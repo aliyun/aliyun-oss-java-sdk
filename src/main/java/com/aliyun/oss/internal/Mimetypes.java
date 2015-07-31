@@ -1,0 +1,115 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package com.aliyun.oss.internal;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.StringTokenizer;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+/**
+ * Utility class used to determine the mimetype of files based on file extensions.
+ */
+public class Mimetypes {
+    private static final Log log = LogFactory.getLog(Mimetypes.class);
+    
+    /* The default MIME type */
+    public static final String DEFAULT_MIMETYPE = "application/octet-stream";
+
+    private static Mimetypes mimetypes = null;
+
+    private HashMap<String, String> extensionToMimetypeMap = new HashMap<String, String>();
+
+    private Mimetypes() {}
+
+    public synchronized static Mimetypes getInstance() {
+        if (mimetypes != null) 
+        	return mimetypes;
+
+        mimetypes = new Mimetypes();
+        InputStream is = mimetypes.getClass().getResourceAsStream("/mime.types");
+        if (is != null) {
+            if (log.isDebugEnabled()) {
+                log.debug("Loading mime types from file in the classpath: mime.types");
+            }
+            try {
+                mimetypes.loadMimetypes(is);
+            } catch (IOException e) {
+                if (log.isErrorEnabled()) {
+                    log.error("Failed to load mime types from file in the classpath: mime.types", e);
+                }
+            } finally {
+                try { 
+                	is.close(); 
+                } catch (IOException ex) { }
+            }
+        } else {
+            if (log.isWarnEnabled()) {
+                log.warn("Unable to find 'mime.types' file in classpath");
+            }
+        }
+        return mimetypes;
+    }
+
+    public void loadMimetypes(InputStream is) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        String line =  null;
+
+        while ((line = br.readLine()) != null) {
+            line = line.trim();
+
+            if (line.startsWith("#") || line.length() == 0) {
+                // Ignore comments and empty lines.
+            } else {
+                StringTokenizer st = new StringTokenizer(line, " \t");
+                if (st.countTokens() > 1) {
+                    String extension = st.nextToken();
+                    if (st.hasMoreTokens()) {
+                        String mimetype = st.nextToken();
+                        extensionToMimetypeMap.put(extension.toLowerCase(), mimetype);
+                    }
+                }
+            }
+        }
+    }
+
+    public String getMimetype(String fileName) {
+        int lastPeriodIndex = fileName.lastIndexOf(".");
+        if (lastPeriodIndex > 0 && lastPeriodIndex + 1 < fileName.length()) {
+            String ext = fileName.substring(lastPeriodIndex + 1).toLowerCase();
+            if (extensionToMimetypeMap.keySet().contains(ext)) {
+                String mimetype = (String) extensionToMimetypeMap.get(ext);
+                return mimetype;
+            } 
+        }
+        return DEFAULT_MIMETYPE;
+    }
+
+    public String getMimetype(File file) {
+       return getMimetype(file.getName());
+    }
+    
+}
