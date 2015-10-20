@@ -101,7 +101,7 @@ public class OSSMultipartSample {
             // 创建bucket
             client.createBucket(bucketName);
         } catch (ServiceException e) {
-            if (!OSSErrorCode.BUCKES_ALREADY_EXISTS.equals(e.getErrorCode())) {
+            if (!OSSErrorCode.BUCKET_ALREADY_EXISTS.equals(e.getErrorCode())) {
                 // 如果Bucket已经存在，则忽略
                 throw e;
             }
