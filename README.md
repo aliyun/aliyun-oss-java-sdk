@@ -13,9 +13,6 @@ mvn clean packge -DskipTests
 ```
 
 - to run function tests, you will have to config user account in src/test/java/com/aliyun/oss/integrationtests/TestConfig.java, 
-- to run performance tests, you will have to config user account in runner_conf.xml,
-  and make sure your project has corresponding service enabled.
-
 
 ## Authors && Contributors
 
