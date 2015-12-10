@@ -20,8 +20,8 @@
 package com.aliyun.oss.internal;
 
 public final class RequestParameters {
-	
-	public static final String SUBRESOURCE_ACL = "acl";
+    
+    public static final String SUBRESOURCE_ACL = "acl";
     public static final String SUBRESOURCE_REFERER = "referer";
     public static final String SUBRESOURCE_LOCATION = "location"; 
     public static final String SUBRESOURCE_LOGGING = "logging"; 

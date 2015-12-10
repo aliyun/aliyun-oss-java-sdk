@@ -19,32 +19,38 @@
 
 package com.aliyun.oss.internal;
 
-import static com.aliyun.oss.internal.RequestParameters.*;
 import static com.aliyun.oss.common.parser.RequestMarshallers.deleteObjectsRequestMarshaller;
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.common.utils.CodingUtils.assertTrue;
 import static com.aliyun.oss.common.utils.IOUtils.checkFile;
 import static com.aliyun.oss.common.utils.IOUtils.newRepeatableInputStream;
 import static com.aliyun.oss.common.utils.IOUtils.safeClose;
+import static com.aliyun.oss.common.utils.LogUtils.getLog;
+import static com.aliyun.oss.common.utils.LogUtils.logException;
+import static com.aliyun.oss.event.ProgressPublisher.publishProgress;
+import static com.aliyun.oss.internal.OSSConstants.DEFAULT_BUFFER_SIZE;
+import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.addDateHeader;
 import static com.aliyun.oss.internal.OSSUtils.addHeader;
 import static com.aliyun.oss.internal.OSSUtils.addStringListHeader;
-import static com.aliyun.oss.internal.OSSUtils.removeHeader;
 import static com.aliyun.oss.internal.OSSUtils.determineInputStreamLength;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
 import static com.aliyun.oss.internal.OSSUtils.ensureObjectKeyValid;
-import static com.aliyun.oss.internal.OSSUtils.populateResponseHeaderParameters;
 import static com.aliyun.oss.internal.OSSUtils.joinETags;
 import static com.aliyun.oss.internal.OSSUtils.populateRequestMetadata;
+import static com.aliyun.oss.internal.OSSUtils.populateResponseHeaderParameters;
+import static com.aliyun.oss.internal.OSSUtils.removeHeader;
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
+import static com.aliyun.oss.internal.RequestParameters.ENCODING_TYPE;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_ACL;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_DELETE;
+import static com.aliyun.oss.internal.ResponseParsers.appendObjectResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.copyObjectResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.deleteObjectsResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getObjectAclResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getObjectMetadataResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.putObjectReponseParser;
-import static com.aliyun.oss.internal.ResponseParsers.appendObjectResponseParser;
-import static com.aliyun.oss.internal.OSSConstants.DEFAULT_BUFFER_SIZE;
-import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -80,25 +86,32 @@ import com.aliyun.oss.common.utils.ExceptionFactory;
 import com.aliyun.oss.common.utils.HttpHeaders;
 import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.common.utils.RangeSpec;
+import com.aliyun.oss.event.ProgressEventType;
+import com.aliyun.oss.event.ProgressInputStream;
+import com.aliyun.oss.event.ProgressListener;
 import com.aliyun.oss.internal.ResponseParsers.GetObjectResponseParser;
 import com.aliyun.oss.model.AppendObjectRequest;
 import com.aliyun.oss.model.AppendObjectResult;
+import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.CopyObjectRequest;
 import com.aliyun.oss.model.CopyObjectResult;
 import com.aliyun.oss.model.DeleteObjectsRequest;
 import com.aliyun.oss.model.DeleteObjectsResult;
+import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.HeadObjectRequest;
 import com.aliyun.oss.model.OSSObject;
+import com.aliyun.oss.model.ObjectAcl;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
+import com.aliyun.oss.model.SetObjectAclRequest;
 
 /**
  * Object operation.
  */
 public class OSSObjectOperation extends OSSOperation {
-	
+    
     public OSSObjectOperation(ServiceClient client, CredentialsProvider credsProvider) {
         super(client, credsProvider);
     }
@@ -106,58 +119,44 @@ public class OSSObjectOperation extends OSSOperation {
     /**
      * Upload input stream or file to oss.
      */
-	public PutObjectResult putObject(PutObjectRequest putObjectRequest) 
-    		throws OSSException, ClientException {
-    	assertParameterNotNull(putObjectRequest, "putObjectRequest");
-    	return writeObjectInternal(WriteMode.OVERWRITE, putObjectRequest, putObjectReponseParser);
-	}
+    public PutObjectResult putObject(PutObjectRequest putObjectRequest) 
+            throws OSSException, ClientException {
+        assertParameterNotNull(putObjectRequest, "putObjectRequest");
+        return writeObjectInternal(WriteMode.OVERWRITE, putObjectRequest, putObjectReponseParser);
+    }
     
     /**
      * Upload input stream to oss by using url signature.
      */
     public PutObjectResult putObject(URL signedUrl, InputStream requestContent, long contentLength,
-    		Map<String, String> requestHeaders, boolean useChunkEncoding) throws OSSException, ClientException {
+            Map<String, String> requestHeaders, boolean useChunkEncoding) throws OSSException, ClientException {
 
         assertParameterNotNull(signedUrl, "signedUrl");
         assertParameterNotNull(requestContent, "requestContent");
         
         if (requestHeaders == null) {
-        	requestHeaders = new HashMap<String, String>();
+            requestHeaders = new HashMap<String, String>();
         }
         
         RequestMessage request = new RequestMessage();
         request.setMethod(HttpMethod.PUT);
-    	request.setAbsoluteUrl(signedUrl);
-    	request.setUseUrlSignature(true);
-    	request.setContent(requestContent);
-    	request.setContentLength(determineInputStreamLength(requestContent, contentLength, useChunkEncoding));
-    	request.setHeaders(requestHeaders);
-    	request.setUseChunkEncoding(useChunkEncoding);
-    	
-    	return doOperation(request, putObjectReponseParser, null, null, true);
+        request.setAbsoluteUrl(signedUrl);
+        request.setUseUrlSignature(true);
+        request.setContent(requestContent);
+        request.setContentLength(determineInputStreamLength(requestContent, contentLength, useChunkEncoding));
+        request.setHeaders(requestHeaders);
+        request.setUseChunkEncoding(useChunkEncoding);
+        
+        return doOperation(request, putObjectReponseParser, null, null, true);
     }
     
     /**
      * Upload input stream or file to oss by append mode.
      */
-	public AppendObjectResult appendObject(AppendObjectRequest appendObjectRequest) 
-    		throws OSSException, ClientException {
-    	assertParameterNotNull(appendObjectRequest, "appendObjectRequest");
-    	return writeObjectInternal(WriteMode.APPEND, appendObjectRequest, appendObjectResponseParser);
-	}
-
-    /**
-     * Pull an object from oss.
-     */
-    public OSSObject getObject(String bucketName, String key)
+    public AppendObjectResult appendObject(AppendObjectRequest appendObjectRequest) 
             throws OSSException, ClientException {
-
-        assertParameterNotNull(bucketName, "bucketName");
-        assertParameterNotNull(key, "key");
-        ensureBucketNameValid(bucketName);
-        ensureObjectKeyValid(key);
-
-        return getObject(new GetObjectRequest(bucketName, key));
+        assertParameterNotNull(appendObjectRequest, "appendObjectRequest");
+        return writeObjectInternal(WriteMode.APPEND, appendObjectRequest, appendObjectResponseParser);
     }
 
     /**
@@ -165,15 +164,15 @@ public class OSSObjectOperation extends OSSOperation {
      */
     public OSSObject getObject(GetObjectRequest getObjectRequest)
             throws OSSException, ClientException {
-    	
-    	assertParameterNotNull(getObjectRequest, "getObjectRequest");
-    	
-    	String bucketName = null;
-    	String key = null;
-    	RequestMessage request = null;
-    	
-    	if (!getObjectRequest.isUseUrlSignature()) {
-        	assertParameterNotNull(getObjectRequest, "getObjectRequest");
+        
+        assertParameterNotNull(getObjectRequest, "getObjectRequest");
+        
+        String bucketName = null;
+        String key = null;
+        RequestMessage request = null;
+        
+        if (!getObjectRequest.isUseUrlSignature()) {
+            assertParameterNotNull(getObjectRequest, "getObjectRequest");
 
             bucketName = getObjectRequest.getBucketName();
             key = getObjectRequest.getKey();
@@ -190,23 +189,42 @@ public class OSSObjectOperation extends OSSOperation {
             populateResponseHeaderParameters(params, getObjectRequest.getResponseHeaders());
             
             request = new OSSRequestMessageBuilder(getInnerClient())
-	                .setEndpoint(getEndpoint())
-	                .setMethod(HttpMethod.GET)
-	                .setBucket(bucketName)
-	                .setKey(key)
-	                .setHeaders(headers)
-	                .setParameters(params)
-	                .build();
+                    .setEndpoint(getEndpoint())
+                    .setMethod(HttpMethod.GET)
+                    .setBucket(bucketName)
+                    .setKey(key)
+                    .setHeaders(headers)
+                    .setParameters(params)
+                    .setOriginalRequest(getObjectRequest)
+                    .build();
         } else {
-        	request = new RequestMessage();
-        	request.setMethod(HttpMethod.GET);
-        	request.setAbsoluteUrl(getObjectRequest.getAbsoluteUri());
-        	request.setUseUrlSignature(true);
-        	request.setHeaders(getObjectRequest.getHeaders());
+            request = new RequestMessage(getObjectRequest);
+            request.setMethod(HttpMethod.GET);
+            request.setAbsoluteUrl(getObjectRequest.getAbsoluteUri());
+            request.setUseUrlSignature(true);
+            request.setHeaders(getObjectRequest.getHeaders());
+        }
+        
+        final ProgressListener listener = getObjectRequest.getProgressListener();
+        OSSObject ossObject = null;
+        try {
+            publishProgress(listener, ProgressEventType.TRANSFER_STARTED_EVENT);
+            ossObject = doOperation(request, new GetObjectResponseParser(bucketName, key), 
+                    bucketName, key, true);
+            InputStream instream = ossObject.getObjectContent();
+            ProgressInputStream progressInputStream = new ProgressInputStream(instream, listener) {
+                @Override
+                protected void onEOF() {
+                    publishProgress(getListener(), ProgressEventType.TRANSFER_COMPLETED_EVENT);
+                };
+            };
+            ossObject.setObjectContent(progressInputStream);
+        } catch (RuntimeException e) {
+            publishProgress(listener, ProgressEventType.TRANSFER_FAILED_EVENT);
+            throw e;
         }
 
-        return doOperation(request, new GetObjectResponseParser(bucketName, key), 
-        		bucketName, key, true);
+        return ossObject;
     }
 
     /**
@@ -229,8 +247,9 @@ public class OSSObjectOperation extends OSSOperation {
             }
             
             return ossObject.getObjectMetadata();
-        } catch (IOException e) {
-            throw new ClientException(OSS_RESOURCE_MANAGER.getString("CannotReadContentStream"), e);
+        } catch (IOException ex) {
+            logException("Cannot read object content stream: ", ex);
+            throw new ClientException(OSS_RESOURCE_MANAGER.getString("CannotReadContentStream"), ex);
         } finally {
             safeClose(outputStream);
             safeClose(ossObject.getObjectContent());
@@ -240,32 +259,38 @@ public class OSSObjectOperation extends OSSOperation {
     /**
      * Get object matadata.
      */
-    public ObjectMetadata getObjectMetadata(String bucketName, String key)
+    public ObjectMetadata getObjectMetadata(GenericRequest genericRequest)
             throws OSSException, ClientException {
 
+        assertParameterNotNull(genericRequest, "genericRequest");
+        
+        String bucketName = genericRequest.getBucketName();
+        String key = genericRequest.getKey();
+        
         assertParameterNotNull(bucketName, "bucketName");
         assertParameterNotNull(key, "key");
         ensureBucketNameValid(bucketName);
         ensureObjectKeyValid(key);
         
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-	        	.setEndpoint(getEndpoint())
-	            .setMethod(HttpMethod.HEAD)
-	            .setBucket(bucketName)
-	            .setKey(key)
-	            .build();
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.HEAD)
+                .setBucket(bucketName)
+                .setKey(key)
+                .setOriginalRequest(genericRequest)
+                .build();
         
         List<ResponseHandler> reponseHandlers = new ArrayList<ResponseHandler>();
         reponseHandlers.add(new ResponseHandler() {
-        	
+            
             @Override
             public void handle(ResponseMessage response) 
-            		throws ServiceException, ClientException {
+                    throws ServiceException, ClientException {
                 if (response.getStatusCode() == HttpStatus.SC_NOT_FOUND) {
                     safeCloseResponse(response);
                     throw ExceptionFactory.createOSSException(
-                    		response.getHeaders().get(OSSHeaders.OSS_HEADER_REQUEST_ID), 
-                    		OSSErrorCode.NO_SUCH_KEY, 
+                            response.getHeaders().get(OSSHeaders.OSS_HEADER_REQUEST_ID), 
+                            OSSErrorCode.NO_SUCH_KEY, 
                             OSS_RESOURCE_MANAGER.getString("NoSuchKey"));
                 }
             }
@@ -273,7 +298,7 @@ public class OSSObjectOperation extends OSSOperation {
         });
         
         return doOperation(request, getObjectMetadataResponseParser, 
-        		bucketName, key, true, null, reponseHandlers);
+                bucketName, key, true, null, reponseHandlers);
     }
 
     /**
@@ -288,25 +313,30 @@ public class OSSObjectOperation extends OSSOperation {
         populateCopyObjectHeaders(copyObjectRequest, headers);
         
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-        		.setEndpoint(getEndpoint())
-	            .setMethod(HttpMethod.PUT)
-	            .setBucket(copyObjectRequest.getDestinationBucketName())
-	            .setKey(copyObjectRequest.getDestinationKey())
-	            .setHeaders(headers)
-	            .build();
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT)
+                .setBucket(copyObjectRequest.getDestinationBucketName())
+                .setKey(copyObjectRequest.getDestinationKey())
+                .setHeaders(headers)
+                .setOriginalRequest(copyObjectRequest)
+                .build();
         
         return doOperation(request, copyObjectResponseParser, 
-        		copyObjectRequest.getDestinationBucketName(), 
-        		copyObjectRequest.getDestinationKey(), true);
+                copyObjectRequest.getDestinationBucketName(), 
+                copyObjectRequest.getDestinationKey(), true);
     }
-
 
     /**
      * Delete an object.
      */
-    public void deleteObject(String bucketName, String key)
+    public void deleteObject(GenericRequest genericRequest)
             throws OSSException, ClientException {
 
+        assertParameterNotNull(genericRequest, "genericRequest");
+        
+        String bucketName = genericRequest.getBucketName();
+        String key = genericRequest.getKey();
+        
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         assertParameterNotNull(key, "key");
@@ -317,6 +347,7 @@ public class OSSObjectOperation extends OSSOperation {
                 .setMethod(HttpMethod.DELETE)
                 .setBucket(bucketName)
                 .setKey(key)
+                .setOriginalRequest(genericRequest)
                 .build();
         
         doOperation(request, emptyResponseParser, bucketName, key);
@@ -326,13 +357,13 @@ public class OSSObjectOperation extends OSSOperation {
      * Delete multiple objects.
      */
     public DeleteObjectsResult deleteObjects(DeleteObjectsRequest deleteObjectsRequest) {
-    	
-    	assertParameterNotNull(deleteObjectsRequest, "deleteObjectsRequest");
-    	
-    	String bucketName = deleteObjectsRequest.getBucketName();
-    	assertParameterNotNull(bucketName, "bucketName");
+        
+        assertParameterNotNull(deleteObjectsRequest, "deleteObjectsRequest");
+        
+        String bucketName = deleteObjectsRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
-    	
+        
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_DELETE, null);
         
@@ -342,14 +373,15 @@ public class OSSObjectOperation extends OSSOperation {
         addDeleteObjectsOptionalHeaders(headers, deleteObjectsRequest);
         
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-	        	.setEndpoint(getEndpoint())
-	        	.setMethod(HttpMethod.POST)
-	        	.setBucket(bucketName)
-	        	.setParameters(params)
-	        	.setHeaders(headers)
-	        	.setInputSize(rawContent.length)
-	        	.setInputStream(new ByteArrayInputStream(rawContent))
-	        	.build();
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.POST)
+                .setBucket(bucketName)
+                .setParameters(params)
+                .setHeaders(headers)
+                .setInputSize(rawContent.length)
+                .setInputStream(new ByteArrayInputStream(rawContent))
+                .setOriginalRequest(deleteObjectsRequest)
+                .build();
         
         return doOperation(request, deleteObjectsResponseParser, bucketName, null, true);
     }
@@ -358,262 +390,331 @@ public class OSSObjectOperation extends OSSOperation {
      * Check if the object key exists under the specified bucket.
      */
     public void headObject(HeadObjectRequest headObjectRequest)
-			throws OSSException, ClientException {
-    	
-    	assertParameterNotNull(headObjectRequest, "headObjectRequest");
-    	
-    	String bucketName = headObjectRequest.getBucketName();
-    	String key = headObjectRequest.getKey();
-    	
-    	assertParameterNotNull(bucketName, "bucketName");
+            throws OSSException, ClientException {
+        
+        assertParameterNotNull(headObjectRequest, "headObjectRequest");
+        
+        String bucketName = headObjectRequest.getBucketName();
+        String key = headObjectRequest.getKey();
+        
+        assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         assertParameterNotNull(key, "key");
         ensureObjectKeyValid(key);
         
         Map<String, String> headers = new HashMap<String, String>();
-        addDateHeader(headers,
-    			OSSHeaders.HEAD_OBJECT_IF_MODIFIED_SINCE,
-    			headObjectRequest.getModifiedSinceConstraint());
-    	addDateHeader(headers,
-    			OSSHeaders.HEAD_OBJECT_IF_UNMODIFIED_SINCE,
-    			headObjectRequest.getUnmodifiedSinceConstraint());
-    	addStringListHeader(headers,
-    			OSSHeaders.HEAD_OBJECT_IF_MATCH,
-    			headObjectRequest.getMatchingETagConstraints());
-    	addStringListHeader(headers,
-    			OSSHeaders.HEAD_OBJECT_IF_NONE_MATCH,
-    			headObjectRequest.getNonmatchingETagConstraints());
-    	
-    	RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-		    	.setEndpoint(getEndpoint())
-		    	.setMethod(HttpMethod.HEAD)
-		    	.setBucket(bucketName)
-		    	.setKey(key)
-		    	.setHeaders(headers)
-		    	.build();
-    	
-    	doOperation(request, emptyResponseParser, bucketName, key);
-	}
+        addDateHeader(headers, OSSHeaders.HEAD_OBJECT_IF_MODIFIED_SINCE,
+                headObjectRequest.getModifiedSinceConstraint());
+        addDateHeader(headers, OSSHeaders.HEAD_OBJECT_IF_UNMODIFIED_SINCE,
+                headObjectRequest.getUnmodifiedSinceConstraint());
+        
+        addStringListHeader(headers, OSSHeaders.HEAD_OBJECT_IF_MATCH,
+                headObjectRequest.getMatchingETagConstraints());
+        addStringListHeader(headers, OSSHeaders.HEAD_OBJECT_IF_NONE_MATCH,
+                headObjectRequest.getNonmatchingETagConstraints());
+        
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.HEAD)
+                .setBucket(bucketName)
+                .setKey(key)
+                .setHeaders(headers)
+                .setOriginalRequest(headObjectRequest)
+                .build();
+        
+        doOperation(request, emptyResponseParser, bucketName, key);
+    }
+    
+    public void setObjectAcl(SetObjectAclRequest setObjectAclRequest) 
+            throws OSSException, ClientException {
+        
+        assertParameterNotNull(setObjectAclRequest, "setObjectAclRequest");
+
+        String bucketName = setObjectAclRequest.getBucketName();
+        String key = setObjectAclRequest.getKey();
+        CannedAccessControlList cannedAcl = setObjectAclRequest.getCannedACL();
+        
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        assertParameterNotNull(key, "key");
+        ensureObjectKeyValid(key);
+        assertParameterNotNull(cannedAcl, "cannedAcl");
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put(OSSHeaders.OSS_OBJECT_ACL, cannedAcl.toString());
+        
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_ACL, null);
+        
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT)
+                .setBucket(bucketName)
+                .setKey(key)
+                .setParameters(params)
+                .setHeaders(headers)
+                .setOriginalRequest(setObjectAclRequest)
+                .build();
+        
+        doOperation(request, emptyResponseParser, bucketName, key);
+    }
+
+    public ObjectAcl getObjectAcl(GenericRequest genericRequest)
+            throws OSSException, ClientException {
+
+        assertParameterNotNull(genericRequest, "genericRequest");
+        
+        String bucketName = genericRequest.getBucketName();
+        String key = genericRequest.getKey();
+        
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        assertParameterNotNull(key, "key");
+        ensureObjectKeyValid(key);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_ACL, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET)
+                .setBucket(bucketName)
+                .setKey(key)
+                .setParameters(params)
+                .setOriginalRequest(genericRequest)
+                .build();
+        
+        return doOperation(request, getObjectAclResponseParser, bucketName, key, true);
+    }
     
     private static enum MetadataDirective {
-    	
-    	/* Copy metadata from source object */
-    	COPY("COPY"),
+        
+        /* Copy metadata from source object */
+        COPY("COPY"),
 
-    	/* Replace metadata with newly metadata */
-    	REPLACE("REPLACE");
-    	
-    	private final String directiveAsString;
-    	
-    	private MetadataDirective(String directiveAsString) {
-    		this.directiveAsString = directiveAsString;
-    	}
-    	
-    	@Override
-    	public String toString() {
-    		return this.directiveAsString;
-    	}
+        /* Replace metadata with newly metadata */
+        REPLACE("REPLACE");
+        
+        private final String directiveAsString;
+        
+        private MetadataDirective(String directiveAsString) {
+            this.directiveAsString = directiveAsString;
+        }
+        
+        @Override
+        public String toString() {
+            return this.directiveAsString;
+        }
     }
     
     /**
      * An enum to represent different modes the client may specify to upload specified file or inputstream.
      */
     private static enum WriteMode {
-    	
-    	/* If object already not exists, create it. otherwise, append it with the new input */
-    	APPEND("APPEND"),
-    	
-    	/* No matter object exists or not, just overwrite it with the new input */
-    	OVERWRITE("OVERWRITE");
-    	
-    	private final String modeAsString;
-    	
-    	private WriteMode(String modeAsString) {
-    		this.modeAsString = modeAsString;
-    	}
-    	
-    	@Override
-    	public String toString() {
-    		return this.modeAsString;
-    	}
-    	
-    	public static HttpMethod getMappingMethod(WriteMode mode) {
-    		switch (mode) {
-			case APPEND:
-				return HttpMethod.POST;
-			
-			case OVERWRITE:
-				return HttpMethod.PUT;
-				
-			default:
-				throw new IllegalArgumentException("Unsuported write mode" + mode.toString());
-			}
-    	}
+        
+        /* If object already not exists, create it. otherwise, append it with the new input */
+        APPEND("APPEND"),
+        
+        /* No matter object exists or not, just overwrite it with the new input */
+        OVERWRITE("OVERWRITE");
+        
+        private final String modeAsString;
+        
+        private WriteMode(String modeAsString) {
+            this.modeAsString = modeAsString;
+        }
+        
+        @Override
+        public String toString() {
+            return this.modeAsString;
+        }
+        
+        public static HttpMethod getMappingMethod(WriteMode mode) {
+            switch (mode) {
+            case APPEND:
+                return HttpMethod.POST;
+            
+            case OVERWRITE:
+                return HttpMethod.PUT;
+                
+            default:
+                throw new IllegalArgumentException("Unsuported write mode" + mode.toString());
+            }
+        }
     }
     
     private <RequestType extends PutObjectRequest, ResponseType> 
-    	ResponseType writeObjectInternal(WriteMode mode, RequestType originalRequest, 
-    			ResponseParser<ResponseType> responseParser) {
-    	final String bucketName = originalRequest.getBucketName();
-		final String key = originalRequest.getKey();
-		InputStream originalInputStream = originalRequest.getInputStream();
-		ObjectMetadata metadata = originalRequest.getMetadata();
-		if (metadata == null) {
-			metadata = new ObjectMetadata();
-		}
-		
-		assertParameterNotNull(bucketName, "bucketName");
-		assertParameterNotNull(key, "key");
-		ensureBucketNameValid(bucketName);
+        ResponseType writeObjectInternal(WriteMode mode, RequestType originalRequest, 
+                ResponseParser<ResponseType> responseParser) {
+        
+        final String bucketName = originalRequest.getBucketName();
+        final String key = originalRequest.getKey();
+        InputStream originalInputStream = originalRequest.getInputStream();
+        ObjectMetadata metadata = originalRequest.getMetadata();
+        if (metadata == null) {
+            metadata = new ObjectMetadata();
+        }
+        
+        assertParameterNotNull(bucketName, "bucketName");
+        assertParameterNotNull(key, "key");
+        ensureBucketNameValid(bucketName);
         ensureObjectKeyValid(key);
-		
+        
         InputStream repeatableInputStream = null;
-    	if (originalRequest.getFile() != null) {
-        	File toUpload = originalRequest.getFile();
-        	
-        	if (!checkFile(toUpload)) {
-				throw new ClientException("Illegal file path: " + toUpload.getPath());
-			}
-        	
-        	metadata.setContentLength(toUpload.length());
-        	if (metadata.getContentType() == null) {
-        		metadata.setContentType(Mimetypes.getInstance().getMimetype(toUpload));
-        	}
-        	
-        	try {
-        		repeatableInputStream = new RepeatableFileInputStream(toUpload);
-			} catch (IOException e) {
-				throw new ClientException("Cannot locate file to upload", e);
-			}
+        if (originalRequest.getFile() != null) {
+            File toUpload = originalRequest.getFile();
+            
+            if (!checkFile(toUpload)) {
+                getLog().info("Illegal file path: " + toUpload.getPath());
+                throw new ClientException("Illegal file path: " + toUpload.getPath());
+            }
+            
+            metadata.setContentLength(toUpload.length());
+            if (metadata.getContentType() == null) {
+                metadata.setContentType(Mimetypes.getInstance().getMimetype(toUpload));
+            }
+            
+            try {
+                repeatableInputStream = new RepeatableFileInputStream(toUpload);
+            } catch (IOException ex) {
+                logException("Cannot locate file to upload: ", ex);
+                throw new ClientException("Cannot locate file to upload: ", ex);
+            }
         } else {
-        	assertTrue(originalInputStream != null, "Please specify input stream or file to upload");
-        	
-        	if (metadata.getContentType() == null) {
-        		metadata.setContentType(Mimetypes.DEFAULT_MIMETYPE);
-        	}
-        	
-        	try {
-				repeatableInputStream = newRepeatableInputStream(originalInputStream);
-			} catch (IOException e) {
-				throw new ClientException("Cannot wrap to repeatable input stream", e);
-			}
+            assertTrue(originalInputStream != null, "Please specify input stream or file to upload");
+            
+            if (metadata.getContentType() == null) {
+                metadata.setContentType(Mimetypes.getInstance().getMimetype(key));
+            }
+            
+            try {
+                repeatableInputStream = newRepeatableInputStream(originalInputStream);
+            } catch (IOException ex) {
+                logException("Cannot wrap to repeatable input stream: ", ex);
+                throw new ClientException("Cannot wrap to repeatable input stream: ", ex);
+            }
         }
         
         Map<String, String> headers = new HashMap<String, String>();
         populateRequestMetadata(headers, metadata);
         Map<String, String> params = new LinkedHashMap<String, String>();
-        populateWriteObjectHeaders(mode, originalRequest, params);
+        populateWriteObjectParams(mode, originalRequest, params);
         
         RequestMessage httpRequest = new OSSRequestMessageBuilder(getInnerClient())
-		        .setEndpoint(getEndpoint())
-		        .setMethod(WriteMode.getMappingMethod(mode))
-		        .setBucket(bucketName)
-		        .setKey(key)
-		        .setHeaders(headers)
-		        .setParameters(params)
-		        .setInputStream(repeatableInputStream)
-		        .setInputSize(determineInputStreamLength(repeatableInputStream, metadata.getContentLength()))
-		        .build();
+                .setEndpoint(getEndpoint())
+                .setMethod(WriteMode.getMappingMethod(mode))
+                .setBucket(bucketName)
+                .setKey(key)
+                .setHeaders(headers)
+                .setParameters(params)
+                .setInputStream(repeatableInputStream)
+                .setInputSize(determineInputStreamLength(repeatableInputStream, metadata.getContentLength()))
+                .setOriginalRequest(originalRequest)
+                .build();
         
-        return doOperation(httpRequest, responseParser, bucketName, key, true);
+        final ProgressListener listener = originalRequest.getProgressListener();
+        ResponseType result = null;
+        try {
+            publishProgress(listener, ProgressEventType.TRANSFER_STARTED_EVENT);
+            result = doOperation(httpRequest, responseParser, bucketName, key, true);
+            publishProgress(listener, ProgressEventType.TRANSFER_COMPLETED_EVENT);
+        } catch (RuntimeException e) {
+            publishProgress(listener, ProgressEventType.TRANSFER_FAILED_EVENT);
+            throw e;
+        }
+        return result;
     }
 
     private static void populateCopyObjectHeaders(CopyObjectRequest copyObjectRequest,
-    		Map<String, String> headers) {
-    	String copySourceHeader = "/" + copyObjectRequest.getSourceBucketName() + "/"
-    			+ HttpUtil.urlEncode(copyObjectRequest.getSourceKey(), DEFAULT_CHARSET_NAME);
-    	headers.put(OSSHeaders.COPY_OBJECT_SOURCE, copySourceHeader);
-    	
-    	addDateHeader(headers,
-    			OSSHeaders.COPY_OBJECT_SOURCE_IF_MODIFIED_SINCE,
-    			copyObjectRequest.getModifiedSinceConstraint());
-    	addDateHeader(headers,
-    			OSSHeaders.COPY_OBJECT_SOURCE_IF_UNMODIFIED_SINCE,
-    			copyObjectRequest.getUnmodifiedSinceConstraint());
-    	
-    	addStringListHeader(headers,
-    			OSSHeaders.COPY_OBJECT_SOURCE_IF_MATCH,
-    			copyObjectRequest.getMatchingETagConstraints());
-    	addStringListHeader(headers,
-    			OSSHeaders.COPY_OBJECT_SOURCE_IF_NONE_MATCH,
-    			copyObjectRequest.getNonmatchingEtagConstraints());
-    	
-    	addHeader(headers, 
-    			OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION, 
-    			copyObjectRequest.getServerSideEncryption());
-    	
-    	ObjectMetadata newObjectMetadata = copyObjectRequest.getNewObjectMetadata();
-    	if (newObjectMetadata != null) {
-    		headers.put(OSSHeaders.COPY_OBJECT_METADATA_DIRECTIVE, MetadataDirective.REPLACE.toString());
-    		populateRequestMetadata(headers, newObjectMetadata);
-    	}
-    	
-    	// The header of Content-Length should not be specified on copying an object.
-    	removeHeader(headers, HttpHeaders.CONTENT_LENGTH);
+            Map<String, String> headers) {
+        
+        String copySourceHeader = "/" + copyObjectRequest.getSourceBucketName() + "/"
+                + HttpUtil.urlEncode(copyObjectRequest.getSourceKey(), DEFAULT_CHARSET_NAME);
+        headers.put(OSSHeaders.COPY_OBJECT_SOURCE, copySourceHeader);
+        
+        addDateHeader(headers, OSSHeaders.COPY_OBJECT_SOURCE_IF_MODIFIED_SINCE,
+                copyObjectRequest.getModifiedSinceConstraint());
+        addDateHeader(headers, OSSHeaders.COPY_OBJECT_SOURCE_IF_UNMODIFIED_SINCE,
+                copyObjectRequest.getUnmodifiedSinceConstraint());
+        
+        addStringListHeader(headers, OSSHeaders.COPY_OBJECT_SOURCE_IF_MATCH,
+                copyObjectRequest.getMatchingETagConstraints());
+        addStringListHeader(headers, OSSHeaders.COPY_OBJECT_SOURCE_IF_NONE_MATCH,
+                copyObjectRequest.getNonmatchingEtagConstraints());
+        
+        addHeader(headers, OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION, 
+                copyObjectRequest.getServerSideEncryption());
+        
+        ObjectMetadata newObjectMetadata = copyObjectRequest.getNewObjectMetadata();
+        if (newObjectMetadata != null) {
+            headers.put(OSSHeaders.COPY_OBJECT_METADATA_DIRECTIVE, MetadataDirective.REPLACE.toString());
+            populateRequestMetadata(headers, newObjectMetadata);
+        }
+        
+        // The header of Content-Length should not be specified on copying an object.
+        removeHeader(headers, HttpHeaders.CONTENT_LENGTH);
     }
     
     private static void populateGetObjectRequestHeaders(GetObjectRequest getObjectRequest,
-    		Map<String, String> headers) {
-    	
-    	if (getObjectRequest.getRange() != null) {
+            Map<String, String> headers) {
+        
+        if (getObjectRequest.getRange() != null) {
             addGetObjectRangeHeader(getObjectRequest.getRange(), headers);
         }
 
         if (getObjectRequest.getModifiedSinceConstraint() != null) {
-            headers.put(OSSHeaders.GET_OBJECT_IF_MODIFIED_SINCE, DateUtil
-                    .formatRfc822Date(getObjectRequest
-                            .getModifiedSinceConstraint()));
+            headers.put(OSSHeaders.GET_OBJECT_IF_MODIFIED_SINCE, 
+                    DateUtil.formatRfc822Date(getObjectRequest.getModifiedSinceConstraint()));
         }
         
         if (getObjectRequest.getUnmodifiedSinceConstraint() != null) {
-            headers.put(OSSHeaders.GET_OBJECT_IF_UNMODIFIED_SINCE, DateUtil
-                    .formatRfc822Date(getObjectRequest
-                            .getUnmodifiedSinceConstraint()));
+            headers.put(OSSHeaders.GET_OBJECT_IF_UNMODIFIED_SINCE, 
+                    DateUtil.formatRfc822Date(getObjectRequest.getUnmodifiedSinceConstraint()));
         }
         
-        if (getObjectRequest.getMatchingETagConstraints().size() > 0){
+        if (getObjectRequest.getMatchingETagConstraints().size() > 0) {
             headers.put(OSSHeaders.GET_OBJECT_IF_MATCH,
                     joinETags(getObjectRequest.getMatchingETagConstraints()));
         }
         
-        if (getObjectRequest.getNonmatchingETagConstraints().size() > 0){
+        if (getObjectRequest.getNonmatchingETagConstraints().size() > 0) {
             headers.put(OSSHeaders.GET_OBJECT_IF_NONE_MATCH,
                     joinETags(getObjectRequest.getNonmatchingETagConstraints()));
         }
-        
-        // Populate all standard HTTP headers provided by SDK users
-        headers.putAll(getObjectRequest.getHeaders());
     }
      
     private static void addDeleteObjectsRequiredHeaders(Map<String, String> headers, byte[] rawContent) {
-    	headers.put(HttpHeaders.CONTENT_LENGTH, String.valueOf(rawContent.length));
-    	
-    	byte[] md5 = BinaryUtil.calculateMd5(rawContent);
-    	String md5Base64 = BinaryUtil.toBase64String(md5);
-    	headers.put(HttpHeaders.CONTENT_MD5, md5Base64);
+        headers.put(HttpHeaders.CONTENT_LENGTH, String.valueOf(rawContent.length));
+        
+        byte[] md5 = BinaryUtil.calculateMd5(rawContent);
+        String md5Base64 = BinaryUtil.toBase64String(md5);
+        headers.put(HttpHeaders.CONTENT_MD5, md5Base64);
     }
     
-    private static void addDeleteObjectsOptionalHeaders(Map<String, String> headers, DeleteObjectsRequest request) {
-		if (request.getEncodingType() != null) {
-			headers.put(ENCODING_TYPE, request.getEncodingType());
-		}
-	}
+    private static void addDeleteObjectsOptionalHeaders(Map<String, String> headers, 
+            DeleteObjectsRequest request) {
+        if (request.getEncodingType() != null) {
+            headers.put(ENCODING_TYPE, request.getEncodingType());
+        }
+    }
     
-    private static void addGetObjectRangeHeader(long[] range, Map<String, String> headers) {    	
-    	RangeSpec rangeSpec = RangeSpec.parse(range);
+    private static void addGetObjectRangeHeader(long[] range, Map<String, String> headers) {        
+        RangeSpec rangeSpec = RangeSpec.parse(range);
         headers.put(OSSHeaders.RANGE, rangeSpec.toString());
     }
     
-    private static void populateWriteObjectHeaders(WriteMode mode, PutObjectRequest originalRequest, Map<String, String> params) {
-    	if (mode == WriteMode.OVERWRITE) {
-    		return;
-    	}
-    	
-    	assert (originalRequest instanceof AppendObjectRequest);
-    	params.put(RequestParameters.SUBRESOURCE_APPEND, null);
-    	AppendObjectRequest appendObjectRequest = (AppendObjectRequest)originalRequest;
-    	if (appendObjectRequest.getPosition() != null) {
-    		params.put(RequestParameters.POSITION, String.valueOf(appendObjectRequest.getPosition()));    		
-    	}
+    private static void populateWriteObjectParams(WriteMode mode, PutObjectRequest originalRequest, 
+            Map<String, String> params) {
+        
+        if (mode == WriteMode.OVERWRITE) {
+            return;
+        }
+        
+        assert (originalRequest instanceof AppendObjectRequest);
+        params.put(RequestParameters.SUBRESOURCE_APPEND, null);
+        AppendObjectRequest appendObjectRequest = (AppendObjectRequest)originalRequest;
+        if (appendObjectRequest.getPosition() != null) {
+            params.put(RequestParameters.POSITION, String.valueOf(appendObjectRequest.getPosition()));            
+        }
     }
 }

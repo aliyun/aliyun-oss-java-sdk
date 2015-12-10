@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.aliyun.oss.common.utils.DateUtil;
-import com.aliyun.oss.internal.OSSConstants;
 import com.aliyun.oss.internal.OSSHeaders;
 
 /**
@@ -68,7 +67,7 @@ public class ObjectMetadata {
     public void setUserMetadata(Map<String, String> userMetadata) {
         this.userMetadata.clear();
         if (userMetadata != null && !userMetadata.isEmpty()) {
-        	this.userMetadata.putAll(userMetadata);
+            this.userMetadata.putAll(userMetadata);
         }
     }
 
@@ -128,7 +127,7 @@ public class ObjectMetadata {
      * @return 原始的Expires响应头。
      */
     public String getRawExpiresValue() {
-    	return (String) metadata.get(OSSHeaders.EXPIRES);
+        return (String) metadata.get(OSSHeaders.EXPIRES);
     }
     
     /**
@@ -145,10 +144,8 @@ public class ObjectMetadata {
      * @return Object内容的大小。
      */
     public long getContentLength() {
-        Long contentLength = (Long)metadata.get(OSSHeaders.CONTENT_LENGTH);
-
-        if (contentLength == null) return 0;
-        return contentLength.longValue();
+        Long contentLength = (Long)metadata.get(OSSHeaders.CONTENT_LENGTH);        
+        return contentLength == null ? 0 : contentLength.longValue();
     }
 
     /**
@@ -156,14 +153,8 @@ public class ObjectMetadata {
      * 当上传Object到OSS时，请总是指定正确的content length。
      * @param contentLength
      *          Object内容的大小。
-     * @throws IllegalArgumentException
-     *          Object内容的长度大小大于最大限定值：5G字节。
      */
     public void setContentLength(long contentLength) {
-        if (contentLength > OSSConstants.DEFAULT_FILE_SIZE_LIMIT) {
-            throw new IllegalArgumentException("内容长度不能超过5G字节。");
-        }
-
         metadata.put(OSSHeaders.CONTENT_LENGTH, contentLength);
     }
 
@@ -272,7 +263,15 @@ public class ObjectMetadata {
      * @return Object存储类型。
      */
     public String getObjectType() {
-    	return (String)metadata.get(OSSHeaders.OSS_OBJECT_TYPE);
+        return (String)metadata.get(OSSHeaders.OSS_OBJECT_TYPE);
+    }
+    
+    /**
+     * 设置Object访问权限，目前支持default, private, public-read, public-read-write四种访问权限。
+     * @param cannedAcl Object访问权限。
+     */
+    public void setObjectAcl(CannedAccessControlList cannedAcl) {
+        metadata.put(OSSHeaders.OSS_OBJECT_ACL, cannedAcl != null ? cannedAcl.toString() : "");
     }
     
     /**

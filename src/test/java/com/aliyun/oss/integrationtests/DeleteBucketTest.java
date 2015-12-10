@@ -37,65 +37,65 @@ import com.aliyun.oss.OSSException;
 
 public class DeleteBucketTest extends TestBase {
 
-	@Test
-	public void testDeleteExistingBucket() {
-		final String bucketName = "delete-existing-bucket";
-		
-		try {
-			secondClient.createBucket(bucketName);
-			secondClient.deleteBucket(bucketName);
-		} catch (Exception e) {
-			Assert.fail(e.getMessage());
-		}
-	}
+    @Test
+    public void testDeleteExistingBucket() {
+        final String bucketName = "delete-existing-bucket";
+        
+        try {
+            secondClient.createBucket(bucketName);
+            secondClient.deleteBucket(bucketName);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
 
-	@Test
-	public void testDeleteNonexistentBucket() {
-		final String bucketName = "delete-nonexistent-bucket";
-		
-		try {
-			secondClient.deleteBucket(bucketName);
-			Assert.fail("Delete bucket should not be successful.");
-		} catch (OSSException e) {
-			Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-			Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
-		}
-	}
-	
-	@Test
-	public void testDeleteNonemptyBucket() {
-		final String bucketName = "delete-nonempty-bucket";
-		final String key = "delete-nonempty-bucket-key";
-		
-		try {
-			secondClient.createBucket(bucketName);
-			
-			List<String> keys = new ArrayList<String>();
-			keys.add(key);
-			if (!batchPutObject(secondClient, bucketName, keys)) {
-				Assert.fail("batch put object failed");
-			}
-			
-			secondClient.deleteBucket(bucketName);
-			Assert.fail("Delete bucket should not be successful.");
-		} catch (OSSException e) {
-			Assert.assertEquals(OSSErrorCode.BUCKET_NOT_EMPTY, e.getErrorCode());
-			Assert.assertTrue(e.getMessage().startsWith(BUCKET_NOT_EMPTY_ERR));
-		} finally {
-			deleteBucketWithObjects(secondClient, bucketName);
-		}
-	}
-	
-	@Test
-	public void testDeleteBucketWithoutOwnership() {
-		final String bucketWithoutOwnership = "oss";
-		
-		try {
-			secondClient.deleteBucket(bucketWithoutOwnership);
-			Assert.fail("Delete bucket should not be successful.");
-		} catch (OSSException e) {
-			Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-			Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
-		}
-	}
+    @Test
+    public void testDeleteNonexistentBucket() {
+        final String bucketName = "delete-nonexistent-bucket";
+        
+        try {
+            secondClient.deleteBucket(bucketName);
+            Assert.fail("Delete bucket should not be successful.");
+        } catch (OSSException e) {
+            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+        }
+    }
+    
+    @Test
+    public void testDeleteNonemptyBucket() {
+        final String bucketName = "delete-nonempty-bucket";
+        final String key = "delete-nonempty-bucket-key";
+        
+        try {
+            secondClient.createBucket(bucketName);
+            
+            List<String> keys = new ArrayList<String>();
+            keys.add(key);
+            if (!batchPutObject(secondClient, bucketName, keys)) {
+                Assert.fail("batch put object failed");
+            }
+            
+            secondClient.deleteBucket(bucketName);
+            Assert.fail("Delete bucket should not be successful.");
+        } catch (OSSException e) {
+            Assert.assertEquals(OSSErrorCode.BUCKET_NOT_EMPTY, e.getErrorCode());
+            Assert.assertTrue(e.getMessage().startsWith(BUCKET_NOT_EMPTY_ERR));
+        } finally {
+            deleteBucketWithObjects(secondClient, bucketName);
+        }
+    }
+    
+    @Test
+    public void testDeleteBucketWithoutOwnership() {
+        final String bucketWithoutOwnership = "oss";
+        
+        try {
+            secondClient.deleteBucket(bucketWithoutOwnership);
+            Assert.fail("Delete bucket should not be successful.");
+        } catch (OSSException e) {
+            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
+        }
+    }
 }

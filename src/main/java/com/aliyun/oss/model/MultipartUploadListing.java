@@ -52,8 +52,8 @@ public class MultipartUploadListing {
     public MultipartUploadListing() {}
 
     public MultipartUploadListing(String bucketName) {
-		this.bucketName = bucketName;
-	}
+        this.bucketName = bucketName;
+    }
 
     public String getBucketName() {
         return bucketName;
@@ -118,12 +118,12 @@ public class MultipartUploadListing {
     public void setMultipartUploads(List<MultipartUpload> multipartUploads) {
         this.multipartUploads.clear();
         if (multipartUploads != null && !multipartUploads.isEmpty()) {
-        	this.multipartUploads.addAll(multipartUploads);
+            this.multipartUploads.addAll(multipartUploads);
         }
     }
     
     public void addMultipartUpload(MultipartUpload multipartUpload) {
-    	this.multipartUploads.add(multipartUpload);
+        this.multipartUploads.add(multipartUpload);
     }
 
     public List<String> getCommonPrefixes() {
@@ -131,14 +131,14 @@ public class MultipartUploadListing {
     }
 
     public void setCommonPrefixes(List<String> commonPrefixes) {
-    	this.commonPrefixes.clear();
+        this.commonPrefixes.clear();
         if (commonPrefixes != null && !commonPrefixes.isEmpty()) {
-        	this.commonPrefixes.addAll(commonPrefixes);
+            this.commonPrefixes.addAll(commonPrefixes);
         }
     }
     
     public void addCommonPrefix(String commonPrefix) {
-    	this.commonPrefixes.add(commonPrefix);
+        this.commonPrefixes.add(commonPrefix);
     }
 
     public String getDelimiter() {

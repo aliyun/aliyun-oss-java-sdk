@@ -72,7 +72,7 @@ public class CopyObjectRequest extends WebServiceRequest {
      *          目标Object的Key。
      */
     public CopyObjectRequest(String sourceBucketName, String sourceKey,
-            String destinationBucketName, String destinationKey){
+            String destinationBucketName, String destinationKey) {
         setSourceBucketName(sourceBucketName);
         setSourceKey(sourceKey);
         setDestinationBucketName(destinationBucketName);
@@ -184,12 +184,12 @@ public class CopyObjectRequest extends WebServiceRequest {
     public void setMatchingETagConstraints(List<String> matchingETagConstraints) {
         this.matchingETagConstraints.clear();
         if (matchingETagConstraints != null && !matchingETagConstraints.isEmpty()) {
-        	this.matchingETagConstraints.addAll(matchingETagConstraints);
+            this.matchingETagConstraints.addAll(matchingETagConstraints);
         }
     }
     
     public void clearMatchingETagConstraints() {
-    	this.matchingETagConstraints.clear();
+        this.matchingETagConstraints.clear();
     }
 
     /**
@@ -210,14 +210,14 @@ public class CopyObjectRequest extends WebServiceRequest {
      *          ETag限定值的列表。
      */
     public void setNonmatchingETagConstraints(List<String> nonmatchingEtagConstraints) {
-    	this.nonmatchingEtagConstraints.clear();
+        this.nonmatchingEtagConstraints.clear();
         if (nonmatchingEtagConstraints != null && !nonmatchingEtagConstraints.isEmpty()) {
-        	this.nonmatchingEtagConstraints.addAll(nonmatchingEtagConstraints);
+            this.nonmatchingEtagConstraints.addAll(nonmatchingEtagConstraints);
         }
     }
     
     public void clearNonmatchingETagConstraints() {
-    	this.nonmatchingEtagConstraints.clear();
+        this.nonmatchingEtagConstraints.clear();
     }
 
     /**

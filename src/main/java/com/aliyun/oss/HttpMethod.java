@@ -22,7 +22,7 @@ package com.aliyun.oss;
 /**
  * 表示HTTP的请求方法。
  */
-public enum HttpMethod{
+public enum HttpMethod {
     /**
      * DELETE方法。
      */

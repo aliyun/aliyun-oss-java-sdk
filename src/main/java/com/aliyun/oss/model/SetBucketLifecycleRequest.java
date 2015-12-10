@@ -22,74 +22,65 @@ package com.aliyun.oss.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SetBucketLifecycleRequest extends WebServiceRequest {
-	
-	public static final int MAX_LIFECYCLE_RULE_LIMIT = 1000;
-	public static final int MAX_RULE_ID_LENGTH = 255;
+public class SetBucketLifecycleRequest extends GenericRequest {
     
-	private String bucketName;
-	private List<LifecycleRule> lifecycleRules = new ArrayList<LifecycleRule>();
+    public static final int MAX_LIFECYCLE_RULE_LIMIT = 1000;
+    public static final int MAX_RULE_ID_LENGTH = 255;
+    
+    private List<LifecycleRule> lifecycleRules = new ArrayList<LifecycleRule>();
 
-	public SetBucketLifecycleRequest(String bucketName) {
-		this.bucketName = bucketName;
-	}
+    public SetBucketLifecycleRequest(String bucketName) {
+        super(bucketName);
+    }
 
-	public String getBucketName() {
-		return bucketName;
-	}
-	
-	public void setBucketName(String bucketName) {
-		this.bucketName = bucketName;
-	}
+    public List<LifecycleRule> getLifecycleRules() {
+        return lifecycleRules;
+    }
 
-	public List<LifecycleRule> getLifecycleRules() {
-		return lifecycleRules;
-	}
-
-	public void setLifecycleRules(List<LifecycleRule> lifecycleRules) {
-		if (lifecycleRules == null || lifecycleRules.isEmpty()) {
-			throw new IllegalArgumentException("lifecycleRules should not be null or empty.");
-		}
-		
-		if (lifecycleRules.size() > MAX_LIFECYCLE_RULE_LIMIT) {
-			throw new IllegalArgumentException("One bucket not allow exceed one thousand items of LifecycleRules.");
-		}
-		
-		this.lifecycleRules.clear();
-		this.lifecycleRules.addAll(lifecycleRules);
-	}
-	
-	public void clearLifecycles() {
-		this.lifecycleRules.clear();
-	}
-	
-	public void AddLifecycleRule(LifecycleRule lifecycleRule) {
-		if (lifecycleRule == null) {
-			throw new IllegalArgumentException("lifecycleRule should not be null or empty.");
-		}
-		
-		if (this.lifecycleRules.size() >= MAX_LIFECYCLE_RULE_LIMIT) {
-			throw new IllegalArgumentException("One bucket not allow exceed one thousand items of LifecycleRules.");
-		}
-		
-		if (lifecycleRule.getId() != null && lifecycleRule.getId().length() > MAX_RULE_ID_LENGTH) {
-			throw new IllegalArgumentException("Length of lifecycle rule id exceeds max limit " 
-					+ MAX_RULE_ID_LENGTH);
-		}
-		
-		boolean hasSetExpirationTime = (lifecycleRule.getExpirationTime() != null);
-		boolean hasSetExpirationDays =(lifecycleRule.getExpriationDays() != 0);
-		if ((!hasSetExpirationTime && !hasSetExpirationDays) 
-				|| (hasSetExpirationTime && hasSetExpirationDays)) {
-			throw new IllegalArgumentException("Only one expiration property should be specified.");
-		}
-		
-		if (lifecycleRule.getStatus() == LifecycleRule.RuleStatus.Unknown) {
-			throw new IllegalArgumentException("RuleStatus property should be specified with 'Enabled' or 'Disabled'.");
-		}
-		
-		this.lifecycleRules.add(lifecycleRule);
-	}
+    public void setLifecycleRules(List<LifecycleRule> lifecycleRules) {
+        if (lifecycleRules == null || lifecycleRules.isEmpty()) {
+            throw new IllegalArgumentException("lifecycleRules should not be null or empty.");
+        }
+        
+        if (lifecycleRules.size() > MAX_LIFECYCLE_RULE_LIMIT) {
+            throw new IllegalArgumentException("One bucket not allow exceed one thousand items of LifecycleRules.");
+        }
+        
+        this.lifecycleRules.clear();
+        this.lifecycleRules.addAll(lifecycleRules);
+    }
+    
+    public void clearLifecycles() {
+        this.lifecycleRules.clear();
+    }
+    
+    public void AddLifecycleRule(LifecycleRule lifecycleRule) {
+        if (lifecycleRule == null) {
+            throw new IllegalArgumentException("lifecycleRule should not be null or empty.");
+        }
+        
+        if (this.lifecycleRules.size() >= MAX_LIFECYCLE_RULE_LIMIT) {
+            throw new IllegalArgumentException("One bucket not allow exceed one thousand items of LifecycleRules.");
+        }
+        
+        if (lifecycleRule.getId() != null && lifecycleRule.getId().length() > MAX_RULE_ID_LENGTH) {
+            throw new IllegalArgumentException("Length of lifecycle rule id exceeds max limit " 
+                    + MAX_RULE_ID_LENGTH);
+        }
+        
+        boolean hasSetExpirationTime = (lifecycleRule.getExpirationTime() != null);
+        boolean hasSetExpirationDays =(lifecycleRule.getExpriationDays() != 0);
+        if ((!hasSetExpirationTime && !hasSetExpirationDays) 
+                || (hasSetExpirationTime && hasSetExpirationDays)) {
+            throw new IllegalArgumentException("Only one expiration property should be specified.");
+        }
+        
+        if (lifecycleRule.getStatus() == LifecycleRule.RuleStatus.Unknown) {
+            throw new IllegalArgumentException("RuleStatus property should be specified with 'Enabled' or 'Disabled'.");
+        }
+        
+        this.lifecycleRules.add(lifecycleRule);
+    }
 }
 
 

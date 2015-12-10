@@ -26,16 +26,16 @@ import org.junit.Test;
 public class BinaryUtilTest {
     @Test
     public void testBase64String() {
-    	String binaryString = "OssService";
-    	byte[] binaryData = binaryString.getBytes();
-    	assertArrayEquals(BinaryUtil.fromBase64String(BinaryUtil.toBase64String(binaryData)), binaryData);
+        String binaryString = "OssService";
+        byte[] binaryData = binaryString.getBytes();
+        assertArrayEquals(BinaryUtil.fromBase64String(BinaryUtil.toBase64String(binaryData)), binaryData);
     }
 
     @Test
     public void TestCalculateMd5() {
-    	String binaryString = "OssService";
-    	byte[] binaryData = binaryString.getBytes();
-    	@SuppressWarnings("unused")
-		byte[] md5 = BinaryUtil.calculateMd5(binaryData);
+        String binaryString = "OssService";
+        byte[] binaryData = binaryString.getBytes();
+        @SuppressWarnings("unused")
+        byte[] md5 = BinaryUtil.calculateMd5(binaryData);
     }
 }

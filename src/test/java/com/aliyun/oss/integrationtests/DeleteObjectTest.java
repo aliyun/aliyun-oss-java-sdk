@@ -33,46 +33,46 @@ import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 
 public class DeleteObjectTest extends TestBase {
-	
-	@Test
-	public void testExistingBucketAndObject() {
-		List<String> existingKeys = new ArrayList<String>();
-		final String existingKey = "existing-bucket-and-key";
-		existingKeys.add(existingKey);
-		
-		if (!batchPutObject(secondClient, bucketName, existingKeys)) {
-			Assert.fail("batch put object failed");
-		}
-		
-		// Delete existing object
-		try {
-			secondClient.deleteObject(bucketName, existingKey);
-		} catch (Exception e) {
-			Assert.fail(e.getMessage());
-		}
-	}
-	
-	@Test
-	public void testExistingBucketAndNonExistentObject() {
-		final String nonexistentKey = "existing-bucket-and-nonexistent-key";
-		
-		try {
-			secondClient.deleteObject(bucketName, nonexistentKey);
-		} catch (Exception e) {
-			Assert.fail(e.getMessage());
-		}
-	}
-	
-	@Test
-	public void testNonExistentBucketAndObject() {
-		final String nonexistentBucketName = "nonexistent-bucket";
-		final String nonexistentKey = "nonexistent-bucket-and-key";
-		
-		try {
-			secondClient.deleteObject(nonexistentBucketName, nonexistentKey);
-		} catch (OSSException e) {
-			Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-			Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
-		}
-	}
+    
+    @Test
+    public void testExistingBucketAndObject() {
+        List<String> existingKeys = new ArrayList<String>();
+        final String existingKey = "existing-bucket-and-key";
+        existingKeys.add(existingKey);
+        
+        if (!batchPutObject(secondClient, bucketName, existingKeys)) {
+            Assert.fail("batch put object failed");
+        }
+        
+        // Delete existing object
+        try {
+            secondClient.deleteObject(bucketName, existingKey);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+    
+    @Test
+    public void testExistingBucketAndNonExistentObject() {
+        final String nonexistentKey = "existing-bucket-and-nonexistent-key";
+        
+        try {
+            secondClient.deleteObject(bucketName, nonexistentKey);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+    
+    @Test
+    public void testNonExistentBucketAndObject() {
+        final String nonexistentBucketName = "nonexistent-bucket";
+        final String nonexistentKey = "nonexistent-bucket-and-key";
+        
+        try {
+            secondClient.deleteObject(nonexistentBucketName, nonexistentKey);
+        } catch (OSSException e) {
+            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+        }
+    }
 }

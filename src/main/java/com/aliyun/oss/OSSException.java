@@ -20,7 +20,7 @@
 package com.aliyun.oss;
 
 /**
- * 该异常在对开放存储数据服务（Open Storage Service）访问失败时抛出。
+ * 当访问对象存储服务（Open Storage Service）失败时抛出该异常类实例。
  */
 public class OSSException extends ServiceException {
 
@@ -44,12 +44,22 @@ public class OSSException extends ServiceException {
 
     public OSSException(String errorMessage, String errorCode, String requestId,
             String hostId, String header, String resourceType, String method) {
-    	this(errorMessage, errorCode, requestId, hostId, header, resourceType, method, null);
+        this(errorMessage, errorCode, requestId, hostId, header, resourceType, method, null, null);
     }
     
     public OSSException(String errorMessage, String errorCode, String requestId,
             String hostId, String header, String resourceType, String method, Throwable cause) {
-    	super(errorMessage, errorCode, requestId, hostId, cause);
+        this(errorMessage, errorCode, requestId, hostId, header, resourceType, method, null, cause);
+    }
+    
+    public OSSException(String errorMessage, String errorCode, String requestId,
+            String hostId, String header, String resourceType, String method, String rawResponseError) {
+        this(errorMessage, errorCode, requestId, hostId, header, resourceType, method, rawResponseError, null);
+    }
+    
+    public OSSException(String errorMessage, String errorCode, String requestId,
+            String hostId, String header, String resourceType, String method, String rawResponseError, Throwable cause) {
+        super(errorMessage, errorCode, requestId, hostId, rawResponseError, cause);
         this.resourceType = resourceType;
         this.header = header;
         this.method = method;
@@ -60,18 +70,18 @@ public class OSSException extends ServiceException {
     }
 
     public String getHeader() {
-    	return header;
+        return header;
     }
 
-	public String getMethod() {
-		return method;
-	}
-	
-	@Override
+    public String getMethod() {
+        return method;
+    }
+    
+    @Override
     public String getMessage() {
-    	return super.getMessage() 
-    			+ (getResourceType() == null ? "" : "\n[ResourceType]: " + getResourceType())
-    			+ (getHeader() == null ? "" : "\n[Header]: " + getHeader())
-    			+ (getMethod() == null ? "" : "\n[Method]: " + getMethod());
+        return super.getMessage() 
+                + (resourceType == null ? "" : "\n[ResourceType]: " + resourceType)
+                + (header == null ? "" : "\n[Header]: " + header)
+                + (method == null ? "" : "\n[Method]: " + method);
     }
 }

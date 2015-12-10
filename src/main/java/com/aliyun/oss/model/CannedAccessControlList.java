@@ -27,7 +27,13 @@ package com.aliyun.oss.model;
  *
  */
 public enum CannedAccessControlList {
-
+    
+    /**
+     * 指定所有者具有继承控制权限 {@link Permission#Inheritance} ，
+     * 仅供设置Object ACL时使用。
+     */
+    Default("default"),
+    
     /**
      * 指定只有所有者具有完全控制权限 {@link Permission#FullControl}，
      * 其他用户{@link GroupGrantee#AllUsers}无权访问。
@@ -47,7 +53,7 @@ public enum CannedAccessControlList {
     PublicReadWrite("public-read-write");
 
     private String cannedAclString;
-
+    
     private CannedAccessControlList(String cannedAclString){
         this.cannedAclString = cannedAclString;
     }

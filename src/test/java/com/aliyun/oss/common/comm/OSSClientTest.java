@@ -33,10 +33,9 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 
 public class OSSClientTest {
-	@Test
-	@SuppressWarnings("deprecation")
+    @Test
     public void testGeneratePresignedUrl() throws IOException {
-        OSSClient client = new OSSClient("id", "key");
+        OSSClient client = new OSSClient("oss.aliyuncs.com", "id", "key");
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest("bucket", "key");
         Calendar ex = Calendar.getInstance();
         ex.set(2015, 1, 1, 0, 0, 0);

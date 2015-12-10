@@ -25,9 +25,9 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.commons.codec.binary.Base64;
 
 public class BinaryUtil {
-	
-	private static final char[] HEX_DIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-	
+    
+    private static final char[] HEX_DIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+    
     public static String toBase64String(byte[] binaryData) {
         return new String(Base64.encodeBase64(binaryData));
     }
@@ -52,7 +52,7 @@ public class BinaryUtil {
         int len = md5Bytes.length;
         char buf[] = new char[len * 2];
         for (int i = 0; i < len; i++) {          
-        	buf[i * 2] = HEX_DIGITS[(md5Bytes[i] >>> 4) & 0x0f];
+            buf[i * 2] = HEX_DIGITS[(md5Bytes[i] >>> 4) & 0x0f];
             buf[i * 2 + 1] = HEX_DIGITS[md5Bytes[i] & 0x0f];
         }
         return new String(buf);

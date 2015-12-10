@@ -36,154 +36,154 @@ import com.aliyun.oss.model.BucketReferer;
 
 public class BucketRefererTest extends TestBase {
 
-	private static final boolean DEFAULT_EMPTY_REFERER_ALLOWED = true;
-	
-	@Test
-	public void testNormalSetBucketReferer() {
-		final String bucketName = "normal-set-bucket-referer-source";
-		final String referer0 = "http://www.aliyun.com";
-		final String referer1 = "https://www.aliyun.com";
-		final String referer2 = "http://www.*.com";
-		final String referer3 = "https://www.?.aliyuncs.com";
-		
-		try {
-			secondClient.createBucket(bucketName);
-			
-			// Set non-empty referer list
-			BucketReferer r = new BucketReferer();
-			List<String> refererList = new ArrayList<String>();
-			refererList.add(referer0);
-			refererList.add(referer1);
-			refererList.add(referer2);
-			refererList.add(referer3);
-			r.setRefererList(refererList);
-			secondClient.setBucketReferer(bucketName, r);
-			
-			waitForCacheExpiration(5);
-			
-			r = secondClient.getBucketReferer(bucketName);
-			List<String> returedRefererList = r.getRefererList();
-			Assert.assertTrue(r.isAllowEmptyReferer());
-			Assert.assertTrue(returedRefererList.contains(referer0));
-			Assert.assertTrue(returedRefererList.contains(referer1));
-			Assert.assertTrue(returedRefererList.contains(referer2));
-			Assert.assertTrue(returedRefererList.contains(referer3));
-			Assert.assertEquals(4, returedRefererList.size());
-			
-			// Set empty referer list
-			r.clearRefererList();
-			secondClient.setBucketReferer(bucketName, r);
-			
-			r = secondClient.getBucketReferer(bucketName);
-			returedRefererList = r.getRefererList();
-			Assert.assertTrue(r.isAllowEmptyReferer());
-			Assert.assertEquals(0, returedRefererList.size());
-			
-			// Referer list not allowed to be empty
-			refererList.clear();
-			refererList.add(referer0);
-			refererList.add(referer3);
-			r.setRefererList(refererList);
-			r.setAllowEmptyReferer(false);
-			secondClient.setBucketReferer(bucketName, r);
-			
-			r = secondClient.getBucketReferer(bucketName);
-			returedRefererList = r.getRefererList();
-			Assert.assertFalse(r.isAllowEmptyReferer());
-			Assert.assertTrue(returedRefererList.contains(referer0));
-			Assert.assertTrue(returedRefererList.contains(referer3));
-			Assert.assertEquals(2, returedRefererList.size());
-		} catch (Exception e) {
-			Assert.fail(e.getMessage());
-		} finally {
-			secondClient.deleteBucket(bucketName);
-		}
-	}
-	
-	@Test
-	public void testUnormalSetBucketReferer() {
-		final String bucketName = "unormal-set-bucket-referer";
-		final String referer0 = "http://www.aliyun.com";
-		final String referer1 = "https://www.aliyun.com";
-		
-		try {
-			secondClient.createBucket(bucketName);
-			
-			BucketReferer r = new BucketReferer();
-			List<String> refererList = new ArrayList<String>();
-			refererList.add(referer0);
-			refererList.add(referer1);
-			r.setRefererList(refererList);
-			
-			// Set non-existent source bucket 
-			final String nonexistentBucket = "nonexistent-bucket";			
-			try {				
-				secondClient.setBucketReferer(nonexistentBucket, r);
-				Assert.fail("Set bucket referer should not be successful");
-			} catch (OSSException e) {
-				Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-				Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
-			}
-			
-			// Set bucket without ownership
-			final String bucketWithoutOwnership = "oss";
-			try {
-				secondClient.setBucketReferer(bucketWithoutOwnership, r);
-				Assert.fail("Set bucket referer should not be successful");
-			} catch (OSSException e) {
-				Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-				Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
-			}
-			
-			// Not allow referer list to be empty but we set it empty on purpose.
-			// TODO: Why not failed ?
-			try {
-				r.setAllowEmptyReferer(false);
-				r.clearRefererList();
-				secondClient.setBucketReferer(bucketName, r);
-			} catch (Exception e) {
-				Assert.fail(e.getMessage());
-			}
-			
-		} finally {
-			secondClient.deleteBucket(bucketName);
-		}
-	}
-	
-	@Test
-	public void testUnormalGetBucketReferer() {
-		// Get non-existent bucket
-		final String nonexistentBucket = "unormal-get-bucket-referer";
-		try {
-			secondClient.getBucketReferer(nonexistentBucket);
-			Assert.fail("Get bucket referer should not be successful");
-		} catch (OSSException e) {
-			Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-			Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
-		}
-		
-		// Get bucket without ownership
-		final String bucketWithoutOwnership = "oss";
-		try {
-			secondClient.getBucketReferer(bucketWithoutOwnership);
-			Assert.fail("Get bucket referer should not be successful");
-		} catch (OSSException e) {
-			Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-			Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
-		}
-		
-		// Get bucket without setting referer list
-		final String bucketWithoutRefererRule = "bucket-without-referer";
-		try {
-			secondClient.createBucket(bucketWithoutRefererRule);
-			
-			BucketReferer r = secondClient.getBucketReferer(bucketWithoutRefererRule);
-			Assert.assertEquals(DEFAULT_EMPTY_REFERER_ALLOWED, r.isAllowEmptyReferer());
-			Assert.assertEquals(0, r.getRefererList().size());
-		} catch (Exception e) {
-			Assert.fail(e.getMessage());
-		} finally {
-			secondClient.deleteBucket(bucketWithoutRefererRule);
-		}
-	}
+    private static final boolean DEFAULT_EMPTY_REFERER_ALLOWED = true;
+    
+    @Test
+    public void testNormalSetBucketReferer() {
+        final String bucketName = "normal-set-bucket-referer-source";
+        final String referer0 = "http://www.aliyun.com";
+        final String referer1 = "https://www.aliyun.com";
+        final String referer2 = "http://www.*.com";
+        final String referer3 = "https://www.?.aliyuncs.com";
+        
+        try {
+            secondClient.createBucket(bucketName);
+            
+            // Set non-empty referer list
+            BucketReferer r = new BucketReferer();
+            List<String> refererList = new ArrayList<String>();
+            refererList.add(referer0);
+            refererList.add(referer1);
+            refererList.add(referer2);
+            refererList.add(referer3);
+            r.setRefererList(refererList);
+            secondClient.setBucketReferer(bucketName, r);
+            
+            waitForCacheExpiration(5);
+            
+            r = secondClient.getBucketReferer(bucketName);
+            List<String> returedRefererList = r.getRefererList();
+            Assert.assertTrue(r.isAllowEmptyReferer());
+            Assert.assertTrue(returedRefererList.contains(referer0));
+            Assert.assertTrue(returedRefererList.contains(referer1));
+            Assert.assertTrue(returedRefererList.contains(referer2));
+            Assert.assertTrue(returedRefererList.contains(referer3));
+            Assert.assertEquals(4, returedRefererList.size());
+            
+            // Set empty referer list
+            r.clearRefererList();
+            secondClient.setBucketReferer(bucketName, r);
+            
+            r = secondClient.getBucketReferer(bucketName);
+            returedRefererList = r.getRefererList();
+            Assert.assertTrue(r.isAllowEmptyReferer());
+            Assert.assertEquals(0, returedRefererList.size());
+            
+            // Referer list not allowed to be empty
+            refererList.clear();
+            refererList.add(referer0);
+            refererList.add(referer3);
+            r.setRefererList(refererList);
+            r.setAllowEmptyReferer(false);
+            secondClient.setBucketReferer(bucketName, r);
+            
+            r = secondClient.getBucketReferer(bucketName);
+            returedRefererList = r.getRefererList();
+            Assert.assertFalse(r.isAllowEmptyReferer());
+            Assert.assertTrue(returedRefererList.contains(referer0));
+            Assert.assertTrue(returedRefererList.contains(referer3));
+            Assert.assertEquals(2, returedRefererList.size());
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        } finally {
+            secondClient.deleteBucket(bucketName);
+        }
+    }
+    
+    @Test
+    public void testUnormalSetBucketReferer() {
+        final String bucketName = "unormal-set-bucket-referer";
+        final String referer0 = "http://www.aliyun.com";
+        final String referer1 = "https://www.aliyun.com";
+        
+        try {
+            secondClient.createBucket(bucketName);
+            
+            BucketReferer r = new BucketReferer();
+            List<String> refererList = new ArrayList<String>();
+            refererList.add(referer0);
+            refererList.add(referer1);
+            r.setRefererList(refererList);
+            
+            // Set non-existent source bucket 
+            final String nonexistentBucket = "nonexistent-bucket";            
+            try {                
+                secondClient.setBucketReferer(nonexistentBucket, r);
+                Assert.fail("Set bucket referer should not be successful");
+            } catch (OSSException e) {
+                Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+                Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+            }
+            
+            // Set bucket without ownership
+            final String bucketWithoutOwnership = "oss";
+            try {
+                secondClient.setBucketReferer(bucketWithoutOwnership, r);
+                Assert.fail("Set bucket referer should not be successful");
+            } catch (OSSException e) {
+                Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+                Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
+            }
+            
+            // Not allow referer list to be empty but we set it empty on purpose.
+            // TODO: Why not failed ?
+            try {
+                r.setAllowEmptyReferer(false);
+                r.clearRefererList();
+                secondClient.setBucketReferer(bucketName, r);
+            } catch (Exception e) {
+                Assert.fail(e.getMessage());
+            }
+            
+        } finally {
+            secondClient.deleteBucket(bucketName);
+        }
+    }
+    
+    @Test
+    public void testUnormalGetBucketReferer() {
+        // Get non-existent bucket
+        final String nonexistentBucket = "unormal-get-bucket-referer";
+        try {
+            secondClient.getBucketReferer(nonexistentBucket);
+            Assert.fail("Get bucket referer should not be successful");
+        } catch (OSSException e) {
+            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+        }
+        
+        // Get bucket without ownership
+        final String bucketWithoutOwnership = "oss";
+        try {
+            secondClient.getBucketReferer(bucketWithoutOwnership);
+            Assert.fail("Get bucket referer should not be successful");
+        } catch (OSSException e) {
+            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
+        }
+        
+        // Get bucket without setting referer list
+        final String bucketWithoutRefererRule = "bucket-without-referer";
+        try {
+            secondClient.createBucket(bucketWithoutRefererRule);
+            
+            BucketReferer r = secondClient.getBucketReferer(bucketWithoutRefererRule);
+            Assert.assertEquals(DEFAULT_EMPTY_REFERER_ALLOWED, r.isAllowEmptyReferer());
+            Assert.assertEquals(0, r.getRefererList().size());
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        } finally {
+            secondClient.deleteBucket(bucketWithoutRefererRule);
+        }
+    }
 }

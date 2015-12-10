@@ -27,21 +27,14 @@ import java.util.Map;
 /**
  * 指定从OSS下载Object的请求参数。
  */
-public class GetObjectRequest extends WebServiceRequest {
-
-    // Object所在的Bucket的名称
-    private String bucketName;
-
-    // Object Key
-    private String key;
-
-    // 指定返回Object内容的字节范围。
-    private long[] range;
-
+public class GetObjectRequest extends GenericRequest {
+   
     private List<String> matchingETagConstraints = new ArrayList<String>();
     private List<String> nonmatchingEtagConstraints = new ArrayList<String>();
     private Date unmodifiedSinceConstraint;
     private Date modifiedSinceConstraint;
+
+    private long[] range;
 
     private ResponseHeaderOverrides responseHeaders;
     
@@ -59,8 +52,7 @@ public class GetObjectRequest extends WebServiceRequest {
      *          Object Key。
      */
     public GetObjectRequest(String bucketName, String key) {
-        setBucketName(bucketName);
-        setKey(key);
+        super(bucketName, key);
     }
     
     /**
@@ -69,47 +61,14 @@ public class GetObjectRequest extends WebServiceRequest {
      * @param requestHeaders 请求头。
      */
     public GetObjectRequest(URL absoluteUrl, Map<String, String> requestHeaders) {
-    	this.absoluteUrl = absoluteUrl;
-    	this.useUrlSignature = true;
-    	this.getHeaders().clear();
-    	if (requestHeaders != null && !requestHeaders.isEmpty()) {
-    		this.getHeaders().putAll(requestHeaders);
-    	}
+        this.absoluteUrl = absoluteUrl;
+        this.useUrlSignature = true;
+        this.getHeaders().clear();
+        if (requestHeaders != null && !requestHeaders.isEmpty()) {
+            this.getHeaders().putAll(requestHeaders);
+        }
     }
-
-    /**
-     * 返回Bucket名称。
-     * @return Bucket名称。
-     */
-    public String getBucketName() {
-        return bucketName;
-    }
-
-    /**
-     * 设置Bucket名称。
-     * @param bucketName
-     */
-    public void setBucketName(String bucketName) {
-        this.bucketName = bucketName;
-    }
-
-    /**
-     * 返回Object Key。
-     * @return Object Key。
-     */
-    public String getKey() {
-        return key;
-    }
-
-    /**
-     * 设置Object Key。
-     * @param key
-     *          Object Key。
-     */
-    public void setKey(String key) {
-        this.key = key;
-    }
-
+    
     /**
      * 返回一个值表示请求应当返回Object内容的字节范围。
      * @return 一个值表示请求应当返回Object内容的字节范围。
@@ -135,7 +94,28 @@ public class GetObjectRequest extends WebServiceRequest {
      *          </p>
      */
     public void setRange(long start, long end) {
-    	range = new long[] {start, end};
+        range = new long[] {start, end};
+    }
+    
+    /**
+     * 设置一个值表示请求应当返回Object内容的字节范围（可选）。
+     * @param start
+     *          <p>范围的起始值。</p>
+     *          <p>当值大于或等于0时，表示起始的字节位置。
+     *          当值为-1时，表示不设置起始的字节位置，此时end参数不能-1，
+     *          例如end为100，Range请求头的值为bytes=-100，表示获取最后100个字节。
+     *          </p>
+     * @param end
+     *          <p>范围的结束值。</p>
+     *          <p>当值小于或等于0时，表示结束的字节位或最后的字节数。
+     *          当值为-1时，表示不设置结束的字节位置，此时start参数不能为-1，
+     *          例如start为99，Range请求头的值为bytes=99-，表示获取第100个字节及
+     *          以后的所有内容。
+     *          </p>
+     */
+    public GetObjectRequest withRange(long start, long end) {
+        setRange(start, end);
+        return this;
     }
 
     /**
@@ -158,12 +138,12 @@ public class GetObjectRequest extends WebServiceRequest {
     public void setMatchingETagConstraints(List<String> eTagList) {
         this.matchingETagConstraints.clear();
         if (eTagList != null && !eTagList.isEmpty()) {
-        	this.matchingETagConstraints.addAll(eTagList);
+            this.matchingETagConstraints.addAll(eTagList);
         }
     }
     
     public void clearMatchingETagConstraints() {
-    	this.matchingETagConstraints.clear();
+        this.matchingETagConstraints.clear();
     }
 
     /**
@@ -183,14 +163,14 @@ public class GetObjectRequest extends WebServiceRequest {
      *          目前OSS支持传入一个ETag，如果传入多于一个ETag，将只有列表中的第一个有效。
      */
     public void setNonmatchingETagConstraints(List<String> eTagList) {
-    	this.nonmatchingEtagConstraints.clear();
+        this.nonmatchingEtagConstraints.clear();
         if (eTagList != null && !eTagList.isEmpty()) {
-        	this.nonmatchingEtagConstraints.addAll(eTagList);
+            this.nonmatchingEtagConstraints.addAll(eTagList);
         }
     }
     
     public void clearNonmatchingETagConstraints() {
-    	this.nonmatchingEtagConstraints.clear();
+        this.nonmatchingEtagConstraints.clear();
     }
 
     /**
@@ -252,20 +232,20 @@ public class GetObjectRequest extends WebServiceRequest {
         this.responseHeaders = responseHeaders;
     }
 
-	public URL getAbsoluteUri() {
-		return absoluteUrl;
-	}
+    public URL getAbsoluteUri() {
+        return absoluteUrl;
+    }
 
-	public void setAbsoluteUri(URL absoluteUri) {
-		this.absoluteUrl = absoluteUri;
-	}
+    public void setAbsoluteUri(URL absoluteUri) {
+        this.absoluteUrl = absoluteUri;
+    }
 
-	public boolean isUseUrlSignature() {
-		return useUrlSignature;
-	}
+    public boolean isUseUrlSignature() {
+        return useUrlSignature;
+    }
 
-	public void setUseUrlSignature(boolean useUrlSignature) {
-		this.useUrlSignature = useUrlSignature;
-	}
+    public void setUseUrlSignature(boolean useUrlSignature) {
+        this.useUrlSignature = useUrlSignature;
+    }
     
 }

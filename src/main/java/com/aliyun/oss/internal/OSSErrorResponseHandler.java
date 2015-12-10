@@ -20,6 +20,7 @@
 package com.aliyun.oss.internal;
 
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
+import static com.aliyun.oss.internal.OSSUtils.COMMON_RESOURCE_MANAGER;
 
 import org.apache.http.HttpStatus;
 
@@ -31,7 +32,6 @@ import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.parser.JAXBResponseParser;
 import com.aliyun.oss.common.parser.ResponseParseException;
 import com.aliyun.oss.common.utils.ExceptionFactory;
-import com.aliyun.oss.common.utils.ResourceManager;
 import com.aliyun.oss.internal.model.OSSErrorResult;
 
 /**
@@ -40,7 +40,7 @@ import com.aliyun.oss.internal.model.OSSErrorResult;
  */
 public class OSSErrorResponseHandler implements ResponseHandler {
     
-	public void handle(ResponseMessage response)
+    public void handle(ResponseMessage response)
             throws OSSException, ClientException {
 
         if (response.isSuccessful()) {
@@ -50,31 +50,28 @@ public class OSSErrorResponseHandler implements ResponseHandler {
         String requestId = response.getRequestId();
         int statusCode = response.getStatusCode();
         if (response.getContent() == null) {
-        	/**
-        	 * When HTTP response body is null, handle status code 404 Not Found, 304 Not Modified, 
-        	 * 412 Precondition Failed especially.
-        	 */
+            /**
+             * When HTTP response body is null, handle status code 404 Not Found, 304 Not Modified, 
+             * 412 Precondition Failed especially.
+             */
             if (statusCode == HttpStatus.SC_NOT_FOUND) {
-            	throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.NO_SUCH_KEY, "Not Found");
+                throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.NO_SUCH_KEY, "Not Found");
             } else if (statusCode == HttpStatus.SC_NOT_MODIFIED) {
-            	throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.NOT_MODIFIED, "Not Modified");
+                throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.NOT_MODIFIED, "Not Modified");
             } else if (statusCode == HttpStatus.SC_PRECONDITION_FAILED) {
-            	throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.PRECONDITION_FAILED, "Precondition Failed");
+                throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.PRECONDITION_FAILED, "Precondition Failed");
             } else {
-            	throw ExceptionFactory.createInvalidResponseException(requestId,
-            			ResourceManager.getInstance(OSSConstants.RESOURCE_NAME_COMMON)
-            			.getString("ServerReturnsUnknownError"), null);            	
+                throw ExceptionFactory.createInvalidResponseException(requestId,
+                        COMMON_RESOURCE_MANAGER.getString("ServerReturnsUnknownError"));                
             }
         }
 
         JAXBResponseParser parser = new JAXBResponseParser(OSSErrorResult.class);
         try {
             OSSErrorResult errorResult = (OSSErrorResult)parser.parse(response);
-            throw ExceptionFactory.createOSSException(errorResult);
+            throw ExceptionFactory.createOSSException(errorResult, response.getErrorResponseAsString());
         } catch (ResponseParseException e) {
-            throw ExceptionFactory.createInvalidResponseException(requestId,
-                    ResourceManager.getInstance(OSSConstants.RESOURCE_NAME_COMMON)
-                        .getString("ServerReturnsUnknownError"), e);
+            throw ExceptionFactory.createInvalidResponseException(requestId, response.getErrorResponseAsString(), e);
         } finally {            
             safeCloseResponse(response);
         }

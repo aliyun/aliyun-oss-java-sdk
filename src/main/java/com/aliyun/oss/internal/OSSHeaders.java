@@ -23,7 +23,7 @@ import com.aliyun.oss.common.utils.HttpHeaders;
 
 public interface OSSHeaders extends HttpHeaders {
     
-	static final String OSS_PREFIX = "x-oss-";
+    static final String OSS_PREFIX = "x-oss-";
     static final String OSS_USER_METADATA_PREFIX = "x-oss-meta-";
 
     static final String OSS_CANNED_ACL = "x-oss-acl";
@@ -67,4 +67,6 @@ public interface OSSHeaders extends HttpHeaders {
     static final String OSS_NEXT_APPEND_POSITION = "x-oss-next-append-position";
     static final String OSS_HASH_CRC64_ECMA = "x-oss-hash-crc64ecma";
     static final String OSS_OBJECT_TYPE = "x-oss-object-type";
+    
+    static final String OSS_OBJECT_ACL = "x-oss-object-acl";
 }

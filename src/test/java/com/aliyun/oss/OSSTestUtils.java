@@ -31,12 +31,12 @@ import com.aliyun.oss.model.OSSObjectSummary;
 import com.aliyun.oss.model.ObjectListing;
 
 public class OSSTestUtils {
-	
-	
-	@Test
-	public void testOss(){
-		
-	}
+    
+    
+    @Test
+    public void testOss(){
+        
+    }
 
     /**
      * 取测试文件的路径

@@ -52,7 +52,7 @@ public class ClientException extends RuntimeException {
     /**
      * 构造新实例。
      */
-    public ClientException(){
+    public ClientException() {
         super();
     }
 
@@ -61,7 +61,7 @@ public class ClientException extends RuntimeException {
      * @param errorMessage 异常信息。
      */
     public ClientException(String errorMessage) {
-    	this(errorMessage, null);
+        this(errorMessage, null);
     }
 
     /**
@@ -69,7 +69,7 @@ public class ClientException extends RuntimeException {
      * @param cause 异常原因。
      */
     public ClientException(Throwable cause) {
-    	this(null, cause);
+        this(null, cause);
     }
     
     /**
@@ -111,10 +111,10 @@ public class ClientException extends RuntimeException {
      * 获取异常信息。
      * @return 异常信息。
      */
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-	
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+    
     /**
      * 获取异常的错误码
      * @return 异常错误码
@@ -131,10 +131,10 @@ public class ClientException extends RuntimeException {
        return requestId;
     }
 
-	@Override
+    @Override
     public String getMessage() {
-    	return getErrorMessage() 
-    			+ "\n[ErrorCode]: " + getErrorCode()
-    			+ "\n[RequestId]: " + getRequestId();
+        return getErrorMessage() 
+                + "\n[ErrorCode]: " + errorCode != null ? errorCode : ""
+                + "\n[RequestId]: " + requestId != null ? requestId : "";
     }
 }

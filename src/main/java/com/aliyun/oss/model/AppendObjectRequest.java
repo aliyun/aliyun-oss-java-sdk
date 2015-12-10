@@ -24,22 +24,35 @@ import java.io.InputStream;
 
 public class AppendObjectRequest extends PutObjectRequest {
     
-	private Long position;
+    private Long position;
     
     public AppendObjectRequest(String bucketName, String key, File file) {
-        super(bucketName, key, file);
+        this(bucketName, key, file, null);
+    }
+    
+    public AppendObjectRequest(String bucketName, String key, File file, ObjectMetadata metadata) {
+        super(bucketName, key, file, metadata);
+    }
+    
+    public AppendObjectRequest(String bucketName, String key, InputStream input) {
+        this(bucketName, key, input, null);
     }
 
     public AppendObjectRequest(String bucketName, String key, InputStream input, ObjectMetadata metadata) {
         super(bucketName, key, input, metadata);
     }
 
-	public Long getPosition() {
-		return position;
-	}
+    public Long getPosition() {
+        return position;
+    }
 
-	public void setPosition(Long position) {
-		this.position = position;
-	}
-	
+    public void setPosition(Long position) {
+        this.position = position;
+    }
+    
+    public AppendObjectRequest withPosition(Long position) {
+        setPosition(position);
+        return this;
+    }
+    
 }

@@ -24,7 +24,7 @@ package com.aliyun.oss.model;
  */
 public class Grant {
     
-	private Grantee grantee;
+    private Grantee grantee;
     private Permission permission;
     
     /**

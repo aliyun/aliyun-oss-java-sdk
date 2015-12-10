@@ -45,23 +45,23 @@ public class DefaultCredentials implements Credentials {
         this.securityToken = securityToken;
     }
 
-	@Override
-	public String getAccessKeyId() {
-		return accessKeyId;
-	}
+    @Override
+    public String getAccessKeyId() {
+        return accessKeyId;
+    }
 
-	@Override
-	public String getSecretAccessKey() {
-		return secretAccessKey;
-	}
+    @Override
+    public String getSecretAccessKey() {
+        return secretAccessKey;
+    }
 
-	@Override
-	public String getSecurityToken() {
-		return securityToken;
-	}
+    @Override
+    public String getSecurityToken() {
+        return securityToken;
+    }
 
-	@Override
-	public boolean useSecurityToken() {
-		return this.securityToken != null;
-	}
+    @Override
+    public boolean useSecurityToken() {
+        return this.securityToken != null;
+    }
 }

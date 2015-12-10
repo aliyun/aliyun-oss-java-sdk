@@ -19,31 +19,15 @@
 
 package com.aliyun.oss.model;
 
-public class CreateBucketRequest extends WebServiceRequest {
+public class CreateBucketRequest extends GenericRequest {
     
-    private String bucketName;
     private String locationConstraint;
     private CannedAccessControlList cannedACL;
     
     public CreateBucketRequest(String bucketName) {
-        setBucketName(bucketName);
-        setCannedACL(CannedAccessControlList.Private);
-    }
-
-    /**
-     * 获取要建立的Bucket的名称
-     * @return Bucket的名称
-     */
-    public String getBucketName() {
-        return bucketName;
-    }
-
-    /**
-     * 设置要建立的Bucket的名称
-     * @param bucketName Bucket的名称
-     */
-    public void setBucketName(String bucketName) {
-        this.bucketName = bucketName;
+        super(bucketName);
+        setLocationConstraint(null);
+        setCannedACL(null);
     }
 
     /**
@@ -61,12 +45,26 @@ public class CreateBucketRequest extends WebServiceRequest {
     public void setLocationConstraint(String locationConstraint) {
         this.locationConstraint = locationConstraint;
     }
+    
+    /**
+     * 设置Bucket所在的数据中心
+     * @param locationConstraint Bucket所在的数据中心名称
+     */
+    public CreateBucketRequest withLocationConstraint(String locationConstraint) {
+        setLocationConstraint(locationConstraint);
+        return this;
+    }
 
-	public CannedAccessControlList getCannedACL() {
-		return cannedACL;
-	}
+    public CannedAccessControlList getCannedACL() {
+        return cannedACL;
+    }
 
-	public void setCannedACL(CannedAccessControlList cannedACL) {
-		this.cannedACL = cannedACL;
-	}
+    public void setCannedACL(CannedAccessControlList cannedACL) {
+        this.cannedACL = cannedACL;
+    }
+    
+    public CreateBucketRequest withCannedACL(CannedAccessControlList cannedACL) {
+        setCannedACL(cannedACL);
+        return this;
+    }
 }

@@ -32,8 +32,8 @@ import com.aliyun.oss.common.utils.BinaryUtil;
  * Used for computing Hmac-SHA1 signature.
  */
 public class HmacSHA1Signature extends ServiceSignature {
-	
-	/* The default encoding. */
+    
+    /* The default encoding. */
     private static final String DEFAULT_ENCODING = "UTF-8";
     
     /* Signature method. */
@@ -69,7 +69,7 @@ public class HmacSHA1Signature extends ServiceSignature {
     private byte[] sign(byte[] key, byte[] data) {
         try {
             // Because Mac.getInstance(String) calls a synchronized method, it could block on 
-        	// invoked concurrently, so use prototype pattern to improve perf.
+            // invoked concurrently, so use prototype pattern to improve perf.
             if (macInstance == null) {
                 synchronized (LOCK) {
                     if (macInstance == null) {

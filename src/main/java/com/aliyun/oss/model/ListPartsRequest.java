@@ -23,11 +23,7 @@ package com.aliyun.oss.model;
  * 包含列出Part的请求参数。
  *
  */
-public class ListPartsRequest extends WebServiceRequest {
-
-    private String bucketName;
-
-    private String key;
+public class ListPartsRequest extends GenericRequest {
 
     private String uploadId;
 
@@ -45,43 +41,8 @@ public class ListPartsRequest extends WebServiceRequest {
      *          Mutlipart上传事件的Upload ID。
      */
     public ListPartsRequest(String bucketName, String key, String uploadId) {
-        this.bucketName = bucketName;
-        this.key = key;
+        super(bucketName, key);
         this.uploadId = uploadId;
-    }
-
-    /**
-     * 返回{@link Bucket}名称。
-     * @return Bucket名称。
-     */
-    public String getBucketName() {
-        return bucketName;
-    }
-
-    /**
-     * 设置{@link Bucket}名称。
-     * @param bucketName
-     *          Bucket名称。
-     */
-    public void setBucketName(String bucketName) {
-        this.bucketName = bucketName;
-    }
-
-    /**
-     * 返回{@link OSSObject} key。
-     * @return Object key。
-     */
-    public String getKey() {
-        return key;
-    }
-
-    /**
-     * 设置{@link OSSObject} key。
-     * @param key
-     *          Object key。
-     */
-    public void setKey(String key) {
-        this.key = key;
     }
 
     /**

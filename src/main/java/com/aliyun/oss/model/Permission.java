@@ -23,6 +23,7 @@ package com.aliyun.oss.model;
  * 表示访问控制权限。
  */
 public enum Permission {
+    
     /**
      * 完全控制权限，即可读可写。
      */
@@ -32,4 +33,5 @@ public enum Permission {
      * 只读权限。
      */
     Read;
+    
 }

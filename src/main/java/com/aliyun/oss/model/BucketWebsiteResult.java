@@ -20,20 +20,20 @@
 package com.aliyun.oss.model;
 
 public class BucketWebsiteResult {
-	private String indexDocument;
-	private String errorDocument;
-	
-	
-	public String getIndexDocument() {
-		return indexDocument;
-	}
-	public void setIndexDocument(String indexDocument) {
-		this.indexDocument = indexDocument;
-	}
-	public String getErrorDocument() {
-		return errorDocument;
-	}
-	public void setErrorDocument(String errorDocument) {
-		this.errorDocument = errorDocument;
-	}
+    private String indexDocument;
+    private String errorDocument;
+    
+    
+    public String getIndexDocument() {
+        return indexDocument;
+    }
+    public void setIndexDocument(String indexDocument) {
+        this.indexDocument = indexDocument;
+    }
+    public String getErrorDocument() {
+        return errorDocument;
+    }
+    public void setErrorDocument(String errorDocument) {
+        this.errorDocument = errorDocument;
+    }
 }

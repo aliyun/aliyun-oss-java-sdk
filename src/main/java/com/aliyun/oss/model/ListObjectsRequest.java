@@ -24,12 +24,9 @@ import com.aliyun.oss.internal.OSSUtils;
 /**
  * 包含获取object列表的请求信息。
  */
-public class ListObjectsRequest extends WebServiceRequest {
+public class ListObjectsRequest extends GenericRequest {
 
-	private static final int MAX_RETURNED_KEYS_LIMIT = 1000;
-	
-    // bucket 名称。
-    private String bucketName;
+    private static final int MAX_RETURNED_KEYS_LIMIT = 1000;
     
     // prefix限定返回的object key必须以prefix作为前缀。
     private String prefix;
@@ -70,30 +67,13 @@ public class ListObjectsRequest extends WebServiceRequest {
      *          delimiter是一个用于对Object名字进行分组的字符。
      */
     public ListObjectsRequest(String bucketName, String prefix, String marker, String delimiter, Integer maxKeys) {
-        setBucketName(bucketName);
+        super(bucketName);
         setPrefix(prefix);
         setMarker(marker);
         setDelimiter(delimiter);
         if (maxKeys != null) {
             setMaxKeys(maxKeys);
         }
-    }
-
-    /**
-     * 返回bucket名称。
-     * @return bucket名称。
-     */
-    public String getBucketName() {
-        return bucketName;
-    }
-
-    /**
-     * 设置bucket名称。
-     * @param bucketName
-     *          bucket名称。
-     */
-    public void setBucketName(String bucketName) {
-        this.bucketName = bucketName;
     }
 
     /**
@@ -113,6 +93,16 @@ public class ListObjectsRequest extends WebServiceRequest {
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
+    
+    /**
+     * 设置prefix，限定返回的object key必须以prefix作为前缀。
+     * @param prefix
+     *          前缀prefix。
+     */
+    public ListObjectsRequest withPrefix(String prefix) {
+        setPrefix(prefix);
+        return this;
+    }
 
     /**
      * 返回marker，用户设定结果从marker之后按字母排序的第一个开始返回。
@@ -130,6 +120,16 @@ public class ListObjectsRequest extends WebServiceRequest {
      */
     public void setMarker(String marker) {
         this.marker = marker;
+    }
+    
+    /**
+     * 设置marker, 用户设定结果从marker之后按字母排序的第一个开始返回。
+     * @param marker
+     *          marker
+     */
+    public ListObjectsRequest withMarker(String marker) {
+        setMarker(marker);
+        return this;
     }
 
     /**
@@ -154,6 +154,16 @@ public class ListObjectsRequest extends WebServiceRequest {
 
         this.maxKeys = maxKeys;
     }
+    
+    /**
+     * 设置用于限定此次返回object的最大数，如果不设定，默认为100。最大值为1000。
+     * @param maxKeys
+     *      用于限定此次返回object的最大数。最大值为1000。
+     */
+    public ListObjectsRequest withMaxKeys(Integer maxKeys) {
+        setMaxKeys(maxKeys);
+        return this;
+    }
 
     /**
      * 获取一个用于对Object名字进行分组的字符。
@@ -169,6 +179,15 @@ public class ListObjectsRequest extends WebServiceRequest {
      */
     public void setDelimiter(String delimiter) {
         this.delimiter = delimiter;
+    }
+    
+    /**
+     * 设置一个用于对Object名字进行分组的字符。
+     * @param delimiter the delimiter to set
+     */
+    public ListObjectsRequest withDelimiter(String delimiter) {
+        setDelimiter(delimiter);
+        return this;
     }
     
     /**
@@ -189,5 +208,17 @@ public class ListObjectsRequest extends WebServiceRequest {
      */
     public void setEncodingType(String encodingType) {
         this.encodingType = encodingType;
+    }
+    
+    /**
+     * 设置应用于请求响应体中Object名称的编码方式。
+     * 
+     * @param encodingType
+     *            请求响应体中Object名称的编码方式。
+     *            有效值: null (不进行编码处理) 或 "url".
+     */
+    public ListObjectsRequest withEncodingType(String encodingType) {
+        setEncodingType(encodingType);
+        return this;
     }
 }

@@ -45,7 +45,7 @@ public class OSSObjectSummary {
     /**
      * 初始化一个新的{@link OSSObjectSummary}实例。
      */
-    public OSSObjectSummary(){
+    public OSSObjectSummary() {
     }
 
     /**

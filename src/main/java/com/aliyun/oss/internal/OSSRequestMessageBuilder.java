@@ -22,7 +22,7 @@ package com.aliyun.oss.internal;
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterInRange;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_FILE_SIZE_LIMIT;
 import static com.aliyun.oss.internal.OSSUtils.determineFinalEndpoint;
-import static com.aliyun.oss.internal.OSSUtils.makeResourcePath;
+import static com.aliyun.oss.internal.OSSUtils.determineResourcePath;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -38,9 +38,10 @@ import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.comm.ServiceClient;
 import com.aliyun.oss.common.comm.io.FixedLengthInputStream;
 import com.aliyun.oss.common.utils.DateUtil;
+import com.aliyun.oss.model.WebServiceRequest;
 
 /*
- * HTTP Request message builder.
+ * HTTP request message builder.
  */
 public class OSSRequestMessageBuilder {
     
@@ -55,8 +56,10 @@ public class OSSRequestMessageBuilder {
     private ServiceClient innerClient;
     private boolean useChunkEncoding = false;
     
+    private WebServiceRequest originalRequest;
+    
     public OSSRequestMessageBuilder(ServiceClient innerClient) {
-    	this.innerClient = innerClient;
+        this.innerClient = innerClient;
     }
     
     public URI getEndpoint() {
@@ -133,10 +136,10 @@ public class OSSRequestMessageBuilder {
     }
     
     public OSSRequestMessageBuilder setInputStreamWithLength(FixedLengthInputStream instream) {
-    	assertParameterInRange(inputSize, -1, DEFAULT_FILE_SIZE_LIMIT);
-    	this.inputStream = instream;
-    	this.inputSize = instream.getLength();
-    	return this;
+        assertParameterInRange(inputSize, -1, DEFAULT_FILE_SIZE_LIMIT);
+        this.inputStream = instream;
+        this.inputSize = instream.getLength();
+        return this;
     }
     
     public long getInputSize() {
@@ -144,39 +147,40 @@ public class OSSRequestMessageBuilder {
     }
     
     public OSSRequestMessageBuilder setInputSize(long inputSize) {
-    	assertParameterInRange(inputSize, -1, DEFAULT_FILE_SIZE_LIMIT);
+        assertParameterInRange(inputSize, -1, DEFAULT_FILE_SIZE_LIMIT);
         this.inputSize = inputSize;
         return this;
     }
     
     public boolean isUseChunkEncoding() {
-		return useChunkEncoding;
-	}
+        return useChunkEncoding;
+    }
 
-	public OSSRequestMessageBuilder setUseChunkEncoding(boolean useChunkEncoding) {
-		this.useChunkEncoding = useChunkEncoding;
-		return this;
-	}
+    public OSSRequestMessageBuilder setUseChunkEncoding(boolean useChunkEncoding) {
+        this.useChunkEncoding = useChunkEncoding;
+        return this;
+    }
+    
+    public OSSRequestMessageBuilder setOriginalRequest(WebServiceRequest originalRequest) {
+        this.originalRequest = originalRequest;
+        return this;
+    }
 
-	public RequestMessage build() {       
-        Map<String, String> sentHeaders = new HashMap<String, String>(headers);
-        sentHeaders.put(OSSHeaders.DATE, DateUtil.formatRfc822Date(new Date()));
-        if (sentHeaders.get(OSSHeaders.CONTENT_TYPE) == null) {
-            sentHeaders.put(OSSHeaders.CONTENT_TYPE, "");
-        }
+    public RequestMessage build() {       
+        Map<String, String> sentHeaders = new HashMap<String, String>(this.headers);
+        sentHeaders.put(OSSHeaders.DATE, DateUtil.formatRfc822Date(new Date()));        
+        Map<String, String> sentParameters = new LinkedHashMap<String, String>(this.parameters);
         
-        Map<String, String> sentParameters = new LinkedHashMap<String, String>(parameters);
-        
-        RequestMessage request = new RequestMessage();
-        ClientConfiguration clientCofig = innerClient.getClientConfiguration();
-        request.setEndpoint(determineFinalEndpoint(endpoint, bucket, clientCofig));
-        request.setResourcePath(makeResourcePath(key));
+        RequestMessage request = new RequestMessage(this.originalRequest);
+        ClientConfiguration clientCofig = this.innerClient.getClientConfiguration();
+        request.setEndpoint(determineFinalEndpoint(this.endpoint, this.bucket, clientCofig));
+        request.setResourcePath(determineResourcePath(this.bucket, this.key, clientCofig.isSLDEnabled()));
         request.setHeaders(sentHeaders);
         request.setParameters(sentParameters);
-        request.setMethod(method);
-        request.setContent(inputStream);
-        request.setContentLength(inputSize);
-        request.setUseChunkEncoding(inputSize == -1 ? true : useChunkEncoding);
+        request.setMethod(this.method);
+        request.setContent(this.inputStream);
+        request.setContentLength(this.inputSize);
+        request.setUseChunkEncoding(this.inputSize == -1 ? true : this.useChunkEncoding);
         
         return request;
     }

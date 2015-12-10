@@ -19,6 +19,8 @@
 
 package com.aliyun.oss.common.utils;
 
+import static com.aliyun.oss.internal.OSSUtils.COMMON_RESOURCE_MANAGER;
+
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -31,6 +33,7 @@ import org.apache.http.conn.HttpHostConnectException;
 
 import com.aliyun.oss.ClientErrorCode;
 import com.aliyun.oss.ClientException;
+import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.internal.model.OSSErrorResult;
 
@@ -39,7 +42,7 @@ import com.aliyun.oss.internal.model.OSSErrorResult;
  * and <code>OSSException</code>.
  */
 public class ExceptionFactory {
-	
+    
     public static ClientException createNetworkException(IOException ex) {
         String requestId = "Unknown";
         String errorCode = ClientErrorCode.UNKNOWN;
@@ -47,41 +50,59 @@ public class ExceptionFactory {
         if (ex instanceof SocketTimeoutException) {
             errorCode = ClientErrorCode.SOCKET_TIMEOUT;
         } else if (ex instanceof SocketException) {
-        	errorCode = ClientErrorCode.SOCKET_EXCEPTION;
+            errorCode = ClientErrorCode.SOCKET_EXCEPTION;
         } else if (ex instanceof ConnectTimeoutException) {
             errorCode = ClientErrorCode.CONNECTION_TIMEOUT;
         } else if (ex instanceof UnknownHostException) {
            errorCode = ClientErrorCode.UNKNOWN_HOST;
         } else if (ex instanceof HttpHostConnectException) {
-        	errorCode = ClientErrorCode.CONNECTION_REFUSED;
+            errorCode = ClientErrorCode.CONNECTION_REFUSED;
         } else if (ex instanceof ClientProtocolException) {
-        	Throwable cause = ex.getCause();
-        	if (cause instanceof NonRepeatableRequestException) {
-        		errorCode = ClientErrorCode.NONREPEATABLE_REQUEST;
-        		return new ClientException(requestId, errorCode, cause.getMessage(), cause);
-        	}
+            Throwable cause = ex.getCause();
+            if (cause instanceof NonRepeatableRequestException) {
+                errorCode = ClientErrorCode.NONREPEATABLE_REQUEST;
+                return new ClientException(cause.getMessage(), errorCode, requestId, cause);
+            }
         }
         
         return new ClientException(ex.getMessage(), errorCode, requestId, ex);
     }
     
-    public static ClientException createInvalidResponseException(String requestId, String message, Throwable cause) {
-    	return new ClientException(message, ClientErrorCode.INVALID_RESPONSE, requestId, cause);
+    public static OSSException createInvalidResponseException(String requestId, Throwable cause) {
+        return createInvalidResponseException(requestId, COMMON_RESOURCE_MANAGER.getFormattedString(
+                "FailedToParseResponse", cause.getMessage()));
+    }
+    
+    public static OSSException createInvalidResponseException(String requestId, String rawResponseError, 
+            Throwable cause) {
+        return createInvalidResponseException(requestId, COMMON_RESOURCE_MANAGER.getFormattedString(
+                "FailedToParseResponse", cause.getMessage()), rawResponseError);
+    }
+    
+    public static OSSException createInvalidResponseException(String requestId, String message) {
+        return createOSSException(requestId, OSSErrorCode.INVALID_RESPONSE, message);
+    }
+    
+    public static OSSException createInvalidResponseException(String requestId, String message, 
+            String rawResponseError) {
+        return createOSSException(requestId, OSSErrorCode.INVALID_RESPONSE, message, rawResponseError);
     }
     
     public static OSSException createOSSException(OSSErrorResult errorResult) {
-        return new OSSException(
-                errorResult.Message != null ? errorResult.Message : null,
-                errorResult.Code != null ? errorResult.Code : null,
-                errorResult.RequestId != null ? errorResult.RequestId : null,
-                errorResult.HostId != null ? errorResult.HostId : null,
-                errorResult.Header != null ? errorResult.Header : null,
-                errorResult.ResourceType != null ? errorResult.ResourceType : null,
-                errorResult.Method != null ? errorResult.Method : null);
+        return createOSSException(errorResult, null);
     }
-
+    
+    public static OSSException createOSSException(OSSErrorResult errorResult, String rawResponseError) {
+        return new OSSException(errorResult.Message, errorResult.Code, errorResult.RequestId, errorResult.HostId, 
+                errorResult.Header, errorResult.ResourceType, errorResult.Method, rawResponseError);
+    }
     
     public static OSSException createOSSException(String requestId, String errorCode, String message) {
         return new OSSException(message, errorCode, requestId, null, null, null, null);
+    }
+    
+    public static OSSException createOSSException(String requestId, String errorCode, String message, 
+            String rawResponseError) {
+        return new OSSException(message, errorCode, requestId, null, null, null, null, rawResponseError);
     }
 }

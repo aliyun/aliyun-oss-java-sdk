@@ -43,12 +43,12 @@ public class BucketList {
     public void setBucketList(List<Bucket> buckets) {
        this.buckets.clear();
        if (buckets != null && !buckets.isEmpty()) {
-    	   this.buckets.addAll(buckets);
+           this.buckets.addAll(buckets);
        }
     }
     
     public void clearBucketList() {
-    	this.buckets.clear();
+        this.buckets.clear();
     }
 
     public String getPrefix() {

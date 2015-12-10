@@ -22,9 +22,9 @@ package com.aliyun.oss.model;
 import com.aliyun.oss.internal.OSSUtils;
 
 public class ListBucketsRequest extends WebServiceRequest {
-	
-	public static final int MAX_RETURNED_KEYS = 1000;
-	
+    
+    public static final int MAX_RETURNED_KEYS = 1000;
+    
     // prefix限定返回的object key必须以prefix作为前缀。
     private String prefix;
     
@@ -73,6 +73,16 @@ public class ListBucketsRequest extends WebServiceRequest {
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
+    
+    /**
+     * 设置prefix，限定返回的bucket name必须以prefix作为前缀。
+     * @param prefix
+     *          前缀prefix。
+     */
+    public ListBucketsRequest withPrefix(String prefix) {
+        setPrefix(prefix);
+        return this;
+    }
 
     /**
      * 返回marker，用户设定结果从marker之后按字母排序的第一个开始返回。
@@ -91,6 +101,16 @@ public class ListBucketsRequest extends WebServiceRequest {
     public void setMarker(String marker) {
         this.marker = marker;
     }
+    
+    /**
+     * 设置marker, 用户设定结果从marker之后按字母排序的第一个开始返回。
+     * @param marker
+     *          marker
+     */
+    public ListBucketsRequest withMarker(String marker) {
+        setMarker(marker);
+        return this;
+    }
 
     /**
      * 返回用于限定此次返回bucket的最大数，如果不设定，默认为100。
@@ -107,11 +127,21 @@ public class ListBucketsRequest extends WebServiceRequest {
      *      用于限定此次返回bucket的最大数。最大值为1000。
      */
     public void setMaxKeys(Integer maxKeys) {
-    	int tmp = maxKeys.intValue();
+        int tmp = maxKeys.intValue();
         if (tmp < 0 || tmp > MAX_RETURNED_KEYS) {
             throw new IllegalArgumentException(
                 OSSUtils.OSS_RESOURCE_MANAGER.getString("MaxKeysOutOfRange"));
         }
         this.maxKeys = maxKeys;
+    }
+    
+    /**
+     * 设置用于限定此次返回bucket的最大数，如果不设定，默认为100。最大值为1000。
+     * @param maxKeys
+     *      用于限定此次返回bucket的最大数。最大值为1000。
+     */
+    public ListBucketsRequest withMaxKeys(Integer maxKeys) {
+        setMaxKeys(maxKeys);
+        return this;
     }
 }

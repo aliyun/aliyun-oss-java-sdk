@@ -23,9 +23,7 @@ package com.aliyun.oss.model;
  * 包含列出所有执行中Multipart上传事件的请求参数。
  *
  */
-public class ListMultipartUploadsRequest {
-
-    private String bucketName;
+public class ListMultipartUploadsRequest extends GenericRequest {
 
     private String delimiter;
 
@@ -43,24 +41,7 @@ public class ListMultipartUploadsRequest {
      *          Bucket名称。
      */
     public ListMultipartUploadsRequest(String bucketName) {
-        this.bucketName = bucketName;
-    }
-
-    /**
-     * 返回{@link Bucket}名称。
-     * @return Bucket名称。
-     */
-    public String getBucketName() {
-        return bucketName;
-    }
-
-    /**
-     * 设置{@link Bucket}名称。
-     * @param bucketName
-     *          Bucket名称。
-     */
-    public void setBucketName(String bucketName) {
-        this.bucketName = bucketName;
+        super(bucketName);
     }
 
     /**

@@ -20,6 +20,9 @@
 package com.aliyun.oss.common.comm;
 
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
+import static com.aliyun.oss.common.utils.LogUtils.getLog;
+import static com.aliyun.oss.common.utils.LogUtils.logException;
+import static com.aliyun.oss.internal.OSSUtils.COMMON_RESOURCE_MANAGER;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -27,45 +30,37 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpMessage;
 
 import com.aliyun.oss.ClientConfiguration;
-import com.aliyun.oss.ClientErrorCode;
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.ServiceException;
 import com.aliyun.oss.common.utils.HttpUtil;
-import com.aliyun.oss.common.utils.ResourceManager;
 import com.aliyun.oss.internal.OSSConstants;
 
 /**
  * Abstract service client that provides interfaces to access OSS services.
  */
 public abstract class ServiceClient {
-    
-	private static final Log log = LogFactory.getLog(ServiceClient.class);
-    
-	private static final ResourceManager rm = 
-    		ResourceManager.getInstance(OSSConstants.RESOURCE_NAME_COMMON);
 
-    protected final ClientConfiguration config;
+    protected ClientConfiguration config;
 
     protected ServiceClient(ClientConfiguration config) {
-        this.config = (config == null) ? new ClientConfiguration() : config;
+        this.config = config;
     }
     
     public ClientConfiguration getClientConfiguration() {
-        return this.config == null ? new ClientConfiguration() : this.config;
+        return this.config;
     }
 
     /**
-     * Send HTTP request with specified context to oss and wait for HTTP response.
+     * Send HTTP request with specified context to OSS and wait for HTTP response.
      */
     public ResponseMessage sendRequest(RequestMessage request, ExecutionContext context)
             throws ServiceException, ClientException {
         
-    	assertParameterNotNull(request, "request");
+        assertParameterNotNull(request, "request");
         assertParameterNotNull(context, "context");
 
         try {
@@ -74,21 +69,20 @@ public abstract class ServiceClient {
             // Close the request stream as well after the request is completed.
             try {
                 request.close();
-            } catch (IOException e) {
-            	if (log.isWarnEnabled()) {
-            		log.warn("Unexpected io exception when trying to close http request: " + e.getMessage());
-            	}
+            } catch (IOException ex) {
+                logException("Unexpected io exception when trying to close http request: ", ex);
+                throw new ClientException("Unexpected io exception when trying to close http request: ", ex);
             }
         }
     }
 
-    private ResponseMessage sendRequestImpl(RequestMessage request,
-            ExecutionContext context) throws ClientException, ServiceException {
+    private ResponseMessage sendRequestImpl(RequestMessage request, ExecutionContext context) 
+            throws ClientException, ServiceException {
 
         RetryStrategy retryStrategy = context.getRetryStrategy() != null ? 
-        		context.getRetryStrategy() : this.getDefaultRetryStrategy();
+                context.getRetryStrategy() : this.getDefaultRetryStrategy();
 
-        // Sign the request if a signer is provided.
+        // Sign the request if a signer provided.
         if (context.getSigner() != null && !request.isUseUrlSignature()) {
             context.getSigner().sign(request);
         }
@@ -107,20 +101,21 @@ public abstract class ServiceClient {
                     pause(retries, retryStrategy);
                     if (requestContent != null && requestContent.markSupported()) {
                         try {
-							requestContent.reset();
-						} catch (IOException ex) {
-							throw new ClientException("Failed to reset the request input stream", ex);
-						}
+                            requestContent.reset();
+                        } catch (IOException ex) {
+                            logException("Failed to reset the request input stream: ", ex);
+                            throw new ClientException("Failed to reset the request input stream: ", ex);
+                        }
                     }
                 }
                 
                 /* The key four steps to send HTTP requests and receive HTTP responses. */
                 
-                // Step1. Build HTTP request with specified request parameters and context.
+                // Step 1. Preprocess HTTP request.
+                handleRequest(request, context.getResquestHandlers());
+
+                // Step 2. Build HTTP request with specified request parameters and context.
                 Request httpRequest = buildRequest(request, context);
-                
-                // Step 2. Postprocess HTTP request.
-                handleRequest(httpRequest, context.getResquestHandlers());
                 
                 // Step 3. Send HTTP request to OSS.
                 response = sendRequestCore(httpRequest, context);
@@ -129,35 +124,31 @@ public abstract class ServiceClient {
                 handleResponse(response, context.getResponseHandlers());
                 
                 return response;
-            } catch (ServiceException ex) {     	
-            	if (log.isWarnEnabled()) {
-            		log.warn("Unable to execute HTTP request: " + ex.getMessage());
-            	}
+            } catch (ServiceException sex) {        
+                logException("[Server]Unable to execute HTTP request: ", sex);
+                
                 // Notice that the response should not be closed in the
                 // finally block because if the request is successful,
                 // the response should be returned to the callers.
                 closeResponseSilently(response);
-                if (!shouldRetry(ex, request, response, retries, retryStrategy)) {
-                    throw ex;
+                
+                if (!shouldRetry(sex, request, response, retries, retryStrategy)) {
+                    throw sex;
                 }
-            } catch (ClientException ex) {
-            	if (log.isWarnEnabled()) {
-            		log.warn("Unable to execute HTTP request: " + ex.getMessage());
-            	}
+            } catch (ClientException cex) {
+                logException("[Client]Unable to execute HTTP request: ", cex);
+                
                 closeResponseSilently(response);
-                // No need retry for invalid response
-                if (ex.getErrorCode().equals(ClientErrorCode.INVALID_RESPONSE)) {
-                   throw ex;
-                }
-                if (!shouldRetry(ex, request, response, retries, retryStrategy)) {
-                    throw ex;
+                
+                if (!shouldRetry(cex, request, response, retries, retryStrategy)) {
+                    throw cex;
                 }                
             } catch (Exception ex) { 
-            	if (log.isWarnEnabled()) {
-            		log.warn("Unable to execute HTTP request: " + ex.getMessage());
-            	}
+                logException("[Unknown]Unable to execute HTTP request: ", ex);
+                
                 closeResponseSilently(response);
-                throw new ClientException(rm.getFormattedString(
+                
+                throw new ClientException(COMMON_RESOURCE_MANAGER.getFormattedString(
                         "ConnectionError", ex.getMessage()), ex);   
             } finally {
                 retries ++;
@@ -166,26 +157,26 @@ public abstract class ServiceClient {
     }
 
     /**
-     * Implements the core logic to send requests to Aliyun services.
+     * Implements the core logic to send requests to Aliyun OSS services.
      */
     protected abstract ResponseMessage sendRequestCore(Request request, ExecutionContext context)
             throws IOException;
 
     private Request buildRequest(RequestMessage requestMessage, ExecutionContext context)
             throws ClientException {
+        
         Request request = new Request();
         request.setMethod(requestMessage.getMethod());
         request.setUseChunkEncoding(requestMessage.isUseChunkEncoding());
         
         if (requestMessage.isUseUrlSignature()) {
-        	request.setUrl(requestMessage.getAbsoluteUrl().toString());
-        	request.setUseUrlSignature(true);
-        	
-        	request.setContent(requestMessage.getContent());
-            request.setContentLength(requestMessage.getContentLength());
+            request.setUrl(requestMessage.getAbsoluteUrl().toString());
+            request.setUseUrlSignature(true);
             
+            request.setContent(requestMessage.getContent());
+            request.setContentLength(requestMessage.getContentLength());
             request.setHeaders(requestMessage.getHeaders());
-        	
+            
             return request;
         }
         
@@ -198,8 +189,8 @@ public abstract class ServiceClient {
 
         final String delimiter = "/";
         String uri = requestMessage.getEndpoint().toString();
-        if (!uri.endsWith(delimiter)
-                && (requestMessage.getResourcePath() == null ||
+        if (!uri.endsWith(delimiter) && 
+                (requestMessage.getResourcePath() == null ||
                 !requestMessage.getResourcePath().startsWith(delimiter))) {
             uri += delimiter;
         }
@@ -209,7 +200,7 @@ public abstract class ServiceClient {
         }
 
         String paramString = HttpUtil.paramToQueryString(requestMessage.getParameters(), 
-        		context.getCharset());
+                context.getCharset());
         
         /*
          * For all non-POST requests, and any POST requests that already have a
@@ -234,7 +225,8 @@ public abstract class ServiceClient {
                 request.setContent(content);
                 request.setContentLength(buf.length);
             } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(rm.getFormattedString("EncodingFailed", e.getMessage()));
+                throw new RuntimeException(COMMON_RESOURCE_MANAGER.getFormattedString(
+                        "EncodingFailed", e.getMessage()));
             }
         } else {
             request.setContent(requestMessage.getContent());
@@ -247,16 +239,11 @@ public abstract class ServiceClient {
     private void handleResponse(ResponseMessage response, List<ResponseHandler> responseHandlers)
             throws ServiceException, ClientException {
         for(ResponseHandler h : responseHandlers) {
-            if (!response.isSuccessful()) {
-                if (log.isDebugEnabled()) {
-                	log.debug(response.getDebugInfo());
-                }
-            }
             h.handle(response);
         }
     }
 
-    private void handleRequest(Request message, List<RequestHandler> resquestHandlers) 
+    private void handleRequest(RequestMessage message, List<RequestHandler> resquestHandlers) 
             throws ServiceException, ClientException {
         for(RequestHandler h : resquestHandlers) {
             h.handle(message);
@@ -268,10 +255,8 @@ public abstract class ServiceClient {
         
         long delay = retryStrategy.getPauseDelay(retries);        
         
-        if (log.isDebugEnabled()) {
-        	log.debug("Retriable error detected, will retry in " + delay
-                    + "ms, attempt number: " + retries);
-        }
+        getLog().debug("An retriable error request will be retried after " + delay
+                + "(ms) with attempt times: " + retries);
         
         try {
             Thread.sleep(delay);
@@ -292,21 +277,20 @@ public abstract class ServiceClient {
         }
         
         if (retryStrategy.shouldRetry(exception, request, response, retries)) {
-            if (log.isDebugEnabled()) {
-            	log.debug("Retrying on " + exception.getClass().getName() + ": "
-                        + exception.getMessage());
-            }
+            getLog().debug("Retrying on " + exception.getClass().getName() + ": "
+                    + exception.getMessage());
             return true;
         }       
         return false;
     }
 
     private void closeResponseSilently(ResponseMessage response) {
-
         if (response != null) {
             try {
                 response.close();
-            } catch (IOException ioe) { /* silently close the response.*/ }
+            } catch (IOException ioe) { 
+                /* silently close the response. */ 
+            }
         }
     }
     
@@ -340,20 +324,20 @@ public abstract class ServiceClient {
             this.method = method;
         }
 
-		public boolean isUseUrlSignature() {
-			return useUrlSignature;
-		}
+        public boolean isUseUrlSignature() {
+            return useUrlSignature;
+        }
 
-		public void setUseUrlSignature(boolean useUrlSignature) {
-			this.useUrlSignature = useUrlSignature;
-		}
+        public void setUseUrlSignature(boolean useUrlSignature) {
+            this.useUrlSignature = useUrlSignature;
+        }
 
-		public boolean isUseChunkEncoding() {
-			return useChunkEncoding;
-		}
+        public boolean isUseChunkEncoding() {
+            return useChunkEncoding;
+        }
 
-		public void setUseChunkEncoding(boolean useChunkEncoding) {
-			this.useChunkEncoding = useChunkEncoding;
-		}
+        public void setUseChunkEncoding(boolean useChunkEncoding) {
+            this.useChunkEncoding = useChunkEncoding;
+        }
     }
 }

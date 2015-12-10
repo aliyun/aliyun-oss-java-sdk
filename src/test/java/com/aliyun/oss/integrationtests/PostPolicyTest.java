@@ -31,17 +31,17 @@ import com.aliyun.oss.model.MatchMode;
 import com.aliyun.oss.model.PolicyConditions;
 
 public class PostPolicyTest extends TestBase {
-	
-	@Test
-	public void testGenPostPolicy() {	
-		final String bucketName = "gen-post-policy";
-		
-		try {
-			secondClient.createBucket(bucketName);
-			
-			Date expiration = DateUtil.parseIso8601Date("2015-03-19T03:44:06.476Z");
-			
-			PolicyConditions policyConds = new PolicyConditions();
+    
+    @Test
+    public void testGenPostPolicy() {    
+        final String bucketName = "gen-post-policy";
+        
+        try {
+            secondClient.createBucket(bucketName);
+            
+            Date expiration = DateUtil.parseIso8601Date("2015-03-19T03:44:06.476Z");
+            
+            PolicyConditions policyConds = new PolicyConditions();
             policyConds.addConditionItem("bucket", bucketName);
             // $ must be escaped with backslash.
             policyConds.addConditionItem(MatchMode.Exact, PolicyConditions.COND_KEY, "user/eric/\\${filename}");
@@ -51,27 +51,27 @@ public class PostPolicyTest extends TestBase {
 
             String actualPostPolicy = secondClient.generatePostPolicy(expiration, policyConds);
             String expectedPostPolicy = String.format("{\"expiration\":\"2015-03-19T03:44:06.476Z\",\"conditions\":[{\"bucket\":\"%s\"},"
-            		+ "[\"eq\",\"$key\",\"user/eric/\\${filename}\"],[\"starts-with\",\"$key\",\"user/eric\"],[\"starts-with\",\"$x-oss-meta-tag\","
-            		+ "\"dummy_etag\"],[\"content-length-range\",1,1024]]}", bucketName);
+                    + "[\"eq\",\"$key\",\"user/eric/\\${filename}\"],[\"starts-with\",\"$key\",\"user/eric\"],[\"starts-with\",\"$x-oss-meta-tag\","
+                    + "\"dummy_etag\"],[\"content-length-range\",1,1024]]}", bucketName);
             Assert.assertEquals(expectedPostPolicy, actualPostPolicy);
             
             byte[] binaryData = actualPostPolicy.getBytes("utf-8");
-			String actualEncodedPolicy = BinaryUtil.toBase64String(binaryData);
+            String actualEncodedPolicy = BinaryUtil.toBase64String(binaryData);
             String expectedEncodedPolicy = "eyJleHBpcmF0aW9uIjoiMjAxNS0wMy0xOVQwMzo0NDowNi40Nz"
-            		+ "ZaIiwiY29uZGl0aW9ucyI6W3siYnVja2V0IjoiZ2VuLXBvc3QtcG9saWN5In0sWyJlcSIsIiRrZXkiLC"
-            		+ "J1c2VyL2VyaWMvXCR7ZmlsZW5hbWV9Il0sWyJzdGFydHMtd2l0aCIsIiRrZXkiLCJ1c2VyL2Vya"
-            		+ "WMiXSxbInN0YXJ0cy13aXRoIiwiJHgtb3NzLW1ldGEtdGFnIiwiZHVtbXlfZXRhZyJdLFsiY29udG"
-            		+ "VudC1sZW5ndGgtcmFuZ2UiLDEsMTAyNF1dfQ==";
+                    + "ZaIiwiY29uZGl0aW9ucyI6W3siYnVja2V0IjoiZ2VuLXBvc3QtcG9saWN5In0sWyJlcSIsIiRrZXkiLC"
+                    + "J1c2VyL2VyaWMvXCR7ZmlsZW5hbWV9Il0sWyJzdGFydHMtd2l0aCIsIiRrZXkiLCJ1c2VyL2Vya"
+                    + "WMiXSxbInN0YXJ0cy13aXRoIiwiJHgtb3NzLW1ldGEtdGFnIiwiZHVtbXlfZXRhZyJdLFsiY29udG"
+                    + "VudC1sZW5ndGgtcmFuZ2UiLDEsMTAyNF1dfQ==";
             Assert.assertEquals(expectedEncodedPolicy, actualEncodedPolicy);
-			
+            
             String actualPostSignature = secondClient.calculatePostSignature(actualPostPolicy);
-            String expectedPostSignature = "i65eymI+VuLY63t193Z8Y8f6/gc=";
+            String expectedPostSignature = "4j8RKOVq7f0Sbz3h2COVuu47914=";
             Assert.assertEquals(expectedPostSignature, actualPostSignature);
-		} catch (Exception e) {
-			Assert.fail(e.getMessage());
-		} finally {
-			secondClient.deleteBucket(bucketName);
-		}
-	}
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        } finally {
+            secondClient.deleteBucket(bucketName);
+        }
+    }
 
 }

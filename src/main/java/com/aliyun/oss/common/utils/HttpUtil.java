@@ -34,29 +34,29 @@ public class HttpUtil {
      * Encode a URL segment with special chars replaced.
      */
     public static String urlEncode(String value, String encoding) {
-    	if (value == null) {
-    		return "";
-    	}
-    	
-    	try {
-    		String encoded = URLEncoder.encode(value, encoding);
+        if (value == null) {
+            return "";
+        }
+        
+        try {
+            String encoded = URLEncoder.encode(value, encoding);
             return encoded.replace("+", "%20").replace("*", "%2A")
-            		.replace("%7E", "~").replace("%2F", "/");
-    	} catch (UnsupportedEncodingException e) {
-    		throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getString("FailedToEncodeUri"), e);
-    	}
+                    .replace("%7E", "~").replace("%2F", "/");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getString("FailedToEncodeUri"), e);
+        }
     }
     
     public static String urlDecode(String value, String encoding) {
-    	if (isNullOrEmpty(value)) {
-    		return value;
-    	}
-    	
-    	try {
-			return URLDecoder.decode(value, encoding);
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getString("FailedToDecodeUrl"), e);
-		}
+        if (isNullOrEmpty(value)) {
+            return value;
+        }
+        
+        try {
+            return URLDecoder.decode(value, encoding);
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getString("FailedToDecodeUrl"), e);
+        }
     }
 
     /**
@@ -64,7 +64,7 @@ public class HttpUtil {
      */
     public static String paramToQueryString(Map<String, String> params, String charset) {
         
-    	if (params == null || params.isEmpty()) {
+        if (params == null || params.isEmpty()) {
             return null;
         }
 
@@ -106,9 +106,9 @@ public class HttpUtil {
     }
 
     private static void convertHeaderCharset(Map<String, String> headers, 
-    		String fromCharset, String toCharset) {
+            String fromCharset, String toCharset) {
 
-    	for(Map.Entry<String, String> header : headers.entrySet()) {
+        for(Map.Entry<String, String> header : headers.entrySet()) {
             if (header.getValue() == null) {
                 continue;
             }

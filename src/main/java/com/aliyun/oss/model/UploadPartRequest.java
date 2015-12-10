@@ -26,30 +26,23 @@ import com.aliyun.oss.common.comm.io.PartialStream;
 /**
  * 包含上传Multipart分块（Part）参数。
  */
-public class UploadPartRequest extends WebServiceRequest {
-
-    private String bucketName;
-
-    private String key;
+public class UploadPartRequest extends GenericRequest {
 
     private String uploadId;
 
     private int partNumber;
 
-    private long partSize;
+    private long partSize = -1;
 
     private String md5Digest;
 
     private InputStream inputStream;
     
     private boolean useChunkEncoding = false;
-
+    
+    public UploadPartRequest() { }
+    
     /**
-     * 默认构造函数。
-     */
-    public UploadPartRequest() {}
-
-	/**
      * 设置包含上传分块内容的数据流。
      * @param inputStream
      *          包含上传分块内容的数据流。
@@ -64,40 +57,6 @@ public class UploadPartRequest extends WebServiceRequest {
      */
     public InputStream getInputStream() {
         return inputStream;
-    }
-
-    /**
-     * 返回{@link Bucket}名称。
-     * @return Bucket名称。
-     */
-    public String getBucketName() {
-        return bucketName;
-    }
-
-    /**
-     * 设置{@link Bucket}名称。
-     * @param bucketName
-     *          Bucket名称。
-     */
-    public void setBucketName(String bucketName) {
-        this.bucketName = bucketName;
-    }
-
-    /**
-     * 返回{@link OSSObject} key。
-     * @return Object key。
-     */
-    public String getKey() {
-        return key;
-    }
-
-    /**
-     * 设置{@link OSSObject} key。
-     * @param key
-     *          Object key。
-     */
-    public void setKey(String key) {
-        this.key = key;
     }
 
     /**
@@ -143,8 +102,10 @@ public class UploadPartRequest extends WebServiceRequest {
     }
 
     /**
-     * 返回分块（Part）数据的字节数。
-     * 除最后一个Part外，其他Part最小为5MB。
+     * 返回分块（Part）数据的字节数。除最后一个Part外，其他Part最小为100KB。
+     * <p>如果未设置分片（Part）数据的字节数，取默认值-1，表示长度未知，
+     * 采用Chunked编码的方式上传该分片（Part）。</p>
+     * 
      * @return 分块（Part）数据的字节数。
      */
     public long getPartSize() {
@@ -152,8 +113,9 @@ public class UploadPartRequest extends WebServiceRequest {
     }
 
     /**
-     * 设置返回分块（Part）数据的字节数。
-     * 除最后一个Part外，其他Part最小为5MB。
+     * 设置返回分块（Part）数据的字节数。除最后一个Part外，其他Part最小为100KB。
+     * <p>可显示设置为-1，表示长度未知，采用Chunked编码的方式上传该分片（Part）。</p>
+     * 
      * @param partSize
      *          分块（Part）数据的字节数。
      */
@@ -182,19 +144,19 @@ public class UploadPartRequest extends WebServiceRequest {
      * 获取是否采用Chunked编码方式传输请求数据。
      * @return 是否采用Chunked编码方式
      */
-	public boolean isUseChunkEncoding() {
-		return useChunkEncoding;
-	}
-	
-	/**
-	 * 设置是否采用Chunked编码方式传输请求数据。
-	 * @param useChunkEncoding 是否采用Chunked编码
-	 */
-	public void setUseChunkEncoding(boolean useChunkEncoding) {
-		this.useChunkEncoding = useChunkEncoding;
-	}
-	
-	public PartialStream buildPartialStream() {
-		return new PartialStream(inputStream, (int)partSize);
-	}
+    public boolean isUseChunkEncoding() {
+        return useChunkEncoding || (this.partSize == -1);
+    }
+    
+    /**
+     * 设置是否采用Chunked编码方式传输请求数据。
+     * @param useChunkEncoding 是否采用Chunked编码
+     */
+    public void setUseChunkEncoding(boolean useChunkEncoding) {
+        this.useChunkEncoding = useChunkEncoding;
+    }
+    
+    public PartialStream buildPartialStream() {
+        return new PartialStream(inputStream, (int)partSize);
+    }
 }

@@ -19,7 +19,6 @@
 
 package com.aliyun.oss.internal;
 
-import static com.aliyun.oss.internal.RequestParameters.*;
 import static com.aliyun.oss.common.parser.RequestMarshallers.bucketRefererMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.createBucketRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketLifecycleRequestMarshaller;
@@ -27,6 +26,17 @@ import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketLoggingRe
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketWebsiteRequestMarshaller;
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
+import static com.aliyun.oss.internal.RequestParameters.DELIMITER;
+import static com.aliyun.oss.internal.RequestParameters.ENCODING_TYPE;
+import static com.aliyun.oss.internal.RequestParameters.MARKER;
+import static com.aliyun.oss.internal.RequestParameters.MAX_KEYS;
+import static com.aliyun.oss.internal.RequestParameters.PREFIX;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_ACL;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_LIFECYCLE;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_LOCATION;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_LOGGING;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_REFERER;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_WEBSITE;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketAclResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketLifecycleResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketLocationResponseParser;
@@ -56,12 +66,15 @@ import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.BucketWebsiteResult;
 import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.CreateBucketRequest;
+import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.LifecycleRule;
 import com.aliyun.oss.model.ListBucketsRequest;
 import com.aliyun.oss.model.ListObjectsRequest;
 import com.aliyun.oss.model.ObjectListing;
+import com.aliyun.oss.model.SetBucketAclRequest;
 import com.aliyun.oss.model.SetBucketLifecycleRequest;
 import com.aliyun.oss.model.SetBucketLoggingRequest;
+import com.aliyun.oss.model.SetBucketRefererRequest;
 import com.aliyun.oss.model.SetBucketWebsiteRequest;
 
 /**
@@ -79,16 +92,14 @@ public class OSSBucketOperation extends OSSOperation {
     public Bucket createBucket(CreateBucketRequest createBucketRequest)
             throws OSSException, ClientException {
 
-    	assertParameterNotNull(createBucketRequest, "createBucketRequest");
-    	
+        assertParameterNotNull(createBucketRequest, "createBucketRequest");
+        
         String bucketName = createBucketRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         
-        CannedAccessControlList cannedACL = createBucketRequest.getCannedACL();
-        assertParameterNotNull(cannedACL, "cannedACL");
         Map<String, String> headers = new HashMap<String, String>();
-        headers.put(OSSHeaders.OSS_CANNED_ACL, cannedACL.toString());
+        addOptionalACLHeader(headers, createBucketRequest.getCannedACL());
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
                 .setEndpoint(getEndpoint())
@@ -96,6 +107,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setBucket(bucketName)
                 .setHeaders(headers)
                 .setInputStreamWithLength(createBucketRequestMarshaller.marshall(createBucketRequest))
+                .setOriginalRequest(createBucketRequest)
                 .build();
 
         doOperation(request, emptyResponseParser, bucketName, null);
@@ -105,9 +117,12 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Delete a bucket.
      */
-    public void deleteBucket(String bucketName)
+    public void deleteBucket(GenericRequest genericRequest) 
             throws OSSException, ClientException {
 
+        assertParameterNotNull(genericRequest, "genericRequest");
+        
+        String bucketName = genericRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         
@@ -115,6 +130,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.DELETE)
                 .setBucket(bucketName)
+                .setOriginalRequest(genericRequest)
                 .build();
         
         doOperation(request, emptyResponseParser, bucketName, null);
@@ -124,8 +140,8 @@ public class OSSBucketOperation extends OSSOperation {
      * List all my buckets.
      */
     public List<Bucket> listBuckets() throws OSSException, ClientException {
-    	BucketList bucketList = listBuckets(new ListBucketsRequest(null, null, null));
-    	List<Bucket> buckets = bucketList.getBucketList();
+        BucketList bucketList = listBuckets(new ListBucketsRequest(null, null, null));
+        List<Bucket> buckets = bucketList.getBucketList();
         while (bucketList.isTruncated()) {
             bucketList = listBuckets(new ListBucketsRequest(null, bucketList.getNextMarker(), null));
             buckets.addAll(bucketList.getBucketList());
@@ -137,7 +153,7 @@ public class OSSBucketOperation extends OSSOperation {
      * List all my buckets. 
      */
     public BucketList listBuckets(ListBucketsRequest listBucketRequest) 
-    		throws OSSException, ClientException {
+            throws OSSException, ClientException {
 
         assertParameterNotNull(listBucketRequest, "listBucketRequest");
 
@@ -153,46 +169,50 @@ public class OSSBucketOperation extends OSSOperation {
         }
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-		        .setEndpoint(getEndpoint())
-		        .setMethod(HttpMethod.GET)
-		        .setParameters(params)
-		        .build();
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET)
+                .setParameters(params)
+                .setOriginalRequest(listBucketRequest)
+                .build();
         
         return doOperation(request, listBucketResponseParser, null, null, true);
     }
 
     /**
-     * Set bucket's ACL.
+     * Set bucket's canned ACL.
      */
-    public void setBucketAcl(String bucketName, CannedAccessControlList acl)
+    public void setBucketAcl(SetBucketAclRequest setBucketAclRequest)
             throws OSSException, ClientException {
-
+        
+        assertParameterNotNull(setBucketAclRequest, "setBucketAclRequest");
+        
+        String bucketName = setBucketAclRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
 
-        if (acl == null) {
-            acl = CannedAccessControlList.Private;
-        }
-
         Map<String, String> headers = new HashMap<String, String>();
-        headers.put(OSSHeaders.OSS_CANNED_ACL, acl.toString());
+        addOptionalACLHeader(headers, setBucketAclRequest.getCannedACL());
         
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
                 .setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.PUT)
                 .setBucket(bucketName)
                 .setHeaders(headers)
+                .setOriginalRequest(setBucketAclRequest)
                 .build();
         
-       doOperation(request, emptyResponseParser, bucketName, null);
+        doOperation(request, emptyResponseParser, bucketName, null);
     }
 
     /**
      * Get bucket's ACL.
      */
-    public AccessControlList getBucketAcl(String bucketName)
+    public AccessControlList getBucketAcl(GenericRequest genericRequest)
             throws OSSException, ClientException {
 
+        assertParameterNotNull(genericRequest, "genericRequest");
+        
+        String bucketName = genericRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
 
@@ -200,11 +220,12 @@ public class OSSBucketOperation extends OSSOperation {
         params.put(SUBRESOURCE_ACL, null);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-		        .setEndpoint(getEndpoint())
-		        .setMethod(HttpMethod.GET)
-		        .setBucket(bucketName)
-		        .setParameters(params)
-		        .build();
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET)
+                .setBucket(bucketName)
+                .setParameters(params)
+                .setOriginalRequest(genericRequest)
+                .build();
         
         return doOperation(request, getBucketAclResponseParser, bucketName, null, true);
     }
@@ -212,12 +233,16 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Set bucket referer.
      */
-    public void setBucketReferer(String bucketName, BucketReferer referer)
+    public void setBucketReferer(SetBucketRefererRequest setBucketRefererRequest)
             throws OSSException, ClientException {
-
+        
+        assertParameterNotNull(setBucketRefererRequest, "setBucketRefererRequest");
+        
+        String bucketName = setBucketRefererRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
 
+        BucketReferer referer = setBucketRefererRequest.getReferer();
         if (referer == null) {
             referer = new BucketReferer();
         }
@@ -231,6 +256,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setBucket(bucketName)
                 .setParameters(params)
                 .setInputStreamWithLength(bucketRefererMarshaller.marshall(referer))
+                .setOriginalRequest(setBucketRefererRequest)
                 .build();
         
         doOperation(request, emptyResponseParser, bucketName, null);
@@ -239,9 +265,12 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Get bucket referer.
      */
-    public BucketReferer getBucketReferer(String bucketName)
+    public BucketReferer getBucketReferer(GenericRequest genericRequest)
             throws OSSException, ClientException {
 
+        assertParameterNotNull(genericRequest, "genericRequest");
+        
+        String bucketName = genericRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
 
@@ -249,11 +278,12 @@ public class OSSBucketOperation extends OSSOperation {
         params.put(SUBRESOURCE_REFERER, null);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-		        .setEndpoint(getEndpoint())
-		        .setMethod(HttpMethod.GET)
-		        .setBucket(bucketName)
-		        .setParameters(params)
-		        .build();
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET)
+                .setBucket(bucketName)
+                .setParameters(params)
+                .setOriginalRequest(genericRequest)
+                .build();
         
         return doOperation(request, getBucketRefererResponseParser , bucketName, null, true);
     }
@@ -261,20 +291,24 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Get bucket location.
      */
-    public String getBucketLocation(String bucketName) {
+    public String getBucketLocation(GenericRequest genericRequest) {
         
-    	assertParameterNotNull(bucketName, "bucketName");
+        assertParameterNotNull(genericRequest, "genericRequest");
+        
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_LOCATION, null);
         
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-		        .setEndpoint(getEndpoint())
-		        .setMethod(HttpMethod.GET)
-		        .setBucket(bucketName)
-		        .setParameters(params)
-		        .build();
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET)
+                .setBucket(bucketName)
+                .setParameters(params)
+                .setOriginalRequest(genericRequest)
+                .build();
         
         return doOperation(request, getBucketLocationResponseParser, bucketName, null, true);
     }
@@ -282,19 +316,24 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Determine whether a bucket exists or not.
      */
-    public boolean doesBucketExists(String bucketName)
+    public boolean doesBucketExists(GenericRequest genericRequest)
             throws OSSException, ClientException {
 
+        assertParameterNotNull(genericRequest, "genericRequest");
+        
+        String bucketName = genericRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         
         try {
-        	 getBucketAcl(bucketName);
-		} catch (OSSException e) {
-		   if(e.getErrorCode().equals(OSSErrorCode.NO_SUCH_BUCKET)) {
-			   return false;
-		   }
-		}
+             getBucketAcl(new GenericRequest(bucketName));
+        } catch (OSSException oe) {
+           if(oe.getErrorCode().equals(OSSErrorCode.NO_SUCH_BUCKET)) {
+               return false;
+           }
+        } catch (Exception e) {
+            System.err.println("doesBucketExists " + e.getMessage());
+        }
         return true;
     }
 
@@ -314,11 +353,12 @@ public class OSSBucketOperation extends OSSOperation {
         populateListObjectsRequestParameters(listObjectsRequest, params);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-		        .setEndpoint(getEndpoint())
-		        .setMethod(HttpMethod.GET)
-		        .setBucket(bucketName)
-		        .setParameters(params)
-		        .build();
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET)
+                .setBucket(bucketName)
+                .setParameters(params)
+                .setOriginalRequest(listObjectsRequest)
+                .build();
         
         return doOperation(request, listObjectsReponseParser, bucketName, null, true);
     }
@@ -328,8 +368,8 @@ public class OSSBucketOperation extends OSSOperation {
      */
     public void setBucketLogging(SetBucketLoggingRequest setBucketLoggingRequest)
             throws OSSException, ClientException {
-    	
-    	assertParameterNotNull(setBucketLoggingRequest, "setBucketLoggingRequest");
+        
+        assertParameterNotNull(setBucketLoggingRequest, "setBucketLoggingRequest");
 
         String bucketName = setBucketLoggingRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
@@ -344,6 +384,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setBucket(bucketName)
                 .setParameters(params)
                 .setInputStreamWithLength(setBucketLoggingRequestMarshaller.marshall(setBucketLoggingRequest))
+                .setOriginalRequest(setBucketLoggingRequest)
                 .build();
         
         doOperation(request, emptyResponseParser, bucketName, null);
@@ -352,21 +393,25 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Get bucket logging.
      */
-    public BucketLoggingResult getBucketLogging(String bucketName)
+    public BucketLoggingResult getBucketLogging(GenericRequest genericRequest)
             throws OSSException, ClientException {
         
-    	assertParameterNotNull(bucketName, "bucketName");
+        assertParameterNotNull(genericRequest, "genericRequest");
+        
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_LOGGING, null);
         
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-		        .setEndpoint(getEndpoint())
-		        .setMethod(HttpMethod.GET)
-		        .setBucket(bucketName)
-		        .setParameters(params)
-		        .build();
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET)
+                .setBucket(bucketName)
+                .setParameters(params)
+                .setOriginalRequest(genericRequest)
+                .build();
         
         return doOperation(request, getBucketLoggingResponseParser, bucketName, null, true);
     }
@@ -374,10 +419,13 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Delete bucket logging.
      */
-    public void deleteBucketLogging(String bucketName)
+    public void deleteBucketLogging(GenericRequest genericRequest)
             throws OSSException, ClientException {
 
-    	assertParameterNotNull(bucketName, "bucketName");
+        assertParameterNotNull(genericRequest, "genericRequest");
+        
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         
         Map<String, String> params = new HashMap<String, String>();
@@ -388,6 +436,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setMethod(HttpMethod.DELETE)
                 .setBucket(bucketName)
                 .setParameters(params)
+                .setOriginalRequest(genericRequest)
                 .build();
         
         doOperation(request, emptyResponseParser, bucketName, null);
@@ -398,8 +447,8 @@ public class OSSBucketOperation extends OSSOperation {
      */
     public void setBucketWebsite(SetBucketWebsiteRequest setBucketWebSiteRequest)
             throws OSSException, ClientException {
-    	
-    	assertParameterNotNull(setBucketWebSiteRequest, "setBucketWebSiteRequest");
+        
+        assertParameterNotNull(setBucketWebSiteRequest, "setBucketWebSiteRequest");
 
         String bucketName = setBucketWebSiteRequest.getBucketName();         
         assertParameterNotNull(bucketName, "bucketName");
@@ -417,6 +466,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setBucket(bucketName)
                 .setParameters(params)
                 .setInputStreamWithLength(setBucketWebsiteRequestMarshaller.marshall(setBucketWebSiteRequest))
+                .setOriginalRequest(setBucketWebSiteRequest)
                 .build();
         
         doOperation(request, emptyResponseParser, bucketName, null);
@@ -425,21 +475,25 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Get bucket website.
      */
-    public BucketWebsiteResult getBucketWebsite(String bucketName)
+    public BucketWebsiteResult getBucketWebsite(GenericRequest genericRequest)
             throws OSSException, ClientException {
+
+        assertParameterNotNull(genericRequest, "genericRequest");
         
-    	assertParameterNotNull(bucketName, "bucketName");
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_WEBSITE, null);
         
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-		        .setEndpoint(getEndpoint())
-		        .setMethod(HttpMethod.GET)
-		        .setBucket(bucketName)
-		        .setParameters(params)
-		        .build();
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET)
+                .setBucket(bucketName)
+                .setParameters(params)
+                .setOriginalRequest(genericRequest)
+                .build();
         
         return doOperation(request, getBucketWebsiteResponseParser, bucketName, null, true);
     }
@@ -447,10 +501,13 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Delete bucket website.
      */
-    public void deleteBucketWebsite(String bucketName)
+    public void deleteBucketWebsite(GenericRequest genericRequest)
             throws OSSException, ClientException {
 
-    	assertParameterNotNull(bucketName, "bucketName");
+        assertParameterNotNull(genericRequest, "genericRequest");
+        
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         
         Map<String, String> params = new HashMap<String, String>();
@@ -461,6 +518,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setMethod(HttpMethod.DELETE)
                 .setBucket(bucketName)
                 .setParameters(params)
+                .setOriginalRequest(genericRequest)
                 .build();
         
         doOperation(request, emptyResponseParser, bucketName, null);
@@ -471,9 +529,9 @@ public class OSSBucketOperation extends OSSOperation {
      */
     public void setBucketLifecycle(SetBucketLifecycleRequest setBucketLifecycleRequest)
             throws OSSException, ClientException {
-    	
-    	assertParameterNotNull(setBucketLifecycleRequest, "setBucketLifecycleRequest");
-    	
+        
+        assertParameterNotNull(setBucketLifecycleRequest, "setBucketLifecycleRequest");
+        
         String bucketName = setBucketLifecycleRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
@@ -487,6 +545,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setBucket(bucketName)
                 .setParameters(params)
                 .setInputStreamWithLength(setBucketLifecycleRequestMarshaller.marshall(setBucketLifecycleRequest))
+                .setOriginalRequest(setBucketLifecycleRequest)
                 .build();
         
         doOperation(request, emptyResponseParser, bucketName, null);
@@ -495,21 +554,25 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Get bucket lifecycle.
      */
-    public List<LifecycleRule> getBucketLifecycle(String bucketName)
+    public List<LifecycleRule> getBucketLifecycle(GenericRequest genericRequest)
             throws OSSException, ClientException {
+
+        assertParameterNotNull(genericRequest, "genericRequest");
         
-    	assertParameterNotNull(bucketName, "bucketName");
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_LIFECYCLE, null);
         
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-		        .setEndpoint(getEndpoint())
-		        .setMethod(HttpMethod.GET)
-		        .setBucket(bucketName)
-		        .setParameters(params)
-		        .build();
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET)
+                .setBucket(bucketName)
+                .setParameters(params)
+                .setOriginalRequest(genericRequest)
+                .build();
         
         return doOperation(request, getBucketLifecycleResponseParser, bucketName, null, true);
     }
@@ -517,10 +580,13 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Delete bucket lifecycle.
      */
-    public void deleteBucketLifecycle(String bucketName)
+    public void deleteBucketLifecycle(GenericRequest genericRequest)
             throws OSSException, ClientException {
 
-    	assertParameterNotNull(bucketName, "bucketName");
+        assertParameterNotNull(genericRequest, "genericRequest");
+        
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         
         Map<String, String> params = new HashMap<String, String>();
@@ -531,32 +597,39 @@ public class OSSBucketOperation extends OSSOperation {
                 .setMethod(HttpMethod.DELETE)
                 .setBucket(bucketName)
                 .setParameters(params)
+                .setOriginalRequest(genericRequest)
                 .build();
         
         doOperation(request, emptyResponseParser, bucketName, null);
     }
     
     private static void populateListObjectsRequestParameters(ListObjectsRequest listObjectsRequest,
-    		Map<String, String> params) {
-    	
-    	if (listObjectsRequest.getPrefix() != null) {
+            Map<String, String> params) {
+        
+        if (listObjectsRequest.getPrefix() != null) {
             params.put(PREFIX, listObjectsRequest.getPrefix());
         }
         
-    	if (listObjectsRequest.getMarker() != null) {
+        if (listObjectsRequest.getMarker() != null) {
             params.put(MARKER, listObjectsRequest.getMarker());
         }
         
-    	if (listObjectsRequest.getDelimiter() != null) {
+        if (listObjectsRequest.getDelimiter() != null) {
             params.put(DELIMITER, listObjectsRequest.getDelimiter());
         }
         
-    	if (listObjectsRequest.getMaxKeys() != null) {
+        if (listObjectsRequest.getMaxKeys() != null) {
             params.put(MAX_KEYS, Integer.toString(listObjectsRequest.getMaxKeys()));
         }
-    	
-    	if (listObjectsRequest.getEncodingType() != null) {
-    		params.put(ENCODING_TYPE, listObjectsRequest.getEncodingType());
-    	}
+        
+        if (listObjectsRequest.getEncodingType() != null) {
+            params.put(ENCODING_TYPE, listObjectsRequest.getEncodingType());
+        }
+    }
+    
+    private static void addOptionalACLHeader(Map<String, String> headers, CannedAccessControlList cannedAcl) {
+        if (cannedAcl != null) {
+            headers.put(OSSHeaders.OSS_CANNED_ACL, cannedAcl.toString());
+        }
     }
 } 

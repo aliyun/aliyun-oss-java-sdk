@@ -41,10 +41,10 @@ import java.io.InputStream;
 public class OSSObject {
 
     // Object key (name)
-    private String key = null;
+    private String key;
 
     // Object所在的Bucket的名称。
-    private String bucketName = null;
+    private String bucketName;
 
     // Object的元数据。
     private ObjectMetadata metadata = new ObjectMetadata();

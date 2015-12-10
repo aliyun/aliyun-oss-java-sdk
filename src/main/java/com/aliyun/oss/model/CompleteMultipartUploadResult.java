@@ -23,7 +23,7 @@ package com.aliyun.oss.model;
  * 包含完成一个Multipart上传事件的返回结果。
  *
  */
-public class CompleteMultipartUploadResult{
+public class CompleteMultipartUploadResult extends WebServiceRequest {
 
     /** The name of the bucket containing the completed multipart upload. */
     private String bucketName;

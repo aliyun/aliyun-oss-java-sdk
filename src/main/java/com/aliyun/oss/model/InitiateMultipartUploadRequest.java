@@ -23,11 +23,7 @@ package com.aliyun.oss.model;
  * 包含初始化一个Multipart上传事件的请求参数。
  *
  */
-public class InitiateMultipartUploadRequest  {
-
-    private String bucketName;
-
-    private String key;
+public class InitiateMultipartUploadRequest extends GenericRequest {
 
     private ObjectMetadata objectMetadata;
 
@@ -52,44 +48,8 @@ public class InitiateMultipartUploadRequest  {
      *          将创建的Object的附加信息。
      */
     public InitiateMultipartUploadRequest(String bucketName, String key, ObjectMetadata objectMetadata) {
-        this.bucketName = bucketName;
-        this.key = key;
+        super(bucketName, key);
         this.objectMetadata = objectMetadata;
-    }
-    
-    /**
-     * 返回用来创建Multipart上传的Bucket的名称。
-     * @return 用来创建Multipart上传的Bucket的名称。
-     */
-    public String getBucketName() {
-        return bucketName;
-    }
-
-    /**
-     * 设置用来创建Multipart上传的Bucket的名称。
-     * @param bucketName
-     *          用来创建Multipart上传的Bucket的名称。
-     */
-    public void setBucketName(String bucketName) {
-        this.bucketName = bucketName;
-    }
-
-    /**
-     * 返回用来创建的Multipart的Object（也就是Multipart上传完成后新生成的Object）的key。
-     * @return
-     *      用来创建的Multipart的Object（也就是Multipart上传完成后新生成的Object）的key。
-     */
-    public String getKey() {
-        return key;
-    }
-
-    /**
-     * 设置用来创建的Multipart的Object（也就是Multipart上传完成后新生成的Object）的key。
-     * @param key
-     *          用来创建的Multipart的Object（也就是Multipart上传完成后新生成的Object）的key。
-     */
-    public void setKey(String key) {
-        this.key = key;
     }
 
     /**

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ListBucketResult>
-	<Name>pacjux7y1b86pmtu7g8d6b7z-test-bucket</Name>
-	<Prefix></Prefix>
-	<Marker></Marker>
-	<MaxKeys>100</MaxKeys>
-	<Delimiter></Delimiter>
+    <Name>pacjux7y1b86pmtu7g8d6b7z-test-bucket</Name>
+    <Prefix></Prefix>
+    <Marker></Marker>
+    <MaxKeys>100</MaxKeys>
+    <Delimiter></Delimiter>
     <IsTruncated>false</IsTruncated>
 
     <Contents>

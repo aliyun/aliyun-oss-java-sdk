@@ -19,29 +19,22 @@
 
 package com.aliyun.oss.common.comm;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import com.aliyun.oss.ClientErrorCode;
-import com.aliyun.oss.ClientException;
-import com.aliyun.oss.common.utils.ResourceManager;
-import com.aliyun.oss.internal.OSSConstants;
 import com.aliyun.oss.internal.OSSHeaders;
 
 public class ResponseMessage extends HttpMesssage {
-	
-	private static final int HTTP_SUCCESS_STATUS_CODE = 200;
-	private static ResourceManager rm = ResourceManager.getInstance(OSSConstants.RESOURCE_NAME_COMMON);
     
-	private String uri;
+    private static final int HTTP_SUCCESS_STATUS_CODE = 200;
+    
+    private String uri;
     private int statusCode;
 
     private ServiceClient.Request request;
     
+    // For convenience of logging invalid response
+    private String errorResponseAsString;
+    
     public ResponseMessage(ServiceClient.Request request) {
-    	this.request = request;
+        this.request = request;
     }
 
     public String getUri() {
@@ -65,35 +58,18 @@ public class ResponseMessage extends HttpMesssage {
     }
 
     public ServiceClient.Request getRequest() {
-		return request;
-	}
+        return request;
+    }
     
-	public boolean isSuccessful(){
+    public boolean isSuccessful(){
         return statusCode / 100 == HTTP_SUCCESS_STATUS_CODE / 100;
     }
 
-    public String getDebugInfo() throws ClientException {
-        String debugInfo = "Response Header:\n" + getHeaders().toString() +
-        	"\nResponse Content:\n";
-        InputStream inStream = getContent();
-        if (inStream == null) {
-        	return debugInfo;
-        }
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int len = -1;
-        try {
-            while ((len = inStream.read(buffer)) != -1) {
-                outStream.write(buffer, 0, len);
-            }
-            outStream.flush();
-            debugInfo += outStream.toString("utf-8");
-            setContent(new ByteArrayInputStream(outStream.toByteArray()));
-            //outStream.close(); //close has no effect
-            return debugInfo;
-        } catch (IOException e) {
-            throw new ClientException(getRequestId(), ClientErrorCode.INVALID_RESPONSE,
-                rm.getFormattedString("FailedToParseResponse", e.getMessage()), e);
-        }
+    public String getErrorResponseAsString() {
+        return errorResponseAsString;
+    }
+
+    public void setErrorResponseAsString(String errorResponseAsString) {
+        this.errorResponseAsString = errorResponseAsString;
     }
 }

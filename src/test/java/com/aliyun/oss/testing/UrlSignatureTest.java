@@ -44,85 +44,85 @@ import com.aliyun.oss.model.PutObjectResult;
 
 public class UrlSignatureTest {
 
-	static final String endpoint = "<valid endpoint>";
-	static final String accessId = "<your access id>";
-	static final String accessKey = "<your access key>";
-	    
+    static final String endpoint = "<valid endpoint>";
+    static final String accessId = "<your access id>";
+    static final String accessKey = "<your access key>";
+        
     static OSSClient client = new OSSClient(endpoint, accessId, accessKey);
-	
+    
     static final String bucketName = "<your bucket name>";
-	static final String key = "<object key>";
-	static final String filePath = "<file to upload>";
-	
-	@Ignore
-	public void testGetObject() {	
-		
-		try {
-			Date expiration = DateUtil.parseRfc822Date("Thu, 19 Mar 2015 18:00:00 GMT");
-			GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.GET);
-			request.setExpiration(expiration);
-			request.setContentType("application/octet-stream");
-			URL signedUrl = client.generatePresignedUrl(request);
-			System.out.println("signed url for getObject: " + signedUrl);
-			
-			Map<String, String> customHeaders = new HashMap<String, String>();
-			customHeaders.put("Range", "bytes=100-1000");
-			customHeaders.put("Content-Type", "application/octet-stream");
-			OSSObject object = client.getObject(signedUrl, customHeaders);
-			
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			String expectedETag = null;
-	        try {
-	            int bufSize = 1024 * 4;
-	            byte[] buffer = new byte[bufSize];
-	            int bytesRead;
-	            while ((bytesRead = object.getObjectContent().read(buffer)) != -1) {
-	                outputStream.write(buffer, 0, bytesRead);
-	            }
-	            
-	            expectedETag = BinaryUtil.encodeMD5(outputStream.toByteArray());
-	        } catch (IOException e) {
-	            Assert.fail(e.getMessage());
-	        } finally {
-	            IOUtils.safeClose(outputStream);
-	            IOUtils.safeClose(object.getObjectContent());
-	        }
-			
-			ObjectMetadata metadata = client.getObjectMetadata(bucketName, key);
-			String actualETag = metadata.getETag();
-			
-			Assert.assertEquals(expectedETag, actualETag);
-		} catch (Exception e) {
-			Assert.fail(e.getMessage());
-		}
-	}
-	
-	@Ignore
-	public void testPutObject() {	
-		OSSClient client = new OSSClient(endpoint, accessId, accessKey);
-		try {
-			Date expiration = DateUtil.parseRfc822Date("Thu, 19 Mar 2015 18:00:00 GMT");
-			GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.PUT);
-			request.setExpiration(expiration);
-			request.setContentType("application/octet-stream");
-			request.addUserMetadata("author", "aliy");
-			URL signedUrl = client.generatePresignedUrl(request);
-			System.out.println("signed url for putObject: " + signedUrl);
-			
-			File f = new File(filePath);
-			FileInputStream fin = new FileInputStream(f);
-			Map<String, String> customHeaders = new HashMap<String, String>();
-			customHeaders.put("Content-Type", "application/octet-stream");
-			customHeaders.put("x-oss-meta-author", "aliy");
-			PutObjectResult result = client.putObject(signedUrl, fin, f.length(), customHeaders);
-			
-			fin = new FileInputStream(f);
-			byte[] binaryData = IOUtils.readStreamAsByteArray(fin);
-			String expectedETag = BinaryUtil.encodeMD5(binaryData);
-			String actualETag = result.getETag();
-			Assert.assertEquals(expectedETag, actualETag);
-		} catch (Exception e) {
-			Assert.fail(e.getMessage());
-		} 
-	}
+    static final String key = "<object key>";
+    static final String filePath = "<file to upload>";
+    
+    @Ignore
+    public void testGetObject() {    
+        
+        try {
+            Date expiration = DateUtil.parseRfc822Date("Thu, 19 Mar 2015 18:00:00 GMT");
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.GET);
+            request.setExpiration(expiration);
+            request.setContentType("application/octet-stream");
+            URL signedUrl = client.generatePresignedUrl(request);
+            System.out.println("signed url for getObject: " + signedUrl);
+            
+            Map<String, String> customHeaders = new HashMap<String, String>();
+            customHeaders.put("Range", "bytes=100-1000");
+            customHeaders.put("Content-Type", "application/octet-stream");
+            OSSObject object = client.getObject(signedUrl, customHeaders);
+            
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            String expectedETag = null;
+            try {
+                int bufSize = 1024 * 4;
+                byte[] buffer = new byte[bufSize];
+                int bytesRead;
+                while ((bytesRead = object.getObjectContent().read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+                
+                expectedETag = BinaryUtil.encodeMD5(outputStream.toByteArray());
+            } catch (IOException e) {
+                Assert.fail(e.getMessage());
+            } finally {
+                IOUtils.safeClose(outputStream);
+                IOUtils.safeClose(object.getObjectContent());
+            }
+            
+            ObjectMetadata metadata = client.getObjectMetadata(bucketName, key);
+            String actualETag = metadata.getETag();
+            
+            Assert.assertEquals(expectedETag, actualETag);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+    
+    @Ignore
+    public void testPutObject() {    
+        OSSClient client = new OSSClient(endpoint, accessId, accessKey);
+        try {
+            Date expiration = DateUtil.parseRfc822Date("Thu, 19 Mar 2015 18:00:00 GMT");
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.PUT);
+            request.setExpiration(expiration);
+            request.setContentType("application/octet-stream");
+            request.addUserMetadata("author", "aliy");
+            URL signedUrl = client.generatePresignedUrl(request);
+            System.out.println("signed url for putObject: " + signedUrl);
+            
+            File f = new File(filePath);
+            FileInputStream fin = new FileInputStream(f);
+            Map<String, String> customHeaders = new HashMap<String, String>();
+            customHeaders.put("Content-Type", "application/octet-stream");
+            customHeaders.put("x-oss-meta-author", "aliy");
+            PutObjectResult result = client.putObject(signedUrl, fin, f.length(), customHeaders);
+            
+            fin = new FileInputStream(f);
+            byte[] binaryData = IOUtils.readStreamAsByteArray(fin);
+            String expectedETag = BinaryUtil.encodeMD5(binaryData);
+            String actualETag = result.getETag();
+            Assert.assertEquals(expectedETag, actualETag);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        } 
+    }
 }

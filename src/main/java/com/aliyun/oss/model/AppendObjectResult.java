@@ -24,26 +24,26 @@ package com.aliyun.oss.model;
  * Successful response of append object operation.
  */
 public class AppendObjectResult {
-	
-	/* Indicates that which position to append at next time. */
-	private Long nextPosition;
-	
-	/* Returned value of the appended object crc64 */
-	private String objectCRC64;
+    
+    /* Indicates that which position to append at next time. */
+    private Long nextPosition;
+    
+    /* Returned value of the appended object crc64 */
+    private String objectCRC64;
 
-	public Long getNextPosition() {
-		return nextPosition;
-	}
+    public Long getNextPosition() {
+        return nextPosition;
+    }
 
-	public void setNextPosition(Long nextPosition) {
-		this.nextPosition = nextPosition;
-	}
+    public void setNextPosition(Long nextPosition) {
+        this.nextPosition = nextPosition;
+    }
 
-	public String getObjectCRC64() {
-		return objectCRC64;
-	}
+    public String getObjectCRC64() {
+        return objectCRC64;
+    }
 
-	public void setObjectCRC64(String objectCRC64) {
-		this.objectCRC64 = objectCRC64;
-	}
+    public void setObjectCRC64(String objectCRC64) {
+        this.objectCRC64 = objectCRC64;
+    }
 }

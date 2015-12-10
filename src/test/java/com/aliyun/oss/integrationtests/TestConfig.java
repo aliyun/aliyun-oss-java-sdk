@@ -24,15 +24,15 @@ import java.io.File;
 public final class TestConfig {
 	
 	// Client Configurations for OSS hangzhou cluster
-	public static final String DEFAULT_ENDPOINT = "http://oss.aliyuncs.com";
+	public static final String DEFAULT_ENDPOINT = "http://oss-cn-hangzhou.aliyuncs.com";
 	public static final String DEFAULT_LOCATION = "oss-cn-hangzhou";
 	public static final String DEFAULT_ACCESS_ID_1 = "<valid access id1>";
 	public static final String DEFAULT_ACCESS_KEY_1 = "<valid access key1>";
 	public static final String DEFAULT_ACCESS_ID_2 = "<valid access id2>";
 	public static final String DEFAULT_ACCESS_KEY_2 = "<valid access key2>";
 	
-	// Client Configurations for OSS testing cluster
-	public static final String SECOND_ENDPOINT = "http://oss.aliyun-inc.com";
+	// Another Client Configurations for OSS hangzhou cluster
+	public static final String SECOND_ENDPOINT = "http://oss-cn-hangzhou.aliyun-inc.com";
 	public static final String SECOND_LOCATION = "oss-cn-hangzhou";
 	public static final String SECOND_ACCESS_ID = "<valid access id>";
 	public static final String SECOND_ACCESS_KEY = "<valid access key>";
@@ -78,8 +78,8 @@ public final class TestConfig {
 	public static final int STS_DURATION_SECONDS = 3600;
 	public static final String STS_GET_TOKEN_URI = "/api/GetFederationToken";
 	public static final String STS_VERSION = "1";
-	public static final String STS_GRANTEE = "testuser1";
-	public static final String POP_USER = "pop";
-	public static final String POP_PWD = "poppassword";
+	public static final String STS_GRANTEE = "<valid sts grantee>";
+	public static final String POP_USER = "<valid pop user>";
+	public static final String POP_PWD = "<valid pop password>";
 	
 }

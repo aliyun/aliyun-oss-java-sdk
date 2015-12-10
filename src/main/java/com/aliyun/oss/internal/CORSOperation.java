@@ -35,6 +35,7 @@ import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.comm.ServiceClient;
+import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.OptionsRequest;
 import com.aliyun.oss.model.SetBucketCORSRequest;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
@@ -44,113 +45,124 @@ import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
  */
 public class CORSOperation extends OSSOperation {
     
-	private static final String SUBRESOURCE_CORS = "cors";
-	
-	public CORSOperation(ServiceClient client, CredentialsProvider credsProvider) {
-		super(client, credsProvider);
-	}
+    private static final String SUBRESOURCE_CORS = "cors";
+    
+    public CORSOperation(ServiceClient client, CredentialsProvider credsProvider) {
+        super(client, credsProvider);
+    }
 
-	/**
-	 * Set bucket cors. 
-	 */
-	public void setBucketCORS(SetBucketCORSRequest setBucketCORSRequest) {
-		
-		checkSetBucketCORSRequestValidity(setBucketCORSRequest);
-		
-		Map<String, String> parameters = new LinkedHashMap<String, String>();
-		parameters.put(SUBRESOURCE_CORS, null);
-		
-		RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-				.setEndpoint(getEndpoint())
-				.setMethod(HttpMethod.PUT)
-				.setBucket(setBucketCORSRequest.getBucketName())
-				.setParameters(parameters)
-				.setInputStreamWithLength(setBucketCORSRequestMarshaller.marshall(setBucketCORSRequest))
-				.build();
+    /**
+     * Set bucket cors. 
+     */
+    public void setBucketCORS(SetBucketCORSRequest setBucketCORSRequest) {
+        
+        checkSetBucketCORSRequestValidity(setBucketCORSRequest);
+        
+        Map<String, String> parameters = new LinkedHashMap<String, String>();
+        parameters.put(SUBRESOURCE_CORS, null);
+        
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT)
+                .setBucket(setBucketCORSRequest.getBucketName())
+                .setParameters(parameters)
+                .setInputStreamWithLength(setBucketCORSRequestMarshaller.marshall(setBucketCORSRequest))
+                .setOriginalRequest(setBucketCORSRequest)
+                .build();
 
-		doOperation(request, emptyResponseParser, setBucketCORSRequest.getBucketName(), null);
-	}
-	
-	/**
-	 * Return a list of CORS rules of the specified bucket.
-	 */
-	public List<CORSRule> getBucketCORSRules(String bucketName) {
-		
-		assertParameterNotNull(bucketName, "bucketName");
+        doOperation(request, emptyResponseParser, setBucketCORSRequest.getBucketName(), null);
+    }
+    
+    /**
+     * Return a list of CORS rules of the specified bucket.
+     */
+    public List<CORSRule> getBucketCORSRules(GenericRequest genericRequest) {
+
+        assertParameterNotNull(genericRequest, "genericRequest");
+        
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
-		
-		Map<String, String> parameters = new LinkedHashMap<String, String>();
+        
+        Map<String, String> parameters = new LinkedHashMap<String, String>();
         parameters.put(SUBRESOURCE_CORS, null);
          
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-		        .setEndpoint(getEndpoint())
-		        .setMethod(HttpMethod.GET)
-		        .setParameters(parameters)
-		        .setBucket(bucketName)
-		        .build();
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET)
+                .setParameters(parameters)
+                .setBucket(bucketName)
+                .setOriginalRequest(genericRequest)
+                .build();
         
         return doOperation(request, getBucketCorsResponseParser, bucketName, null, true);
-	}
-	
-	/**
-	 * Delete bucket cors. 
-	 */
-	public void deleteBucketCORS(String bucketName) {
-		
-		assertParameterNotNull(bucketName, "bucketName");
-		ensureBucketNameValid(bucketName);
-		
-		Map<String, String> parameters = new LinkedHashMap<String, String>();
+    }
+    
+    /**
+     * Delete bucket cors. 
+     */
+    public void deleteBucketCORS(GenericRequest genericRequest) {
+
+        assertParameterNotNull(genericRequest, "genericRequest");
+        
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        
+        Map<String, String> parameters = new LinkedHashMap<String, String>();
         parameters.put(SUBRESOURCE_CORS, null);
-		
+        
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-				.setEndpoint(getEndpoint())
-				.setMethod(HttpMethod.DELETE)
-				.setParameters(parameters)
-				.setBucket(bucketName)
-				.build();
-		
-		doOperation(request, emptyResponseParser, bucketName, null);
-	}
-	
-	/**
-	 * Options object.
-	 */
-	public ResponseMessage optionsObject(OptionsRequest optionsRequest) {
-		
-		assertParameterNotNull(optionsRequest, "optionsRequest");
-		
-		String bucketName = optionsRequest.getBucketName();
-		assertParameterNotNull(bucketName, "bucketName");
-		ensureBucketNameValid(bucketName);
-		
-		RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-				.setEndpoint(getEndpoint())
-				.setMethod(HttpMethod.OPTIONS)
-				.setBucket(bucketName)
-				.setKey(optionsRequest.getObjectName())
-				.addHeader(OSSHeaders.ORIGIN, optionsRequest.getOrigin())
-				.addHeader(OSSHeaders.ACCESS_CONTROL_REQUEST_METHOD, optionsRequest.getRequestMethod().name())
-				.addHeader(OSSHeaders.ACCESS_CONTROL_REQUEST_HEADER, optionsRequest.getRequestHeaders())
-				.build();
-		
-		return doOperation(request, emptyResponseParser, bucketName, null);
-	}
-	
-	private static void checkSetBucketCORSRequestValidity(SetBucketCORSRequest setBucketCORSRequest) {		
-		
-		assertParameterNotNull(setBucketCORSRequest, "setBucketCORSRequest");
-		
-		String bucketName = setBucketCORSRequest.getBucketName();
-		assertStringNotNullOrEmpty(bucketName, "bucketName");
-		ensureBucketNameValid(bucketName);
-		
-		List<CORSRule> corsRules = setBucketCORSRequest.getCorsRules();
-		assertListNotNullOrEmpty(corsRules, "corsRules");
-		for(CORSRule rule : setBucketCORSRequest.getCorsRules()) {
-			assertListNotNullOrEmpty(rule.getAllowedOrigins(), "allowedOrigin");
-			assertListNotNullOrEmpty(rule.getAllowedMethods(), "allowedMethod");
-		}
-	}
-	
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.DELETE)
+                .setParameters(parameters)
+                .setBucket(bucketName)
+                .setOriginalRequest(genericRequest)
+                .build();
+        
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+    
+    /**
+     * Options object.
+     */
+    public ResponseMessage optionsObject(OptionsRequest optionsRequest) {
+        
+        assertParameterNotNull(optionsRequest, "optionsRequest");
+        
+        String bucketName = optionsRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        
+        @SuppressWarnings("deprecation")
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.OPTIONS)
+                .setBucket(bucketName)
+                .setKey(optionsRequest.getObjectName())
+                .addHeader(OSSHeaders.ORIGIN, optionsRequest.getOrigin())
+                .addHeader(OSSHeaders.ACCESS_CONTROL_REQUEST_METHOD, optionsRequest.getRequestMethod().name())
+                .addHeader(OSSHeaders.ACCESS_CONTROL_REQUEST_HEADER, optionsRequest.getRequestHeaders())
+                .setOriginalRequest(optionsRequest)
+                .build();
+        
+        return doOperation(request, emptyResponseParser, bucketName, null);
+    }
+    
+    private static void checkSetBucketCORSRequestValidity(SetBucketCORSRequest setBucketCORSRequest) {        
+        
+        assertParameterNotNull(setBucketCORSRequest, "setBucketCORSRequest");
+        
+        String bucketName = setBucketCORSRequest.getBucketName();
+        assertStringNotNullOrEmpty(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        
+        List<CORSRule> corsRules = setBucketCORSRequest.getCorsRules();
+        assertListNotNullOrEmpty(corsRules, "corsRules");
+        for(CORSRule rule : setBucketCORSRequest.getCorsRules()) {
+            assertListNotNullOrEmpty(rule.getAllowedOrigins(), "allowedOrigin");
+            assertListNotNullOrEmpty(rule.getAllowedMethods(), "allowedMethod");
+        }
+    }
+    
 }

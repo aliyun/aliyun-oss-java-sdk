@@ -26,73 +26,73 @@ import java.util.List;
 /**
  * Options for checking if the object key exists under the specified bucket.
  */
-public class HeadObjectRequest {
-	
-	private String bucketName;
-	private String key;
-	
-	private List<String> matchingETagConstraints = new ArrayList<String>();
-	private List<String> nonmatchingETagConstraints = new ArrayList<String>();
+public class HeadObjectRequest extends WebServiceRequest {
+    
+    private String bucketName;
+    private String key;
+    
+    private List<String> matchingETagConstraints = new ArrayList<String>();
+    private List<String> nonmatchingETagConstraints = new ArrayList<String>();
     private Date unmodifiedSinceConstraint;
     private Date modifiedSinceConstraint;
-	
-    public HeadObjectRequest(String bucketName, String key) {
-		this.bucketName = bucketName;
-		this.key = key;
-	}
-
-	public String getBucketName() {
-		return bucketName;
-	}
     
-	public void setBucketName(String bucketName) {
-		this.bucketName = bucketName;
-	}
-	
-	public String getKey() {
-		return key;
-	}
-	
-	public void setKey(String key) {
-		this.key = key;
-	}
-	
-	public List<String> getMatchingETagConstraints() {
-		return matchingETagConstraints;
-	}
-	
-	public void setMatchingETagConstraints(List<String> matchingETagConstraints) {
-		this.matchingETagConstraints.clear();
-		if (matchingETagConstraints != null && !matchingETagConstraints.isEmpty()) {
-			this.matchingETagConstraints.addAll(matchingETagConstraints);
-		}
-	}
-	
-	public List<String> getNonmatchingETagConstraints() {
-		return nonmatchingETagConstraints;
-	}
-	
-	public void setNonmatchingETagConstraints(
-			List<String> nonmatchingETagConstraints) {
-		this.nonmatchingETagConstraints.clear();
-		if (nonmatchingETagConstraints != null && !nonmatchingETagConstraints.isEmpty()) {
-			this.nonmatchingETagConstraints.addAll(nonmatchingETagConstraints);
-		}
-	}
-	
-	public Date getUnmodifiedSinceConstraint() {
-		return unmodifiedSinceConstraint;
-	}
-	
-	public void setUnmodifiedSinceConstraint(Date unmodifiedSinceConstraint) {
-		this.unmodifiedSinceConstraint = unmodifiedSinceConstraint;
-	}
-	
-	public Date getModifiedSinceConstraint() {
-		return modifiedSinceConstraint;
-	}
-	
-	public void setModifiedSinceConstraint(Date modifiedSinceConstraint) {
-		this.modifiedSinceConstraint = modifiedSinceConstraint;
-	}
+    public HeadObjectRequest(String bucketName, String key) {
+        this.bucketName = bucketName;
+        this.key = key;
+    }
+
+    public String getBucketName() {
+        return bucketName;
+    }
+    
+    public void setBucketName(String bucketName) {
+        this.bucketName = bucketName;
+    }
+    
+    public String getKey() {
+        return key;
+    }
+    
+    public void setKey(String key) {
+        this.key = key;
+    }
+    
+    public List<String> getMatchingETagConstraints() {
+        return matchingETagConstraints;
+    }
+    
+    public void setMatchingETagConstraints(List<String> matchingETagConstraints) {
+        this.matchingETagConstraints.clear();
+        if (matchingETagConstraints != null && !matchingETagConstraints.isEmpty()) {
+            this.matchingETagConstraints.addAll(matchingETagConstraints);
+        }
+    }
+    
+    public List<String> getNonmatchingETagConstraints() {
+        return nonmatchingETagConstraints;
+    }
+    
+    public void setNonmatchingETagConstraints(
+            List<String> nonmatchingETagConstraints) {
+        this.nonmatchingETagConstraints.clear();
+        if (nonmatchingETagConstraints != null && !nonmatchingETagConstraints.isEmpty()) {
+            this.nonmatchingETagConstraints.addAll(nonmatchingETagConstraints);
+        }
+    }
+    
+    public Date getUnmodifiedSinceConstraint() {
+        return unmodifiedSinceConstraint;
+    }
+    
+    public void setUnmodifiedSinceConstraint(Date unmodifiedSinceConstraint) {
+        this.unmodifiedSinceConstraint = unmodifiedSinceConstraint;
+    }
+    
+    public Date getModifiedSinceConstraint() {
+        return modifiedSinceConstraint;
+    }
+    
+    public void setModifiedSinceConstraint(Date modifiedSinceConstraint) {
+        this.modifiedSinceConstraint = modifiedSinceConstraint;
+    }
 }

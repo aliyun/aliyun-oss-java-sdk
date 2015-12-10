@@ -65,9 +65,12 @@ public class ClientConfiguration {
     private String proxyDomain = null;
     private String proxyWorkstation = null;
 
+    private boolean supportCname = true;
     private List<String> cnameExcludeList = new ArrayList<String>();
     private Lock rlock = new ReentrantLock();
-
+    
+    private boolean sldEnabled = false;
+        
     /**
      * 构造用户代理。
      * @return 用户代理。
@@ -116,10 +119,10 @@ public class ClientConfiguration {
      * @throws ClientException
      */
     public void setProxyPort(int proxyPort) throws ClientException {
-    	if (proxyPort <= 0) {
-    		throw new ClientException(ResourceManager.getInstance(
-    				OSSConstants.RESOURCE_NAME_COMMON).getString("ParameterIsInvalid"), null);
-    	}
+        if (proxyPort <= 0) {
+            throw new ClientException(ResourceManager.getInstance(
+                    OSSConstants.RESOURCE_NAME_COMMON).getString("ParameterIsInvalid"), null);
+        }
         this.proxyPort = proxyPort;
     }
 
@@ -267,89 +270,129 @@ public class ClientConfiguration {
      * @return 连接过期时间。
      */
     public long getConnectionTTL() {
-		return connectionTTL;
-	}
+        return connectionTTL;
+    }
 
     /**
      * 设置连接池中连接过期时间。
      * @param connectionTTL 连接过期时间（单位为毫秒）。
      */
-	public void setConnectionTTL(long connectionTTL) {
-		this.connectionTTL = connectionTTL;
-	}
+    public void setConnectionTTL(long connectionTTL) {
+        this.connectionTTL = connectionTTL;
+    }
 
-	/**
+    /**
      * 查看是否使用{@link IdleConnectionReaper}管理过期连接。
      */
     public boolean isUseReaper() {
-		return useReaper;
-	}
+        return useReaper;
+    }
 
     /**
      * 设置是否使用{@link IdleConnectionReaper}管理过期连接。
      */
-	public void setUseReaper(boolean useReaper) {
-		this.useReaper = useReaper;
-	}
+    public void setUseReaper(boolean useReaper) {
+        this.useReaper = useReaper;
+    }
 
-	/**
-	 * 获取连接OSS所采用的协议（HTTP/HTTPS）。 
-	 */
-	public Protocol getProtocol() {
-		return protocol;
-	}
+    /**
+     * 获取连接OSS所采用的协议（HTTP/HTTPS）。 
+     */
+    public Protocol getProtocol() {
+        return protocol;
+    }
 
-	/**
-	 * 设置连接OSS所采用的协议（HTTP/HTTPS）。
-	 */
-	public void setProtocol(Protocol protocol) {
-		this.protocol = protocol;
-	}
+    /**
+     * 设置连接OSS所采用的协议（HTTP/HTTPS）。
+     */
+    public void setProtocol(Protocol protocol) {
+        this.protocol = protocol;
+    }
 
-	/**
+    /**
      * 获取CNAME排除列表（不可修改），以列表元素作为后缀的域名将不进行CNAME解析。
      * @return CNAME排除列表。
      */
-	public List<String> getCnameExcludeList() {
-		if (this.cnameExcludeList.size() == 0) {
-			rlock.lock();
-			if (this.cnameExcludeList.size() == 0) {
-				AppendDefaultExcludeList(this.cnameExcludeList);
-			}
-			rlock.unlock();
-		}
-		return Collections.unmodifiableList(this.cnameExcludeList);
-	}
+    public List<String> getCnameExcludeList() {
+        if (this.cnameExcludeList.size() == 0) {
+            rlock.lock();
+            if (this.cnameExcludeList.size() == 0) {
+                AppendDefaultExcludeList(this.cnameExcludeList);
+            }
+            rlock.unlock();
+        }
+        return Collections.unmodifiableList(this.cnameExcludeList);
+    }
 
-	/**
-	 * 设置CNAME排除列表。
-	 * @param cnameExcludeList CNAME排除列表。
-	 */
-	public void setCnameExcludeList(List<String> cnameExcludeList) {
-		if (cnameExcludeList == null) {
-			throw new IllegalArgumentException("cname exclude list should not be null.");
-		}
-		
-		this.cnameExcludeList.clear();
-		for (String excl : cnameExcludeList) {
-			if (!excl.trim().isEmpty()) {
-				this.cnameExcludeList.add(excl);
-			}
-		}
-		
-		AppendDefaultExcludeList(this.cnameExcludeList);
-	}
-	
-	/**
-	 * 添加默认CNAME排除列表至CNAME自定义排除列表。
-	 * @param excludeList CNAME自定义排除列表。
-	 */
-	private static void AppendDefaultExcludeList(List<String> excludeList) {
-		String[] excludes = DEFAULT_CNAME_EXCLUDE_LIST.split(",");
-		for (String excl : excludes) {
-        	if (!excl.trim().isEmpty() && !excludeList.contains(excl)) {
-        		excludeList.add(excl.trim().toLowerCase());
-        	}
+    /**
+     * 设置CNAME排除列表。
+     * @param cnameExcludeList CNAME排除列表。
+     */
+    public void setCnameExcludeList(List<String> cnameExcludeList) {
+        if (cnameExcludeList == null) {
+            throw new IllegalArgumentException("cname exclude list should not be null.");
+        }
+        
+        this.cnameExcludeList.clear();
+        for (String excl : cnameExcludeList) {
+            if (!excl.trim().isEmpty()) {
+                this.cnameExcludeList.add(excl);
+            }
+        }
+        
+        AppendDefaultExcludeList(this.cnameExcludeList);
+    }
+    
+    /**
+     * 添加默认CNAME排除列表至CNAME自定义排除列表。
+     * @param excludeList CNAME自定义排除列表。
+     */
+    private static void AppendDefaultExcludeList(List<String> excludeList) {
+        String[] excludes = DEFAULT_CNAME_EXCLUDE_LIST.split(",");
+        for (String excl : excludes) {
+            if (!excl.trim().isEmpty() && !excludeList.contains(excl)) {
+                excludeList.add(excl.trim().toLowerCase());
+            }
        }
-	}
+    }
+
+    /**
+     * 获取是否支持Cname作为Endpoint，默认支持该方式。
+     * @return 若支持返回True，否则返回False
+     */
+    public boolean isSupportCname() {
+        return supportCname;
+    }
+
+    /**
+     * 设置是否支持Cname作为Endpoint。
+     * 
+     * <p>当设置为True时，则先检查Cname排除列表，如果不在其中则认为是Cname，
+     *     否则就认为是三级域名方式访问；当设置为False时，不检查Cname排除列表，
+     * 总是以三级域名方式访问。</p>
+     * 
+     * @param supportCname 是否支持Cname作为Endpoint。
+     */
+    public ClientConfiguration setSupportCname(boolean supportCname) {
+        this.supportCname = supportCname;
+        return this;
+    }
+
+    /**
+     * 获取是否开启二级域名（Second Level Domain）的访问方式，默认不开启。
+     * @return 若开启则返回True，否则返回False
+     */
+    public boolean isSLDEnabled() {
+        return sldEnabled;
+    }
+
+    /**
+     * 设置是否开启二级域名（Second Level Domain）的访问方式。
+     * @param enabled 是否开启二级域名访问方式
+     */
+    public ClientConfiguration setSLDEnabled(boolean enabled) {
+        this.sldEnabled = enabled;
+        return this;
+    }
+    
 }

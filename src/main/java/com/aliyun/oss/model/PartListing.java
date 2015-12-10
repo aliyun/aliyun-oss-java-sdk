@@ -189,7 +189,7 @@ public class PartListing {
     public void setParts(List<PartSummary> parts) {
         this.parts.clear();
         if (parts != null && !parts.isEmpty()) {
-        	this.parts.addAll(parts);
+            this.parts.addAll(parts);
         }
     }
     
@@ -199,7 +199,7 @@ public class PartListing {
      *      {@link PartSummary}实例。
      */
     public void addPart(PartSummary partSummary) {
-    	this.parts.add(partSummary);
+        this.parts.add(partSummary);
     }
 
 }

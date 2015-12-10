@@ -19,24 +19,21 @@
 
 package com.aliyun.oss.common.comm;
 
+import static com.aliyun.oss.common.utils.LogUtils.getLog;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.HttpClientConnectionManager;
 
 /**
  * A daemon thread used to periodically check connection pools for idle connections.
  */
-@SuppressWarnings("deprecation")
 public final class IdleConnectionReaper extends Thread {
-
-	private static final Log log = LogFactory.getLog(IdleConnectionReaper.class);
     
-	private static final int REAP_INTERVAL_MILLISECONDS = 60 * 1000;
-    private static final ArrayList<ClientConnectionManager> connectionManagers = new ArrayList<ClientConnectionManager>();
+    private static final int REAP_INTERVAL_MILLISECONDS = 60 * 1000;
+    private static final ArrayList<HttpClientConnectionManager> connectionManagers = new ArrayList<HttpClientConnectionManager>();
 
     private static IdleConnectionReaper instance;
     
@@ -47,7 +44,7 @@ public final class IdleConnectionReaper extends Thread {
         setDaemon(true);
     }
 
-    public static synchronized boolean registerConnectionManager(ClientConnectionManager connectionManager) {
+    public static synchronized boolean registerConnectionManager(HttpClientConnectionManager connectionManager) {
         if (instance == null) {
             instance = new IdleConnectionReaper();
             instance.start();
@@ -55,7 +52,7 @@ public final class IdleConnectionReaper extends Thread {
         return connectionManagers.add(connectionManager);
     }
 
-    public static synchronized boolean removeConnectionManager(ClientConnectionManager connectionManager) {
+    public static synchronized boolean removeConnectionManager(HttpClientConnectionManager connectionManager) {
         boolean b = connectionManagers.remove(connectionManager);
         if (connectionManagers.isEmpty())
             shutdown();
@@ -71,29 +68,25 @@ public final class IdleConnectionReaper extends Thread {
     public void run() {
         while (true) {
             if (shuttingDown) {
-                log.debug("Shutting down reaper thread.");
+                getLog().debug("Shutting down reaper thread.");
                 return;
             }
             try {
                 Thread.sleep(REAP_INTERVAL_MILLISECONDS);
 
-                List<ClientConnectionManager> connectionManagers = null;
+                List<HttpClientConnectionManager> connectionManagers = null;
                 synchronized (IdleConnectionReaper.class) {
-                    connectionManagers = (List<ClientConnectionManager>)IdleConnectionReaper.connectionManagers.clone();
+                    connectionManagers = (List<HttpClientConnectionManager>)IdleConnectionReaper.connectionManagers.clone();
                 }
-                for (ClientConnectionManager connectionManager : connectionManagers) {
+                for (HttpClientConnectionManager connectionManager : connectionManagers) {
                     try {
                         connectionManager.closeIdleConnections(60, TimeUnit.SECONDS);
                     } catch (Exception ex) {
-                        if (log.isWarnEnabled()) {
-                        	log.warn("Unable to close idle connections", ex);
-                        }
+                        getLog().warn("Unable to close idle connections", ex);
                     }
                 }
             } catch (Throwable t) {
-                if (log.isDebugEnabled()) {
-                	log.debug("Reaper thread: ",  t);
-                }
+                getLog().debug("Reaper thread: ",  t);
             }
         }
     }
@@ -110,6 +103,6 @@ public final class IdleConnectionReaper extends Thread {
     }
 
     public static synchronized int size() { 
-    	return connectionManagers.size(); 
+        return connectionManagers.size(); 
     }
 }

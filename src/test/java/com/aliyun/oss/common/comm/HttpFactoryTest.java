@@ -20,7 +20,6 @@
 package com.aliyun.oss.common.comm;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -31,67 +30,17 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.junit.Test;
 
-import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.HttpMethod;
 
-@SuppressWarnings({ "deprecation" })
 public class HttpFactoryTest {
-
-    @SuppressWarnings("resource")
-	@Test
-    public void testCreateHttpClient() {
-        ClientConfiguration config = new ClientConfiguration();
-
-        HttpClientFactory factory = new HttpClientFactory();
-        HttpClient httpClient = factory.createHttpClient(config);
-
-        // Should be thread-safed.
-        ClientConnectionManager connMgr = httpClient.getConnectionManager();
-        assertTrue(connMgr instanceof PoolingClientConnectionManager);
-
-        // Verify proxy
-        String proxyHost = "127.0.0.1";
-        int proxyPort = 8888;
-        config.setProxyHost(proxyHost);
-        config.setProxyPort(proxyPort);
-
-        httpClient = factory.createHttpClient(config);
-
-        DefaultHttpClient defaultHttpClient = (DefaultHttpClient)httpClient;
-        HttpHost proxy = (HttpHost)defaultHttpClient.getParams().getParameter(ConnRoutePNames.DEFAULT_PROXY);
-
-        assertEquals(proxyHost, proxy.getHostName());
-        assertEquals(proxyPort, proxy.getPort());
-
-        String proxyUsername = "user";
-        String proxyPassword = "pwd";
-        config.setProxyUsername(proxyUsername);
-        config.setProxyPassword(proxyPassword);
-        httpClient = factory.createHttpClient(config);
-        defaultHttpClient = (DefaultHttpClient)httpClient;
-        Credentials cred =
-                defaultHttpClient.getCredentialsProvider()
-                .getCredentials(new AuthScope(proxyHost, proxyPort));
-
-        assertEquals(proxyUsername, cred.getUserPrincipal().getName());
-        assertEquals(proxyPassword, cred.getPassword());
-    }
 
     @Test
     public void testCreateHttpRequest() throws Exception {
@@ -105,8 +54,6 @@ public class HttpFactoryTest {
             e.printStackTrace();
             fail(e.getMessage());
         }
-        String contentType = "application/x-www-form-urlencoded; " +
-                "charset=" + context.getCharset().toLowerCase();
 
         HttpRequestFactory factory = new HttpRequestFactory();
 
@@ -120,7 +67,6 @@ public class HttpFactoryTest {
         httpRequest = factory.createHttpRequest(request, context);
         HttpGet getMethod = (HttpGet)httpRequest;
         assertEquals(url, getMethod.getURI().toString());
-        assertEquals(contentType, getMethod.getFirstHeader("Content-Type").getValue());
 
         // DELETE
         request.setMethod(HttpMethod.DELETE);

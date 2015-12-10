@@ -47,11 +47,6 @@ public interface ClientErrorCode {
     static final String SOCKET_EXCEPTION = "SocketException";
     
     /**
-     * 返回结果无法解析。
-     */
-    static final String INVALID_RESPONSE = "InvalidResponse";
-    
-    /**
      * 远程服务拒绝连接。
      */
     static final String CONNECTION_REFUSED = "ConnectionRefused";

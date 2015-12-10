@@ -20,11 +20,10 @@
 package com.aliyun.oss.common.comm;
 
 import com.aliyun.oss.ClientException;
-import com.aliyun.oss.ServiceException;
-import com.aliyun.oss.common.comm.ServiceClient.Request;
+import com.aliyun.oss.OSSException;
 
 public interface RequestHandler {
 
-    public void handle(Request message) throws ServiceException, ClientException;
+    public void handle(RequestMessage request) throws OSSException, ClientException;
     
 }

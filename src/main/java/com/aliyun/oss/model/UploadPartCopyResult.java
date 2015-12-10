@@ -21,7 +21,7 @@ package com.aliyun.oss.model;
 
 public class UploadPartCopyResult {
 
-	private int partNumber;
+    private int partNumber;
 
     private String eTag;
 

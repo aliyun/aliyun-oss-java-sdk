@@ -31,8 +31,8 @@ import com.aliyun.oss.internal.OSSConstants;
  */
 public class ExecutionContext {
     
-	/* Request signer */
-	private RequestSigner signer;
+    /* Request signer */
+    private RequestSigner signer;
     
     /* The request handlers that handle request content in as a pipeline. */
     private List<RequestHandler> requestHandlers = new LinkedList<RequestHandler>();
@@ -103,12 +103,12 @@ public class ExecutionContext {
         requestHandlers.remove(handler);
     }
 
-	public Credentials getCredentials() {
-		return credentials;
-	}
+    public Credentials getCredentials() {
+        return credentials;
+    }
 
-	public void setCredentials(Credentials credentials) {
-		this.credentials = credentials;
-	}
+    public void setCredentials(Credentials credentials) {
+        this.credentials = credentials;
+    }
 
 }

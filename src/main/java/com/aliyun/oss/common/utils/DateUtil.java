@@ -30,7 +30,7 @@ import java.util.SimpleTimeZone;
  * A simple utility class for date formating.
  */
 public class DateUtil {
-	
+    
     // RFC 822 Date Format
     private static final String RFC822_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss z";
 

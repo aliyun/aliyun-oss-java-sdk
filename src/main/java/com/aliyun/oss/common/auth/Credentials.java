@@ -24,7 +24,7 @@ package com.aliyun.oss.common.auth;
  * securely sign requests to OSS.
  */
 public interface Credentials {
-	/**
+    /**
      * Returns the access key ID for this credentials. 
      */
     public String getAccessKeyId();

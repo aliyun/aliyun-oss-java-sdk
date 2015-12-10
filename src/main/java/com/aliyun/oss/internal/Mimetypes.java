@@ -19,6 +19,8 @@
 
 package com.aliyun.oss.internal;
 
+import static com.aliyun.oss.common.utils.LogUtils.getLog;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -27,14 +29,10 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * Utility class used to determine the mimetype of files based on file extensions.
  */
 public class Mimetypes {
-    private static final Log log = LogFactory.getLog(Mimetypes.class);
     
     /* The default MIME type */
     public static final String DEFAULT_MIMETYPE = "application/octet-stream";
@@ -47,29 +45,24 @@ public class Mimetypes {
 
     public synchronized static Mimetypes getInstance() {
         if (mimetypes != null) 
-        	return mimetypes;
+            return mimetypes;
 
         mimetypes = new Mimetypes();
         InputStream is = mimetypes.getClass().getResourceAsStream("/mime.types");
         if (is != null) {
-            if (log.isDebugEnabled()) {
-                log.debug("Loading mime types from file in the classpath: mime.types");
-            }
+            getLog().debug("Loading mime types from file in the classpath: mime.types");
+            
             try {
                 mimetypes.loadMimetypes(is);
             } catch (IOException e) {
-                if (log.isErrorEnabled()) {
-                    log.error("Failed to load mime types from file in the classpath: mime.types", e);
-                }
+                getLog().error("Failed to load mime types from file in the classpath: mime.types", e);
             } finally {
                 try { 
-                	is.close(); 
+                    is.close(); 
                 } catch (IOException ex) { }
             }
         } else {
-            if (log.isWarnEnabled()) {
-                log.warn("Unable to find 'mime.types' file in classpath");
-            }
+            getLog().warn("Unable to find 'mime.types' file in classpath");
         }
         return mimetypes;
     }

@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 import org.junit.Test;
@@ -54,16 +55,6 @@ public class OSSClientArgCheckTest {
         
         // Legal key
         assertTrue(OSSUtils.validateObjectKey((char)9 + "" + (char)0x20 + "123_.*  中文-!@#$%^&*()_+-=;'\"~`><?/':[]|\\"));
-        
-        // Illegal key for using unspport xml char
-        //assertFalse(OSSUtils.validateObjectKey((char)26 + "name"));
-        //assertFalse(OSSUtils.validateObjectKey((char)31 + "name"));
-        
-        // Illegal key for \n and \r (Now is valid)
-        //assertFalse(OSSUtils.validateObjectKey("123\n6"));
-        //assertFalse(OSSUtils.validateObjectKey("123\r6"));
-       
-
     }
 
     @Test
@@ -124,13 +115,10 @@ public class OSSClientArgCheckTest {
 
         final ObjectMetadata metadata = new ObjectMetadata();
 
-        // no metadata (create metadata instance if not exist)
-//        try{
-//            client.putObject(validBucketName, objectKey, input, null);
-//        } catch (NullPointerException e) {}
         // no input stream
         try{
-            client.putObject(validBucketName, objectKey, null, metadata);
+            InputStream instream = null;
+            client.putObject(validBucketName, objectKey, instream, metadata);
         } catch (IllegalArgumentException e) {}
         // too big content-length
         final long G5 = 5 * 1024 * 1024 * 1024L;

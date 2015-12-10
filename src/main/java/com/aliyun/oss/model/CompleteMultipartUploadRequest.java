@@ -24,21 +24,17 @@ import java.util.List;
 
 /**
  * 包含完成一个Multipart上传事件的请求参数。
- *
  */
-public class CompleteMultipartUploadRequest extends WebServiceRequest {
-
-    /** The name of the bucket containing the multipart upload to complete */
-    private String bucketName;
-
-    /** The key of the multipart upload to complete */
-    private String key;
+public class CompleteMultipartUploadRequest extends GenericRequest {
 
     /** The ID of the multipart upload to complete */
     private String uploadId;
 
     /** The list of part numbers and ETags to use when completing the multipart upload */
     private List<PartETag> partETags = new ArrayList<PartETag>();
+    
+    /** The access control list for multipart uploaded object */
+    private CannedAccessControlList cannedACL;
 
     /**
      * 构造函数。
@@ -51,45 +47,12 @@ public class CompleteMultipartUploadRequest extends WebServiceRequest {
      * @param partETags
      *          标识上传Part结果的{@link PartETag}列表。
      */
-    public CompleteMultipartUploadRequest(String bucketName, String key, String uploadId, List<PartETag> partETags) {
-        this.bucketName = bucketName;
-        this.key = key;
+    public CompleteMultipartUploadRequest(String bucketName, String key, String uploadId, 
+            List<PartETag> partETags) {
+        super(bucketName, key);
         this.uploadId = uploadId;
         this.partETags = partETags;
-    }
-
-    /**
-     * 返回{@link Bucket}名称。
-     * @return Bucket名称。
-     */
-    public String getBucketName() {
-        return bucketName;
-    }
-
-    /**
-     * 设置{@link Bucket}名称。
-     * @param bucketName
-     *          Bucket名称。
-     */
-    public void setBucketName(String bucketName) {
-        this.bucketName = bucketName;
-    }
-
-    /**
-     * 返回{@link OSSObject} key。
-     * @return Object key。
-     */
-    public String getKey() {
-        return key;
-    }
-
-    /**
-     * 设置{@link OSSObject} key。
-     * @param key
-     *          Object key。
-     */
-    public void setKey(String key) {
-        this.key = key;
+        setObjectACL(null);
     }
 
     /**
@@ -124,5 +87,21 @@ public class CompleteMultipartUploadRequest extends WebServiceRequest {
      */
     public void setPartETags(List<PartETag> partETags) {
         this.partETags = partETags;
+    }
+    
+    /**
+     * 获取Object ACL。
+     * @return Object ACL。
+     */
+    public CannedAccessControlList getObjectACL() {
+        return cannedACL;
+    }
+
+    /**
+     * 设置Object ACL。
+     * @param Object ACL。
+     */
+    public void setObjectACL(CannedAccessControlList cannedACL) {
+        this.cannedACL = cannedACL;
     }
 }

@@ -111,16 +111,12 @@ public class OSSResponseParserTest {
 
         String filename = "getBucketAcl.xml";
         InputStream in = getInputStream(filename);
-
-        AccessControlList accessControlList = ResponseParsers
-                .parseGetBucketAcl(in);
+        AccessControlList accessControlList = ResponseParsers.parseGetBucketAcl(in);
 
         Assert.assertEquals("51744", accessControlList.getOwner().getId());
-        Assert.assertEquals("51744", accessControlList.getOwner()
-                .getDisplayName());
-
-        Assert.assertEquals(Permission.FullControl, ((Grant) (accessControlList
-                .getGrants().toArray()[0])).getPermission());
+        Assert.assertEquals("51744", accessControlList.getOwner().getDisplayName());
+        Assert.assertEquals(Permission.FullControl, 
+                ((Grant)(accessControlList.getGrants().toArray()[0])).getPermission());
 
         in.close();
     }

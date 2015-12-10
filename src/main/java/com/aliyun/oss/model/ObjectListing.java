@@ -50,18 +50,18 @@ public class ObjectListing {
     }
     
     public void addObjectSummary(OSSObjectSummary objectSummary) {
-    	this.objectSummaries.add(objectSummary);
+        this.objectSummaries.add(objectSummary);
     }
     
     public void setObjectSummaries(List<OSSObjectSummary> objectSummaries) {
         this.objectSummaries.clear();
         if (objectSummaries != null && !objectSummaries.isEmpty()) {
-        	this.objectSummaries.addAll(objectSummaries);
+            this.objectSummaries.addAll(objectSummaries);
         }
     }
     
     public void clearObjectSummaries() {
-    	this.objectSummaries.clear();
+        this.objectSummaries.clear();
     }
 
     public List<String> getCommonPrefixes() {
@@ -69,18 +69,18 @@ public class ObjectListing {
     }
     
     public void addCommonPrefix(String commonPrefix) {
-    	this.commonPrefixes.add(commonPrefix);
+        this.commonPrefixes.add(commonPrefix);
     }
 
     public void setCommonPrefixes(List<String> commonPrefixes) {
         this.commonPrefixes.clear();
         if (commonPrefixes != null && !commonPrefixes.isEmpty()) {
-        	this.commonPrefixes.addAll(commonPrefixes);
+            this.commonPrefixes.addAll(commonPrefixes);
         }
     }
     
     public void clearCommonPrefixes() {
-    	this.commonPrefixes.clear();
+        this.commonPrefixes.clear();
     }
 
     public String getNextMarker() {
@@ -132,14 +132,14 @@ public class ObjectListing {
     }
 
     public String getEncodingType() {
-		return encodingType;
-	}
+        return encodingType;
+    }
 
-	public void setEncodingType(String encodingType) {
-		this.encodingType = encodingType;
-	}
+    public void setEncodingType(String encodingType) {
+        this.encodingType = encodingType;
+    }
 
-	public boolean isTruncated() {
+    public boolean isTruncated() {
         return isTruncated;
     }
 

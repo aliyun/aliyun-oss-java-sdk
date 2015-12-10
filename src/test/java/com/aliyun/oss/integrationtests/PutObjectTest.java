@@ -56,377 +56,434 @@ import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.HttpHeaders;
+import com.aliyun.oss.internal.Mimetypes;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectRequest;
 
 public class PutObjectTest extends TestBase {
-	
-	@Ignore
-	public void putSmallFileConcurrently() throws Exception {
-		final int threadCount = 100;
-		final String keyPrefix = "put-small-file-concurrently-";
-		final String filePath = genFixedLengthFile(1 * 1024 * 1024); //1MB
-		final AtomicInteger completedCount = new AtomicInteger(0);
-		try {	
-			Thread[] putThreads = new Thread[threadCount];
-			for (int i = 0; i < threadCount; i++) {
-				final int seqNum = i;
-				Runnable r = new Runnable() {
-					
-					@Override
-					public void run() {
-						try {
-							secondClient.putObject(bucketName, buildObjectKey(keyPrefix, seqNum), 
-									new File(filePath));
-							completedCount.incrementAndGet();
-						} catch (Exception ex) {
-							Assert.fail(ex.getMessage());
-						} 
-					}
-				};
-				
-				putThreads[i] = new Thread(r);
-			}
-			
-			waitAll(putThreads);
-		} catch (Exception ex) {
-			Assert.fail(ex.getMessage());
-		} finally {
-			removeFile(filePath);
-			int totalCompleted = completedCount.get();
-			Assert.assertEquals(threadCount, totalCompleted);
-		}
-	}
-	
-	@Ignore
-	public void putMediumFileConcurrently() throws Exception {
-		final int threadCount = 100;
-		final String keyPrefix = "put-medium-file-concurrently-";
-		final String filePath = genFixedLengthFile(256 * 1024 * 1024); // 256MB
-		final AtomicInteger completedCount = new AtomicInteger(0);
-		
-		try {	
-			Thread[] putThreads = new Thread[threadCount];
-			for (int i = 0; i < threadCount; i++) {
-				final int seqNum = i;
-				Runnable r = new Runnable() {
-					
-					@Override
-					public void run() {
-						try {
-							secondClient.putObject(bucketName, buildObjectKey(keyPrefix, seqNum), 
-									new File(filePath));
-							completedCount.incrementAndGet();
-						} catch (Exception e) {
-							Assert.fail(e.getMessage());
-						} 
-					}
-				};
-				
-				putThreads[i] = new Thread(r);
-			}
-			
-			waitAll(putThreads);
-		} catch (Exception ex) {
-			Assert.fail(ex.getMessage());
-		} finally {
-			int totalCompleted = completedCount.get();
-			Assert.assertEquals(threadCount, totalCompleted);
-			removeFile(filePath);
-		}
-	}
-	
-	@Ignore
-	public void putLargeFileConcurrently() throws Exception {
-		final int threadCount = 10;
-		final String keyPrefix = "put-large-file-concurrently-";
-		final String filePath = genFixedLengthFile(2 * 1024 * 1024 * 1024); // 2GB
-		final AtomicInteger completedCount = new AtomicInteger(0);
-		
-		try {	
-			Thread[] putThreads = new Thread[threadCount];
-			for (int i = 0; i < threadCount; i++) {
-				final int seqNum = i;
-				Runnable r = new Runnable() {
-					
-					@Override
-					public void run() {
-						try {
-							secondClient.putObject(bucketName, buildObjectKey(keyPrefix, seqNum), 
-									new File(filePath));
-							completedCount.incrementAndGet();
-						} catch (Exception e) {
-							Assert.fail(e.getMessage());
-						} 
-					}
-				};
-				
-				putThreads[i] = new Thread(r);
-			}
-			
-			waitAll(putThreads);
-		} catch (Exception ex) {
-			Assert.fail(ex.getMessage());
-		} finally {
-			int totalCompleted = completedCount.get();
-			Assert.assertEquals(threadCount, totalCompleted);
-			removeFile(filePath);
-		}
-	}
-	
-	@Ignore
-	public void testPutRandomScaleFileConcurrently() throws Exception {
-		final int threadCount = 100;
-		final String keyPrefix = "put-random-scale-file-concurrently-";
-		final AtomicInteger completedCount = new AtomicInteger(0);
-		List<File> fileList = new ArrayList<File>();
-		
-		try {	
-			Thread[] putThreads = new Thread[threadCount];
-			for (int i = 0; i < threadCount; i++) {
-				final int seqNum = i;
-				final File randomFile = new File(genRandomLengthFile());
-				fileList.add(randomFile);
-				Runnable r = new Runnable() {
-					
-					@Override
-					public void run() {
-						try {
-							secondClient.putObject(bucketName, buildObjectKey(keyPrefix, seqNum), 
-									randomFile);
-							completedCount.incrementAndGet();
-						} catch (Exception ex) {
-							Assert.fail(ex.getMessage());
-						} 
-					}
-				};
-				
-				putThreads[i] = new Thread(r);
-			}
-			
-			waitAll(putThreads);
-		} catch (Exception ex) {
-			Assert.fail(ex.getMessage());
-		} finally {
-			int totalCompleted = completedCount.get();
-			Assert.assertEquals(threadCount, totalCompleted);
-			removeFiles(fileList);
-		}
-	}
+    
+    @Ignore
+    public void putSmallFileConcurrently() throws Exception {
+        final int threadCount = 100;
+        final String keyPrefix = "put-small-file-concurrently-";
+        final String filePath = genFixedLengthFile(1 * 1024 * 1024); //1MB
+        final AtomicInteger completedCount = new AtomicInteger(0);
+        try {    
+            Thread[] putThreads = new Thread[threadCount];
+            for (int i = 0; i < threadCount; i++) {
+                final int seqNum = i;
+                Runnable r = new Runnable() {
+                    
+                    @Override
+                    public void run() {
+                        try {
+                            secondClient.putObject(bucketName, buildObjectKey(keyPrefix, seqNum), 
+                                    new File(filePath));
+                            completedCount.incrementAndGet();
+                        } catch (Exception ex) {
+                            Assert.fail(ex.getMessage());
+                        } 
+                    }
+                };
+                
+                putThreads[i] = new Thread(r);
+            }
+            
+            waitAll(putThreads);
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        } finally {
+            removeFile(filePath);
+            int totalCompleted = completedCount.get();
+            Assert.assertEquals(threadCount, totalCompleted);
+        }
+    }
+    
+    @Ignore
+    public void putMediumFileConcurrently() throws Exception {
+        final int threadCount = 100;
+        final String keyPrefix = "put-medium-file-concurrently-";
+        final String filePath = genFixedLengthFile(256 * 1024 * 1024); // 256MB
+        final AtomicInteger completedCount = new AtomicInteger(0);
+        
+        try {    
+            Thread[] putThreads = new Thread[threadCount];
+            for (int i = 0; i < threadCount; i++) {
+                final int seqNum = i;
+                Runnable r = new Runnable() {
+                    
+                    @Override
+                    public void run() {
+                        try {
+                            secondClient.putObject(bucketName, buildObjectKey(keyPrefix, seqNum), 
+                                    new File(filePath));
+                            completedCount.incrementAndGet();
+                        } catch (Exception e) {
+                            Assert.fail(e.getMessage());
+                        } 
+                    }
+                };
+                
+                putThreads[i] = new Thread(r);
+            }
+            
+            waitAll(putThreads);
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        } finally {
+            int totalCompleted = completedCount.get();
+            Assert.assertEquals(threadCount, totalCompleted);
+            removeFile(filePath);
+        }
+    }
+    
+    @Ignore
+    public void putLargeFileConcurrently() throws Exception {
+        final int threadCount = 10;
+        final String keyPrefix = "put-large-file-concurrently-";
+        final String filePath = genFixedLengthFile(2 * 1024 * 1024 * 1024); // 2GB
+        final AtomicInteger completedCount = new AtomicInteger(0);
+        
+        try {    
+            Thread[] putThreads = new Thread[threadCount];
+            for (int i = 0; i < threadCount; i++) {
+                final int seqNum = i;
+                Runnable r = new Runnable() {
+                    
+                    @Override
+                    public void run() {
+                        try {
+                            secondClient.putObject(bucketName, buildObjectKey(keyPrefix, seqNum), 
+                                    new File(filePath));
+                            completedCount.incrementAndGet();
+                        } catch (Exception e) {
+                            Assert.fail(e.getMessage());
+                        } 
+                    }
+                };
+                
+                putThreads[i] = new Thread(r);
+            }
+            
+            waitAll(putThreads);
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        } finally {
+            int totalCompleted = completedCount.get();
+            Assert.assertEquals(threadCount, totalCompleted);
+            removeFile(filePath);
+        }
+    }
+    
+    @Ignore
+    public void testPutRandomScaleFileConcurrently() throws Exception {
+        final int threadCount = 100;
+        final String keyPrefix = "put-random-scale-file-concurrently-";
+        final AtomicInteger completedCount = new AtomicInteger(0);
+        List<File> fileList = new ArrayList<File>();
+        
+        try {    
+            Thread[] putThreads = new Thread[threadCount];
+            for (int i = 0; i < threadCount; i++) {
+                final int seqNum = i;
+                final File randomFile = new File(genRandomLengthFile());
+                fileList.add(randomFile);
+                Runnable r = new Runnable() {
+                    
+                    @Override
+                    public void run() {
+                        try {
+                            secondClient.putObject(bucketName, buildObjectKey(keyPrefix, seqNum), 
+                                    randomFile);
+                            completedCount.incrementAndGet();
+                        } catch (Exception ex) {
+                            Assert.fail(ex.getMessage());
+                        } 
+                    }
+                };
+                
+                putThreads[i] = new Thread(r);
+            }
+            
+            waitAll(putThreads);
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        } finally {
+            int totalCompleted = completedCount.get();
+            Assert.assertEquals(threadCount, totalCompleted);
+            removeFiles(fileList);
+        }
+    }
 
-	@Test
-	public void testPutObjectWithCLRF() throws IOException {
-		final String keyWithCLRF = "abc\r\ndef";
-		final String filePath = genFixedLengthFile(128 * 1024); //128KB
-		
-		try {
-			secondClient.putObject(bucketName, keyWithCLRF, new File(filePath));
-			OSSObject o = secondClient.getObject(bucketName, keyWithCLRF);
-			Assert.assertEquals(keyWithCLRF, o.getKey());
-		} catch (OSSException ex) {
-			Assert.assertEquals(OSSErrorCode.INVALID_OBJECT_NAME, ex.getErrorCode());
-			Assert.assertTrue(ex.getMessage().startsWith(INVALID_OBJECT_NAME_ERR));
-		} finally {
-			secondClient.deleteObject(bucketName, keyWithCLRF);
-			removeFile(filePath);
-		}
-	}
-	
-	@Test
-	public void testUnormalPutObject() throws IOException {
-		final String key = "unormal-put-object";
-		
-		// Try to put object into non-existent bucket
-		final String nonexistentBucket = "nonexistent-bucket";
-		try {
-			secondClient.putObject(nonexistentBucket, key, genFixedLengthInputStream(128), null);
-			Assert.fail("Put object should not be successful");
-		} catch (OSSException ex) {
-			Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, ex.getErrorCode());
-			Assert.assertTrue(ex.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
-		} 
-		
-		// Try to put object into bucket without ownership
-		final String bucketWithoutOwnership = "oss";
-		try {
-			secondClient.putObject(bucketWithoutOwnership, key, genFixedLengthInputStream(128), null);
-			Assert.fail("Put object should not be successful");
-		} catch (OSSException ex) {
-			Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, ex.getErrorCode());
-			Assert.assertTrue(ex.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
-		} 
-		
-		// Try to put object with length exceeding max limit(5GB)
-		final long contentLength = DEFAULT_FILE_SIZE_LIMIT + 1;
-		try {
-			ObjectMetadata metadata = new ObjectMetadata();
-			metadata.setContentLength(contentLength);
-			secondClient.putObject(bucketName, key, genFixedLengthInputStream(128), metadata);
-			Assert.fail("Put object should not be successful");
-		} catch (Exception ex) {
-			Assert.assertTrue(ex instanceof IllegalArgumentException);
-		}
-		
-		// Set invalid server side encryption
-		final String invalidServerSideEncryption = "Invalid-Server-Side-Encryption";
-		try {
-			ObjectMetadata metadata = new ObjectMetadata();
-			metadata.setServerSideEncryption(invalidServerSideEncryption);
-			secondClient.putObject(bucketName, key, genFixedLengthInputStream(128), metadata);
-			Assert.fail("Put object should not be successful");
-		} catch (OSSException ex) {
-			Assert.assertEquals(OSSErrorCode.INVALID_ENCRYPTION_ALGORITHM_ERROR, ex.getErrorCode());
-			Assert.assertTrue(ex.getMessage().startsWith(INVALID_ENCRYPTION_ALGO_ERR));
-		}
-		
-		// Set invalid Content-MD5
-		final String invalidContentMD5 = "Invalid-Content-MD5";
-		try {
-			ObjectMetadata metadata = new ObjectMetadata();
-			metadata.setContentMD5(invalidContentMD5);
-			secondClient.putObject(bucketName, key, genFixedLengthInputStream(128), metadata);
-			Assert.fail("Put object should not be successful");
-		} catch (OSSException ex) {
-			Assert.assertEquals(OSSErrorCode.INVALID_DIGEST, ex.getErrorCode());
-			Assert.assertTrue(ex.getMessage().startsWith(INVALID_DIGEST_ERR));
-		}
-	}
-	
-	@Test
-	public void testPutObjectChunked() throws Exception {		
-		final String key = "put-object-chunked";
-		final int instreamLength = 128 * 1024;
-		
-		InputStream instream = null;
-		try {
-			instream = genFixedLengthInputStream(instreamLength);
-			secondClient.putObject(bucketName, key, instream, null);
-			OSSObject o = secondClient.getObject(bucketName, key);
-			Assert.assertEquals(key, o.getKey());
-			Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
-		} catch (Exception ex) {
-			Assert.fail(ex.getMessage());
-		}
-	}
-	
-	@Test
-	public void testOverridedPutObject() throws Exception {		
-		String key = "overrided-put-object";
-		final int instreamLength = 128 * 1024;
-		
-		InputStream instream = null;
-		try {
-			// Override 1
-			instream = genFixedLengthInputStream(instreamLength);
-			secondClient.putObject(bucketName, key, instream, null);
-			OSSObject o = secondClient.getObject(bucketName, key);
-			Assert.assertEquals(key, o.getKey());
-			Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
-			
-			// Override 2
-			final String filePath = genFixedLengthFile(instreamLength);
-			secondClient.putObject(bucketName, key, new File(filePath));
-			Assert.assertEquals(instreamLength, new File(filePath).length());
-			
-			// Override 3
-			secondClient.putObject(new PutObjectRequest(bucketName, key, new File(filePath)));
-			o = secondClient.getObject(bucketName, key);
-			Assert.assertEquals(key, o.getKey());
-			Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
-		} catch (Exception ex) {
-			Assert.fail(ex.getMessage());
-		}
-	}
-	
-	@Test
-	public void testPutObjectByUrlSignature() throws Exception {
-		final String key = "put-object-by-urlsignature";
-		final String metaKey0 = "author";
-		final String metaValue0 = "aliy";
-		final String expirationString = "Sun, 12 Apr 2016 12:00:00 GMT";
-		final long inputStreamLength = 128 * 1024; //128KB
-		
-		GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.PUT);
-		Date expiration = DateUtil.parseRfc822Date(expirationString);
-		request.setExpiration(expiration);
-		request.setContentType(DEFAULT_OBJECT_CONTENT_TYPE);
-		request.addUserMetadata(metaKey0, metaValue0);
-		URL signedUrl = secondClient.generatePresignedUrl(request);
-				
-		Map<String, String> requestHeaders = new HashMap<String, String>();
-		requestHeaders.put(HttpHeaders.CONTENT_TYPE, DEFAULT_OBJECT_CONTENT_TYPE);
-		requestHeaders.put(OSS_USER_METADATA_PREFIX + metaKey0, metaValue0);
-		
-		// Override 1
-		InputStream instream = null;
-		try {
-			instream = genFixedLengthInputStream(inputStreamLength);
-			// Using url signature & chunked encoding to upload specified inputstream.
-			secondClient.putObject(signedUrl, instream, -1, requestHeaders, true);
-			OSSObject o = secondClient.getObject(bucketName, key);
-			Assert.assertEquals(key, o.getKey());
-			Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
-			
-			ObjectMetadata metadata = o.getObjectMetadata();
-			Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
-			Assert.assertTrue(metadata.getUserMetadata().containsKey(metaKey0));
-		} catch (Exception ex) {
-			Assert.fail(ex.getMessage());
-		}
-		
-		// Override 2
-		try {
-			instream = genFixedLengthInputStream(inputStreamLength);
-			// Using url signature encoding to upload specified inputstream.
-			secondClient.putObject(signedUrl, instream, -1, requestHeaders);
-			OSSObject o = secondClient.getObject(bucketName, key);
-			Assert.assertEquals(key, o.getKey());
-			Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
-			
-			ObjectMetadata metadata = o.getObjectMetadata();
-			Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
-			Assert.assertTrue(metadata.getUserMetadata().containsKey(metaKey0));
-		} catch (Exception ex) {
-			Assert.fail(ex.getMessage());
-		} 
-		
-		// Override 3
-		String filePath = genFixedLengthFile(inputStreamLength);
-		try {
-			// Using url signature encoding to upload specified inputstream.
-			secondClient.putObject(signedUrl, filePath, requestHeaders);
-			OSSObject o = secondClient.getObject(bucketName, key);
-			Assert.assertEquals(key, o.getKey());
-			Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
-			
-			ObjectMetadata metadata = o.getObjectMetadata();
-			Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
-			Assert.assertTrue(metadata.getUserMetadata().containsKey(metaKey0));
-		} catch (Exception ex) {
-			Assert.fail(ex.getMessage());
-		} finally {
-			removeFile(filePath);
-		}
-		
-		// Override 4
-		filePath = genFixedLengthFile(inputStreamLength);
-		try {
-			// Using url signature encoding to upload specified inputstream.
-			secondClient.putObject(signedUrl, filePath, requestHeaders, true);
-			OSSObject o = secondClient.getObject(bucketName, key);
-			Assert.assertEquals(key, o.getKey());
-			Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
-			
-			ObjectMetadata metadata = o.getObjectMetadata();
-			Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
-			Assert.assertTrue(metadata.getUserMetadata().containsKey(metaKey0));
-		} catch (Exception ex) {
-			Assert.fail(ex.getMessage());
-		} finally {
-			removeFile(filePath);
-		}
-	}
-	
+    @Test
+    public void testPutObjectWithCLRF() throws IOException {
+        final String keyWithCLRF = "abc\r\ndef";
+        final String filePath = genFixedLengthFile(128 * 1024); //128KB
+        
+        try {
+            secondClient.putObject(bucketName, keyWithCLRF, new File(filePath));
+            OSSObject o = secondClient.getObject(bucketName, keyWithCLRF);
+            Assert.assertEquals(keyWithCLRF, o.getKey());
+        } catch (OSSException ex) {
+            Assert.assertEquals(OSSErrorCode.INVALID_OBJECT_NAME, ex.getErrorCode());
+            Assert.assertTrue(ex.getMessage().startsWith(INVALID_OBJECT_NAME_ERR));
+        } finally {
+            secondClient.deleteObject(bucketName, keyWithCLRF);
+            removeFile(filePath);
+        }
+    }
+    
+    @Test
+    public void testUnormalPutObject() throws IOException {
+        final String key = "unormal-put-object";
+        
+        // Try to put object into non-existent bucket
+        final String nonexistentBucket = "nonexistent-bucket";
+        try {
+            secondClient.putObject(nonexistentBucket, key, genFixedLengthInputStream(128));
+            Assert.fail("Put object should not be successful");
+        } catch (OSSException ex) {
+            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, ex.getErrorCode());
+            Assert.assertTrue(ex.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+        } 
+        
+        // Try to put object into bucket without ownership
+        final String bucketWithoutOwnership = "oss";
+        try {
+            secondClient.putObject(bucketWithoutOwnership, key, genFixedLengthInputStream(128));
+            Assert.fail("Put object should not be successful");
+        } catch (OSSException ex) {
+            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, ex.getErrorCode());
+            Assert.assertTrue(ex.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
+        } 
+        
+        // Try to put object with length exceeding max limit(5GB)
+        final long contentLength = DEFAULT_FILE_SIZE_LIMIT + 1;
+        try {
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(contentLength);
+            secondClient.putObject(bucketName, key, genFixedLengthInputStream(128), metadata);
+            Assert.fail("Put object should not be successful");
+        } catch (Exception ex) {
+            Assert.assertTrue(ex instanceof IllegalArgumentException);
+        }
+        
+        // Set invalid server side encryption
+        final String invalidServerSideEncryption = "Invalid-Server-Side-Encryption";
+        try {
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setServerSideEncryption(invalidServerSideEncryption);
+            secondClient.putObject(bucketName, key, genFixedLengthInputStream(128), metadata);
+            Assert.fail("Put object should not be successful");
+        } catch (OSSException ex) {
+            Assert.assertEquals(OSSErrorCode.INVALID_ENCRYPTION_ALGORITHM_ERROR, ex.getErrorCode());
+            Assert.assertTrue(ex.getMessage().startsWith(INVALID_ENCRYPTION_ALGO_ERR));
+        }
+        
+        // Set invalid Content-MD5
+        final String invalidContentMD5 = "Invalid-Content-MD5";
+        try {
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentMD5(invalidContentMD5);
+            secondClient.putObject(bucketName, key, genFixedLengthInputStream(128), metadata);
+            Assert.fail("Put object should not be successful");
+        } catch (OSSException ex) {
+            Assert.assertEquals(OSSErrorCode.INVALID_DIGEST, ex.getErrorCode());
+            Assert.assertTrue(ex.getMessage().startsWith(INVALID_DIGEST_ERR));
+        }
+    }
+    
+    @Test
+    public void testPutObjectChunked() throws Exception {        
+        final String key = "put-object-chunked";
+        final int instreamLength = 128 * 1024;
+        
+        InputStream instream = null;
+        try {
+            instream = genFixedLengthInputStream(instreamLength);
+            secondClient.putObject(bucketName, key, instream, null);
+            OSSObject o = secondClient.getObject(bucketName, key);
+            Assert.assertEquals(key, o.getKey());
+            Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void testOverridedPutObject() throws Exception {        
+        String key = "overrided-put-object";
+        final int instreamLength = 128 * 1024;
+        
+        InputStream instream = null;
+        try {
+            // Override 1
+            instream = genFixedLengthInputStream(instreamLength);
+            secondClient.putObject(bucketName, key, instream);
+            OSSObject o = secondClient.getObject(bucketName, key);
+            Assert.assertEquals(key, o.getKey());
+            Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
+            
+            // Override 2
+            final String filePath = genFixedLengthFile(instreamLength);
+            secondClient.putObject(bucketName, key, new File(filePath));
+            Assert.assertEquals(instreamLength, new File(filePath).length());
+            
+            // Override 3
+            secondClient.putObject(new PutObjectRequest(bucketName, key, new File(filePath)));
+            o = secondClient.getObject(bucketName, key);
+            Assert.assertEquals(key, o.getKey());
+            Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void testPutObjectByUrlSignature() throws Exception {
+        final String key = "put-object-by-urlsignature";
+        final String metaKey0 = "author";
+        final String metaValue0 = "aliy";
+        final String expirationString = "Sun, 12 Apr 2016 12:00:00 GMT";
+        final long inputStreamLength = 128 * 1024; //128KB
+        
+        GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.PUT);
+        Date expiration = DateUtil.parseRfc822Date(expirationString);
+        request.setExpiration(expiration);
+        request.setContentType(DEFAULT_OBJECT_CONTENT_TYPE);
+        request.addUserMetadata(metaKey0, metaValue0);
+        URL signedUrl = secondClient.generatePresignedUrl(request);
+                
+        Map<String, String> requestHeaders = new HashMap<String, String>();
+        requestHeaders.put(HttpHeaders.CONTENT_TYPE, DEFAULT_OBJECT_CONTENT_TYPE);
+        requestHeaders.put(OSS_USER_METADATA_PREFIX + metaKey0, metaValue0);
+        
+        // Override 1
+        InputStream instream = null;
+        try {
+            instream = genFixedLengthInputStream(inputStreamLength);
+            // Using url signature & chunked encoding to upload specified inputstream.
+            secondClient.putObject(signedUrl, instream, -1, requestHeaders, true);
+            OSSObject o = secondClient.getObject(bucketName, key);
+            Assert.assertEquals(key, o.getKey());
+            Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+            
+            ObjectMetadata metadata = o.getObjectMetadata();
+            Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
+            Assert.assertTrue(metadata.getUserMetadata().containsKey(metaKey0));
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        }
+        
+        // Override 2
+        try {
+            instream = genFixedLengthInputStream(inputStreamLength);
+            // Using url signature encoding to upload specified inputstream.
+            secondClient.putObject(signedUrl, instream, -1, requestHeaders);
+            OSSObject o = secondClient.getObject(bucketName, key);
+            Assert.assertEquals(key, o.getKey());
+            Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+            
+            ObjectMetadata metadata = o.getObjectMetadata();
+            Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
+            Assert.assertTrue(metadata.getUserMetadata().containsKey(metaKey0));
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        } 
+        
+        // Override 3
+        String filePath = genFixedLengthFile(inputStreamLength);
+        try {
+            // Using url signature encoding to upload specified inputstream.
+            secondClient.putObject(signedUrl, filePath, requestHeaders);
+            OSSObject o = secondClient.getObject(bucketName, key);
+            Assert.assertEquals(key, o.getKey());
+            Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+            
+            ObjectMetadata metadata = o.getObjectMetadata();
+            Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
+            Assert.assertTrue(metadata.getUserMetadata().containsKey(metaKey0));
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        } finally {
+            removeFile(filePath);
+        }
+        
+        // Override 4
+        filePath = genFixedLengthFile(inputStreamLength);
+        try {
+            // Using url signature encoding to upload specified inputstream.
+            secondClient.putObject(signedUrl, filePath, requestHeaders, true);
+            OSSObject o = secondClient.getObject(bucketName, key);
+            Assert.assertEquals(key, o.getKey());
+            Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+            
+            ObjectMetadata metadata = o.getObjectMetadata();
+            Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
+            Assert.assertTrue(metadata.getUserMetadata().containsKey(metaKey0));
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        } finally {
+            removeFile(filePath);
+        }
+    }
+    
+    @Test
+    public void testContentTypeAutoSetting() throws Exception {        
+        final String keyWithSuffix = "abc.jpg";
+        final String keyWithoutSuffix = "abc";
+        final int instreamLength = 128 * 1024;
+        
+        InputStream instream = null;
+        try {
+            instream = genFixedLengthInputStream(instreamLength);
+            secondClient.putObject(bucketName, keyWithSuffix, instream);
+            OSSObject o = secondClient.getObject(bucketName, keyWithSuffix);
+            Assert.assertEquals(keyWithSuffix, o.getKey());
+            Assert.assertEquals(Mimetypes.getInstance().getMimetype(keyWithSuffix), 
+                    o.getObjectMetadata().getContentType());
+            
+            instream = genFixedLengthInputStream(instreamLength);
+            secondClient.putObject(bucketName, keyWithoutSuffix, instream);
+            o = secondClient.getObject(bucketName, keyWithoutSuffix);
+            Assert.assertEquals(keyWithoutSuffix, o.getKey());
+            Assert.assertEquals(Mimetypes.getInstance().getMimetype(keyWithoutSuffix), 
+                    o.getObjectMetadata().getContentType());
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+            
+            if (instream != null) {
+                instream.close();
+            }
+        }
+    }
+    
+    @Test
+    public void testIncorrentSignature() throws Exception {        
+        final String key = "incorrent-signature";
+        final String metaKey = "mk0 ";
+        final String metaVal = "  mv0";
+        final String contentTypeWithBlank = "    text/html  ";
+        final int instreamLength = 128 * 1024;
+        
+        InputStream instream = null;
+        try {
+            instream = genFixedLengthInputStream(instreamLength);
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType(contentTypeWithBlank);
+            metadata.addUserMetadata(metaKey, metaVal);
+            secondClient.putObject(bucketName, key, instream, metadata);
+            OSSObject o = secondClient.getObject(bucketName, key);
+            Assert.assertEquals(contentTypeWithBlank.trim(), o.getObjectMetadata().getContentType());
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+            
+            if (instream != null) {
+                instream.close();
+            }
+        }
+    }
+    
 }

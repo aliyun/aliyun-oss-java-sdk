@@ -20,7 +20,7 @@
 package com.aliyun.oss.common.parser;
 
 public interface Marshaller<T, R> {
-	
-	public T marshall(R input);
-	
+    
+    public T marshall(R input);
+    
 }

@@ -33,18 +33,18 @@ import com.aliyun.oss.model.PolicyConditions;
 
 public class PostPolicyTest {
 
-	static final String endpoint = "<valid endpoint>";
-	static final String accessId = "<your access id>";
-	static final String accessKey = "<your access key>";
-	
-	static final String bucketName = "<your bucket name>";
-	
-	@Ignore
-	public void testGenPostPolicy() {	
-		OSSClient client = new OSSClient(endpoint, accessId, accessKey);
-		try {
-			Date expiration = DateUtil.parseIso8601Date("2015-03-19T03:44:06.476Z");
-			PolicyConditions policyConds = new PolicyConditions();
+    static final String endpoint = "<valid endpoint>";
+    static final String accessId = "<your access id>";
+    static final String accessKey = "<your access key>";
+    
+    static final String bucketName = "<your bucket name>";
+    
+    @Ignore
+    public void testGenPostPolicy() {    
+        OSSClient client = new OSSClient(endpoint, accessId, accessKey);
+        try {
+            Date expiration = DateUtil.parseIso8601Date("2015-03-19T03:44:06.476Z");
+            PolicyConditions policyConds = new PolicyConditions();
             policyConds.addConditionItem("bucket", bucketName);
             // $ must be escaped with backslash.
             policyConds.addConditionItem(MatchMode.Exact, PolicyConditions.COND_KEY, "user/eric/\\${filename}");
@@ -57,16 +57,16 @@ public class PostPolicyTest {
             Assert.assertEquals(expectedPostPolicy, actualPostPolicy);
             
             byte[] binaryData = actualPostPolicy.getBytes("utf-8");
-			String actualEncodedPolicy = BinaryUtil.toBase64String(binaryData);
+            String actualEncodedPolicy = BinaryUtil.toBase64String(binaryData);
             String expectedEncodedPolicy = "eyJleHBpcmF0aW9uIjoiMjAxNS0wMy0xOVQwMzo0NDowNi40NzZaIiwiY29uZGl0aW9ucyI6W3siYnVja2V0Ijoib3NzLXRlc3QyIn0sWyJlcSIsIiRrZXkiLCJ1c2VyL2VyaWMvXCR7ZmlsZW5hbWV9Il0sWyJzdGFydHMtd2l0aCIsIiRrZXkiLCJ1c2VyL2VyaWMiXSxbInN0YXJ0cy13aXRoIiwiJHgtb3NzLW1ldGEtdGFnIiwiZHVtbXlfZXRhZyJdLFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLDEsMTAyNF1dfQ==";
             Assert.assertEquals(expectedEncodedPolicy, actualEncodedPolicy);
-			
+            
             String actualPostSignature = client.calculatePostSignature(actualPostPolicy);
             String expectedPostSignature = "+fOC13qQyIUqF+T/mSA/So2qEBw=";
             Assert.assertEquals(expectedPostSignature, actualPostSignature);
-		} catch (Exception e) {
-			Assert.fail(e.getMessage());
-		}
-	}
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
 
 }

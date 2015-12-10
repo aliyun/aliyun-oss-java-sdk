@@ -19,14 +19,12 @@
 
 package com.aliyun.oss.common.comm.io;
 
+import static com.aliyun.oss.common.utils.LogUtils.getLog;
+
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 public class RepeatableInputStream extends InputStream {
-    private static final Log log = LogFactory.getLog(RepeatableInputStream.class);
 
     private InputStream is = null;
     private int bufferSize = 0;
@@ -46,33 +44,30 @@ public class RepeatableInputStream extends InputStream {
 
     public void reset() throws IOException {
         if (bytesReadFromMark <= bufferSize) {
-        	if (log.isDebugEnabled()) {
-        		log.debug("Reset after reading " + bytesReadFromMark + " bytes.");
-        	}
+            getLog().debug("Reset after reading " + bytesReadFromMark + " bytes.");
             bufferOffset = 0;
         } else {
-            throw new IOException(
-                "Input stream cannot be reset as " + this.bytesReadFromMark
-                + " bytes have been written, exceeding the available buffer size of " + this.bufferSize);
+            throw new IOException("Input stream cannot be reset as " + this.bytesReadFromMark
+                    + " bytes have been written, exceeding the available buffer size of " + this.bufferSize);
         }
     }
 
     public boolean markSupported() {
-    	return true;
+        return true;
     }
 
     public synchronized void mark(int readlimit) {
-    	if (bytesReadFromMark <= bufferSize && buffer != null) {
+        if (bytesReadFromMark <= bufferSize && buffer != null) {
             byte[] newBuffer = new byte[this.bufferSize];
-    		System.arraycopy(buffer, bufferOffset, newBuffer, 0, (int)(bytesReadFromMark - bufferOffset));
+            System.arraycopy(buffer, bufferOffset, newBuffer, 0, (int)(bytesReadFromMark - bufferOffset));
             this.buffer = newBuffer;
             this.bytesReadFromMark -= bufferOffset;
-    		this.bufferOffset = 0;
-    	} else {
-    		this.bufferOffset = 0;
+            this.bufferOffset = 0;
+        } else {
+            this.bufferOffset = 0;
             this.bytesReadFromMark = 0;
             this.buffer = new byte[this.bufferSize];
-    	}
+        }
     }
 
     public int available() throws IOException {
@@ -107,10 +102,8 @@ public class RepeatableInputStream extends InputStream {
             System.arraycopy(tmp, 0, buffer, (int) bytesReadFromMark, count);
             bufferOffset += count;
         } else if (buffer != null) {
-        	if (log.isDebugEnabled()) {
-        		log.debug("Buffer size " + bufferSize + " has been exceeded and the input stream "
-                + "will not be repeatable until the next mark. Freeing buffer memory");
-        	}
+            getLog().debug("Buffer size " + bufferSize + " has been exceeded and the input stream "
+                    + "will not be repeatable until the next mark. Freeing buffer memory");
             buffer = null;
         }
 

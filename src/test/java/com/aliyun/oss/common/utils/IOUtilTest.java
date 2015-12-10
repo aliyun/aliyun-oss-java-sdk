@@ -29,22 +29,22 @@ import org.junit.Test;
 import static org.junit.Assert.assertArrayEquals;;
 
 public class IOUtilTest {
-	@Test
+    @Test
     public void testBase64String() {
-		String dataString = "OssService"; 
-		byte[] expectByteData = dataString.getBytes();
-		InputStream inStream = new ByteArrayInputStream(expectByteData);
-		byte[] byteData = null;
-		try {
-			byteData = IOUtils.readStreamAsByteArray(inStream);
-			assertArrayEquals(byteData, expectByteData);
-			byteData = IOUtils.readStreamAsByteArray(null);
-			assertArrayEquals(byteData, new byte[0]);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		IOUtils.safeClose(inStream);
-		OutputStream outStream = new ByteArrayOutputStream();
-		IOUtils.safeClose(outStream);
-	}
+        String dataString = "OssService"; 
+        byte[] expectByteData = dataString.getBytes();
+        InputStream inStream = new ByteArrayInputStream(expectByteData);
+        byte[] byteData = null;
+        try {
+            byteData = IOUtils.readStreamAsByteArray(inStream);
+            assertArrayEquals(byteData, expectByteData);
+            byteData = IOUtils.readStreamAsByteArray(null);
+            assertArrayEquals(byteData, new byte[0]);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        IOUtils.safeClose(inStream);
+        OutputStream outStream = new ByteArrayOutputStream();
+        IOUtils.safeClose(outStream);
+    }
 }

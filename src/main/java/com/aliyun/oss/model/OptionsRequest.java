@@ -21,60 +21,64 @@ package com.aliyun.oss.model;
 
 import com.aliyun.oss.HttpMethod;
 
-public class OptionsRequest {
-	
-	private String bucketName;
-	private String objectName;
-	
-	private String origin;
-	private HttpMethod requestMethod;
-	private String requestHeaders;
+public class OptionsRequest extends GenericRequest {
+    
+    private String origin;
+    private HttpMethod requestMethod;
+    private String requestHeaders;
 
-	public OptionsRequest() {}
-	
-	public OptionsRequest(String bucketName, String objectName) {
-		this.bucketName = bucketName;
-		this.objectName = objectName;
-	}
+    public OptionsRequest() {}
+    
+    public OptionsRequest(String bucketName, String key) {
+        super(bucketName, key);
+    }
 
-	public String getBucketName() {
-		return bucketName;
-	}
+    public String getOrigin() {
+        return origin;
+    }
 
-	public void setBucketName(String bucketName) {
-		this.bucketName = bucketName;
-	}
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
+    
+    public OptionsRequest withOrigin(String origin) {
+        setOrigin(origin);
+        return this;
+    }
 
-	public String getOrigin() {
-		return origin;
-	}
+    public HttpMethod getRequestMethod() {
+        return requestMethod;
+    }
 
-	public void setOrigin(String origin) {
-		this.origin = origin;
-	}
+    public void setRequestMethod(HttpMethod requestMethod) {
+        this.requestMethod = requestMethod;
+    }
+    
+    public OptionsRequest withRequestMethod(HttpMethod requestMethod) {
+        setRequestMethod(requestMethod);
+        return this;
+    }
 
-	public HttpMethod getRequestMethod() {
-		return requestMethod;
-	}
+    public String getRequestHeaders() {
+        return requestHeaders;
+    }
 
-	public void setRequestMethod(HttpMethod requestMethod) {
-		this.requestMethod = requestMethod;
-	}
-
-	public String getRequestHeaders() {
-		return requestHeaders;
-	}
-
-	public void setRequestHeaders(String requestHeaders) {
-		this.requestHeaders = requestHeaders;
-	}
-
+    public void setRequestHeaders(String requestHeaders) {
+        this.requestHeaders = requestHeaders;
+    }
+    
+    public OptionsRequest withRequestHeaders(String requestHeaders) {
+        setRequestHeaders(requestHeaders);
+        return this;
+    }
+    
+    @Deprecated
     public String getObjectName() {
-        return objectName;
+        return this.getKey();
     }
 
+    @Deprecated
     public void setObjectName(String objectName) {
-        this.objectName = objectName;
+        this.setKey(objectName);
     }
-
 }

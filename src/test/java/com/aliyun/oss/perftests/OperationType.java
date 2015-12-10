@@ -20,6 +20,6 @@
 package com.aliyun.oss.perftests;
 
 public enum OperationType {
-	PUT,
-	GET
+    PUT,
+    GET
 }

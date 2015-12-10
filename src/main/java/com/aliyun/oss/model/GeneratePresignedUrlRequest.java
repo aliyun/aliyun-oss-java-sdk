@@ -249,7 +249,7 @@ public class GeneratePresignedUrlRequest {
     }
 
     public Map<String,String> getQueryParameter(){
-    	return this.queryParam;
+        return this.queryParam;
     }
     /**
      * 用户请求参数，Query String。

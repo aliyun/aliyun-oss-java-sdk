@@ -25,35 +25,35 @@ import org.junit.Ignore;
 import com.aliyun.oss.OSSClient;
 
 public class NamingConventionsTest {
-	
-	static final String endpoint = "<valid endpoint>";
-	static final String accessId = "<your access id>";
-	static final String accessKey = "<your access key>";
-	
-	static OSSClient client = new OSSClient(endpoint, accessId, accessKey);
-	
-	@Ignore
-	public void testInvalidBucketNames() {
-		String[] invalidBucketNames = { "ab", "abcdefjhijklmnopqrstuvwxyz0123456789abcdefjhijklmnopqrstuvwxyza",
-				"abC", "abc#", "-abc", "#abc", "-abc-", "Abcdefg", "abcdefg-" };
-		for (String value : invalidBucketNames) {
-			boolean created = false;
-			try {
-				client.createBucket(value);
-				created = true;
-				Assert.fail(String.format("Invalid bucket name %s should not be created successfully.", value));
-			} catch (Exception ex) {
-				Assert.assertTrue(ex instanceof IllegalArgumentException);
-			} finally {
-				if (created) {
-					client.deleteBucket(value);
-				}
-			}
-		}
-	}
-	
-	@Ignore
-	public void testInvalidObjectNames() {
-		// TODO
-	}
+    
+    static final String endpoint = "<valid endpoint>";
+    static final String accessId = "<your access id>";
+    static final String accessKey = "<your access key>";
+    
+    static OSSClient client = new OSSClient(endpoint, accessId, accessKey);
+    
+    @Ignore
+    public void testInvalidBucketNames() {
+        String[] invalidBucketNames = { "ab", "abcdefjhijklmnopqrstuvwxyz0123456789abcdefjhijklmnopqrstuvwxyza",
+                "abC", "abc#", "-abc", "#abc", "-abc-", "Abcdefg", "abcdefg-" };
+        for (String value : invalidBucketNames) {
+            boolean created = false;
+            try {
+                client.createBucket(value);
+                created = true;
+                Assert.fail(String.format("Invalid bucket name %s should not be created successfully.", value));
+            } catch (Exception ex) {
+                Assert.assertTrue(ex instanceof IllegalArgumentException);
+            } finally {
+                if (created) {
+                    client.deleteBucket(value);
+                }
+            }
+        }
+    }
+    
+    @Ignore
+    public void testInvalidObjectNames() {
+        // TODO
+    }
 }

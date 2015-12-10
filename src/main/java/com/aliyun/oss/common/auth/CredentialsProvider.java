@@ -25,8 +25,8 @@ package com.aliyun.oss.common.auth;
  * Note that <b>implementations of this interface must be thread-safe.</b>
  */
 public interface CredentialsProvider {
-	
-	public void setCredentials(Credentials creds);
-	
-	public Credentials getCredentials();
+    
+    public void setCredentials(Credentials creds);
+    
+    public Credentials getCredentials();
 }

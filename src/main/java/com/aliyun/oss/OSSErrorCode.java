@@ -223,4 +223,9 @@ public interface OSSErrorCode {
      * Object追加位置与其当前长度不一致。
      */
     static final String POSITION_NOT_EQUAL_TO_LENGTH = "PositionNotEqualToLength";
+
+    /**
+     * 返回结果无法解析。
+     */
+    static final String INVALID_RESPONSE = "InvalidResponse";
 }

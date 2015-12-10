@@ -21,6 +21,9 @@ package com.aliyun.oss.internal;
 
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
 import static com.aliyun.oss.internal.OSSConstants.OBJECT_NAME_MAX_LENGTH;
+import static com.aliyun.oss.internal.OSSConstants.OSS_AUTHORIZATION_PREFIX;
+import static com.aliyun.oss.internal.OSSConstants.OSS_AUTHORIZATION_SEPERATOR;
+import static com.aliyun.oss.internal.OSSConstants.RESOURCE_NAME_COMMON;
 import static com.aliyun.oss.internal.OSSConstants.RESOURCE_NAME_OSS;
 
 import java.io.IOException;
@@ -42,26 +45,30 @@ import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.ResponseHeaderOverrides;
 
 public class OSSUtils {
-	
-	private static String BUCKET_NAMING_REGEX = "^[a-z0-9][a-z0-9_\\-]{1,61}[a-z0-9]$";
-	
-    public static final ResourceManager OSS_RESOURCE_MANAGER =
+    
+    public static final ResourceManager OSS_RESOURCE_MANAGER = 
             ResourceManager.getInstance(RESOURCE_NAME_OSS);
+    public static final ResourceManager COMMON_RESOURCE_MANAGER = 
+            ResourceManager.getInstance(RESOURCE_NAME_COMMON);    
+    
+    private static final String BUCKET_NAMING_REGEX = "^[a-z0-9][a-z0-9_\\-]{1,61}[a-z0-9]$";
 
     /**
      * Validate bucket name.
      */
     public static boolean validateBucketName(String bucketName) {
+        
         if (bucketName == null) {
             return false;
         }
+        
         return bucketName.matches(BUCKET_NAMING_REGEX);
     }
 
     public static void ensureBucketNameValid(String bucketName) {
         if (!validateBucketName(bucketName)) {
             throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getFormattedString(
-            		"BucketNameInvalid", bucketName));
+                    "BucketNameInvalid", bucketName));
         }
     }
 
@@ -69,12 +76,12 @@ public class OSSUtils {
      * Validate object name.
      */
     public static boolean validateObjectKey(String key) {
+        
         if (key == null) {
             return false;
         }
         
-        // Validate CHARSET encode
-        byte[] bytes;
+        byte[] bytes = null;
         try {
             bytes = key.getBytes(DEFAULT_CHARSET_NAME);
         } catch (UnsupportedEncodingException e) {
@@ -83,11 +90,9 @@ public class OSSUtils {
         
         // Validate exculde xml unsupported chars
         char keyChars[] = key.toCharArray();
-        
-        // Cannot start with "/" or "\"
-        char beginKeyChar = keyChars[0];
-        if (beginKeyChar == '/' || beginKeyChar == '\\') {
-        	return false;
+        char firstChar = keyChars[0];
+        if (firstChar == '/' || firstChar == '\\') {
+            return false;
         }
         
         return (bytes.length > 0 && bytes.length < OBJECT_NAME_MAX_LENGTH);
@@ -95,8 +100,8 @@ public class OSSUtils {
 
     public static void ensureObjectKeyValid(String key) {
         if (!validateObjectKey(key)) {
-        	throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getFormattedString(
-            		"ObjectKeyInvalid", key));
+            throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getFormattedString(
+                    "ObjectKeyInvalid", key));
         }
     }
     
@@ -106,11 +111,11 @@ public class OSSUtils {
      */
     public static URI determineFinalEndpoint(URI endpoint, String bucket, ClientConfiguration clientConfig) {
         try {
-        	StringBuilder conbinedEndpoint = new StringBuilder();
-        	conbinedEndpoint.append(String.format("%s://", endpoint.getScheme()));
-        	conbinedEndpoint.append(buildCanonicalHost(endpoint, bucket, clientConfig));
-        	conbinedEndpoint.append(endpoint.getPort() != -1 ? String.format(":%s", endpoint.getPort()) : "");
-        	conbinedEndpoint.append(endpoint.getPath());
+            StringBuilder conbinedEndpoint = new StringBuilder();
+            conbinedEndpoint.append(String.format("%s://", endpoint.getScheme()));
+            conbinedEndpoint.append(buildCanonicalHost(endpoint, bucket, clientConfig));
+            conbinedEndpoint.append(endpoint.getPort() != -1 ? String.format(":%s", endpoint.getPort()) : "");
+            conbinedEndpoint.append(endpoint.getPath());
             return new URI(conbinedEndpoint.toString());
         } catch (URISyntaxException ex) {
             throw new IllegalArgumentException(ex.getMessage(), ex);            
@@ -118,34 +123,40 @@ public class OSSUtils {
     }
     
     private static String buildCanonicalHost(URI endpoint, String bucket, ClientConfiguration clientConfig) {
-    	String host = endpoint.getHost();
-    	boolean isCname = cnameExcludeFilter(host, clientConfig.getCnameExcludeList());
-    	
-    	StringBuffer cannonicalHost = new StringBuffer();
-    	if (bucket != null && !isCname) {
-    		cannonicalHost.append(bucket);
-    		cannonicalHost.append(".");
-    		cannonicalHost.append(host);
-    	} else {
-    		cannonicalHost.append(host);
-    	}
-    	
-    	return cannonicalHost.toString();
+        String host = endpoint.getHost();
+        
+        boolean isCname = false;
+        if (clientConfig.isSupportCname()) {
+            isCname = cnameExcludeFilter(host, clientConfig.getCnameExcludeList());            
+        }
+        
+        StringBuffer cannonicalHost = new StringBuffer();
+        if (bucket != null && !isCname && !clientConfig.isSLDEnabled()) {        
+                cannonicalHost.append(bucket).append(".").append(host);
+        } else {
+            cannonicalHost.append(host);
+        }
+        
+        return cannonicalHost.toString();
     }
 
-	 private static boolean cnameExcludeFilter(String hostToFilter, List<String> excludeList) {
-    	if (hostToFilter != null && !hostToFilter.trim().isEmpty()) {
-    		String canonicalHost = hostToFilter.toLowerCase();
-    		for (String excl : excludeList) {
-    			if (canonicalHost.endsWith(excl)) {
-    				return false;
-    			}
-    		}
-    		return true;
-    	}
-    	throw new  IllegalArgumentException("Host name can not be null.");
+    private static boolean cnameExcludeFilter(String hostToFilter, List<String> excludeList) {         
+        if (hostToFilter != null && !hostToFilter.trim().isEmpty()) {
+            String canonicalHost = hostToFilter.toLowerCase();
+            for (String excl : excludeList) {
+                if (canonicalHost.endsWith(excl)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        throw new  IllegalArgumentException("Host name can not be null.");
     }
-	
+    
+    public static String determineResourcePath(String bucket, String key, boolean sldEnabled) {
+        return sldEnabled ? makeResourcePath(bucket, key) : makeResourcePath(key);
+    }
+    
     /**
      * Make a resource path from the object key, used when the bucket name pearing in the endpoint.
      */
@@ -158,7 +169,7 @@ public class OSSUtils {
      */
     public static String makeResourcePath(String bucket, String key) {
         if (bucket != null) {
-            return bucket + (key != null ? "/" + OSSUtils.urlEncodeKey(key) : "");
+            return bucket + "/" + (key != null ? OSSUtils.urlEncodeKey(key) : "");
         } else {
             return null;
         }
@@ -199,7 +210,11 @@ public class OSSUtils {
         Map<String, Object> rawMetadata = metadata.getRawMetadata();
         if (rawMetadata != null) {
             for (Entry<String, Object> entry : rawMetadata.entrySet()) {
-                headers.put(entry.getKey(), entry.getValue().toString());
+                String key = entry.getKey();
+                String value = entry.getValue().toString();
+                if (key != null) key = key.trim();
+                if (value != null) value = value.trim();
+                headers.put(key, value);
             }
         }
 
@@ -228,115 +243,135 @@ public class OSSUtils {
     }
 
     public static void addStringListHeader(Map<String, String> headers, String header, 
-    		List<String> values) {
+            List<String> values) {
         if (values != null && !values.isEmpty()) {
             headers.put(header, join(values));
         }
     }
     
     public static void removeHeader(Map<String, String> headers, String header) {
-    	if (header != null && headers.containsKey(header)) {
-    		headers.remove(header);
-    	}
+        if (header != null && headers.containsKey(header)) {
+            headers.remove(header);
+        }
     }
      
     public static String join(List<String> strings) {
-        StringBuilder result = new StringBuilder();
-
+        
+        StringBuilder sb = new StringBuilder();
         boolean first = true;
+        
         for (String s : strings) {
-            if (!first) result.append(", ");
-
-            result.append(s);
+            if (!first) {
+                sb.append(", ");
+            }
+            sb.append(s);
+            
             first = false;
         }
 
-        return result.toString();
+        return sb.toString();
     }
     
     public static String trimQuotes(String s) {
-        if (s == null) return null;
+        
+        if (s == null) {
+            return null;
+        }
 
         s = s.trim();
-        if (s.startsWith("\"")) s = s.substring(1);
-        if (s.endsWith("\"")) s = s.substring(0, s.length() - 1);
+        if (s.startsWith("\"")) {
+            s = s.substring(1);            
+        }
+        if (s.endsWith("\"")) {
+            s = s.substring(0, s.length() - 1);            
+        }
 
         return s;
     }
 
     public static void populateResponseHeaderParameters(Map<String, String> params, 
-    		ResponseHeaderOverrides responseHeaders) {        
-    	if (responseHeaders != null) {
-    		if (responseHeaders.getCacheControl() != null) {
+            ResponseHeaderOverrides responseHeaders) {        
+        
+        if (responseHeaders != null) {
+            if (responseHeaders.getCacheControl() != null) {
                 params.put(ResponseHeaderOverrides.RESPONSE_HEADER_CACHE_CONTROL, 
-                		responseHeaders.getCacheControl());
+                        responseHeaders.getCacheControl());
             }
             
             if (responseHeaders.getContentDisposition() != null) {
                 params.put(ResponseHeaderOverrides.RESPONSE_HEADER_CONTENT_DISPOSITION, 
-                		responseHeaders.getContentDisposition());
+                        responseHeaders.getContentDisposition());
             }
             
             if (responseHeaders.getContentEncoding() != null) {
                 params.put(ResponseHeaderOverrides.RESPONSE_HEADER_CONTENT_ENCODING, 
-                		responseHeaders.getContentEncoding());
+                        responseHeaders.getContentEncoding());
             }
             
             if (responseHeaders.getContentLangauge() != null) {
                 params.put(ResponseHeaderOverrides.RESPONSE_HEADER_CONTENT_LANGUAGE, 
-                		responseHeaders.getContentLangauge());
+                        responseHeaders.getContentLangauge());
             }
             
             if (responseHeaders.getContentType() != null) {
                 params.put(ResponseHeaderOverrides.RESPONSE_HEADER_CONTENT_TYPE, 
-                		responseHeaders.getContentType());
+                        responseHeaders.getContentType());
             }
             
             if (responseHeaders.getExpires() != null) {
                 params.put(ResponseHeaderOverrides.RESPONSE_HEADER_EXPIRES, 
-                		responseHeaders.getExpires());
+                        responseHeaders.getExpires());
             }
-    	}
+        }
     }
 
     public static void safeCloseResponse(ResponseMessage response) {
         try {
             response.close();
-        } catch(IOException e) {}
+        } catch(IOException e) { }
     }
     
     public static long determineInputStreamLength(InputStream instream, long hintLength) {
-    	if (hintLength <= 0 || !instream.markSupported()) {
-    		return -1;
-    	} 
-    	
-    	return hintLength;
+        
+        if (hintLength <= 0 || !instream.markSupported()) {
+            return -1;
+        } 
+        
+        return hintLength;
     }
     
     public static long determineInputStreamLength(InputStream instream, long hintLength, 
-    		boolean useChunkEncoding) {
-    	if (useChunkEncoding) {
-    		return -1;
-    	}
-    	
-    	if (hintLength <= 0 || !instream.markSupported()) {
-    		return -1;
-    	} 
-    	
-    	return hintLength;
+            boolean useChunkEncoding) {
+        
+        if (useChunkEncoding) {
+            return -1;
+        }
+        
+        if (hintLength <= 0 || !instream.markSupported()) {
+            return -1;
+        } 
+        
+        return hintLength;
     }
     
-    public static String joinETags(List<String> etags) {
-        StringBuilder result = new StringBuilder();
-
+    public static String joinETags(List<String> eTags) {
+        
+        StringBuilder sb = new StringBuilder();
         boolean first = true;
-        for (String etag : etags) {
-            if (!first) result.append(", ");
-
-            result.append(etag);
+        
+        for (String eTag : eTags) {
+            if (!first) {
+                sb.append(", ");
+            }
+            sb.append(eTag);
+            
             first = false;
         }
 
-        return result.toString();
+        return sb.toString();
+    }
+    
+    public static String composeRequestAuthorization(String accessKeyId, String signature) {
+        return OSS_AUTHORIZATION_PREFIX + accessKeyId + OSS_AUTHORIZATION_SEPERATOR + signature;
     }
 }

@@ -48,6 +48,8 @@ public class ServiceException extends RuntimeException {
     private String errorCode;
     private String requestId;
     private String hostId;
+    
+    private String rawResponseError;
 
     /**
      * 构造新实例。
@@ -103,11 +105,26 @@ public class ServiceException extends RuntimeException {
      * @param cause 异常原因。
      */
     public ServiceException(String errorMessage, String errorCode, String requestId, String hostId, 
-    		Throwable cause) {
+            Throwable cause) {
+        this(errorMessage, errorCode, requestId, hostId, null, cause);
+    }
+    
+    /**
+     * 用异常消息和表示异常原因及其他信息的对象构造新实例。
+     * @param errorMessage 异常信息。
+     * @param errorCode 错误代码。
+     * @param requestId Request ID。
+     * @param hostId Host ID。
+     * @param rawResponseError OSS错误响应体。
+     * @param cause 异常原因。
+     */
+    public ServiceException(String errorMessage, String errorCode, String requestId, String hostId, 
+            String rawResponseError, Throwable cause) {
         this(errorMessage, cause);
         this.errorCode = errorCode;
         this.requestId = requestId;
         this.hostId = hostId;
+        this.rawResponseError = rawResponseError;
     }
 
     /**
@@ -115,10 +132,10 @@ public class ServiceException extends RuntimeException {
      * @return 异常信息。
      */
     public String getErrorMessage() {
-		return errorMessage;
-	}
+        return errorMessage;
+    }
 
-	/**
+    /**
      * 返回错误代码的字符串表示。
      * @return 错误代码的字符串表示。
      */
@@ -142,11 +159,35 @@ public class ServiceException extends RuntimeException {
         return hostId;
     }
     
+    /**
+     * 返回OSS错误响应体的字符串表示。
+     * @return OSS错误响应体的字符串表示
+     */
+    public String getRawResponseError() {
+        return rawResponseError;
+    }
+
+    /**
+     * 设置OSS错误响应体的字符串表示。
+     * @param rawResponseError OSS错误响应体的字符串表示
+     */
+    public void setRawResponseError(String rawResponseError) {
+        this.rawResponseError = rawResponseError;
+    }
+    
+    private String formatRawResponseError() {
+        if (rawResponseError == null || rawResponseError.equals("")) {
+            return "";
+        }
+        return String.format("\n[ResponseError]:\n%s", this.rawResponseError); 
+    }
+    
     @Override
     public String getMessage() {
-    	return getErrorMessage() 
-    			+ "\n[ErrorCode]: " + getErrorCode()
-    			+ "\n[RequestId]: " + getRequestId()
-    			+ "\n[HostId]: " + getHostId();
+        return getErrorMessage() 
+                + "\n[ErrorCode]: " + getErrorCode()
+                + "\n[RequestId]: " + getRequestId()
+                + "\n[HostId]: " + getHostId()
+                + formatRawResponseError();
     }
 }

@@ -23,7 +23,7 @@ import com.aliyun.oss.ClientException;
 import com.aliyun.oss.common.comm.RequestMessage;
 
 public interface RequestSigner {
-	
+    
     public void sign(RequestMessage request) throws ClientException;
     
 }

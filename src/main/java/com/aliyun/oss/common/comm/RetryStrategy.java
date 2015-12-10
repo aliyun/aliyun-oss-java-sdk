@@ -24,7 +24,7 @@ public abstract class RetryStrategy {
     private static final int DEFAULT_RETRY_PAUSE_SCALE = 300; // milliseconds. 
     
     public abstract boolean shouldRetry(Exception ex, RequestMessage request, 
-    		ResponseMessage response, int retries);
+            ResponseMessage response, int retries);
     
     public long getPauseDelay(int retries) {
         // make the pause time increase exponentially

@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.aliyun.oss.HttpMethod;
+import com.aliyun.oss.model.WebServiceRequest;
 
 /**
  * Represent HTTP requests sent to OSS. 
@@ -51,8 +52,18 @@ public class RequestMessage extends HttpMesssage {
     
     /* Indicate whether using chunked encoding */
     private boolean useChunkEncoding = false;
+    
+    /* The original request provided by user */
+    private final WebServiceRequest originalRequest;
 
-    public RequestMessage() {}
+    public RequestMessage() {
+        this(null);
+    }
+    
+    public RequestMessage(WebServiceRequest originalRequest) {
+        this.originalRequest = (originalRequest == null) ?
+                WebServiceRequest.NOOP : originalRequest;
+    }
 
     public HttpMethod getMethod() {
         return method;
@@ -85,7 +96,7 @@ public class RequestMessage extends HttpMesssage {
     public void setParameters(Map<String, String> parameters) {
         this.parameters.clear();
         if (parameters != null && !parameters.isEmpty()) {
-        	this.parameters.putAll(parameters);
+            this.parameters.putAll(parameters);
         }
     }
 
@@ -106,32 +117,36 @@ public class RequestMessage extends HttpMesssage {
  
     public String toString() {
        return "Endpoint: " + this.getEndpoint().getHost() 
-    		   + ", ResourcePath: " + this.getResourcePath() 
-    		   + ", Headers:" + this.getHeaders();
+               + ", ResourcePath: " + this.getResourcePath() 
+               + ", Headers:" + this.getHeaders();
     }
 
-	public URL getAbsoluteUrl() {
-		return absoluteUrl;
-	}
+    public URL getAbsoluteUrl() {
+        return absoluteUrl;
+    }
 
-	public void setAbsoluteUrl(URL absoluteUrl) {
-		this.absoluteUrl = absoluteUrl;
-	}
+    public void setAbsoluteUrl(URL absoluteUrl) {
+        this.absoluteUrl = absoluteUrl;
+    }
 
-	public boolean isUseUrlSignature() {
-		return useUrlSignature;
-	}
+    public boolean isUseUrlSignature() {
+        return useUrlSignature;
+    }
 
-	public void setUseUrlSignature(boolean useUrlSignature) {
-		this.useUrlSignature = useUrlSignature;
-	}
+    public void setUseUrlSignature(boolean useUrlSignature) {
+        this.useUrlSignature = useUrlSignature;
+    }
 
-	public boolean isUseChunkEncoding() {
-		return useChunkEncoding;
-	}
+    public boolean isUseChunkEncoding() {
+        return useChunkEncoding;
+    }
 
-	public void setUseChunkEncoding(boolean useChunkEncoding) {
-		this.useChunkEncoding = useChunkEncoding;
-	}
+    public void setUseChunkEncoding(boolean useChunkEncoding) {
+        this.useChunkEncoding = useChunkEncoding;
+    }
+
+    public WebServiceRequest getOriginalRequest() {
+        return originalRequest;
+    }
 
 }

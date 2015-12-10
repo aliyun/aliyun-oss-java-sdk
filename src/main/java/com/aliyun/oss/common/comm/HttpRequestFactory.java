@@ -34,12 +34,14 @@ import com.aliyun.oss.ClientException;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.common.comm.io.ChunkedInputStreamEntity;
 import com.aliyun.oss.common.utils.HttpHeaders;
-import com.aliyun.oss.internal.OSSConstants;
 
 class HttpRequestFactory {
 
-    public HttpRequestBase createHttpRequest(ServiceClient.Request request, ExecutionContext context) {
+    public HttpRequestBase createHttpRequest(ServiceClient.Request request, 
+            ExecutionContext context) {
+        
         String uri = request.getUri();        
+        
         HttpRequestBase httpRequest;
         HttpMethod method = request.getMethod();
         if (method == HttpMethod.POST) {
@@ -53,11 +55,11 @@ class HttpRequestFactory {
         } else if (method == HttpMethod.PUT) {
             HttpPut putMethod = new HttpPut(uri);
 
-            if (request.getContent() != null){
+            if (request.getContent() != null) {
                 if (request.isUseChunkEncoding()) {
                     putMethod.setEntity(buildChunkedInputStreamEntity(request));
                 } else {
-                	putMethod.setEntity(new RepeatableInputStreamEntity(request));
+                    putMethod.setEntity(new RepeatableInputStreamEntity(request));
                 }
             }
 
@@ -71,7 +73,7 @@ class HttpRequestFactory {
         } else if (method == HttpMethod.OPTIONS) {
             httpRequest = new HttpOptions(uri);
         } else {
-        	throw new ClientException("Unknown HTTP method name: " + method.toString());
+            throw new ClientException("Unknown HTTP method name: " + method.toString());
         }
 
         configureRequestHeaders(request, context, httpRequest);
@@ -80,29 +82,19 @@ class HttpRequestFactory {
     }
     
     private HttpEntity buildChunkedInputStreamEntity(ServiceClient.Request request) {
-    	ChunkedInputStreamEntity requestEntity = new ChunkedInputStreamEntity(request);
-        if (!request.isUseUrlSignature()) {
-        	requestEntity.setContentType(OSSConstants.DEFAULT_OBJECT_CONTENT_TYPE);
-        }
-        return requestEntity;
+        return new ChunkedInputStreamEntity(request);
     }
 
-    private void configureRequestHeaders(ServiceClient.Request request, ExecutionContext context, HttpRequestBase httpRequest) {
+    private void configureRequestHeaders(ServiceClient.Request request, ExecutionContext context, 
+            HttpRequestBase httpRequest) {
+
         for(Entry<String, String> entry : request.getHeaders().entrySet()){
             if (entry.getKey().equalsIgnoreCase(HttpHeaders.CONTENT_LENGTH) 
-            		|| entry.getKey().equalsIgnoreCase(HttpHeaders.HOST)) {
+                    || entry.getKey().equalsIgnoreCase(HttpHeaders.HOST)) {
                 continue;
             }
 
             httpRequest.addHeader(entry.getKey(), entry.getValue());
-        }
-
-        if (!request.isUseUrlSignature() && 
-        		(httpRequest.getHeaders(HttpHeaders.CONTENT_TYPE) == null ||
-                httpRequest.getHeaders(HttpHeaders.CONTENT_TYPE).length == 0)) {
-            httpRequest.addHeader(HttpHeaders.CONTENT_TYPE,
-                    "application/x-www-form-urlencoded; " +
-                            "charset=" + context.getCharset().toLowerCase());
         }
     }
 }

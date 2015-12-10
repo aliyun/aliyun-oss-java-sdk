@@ -23,13 +23,7 @@ package com.aliyun.oss.model;
  * 包含终止一个Multipart上传事件的请求参数。
  *
  */
-public class AbortMultipartUploadRequest extends WebServiceRequest {
-
-    /** The name of the bucket containing the multipart upload to abort */
-    private String bucketName;
-
-    /** The key of the multipart upload to abort */
-    private String key;
+public class AbortMultipartUploadRequest extends GenericRequest {
 
     /** The ID of the multipart upload to abort */
     private String uploadId;
@@ -44,43 +38,8 @@ public class AbortMultipartUploadRequest extends WebServiceRequest {
      *          标识Multipart上传事件的Upload ID。
      */
     public AbortMultipartUploadRequest(String bucketName, String key, String uploadId) {
-        this.bucketName = bucketName;
-        this.key = key;
+        super(bucketName, key);
         this.uploadId = uploadId;
-    }
-
-    /**
-     * 返回{@link Bucket}名称。
-     * @return Bucket名称。
-     */
-    public String getBucketName() {
-        return this.bucketName;
-    }
-
-    /**
-     * 设置{@link Bucket}名称。
-     * @param bucketName
-     *          Bucket名称。
-     */
-    public void setBucketName(String bucketName) {
-        this.bucketName = bucketName;
-    }
-
-    /**
-     * 返回{@link OSSObject} key。
-     * @return Object key。
-     */
-    public String getKey() {
-        return key;
-    }
-
-    /**
-     * 设置{@link OSSObject} key。
-     * @param key
-     *          Object key。
-     */
-    public void setKey(String key) {
-        this.key = key;
     }
 
     /**

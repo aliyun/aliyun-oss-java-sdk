@@ -21,7 +21,10 @@ package com.aliyun.oss.internal;
 
 import static com.aliyun.oss.common.utils.CodingUtils.assertTrue;
 import static com.aliyun.oss.internal.RequestParameters.PART_NUMBER;
+import static com.aliyun.oss.internal.RequestParameters.POSITION;
+import static com.aliyun.oss.internal.RequestParameters.SECURITY_TOKEN;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_ACL;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_APPEND;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_CORS;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_DELETE;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_LIFECYCLE;
@@ -30,10 +33,7 @@ import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_LOGGING;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_REFERER;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_UPLOADS;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_WEBSITE;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_APPEND;
 import static com.aliyun.oss.internal.RequestParameters.UPLOAD_ID;
-import static com.aliyun.oss.internal.RequestParameters.SECURITY_TOKEN;
-import static com.aliyun.oss.internal.RequestParameters.POSITION;
 import static com.aliyun.oss.model.ResponseHeaderOverrides.RESPONSE_HEADER_CACHE_CONTROL;
 import static com.aliyun.oss.model.ResponseHeaderOverrides.RESPONSE_HEADER_CONTENT_DISPOSITION;
 import static com.aliyun.oss.model.ResponseHeaderOverrides.RESPONSE_HEADER_CONTENT_ENCODING;
@@ -52,13 +52,13 @@ import com.aliyun.oss.common.utils.HttpHeaders;
 
 public class SignUtils {
     
-	private static final String NEW_LINE = "\n";
+    private static final String NEW_LINE = "\n";
 
     private static final List<String> SIGNED_PARAMTERS = Arrays.asList(new String[] {
-    		SUBRESOURCE_ACL, SUBRESOURCE_UPLOADS, SUBRESOURCE_LOCATION, 
-    		SUBRESOURCE_CORS, SUBRESOURCE_LOGGING, SUBRESOURCE_WEBSITE, 
-    		SUBRESOURCE_REFERER, SUBRESOURCE_LIFECYCLE, SUBRESOURCE_DELETE, 
-    		SUBRESOURCE_APPEND, UPLOAD_ID, PART_NUMBER, SECURITY_TOKEN, POSITION,
+            SUBRESOURCE_ACL, SUBRESOURCE_UPLOADS, SUBRESOURCE_LOCATION, 
+            SUBRESOURCE_CORS, SUBRESOURCE_LOGGING, SUBRESOURCE_WEBSITE, 
+            SUBRESOURCE_REFERER, SUBRESOURCE_LIFECYCLE, SUBRESOURCE_DELETE, 
+            SUBRESOURCE_APPEND, UPLOAD_ID, PART_NUMBER, SECURITY_TOKEN, POSITION,
             RESPONSE_HEADER_CACHE_CONTROL, RESPONSE_HEADER_CONTENT_DISPOSITION, 
             RESPONSE_HEADER_CONTENT_ENCODING, RESPONSE_HEADER_CONTENT_LANGUAGE,
             RESPONSE_HEADER_CONTENT_TYPE, RESPONSE_HEADER_EXPIRES
@@ -67,7 +67,7 @@ public class SignUtils {
     public static String buildCanonicalString(String method, String resourcePath,
             RequestMessage request, String expires) {
         
-    	StringBuilder canonicalString = new StringBuilder();
+        StringBuilder canonicalString = new StringBuilder();
         canonicalString.append(method + NEW_LINE);
         
         Map<String, String> headers = request.getHeaders();
@@ -80,12 +80,11 @@ public class SignUtils {
                 }
                 
                 String lowerKey = header.getKey().toLowerCase();
-                
-                if (lowerKey.equals(HttpHeaders.CONTENT_TYPE.toLowerCase())
-                        || lowerKey.equals(HttpHeaders.CONTENT_MD5.toLowerCase())
-                        || lowerKey.equals(HttpHeaders.DATE.toLowerCase())
-                        || lowerKey.startsWith(OSSHeaders.OSS_PREFIX)) {
-                    headersToSign.put(lowerKey, header.getValue());
+                if (lowerKey.equals(HttpHeaders.CONTENT_TYPE.toLowerCase()) || 
+                        lowerKey.equals(HttpHeaders.CONTENT_MD5.toLowerCase()) || 
+                        lowerKey.equals(HttpHeaders.DATE.toLowerCase()) || 
+                        lowerKey.startsWith(OSSHeaders.OSS_PREFIX)) {
+                    headersToSign.put(lowerKey, header.getValue().trim());
                 }
             }
         }
@@ -128,7 +127,7 @@ public class SignUtils {
 
     private static String buildCanonicalizedResource(String resourcePath, Map<String, String> parameters) {
         
-    	assertTrue(resourcePath.startsWith("/"), "Resource path should start with slash character");
+        assertTrue(resourcePath.startsWith("/"), "Resource path should start with slash character");
 
         StringBuilder builder = new StringBuilder();
         builder.append(resourcePath);

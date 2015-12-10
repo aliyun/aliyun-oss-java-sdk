@@ -22,10 +22,7 @@ package com.aliyun.oss.model;
 import java.io.File;
 import java.io.InputStream;
 
-public class PutObjectRequest {
-    
-	private String bucketName;
-    private String key;
+public class PutObjectRequest extends GenericRequest {
     
     private File file;
     private InputStream inputStream;
@@ -33,60 +30,46 @@ public class PutObjectRequest {
     private ObjectMetadata metadata;
     
     public PutObjectRequest(String bucketName, String key, File file) {
-        this.bucketName = bucketName;
-        this.key = key;
+        this(bucketName, key, file, null);
+    }
+    
+    public PutObjectRequest(String bucketName, String key, File file, ObjectMetadata metadata) {
+        super(bucketName, key);
         this.file = file;
+        this.metadata = metadata;
+    }
+    
+    public PutObjectRequest(String bucketName, String key, InputStream input) {
+        this(bucketName, key, input, null);
     }
 
     public PutObjectRequest(String bucketName, String key, InputStream input, ObjectMetadata metadata) {
-        this.bucketName = bucketName;
-        this.key = key;
+        super(bucketName, key);
         this.inputStream = input;
         this.metadata = metadata;
     }
 
-	public String getBucketName() {
-		return bucketName;
-	}
+    public File getFile() {
+        return file;
+    }
 
-	public void setBucketName(String bucketName) {
-		this.bucketName = bucketName;
-	}
+    public void setFile(File file) {
+        this.file = file;
+    }
 
-	public String getKey() {
-		return key;
-	}
+    public InputStream getInputStream() {
+        return inputStream;
+    }
 
-	public void setKey(String key) {
-		this.key = key;
-	}
+    public void setInputStream(InputStream inputStream) {
+        this.inputStream = inputStream;
+    }
 
-	public File getFile() {
-		return file;
-	}
+    public ObjectMetadata getMetadata() {
+        return metadata;
+    }
 
-	public void setFile(File file) {
-		this.file = file;
-	}
-
-	public InputStream getInputStream() {
-		return inputStream;
-	}
-
-	public void setInputStream(InputStream inputStream) {
-		this.inputStream = inputStream;
-	}
-
-	public ObjectMetadata getMetadata() {
-		return metadata;
-	}
-
-	public void setMetadata(ObjectMetadata metadata) {
-		this.metadata = metadata;
-	}
-	
-	public PutObjectRequest withMetadata(ObjectMetadata metadata) {
-		setMetadata(metadata);
-		return this;
-	}
+    public void setMetadata(ObjectMetadata metadata) {
+        this.metadata = metadata;
+    }
 }

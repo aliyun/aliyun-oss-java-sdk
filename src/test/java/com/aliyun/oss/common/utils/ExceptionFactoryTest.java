@@ -32,16 +32,16 @@ import com.aliyun.oss.ClientException;
 
 public class ExceptionFactoryTest {
 
-	@Test
-	public void testCreateNetworkException() { 
-		SocketTimeoutException ste = new SocketTimeoutException();
-		ClientException ex = ExceptionFactory.createNetworkException(ste);
-		assertEquals(ex.getErrorCode(), ClientErrorCode.SOCKET_TIMEOUT);
-		ConnectTimeoutException cte = new ConnectTimeoutException();
-		ex = ExceptionFactory.createNetworkException(cte);
-		assertEquals(ex.getErrorCode(), ClientErrorCode.CONNECTION_TIMEOUT);
-		IOException ioe = new IOException();
-		ex = ExceptionFactory.createNetworkException(ioe);
-		assertEquals(ex.getErrorCode(), ClientErrorCode.UNKNOWN);
-	}
+    @Test
+    public void testCreateNetworkException() { 
+        SocketTimeoutException ste = new SocketTimeoutException();
+        ClientException ex = ExceptionFactory.createNetworkException(ste);
+        assertEquals(ex.getErrorCode(), ClientErrorCode.SOCKET_TIMEOUT);
+        ConnectTimeoutException cte = new ConnectTimeoutException();
+        ex = ExceptionFactory.createNetworkException(cte);
+        assertEquals(ex.getErrorCode(), ClientErrorCode.CONNECTION_TIMEOUT);
+        IOException ioe = new IOException();
+        ex = ExceptionFactory.createNetworkException(ioe);
+        assertEquals(ex.getErrorCode(), ClientErrorCode.UNKNOWN);
+    }
 }

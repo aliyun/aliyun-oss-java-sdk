@@ -40,8 +40,8 @@ public class IOUtils {
     public static String readStreamAsString(InputStream in, String charset)
             throws IOException {
         
-    	if (in == null) {
-        	return "";
+        if (in == null) {
+            return "";
         }
 
         Reader reader = null;
@@ -50,7 +50,7 @@ public class IOUtils {
 
         char[] buffer = new char[1024];
         try {
-        	int n = -1;
+            int n = -1;
             reader = new BufferedReader(new InputStreamReader(in, charset));
             while((n = reader.read(buffer)) != -1) {
                 writer.write(buffer, 0, n);
@@ -71,7 +71,8 @@ public class IOUtils {
     }
     
     public static byte[] readStreamAsByteArray(InputStream in)
-        throws IOException {
+            throws IOException {
+        
         if (in == null) {
             return new byte[0];
         }
@@ -103,37 +104,37 @@ public class IOUtils {
     }
     
     public static boolean checkFile(File file) {
-    	if (file == null) {
-    		return false;
-    	}
-    	
-    	boolean exists = false;
-    	boolean isFile = false;
-    	boolean canRead = false;
-    	try {
-    		exists = file.exists();
-    		isFile = file.isFile();
-    		canRead = file.canRead();
-    	} catch (SecurityException se) {
-    		// Swallow the exception and return false directly.
-    		return false;
-    	}
-    	
-    	return (exists && isFile && canRead);
+        if (file == null) {
+            return false;
+        }
+        
+        boolean exists = false;
+        boolean isFile = false;
+        boolean canRead = false;
+        try {
+            exists = file.exists();
+            isFile = file.isFile();
+            canRead = file.canRead();
+        } catch (SecurityException se) {
+            // Swallow the exception and return false directly.
+            return false;
+        }
+        
+        return (exists && isFile && canRead);
     }
     
     @SuppressWarnings("resource")
-	public static InputStream newRepeatableInputStream(final InputStream original) throws IOException {
-    	InputStream repeatable = null;
-    	if (!original.markSupported()) {
-    		if (original instanceof FileInputStream) {
-    			repeatable = new RepeatableFileInputStream((FileInputStream)original);
-    		} else {
-    			repeatable = new RepeatableInputStream(original, OSSConstants.DEFAULT_STREAM_BUFFER_SIZE);    			
-    		}
-    	} else {
-    		repeatable = original;
-    	}
-    	return repeatable;
+    public static InputStream newRepeatableInputStream(final InputStream original) throws IOException {
+        InputStream repeatable = null;
+        if (!original.markSupported()) {
+            if (original instanceof FileInputStream) {
+                repeatable = new RepeatableFileInputStream((FileInputStream)original);
+            } else {
+                repeatable = new RepeatableInputStream(original, OSSConstants.DEFAULT_STREAM_BUFFER_SIZE);                
+            }
+        } else {
+            repeatable = original;
+        }
+        return repeatable;
     }
 }

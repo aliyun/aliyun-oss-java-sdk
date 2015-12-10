@@ -62,6 +62,7 @@ import com.aliyun.oss.model.CompleteMultipartUploadRequest;
 import com.aliyun.oss.model.CopyObjectRequest;
 import com.aliyun.oss.model.CreateBucketRequest;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
+import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.InitiateMultipartUploadRequest;
 import com.aliyun.oss.model.ListMultipartUploadsRequest;
@@ -72,11 +73,12 @@ import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PartETag;
 import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.ResponseHeaderOverrides;
+import com.aliyun.oss.model.SetBucketAclRequest;
 import com.aliyun.oss.model.UploadPartRequest;
 
 public class OSSClientRequestTest {
     private static class RequestTestServiceClient extends ServiceClient {
-    	
+        
         public RequestTestServiceClient(ClientConfiguration conf) {
             super(conf);
         }
@@ -99,10 +101,10 @@ public class OSSClientRequestTest {
             };
         }
 
-		@Override
-		public void shutdown() {
-			// TODO Auto-generated method stub
-		}
+        @Override
+        public void shutdown() {
+            // TODO Auto-generated method stub
+        }
     }
 
     private static class RequestReceivedException extends OSSException{
@@ -131,10 +133,10 @@ public class OSSClientRequestTest {
     private static ClientConfiguration conf;
     
     static {
-    	conf = new ClientConfiguration();
-    	List<String> cnameExcludeList = new ArrayList<String>();
-    	cnameExcludeList.add("localhost");
-    	conf.setCnameExcludeList(cnameExcludeList);
+        conf = new ClientConfiguration();
+        List<String> cnameExcludeList = new ArrayList<String>();
+        cnameExcludeList.add("localhost");
+        conf.setCnameExcludeList(cnameExcludeList);
     }
     
     final OSSBucketOperation bucketOp =
@@ -161,10 +163,10 @@ public class OSSClientRequestTest {
     
     @Before
     public void setUp() {
-    	bucketOp.setEndpoint(endpoint);
-    	objectOp.setEndpoint(endpoint);
-    	multipartOp.setEndpoint(endpoint);
-	}
+        bucketOp.setEndpoint(endpoint);
+        objectOp.setEndpoint(endpoint);
+        multipartOp.setEndpoint(endpoint);
+    }
 
     @SuppressWarnings("serial")
     @Test
@@ -173,19 +175,18 @@ public class OSSClientRequestTest {
         // expected acl: private
         TestAction test1 = new TestAction(){
             public void run() throws Exception{
-                bucketOp.setBucketAcl(bucketName, null);
+                bucketOp.setBucketAcl(new SetBucketAclRequest(bucketName, null));
             }
         };
         executeTest(test1, HttpMethod.PUT, bucketName + "." + endpoint.getHost(), "",
                 new HashMap<String, String>(){
             {
-                put("x-oss-acl", "private");
             }
         });
         // expected acl: public-read
         TestAction test2 = new TestAction(){
             public void run() throws Exception{
-                bucketOp.setBucketAcl(bucketName, CannedAccessControlList.PublicRead);
+                bucketOp.setBucketAcl(new SetBucketAclRequest(bucketName, CannedAccessControlList.PublicRead));
             }
         };
         executeTest(test2, HttpMethod.PUT, bucketName + "." + endpoint.getHost(), "",
@@ -197,7 +198,7 @@ public class OSSClientRequestTest {
         // expected acl: public-read-write
         TestAction test3 = new TestAction(){
             public void run() throws Exception{
-                bucketOp.setBucketAcl(bucketName, CannedAccessControlList.PublicReadWrite);
+                bucketOp.setBucketAcl(new SetBucketAclRequest(bucketName, CannedAccessControlList.PublicReadWrite));
             }
         };
         executeTest(test3, HttpMethod.PUT, bucketName + "." + endpoint.getHost(), "",
@@ -206,15 +207,28 @@ public class OSSClientRequestTest {
                 put("x-oss-acl", "public-read-write");
             }
         });
+     // expected acl: private
+        TestAction test4 = new TestAction(){
+            public void run() throws Exception{
+                bucketOp.setBucketAcl(new SetBucketAclRequest(bucketName, CannedAccessControlList.Private));
+            }
+        };
+        executeTest(test4, HttpMethod.PUT, bucketName + "." + endpoint.getHost(), "",
+                new HashMap<String, String>(){
+            {
+                put("x-oss-acl", "private");
+            }
+        });
+
 
         // Get Bucket ACL
         // expected acl: private
-        TestAction test4 = new TestAction(){
+        TestAction test5 = new TestAction(){
             public void run() throws Exception{
-                bucketOp.getBucketAcl(bucketName);
+                bucketOp.getBucketAcl(new GenericRequest(bucketName));
             }
         };
-        executeTest(test4, HttpMethod.GET, bucketName + "." + endpoint.getHost(), "?acl", null);
+        executeTest(test5, HttpMethod.GET, bucketName + "." + endpoint.getHost(), "?acl", null);
 
     }
     
@@ -239,7 +253,7 @@ public class OSSClientRequestTest {
             
             @Override
             public void run() throws Exception {
-                bucketOp.getBucketLocation(bucketName);
+                bucketOp.getBucketLocation(new GenericRequest(bucketName));
             }
         };
         executeTest(test, HttpMethod.GET, bucketName + "." + endpoint.getHost(), "?location", null);
@@ -394,7 +408,7 @@ public class OSSClientRequestTest {
     public void testGetObjectRequest(){
         TestAction test1 = new TestAction(){
             public void run() throws Exception{
-                objectOp.getObject(bucketName, objectKey);
+                objectOp.getObject(new GetObjectRequest(bucketName, objectKey));
             }
         };
         executeTest(test1, HttpMethod.GET, bucketName + "." + endpoint.getHost(), objectKey, null);
@@ -460,21 +474,21 @@ public class OSSClientRequestTest {
 
         /* All following ranges regarded as valid input.
         try {
-        	request.setRange(100, -1);
+            request.setRange(100, -1);
             expectedHeaders.put(RANGE_HEADER, "bytes=100-");
             executeTest(test, HttpMethod.GET, bucketName + "." + endpoint.getHost(), objectKey, expectedHeaders);
             fail("Get object should not be successful.");
         } catch (IllegalArgumentException e) {
-        	// success
+            // success
         }
 
         try {
-        	request.setRange(-1, 100);
+            request.setRange(-1, 100);
             expectedHeaders.put(RANGE_HEADER, "bytes=-100");
             executeTest(test, HttpMethod.GET, bucketName + "." + endpoint.getHost(), objectKey, expectedHeaders);
             fail("Get object should not be successful.");
         } catch (IllegalArgumentException e) {
-        	// success
+            // success
         }
 
         try {
@@ -647,11 +661,11 @@ public class OSSClientRequestTest {
         request.setResponseHeaders(responseHeaders);
 
         expectedUrlPrefix = endpoint.getScheme() 
-        		+ "://" + endpoint.getHost() 
-        		+ "/" + objectKey
+                + "://" + endpoint.getHost() 
+                + "/" + objectKey
                 + "?Expires="
-        		+ Long.toString(expiration.getTime() / 1000) 
-        		+ "&OSSAccessKeyId=" + accessId
+                + Long.toString(expiration.getTime() / 1000) 
+                + "&OSSAccessKeyId=" + accessId
                 + "&Signature=";
         try {
             url = ossClient.generatePresignedUrl(request);

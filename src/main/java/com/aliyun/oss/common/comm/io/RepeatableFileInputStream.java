@@ -19,20 +19,18 @@
 
 package com.aliyun.oss.common.comm.io;
 
+import static com.aliyun.oss.common.utils.LogUtils.getLog;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.FileChannel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.aliyun.oss.ClientException;
 
 public class RepeatableFileInputStream extends InputStream {
-	private static final Log log = LogFactory.getLog(RepeatableFileInputStream.class);
-
+    
     private File file = null;
     private FileInputStream fis = null;
     private FileChannel fileChannel = null;
@@ -43,34 +41,32 @@ public class RepeatableFileInputStream extends InputStream {
     }
     
     public RepeatableFileInputStream(FileInputStream fis) throws IOException {
-    	this(fis, null);
+        this(fis, null);
     }
     
     public RepeatableFileInputStream(FileInputStream fis, File file) throws IOException {
-    	this.file = file;
+        this.file = file;
         this.fis = fis;
         this.fileChannel = fis.getChannel();
         this.markPos = fileChannel.position();
     }
 
     public void reset() throws IOException {
-    	fileChannel.position(markPos);
-        if (log.isTraceEnabled())
-            log.trace("Reset to position " + markPos);
+        fileChannel.position(markPos);
+        getLog().trace("Reset to position " + markPos);
     }
 
     public boolean markSupported() {
-    	return true;
+        return true;
     }
 
     public void mark(int readlimit) {
-    	try {
+        try {
             markPos = fileChannel.position();
         } catch (IOException e) {
             throw new ClientException("Failed to mark file position", e);
         }
-        if (log.isTraceEnabled())
-            log.trace("File input stream marked at position " + markPos);
+        getLog().trace("File input stream marked at position " + markPos);
     }
 
     public int available() throws IOException {
@@ -86,9 +82,9 @@ public class RepeatableFileInputStream extends InputStream {
     }
 
     @Override
-	public long skip(long n) throws IOException {
-		return fis.skip(n);
-	}
+    public long skip(long n) throws IOException {
+        return fis.skip(n);
+    }
 
     public int read(byte[] b, int off, int len) throws IOException {
         return fis.read(b, off, len);
@@ -99,7 +95,7 @@ public class RepeatableFileInputStream extends InputStream {
     }
 
     public File getFile() {
-    	return this.file;
+        return this.file;
     }
 }
 

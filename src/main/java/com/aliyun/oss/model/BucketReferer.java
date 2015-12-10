@@ -30,43 +30,43 @@ import java.util.List;
  *
  */
 public class BucketReferer {
-	private boolean allowEmptyReferer = true;
-	private List<String> refererList = new ArrayList<String>();
+    private boolean allowEmptyReferer = true;
+    private List<String> refererList = new ArrayList<String>();
 
-	public BucketReferer() {
-		
-	}
-	
-	public BucketReferer(boolean allowEmptyReferer, List<String> refererList) {
-		setAllowEmptyReferer(allowEmptyReferer);
-		setRefererList(refererList);
-	}
-	
-	@Deprecated
-	public boolean allowEmpty() {
-		return this.allowEmptyReferer;
-	}
-	
-	public boolean isAllowEmptyReferer() {
-		return allowEmptyReferer;
-	}
+    public BucketReferer() {
+        
+    }
+    
+    public BucketReferer(boolean allowEmptyReferer, List<String> refererList) {
+        setAllowEmptyReferer(allowEmptyReferer);
+        setRefererList(refererList);
+    }
+    
+    @Deprecated
+    public boolean allowEmpty() {
+        return this.allowEmptyReferer;
+    }
+    
+    public boolean isAllowEmptyReferer() {
+        return allowEmptyReferer;
+    }
 
-	public void setAllowEmptyReferer(boolean allowEmptyReferer) {
-		this.allowEmptyReferer = allowEmptyReferer;
-	}
+    public void setAllowEmptyReferer(boolean allowEmptyReferer) {
+        this.allowEmptyReferer = allowEmptyReferer;
+    }
 
-	public List<String> getRefererList() {
-		return refererList;
-	}
-	
-	public void setRefererList(List<String> refererList) {
-		this.refererList.clear();
-		if (refererList != null && !refererList.isEmpty()) {
-			this.refererList.addAll(refererList);
-		}
-	}
-	
-	public void clearRefererList() {
-		this.refererList.clear();
-	}
+    public List<String> getRefererList() {
+        return refererList;
+    }
+    
+    public void setRefererList(List<String> refererList) {
+        this.refererList.clear();
+        if (refererList != null && !refererList.isEmpty()) {
+            this.refererList.addAll(refererList);
+        }
+    }
+    
+    public void clearRefererList() {
+        this.refererList.clear();
+    }
 }

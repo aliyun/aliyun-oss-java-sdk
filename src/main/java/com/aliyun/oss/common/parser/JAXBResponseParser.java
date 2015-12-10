@@ -19,7 +19,7 @@
 
 package com.aliyun.oss.common.parser;
 
-import static com.aliyun.oss.internal.OSSConstants.RESOURCE_NAME_COMMON;
+import static com.aliyun.oss.internal.OSSUtils.COMMON_RESOURCE_MANAGER;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -36,15 +36,12 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.aliyun.oss.common.comm.ResponseMessage;
-import com.aliyun.oss.common.utils.ResourceManager;
 
 /**
  * Implementation of <code>ResponseParser<code> with JAXB.
  */
 public class JAXBResponseParser implements ResponseParser<Object> {
-
-	private static ResourceManager rm = ResourceManager.getInstance(RESOURCE_NAME_COMMON);
-	
+    
     private static final SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
 
     // It allows to specify the class type, if the class type is specified,
@@ -86,18 +83,17 @@ public class JAXBResponseParser implements ResponseParser<Object> {
             // if XMLReader is specified in the SAXSource instance.
             return um.unmarshal(getSAXSource(responseContent));
         } catch (JAXBException e) {
-        	throw new ResponseParseException(rm.getFormattedString("FailedToParseResponse", 
-            		e.getMessage()), e);
+            throw new ResponseParseException(COMMON_RESOURCE_MANAGER.getFormattedString(
+                    "FailedToParseResponse", e.getMessage()), e);
         } catch (SAXException e) {
-        	throw new ResponseParseException(rm.getFormattedString("FailedToParseResponse", 
-            		e.getMessage()), e);
+            throw new ResponseParseException(COMMON_RESOURCE_MANAGER.getFormattedString(
+                    "FailedToParseResponse", e.getMessage()), e);
         } catch (ParserConfigurationException e) {
-            throw new ResponseParseException(rm.getFormattedString("FailedToParseResponse", 
-            		e.getMessage()), e);
+            throw new ResponseParseException(COMMON_RESOURCE_MANAGER.getFormattedString(
+                    "FailedToParseResponse", e.getMessage()), e);
         }
     }
 
-    
     private static synchronized void initJAXBContext(Class<?> c)
             throws JAXBException {
         if (!cachedContexts.containsKey(c)){
@@ -108,7 +104,6 @@ public class JAXBResponseParser implements ResponseParser<Object> {
 
     private static SAXSource getSAXSource(InputStream content)
             throws SAXException, ParserConfigurationException {
-
         SAXParser saxParser = saxParserFactory.newSAXParser();
         return new SAXSource(saxParser.getXMLReader(), new InputSource(content));
     }

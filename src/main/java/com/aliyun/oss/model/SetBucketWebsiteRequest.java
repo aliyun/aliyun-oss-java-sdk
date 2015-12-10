@@ -19,38 +19,29 @@
 
 package com.aliyun.oss.model;
 
-public class SetBucketWebsiteRequest extends WebServiceRequest {
+public class SetBucketWebsiteRequest extends GenericRequest {
 
-	private String bucketName;
-	private String indexDocument;
-	private String errorDocument;
-	
-	public SetBucketWebsiteRequest(String bucketName) {
-		this.bucketName = bucketName;
-	}
-	
-	public String getBucketName() {
-		return bucketName;
-	}
-	
-	public void setBucketName(String bucketName) {
-		this.bucketName = bucketName;
-	}
-	
-	public String getIndexDocument() {
-		return indexDocument;
-	}
-	
-	public void setIndexDocument(String indexDocument) {
-		this.indexDocument = indexDocument;
-	}
-	
-	public String getErrorDocument() {
-		return errorDocument;
-	}
-	
-	public void setErrorDocument(String errorDocument) {
-		this.errorDocument = errorDocument;
-	}
-	
+    private String indexDocument;
+    private String errorDocument;
+    
+    public SetBucketWebsiteRequest(String bucketName) {
+        super(bucketName);
+    }
+    
+    public String getIndexDocument() {
+        return indexDocument;
+    }
+    
+    public void setIndexDocument(String indexDocument) {
+        this.indexDocument = indexDocument;
+    }
+    
+    public String getErrorDocument() {
+        return errorDocument;
+    }
+    
+    public void setErrorDocument(String errorDocument) {
+        this.errorDocument = errorDocument;
+    }
+    
 }

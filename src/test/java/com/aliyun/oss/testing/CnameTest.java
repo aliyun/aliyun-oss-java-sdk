@@ -31,32 +31,32 @@ import com.aliyun.oss.OSSClient;
 
 public class CnameTest {
 
-	@Ignore
-	@SuppressWarnings("unused")
-	public void testCnameExcludeList() {
-		ClientConfiguration cc = new ClientConfiguration();
-		// Defalut CNAME Exclude List: [.aliyuncs.com, .aliyun-inc.com, localhost]
-		List<String> currentExcludeList = cc.getCnameExcludeList();
-		Assert.assertEquals(currentExcludeList.size(), 3);
-		Assert.assertTrue(currentExcludeList.contains(".aliyuncs.com"));
-		Assert.assertTrue(currentExcludeList.contains(".aliyun-inc.com"));
-		Assert.assertTrue(currentExcludeList.contains("localhost"));
-		
-		List<String> cnameExcludeList = new ArrayList<String>();
-		String excludeItem = "http://oss-cn-hangzhou.aliyuncs.gd";
-		// Add your customized host name here
-		cnameExcludeList.add(excludeItem);
-		cc.setCnameExcludeList(cnameExcludeList);
-		currentExcludeList = cc.getCnameExcludeList();
-		Assert.assertEquals(currentExcludeList.size(), 4);
-		Assert.assertTrue(currentExcludeList.contains(excludeItem));
-		Assert.assertTrue(currentExcludeList.contains(".aliyuncs.com"));
-		Assert.assertTrue(currentExcludeList.contains(".aliyun-inc.com"));
-		Assert.assertTrue(currentExcludeList.contains("localhost"));
-		
-		OSSClient client = new OSSClient("<input your customized host name>", 
-				"<input your access id>", "<input your access key>", cc);
-		// Do some operations with client here...
-	}
+    @Ignore
+    @SuppressWarnings("unused")
+    public void testCnameExcludeList() {
+        ClientConfiguration cc = new ClientConfiguration();
+        // Defalut CNAME Exclude List: [.aliyuncs.com, .aliyun-inc.com, localhost]
+        List<String> currentExcludeList = cc.getCnameExcludeList();
+        Assert.assertEquals(currentExcludeList.size(), 3);
+        Assert.assertTrue(currentExcludeList.contains(".aliyuncs.com"));
+        Assert.assertTrue(currentExcludeList.contains(".aliyun-inc.com"));
+        Assert.assertTrue(currentExcludeList.contains("localhost"));
+        
+        List<String> cnameExcludeList = new ArrayList<String>();
+        String excludeItem = "http://oss-cn-hangzhou.aliyuncs.gd";
+        // Add your customized host name here
+        cnameExcludeList.add(excludeItem);
+        cc.setCnameExcludeList(cnameExcludeList);
+        currentExcludeList = cc.getCnameExcludeList();
+        Assert.assertEquals(currentExcludeList.size(), 4);
+        Assert.assertTrue(currentExcludeList.contains(excludeItem));
+        Assert.assertTrue(currentExcludeList.contains(".aliyuncs.com"));
+        Assert.assertTrue(currentExcludeList.contains(".aliyun-inc.com"));
+        Assert.assertTrue(currentExcludeList.contains("localhost"));
+        
+        OSSClient client = new OSSClient("<input your customized host name>", 
+                "<input your access id>", "<input your access key>", cc);
+        // Do some operations with client here...
+    }
 
 }

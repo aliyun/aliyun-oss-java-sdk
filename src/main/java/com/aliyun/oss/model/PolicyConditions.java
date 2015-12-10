@@ -28,14 +28,14 @@ import java.util.Map;
  * 表示一条Conditions项。
  */
 class ConditionItem {
-	/**
-	 * Conditions元组类型，目前支持二元组（{ ... }）、三元组（[ ... ]）。
-	 */
-	enum TupleType {
-	    Two,
-	    Three
-	};
-	
+    /**
+     * Conditions元组类型，目前支持二元组（{ ... }）、三元组（[ ... ]）。
+     */
+    enum TupleType {
+        Two,
+        Three
+    };
+    
     private String name;
     private MatchMode matchMode;
     private String value;
@@ -91,53 +91,53 @@ class ConditionItem {
         return jsonizedCond;
     }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public MatchMode getMatchMode() {
-		return matchMode;
-	}
+    public MatchMode getMatchMode() {
+        return matchMode;
+    }
 
-	public void setMatchMode(MatchMode matchMode) {
-		this.matchMode = matchMode;
-	}
+    public void setMatchMode(MatchMode matchMode) {
+        this.matchMode = matchMode;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	public TupleType getTupleType() {
-		return tupleType;
-	}
+    public TupleType getTupleType() {
+        return tupleType;
+    }
 
-	public void setTupleType(TupleType tupleType) {
-		this.tupleType = tupleType;
-	}
+    public void setTupleType(TupleType tupleType) {
+        this.tupleType = tupleType;
+    }
 
-	public long getMinimum() {
-		return minimum;
-	}
+    public long getMinimum() {
+        return minimum;
+    }
 
-	public void setMinimum(long minimum) {
-		this.minimum = minimum;
-	}
+    public void setMinimum(long minimum) {
+        this.minimum = minimum;
+    }
 
-	public long getMaximum() {
-		return maximum;
-	}
+    public long getMaximum() {
+        return maximum;
+    }
 
-	public void setMaximum(long maximum) {
-		this.maximum = maximum;
-	}
+    public void setMaximum(long maximum) {
+        this.maximum = maximum;
+    }
 }
 
 /**
@@ -159,11 +159,11 @@ public class PolicyConditions {
     private List<ConditionItem> _conds = new ArrayList<ConditionItem>(); 
 
     static {
-    	List<MatchMode> ordinaryMatchModes = new ArrayList<MatchMode>();
-    	ordinaryMatchModes.add(MatchMode.Exact);
-    	ordinaryMatchModes.add(MatchMode.StartWith);
-    	List<MatchMode> specialMatchModes = new ArrayList<MatchMode>();
-    	specialMatchModes.add(MatchMode.Range);
+        List<MatchMode> ordinaryMatchModes = new ArrayList<MatchMode>();
+        ordinaryMatchModes.add(MatchMode.Exact);
+        ordinaryMatchModes.add(MatchMode.StartWith);
+        List<MatchMode> specialMatchModes = new ArrayList<MatchMode>();
+        specialMatchModes.add(MatchMode.Range);
 
         _supportedMatchRules.put(COND_CONTENT_LENGTH_RANGE, specialMatchModes);
 
@@ -221,7 +221,7 @@ public class PolicyConditions {
     }
 
     public String jsonize() {
-    	StringBuilder jsonizedConds = new StringBuilder();
+        StringBuilder jsonizedConds = new StringBuilder();
         jsonizedConds.append("\"conditions\":[");
         for (ConditionItem cond : _conds)
             jsonizedConds.append(cond.jsonize());

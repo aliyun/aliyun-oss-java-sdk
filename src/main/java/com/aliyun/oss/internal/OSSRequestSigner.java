@@ -41,13 +41,13 @@ public class OSSRequestSigner implements RequestSigner {
 
     @Override
     public void sign(RequestMessage request) throws ClientException {
-    	String accessKeyId = creds.getAccessKeyId();
+        String accessKeyId = creds.getAccessKeyId();
         String secretAccessKey = creds.getSecretAccessKey();
 
         if (accessKeyId.length() > 0 && secretAccessKey.length() > 0) {
             String canonicalString = SignUtils.buildCanonicalString(httpMethod, resourcePath, request, null);
             String signature = ServiceSignature.create().computeSignature(secretAccessKey, canonicalString);
-            request.addHeader(OSSHeaders.AUTHORIZATION, "OSS " + accessKeyId + ":" + signature);
+            request.addHeader(OSSHeaders.AUTHORIZATION, OSSUtils.composeRequestAuthorization(accessKeyId, signature));
         } 
     }
 }

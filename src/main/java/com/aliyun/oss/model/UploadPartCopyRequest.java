@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 public class UploadPartCopyRequest extends WebServiceRequest {
-	
+    
     private String bucketName;
     
     private String key;
@@ -54,11 +54,11 @@ public class UploadPartCopyRequest extends WebServiceRequest {
     public UploadPartCopyRequest() {}
     
     public UploadPartCopyRequest(String sourceBucketName, String sourceKey, 
-    		String targetBucketName, String targetKey) {
-    	setBucketName(targetBucketName);
-    	setKey(targetKey);
-    	setSourceBucketName(sourceBucketName);
-    	setSourceKey(sourceKey);
+            String targetBucketName, String targetKey) {
+        setBucketName(targetBucketName);
+        setKey(targetKey);
+        setSourceBucketName(sourceBucketName);
+        setSourceKey(sourceKey);
     }
     
     /**
@@ -173,30 +173,30 @@ public class UploadPartCopyRequest extends WebServiceRequest {
         this.md5Digest = md5Digest;
     }
 
-	public String getSourceBucketName() {
-		return sourceBucketName;
-	}
+    public String getSourceBucketName() {
+        return sourceBucketName;
+    }
 
-	public void setSourceBucketName(String sourceBucketName) {
-		this.sourceBucketName = sourceBucketName;
-	}
+    public void setSourceBucketName(String sourceBucketName) {
+        this.sourceBucketName = sourceBucketName;
+    }
 
-	public String getSourceKey() {
-		return sourceKey;
-	}
+    public String getSourceKey() {
+        return sourceKey;
+    }
 
-	public void setSourceKey(String sourceKey) {
-		this.sourceKey = sourceKey;
-	}
+    public void setSourceKey(String sourceKey) {
+        this.sourceKey = sourceKey;
+    }
 
-	public Long getBeginIndex() {
-		return beginIndex;
-	}
+    public Long getBeginIndex() {
+        return beginIndex;
+    }
 
-	public void setBeginIndex(Long beginIndex) {
-		this.beginIndex = beginIndex;
-	}
-	
+    public void setBeginIndex(Long beginIndex) {
+        this.beginIndex = beginIndex;
+    }
+    
     public List<String> getMatchingETagConstraints() {
         return matchingETagConstraints;
     }
@@ -204,12 +204,12 @@ public class UploadPartCopyRequest extends WebServiceRequest {
     public void setMatchingETagConstraints(List<String> matchingETagConstraints) {
         this.matchingETagConstraints.clear();
         if (matchingETagConstraints != null && !matchingETagConstraints.isEmpty()) {
-        	this.matchingETagConstraints.addAll(matchingETagConstraints);
+            this.matchingETagConstraints.addAll(matchingETagConstraints);
         }
     }
     
     public void clearMatchingETagConstraints() {
-    	this.matchingETagConstraints.clear();
+        this.matchingETagConstraints.clear();
     }
 
     public List<String> getNonmatchingEtagConstraints() {
@@ -217,14 +217,14 @@ public class UploadPartCopyRequest extends WebServiceRequest {
     }
 
     public void setNonmatchingETagConstraints(List<String> nonmatchingEtagConstraints) {
-    	this.nonmatchingEtagConstraints.clear();
+        this.nonmatchingEtagConstraints.clear();
         if (nonmatchingEtagConstraints != null && !nonmatchingEtagConstraints.isEmpty()) {
-        	this.nonmatchingEtagConstraints.addAll(nonmatchingEtagConstraints);
+            this.nonmatchingEtagConstraints.addAll(nonmatchingEtagConstraints);
         }
     }
     
     public void clearNonmatchingETagConstraints() {
-    	this.nonmatchingEtagConstraints.clear();
+        this.nonmatchingEtagConstraints.clear();
     }
 
     public Date getUnmodifiedSinceConstraint() {
