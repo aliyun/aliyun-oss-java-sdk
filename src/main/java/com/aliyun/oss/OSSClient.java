@@ -574,7 +574,7 @@ public class OSSClient implements OSS {
     @Override
     public void deleteObject(String bucketName, String key) 
             throws OSSException, ClientException {
-        this.deleteBucket(new GenericRequest(bucketName, key));
+        this.deleteObject(new GenericRequest(bucketName, key));
     }
     
     @Override
@@ -841,7 +841,7 @@ public class OSSClient implements OSS {
     @Override
     public void deleteBucketLogging(String bucketName) 
             throws OSSException, ClientException {
-        this.deleteBucket(new GenericRequest(bucketName));
+        this.deleteBucketLogging(new GenericRequest(bucketName));
     }
     
     @Override
