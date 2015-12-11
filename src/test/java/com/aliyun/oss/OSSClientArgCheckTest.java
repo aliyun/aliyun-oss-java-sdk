@@ -123,13 +123,6 @@ public class OSSClientArgCheckTest {
         // too big content-length
         final long G5 = 5 * 1024 * 1024 * 1024L;
         metadata.setContentLength(G5);
-        try{
-            metadata.setContentLength(G5 + 1);
-            fail();
-        } catch(IllegalArgumentException e) {}
-
-        // valid content-length
-        metadata.setContentLength(G5);
 
         // Invalid bucket name
         metadata.setContentLength(contentBuffer.length);
