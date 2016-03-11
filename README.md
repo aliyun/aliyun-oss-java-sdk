@@ -12,7 +12,7 @@ cd aliyun-oss-java-sdk
 mvn clean packge -DskipTests
 ```
 
-- to run function tests, you will have to config user account in src/test/java/com/aliyun/oss/integrationtests/TestConfig.java, 
+- to run function tests, you will have to config user account in src/test/java/com/aliyun/oss/integrationtests/TestConfig.java
 
 ## Authors && Contributors
 
