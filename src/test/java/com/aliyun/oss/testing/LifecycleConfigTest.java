@@ -59,7 +59,7 @@ public class LifecycleConfigTest {
             Assert.assertEquals(r0.getId(), "delete obsoleted files");
             Assert.assertEquals(r0.getPrefix(), "obsoleted/");
             Assert.assertEquals(r0.getStatus(), RuleStatus.Enabled);
-            Assert.assertEquals(r0.getExpriationDays(), 3);
+            Assert.assertEquals(r0.getExpirationDays(), 3);
             
             LifecycleRule r1 = rules.get(1);
             Assert.assertEquals(r1.getId(), "delete temporary files");

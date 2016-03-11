@@ -19,12 +19,13 @@
 
 package com.aliyun.oss.common.parser;
 
+import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-
-import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
+import java.util.Map;
 
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.common.comm.io.FixedLengthInputStream;
@@ -32,15 +33,26 @@ import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.CompleteMultipartUploadRequest;
 import com.aliyun.oss.model.CreateBucketRequest;
+import com.aliyun.oss.model.DeleteBucketCnameRequest;
 import com.aliyun.oss.model.DeleteObjectsRequest;
 import com.aliyun.oss.model.LifecycleRule;
+import com.aliyun.oss.model.LifecycleRule.AbortMultipartUpload;
+import com.aliyun.oss.model.LifecycleRule.RuleStatus;
 import com.aliyun.oss.model.PartETag;
+import com.aliyun.oss.model.PutBucketImageRequest;
+import com.aliyun.oss.model.PutImageStyleRequest;
 import com.aliyun.oss.model.SetBucketCORSRequest;
+import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
+import com.aliyun.oss.model.DeleteBucketReplicationRequest;
+import com.aliyun.oss.model.RoutingRule;
+import com.aliyun.oss.model.AddBucketCnameRequest;
 import com.aliyun.oss.model.SetBucketLifecycleRequest;
 import com.aliyun.oss.model.SetBucketLoggingRequest;
+import com.aliyun.oss.model.AddBucketReplicationRequest;
+import com.aliyun.oss.model.SetBucketTaggingRequest;
 import com.aliyun.oss.model.SetBucketWebsiteRequest;
-import com.aliyun.oss.model.LifecycleRule.RuleStatus;
-import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
+import com.aliyun.oss.model.TagSet;
+import com.aliyun.oss.model.UserQos;
 
 /**
  * A collection of marshallers that marshall HTTP request into crossponding input stream. 
@@ -56,8 +68,15 @@ public final class RequestMarshallers {
     public static final SetBucketLoggingRequestMarshaller setBucketLoggingRequestMarshaller = new SetBucketLoggingRequestMarshaller();
     public static final SetBucketWebsiteRequestMarshaller setBucketWebsiteRequestMarshaller = new SetBucketWebsiteRequestMarshaller();
     public static final SetBucketLifecycleRequestMarshaller setBucketLifecycleRequestMarshaller = new SetBucketLifecycleRequestMarshaller();
+	public static final PutBucketImageRequestMarshaller putBucketImageRequestMarshaller = new PutBucketImageRequestMarshaller();
+	public static final PutImageStyleRequestMarshaller putImageStyleRequestMarshaller = new PutImageStyleRequestMarshaller();
     public static final SetBucketCORSRequestMarshaller setBucketCORSRequestMarshaller = new SetBucketCORSRequestMarshaller();
-    
+    public static final SetBucketTaggingRequestMarshaller setBucketTaggingRequestMarshaller = new SetBucketTaggingRequestMarshaller();
+    public static final AddBucketReplicationRequestMarshaller addBucketReplicationRequestMarshaller = new AddBucketReplicationRequestMarshaller();
+    public static final DeleteBucketReplicationRequestMarshaller deleteBucketReplicationRequestMarshaller = new DeleteBucketReplicationRequestMarshaller();    
+    public static final AddBucketCnameRequestMarshaller addBucketCnameRequestMarshaller = new AddBucketCnameRequestMarshaller();
+    public static final DeleteBucketCnameRequestMarshaller deleteBucketCnameRequestMarshaller = new DeleteBucketCnameRequestMarshaller();    
+    public static final SetBucketQosRequestMarshaller setBucketQosRequestMarshaller = new SetBucketQosRequestMarshaller();    
     public static final CompleteMultipartUploadRequestMarshaller completeMultipartUploadRequestMarshaller = new CompleteMultipartUploadRequestMarshaller();
     
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
@@ -89,14 +108,72 @@ public final class RequestMarshallers {
         
     }
     
+	public static final class PutImageStyleRequestMarshaller implements RequestMarshaller<PutImageStyleRequest> {
+		@Override
+		public FixedLengthInputStream marshall(PutImageStyleRequest request) {
+			StringBuffer xmlBody = new StringBuffer();
+	        xmlBody.append("<Style>");
+	        xmlBody.append("<Content>" + request.GetStyle() + "</Content>");
+	        xmlBody.append("</Style>");
+	        return stringMarshaller.marshall(xmlBody.toString());
+		}
+	}
+
+	public static final class PutBucketImageRequestMarshaller  implements RequestMarshaller<PutBucketImageRequest> {
+		@Override
+		public FixedLengthInputStream marshall(PutBucketImageRequest request) {
+			StringBuffer xmlBody = new StringBuffer();
+	        xmlBody.append("<Channel>");
+	        if (request.GetIsForbidOrigPicAccess()) {
+	        	xmlBody.append("<OrigPicForbidden>true</OrigPicForbidden>");
+	        } else {
+	        	xmlBody.append("<OrigPicForbidden>false</OrigPicForbidden>");
+	        }
+	        
+	        if (request.GetIsUseStyleOnly()) {
+	        	xmlBody.append("<UseStyleOnly>true</UseStyleOnly>");
+	        } else {
+	        	xmlBody.append("<UseStyleOnly>false</UseStyleOnly>");
+	        }
+	        
+	        if (request.GetIsAutoSetContentType()) {
+	        	xmlBody.append("<AutoSetContentType>true</AutoSetContentType>");
+	        } else {
+	        	xmlBody.append("<AutoSetContentType>false</AutoSetContentType>");
+	        }
+	        
+	        if (request.GetIsUseSrcFormat()) {
+	        	xmlBody.append("<UseSrcFormat>true</UseSrcFormat>");
+	        } else {
+	        	xmlBody.append("<UseSrcFormat>false</UseSrcFormat>");
+	        }
+	        
+	        if (request.GetIsSetAttachName()) {
+	        	xmlBody.append("<SetAttachName>true</SetAttachName>");
+	        } else {
+	        	xmlBody.append("<SetAttachName>false</SetAttachName>");
+	        }
+	        xmlBody.append("<Default404Pic>" + request.GetDefault404Pic() + "</Default404Pic>");
+	        xmlBody.append("<StyleDelimiters>" + request.GetStyleDelimiters() + "</StyleDelimiters>");
+	        
+	        xmlBody.append("</Channel>");
+			return stringMarshaller.marshall(xmlBody.toString());
+		}
+	}
+    
     public static final class CreateBucketRequestMarshaller implements RequestMarshaller<CreateBucketRequest> {
 
         @Override
         public FixedLengthInputStream marshall(CreateBucketRequest request) {
             StringBuffer xmlBody = new StringBuffer();
-            if (request.getLocationConstraint() != null) {
+            if (request.getLocationConstraint() != null || request.getStorageClass() != null) {
                 xmlBody.append("<CreateBucketConfiguration>");
-                xmlBody.append("<LocationConstraint>" + request.getLocationConstraint() + "</LocationConstraint>");
+                if (request.getLocationConstraint() != null) {
+                    xmlBody.append("<LocationConstraint>" + request.getLocationConstraint() + "</LocationConstraint>");
+                }
+                if (request.getStorageClass() != null) {
+                    xmlBody.append("<StorageClass>" + request.getStorageClass().toString() + "</StorageClass>");
+                }
                 xmlBody.append("</CreateBucketConfiguration>");
             }
             return stringMarshaller.marshall(xmlBody.toString());
@@ -157,14 +234,67 @@ public final class RequestMarshallers {
         public FixedLengthInputStream marshall(SetBucketWebsiteRequest request) {
             StringBuffer xmlBody = new StringBuffer();
             xmlBody.append("<WebsiteConfiguration>");
-            xmlBody.append("<IndexDocument>");
-            xmlBody.append("<Suffix>" + request.getIndexDocument() + "</Suffix>");
-            xmlBody.append("</IndexDocument>");
+            if(request.getIndexDocument() != null){
+                xmlBody.append("<IndexDocument>");
+                xmlBody.append("<Suffix>" + request.getIndexDocument() + "</Suffix>");
+                xmlBody.append("</IndexDocument>");
+            }
             if(request.getErrorDocument() != null){
                 xmlBody.append("<ErrorDocument>");
                 xmlBody.append("<Key>" + request.getErrorDocument() + "</Key>");
                 xmlBody.append("</ErrorDocument>");
             }
+            
+            // RoutingRules可以没有
+            if (request.getRoutingRules().size() > 0) {
+                xmlBody.append("<RoutingRules>");
+                for (RoutingRule routingRule : request.getRoutingRules()) {
+                    xmlBody.append("<RoutingRule>");
+                    xmlBody.append("<RuleNumber>" + routingRule.getNumber() + "</RuleNumber>");
+                    
+                    // Condition字句可以没有，如果有至少有一个条件
+                    RoutingRule.Condition condition = routingRule.getCondition();
+                    if (condition.getKeyPrefixEquals() != null || condition.getHttpErrorCodeReturnedEquals() > 0) {
+                        xmlBody.append("<Condition>");
+                        if (condition.getKeyPrefixEquals() != null) {
+                            xmlBody.append("<KeyPrefixEquals>" + escapeKey(condition.getKeyPrefixEquals()) + "</KeyPrefixEquals>");
+                        }
+                        if (condition.getHttpErrorCodeReturnedEquals() != null) {
+                            xmlBody.append("<HttpErrorCodeReturnedEquals>" + condition.getHttpErrorCodeReturnedEquals() + "</HttpErrorCodeReturnedEquals>");
+                        }
+                        xmlBody.append("</Condition>");
+                    }
+                    
+                    // Redirect子句必须存在
+                    RoutingRule.Redirect redirect = routingRule.getRedirect();
+                    xmlBody.append("<Redirect>");
+                    if (redirect.getRedirectType() != null) {
+                        xmlBody.append("<RedirectType>" + redirect.getRedirectType().toString() + "</RedirectType>");
+                    }
+                    if (redirect.getHostName() != null) {
+                        xmlBody.append("<HostName>" + redirect.getHostName() + "</HostName>");
+                    }
+                    if (redirect.getProtocol() != null) {
+                        xmlBody.append("<Protocol>" + redirect.getProtocol().toString() + "</Protocol>");
+                    }
+                    if (redirect.getReplaceKeyPrefixWith() != null) {
+                        xmlBody.append("<ReplaceKeyPrefixWith>" + escapeKey(redirect.getReplaceKeyPrefixWith()) + "</ReplaceKeyPrefixWith>");
+                    }
+                    if (redirect.getReplaceKeyWith() != null) {
+                        xmlBody.append("<ReplaceKeyWith>" + escapeKey(redirect.getReplaceKeyWith()) + "</ReplaceKeyWith>");
+                    }
+                    if (redirect.getHttpRedirectCode() != null) {
+                        xmlBody.append("<HttpRedirectCode>" + redirect.getHttpRedirectCode() + "</HttpRedirectCode>");
+                    }
+                    if (redirect.getMirrorURL() != null) {
+                        xmlBody.append("<MirrorURL>" + redirect.getMirrorURL() + "</MirrorURL>");
+                    }
+                    xmlBody.append("</Redirect>");
+                    xmlBody.append("</RoutingRule>");
+                }
+                xmlBody.append("</RoutingRules>");
+            }
+            
             xmlBody.append("</WebsiteConfiguration>");
             return stringMarshaller.marshall(xmlBody.toString());
         }
@@ -199,8 +329,21 @@ public final class RequestMarshallers {
                 if (rule.getExpirationTime() != null) {
                     String formatDate = DateUtil.formatIso8601Date(rule.getExpirationTime());
                     xmlBody.append("<Expiration><Date>" + formatDate + "</Date></Expiration>");
-                } else {
-                    xmlBody.append("<Expiration><Days>" + rule.getExpriationDays() + "</Days></Expiration>");
+                } else if (rule.getExpirationDays() != 0) {
+                    xmlBody.append("<Expiration><Days>" + rule.getExpirationDays() + "</Days></Expiration>");
+                } else if (rule.getCreatedBeforeDate() != null){
+                    String formatDate = DateUtil.formatIso8601Date(rule.getCreatedBeforeDate());
+                    xmlBody.append("<Expiration><CreatedBeforeDate>" + formatDate + "</CreatedBeforeDate></Expiration>");                    
+                }
+                
+                if (rule.getAbortMultipartUpload() != null) {
+                    AbortMultipartUpload abortMultipartUpload = rule.getAbortMultipartUpload();
+                    if (abortMultipartUpload.getExpirationDays() != 0) {
+                        xmlBody.append("<AbortMultipartUpload><Days>" + abortMultipartUpload.getExpirationDays() + "</Days></AbortMultipartUpload>");
+                    } else {
+                        String formatDate = DateUtil.formatIso8601Date(abortMultipartUpload.getCreatedBeforeDate());
+                        xmlBody.append("<AbortMultipartUpload><CreatedBeforeDate>" + formatDate + "</CreatedBeforeDate></AbortMultipartUpload>");                    
+                    }
                 }
                 
                 xmlBody.append("</Rule>");
@@ -291,6 +434,138 @@ public final class RequestMarshallers {
             }
             xmlBody.append("</Delete>");
             
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+        
+    }
+    
+    public static final class SetBucketTaggingRequestMarshaller implements RequestMarshaller<SetBucketTaggingRequest> {
+
+        @Override
+        public FixedLengthInputStream marshall(SetBucketTaggingRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            TagSet tagSet =  request.getTagSet();
+            xmlBody.append("<Tagging><TagSet>");
+            Map<String, String> tags = tagSet.getAllTags();
+            if (!tags.isEmpty()) {
+                for (Map.Entry<String, String> tag : tags.entrySet()) {
+                    xmlBody.append("<Tag>");
+                    xmlBody.append("<Key>" + tag.getKey() + "</Key>");
+                    xmlBody.append("<Value>" + tag.getValue() + "</Value>");
+                    xmlBody.append("</Tag>");
+                }
+            }
+            xmlBody.append("</TagSet></Tagging>");
+            return stringMarshaller.marshall(xmlBody.toString());
+        }
+        
+    }
+    
+    public static final class AddBucketReplicationRequestMarshaller implements RequestMarshaller<AddBucketReplicationRequest> {
+        
+        @Override
+        public FixedLengthInputStream marshall(AddBucketReplicationRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<ReplicationConfiguration>");
+            xmlBody.append("<Rule>");
+            xmlBody.append("<ID>" + escapeKey(request.getReplicationRuleID()) + "</ID>");
+            xmlBody.append("<Destination>");
+            xmlBody.append("<Bucket>" + request.getTargetBucketName() + "</Bucket>");
+            xmlBody.append("<Location>" + request.getTargetBucketLocation() + "</Location>");
+            xmlBody.append("</Destination>");
+            if (request.isEnableHistoricalObjectReplication()) {
+                xmlBody.append("<HistoricalObjectReplication>" + "enabled" + "</HistoricalObjectReplication>");
+            } else {
+                xmlBody.append("<HistoricalObjectReplication>" + "disabled" + "</HistoricalObjectReplication>");
+            }
+            xmlBody.append("</Rule>");
+            xmlBody.append("</ReplicationConfiguration>");
+            return stringMarshaller.marshall(xmlBody.toString());
+        }
+        
+    }
+    
+    public static final class DeleteBucketReplicationRequestMarshaller implements RequestMarshaller2<DeleteBucketReplicationRequest> {
+
+        @Override
+        public byte[] marshall(DeleteBucketReplicationRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<ReplicationRules>");
+            xmlBody.append("<ID>" + escapeKey(request.getReplicationRuleID()) + "</ID>");
+            xmlBody.append("</ReplicationRules>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+        
+    }
+    
+    public static final class AddBucketCnameRequestMarshaller implements RequestMarshaller2<AddBucketCnameRequest> {
+
+        @Override
+        public byte[] marshall(AddBucketCnameRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<BucketCnameConfiguration>");
+            xmlBody.append("<Cname>");
+            xmlBody.append("<Domain>" + request.getDomain() + "</Domain>");
+            xmlBody.append("</Cname>");
+            xmlBody.append("</BucketCnameConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+        
+    }
+    
+    public static final class DeleteBucketCnameRequestMarshaller implements RequestMarshaller2<DeleteBucketCnameRequest> {
+
+        @Override
+        public byte[] marshall(DeleteBucketCnameRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<BucketCnameConfiguration>");
+            xmlBody.append("<Cname>");
+            xmlBody.append("<Domain>" + request.getDomain() + "</Domain>");
+            xmlBody.append("</Cname>");
+            xmlBody.append("</BucketCnameConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+        
+    }
+    
+    public static final class SetBucketQosRequestMarshaller implements RequestMarshaller2<UserQos> {
+
+        @Override
+        public byte[] marshall(UserQos userQos) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<BucketUserQos>");
+            if (userQos.hasStorageCapacity()) {
+                xmlBody.append("<StorageCapacity>" + userQos.getStorageCapacity() + "</StorageCapacity>");
+            }
+            xmlBody.append("</BucketUserQos>");
+
             byte[] rawData = null;
             try {
                 rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);

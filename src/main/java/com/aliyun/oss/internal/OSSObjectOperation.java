@@ -37,20 +37,25 @@ import static com.aliyun.oss.internal.OSSUtils.addStringListHeader;
 import static com.aliyun.oss.internal.OSSUtils.determineInputStreamLength;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
 import static com.aliyun.oss.internal.OSSUtils.ensureObjectKeyValid;
+import static com.aliyun.oss.internal.OSSUtils.ensureCallbackValid;
 import static com.aliyun.oss.internal.OSSUtils.joinETags;
 import static com.aliyun.oss.internal.OSSUtils.populateRequestMetadata;
 import static com.aliyun.oss.internal.OSSUtils.populateResponseHeaderParameters;
+import static com.aliyun.oss.internal.OSSUtils.populateRequestCallback;
 import static com.aliyun.oss.internal.OSSUtils.removeHeader;
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
 import static com.aliyun.oss.internal.RequestParameters.ENCODING_TYPE;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_ACL;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_DELETE;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_OBJECTMETA;
 import static com.aliyun.oss.internal.ResponseParsers.appendObjectResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.copyObjectResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.deleteObjectsResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getObjectAclResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getObjectMetadataResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.putObjectReponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.putObjectCallbackReponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getSimplifiedObjectMetaResponseParser;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -106,6 +111,7 @@ import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
 import com.aliyun.oss.model.SetObjectAclRequest;
+import com.aliyun.oss.model.SimplifiedObjectMeta;
 
 /**
  * Object operation.
@@ -122,7 +128,11 @@ public class OSSObjectOperation extends OSSOperation {
     public PutObjectResult putObject(PutObjectRequest putObjectRequest) 
             throws OSSException, ClientException {
         assertParameterNotNull(putObjectRequest, "putObjectRequest");
-        return writeObjectInternal(WriteMode.OVERWRITE, putObjectRequest, putObjectReponseParser);
+        if (putObjectRequest.getCallback() == null) {
+            return writeObjectInternal(WriteMode.OVERWRITE, putObjectRequest, putObjectReponseParser);
+        } else {
+            return writeObjectInternal(WriteMode.OVERWRITE, putObjectRequest, putObjectCallbackReponseParser);
+        }
     }
     
     /**
@@ -254,6 +264,36 @@ public class OSSObjectOperation extends OSSOperation {
             safeClose(outputStream);
             safeClose(ossObject.getObjectContent());
         }
+    }
+    
+    /**
+     * Get simplified object meta.
+     */
+    public SimplifiedObjectMeta getSimplifiedObjectMeta(GenericRequest genericRequest) {
+        
+        assertParameterNotNull(genericRequest, "genericRequest");
+        
+        String bucketName = genericRequest.getBucketName();
+        String key = genericRequest.getKey();
+        
+        assertParameterNotNull(bucketName, "bucketName");
+        assertParameterNotNull(key, "key");
+        ensureBucketNameValid(bucketName);
+        ensureObjectKeyValid(key);
+        
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_OBJECTMETA, null);
+        
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET)
+                .setBucket(bucketName)
+                .setKey(key)
+                .setParameters(params)
+                .setOriginalRequest(genericRequest)
+                .build();
+        
+        return doOperation(request, getSimplifiedObjectMetaResponseParser, bucketName, key, true);
     }
 
     /**
@@ -559,6 +599,7 @@ public class OSSObjectOperation extends OSSOperation {
         assertParameterNotNull(key, "key");
         ensureBucketNameValid(bucketName);
         ensureObjectKeyValid(key);
+        ensureCallbackValid(originalRequest.getCallback());
         
         InputStream repeatableInputStream = null;
         if (originalRequest.getFile() != null) {
@@ -597,6 +638,7 @@ public class OSSObjectOperation extends OSSOperation {
         
         Map<String, String> headers = new HashMap<String, String>();
         populateRequestMetadata(headers, metadata);
+        populateRequestCallback(headers, originalRequest.getCallback());
         Map<String, String> params = new LinkedHashMap<String, String>();
         populateWriteObjectParams(mode, originalRequest, params);
         
@@ -612,11 +654,18 @@ public class OSSObjectOperation extends OSSOperation {
                 .setOriginalRequest(originalRequest)
                 .build();
         
+        List<ResponseHandler> reponseHandlers = new ArrayList<ResponseHandler>();
+        reponseHandlers.add(new OSSCallbackErrorResponseHandler());
+        
         final ProgressListener listener = originalRequest.getProgressListener();
         ResponseType result = null;
         try {
             publishProgress(listener, ProgressEventType.TRANSFER_STARTED_EVENT);
-            result = doOperation(httpRequest, responseParser, bucketName, key, true);
+            if (originalRequest.getCallback() == null) {
+                result = doOperation(httpRequest, responseParser, bucketName, key, true);
+            } else {
+                result = doOperation(httpRequest, responseParser, bucketName, key, true, null, reponseHandlers);
+            }
             publishProgress(listener, ProgressEventType.TRANSFER_COMPLETED_EVENT);
         } catch (RuntimeException e) {
             publishProgress(listener, ProgressEventType.TRANSFER_FAILED_EVENT);

@@ -33,20 +33,31 @@ import com.aliyun.oss.model.AccessControlList;
 import com.aliyun.oss.model.AppendObjectRequest;
 import com.aliyun.oss.model.AppendObjectResult;
 import com.aliyun.oss.model.Bucket;
+import com.aliyun.oss.model.BucketInfo;
 import com.aliyun.oss.model.BucketList;
 import com.aliyun.oss.model.BucketLoggingResult;
 import com.aliyun.oss.model.BucketReferer;
+import com.aliyun.oss.model.BucketReplicationProgress;
 import com.aliyun.oss.model.BucketWebsiteResult;
 import com.aliyun.oss.model.CannedAccessControlList;
+import com.aliyun.oss.model.CnameConfiguration;
 import com.aliyun.oss.model.CompleteMultipartUploadRequest;
 import com.aliyun.oss.model.CompleteMultipartUploadResult;
 import com.aliyun.oss.model.CopyObjectRequest;
 import com.aliyun.oss.model.CopyObjectResult;
 import com.aliyun.oss.model.CreateBucketRequest;
+import com.aliyun.oss.model.DeleteBucketCnameRequest;
+import com.aliyun.oss.model.DeleteBucketReplicationRequest;
 import com.aliyun.oss.model.DeleteObjectsRequest;
 import com.aliyun.oss.model.DeleteObjectsResult;
+import com.aliyun.oss.model.DownloadFileRequest;
+import com.aliyun.oss.model.DownloadFileResult;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 import com.aliyun.oss.model.GenericRequest;
+import com.aliyun.oss.model.GetBucketImageResult;
+import com.aliyun.oss.model.GetBucketReplicationProgressRequest;
+import com.aliyun.oss.model.ReplicationRule;
+import com.aliyun.oss.model.GetImageStyleResult;
 import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.HeadObjectRequest;
 import com.aliyun.oss.model.InitiateMultipartUploadRequest;
@@ -64,12 +75,23 @@ import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.OptionsRequest;
 import com.aliyun.oss.model.PartListing;
 import com.aliyun.oss.model.PolicyConditions;
+import com.aliyun.oss.model.PutBucketImageRequest;
+import com.aliyun.oss.model.PutImageStyleRequest;
 import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
 import com.aliyun.oss.model.SetBucketAclRequest;
 import com.aliyun.oss.model.SetBucketCORSRequest;
+import com.aliyun.oss.model.AddBucketCnameRequest;
 import com.aliyun.oss.model.SetBucketRefererRequest;
+import com.aliyun.oss.model.AddBucketReplicationRequest;
+import com.aliyun.oss.model.SetBucketStorageCapacityRequest;
+import com.aliyun.oss.model.SetBucketTaggingRequest;
 import com.aliyun.oss.model.SetObjectAclRequest;
+import com.aliyun.oss.model.SimplifiedObjectMeta;
+import com.aliyun.oss.model.TagSet;
+import com.aliyun.oss.model.Style;
+import com.aliyun.oss.model.UploadFileRequest;
+import com.aliyun.oss.model.UploadFileResult;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
 import com.aliyun.oss.model.SetBucketLifecycleRequest;
 import com.aliyun.oss.model.SetBucketLoggingRequest;
@@ -78,6 +100,7 @@ import com.aliyun.oss.model.UploadPartCopyRequest;
 import com.aliyun.oss.model.UploadPartCopyResult;
 import com.aliyun.oss.model.UploadPartRequest;
 import com.aliyun.oss.model.UploadPartResult;
+import com.aliyun.oss.model.UserQos;
 
 /**
  * 阿里云对象存储服务（Object Storage Service， OSS）的访问接口。
@@ -260,7 +283,69 @@ public interface OSS {
      */ 
     public String getBucketLocation(GenericRequest genericRequest)
             throws OSSException, ClientException;
+    
+    /**
+     * 设置给定{@link Bucket}的标签。
+     * @param bucketName
+     *           Bucket名称。
+     * @param tags
+     *           标签集。
+     */
+    public void setBucketTagging(String bucketName, Map<String, String> tags)
+            throws OSSException, ClientException;
+    
+    /**
+     * 设置给定{@link Bucket}的标签。
+     * @param bucketName
+     *           Bucket名称。
+     * @param tagSet
+     *           标签集。
+     */
+    public void setBucketTagging(String bucketName, TagSet tagSet)
+            throws OSSException, ClientException;
+    
+    /**
+     * 设置给定{@link Bucket}的标签。
+     * @param setBucketTaggingRequest
+     *           请求信息。
+     */
+    public void setBucketTagging(SetBucketTaggingRequest setBucketTaggingRequest)
+            throws OSSException, ClientException;
+    
+    /**
+     * 获取给定{@link Bucket}的标签。
+     * @param bucketName
+     *           Bucket名称。
+     * @return Bucket标签。
+     */
+    public TagSet getBucketTagging(String bucketName) 
+            throws OSSException, ClientException;
+    
+    /**
+     * 获取给定{@link Bucket}的标签。
+     * @param genericRequest
+     *          请求信息。
+     * @return Bucket标签。
+     */
+    public TagSet getBucketTagging(GenericRequest genericRequest) 
+            throws OSSException, ClientException;
+    
+    /**
+     * 删除给定{@link Bucket}的标签。
+     * @param bucketName
+     *          Bucket名称。
+     */
+    public void deleteBucketTagging(String bucketName)
+            throws OSSException, ClientException;
 
+    /**
+     * 删除给定{@link Bucket}的标签。
+     * @param genericRequest
+     *          请求信息。
+     */
+    public void deleteBucketTagging(GenericRequest genericRequest)
+            throws OSSException, ClientException;
+    
     /**
      * 判断给定{@link Bucket}是否存在。
      * @param bucketName
@@ -487,6 +572,34 @@ public interface OSS {
             throws OSSException, ClientException;
     
     /**
+     * 获取指定的{@link OSSObject}的基本元信息。
+     * 
+     * <p>相比Head Object更轻量，仅返回指定Object的少量基本meta信息，
+     * 包括该Object的ETag、Size（文件大小）、LastModified（最后修改时间）。</p>
+     * @param bucketName
+     *           Bucket名称。
+     * @param key
+     *           Object key。
+     * @return
+     *           指定{@link OSSObject}的基本元信息{@link SimplifiedObjectMeta}。
+     */
+    public SimplifiedObjectMeta getSimplifiedObjectMeta(String bucketName, String key)
+            throws OSSException, ClientException;
+    
+    /**
+     * 获取指定的{@link OSSObject}的基本元信息。
+     * 
+     * <p>相比Head Object更轻量，仅返回指定Object的少量基本meta信息，
+     * 包括该Object的ETag、Size（文件大小）、LastModified（最后修改时间）。</p>
+     * @param genericRequest
+     *           请求信息。
+     * @return
+     *           指定{@link OSSObject}的基本元信息{@link SimplifiedObjectMeta}。
+     */
+    public SimplifiedObjectMeta getSimplifiedObjectMeta(GenericRequest genericRequest)
+            throws OSSException, ClientException;
+    
+    /**
      * 返回{@link OSSObject}的元数据。
      * @param bucketName
      *          Bucket名称。
@@ -645,6 +758,120 @@ public interface OSS {
      */
     public URL generatePresignedUrl(GeneratePresignedUrlRequest request)
             throws ClientException;
+    /**
+     * 开通{@link Bucket} 图片处理功能
+     * @param request
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public void putBucketImage(PutBucketImageRequest request)
+    		throws OSSException, ClientException;
+    
+    /**
+     * 获取{@link Bucket} 图片处理功能属性
+     * @param result
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public GetBucketImageResult getBucketImage(String bucketName)
+    		throws OSSException, ClientException;
+    
+    /**
+     * 获取{@link Bucket} 图片处理功能属性
+     * @param result
+     * @param genericRequest
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public GetBucketImageResult getBucketImage(String bucketName, GenericRequest genericRequest)
+    		throws OSSException, ClientException;
+    
+    /**
+     * 删除{@link Bucket} 图片处理功能
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public void deleteBucketImage(String bucketName) 
+    		throws OSSException, ClientException;
+    
+    /**
+     * 删除{@link Bucket} 图片处理功能
+     * @throws OSSException
+     * @param genericRequest
+     * @throws ClientException
+     */
+    public void deleteBucketImage(String bucketName, GenericRequest genericRequest) 
+    		throws OSSException, ClientException;
+    
+    /**
+     * 删除{@link Bucket} 名为styleName 的 style
+     * @param bucketName
+     * @param styleName
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public void deleteImageStyle(String bucketName, String styleName)
+    		throws OSSException, ClientException;
+    
+    /**
+     * 删除{@link Bucket} 名为styleName 的 style
+     * @param bucketName
+     * @param styleName
+     * @param genericRequest
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public void deleteImageStyle(String bucketName, String styleName, GenericRequest genericRequest)
+    		throws OSSException, ClientException;
+    
+    /**
+     * 添加 {@link Bucket} 图片处理样式
+     * @param putImageStyleRequest
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public void putImageStyle(PutImageStyleRequest putImageStyleRequest)
+    		throws OSSException, ClientException;
+    
+    /**
+     * 获取 {@link Bucket} 名为styleName 的样式
+     * @param bucketName
+     * @param styleName
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public GetImageStyleResult getImageStyle(String bucketName, String styleName)
+    		throws OSSException, ClientException;
+    
+    /**
+     * 获取 {@link Bucket} 名为styleName 的样式
+     * @param bucketName
+     * @param styleName
+     * @param genericRequest
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public GetImageStyleResult getImageStyle(String bucketName, String styleName, GenericRequest genericRequest)
+    		throws OSSException, ClientException;
+    
+    /**
+     * 列出 {@link Bucket} bucketName下的所有样式
+     * @param bucketName
+     * @param genericRequest
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public List<Style> listImageStyle(String bucketName) 
+    		throws OSSException, ClientException;
+    
+    /**
+     * 列出 {@link Bucket} bucketName下的所有样式
+     * @param bucketName
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public List<Style> listImageStyle(String bucketName, GenericRequest genericRequest) 
+    		throws OSSException, ClientException;
 
     /**
      * 初始化一个Multipart上传事件。
@@ -961,4 +1188,235 @@ public interface OSS {
      */
     public void deleteBucketLifecycle(GenericRequest genericRequest)
             throws OSSException, ClientException;
+    
+    /**
+     * 设置{@link Bucket}的跨区域复制规则。
+     * @param addBucketReplicationRequest 请求参数。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public void addBucketReplication(AddBucketReplicationRequest addBucketReplicationRequest)
+    		throws OSSException, ClientException;
+    
+    /**
+     * 获取{@link Bucket}已设置的跨区域复制规则。
+     * @param bucketName 指定Bucket名称。
+     * @return 已设置的跨区域复制规则列表。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public List<ReplicationRule> getBucketReplication(String bucketName)
+            throws OSSException, ClientException;
+    
+    /**
+     * 获取{@link Bucket}已设置的跨区域复制规则。
+     * @param genericRequest
+     *          请求信息。
+     * @return 已设置的跨区域复制规则列表。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public List<ReplicationRule> getBucketReplication(GenericRequest genericRequest)
+            throws OSSException, ClientException;
+    
+    /**
+     * 停止{@link Bucket}的跨区域复制并删除复制配置。
+     * @param bucketName 指定Bucket名称。
+     * @param replicationRuleID 复制规则对应的ID。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public void deleteBucketReplication(String bucketName, String replicationRuleID)
+            throws OSSException, ClientException;
+    
+    /**
+     * 停止{@link Bucket}的跨区域复制并删除复制配置。
+     * @param deleteBucketReplicationRequest
+     *          请求信息。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public void deleteBucketReplication(DeleteBucketReplicationRequest deleteBucketReplicationRequest)
+            throws OSSException, ClientException;
+    
+    /**
+     * 获取{@link Bucket}的跨区域复制进度。
+     * @param bucketName 指定Bucket名称。
+     * @param replicationRuleID 复制规则对应的ID。
+     * @return 历史数据和新写入数据的复制进度。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public BucketReplicationProgress getBucketReplicationProgress(String bucketName, String replicationRuleID)
+            throws OSSException, ClientException;
+    
+    /**
+     * 获取{@link Bucket}的跨区域复制进度。
+     * @param genericRequest
+     *          请求信息。
+     * @return 历史数据和新写入数据的复制进度。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public BucketReplicationProgress getBucketReplicationProgress(
+            GetBucketReplicationProgressRequest getBucketReplicationProgressRequest)
+            throws OSSException, ClientException;
+    
+    /**
+     * 获取{@link Bucket}所在的数据中心配对的可复制到的数据中心。
+     * @param bucketName 指定Bucket名称。
+     * @return 可复制到的数据中心列表。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public List<String> getBucketReplicationLocation(String bucketName)
+            throws OSSException, ClientException;
+    
+    /**
+     * 获取{@link Bucket}的所在的数据中心配对的可复制到的数据中心。
+     * @param genericRequest
+     *          请求信息。
+     * @return 可复制到的数据中心列表。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public List<String> getBucketReplicationLocation(GenericRequest genericRequest)
+            throws OSSException, ClientException;
+    
+    /**
+     * 添加{@link Bucket}的cname。
+     * @param setBucketCnameRequest 请求参数。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public void addBucketCname(AddBucketCnameRequest addBucketCnameRequest)
+            throws OSSException, ClientException;
+    
+    /**
+     * 获取{@link Bucket}已设置的cname。
+     * @param bucketName 指定Bucket名称。
+     * @return 已设置的跨区域复制规则列表。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public List<CnameConfiguration> getBucketCname(String bucketName)
+            throws OSSException, ClientException;
+    
+    /**
+     * 获取{@link Bucket}已设置的cname。
+     * @param genericRequest
+     *          请求信息。
+     * @return 已设置的跨区域复制规则列表。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public List<CnameConfiguration> getBucketCname(GenericRequest genericRequest)
+            throws OSSException, ClientException;
+    
+    /**
+     * 删除{@link Bucket}的指定的cname。
+     * @param bucketName 指定Bucket名称。
+     * @param domain cname。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public void deleteBucketCname(String bucketName, String domain)
+            throws OSSException, ClientException;
+    
+    /**
+     * 删除{@link Bucket}的指定的cname。
+     * @param deleteBucketCnameRequest 删除cname请求。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public void deleteBucketCname(DeleteBucketCnameRequest deleteBucketCnameRequest)
+            throws OSSException, ClientException;
+    
+    /**
+     * 获取{@link Bucket}的信息。
+     * @param bucketName 指定Bucket名称。
+     * @return Bucket信息。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public BucketInfo getBucketInfo(String bucketName)
+            throws OSSException, ClientException;
+    
+    /**
+     * 获取{@link Bucket}的信息。
+     * @param genericRequest 请求信息。
+     * @return Bucket信息。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public BucketInfo getBucketInfo(GenericRequest genericRequest)
+            throws OSSException, ClientException;
+    
+    /**
+     * 设置{@link Bucket}的容量。
+     * @param bucketName 指定Bucket名称。
+     * @param userQos 包括的容量的Bucket Qos。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public void setBucketStorageCapacity(String bucketName, UserQos userQos) throws OSSException, ClientException;
+    
+    /**
+     * 设置{@link Bucket}的容量。
+     * @param setBucketStorageCapacityRequest 请求信息。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public void setBucketStorageCapacity(SetBucketStorageCapacityRequest setBucketStorageCapacityRequest) 
+            throws OSSException, ClientException;
+    
+    /**
+     * 获取{@link Bucket}的容量。
+     * @param bucketName 指定Bucket名称。
+     * @return Bucket的容量配置。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public UserQos getBucketStorageCapacity(String bucketName) throws OSSException, ClientException;
+    
+    /**
+     * 获取{@link Bucket}的容量。
+     * @param genericRequest 请求信息。
+     * @return Bucket的容量配置。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public UserQos getBucketStorageCapacity(GenericRequest genericRequest) 
+            throws OSSException, ClientException;
+			
+    /**
+     * 文件上传
+     * 
+     * 上传的文件分成若干个分片分别上传，最后所有分片都上传 成功后，完成整个文件的上传。
+     * 在上传的过程中会记录当前上传的进度信息，记 录在checkpoint文件中。
+     * 如果上传过程中某一分片上传失败，再次上传时会从 checkpoint文件中记录的点继续上传。
+     * 这要求再次调用时要指定与上次相同的 checkpoint文件。上传完成后checkpoint文件会被删除。
+     * 默认一个线程、不开启checkpoint。
+     * 
+     * @param uploadFileRequest上传文件请求。
+     * @return 文件上传是否成功，及每个分片上传是否成功。
+     * @throws Throwable 
+     */
+    public UploadFileResult uploadFile(UploadFileRequest uploadFileRequest) throws Throwable;
+    
+    /**
+     * 文件下载
+     * 
+     * 实现原理是将要下载的Object分成若干个分片分别下载，最后所有分片都下 载成功后，完成整个文件的下载。
+     * 在下载的过程中会记录当前下载的进度信息 （记录在checkpoint文件中）和已下载的分片，
+     * 如果下载过程中某一分片下载失败，再次下 载时会从checkpoint文件中记录的点继续下载。
+     * 这要求再次调用时要指定与上次 相同的checkpoint文件。下载完成后，checkpoint文件会被删除。
+     * 默认一个线程、不开启checkpoint。
+     * 
+     * @param downloadFileRequest分片下载请求。
+     * @return 文件上传是否成功、每个分片上传是否成功，及ObjectMetadata。
+     * @throws Throwable
+     */
+    public DownloadFileResult downloadFile(DownloadFileRequest downloadFileRequest) throws Throwable;
+    
 }

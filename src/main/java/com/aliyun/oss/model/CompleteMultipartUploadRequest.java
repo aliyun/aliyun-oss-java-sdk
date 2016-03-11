@@ -35,6 +35,9 @@ public class CompleteMultipartUploadRequest extends GenericRequest {
     
     /** The access control list for multipart uploaded object */
     private CannedAccessControlList cannedACL;
+    
+    /** callback */
+    private Callback callback;
 
     /**
      * 构造函数。
@@ -104,4 +107,13 @@ public class CompleteMultipartUploadRequest extends GenericRequest {
     public void setObjectACL(CannedAccessControlList cannedACL) {
         this.cannedACL = cannedACL;
     }
+    
+    public Callback getCallback() {
+        return callback;
+    }
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
+    
 }

@@ -27,6 +27,7 @@ public class GenericRequest extends WebServiceRequest {
     
     private String bucketName;
     private String key;
+
     
     public GenericRequest() { }
     

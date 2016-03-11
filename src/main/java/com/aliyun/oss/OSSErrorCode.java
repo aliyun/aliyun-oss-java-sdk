@@ -228,4 +228,10 @@ public interface OSSErrorCode {
      * 返回结果无法解析。
      */
     static final String INVALID_RESPONSE = "InvalidResponse";
+    
+    /**
+     * 回调失败，表示OSS没有收到预期的回调响应，不代表应用服务器没有收到回调请求，此时文件已经成功上传到了OSS。
+     */
+    static final String CALLBACK_FAILED = "CallbackFailed";
+
 }

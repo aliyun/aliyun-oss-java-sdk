@@ -31,11 +31,12 @@ import org.apache.http.conn.HttpClientConnectionManager;
  * A daemon thread used to periodically check connection pools for idle connections.
  */
 public final class IdleConnectionReaper extends Thread {
-    
-    private static final int REAP_INTERVAL_MILLISECONDS = 60 * 1000;
+    private static final int REAP_INTERVAL_MILLISECONDS = 5 * 1000;
     private static final ArrayList<HttpClientConnectionManager> connectionManagers = new ArrayList<HttpClientConnectionManager>();
 
     private static IdleConnectionReaper instance;
+    
+    private static long idleConnectionTime = 60 * 1000;
     
     private volatile boolean shuttingDown;
 
@@ -80,7 +81,8 @@ public final class IdleConnectionReaper extends Thread {
                 }
                 for (HttpClientConnectionManager connectionManager : connectionManagers) {
                     try {
-                        connectionManager.closeIdleConnections(60, TimeUnit.SECONDS);
+                        connectionManager.closeExpiredConnections();
+                        connectionManager.closeIdleConnections(idleConnectionTime, TimeUnit.MILLISECONDS);
                     } catch (Exception ex) {
                         getLog().warn("Unable to close idle connections", ex);
                     }
@@ -105,4 +107,9 @@ public final class IdleConnectionReaper extends Thread {
     public static synchronized int size() { 
         return connectionManagers.size(); 
     }
+    
+    public static synchronized void setIdleConnectionTime(long idletime) {
+        idleConnectionTime = idletime;
+    }
+    
 }

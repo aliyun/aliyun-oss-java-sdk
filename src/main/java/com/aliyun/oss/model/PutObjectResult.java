@@ -19,13 +19,18 @@
 
 package com.aliyun.oss.model;
 
+import java.io.InputStream;
+
 /**
  * 上传object操作的返回结果。
  */
-public class PutObjectResult {
+public class PutObjectResult implements CallbackResult {
 
     // Object的ETag值。
     private String eTag;
+    
+    // 回调返回的消息体，需要用户close
+    private InputStream callbackResponseBody;
 
     /**
      * 返回新创建的{@link OSSObject}的ETag值。
@@ -43,4 +48,23 @@ public class PutObjectResult {
     public void setETag(String eTag) {
         this.eTag = eTag;
     }
+    
+    /**
+     * 获取回调返回的消息体，需要close。
+     * @return 回调返回的消息体
+     */
+    @Override
+    public InputStream getCallbackResponseBody() {
+        return callbackResponseBody;
+    }
+    
+    /**
+     * 设置回调返回的消息体。
+     * @param callbackResponseBody 回调返回的消息体。
+     */
+    @Override
+    public void setCallbackResponseBody(InputStream callbackResponseBody) {
+        this.callbackResponseBody = callbackResponseBody;
+    }
+    
 }

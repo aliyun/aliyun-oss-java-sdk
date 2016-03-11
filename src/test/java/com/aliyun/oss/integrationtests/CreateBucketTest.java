@@ -28,6 +28,7 @@ import static com.aliyun.oss.model.LocationConstraint.OSS_CN_SHENZHEN;
 import static com.aliyun.oss.integrationtests.TestConstants.INVALID_LOCATION_CONSTRAINT_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.BUCKET_ALREADY_EXIST_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.TOO_MANY_BUCKETS_ERR;
+import static com.aliyun.oss.integrationtests.TestConstants.MODIFY_STORAGE_TYPE_ERR;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,11 +44,13 @@ import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.AccessControlList;
 import com.aliyun.oss.model.Bucket;
+import com.aliyun.oss.model.BucketList;
 import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.CreateBucketRequest;
 import com.aliyun.oss.model.Grant;
 import com.aliyun.oss.model.GroupGrantee;
 import com.aliyun.oss.model.Permission;
+import com.aliyun.oss.model.StorageClass;
 
 public class CreateBucketTest extends TestBase {
     
@@ -312,4 +315,166 @@ public class CreateBucketTest extends TestBase {
             secondClient.deleteBucket(bucketName);
         }
     }
+    
+    @Test
+    public void testPutWithDefaultStorageType() {
+        final String bucketName = "bucket-with-default-storage-type";
+        
+        CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
+        try {
+            secondClient.createBucket(createBucketRequest);
+
+            BucketList buckets = secondClient.listBuckets(bucketName, "", 100);
+            Assert.assertEquals(1, buckets.getBucketList().size());
+            Assert.assertEquals(StorageClass.Standard, buckets.getBucketList().get(0).getStorageClass());            
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        } finally {
+            secondClient.deleteBucket(bucketName);
+        }
+    }
+    
+    @Test
+    public void testPutWithStorageType() {
+        final String bucketName = "bucket-with-storage-type";
+        
+        CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
+        createBucketRequest.setStorageClass(StorageClass.Nearline);
+        try {
+            secondClient.createBucket(createBucketRequest);
+            AccessControlList returnedAcl = secondClient.getBucketAcl(bucketName);
+            Set<Grant> grants = returnedAcl.getGrants();
+            Assert.assertEquals(0, grants.size());
+            
+            BucketList buckets = secondClient.listBuckets(bucketName, "", 100);
+            Assert.assertEquals(1, buckets.getBucketList().size());
+            Assert.assertEquals(StorageClass.Nearline, buckets.getBucketList().get(0).getStorageClass());
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        } finally {
+            secondClient.deleteBucket(bucketName);
+        }
+    }
+    
+    @Test
+    public void testPutWithStorageTypeFunc() {
+        final String bucketName = "bucket-with-storage-type-func";
+        
+        try {
+            secondClient.createBucket(new CreateBucketRequest(bucketName).withStorageType(StorageClass.Nearline));
+            AccessControlList returnedAcl = secondClient.getBucketAcl(bucketName);
+            Set<Grant> grants = returnedAcl.getGrants();
+            Assert.assertEquals(0, grants.size());
+            
+            BucketList buckets = secondClient.listBuckets(bucketName, "", 100);
+            Assert.assertEquals(1, buckets.getBucketList().size());
+            Assert.assertEquals(StorageClass.Nearline, buckets.getBucketList().get(0).getStorageClass());
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        } finally {
+            secondClient.deleteBucket(bucketName);
+        }
+    }
+    
+    @Test
+    public void testPutWithStorageTypeAndLocation() {
+        final String bucketName = "bucket-with-storage-and-location";
+        
+        CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
+        createBucketRequest.setStorageClass(StorageClass.Standard);
+        createBucketRequest.setLocationConstraint(DEFAULT_LOCATION);
+        try {
+            secondClient.createBucket(createBucketRequest);
+            AccessControlList returnedAcl = secondClient.getBucketAcl(bucketName);
+            Set<Grant> grants = returnedAcl.getGrants();
+            Assert.assertEquals(0, grants.size());
+            System.out.println(returnedAcl.toString());
+            
+            BucketList buckets = secondClient.listBuckets(bucketName, "", 100);
+            Assert.assertEquals(1, buckets.getBucketList().size());
+            Assert.assertEquals(StorageClass.Standard, buckets.getBucketList().get(0).getStorageClass());
+            Assert.assertEquals(DEFAULT_LOCATION, buckets.getBucketList().get(0).getLocation());
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        } finally {
+            secondClient.deleteBucket(bucketName);
+        }
+    }
+    
+    @Test
+    public void testPutWithStorageTypeModify() {
+        final String bucketName = "bucket-with-storage-type-modify";
+        
+        CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
+        try {
+            secondClient.createBucket(createBucketRequest);
+
+            BucketList buckets = secondClient.listBuckets(bucketName, "", 100);
+            Assert.assertEquals(1, buckets.getBucketList().size());
+            Assert.assertEquals(StorageClass.Standard, buckets.getBucketList().get(0).getStorageClass());
+           
+            try {
+                createBucketRequest.setStorageClass(StorageClass.Nearline);
+                secondClient.createBucket(createBucketRequest);
+                Assert.fail("Create bucket should not be successful.");
+            } catch (OSSException oe) {
+                Assert.assertEquals(OSSErrorCode.BUCKET_ALREADY_EXISTS, oe.getErrorCode());
+                Assert.assertTrue(oe.getMessage().startsWith(MODIFY_STORAGE_TYPE_ERR));
+            }
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        } finally {
+            secondClient.deleteBucket(bucketName);
+        }
+    }
+    
+    @Test
+    public void testPutWithWithStorageTypeUnsupportedLocation() {
+        final String bucketName = "bucket-with-storage-unsupported-location";
+        final String unsupportedLocation = "oss-cn-zhengzhou";
+        
+        CreateBucketRequest request = new CreateBucketRequest(bucketName);
+        request.setStorageClass(StorageClass.Standard);
+        request.setLocationConstraint(unsupportedLocation);
+        try {
+            secondClient.createBucket(request);
+            Assert.fail("Create bucket should not be successful.");
+        } catch (OSSException e) {
+            Assert.assertEquals(OSSErrorCode.INVALID_LOCATION_CONSTRAINT, e.getErrorCode());
+            Assert.assertTrue(e.getMessage().startsWith(INVALID_LOCATION_CONSTRAINT_ERR));
+        }
+    }
+    
+    @Test
+    public void testPutWithStorageTypeCompatibility() {
+        final String bucketName = "bucket-with-storage-type-compatibility";
+        
+        CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
+        try {
+            defaultClient.createBucket(createBucketRequest);
+
+            BucketList buckets = defaultClient.listBuckets(bucketName, "", 100);
+            Assert.assertEquals(1, buckets.getBucketList().size());
+            Assert.assertEquals(StorageClass.Standard, buckets.getBucketList().get(0).getStorageClass());
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        } finally {
+            defaultClient.deleteBucket(bucketName);
+        }
+    }
+    
+    @Test
+    public void testPutWithStorageTypeUnsupported() {
+        final String bucketName = "bucket-with-storage-type-unsupported";
+    
+        CreateBucketRequest request = new CreateBucketRequest(bucketName);
+        request.setStorageClass(StorageClass.Standard);
+        try {
+            defaultClient.createBucket(request);
+            Assert.fail("Create bucket should not be successful.");
+        } catch (OSSException e) {
+            Assert.assertEquals(OSSErrorCode.MALFORMED_XML, e.getErrorCode());
+        }
+    }
+    
 }

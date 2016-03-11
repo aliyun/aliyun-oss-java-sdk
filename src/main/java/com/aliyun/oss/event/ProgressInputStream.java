@@ -27,13 +27,11 @@ import com.aliyun.oss.model.WebServiceRequest;
 
 public abstract class ProgressInputStream extends FilterInputStream {
     
-    @SuppressWarnings("resource")
     public static InputStream inputStreamForRequest(InputStream is,
             WebServiceRequest req) {
         return req == null ? is : new RequestProgressInputStream(is, req.getProgressListener());
     }
 
-    @SuppressWarnings("resource")
     public static InputStream inputStreamForResponse(InputStream is,
             WebServiceRequest req) {
         return req == null ? is : new ResponseProgressInputStream(is, req.getProgressListener());

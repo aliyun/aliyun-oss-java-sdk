@@ -29,6 +29,8 @@ public class PutObjectRequest extends GenericRequest {
     
     private ObjectMetadata metadata;
     
+    private Callback callback;
+
     public PutObjectRequest(String bucketName, String key, File file) {
         this(bucketName, key, file, null);
     }
@@ -72,4 +74,13 @@ public class PutObjectRequest extends GenericRequest {
     public void setMetadata(ObjectMetadata metadata) {
         this.metadata = metadata;
     }
+    
+    public Callback getCallback() {
+        return callback;
+    }
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
+    
 }

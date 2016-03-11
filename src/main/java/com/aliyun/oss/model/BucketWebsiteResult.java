@@ -19,21 +19,39 @@
 
 package com.aliyun.oss.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BucketWebsiteResult {
     private String indexDocument;
     private String errorDocument;
-    
+    private List<RoutingRule> routingRules;
     
     public String getIndexDocument() {
         return indexDocument;
     }
+    
     public void setIndexDocument(String indexDocument) {
         this.indexDocument = indexDocument;
     }
+    
     public String getErrorDocument() {
         return errorDocument;
     }
+    
     public void setErrorDocument(String errorDocument) {
         this.errorDocument = errorDocument;
+    }
+    
+    public List<RoutingRule> getRoutingRules() {
+        return routingRules;
+    }
+    
+    public void AddRoutingRule(RoutingRule routingRule) {
+        routingRule.ensureRoutingRuleValid();
+        if (routingRules == null) {
+            routingRules = new ArrayList<RoutingRule>();
+        }
+        this.routingRules.add(routingRule);
     }
 }

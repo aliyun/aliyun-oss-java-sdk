@@ -29,6 +29,12 @@ import static com.aliyun.oss.integrationtests.TestConfig.SECOND_ENDPOINT;
 import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 import static com.aliyun.oss.model.DeleteObjectsRequest.DELETE_OBJECTS_ONETIME_LIMIT;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -257,5 +263,65 @@ public class TestBase {
             secondClient = null;
         }
     }
+     
+    public static boolean compareFile(String fileNameLeft, String fileNameRight) throws IOException {
+        FileInputStream fisLeft = null;
+        FileInputStream fisRight = null;
+        
+        try {
+            fisLeft = new FileInputStream(fileNameLeft);
+            fisRight = new FileInputStream(fileNameRight);
+
+            int len1 = fisLeft.available();
+            int len2 = fisRight.available();
+
+            if (len1 == len2) { 
+                byte[] data1 = new byte[len1];
+                byte[] data2 = new byte[len2];
+
+                fisLeft.read(data1);
+                fisRight.read(data2);
+
+                for (int i = 0; i < len1; i++) {
+                    if (data1[i] != data2[i]) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            } else {
+                return false;
+            }
+        } finally {
+            if (fisLeft != null) {
+                try {
+                    fisLeft.close();
+                } catch (IOException e) {
+                }
+            }
+            
+            if (fisRight != null) {
+                try {
+                    fisRight.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+    }
+    
+    public static File createSampleFile(String fileName, long size) throws IOException {
+        File file = File.createTempFile(fileName, ".txt");
+        file.deleteOnExit();
+        String context = "abcdefghijklmnopqrstuvwxyz0123456789011234567890\n";
+
+        Writer writer = new OutputStreamWriter(new FileOutputStream(file));
+        for (int i = 0; i < size / context.length(); i++) {
+            writer.write(context);
+        }
+        writer.close();
+
+        return file;
+    }
+
 }
 

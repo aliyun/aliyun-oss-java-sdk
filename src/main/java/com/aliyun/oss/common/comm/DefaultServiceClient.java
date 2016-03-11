@@ -80,6 +80,7 @@ public class DefaultServiceClient extends ServiceClient {
         RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
         requestConfigBuilder.setConnectTimeout(config.getConnectionTimeout());
         requestConfigBuilder.setSocketTimeout(config.getSocketTimeout());
+        requestConfigBuilder.setConnectionRequestTimeout(config.getConnectionRequestTimeout());
         
         String proxyHost = config.getProxyHost();
         int proxyPort = config.getProxyPort();
@@ -236,10 +237,11 @@ public class DefaultServiceClient extends ServiceClient {
         PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
         connectionManager.setDefaultMaxPerRoute(config.getMaxConnections());
         connectionManager.setMaxTotal(config.getMaxConnections());
+        connectionManager.setValidateAfterInactivity(config.getValidateAfterInactivity());
         connectionManager.setDefaultSocketConfig(SocketConfig.custom().
                 setSoTimeout(config.getSocketTimeout()).setTcpNoDelay(true).build());
-        connectionManager.setValidateAfterInactivity(-1);
         if (config.isUseReaper()) {
+            IdleConnectionReaper.setIdleConnectionTime(config.getIdleConnectionTime());
             IdleConnectionReaper.registerConnectionManager(connectionManager);
         }
         return connectionManager;

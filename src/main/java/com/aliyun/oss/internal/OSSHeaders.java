@@ -69,4 +69,8 @@ public interface OSSHeaders extends HttpHeaders {
     static final String OSS_OBJECT_TYPE = "x-oss-object-type";
     
     static final String OSS_OBJECT_ACL = "x-oss-object-acl";
+    
+    static final String OSS_HEADER_CALLBACK = "x-oss-callback";
+    static final String OSS_HEADER_CALLBACK_VAR = "x-oss-callback-var";
+
 }

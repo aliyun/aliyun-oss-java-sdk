@@ -45,6 +45,7 @@ import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.CredentialsProvider;
 
+@Ignore
 public class SwitchCredentialsAndEndpointTest extends TestBase {
 
     /* Indicate whether credentials switching starts prior to credentials verification */

@@ -77,4 +77,5 @@ public final class TestConstants {
     
     public static final String MISSING_ARGUMENT_ERR = "Missing Some Required Arguments.";
     
+    public static final String MODIFY_STORAGE_TYPE_ERR = "Cannot modify existing bucket's storage class.";
 }

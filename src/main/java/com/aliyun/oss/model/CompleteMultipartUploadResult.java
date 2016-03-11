@@ -19,11 +19,13 @@
 
 package com.aliyun.oss.model;
 
+import java.io.InputStream;
+
 /**
  * 包含完成一个Multipart上传事件的返回结果。
  *
  */
-public class CompleteMultipartUploadResult extends WebServiceRequest {
+public class CompleteMultipartUploadResult extends WebServiceRequest implements CallbackResult {
 
     /** The name of the bucket containing the completed multipart upload. */
     private String bucketName;
@@ -35,6 +37,9 @@ public class CompleteMultipartUploadResult extends WebServiceRequest {
     private String location;
 
     private String eTag;
+    
+    /** 回调返回的消息体 */
+    private InputStream callbackResponseBody;
 
     /**
      * 返回标识Multipart上传的{@link OSSObject}的URL地址。
@@ -101,6 +106,24 @@ public class CompleteMultipartUploadResult extends WebServiceRequest {
      */
     public void setETag(String etag) {
         this.eTag = etag;
+    }
+    
+    /**
+     * 获取回调返回的消息体，需要close。
+     * @return 回调返回的消息体
+     */
+    @Override
+    public InputStream getCallbackResponseBody() {
+        return callbackResponseBody;
+    }
+    
+    /**
+     * 设置回调返回的消息体。
+     * @param callbackResponseBody 回调返回的消息体。
+     */
+    @Override
+    public void setCallbackResponseBody(InputStream callbackResponseBody) {
+        this.callbackResponseBody = callbackResponseBody;
     }
 
 }

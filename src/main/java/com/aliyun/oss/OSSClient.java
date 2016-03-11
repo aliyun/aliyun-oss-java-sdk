@@ -36,10 +36,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -60,9 +62,11 @@ import com.aliyun.oss.common.utils.HttpHeaders;
 import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.internal.CORSOperation;
 import com.aliyun.oss.internal.OSSBucketOperation;
+import com.aliyun.oss.internal.OSSDownloadOperation;
 import com.aliyun.oss.internal.OSSHeaders;
 import com.aliyun.oss.internal.OSSMultipartOperation;
 import com.aliyun.oss.internal.OSSObjectOperation;
+import com.aliyun.oss.internal.OSSUploadOperation;
 import com.aliyun.oss.internal.OSSUtils;
 import com.aliyun.oss.internal.SignUtils;
 import com.aliyun.oss.model.AbortMultipartUploadRequest;
@@ -70,20 +74,31 @@ import com.aliyun.oss.model.AccessControlList;
 import com.aliyun.oss.model.AppendObjectRequest;
 import com.aliyun.oss.model.AppendObjectResult;
 import com.aliyun.oss.model.Bucket;
+import com.aliyun.oss.model.BucketInfo;
 import com.aliyun.oss.model.BucketList;
 import com.aliyun.oss.model.BucketLoggingResult;
 import com.aliyun.oss.model.BucketReferer;
+import com.aliyun.oss.model.BucketReplicationProgress;
 import com.aliyun.oss.model.BucketWebsiteResult;
 import com.aliyun.oss.model.CannedAccessControlList;
+import com.aliyun.oss.model.CnameConfiguration;
 import com.aliyun.oss.model.CompleteMultipartUploadRequest;
 import com.aliyun.oss.model.CompleteMultipartUploadResult;
 import com.aliyun.oss.model.CopyObjectRequest;
 import com.aliyun.oss.model.CopyObjectResult;
 import com.aliyun.oss.model.CreateBucketRequest;
+import com.aliyun.oss.model.DeleteBucketCnameRequest;
+import com.aliyun.oss.model.DeleteBucketReplicationRequest;
 import com.aliyun.oss.model.DeleteObjectsRequest;
 import com.aliyun.oss.model.DeleteObjectsResult;
+import com.aliyun.oss.model.DownloadFileRequest;
+import com.aliyun.oss.model.DownloadFileResult;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 import com.aliyun.oss.model.GenericRequest;
+import com.aliyun.oss.model.GetBucketImageResult;
+import com.aliyun.oss.model.GetBucketReplicationProgressRequest;
+import com.aliyun.oss.model.ReplicationRule;
+import com.aliyun.oss.model.GetImageStyleResult;
 import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.HeadObjectRequest;
 import com.aliyun.oss.model.InitiateMultipartUploadRequest;
@@ -101,20 +116,32 @@ import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.OptionsRequest;
 import com.aliyun.oss.model.PartListing;
 import com.aliyun.oss.model.PolicyConditions;
+import com.aliyun.oss.model.PutBucketImageRequest;
+import com.aliyun.oss.model.PutImageStyleRequest;
 import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
 import com.aliyun.oss.model.SetBucketAclRequest;
 import com.aliyun.oss.model.SetBucketCORSRequest;
+import com.aliyun.oss.model.UploadFileRequest;
+import com.aliyun.oss.model.UploadFileResult;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
+import com.aliyun.oss.model.AddBucketCnameRequest;
 import com.aliyun.oss.model.SetBucketLifecycleRequest;
 import com.aliyun.oss.model.SetBucketLoggingRequest;
 import com.aliyun.oss.model.SetBucketRefererRequest;
+import com.aliyun.oss.model.AddBucketReplicationRequest;
+import com.aliyun.oss.model.SetBucketStorageCapacityRequest;
+import com.aliyun.oss.model.SetBucketTaggingRequest;
 import com.aliyun.oss.model.SetBucketWebsiteRequest;
 import com.aliyun.oss.model.SetObjectAclRequest;
+import com.aliyun.oss.model.SimplifiedObjectMeta;
+import com.aliyun.oss.model.TagSet;
+import com.aliyun.oss.model.Style;
 import com.aliyun.oss.model.UploadPartCopyRequest;
 import com.aliyun.oss.model.UploadPartCopyResult;
 import com.aliyun.oss.model.UploadPartRequest;
 import com.aliyun.oss.model.UploadPartResult;
+import com.aliyun.oss.model.UserQos;
 
 /**
  * 访问阿里云对象存储服务（Object Storage Service， OSS）的入口类。
@@ -135,6 +162,8 @@ public class OSSClient implements OSS {
     private OSSObjectOperation objectOperation;
     private OSSMultipartOperation multipartOperation;
     private CORSOperation corsOperation;
+    private OSSUploadOperation uploadOperation;
+    private OSSDownloadOperation downloadOperation;
 
     /**
      * 使用默认的OSS Endpoint(http://oss-cn-hangzhou.aliyuncs.com)及
@@ -257,10 +286,37 @@ public class OSSClient implements OSS {
         URI uri = toURI(endpoint);
         this.endpoint = uri;
         
+        if (isIpOrLocalhost(uri)) {
+            serviceClient.getClientConfiguration().setSLDEnabled(true);
+        }
+        
         this.bucketOperation.setEndpoint(uri);
         this.objectOperation.setEndpoint(uri);
         this.multipartOperation.setEndpoint(uri);
         this.corsOperation.setEndpoint(uri);
+    }
+    
+    /**
+     * 判定一个网络地址是否是IP还是域名。IP都是用二级域名，域名(Localhost除外)不使用二级域名。
+     * @param uri URI。
+     */
+    private boolean isIpOrLocalhost(URI uri){
+        if (uri.getHost().equals("localhost")) {
+            return true;
+        }
+        
+        InetAddress ia;
+        try {
+            ia = InetAddress.getByName(uri.getHost());
+        } catch (UnknownHostException e) {
+            return false;
+        }
+        
+        if (ia.getHostName().equals(ia.getHostAddress())) {
+            return true;
+        }
+        
+        return false;
     }
     
     private URI toURI(String endpoint) throws IllegalArgumentException {        
@@ -281,6 +337,8 @@ public class OSSClient implements OSS {
         this.objectOperation = new OSSObjectOperation(this.serviceClient, this.credsProvider);
         this.multipartOperation = new OSSMultipartOperation(this.serviceClient, this.credsProvider);
         this.corsOperation = new CORSOperation(this.serviceClient, this.credsProvider);
+        this.uploadOperation = new OSSUploadOperation(this.multipartOperation);
+        this.downloadOperation = new OSSDownloadOperation(objectOperation);
     }
     
     @Override
@@ -551,6 +609,19 @@ public class OSSClient implements OSS {
             throws OSSException, ClientException {
         GetObjectRequest getObjectRequest = new GetObjectRequest(signedUrl, requestHeaders);
         return objectOperation.getObject(getObjectRequest);
+    }
+    
+
+    @Override
+    public SimplifiedObjectMeta getSimplifiedObjectMeta(String bucketName, String key)
+            throws OSSException, ClientException {
+        return this.getSimplifiedObjectMeta(new GenericRequest(bucketName, key));
+    }
+
+    @Override
+    public SimplifiedObjectMeta getSimplifiedObjectMeta(GenericRequest genericRequest)
+            throws OSSException, ClientException {
+        return this.objectOperation.getSimplifiedObjectMeta(genericRequest);
     }
 
     @Override
@@ -849,6 +920,77 @@ public class OSSClient implements OSS {
             throws OSSException, ClientException {
         bucketOperation.deleteBucketLogging(genericRequest);
     }
+    @Override
+	public void putBucketImage(PutBucketImageRequest request)
+	    		throws OSSException, ClientException{
+		bucketOperation.putBucketImage(request);
+	}
+    
+	@Override
+	public GetBucketImageResult getBucketImage(String bucketName) 
+			throws OSSException, ClientException{
+		return bucketOperation.getBucketImage(bucketName, new GenericRequest());
+	}
+	
+	@Override
+	public GetBucketImageResult getBucketImage(String bucketName, GenericRequest genericRequest) 
+			throws OSSException, ClientException{
+		return bucketOperation.getBucketImage(bucketName, genericRequest);
+	}
+	
+	@Override
+	public void deleteBucketImage(String bucketName) 
+			throws OSSException, ClientException{
+		bucketOperation.deleteBucketImage(bucketName, new GenericRequest());
+	}
+	
+	@Override
+	public void deleteBucketImage(String bucketName, GenericRequest genericRequest) 
+			throws OSSException, ClientException{
+		bucketOperation.deleteBucketImage(bucketName, genericRequest);
+	}
+	
+	@Override
+	public void putImageStyle(PutImageStyleRequest putImageStyleRequest)
+			throws OSSException, ClientException{
+		bucketOperation.putImageStyle(putImageStyleRequest);
+	}
+	
+	@Override
+	public void deleteImageStyle(String bucketName, String styleName)
+			throws OSSException, ClientException{
+		bucketOperation.deleteImageStyle(bucketName, styleName, new GenericRequest());
+	}
+	
+	@Override
+	public void deleteImageStyle(String bucketName, String styleName, GenericRequest genericRequest)
+			throws OSSException, ClientException{
+		bucketOperation.deleteImageStyle(bucketName, styleName, genericRequest);
+	}
+	
+	@Override
+	public GetImageStyleResult getImageStyle(String bucketName, String styleName)
+    		throws OSSException, ClientException{
+		return bucketOperation.getImageStyle(bucketName, styleName, new GenericRequest());
+	}
+	
+	@Override
+	public GetImageStyleResult getImageStyle(String bucketName, String styleName, GenericRequest genericRequest)
+    		throws OSSException, ClientException{
+		return bucketOperation.getImageStyle(bucketName, styleName, genericRequest);
+	}
+	
+	@Override
+    public List<Style> listImageStyle(String bucketName) 
+    		throws OSSException, ClientException {
+            return bucketOperation.listImageStyle(bucketName, new GenericRequest());
+    }
+	
+	@Override
+    public List<Style> listImageStyle(String bucketName, GenericRequest genericRequest) 
+    		throws OSSException, ClientException {
+            return bucketOperation.listImageStyle(bucketName, genericRequest);
+    }
 
     @Override
     public void setBucketWebsite(SetBucketWebsiteRequest setBucketWebSiteRequest)
@@ -935,7 +1077,186 @@ public class OSSClient implements OSS {
     }
     
     @Override
+    public void setBucketTagging(String bucketName, Map<String, String> tags)
+            throws OSSException, ClientException {
+        this.setBucketTagging(new SetBucketTaggingRequest(bucketName, tags));
+    }
+    
+
+    @Override
+    public void setBucketTagging(String bucketName, TagSet tagSet)
+            throws OSSException, ClientException {
+        this.setBucketTagging(new SetBucketTaggingRequest(bucketName, tagSet));
+    }
+
+    @Override
+    public void setBucketTagging(SetBucketTaggingRequest setBucketTaggingRequest)
+            throws OSSException, ClientException {
+        this.bucketOperation.setBucketTagging(setBucketTaggingRequest);
+    }
+
+    @Override
+    public TagSet getBucketTagging(String bucketName) 
+            throws OSSException, ClientException {
+        return this.getBucketTagging(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public TagSet getBucketTagging(GenericRequest genericRequest)
+            throws OSSException, ClientException {
+        return this.bucketOperation.getBucketTagging(genericRequest);
+    }
+
+    @Override
+    public void deleteBucketTagging(String bucketName) 
+            throws OSSException, ClientException {
+        this.deleteBucketTagging(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public void deleteBucketTagging(GenericRequest genericRequest)
+            throws OSSException, ClientException {
+        this.bucketOperation.deleteBucketTagging(genericRequest);
+    }
+    
+    @Override
+    public void addBucketReplication(AddBucketReplicationRequest addBucketReplicationRequest)
+            throws OSSException, ClientException {
+        this.bucketOperation.addBucketReplication(addBucketReplicationRequest);
+    }
+
+    @Override
+    public List<ReplicationRule> getBucketReplication(String bucketName)
+            throws OSSException, ClientException {
+        return this.getBucketReplication(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public List<ReplicationRule> getBucketReplication(GenericRequest genericRequest) 
+            throws OSSException, ClientException {
+        return this.bucketOperation.getBucketReplication(genericRequest);
+    }
+
+    @Override
+    public void deleteBucketReplication(String bucketName,
+            String replicationRuleID) throws OSSException, ClientException {
+        this.deleteBucketReplication(new DeleteBucketReplicationRequest(
+                bucketName, replicationRuleID));
+    }
+
+    @Override
+    public void deleteBucketReplication(
+            DeleteBucketReplicationRequest deleteBucketReplicationRequest)
+            throws OSSException, ClientException {
+        this.bucketOperation.deleteBucketReplication(deleteBucketReplicationRequest);
+    }
+
+    @Override
+    public BucketReplicationProgress getBucketReplicationProgress(
+            String bucketName, String replicationRuleID) throws OSSException,
+            ClientException {
+        return this.getBucketReplicationProgress(new GetBucketReplicationProgressRequest(
+                        bucketName, replicationRuleID));
+    }
+
+    @Override
+    public BucketReplicationProgress getBucketReplicationProgress(
+            GetBucketReplicationProgressRequest getBucketReplicationProgressRequest)
+            throws OSSException, ClientException {
+        return this.bucketOperation.getBucketReplicationProgress(getBucketReplicationProgressRequest);
+    }
+
+    @Override
+    public List<String> getBucketReplicationLocation(String bucketName)
+            throws OSSException, ClientException {
+        return this.getBucketReplicationLocation(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public List<String> getBucketReplicationLocation(GenericRequest genericRequest) 
+            throws OSSException, ClientException {
+        return this.bucketOperation.getBucketReplicationLocation(genericRequest);
+    }
+
+    @Override
+    public void addBucketCname(AddBucketCnameRequest addBucketCnameRequest)
+            throws OSSException, ClientException {
+        this.bucketOperation.addBucketCname(addBucketCnameRequest);
+    }
+
+    @Override
+    public List<CnameConfiguration> getBucketCname(String bucketName)
+            throws OSSException, ClientException {
+        return this.getBucketCname(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public List<CnameConfiguration> getBucketCname(GenericRequest genericRequest)
+            throws OSSException, ClientException {
+        return this.bucketOperation.getBucketCname(genericRequest);
+    }
+
+    @Override
+    public void deleteBucketCname(String bucketName, String domain)
+            throws OSSException, ClientException {
+        this.deleteBucketCname(new DeleteBucketCnameRequest(bucketName, domain));
+    }
+
+    @Override
+    public void deleteBucketCname(DeleteBucketCnameRequest deleteBucketCnameRequest)
+            throws OSSException, ClientException {
+        this.bucketOperation.deleteBucketCname(deleteBucketCnameRequest);
+    }
+    
+    @Override
+    public BucketInfo getBucketInfo(String bucketName) throws OSSException,
+            ClientException {
+        return this.getBucketInfo(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public BucketInfo getBucketInfo(GenericRequest genericRequest)
+            throws OSSException, ClientException {
+        return this.bucketOperation.getBucketInfo(genericRequest);
+    }
+    
+    @Override
+    public void setBucketStorageCapacity(String bucketName, UserQos userQos) throws OSSException,
+            ClientException {
+        this.setBucketStorageCapacity(new SetBucketStorageCapacityRequest(bucketName).withUserQos(userQos)); 
+    }
+
+    @Override
+    public void setBucketStorageCapacity(SetBucketStorageCapacityRequest setBucketStorageCapacityRequest)
+            throws OSSException, ClientException {
+        this.bucketOperation.setBucketStorageCapacity(setBucketStorageCapacityRequest);
+    }
+
+    @Override
+    public UserQos getBucketStorageCapacity(String bucketName)
+            throws OSSException, ClientException {
+        return this.getBucketStorageCapacity(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public UserQos getBucketStorageCapacity(GenericRequest genericRequest)
+            throws OSSException, ClientException {
+        return this.bucketOperation.getBucketStorageCapacity(genericRequest);
+    }
+	
+	@Override
+    public UploadFileResult uploadFile(UploadFileRequest uploadFileRequest) throws Throwable {
+        return this.uploadOperation.uploadFile(uploadFileRequest);
+    }
+    
+    @Override
+    public DownloadFileResult downloadFile(DownloadFileRequest downloadFileRequest) throws Throwable {
+        return downloadOperation.downloadFile(downloadFileRequest);
+    }
+    
+    @Override
     public void shutdown() {
         serviceClient.shutdown();
     }
+    
 }

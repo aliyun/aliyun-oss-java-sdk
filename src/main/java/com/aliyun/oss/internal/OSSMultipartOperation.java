@@ -30,6 +30,8 @@ import static com.aliyun.oss.event.ProgressPublisher.publishProgress;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.addDateHeader;
 import static com.aliyun.oss.internal.OSSUtils.addStringListHeader;
+import static com.aliyun.oss.internal.OSSUtils.ensureCallbackValid;
+import static com.aliyun.oss.internal.OSSUtils.populateRequestCallback;
 import static com.aliyun.oss.internal.OSSUtils.removeHeader;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
 import static com.aliyun.oss.internal.OSSUtils.ensureObjectKeyValid;
@@ -38,6 +40,7 @@ import static com.aliyun.oss.internal.OSSUtils.trimQuotes;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_FILE_SIZE_LIMIT;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
 import static com.aliyun.oss.internal.ResponseParsers.completeMultipartUploadResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.completeMultipartUploadCallbackResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.initiateMultipartUploadResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.listMultipartUploadsResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.listPartsResponseParser;
@@ -45,8 +48,10 @@ import static com.aliyun.oss.internal.ResponseParsers.listPartsResponseParser;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.aliyun.oss.ClientException;
@@ -54,6 +59,7 @@ import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.comm.RequestMessage;
+import com.aliyun.oss.common.comm.ResponseHandler;
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.comm.ServiceClient;
 import com.aliyun.oss.common.utils.HttpUtil;
@@ -139,9 +145,11 @@ public class OSSMultipartOperation extends OSSOperation {
         assertParameterNotNull(key, "key");
         ensureObjectKeyValid(key);
         assertStringNotNullOrEmpty(uploadId, "uploadId");
+        ensureCallbackValid(completeMultipartUploadRequest.getCallback());
 
         Map<String, String> headers = new HashMap<String, String>();
         populateCompleteMultipartUploadOptionalHeaders(completeMultipartUploadRequest, headers);
+        populateRequestCallback(headers, completeMultipartUploadRequest.getCallback());
         
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(UPLOAD_ID, uploadId);
@@ -157,7 +165,14 @@ public class OSSMultipartOperation extends OSSOperation {
                 .setOriginalRequest(completeMultipartUploadRequest)
                 .build();
         
-        return doOperation(request, completeMultipartUploadResponseParser, bucketName, key, true);
+        List<ResponseHandler> reponseHandlers = new ArrayList<ResponseHandler>();
+        reponseHandlers.add(new OSSCallbackErrorResponseHandler());
+        
+        if (completeMultipartUploadRequest.getCallback() == null) {
+            return doOperation(request, completeMultipartUploadResponseParser, bucketName, key, true);
+        } else {
+            return doOperation(request, completeMultipartUploadCallbackResponseParser, bucketName, key, true, null, reponseHandlers);
+        }
     }
 
     /**

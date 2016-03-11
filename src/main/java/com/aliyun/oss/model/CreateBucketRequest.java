@@ -23,6 +23,7 @@ public class CreateBucketRequest extends GenericRequest {
     
     private String locationConstraint;
     private CannedAccessControlList cannedACL;
+    private StorageClass storageClass;
     
     public CreateBucketRequest(String bucketName) {
         super(bucketName);
@@ -63,8 +64,21 @@ public class CreateBucketRequest extends GenericRequest {
         this.cannedACL = cannedACL;
     }
     
+    public StorageClass getStorageClass() {
+        return storageClass;
+    }
+    
+    public void setStorageClass(StorageClass storageClass) {
+        this.storageClass = storageClass;
+    }
+    
     public CreateBucketRequest withCannedACL(CannedAccessControlList cannedACL) {
         setCannedACL(cannedACL);
+        return this;
+    }
+    
+    public CreateBucketRequest withStorageType(StorageClass storageClass) {
+        setStorageClass(storageClass);
         return this;
     }
 }

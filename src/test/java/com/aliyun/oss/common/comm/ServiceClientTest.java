@@ -50,7 +50,6 @@ import com.aliyun.oss.utils.StreamUtils;
 
 public class ServiceClientTest {
     
-
     static class ServiceClientImpl extends DefaultServiceClient {
 
         private int requestAttemps = 0;

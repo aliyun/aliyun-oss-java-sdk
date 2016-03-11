@@ -40,10 +40,13 @@ public class ClientConfiguration {
     
     private static final int DEFAULT_MAX_RETRIES = 3;
     
+    public static final int DEFAULT_CONNECTION_REQUEST_TIMEOUT = -1;
     public static final int DEFAULT_CONNECTION_TIMEOUT = 50 * 1000;
     public static final int DEFAULT_SOCKET_TIMEOUT = 50 * 1000;
     public static final int DEFAULT_MAX_CONNECTIONS = 1024;
     public static final long DEFAULT_CONNECTION_TTL = -1;
+    public static final long DEFAULT_IDLE_CONNECTION_TIME = 60 * 1000;
+    public static final int DEFAULT_VALIDATE_AFTER_INACTIVITY = 2 * 1000; 
 
     public static final boolean DEFAULT_USE_REAPER = true;
     
@@ -51,11 +54,14 @@ public class ClientConfiguration {
     
     private String userAgent = DEFAULT_USER_AGENT;
     private int maxErrorRetry = DEFAULT_MAX_RETRIES;
+    private int connectionRequestTimeout = DEFAULT_CONNECTION_REQUEST_TIMEOUT;
     private int connectionTimeout = DEFAULT_CONNECTION_TIMEOUT;
     private int socketTimeout = DEFAULT_CONNECTION_TIMEOUT;
     private int maxConnections = DEFAULT_MAX_CONNECTIONS;
     private long connectionTTL = DEFAULT_CONNECTION_TTL;
     private boolean useReaper = DEFAULT_USE_REAPER;
+    private long idleConnectionTime = DEFAULT_IDLE_CONNECTION_TIME;
+
     private Protocol protocol = Protocol.HTTP;
     
     private String proxyHost = null;
@@ -247,6 +253,24 @@ public class ClientConfiguration {
     public void setConnectionTimeout(int connectionTimeout) {
         this.connectionTimeout = connectionTimeout;
     }
+    
+    /**
+     * 返回从连接池中获取连接的超时时间（单位：毫秒）。
+     * 0表示无限等待。负值表示未定义，默认-1。
+     * @return 从连接池中获取连接的超时时间。
+     */
+    public int getConnectionRequestTimeout() {
+        return connectionRequestTimeout;
+    }
+
+    /**
+     * 设置从连接池中获取连接的超时时间（单位：毫秒）。
+     * @param connectionRequestTimeout
+     *          设置从连接池中获取连接的超时时间。
+     */
+    public void setConnectionRequestTimeout(int connectionRequestTimeout) {
+        this.connectionRequestTimeout = connectionRequestTimeout;
+    }
 
     /**
      * 返回一个值表示当可重试的请求失败后最大的重试次数。（默认值为3）
@@ -293,6 +317,22 @@ public class ClientConfiguration {
      */
     public void setUseReaper(boolean useReaper) {
         this.useReaper = useReaper;
+    }
+    
+    /**
+     * 获取关闭空闲连接的时长。
+     * @return 关闭空闲连接的时长。
+     */
+    public long getIdleConnectionTime() {
+        return idleConnectionTime;
+    }
+
+    /**
+     * 设置空闲连接的时长，连接空闲该时间后关闭，单位毫秒，默认30秒。
+     * @return idleConnectionTime 空闲连接的时长。
+     */
+    public void setIdleConnectionTime(long idleConnectionTime) {
+        this.idleConnectionTime = idleConnectionTime;
     }
 
     /**
@@ -393,6 +433,14 @@ public class ClientConfiguration {
     public ClientConfiguration setSLDEnabled(boolean enabled) {
         this.sldEnabled = enabled;
         return this;
+    }
+    
+    /**
+     * 连接空闲该时间后，重用前检查该连接的有效性，默认2秒，单位毫秒。
+     * @return 连接空闲时间
+     */
+    public int getValidateAfterInactivity() {
+        return DEFAULT_VALIDATE_AFTER_INACTIVITY;
     }
     
 }

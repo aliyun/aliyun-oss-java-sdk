@@ -646,7 +646,7 @@ public class OSSClientRequestTest {
             fail(e.getMessage());
         }
 
-        String expectedUrlPrefix =  endpoint.getScheme() + "://" + endpoint.getHost() + "/" + objectKey
+        String expectedUrlPrefix =  endpoint.getScheme() + "://" + endpoint.getHost() + "/" + bucketName + "/" + objectKey
                 + "?Expires=" + Long.toString(expiration.getTime() / 1000) + "&OSSAccessKeyId=" + accessId
                 + "&Signature=";
         
@@ -662,6 +662,7 @@ public class OSSClientRequestTest {
 
         expectedUrlPrefix = endpoint.getScheme() 
                 + "://" + endpoint.getHost() 
+                + "/" + bucketName
                 + "/" + objectKey
                 + "?Expires="
                 + Long.toString(expiration.getTime() / 1000) 

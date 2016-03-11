@@ -19,13 +19,13 @@
 
 package com.aliyun.oss.integrationtests;
 
+import static com.aliyun.oss.integrationtests.TestConstants.BUCKET_ACCESS_DENIED_ERR;
+import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_BUCKET_ERR;
+import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_LIFECYCLE_ERR;
 import static com.aliyun.oss.integrationtests.TestUtils.genRandomString;
 import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 import static com.aliyun.oss.model.SetBucketLifecycleRequest.MAX_LIFECYCLE_RULE_LIMIT;
 import static com.aliyun.oss.model.SetBucketLifecycleRequest.MAX_RULE_ID_LENGTH;
-import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_LIFECYCLE_ERR;
-import static com.aliyun.oss.integrationtests.TestConstants.BUCKET_ACCESS_DENIED_ERR;
-import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_BUCKET_ERR;
 
 import java.text.ParseException;
 import java.util.List;
@@ -38,6 +38,7 @@ import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.model.LifecycleRule;
+import com.aliyun.oss.model.LifecycleRule.AbortMultipartUpload;
 import com.aliyun.oss.model.LifecycleRule.RuleStatus;
 import com.aliyun.oss.model.SetBucketLifecycleRequest;
 
@@ -47,9 +48,15 @@ public class BucketLifecycleTest extends TestBase {
     public void testNormalSetBucketLifecycle() throws ParseException {
         final String bucketName = "normal-set-bucket-lifecycle";
         final String ruleId0 = "delete obsoleted files";
-        final String matchPrefix0 = "obsoleted/";
+        final String matchPrefix0 = "obsoleted0/";
         final String ruleId1 = "delete temporary files";
-        final String matchPrefix1 = "temporary/";
+        final String matchPrefix1 = "temporary0/";
+        final String ruleId2 = "delete obsoleted multipart files";
+        final String matchPrefix2 = "obsoleted1/";
+        final String ruleId3 = "delete temporary multipart files";
+        final String matchPrefix3 = "temporary1/";
+        final String ruleId4 = "delete temporary files(2)";
+        final String matchPrefix4 = "temporary2/";
         
         try {
             secondClient.createBucket(bucketName);
@@ -58,22 +65,64 @@ public class BucketLifecycleTest extends TestBase {
             request.AddLifecycleRule(new LifecycleRule(ruleId0, matchPrefix0, RuleStatus.Enabled, 3));
             request.AddLifecycleRule(new LifecycleRule(ruleId1, matchPrefix1, RuleStatus.Enabled, 
                     DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z")));
+            
+            LifecycleRule rule = new LifecycleRule(ruleId2, matchPrefix2, RuleStatus.Enabled, 3);
+            LifecycleRule.AbortMultipartUpload abortMultipartUpload = new LifecycleRule.AbortMultipartUpload();
+            abortMultipartUpload.setExpirationDays(3);
+            rule.setAbortMultipartUpload(abortMultipartUpload);
+            request.AddLifecycleRule(rule);
+            
+            rule = new LifecycleRule(ruleId3, matchPrefix3, RuleStatus.Enabled, 
+                    DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z"));
+            abortMultipartUpload = new LifecycleRule.AbortMultipartUpload();
+            abortMultipartUpload.setCreatedBeforeDate(DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z"));
+            rule.setAbortMultipartUpload(abortMultipartUpload);
+            request.AddLifecycleRule(rule);
+            rule = new LifecycleRule(ruleId4, matchPrefix4, RuleStatus.Enabled);
+            rule.setCreatedBeforeDate(DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z"));
+            request.AddLifecycleRule(rule);
             secondClient.setBucketLifecycle(request);
             
             List<LifecycleRule> rules = secondClient.getBucketLifecycle(bucketName);
-            Assert.assertEquals(rules.size(), 2);
+            Assert.assertEquals(rules.size(), 5);
             
             LifecycleRule r0 = rules.get(0);
             Assert.assertEquals(r0.getId(), ruleId0);
             Assert.assertEquals(r0.getPrefix(), matchPrefix0);
             Assert.assertEquals(r0.getStatus(), RuleStatus.Enabled);
-            Assert.assertEquals(r0.getExpriationDays(), 3);
+            Assert.assertEquals(r0.getExpirationDays(), 3);
+            Assert.assertTrue(r0.getAbortMultipartUpload() == null);
             
             LifecycleRule r1 = rules.get(1);
             Assert.assertEquals(r1.getId(), ruleId1);
             Assert.assertEquals(r1.getPrefix(), matchPrefix1);
             Assert.assertEquals(r1.getStatus(), RuleStatus.Enabled);
             Assert.assertEquals(DateUtil.formatIso8601Date(r1.getExpirationTime()), "2022-10-12T00:00:00.000Z");
+            Assert.assertTrue(r1.getAbortMultipartUpload() == null);
+            
+            LifecycleRule r2 = rules.get(2);
+            Assert.assertEquals(r2.getId(), ruleId2);
+            Assert.assertEquals(r2.getPrefix(), matchPrefix2);
+            Assert.assertEquals(r2.getStatus(), RuleStatus.Enabled);
+            Assert.assertEquals(r2.getExpirationDays(), 3);
+            Assert.assertNotNull(r2.getAbortMultipartUpload());
+            Assert.assertEquals(r2.getAbortMultipartUpload().getExpirationDays(), 3);
+            
+            LifecycleRule r3 = rules.get(3);
+            Assert.assertEquals(r3.getId(), ruleId3);
+            Assert.assertEquals(r3.getPrefix(), matchPrefix3);
+            Assert.assertEquals(r3.getStatus(), RuleStatus.Enabled);
+            Assert.assertEquals(DateUtil.formatIso8601Date(r3.getExpirationTime()), "2022-10-12T00:00:00.000Z");
+            Assert.assertNotNull(r3.getAbortMultipartUpload());
+            Assert.assertEquals(DateUtil.formatIso8601Date(r3.getAbortMultipartUpload().getCreatedBeforeDate()), 
+                    "2022-10-12T00:00:00.000Z");
+            
+            LifecycleRule r4 = rules.get(4);
+            Assert.assertEquals(r4.getId(), ruleId4);
+            Assert.assertEquals(r4.getPrefix(), matchPrefix4);
+            Assert.assertEquals(r4.getStatus(), RuleStatus.Enabled);
+            Assert.assertEquals(DateUtil.formatIso8601Date(r4.getCreatedBeforeDate()), "2022-10-12T00:00:00.000Z");
+            Assert.assertTrue(r4.getAbortMultipartUpload() == null);
             
             // Override existing lifecycle rules
             final String nullRuleId = null;
@@ -89,7 +138,7 @@ public class BucketLifecycleTest extends TestBase {
             r0 = rules.get(0);
             Assert.assertEquals(matchPrefix0, r0.getPrefix());
             Assert.assertEquals(r0.getStatus(), RuleStatus.Enabled);
-            Assert.assertEquals(r0.getExpriationDays(), 7);
+            Assert.assertEquals(r0.getExpirationDays(), 7);
             
             secondClient.deleteBucketLifecycle(bucketName);
             
@@ -185,7 +234,7 @@ public class BucketLifecycleTest extends TestBase {
                 invalidRule.setPrefix(matchPrefix0);
                 invalidRule.setStatus(RuleStatus.Enabled);
                 invalidRule.setExpirationTime(DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z"));
-                invalidRule.setExpriationDays(3);
+                invalidRule.setExpirationDays(3);
                 request.AddLifecycleRule(invalidRule);
                 
                 Assert.fail("Set bucket lifecycle should not be successful");
@@ -206,6 +255,26 @@ public class BucketLifecycleTest extends TestBase {
             } catch (Exception e) {
                 Assert.assertTrue(e instanceof IllegalArgumentException);
             }
+            
+            // With abort multipart upload option
+            try {
+                SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(nonexistentBucket);
+                LifecycleRule invalidRule = new LifecycleRule();
+                invalidRule.setId(ruleId0);
+                invalidRule.setPrefix(matchPrefix0);
+                invalidRule.setStatus(RuleStatus.Enabled);
+                invalidRule.setExpirationDays(3);
+                LifecycleRule.AbortMultipartUpload abortMultipartUpload = new AbortMultipartUpload();
+                abortMultipartUpload.setExpirationDays(3);
+                abortMultipartUpload.setCreatedBeforeDate(DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z"));
+                invalidRule.setAbortMultipartUpload(abortMultipartUpload);
+                request.AddLifecycleRule(invalidRule);
+                
+                Assert.fail("Set bucket lifecycle should not be successful");
+            } catch (Exception e) {
+                Assert.assertTrue(e instanceof IllegalArgumentException);
+            }
+            
         } finally {
             secondClient.deleteBucket(bucketName);
         }

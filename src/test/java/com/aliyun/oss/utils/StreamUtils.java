@@ -28,7 +28,7 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 
 public class StreamUtils {
-
+    
     public static String readContent(InputStream contentStream, String charset)
             throws UnsupportedEncodingException{
 

@@ -50,6 +50,15 @@ public class Bucket {
 
     // 创建时间
     private Date creationDate;
+    
+    // 存储类型
+    private StorageClass storageClass = StorageClass.Standard;
+
+    // 内部地址
+    private String extranetEndpoint;
+    
+    // 外部地址
+    private String intranetEndpoint;
 
     /**
      * 构造函数。
@@ -70,10 +79,18 @@ public class Bucket {
      */
     @Override
     public String toString() {
-        return "OSSBucket [name=" + getName()
-                + ", creationDate=" + getCreationDate()
-                + ", owner=" + getOwner()
-                + ", location="+ getLocation() + "]";
+        if (storageClass == null) {
+            return "OSSBucket [name=" + getName()
+                    + ", creationDate=" + getCreationDate()
+                    + ", owner=" + getOwner()
+                    + ", location="+ getLocation() + "]";
+        } else {
+            return "OSSBucket [name=" + getName()
+                    + ", creationDate=" + getCreationDate()
+                    + ", owner=" + getOwner()
+                    + ", location="+ getLocation()
+                    + ", storageClass=" + getStorageClass() + "]";
+        }
     }
 
     /**
@@ -142,5 +159,53 @@ public class Bucket {
      */
     public void setLocation(String location) {
        this.location = location;
+    }
+    
+    /**
+     * 返回Bucket存储类型
+     * @return storage class
+     */
+    public StorageClass getStorageClass() {
+        return storageClass;
+    }
+
+    /**
+     * 设置Bucket存储类型
+     * @param storageClass
+     */
+    public void setStorageClass(StorageClass storageClass) {
+        this.storageClass = storageClass;
+    }
+    
+    /**
+     * 返回外部地址
+     * @return extranet endpoint
+     */
+    public String getExtranetEndpoint() {
+        return extranetEndpoint;
+    }
+
+    /**
+     * 设置内部地址
+     * @param endpoint extranet endpoint
+     */
+    public void setExtranetEndpoint(String endpoint) {
+        this.extranetEndpoint = endpoint;
+    }
+
+    /**
+     * 返回内部地址
+     * @return intranet endpoint
+     */
+    public String getIntranetEndpoint() {
+        return intranetEndpoint;
+    }
+
+    /**
+     * 设置外部地址
+     * @param endpoint intranet endpoint
+     */
+    public void setIntranetEndpoint(String endpoint) {
+        this.intranetEndpoint = endpoint;
     }
 }

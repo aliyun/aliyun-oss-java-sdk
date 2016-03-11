@@ -19,11 +19,14 @@
 
 package com.aliyun.oss.model;
 
+import java.io.Serializable;
+
 /**
  * 包含Multipart上传的Part的返回结果信息。
  *
  */
-public class PartETag {
+public class PartETag implements Serializable {
+    private static final long serialVersionUID = 2471854027355307627L;
 
     private int partNumber;
 
@@ -73,6 +76,15 @@ public class PartETag {
      */
     public void setETag(String eTag) {
         this.eTag = eTag;
+    }
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((eTag == null) ? 0 : eTag.hashCode());
+        result = prime * result + partNumber;
+        return result;
     }
 
 }

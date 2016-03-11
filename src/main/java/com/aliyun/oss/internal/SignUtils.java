@@ -23,17 +23,29 @@ import static com.aliyun.oss.common.utils.CodingUtils.assertTrue;
 import static com.aliyun.oss.internal.RequestParameters.PART_NUMBER;
 import static com.aliyun.oss.internal.RequestParameters.POSITION;
 import static com.aliyun.oss.internal.RequestParameters.SECURITY_TOKEN;
+import static com.aliyun.oss.internal.RequestParameters.STYLE_NAME;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_ACL;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_APPEND;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_CORS;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_DELETE;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_IMG;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_LIFECYCLE;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_LOCATION;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_LOGGING;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_REFERER;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_STYLE;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_UPLOADS;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_WEBSITE;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_TAGGING;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_REPLICATION;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_REPLICATION_PROGRESS;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_REPLICATION_LOCATION;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_CNAME;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_BUCKET_INFO;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_COMP;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_OBJECTMETA;
 import static com.aliyun.oss.internal.RequestParameters.UPLOAD_ID;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_QOS;
 import static com.aliyun.oss.model.ResponseHeaderOverrides.RESPONSE_HEADER_CACHE_CONTROL;
 import static com.aliyun.oss.model.ResponseHeaderOverrides.RESPONSE_HEADER_CONTENT_DISPOSITION;
 import static com.aliyun.oss.model.ResponseHeaderOverrides.RESPONSE_HEADER_CONTENT_ENCODING;
@@ -58,10 +70,14 @@ public class SignUtils {
             SUBRESOURCE_ACL, SUBRESOURCE_UPLOADS, SUBRESOURCE_LOCATION, 
             SUBRESOURCE_CORS, SUBRESOURCE_LOGGING, SUBRESOURCE_WEBSITE, 
             SUBRESOURCE_REFERER, SUBRESOURCE_LIFECYCLE, SUBRESOURCE_DELETE, 
-            SUBRESOURCE_APPEND, UPLOAD_ID, PART_NUMBER, SECURITY_TOKEN, POSITION,
-            RESPONSE_HEADER_CACHE_CONTROL, RESPONSE_HEADER_CONTENT_DISPOSITION, 
-            RESPONSE_HEADER_CONTENT_ENCODING, RESPONSE_HEADER_CONTENT_LANGUAGE,
-            RESPONSE_HEADER_CONTENT_TYPE, RESPONSE_HEADER_EXPIRES
+            SUBRESOURCE_APPEND, SUBRESOURCE_TAGGING, SUBRESOURCE_OBJECTMETA,
+            UPLOAD_ID, PART_NUMBER, SECURITY_TOKEN, POSITION, RESPONSE_HEADER_CACHE_CONTROL, 
+            RESPONSE_HEADER_CONTENT_DISPOSITION, RESPONSE_HEADER_CONTENT_ENCODING, 
+            RESPONSE_HEADER_CONTENT_LANGUAGE, RESPONSE_HEADER_CONTENT_TYPE, 
+            RESPONSE_HEADER_EXPIRES, SUBRESOURCE_IMG,SUBRESOURCE_STYLE,STYLE_NAME,
+            SUBRESOURCE_REPLICATION, SUBRESOURCE_REPLICATION_PROGRESS,
+            SUBRESOURCE_REPLICATION_LOCATION, SUBRESOURCE_CNAME, 
+            SUBRESOURCE_BUCKET_INFO, SUBRESOURCE_COMP, SUBRESOURCE_QOS,
     });
     
     public static String buildCanonicalString(String method, String resourcePath,

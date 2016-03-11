@@ -26,6 +26,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.NonRepeatableRequestException;
 import org.apache.http.conn.ConnectTimeoutException;
@@ -54,9 +55,11 @@ public class ExceptionFactory {
         } else if (ex instanceof ConnectTimeoutException) {
             errorCode = ClientErrorCode.CONNECTION_TIMEOUT;
         } else if (ex instanceof UnknownHostException) {
-           errorCode = ClientErrorCode.UNKNOWN_HOST;
+            errorCode = ClientErrorCode.UNKNOWN_HOST;
         } else if (ex instanceof HttpHostConnectException) {
             errorCode = ClientErrorCode.CONNECTION_REFUSED;
+        } else if (ex instanceof NoHttpResponseException) {
+            errorCode = ClientErrorCode.CONNECTION_TIMEOUT;
         } else if (ex instanceof ClientProtocolException) {
             Throwable cause = ex.getCause();
             if (cause instanceof NonRepeatableRequestException) {

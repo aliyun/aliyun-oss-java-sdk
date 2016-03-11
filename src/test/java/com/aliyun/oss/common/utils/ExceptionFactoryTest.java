@@ -33,7 +33,7 @@ import com.aliyun.oss.ClientException;
 public class ExceptionFactoryTest {
 
     @Test
-    public void testCreateNetworkException() { 
+    public void testCreateNetworkException() {
         SocketTimeoutException ste = new SocketTimeoutException();
         ClientException ex = ExceptionFactory.createNetworkException(ste);
         assertEquals(ex.getErrorCode(), ClientErrorCode.SOCKET_TIMEOUT);

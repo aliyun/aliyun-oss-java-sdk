@@ -33,7 +33,10 @@ public class ListBucketsRequest extends WebServiceRequest {
 
     // 用于限定此次返回bucket的最大数，如果不设定，默认为100。
     private Integer maxKeys;
-
+    
+    // OSS的BID为26842
+    private String bid;
+    
     /**
      * 构造函数。
      */
@@ -143,5 +146,22 @@ public class ListBucketsRequest extends WebServiceRequest {
     public ListBucketsRequest withMaxKeys(Integer maxKeys) {
         setMaxKeys(maxKeys);
         return this;
+    }
+    
+    /**
+     * 设置bid。
+     * @param bid bid。
+     */
+    public void setBid(String bid) {
+        this.bid = bid;
+    }
+    
+    /**
+     * 返回用于bid。
+     * @return bid。
+     * 
+     */
+    public String getBid() {
+        return bid;
     }
 }

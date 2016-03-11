@@ -42,17 +42,26 @@ import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.model.AccessControlList;
 import com.aliyun.oss.model.AppendObjectResult;
 import com.aliyun.oss.model.Bucket;
+import com.aliyun.oss.model.BucketInfo;
 import com.aliyun.oss.model.BucketList;
 import com.aliyun.oss.model.BucketLoggingResult;
 import com.aliyun.oss.model.BucketReferer;
+import com.aliyun.oss.model.BucketReplicationProgress;
 import com.aliyun.oss.model.BucketWebsiteResult;
 import com.aliyun.oss.model.CannedAccessControlList;
+import com.aliyun.oss.model.CnameConfiguration;
 import com.aliyun.oss.model.CompleteMultipartUploadResult;
 import com.aliyun.oss.model.CopyObjectResult;
 import com.aliyun.oss.model.DeleteObjectsResult;
+import com.aliyun.oss.model.GetBucketImageResult;
+import com.aliyun.oss.model.ReplicationRule;
+import com.aliyun.oss.model.GetImageStyleResult;
 import com.aliyun.oss.model.GroupGrantee;
 import com.aliyun.oss.model.InitiateMultipartUploadResult;
 import com.aliyun.oss.model.LifecycleRule;
+import com.aliyun.oss.model.ReplicationStatus;
+import com.aliyun.oss.model.RoutingRule;
+import com.aliyun.oss.model.StorageClass;
 import com.aliyun.oss.model.LifecycleRule.RuleStatus;
 import com.aliyun.oss.model.MultipartUpload;
 import com.aliyun.oss.model.MultipartUploadListing;
@@ -68,7 +77,11 @@ import com.aliyun.oss.model.PartSummary;
 import com.aliyun.oss.model.Permission;
 import com.aliyun.oss.model.PutObjectResult;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
+import com.aliyun.oss.model.SimplifiedObjectMeta;
+import com.aliyun.oss.model.Style;
+import com.aliyun.oss.model.TagSet;
 import com.aliyun.oss.model.UploadPartCopyResult;
+import com.aliyun.oss.model.UserQos;
 
 /*
  * A collection of parsers that parse HTTP reponses into corresponding human-readable results.
@@ -76,23 +89,36 @@ import com.aliyun.oss.model.UploadPartCopyResult;
 public final class ResponseParsers {
     
     public static final ListBucketResponseParser listBucketResponseParser = new ListBucketResponseParser();
+    public static final ListImageStyleResponseParser listImageStyleResponseParser = new ListImageStyleResponseParser();
     public static final GetBucketRefererResponseParser getBucketRefererResponseParser = new GetBucketRefererResponseParser();
     public static final GetBucketAclResponseParser getBucketAclResponseParser = new GetBucketAclResponseParser();    
     public static final GetBucketLocationResponseParser getBucketLocationResponseParser = new GetBucketLocationResponseParser();    
     public static final GetBucketLoggingResponseParser getBucketLoggingResponseParser = new GetBucketLoggingResponseParser();    
     public static final GetBucketWebsiteResponseParser getBucketWebsiteResponseParser = new GetBucketWebsiteResponseParser();    
     public static final GetBucketLifecycleResponseParser getBucketLifecycleResponseParser = new GetBucketLifecycleResponseParser();    
-    public static final GetBucketCorsResponseParser getBucketCorsResponseParser = new GetBucketCorsResponseParser();    
+    public static final GetBucketCorsResponseParser getBucketCorsResponseParser = new GetBucketCorsResponseParser();
+    public static final GetBucketImageResponseParser getBucketImageResponseParser = new GetBucketImageResponseParser();
+	public static final GetImageStyleResponseParser getImageStyleResponseParser = new GetImageStyleResponseParser();
+    public static final GetBucketTaggingResponseParser getBucketTaggingResponseParser = new GetBucketTaggingResponseParser();    
+    public static final GetBucketReplicationResponseParser getBucketReplicationResponseParser = new GetBucketReplicationResponseParser();    
+    public static final GetBucketReplicationProgressResponseParser getBucketReplicationProgressResponseParser = new GetBucketReplicationProgressResponseParser();    
+    public static final GetBucketReplicationLocationResponseParser getBucketReplicationLocationResponseParser = new GetBucketReplicationLocationResponseParser();
+    public static final GetBucketCnameResponseParser getBucketCnameResponseParser = new GetBucketCnameResponseParser();    
+    public static final GetBucketInfoResponseParser getBucketInfoResponseParser = new GetBucketInfoResponseParser();    
+    public static final GetBucketQosResponseParser getBucketQosResponseParser = new GetBucketQosResponseParser();
     
     public static final ListObjectsReponseParser listObjectsReponseParser = new ListObjectsReponseParser();    
     public static final PutObjectReponseParser putObjectReponseParser = new PutObjectReponseParser();
+    public static final PutObjectCallbackReponseParser putObjectCallbackReponseParser = new PutObjectCallbackReponseParser();
     public static final AppendObjectResponseParser appendObjectResponseParser = new AppendObjectResponseParser();
     public static final GetObjectMetadataResponseParser getObjectMetadataResponseParser = new GetObjectMetadataResponseParser();    
     public static final CopyObjectResponseParser copyObjectResponseParser = new CopyObjectResponseParser();    
     public static final DeleteObjectsResponseParser deleteObjectsResponseParser = new DeleteObjectsResponseParser();
     public static final GetObjectAclResponseParser getObjectAclResponseParser = new GetObjectAclResponseParser();
+    public static final GetSimplifiedObjectMetaResponseParser getSimplifiedObjectMetaResponseParser = new GetSimplifiedObjectMetaResponseParser();
     
     public static final CompleteMultipartUploadResponseParser completeMultipartUploadResponseParser = new CompleteMultipartUploadResponseParser();    
+    public static final CompleteMultipartUploadCallbackResponseParser completeMultipartUploadCallbackResponseParser = new CompleteMultipartUploadCallbackResponseParser();    
     public static final InitiateMultipartUploadResponseParser initiateMultipartUploadResponseParser = new InitiateMultipartUploadResponseParser();    
     public static final ListMultipartUploadsResponseParser listMultipartUploadsResponseParser = new ListMultipartUploadsResponseParser();    
     public static final ListPartsResponseParser listPartsResponseParser = new ListPartsResponseParser();    
@@ -123,6 +149,17 @@ public final class ResponseParsers {
         
     }
     
+    public static final class ListImageStyleResponseParser implements ResponseParser<List<Style> >{
+		@Override
+		public List<Style> parse(ResponseMessage response)
+				throws ResponseParseException {
+			try {
+				return parseListImageStyle(response.getContent());
+			} finally {
+				safeCloseResponse(response);
+			}
+		}
+	}
     public static final class GetBucketRefererResponseParser implements ResponseParser<BucketReferer> {
         
         @Override
@@ -179,6 +216,29 @@ public final class ResponseParsers {
         
     }
     
+	public static final class GetBucketImageResponseParser implements ResponseParser<GetBucketImageResult>{
+		@Override
+		public GetBucketImageResult parse(ResponseMessage response)
+				throws ResponseParseException {
+			try {
+				return parseBucketImage(response.getContent());
+			} finally {
+				safeCloseResponse(response);
+			}
+		}
+	}
+	
+	public static final class GetImageStyleResponseParser implements ResponseParser<GetImageStyleResult>{
+		@Override
+		public GetImageStyleResult parse(ResponseMessage response)
+				throws ResponseParseException {
+			try {
+				return parseImageStyle(response.getContent());
+			} finally {
+				safeCloseResponse(response);
+			}
+		}
+	}
     public static final class GetBucketWebsiteResponseParser implements ResponseParser<BucketWebsiteResult> {
 
         @Override
@@ -207,6 +267,48 @@ public final class ResponseParsers {
         
     }
     
+    public static final class GetBucketCnameResponseParser implements ResponseParser<List<CnameConfiguration>> {
+        
+        @Override
+        public List<CnameConfiguration> parse(ResponseMessage response)
+                throws ResponseParseException {
+            try {
+                return parseGetBucketCname(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+        
+    }
+    
+    public static final class GetBucketInfoResponseParser implements ResponseParser<BucketInfo> {
+        
+        @Override
+        public BucketInfo parse(ResponseMessage response)
+                throws ResponseParseException {
+            try {
+                return parseGetBucketInfo(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+        
+    }
+    
+    public static final class GetBucketQosResponseParser implements ResponseParser<UserQos> {
+        
+        @Override
+        public UserQos parse(ResponseMessage response)
+                throws ResponseParseException {
+            try {
+                return parseGetUserQos(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+        
+    }
+    
     public static final class GetBucketCorsResponseParser implements ResponseParser<List<CORSRule>> {
         
         @Override
@@ -220,6 +322,62 @@ public final class ResponseParsers {
         }
         
     }
+    
+    public static final class GetBucketTaggingResponseParser implements ResponseParser<TagSet> {
+        
+        @Override
+        public TagSet parse(ResponseMessage response)
+                throws ResponseParseException {
+            try {
+                return parseGetBucketTagging(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+        
+    }
+    
+    public static final class GetBucketReplicationResponseParser implements ResponseParser<List<ReplicationRule>> {
+        
+        @Override
+        public List<ReplicationRule> parse(ResponseMessage response)
+                throws ResponseParseException {
+            try {
+                return parseGetBucketReplication(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+        
+    }
+    
+   public static final class GetBucketReplicationProgressResponseParser implements ResponseParser<BucketReplicationProgress> {
+        
+        @Override
+        public BucketReplicationProgress parse(ResponseMessage response)
+                throws ResponseParseException {
+            try {
+                return parseGetBucketReplicationProgress(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+        
+    }
+    
+   public static final class GetBucketReplicationLocationResponseParser implements ResponseParser<List<String>> {
+       
+       @Override
+       public List<String> parse(ResponseMessage response)
+               throws ResponseParseException {
+           try {
+               return parseGetBucketReplicationLocation(response.getContent());
+           } finally {
+               safeCloseResponse(response);
+           }
+       }
+       
+   }
     
     public static final class ListObjectsReponseParser implements ResponseParser<ObjectListing> {
         
@@ -247,6 +405,19 @@ public final class ResponseParsers {
             } finally {
                 safeCloseResponse(response);
             }
+        }
+        
+    }
+    
+    public static final class PutObjectCallbackReponseParser implements ResponseParser<PutObjectResult> {
+        
+        @Override
+        public PutObjectResult parse(ResponseMessage response)
+                throws ResponseParseException {
+            PutObjectResult result = new PutObjectResult();
+            result.setETag(trimQuotes(response.getHeaders().get(OSSHeaders.ETAG)));
+            result.setCallbackResponseBody(response.getContent());
+            return result;
         }
         
     }
@@ -318,6 +489,20 @@ public final class ResponseParsers {
         
     }
     
+    public static final class GetSimplifiedObjectMetaResponseParser implements ResponseParser<SimplifiedObjectMeta> {
+        
+        @Override
+        public SimplifiedObjectMeta parse(ResponseMessage response)
+                throws ResponseParseException {
+            try {
+                return parseSimplifiedObjectMeta(response.getHeaders());
+            } finally {
+                //safeCloseResponse(response);                
+            }
+        }
+        
+    }
+    
     public static final class GetObjectMetadataResponseParser implements ResponseParser<ObjectMetadata> {
         
         @Override
@@ -375,6 +560,18 @@ public final class ResponseParsers {
             } finally {
                 safeCloseResponse(response);                
             }
+        }
+        
+    }
+    
+    public static final class CompleteMultipartUploadCallbackResponseParser implements ResponseParser<CompleteMultipartUploadResult> {
+
+        @Override
+        public CompleteMultipartUploadResult parse(ResponseMessage response)
+                throws ResponseParseException {
+            CompleteMultipartUploadResult result = new CompleteMultipartUploadResult();
+            result.setCallbackResponseBody(response.getContent());
+            return result;
         }
         
     }
@@ -671,7 +868,12 @@ public final class ResponseParsers {
                     bucket.setName(e.getChildText("Name"));
                     bucket.setLocation(e.getChildText("Location"));
                     bucket.setCreationDate(DateUtil.parseIso8601Date(e.getChildText("CreationDate")));
-
+                    if (e.getChild("StorageClass") != null) {
+                        bucket.setStorageClass(StorageClass.parse(e.getChildText("StorageClass")));
+                    }
+                    bucket.setExtranetEndpoint(e.getChildText("ExtranetEndpoint"));
+                    bucket.setIntranetEndpoint(e.getChildText("IntranetEndpoint"));
+                    
                     buckets.add(bucket);
                 }
             }
@@ -683,6 +885,34 @@ public final class ResponseParsers {
         }
 
     }
+    
+    /**
+     * Unmarshall list image style response body to style list.
+     */
+    @SuppressWarnings("unchecked")
+    public static List<Style> parseListImageStyle(InputStream responseBody)
+    		throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+
+            List<Style> styleList = new ArrayList<Style>();
+            List<Element> styleElems = root.getChildren("Style");
+            for (Element e : styleElems) {
+            	Style style = new Style();
+            	style.SetStyleName(e.getChildText("Name"));
+            	style.SetStyle(e.getChildText("Content"));
+            	style.SetLastModifyTime(DateUtil.parseRfc822Date(e.getChildText("LastModifyTime")));
+            	style.SetCreationDate(DateUtil.parseRfc822Date(e.getChildText("CreateTime")));
+                styleList.add(style);
+            }
+            return styleList;
+        } catch (Exception e) {
+        	throw new ResponseParseException(e.getMessage(), e);
+        }
+
+    }
+    
     
     /**
      * Unmarshall get bucket location response body to bucket location.
@@ -697,6 +927,38 @@ public final class ResponseParsers {
             throw new ResponseParseException(e.getMessage(), e);
         }
 
+    }
+    
+    /**
+     * Unmarshall simplified object meta from response headers.
+     */
+    public static SimplifiedObjectMeta parseSimplifiedObjectMeta(Map<String, String> headers) 
+            throws ResponseParseException {
+
+        try {
+            SimplifiedObjectMeta objectMeta = new SimplifiedObjectMeta();
+
+            for (Iterator<String> it = headers.keySet().iterator(); it.hasNext();) {
+                String key = it.next();
+
+                if (key.equals(OSSHeaders.LAST_MODIFIED)) {
+                    try {
+                        objectMeta.setLastModified(DateUtil.parseRfc822Date(headers.get(key)));
+                    } catch (ParseException pe) {
+                        throw new ResponseParseException(pe.getMessage(), pe);
+                    }
+                } else if (key.equals(OSSHeaders.CONTENT_LENGTH)) {
+                    Long value = Long.valueOf(headers.get(key));
+                    objectMeta.setSize(value);
+                } else if (key.equals(OSSHeaders.ETAG)) {
+                    objectMeta.setETag(trimQuotes(headers.get(key)));
+                }
+            }
+
+            return objectMeta;
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
     }
 
     /**
@@ -944,10 +1206,53 @@ public final class ResponseParsers {
             throw new ResponseParseException(e.getMessage(), e);
         }
     }
+    /**
+     * Unmarshall get bucket image response body to corresponding result.
+     */
+    public static GetBucketImageResult parseBucketImage(InputStream responseBody) 
+    		throws ResponseParseException {
 
+        try {
+        	Element root = getXmlRootElement(responseBody);
+        	GetBucketImageResult result = new GetBucketImageResult();
+        	result.SetBucketName(root.getChildText("Name"));
+        	result.SetDefault404Pic(root.getChildText("Default404Pic"));
+        	result.SetStyleDelimiters(root.getChildText("StyleDelimiters"));
+        	result.SetStatus(root.getChildText("Status"));
+        	result.SetIsAutoSetContentType(root.getChildText("AutoSetContentType").equals("True"));
+        	result.SetIsForbidOrigPicAccess(root.getChildText("OrigPicForbidden").equals("True"));
+        	result.SetIsSetAttachName(root.getChildText("SetAttachName").equals("True"));
+        	result.SetIsUseStyleOnly(root.getChildText("UseStyleOnly").equals("True"));
+        	result.SetIsUseSrcFormat(root.getChildText("UseSrcFormat").equals("True"));
+        	return result;
+        } catch (Exception e) {
+        	throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Unmarshall get image style response body to corresponding result.
+     */
+    public static GetImageStyleResult parseImageStyle(InputStream responseBody)
+    		throws ResponseParseException {
+    	
+    	try{
+    		Element root = getXmlRootElement(responseBody);
+    		GetImageStyleResult result = new GetImageStyleResult();
+    		result.SetStyleName(root.getChildText("Name"));
+    		result.SetStyle(root.getChildText("Content"));
+    		result.SetLastModifyTime(DateUtil.parseRfc822Date(root.getChildText("LastModifyTime")));
+    		result.SetCreationDate(DateUtil.parseRfc822Date(root.getChildText("CreateTime")));
+    		return result;
+    	} catch (Exception e) {
+        	throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+    
     /**
      * Unmarshall get bucket website response body to corresponding result.
      */
+    @SuppressWarnings("unchecked")
     public static BucketWebsiteResult parseBucketWebsite(InputStream responseBody)
             throws ResponseParseException {
 
@@ -961,7 +1266,44 @@ public final class ResponseParsers {
             if(root.getChild("ErrorDocument") != null) {
                 result.setErrorDocument(root.getChild("ErrorDocument").getChildText("Key"));
             }
-            
+            if(root.getChild("RoutingRules") != null) {
+                List<Element> ruleElements = root.getChild("RoutingRules").getChildren("RoutingRule");
+                for (Element ruleElem : ruleElements) {
+                    RoutingRule rule = new RoutingRule();
+                    
+                    rule.setNumber(Integer.parseInt(ruleElem.getChildText("RuleNumber")));
+                    
+                    Element condElem = ruleElem.getChild("Condition");
+                    if (condElem != null) {
+                        rule.getCondition().setKeyPrefixEquals(condElem.getChildText("KeyPrefixEquals"));
+                        if (condElem.getChild("HttpErrorCodeReturnedEquals") != null) { 
+                            rule.getCondition().setHttpErrorCodeReturnedEquals(
+                                    Integer.parseInt(condElem.getChildText("HttpErrorCodeReturnedEquals")));
+                        }
+                    }
+                    
+                    Element redirectElem = ruleElem.getChild("Redirect");
+                    if (redirectElem.getChild("RedirectType") != null) {
+                        rule.getRedirect().setRedirectType(RoutingRule.RedirectType.parse(
+                                redirectElem.getChildText("RedirectType")));
+                    }
+                    rule.getRedirect().setHostName(redirectElem.getChildText("HostName"));
+                    if (redirectElem.getChild("Protocol") != null) {
+                        rule.getRedirect().setProtocol(RoutingRule.Protocol.parse(
+                                redirectElem.getChildText("Protocol")));
+                    }
+                    rule.getRedirect().setReplaceKeyPrefixWith(redirectElem.getChildText("ReplaceKeyPrefixWith"));
+                    rule.getRedirect().setReplaceKeyWith(redirectElem.getChildText("ReplaceKeyWith"));
+                    if (redirectElem.getChild("HttpRedirectCode") != null) {
+                        rule.getRedirect().setHttpRedirectCode(
+                            Integer.parseInt(redirectElem.getChildText("HttpRedirectCode"))); 
+                    }
+                    rule.getRedirect().setMirrorURL(redirectElem.getChildText("MirrorURL"));
+                    
+                    result.AddRoutingRule(rule);
+                }
+            }
+
             return result;
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
@@ -1065,7 +1407,209 @@ public final class ResponseParsers {
             throw new ResponseParseException(e.getMessage(), e);
         }
     }
-   
+    
+    /**
+     * Unmarshall get bucket tagging response body to cors rules.
+     */
+    @SuppressWarnings("unchecked")
+    public static TagSet parseGetBucketTagging(InputStream responseBody) 
+            throws ResponseParseException{
+        
+        try {
+            Element root = getXmlRootElement(responseBody);
+            
+            TagSet tagSet = new TagSet();
+            List<Element> tagElems = root.getChild("TagSet").getChildren("Tag");
+            
+            for (Element tagElem : tagElems) {
+                String key = null; 
+                String value = null;
+                
+                if (tagElem.getChild("Key") != null) {
+                    key = tagElem.getChildText("Key");
+                }
+                
+                if (tagElem.getChild("Value") != null) {
+                    value = tagElem.getChildText("Value");
+                }
+                
+                tagSet.setTag(key, value);
+            }
+            
+            return tagSet;
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Unmarshall get bucket replication response body to replication result.
+     */
+    @SuppressWarnings("unchecked")
+    public static List<ReplicationRule> parseGetBucketReplication(InputStream responseBody) 
+            throws ResponseParseException {
+        
+        try {
+            List<ReplicationRule> repRules = new ArrayList<ReplicationRule>();
+            
+            Element root = getXmlRootElement(responseBody);
+            List<Element> ruleElems = root.getChildren("Rule");
+                        
+            for (Element ruleElem : ruleElems) {
+                ReplicationRule repRule = new ReplicationRule();
+                
+                repRule.setReplicationRuleID(ruleElem.getChildText("ID"));
+                
+                Element destination = ruleElem.getChild("Destination");
+                repRule.setTargetBucketName(destination.getChildText("Bucket"));
+                repRule.setTargetBucketLocation(destination.getChildText("Location"));
+                
+                repRule.setReplicationStatus(ReplicationStatus.parse(ruleElem.getChildText("Status"))); 
+                
+                if (ruleElem.getChildText("HistoricalObjectReplication").equals("enabled")) {
+                    repRule.setEnableHistoricalObjectReplication(true);
+                } else {
+                    repRule.setEnableHistoricalObjectReplication(false);
+                }
+                
+                repRules.add(repRule);
+            }
+            
+            return repRules;
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Unmarshall get bucket replication response body to replication progress.
+     */
+    public static BucketReplicationProgress parseGetBucketReplicationProgress(InputStream responseBody) 
+            throws ResponseParseException {
+        try {
+            BucketReplicationProgress progress = new BucketReplicationProgress();
+            
+            Element root = getXmlRootElement(responseBody);
+            Element ruleElem = root.getChild("Rule");
+            
+            progress.setReplicationRuleID(ruleElem.getChildText("ID"));
+            
+            Element destination = ruleElem.getChild("Destination");
+            progress.setTargetBucketName(destination.getChildText("Bucket"));
+            progress.setTargetBucketLocation(destination.getChildText("Location"));
+            
+            progress.setReplicationStatus(ReplicationStatus.parse(ruleElem.getChildText("Status")));  
+            
+            if (ruleElem.getChildText("HistoricalObjectReplication").equals("enabled")) {
+                progress.setEnableHistoricalObjectReplication(true);
+            } else {
+                progress.setEnableHistoricalObjectReplication(false);
+            }
+            
+            Element progressElem = ruleElem.getChild("Progress");
+            if (progressElem != null) {
+                if (progressElem.getChild("HistoricalObject") != null) {
+                    progress.setHistoricalObjectProgress(Float.parseFloat(progressElem.getChildText("HistoricalObject")));
+                }
+                progress.setNewObjectProgress(DateUtil.parseIso8601Date(progressElem.getChildText("NewObject")));
+            }
+                        
+            return progress;
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Unmarshall get bucket replication response body to replication location.
+     */
+    @SuppressWarnings("unchecked")
+    public static List<String> parseGetBucketReplicationLocation(InputStream responseBody) 
+            throws ResponseParseException {
+        try {
+            Element root = getXmlRootElement(responseBody);
+
+            List<String> locationList = new ArrayList<String>();
+            List<Element> locElements = root.getChildren("Location");
+            
+            for (Element locElem : locElements) {
+                locationList.add(locElem.getText()); 
+            }
+            
+            return locationList;
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Unmarshall get bucket info response body to bucket info.
+     */
+    public static BucketInfo parseGetBucketInfo(InputStream responseBody) 
+            throws ResponseParseException {
+        try {
+            Element root = getXmlRootElement(responseBody);
+            Element bucketElem = root.getChild("Bucket");
+            BucketInfo bucketInfo = new BucketInfo();
+            
+            // owner
+            Bucket bucket = new Bucket();
+            String id = bucketElem.getChild("Owner").getChildText("ID");
+            String displayName = bucketElem.getChild("Owner").getChildText("DisplayName");
+            Owner owner = new Owner(id, displayName);
+            bucket.setOwner(owner);
+            
+            // bucket
+            bucket.setOwner(owner);
+            bucket.setName(bucketElem.getChildText("Name"));
+            bucket.setLocation(bucketElem.getChildText("Location"));
+            bucket.setCreationDate(DateUtil.parseIso8601Date(bucketElem.getChildText("CreationDate")));
+            if (bucketElem.getChild("StorageClass") != null) {
+                bucket.setStorageClass(StorageClass.parse(bucketElem.getChildText("StorageClass")));
+            }
+            bucketInfo.setBucket(bucket);
+            
+            // acl
+            String aclString = bucketElem.getChild("AccessControlList").getChildText("Grant");
+            CannedAccessControlList cacl = CannedAccessControlList.parse(aclString);
+            switch (cacl) {
+            case PublicRead:
+                bucketInfo.grantPermission(GroupGrantee.AllUsers, Permission.Read);
+                break;
+            case PublicReadWrite:
+                bucketInfo.grantPermission(GroupGrantee.AllUsers, Permission.FullControl);
+                break;   
+            default:
+                break;
+            }
+
+            return bucketInfo;
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Unmarshall get user qos response body to user qos.
+     */
+    public static UserQos parseGetUserQos(InputStream responseBody) 
+            throws ResponseParseException {
+        
+        try {
+            Element root = getXmlRootElement(responseBody);
+            UserQos userQos = new UserQos();
+            
+            if (root.getChild("StorageCapacity") != null) {
+                userQos.setStorageCapacity(Integer.parseInt(root.getChildText("StorageCapacity")));
+            }
+
+            return userQos;
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+        
+    }
+    
     /**
      * Unmarshall get bucket lifecycle response body to lifecycle rules.
      */
@@ -1098,9 +1642,23 @@ public final class ResponseParsers {
                     if (ruleElem.getChild("Expiration").getChild("Date") != null) {
                         Date expirationDate = DateUtil.parseIso8601Date(ruleElem.getChild("Expiration").getChildText("Date"));
                         rule.setExpirationTime(expirationDate);
+                    } else if (ruleElem.getChild("Expiration").getChild("Days") != null) {
+                        rule.setExpirationDays(Integer.parseInt(ruleElem.getChild("Expiration").getChildText("Days")));
                     } else {
-                        rule.setExpriationDays(Integer.parseInt(ruleElem.getChild("Expiration").getChildText("Days")));
+                        Date createdBeforeDate = DateUtil.parseIso8601Date(ruleElem.getChild("Expiration").getChildText("CreatedBeforeDate"));
+                        rule.setCreatedBeforeDate(createdBeforeDate);
                     }
+                }
+                
+                if (ruleElem.getChild("AbortMultipartUpload") != null) {
+                    LifecycleRule.AbortMultipartUpload abortMultipartUpload = new LifecycleRule.AbortMultipartUpload();
+                    if (ruleElem.getChild("AbortMultipartUpload").getChild("Days") != null) {
+                        abortMultipartUpload.setExpirationDays(Integer.parseInt(ruleElem.getChild("AbortMultipartUpload").getChildText("Days")));
+                    } else {
+                        Date createdBeforeDate = DateUtil.parseIso8601Date(ruleElem.getChild("AbortMultipartUpload").getChildText("CreatedBeforeDate"));
+                        abortMultipartUpload.setCreatedBeforeDate(createdBeforeDate);
+                    }
+                    rule.setAbortMultipartUpload(abortMultipartUpload);
                 }
                 
                 lifecycleRules.add(rule);
@@ -1111,4 +1669,34 @@ public final class ResponseParsers {
             throw new ResponseParseException(e.getMessage(), e);
         }
     }
+    
+    /**
+     * Unmarshall get bucket cname response body to cname configuration.
+     */
+    @SuppressWarnings("unchecked")
+    public static List<CnameConfiguration> parseGetBucketCname(InputStream responseBody) 
+            throws ResponseParseException {
+       
+        try {
+            Element root = getXmlRootElement(responseBody);
+
+            List<CnameConfiguration> cnames = new ArrayList<CnameConfiguration>();
+            List<Element> cnameElements = root.getChildren("Cname");
+            
+            for (Element cnameElem : cnameElements) {
+                CnameConfiguration cname = new CnameConfiguration();
+                
+                cname.setDomain(cnameElem.getChildText("Domain"));
+                cname.setStatus(CnameConfiguration.CnameStatus.valueOf(cnameElem.getChildText("Status")));
+                cname.setLastMofiedTime(DateUtil.parseIso8601Date(cnameElem.getChildText("LastModified")));
+                
+                cnames.add(cname);
+            }
+            
+            return cnames;
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+
 }

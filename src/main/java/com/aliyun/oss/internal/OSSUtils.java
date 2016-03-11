@@ -38,11 +38,14 @@ import java.util.Map.Entry;
 
 import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.common.comm.ResponseMessage;
+import com.aliyun.oss.common.utils.CodingUtils;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.common.utils.ResourceManager;
+import com.aliyun.oss.model.Callback;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.ResponseHeaderOverrides;
+import com.aliyun.oss.model.Callback.CalbackBodyType;
 
 public class OSSUtils {
     
@@ -374,4 +377,85 @@ public class OSSUtils {
     public static String composeRequestAuthorization(String accessKeyId, String signature) {
         return OSS_AUTHORIZATION_PREFIX + accessKeyId + OSS_AUTHORIZATION_SEPERATOR + signature;
     }
+    
+    /**
+     * 用JSON格式编码Callback
+     */
+    public static String jsonizeCallback (Callback callback) {
+        StringBuffer jsonBody = new StringBuffer();
+        
+        jsonBody.append("{");
+        // url, required
+        jsonBody.append("\"callbackUrl\":" + "\"" + callback.getCallbackUrl() + "\"");
+        
+        // host, optional
+        if (callback.getCallbackHost() != null && !callback.getCallbackHost().isEmpty()) {
+            jsonBody.append(",\"callbackHost\":" + "\"" + callback.getCallbackHost() + "\"");
+        }
+        
+        // body, require
+        jsonBody.append(",\"callbackBody\":" + "\"" + callback.getCallbackBody() + "\"");
+
+        // bodyType, optional
+        if (callback.getCalbackBodyType() == CalbackBodyType.JSON) {
+            jsonBody.append(",\"callbackBodyType\":\"application/json\"");
+        } else if (callback.getCalbackBodyType() == CalbackBodyType.URL) {
+            jsonBody.append(",\"callbackBodyType\":\"application/x-www-form-urlencoded\"");
+        }
+        jsonBody.append("}");
+        
+        return jsonBody.toString();
+    }
+    
+    /**
+     * 用JSON格式编码CallbackVar
+     */
+    public static String jsonizeCallbackVar(Callback callback) {
+        StringBuffer jsonBody = new StringBuffer();
+
+        jsonBody.append("{");
+        for (Map.Entry<String, String> entry : callback.getCallbackVar().entrySet()) {
+            if (entry.getKey() != null && entry.getValue() != null) {
+                if (!jsonBody.toString().equals("{")) {
+                    jsonBody.append(",");
+                }
+                jsonBody.append("\"" + entry.getKey() + "\":\"" + entry.getValue() + "\" ");
+            }
+        }
+        jsonBody.append("}");
+
+        return jsonBody.toString();
+    }
+    
+    /**
+     * 确认回调参数有效
+     */
+    public static void ensureCallbackValid(Callback callback) {
+        if (callback != null) {
+            CodingUtils.assertStringNotNullOrEmpty(callback.getCallbackUrl(), "Callback.callbackUrl");
+            CodingUtils.assertParameterNotNull(callback.getCallbackBody(), "Callback.callbackBody");
+        }
+    }
+    
+    /**
+     * 回调参数放入消息头
+     */
+    @SuppressWarnings("restriction")
+    public static void populateRequestCallback(Map<String, String> headers, Callback callback) {
+        if (callback != null) {
+            String jsonCb = jsonizeCallback(callback);
+            String base64Cb = (new sun.misc.BASE64Encoder()).encode(jsonCb.getBytes());
+            // Java的base64库会76后字符后加上换行，这个行为不是我们希望的，去除换行
+            base64Cb = base64Cb.replaceAll("\n", "").replaceAll("\r", "");
+            headers.put(OSSHeaders.OSS_HEADER_CALLBACK, base64Cb);
+            
+            if (callback.hasCallbackVar()) {
+                String jsonCbVar = jsonizeCallbackVar(callback);
+                String base64CbVar = (new sun.misc.BASE64Encoder()).encode(jsonCbVar.getBytes());
+                base64CbVar = base64CbVar.replaceAll("\n", "").replaceAll("\r", "");
+                headers.put(OSSHeaders.OSS_HEADER_CALLBACK_VAR, base64CbVar);
+            }
+        }
+    }
+    
 }

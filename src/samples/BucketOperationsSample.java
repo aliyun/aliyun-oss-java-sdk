@@ -185,7 +185,7 @@ public class BucketOperationsSample {
         LifecycleRule r0 = rules.get(0);
         LifecycleRule r1 = rules.get(1);
         System.out.println("\tRule0: Id=" + r0.getId() + ", Prefix=" + r0.getPrefix() +
-                ", Status=" + r0.getStatus() + ", ExpirationDays=" + r0.getExpriationDays());
+                ", Status=" + r0.getStatus() + ", ExpirationDays=" + r0.getExpirationDays());
         System.out.println("\tRule1: Id=" + r1.getId() + ", Prefix=" + r1.getPrefix() +
                 ", Status=" + r1.getStatus() + ", ExpirationTime=" + formatISO8601Date(r1.getExpirationTime()));
         System.out.println();

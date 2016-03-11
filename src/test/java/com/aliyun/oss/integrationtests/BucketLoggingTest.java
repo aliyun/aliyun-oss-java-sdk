@@ -222,6 +222,7 @@ public class BucketLoggingTest extends TestBase {
         final String bucketWithoutLoggingRule = "bucket-without-logging-rule";
         try {
             secondClient.createBucket(bucketWithoutLoggingRule);
+            
             secondClient.deleteBucketLogging(bucketWithoutLoggingRule);
         } catch (Exception e) {
             Assert.fail(e.getMessage());

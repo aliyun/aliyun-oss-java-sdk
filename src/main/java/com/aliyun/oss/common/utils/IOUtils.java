@@ -19,6 +19,7 @@
 
 package com.aliyun.oss.common.utils;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -31,8 +32,9 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 
+import com.aliyun.oss.common.comm.io.BoundedInputStream;
+import com.aliyun.oss.common.comm.io.RepeatableBoundedFileInputStream;
 import com.aliyun.oss.common.comm.io.RepeatableFileInputStream;
-import com.aliyun.oss.common.comm.io.RepeatableInputStream;
 import com.aliyun.oss.internal.OSSConstants;
 
 public class IOUtils {
@@ -123,18 +125,32 @@ public class IOUtils {
         return (exists && isFile && canRead);
     }
     
-    @SuppressWarnings("resource")
     public static InputStream newRepeatableInputStream(final InputStream original) throws IOException {
         InputStream repeatable = null;
         if (!original.markSupported()) {
             if (original instanceof FileInputStream) {
                 repeatable = new RepeatableFileInputStream((FileInputStream)original);
             } else {
-                repeatable = new RepeatableInputStream(original, OSSConstants.DEFAULT_STREAM_BUFFER_SIZE);                
+                repeatable = new BufferedInputStream(original, OSSConstants.DEFAULT_STREAM_BUFFER_SIZE);                
             }
         } else {
             repeatable = original;
         }
         return repeatable;
     }
+    
+    public static InputStream newRepeatableInputStream(final BoundedInputStream original) throws IOException {
+        InputStream repeatable = null;
+        if (!original.markSupported()) {
+            if (original.getWrappedInputStream() instanceof FileInputStream) {
+                repeatable = new RepeatableBoundedFileInputStream(original);
+            } else {
+                repeatable = new BufferedInputStream(original, OSSConstants.DEFAULT_STREAM_BUFFER_SIZE);
+            }
+        } else {
+            repeatable = original;
+        }
+        return repeatable;
+    }
+    
 }

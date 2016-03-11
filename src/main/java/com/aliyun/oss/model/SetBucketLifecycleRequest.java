@@ -68,15 +68,26 @@ public class SetBucketLifecycleRequest extends GenericRequest {
                     + MAX_RULE_ID_LENGTH);
         }
         
-        boolean hasSetExpirationTime = (lifecycleRule.getExpirationTime() != null);
-        boolean hasSetExpirationDays =(lifecycleRule.getExpriationDays() != 0);
-        if ((!hasSetExpirationTime && !hasSetExpirationDays) 
-                || (hasSetExpirationTime && hasSetExpirationDays)) {
+        int expirationTimeFlag = lifecycleRule.hasExpirationTime() ? 1 : 0;
+        int expirationDaysFlag = lifecycleRule.hasExpirationDays() ? 1 : 0;
+        int createdBeforeDateFlag = lifecycleRule.hasCreatedBeforeDate() ? 1 : 0;
+        int flagSum = expirationTimeFlag + expirationDaysFlag + createdBeforeDateFlag;
+        if (flagSum != 1) {
             throw new IllegalArgumentException("Only one expiration property should be specified.");
         }
         
         if (lifecycleRule.getStatus() == LifecycleRule.RuleStatus.Unknown) {
             throw new IllegalArgumentException("RuleStatus property should be specified with 'Enabled' or 'Disabled'.");
+        }
+        
+        if (lifecycleRule.hasAbortMultipartUpload()) {
+            LifecycleRule.AbortMultipartUpload abortMultipartUpload = lifecycleRule.getAbortMultipartUpload();
+            expirationDaysFlag = abortMultipartUpload.hasExpirationDays() ? 1 : 0;
+            createdBeforeDateFlag = abortMultipartUpload.hasCreatedBeforeDate() ? 1 : 0;
+            flagSum = expirationDaysFlag + createdBeforeDateFlag;
+            if (flagSum != 1) {
+                throw new IllegalArgumentException("Only one expiration property for AbortMultipartUpload should be specified.");
+            }
         }
         
         this.lifecycleRules.add(lifecycleRule);

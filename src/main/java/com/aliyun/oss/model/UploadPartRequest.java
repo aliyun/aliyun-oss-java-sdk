@@ -21,7 +21,7 @@ package com.aliyun.oss.model;
 
 import java.io.InputStream;
 
-import com.aliyun.oss.common.comm.io.PartialStream;
+import com.aliyun.oss.common.comm.io.BoundedInputStream;
 
 /**
  * 包含上传Multipart分块（Part）参数。
@@ -156,7 +156,7 @@ public class UploadPartRequest extends GenericRequest {
         this.useChunkEncoding = useChunkEncoding;
     }
     
-    public PartialStream buildPartialStream() {
-        return new PartialStream(inputStream, (int)partSize);
+    public BoundedInputStream buildPartialStream() {
+        return new BoundedInputStream(inputStream, (int)partSize);
     }
 }
