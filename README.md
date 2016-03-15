@@ -18,7 +18,6 @@ mvn clean package -DskipTests
 
 - [Yubin Bai](https://github.com/baiyubin)
 - [Mengbang Xing](https://github.com/xingfeng2510)
-- [Ting Zhang](https://github.com/dengwu12)
 
 ## License
 
