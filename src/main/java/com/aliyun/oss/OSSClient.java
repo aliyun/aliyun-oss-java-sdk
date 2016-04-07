@@ -56,6 +56,7 @@ import com.aliyun.oss.common.comm.DefaultServiceClient;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.comm.ServiceClient;
+import com.aliyun.oss.common.comm.TimeoutServiceClient;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.HttpHeaders;
@@ -265,7 +266,12 @@ public class OSSClient implements OSS {
      */
     public OSSClient(String endpoint, CredentialsProvider credsProvider, ClientConfiguration config) {
         this.credsProvider = credsProvider;
-        this.serviceClient = new DefaultServiceClient(config == null ? new ClientConfiguration() : config);
+        config = config == null ? new ClientConfiguration() : config;
+        if (config.isRequestTimeoutEnabled()) {
+            this.serviceClient = new TimeoutServiceClient(config);
+        } else {
+            this.serviceClient = new DefaultServiceClient(config);
+        }
         initOperations();
         setEndpoint(endpoint);
     }

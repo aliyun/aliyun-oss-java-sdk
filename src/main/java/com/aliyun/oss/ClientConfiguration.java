@@ -46,7 +46,9 @@ public class ClientConfiguration {
     public static final int DEFAULT_MAX_CONNECTIONS = 1024;
     public static final long DEFAULT_CONNECTION_TTL = -1;
     public static final long DEFAULT_IDLE_CONNECTION_TIME = 60 * 1000;
-    public static final int DEFAULT_VALIDATE_AFTER_INACTIVITY = 2 * 1000; 
+    public static final int DEFAULT_VALIDATE_AFTER_INACTIVITY = 2 * 1000;
+    public static final int DEFAULT_THREAD_POOL_WAIT_TIME = 60 * 1000;
+    public static final int DEFAULT_REQUEST_TIMEOUT = 5 * 60 * 1000;
 
     public static final boolean DEFAULT_USE_REAPER = true;
     
@@ -76,7 +78,12 @@ public class ClientConfiguration {
     private Lock rlock = new ReentrantLock();
     
     private boolean sldEnabled = false;
-        
+    
+    private int threadPoolWaitTime = DEFAULT_THREAD_POOL_WAIT_TIME;
+    private int requestTimeout = DEFAULT_REQUEST_TIMEOUT;
+    private boolean requestTimeoutEnabled = false;
+    
+
     /**
      * 构造用户代理。
      * @return 用户代理。
@@ -328,8 +335,7 @@ public class ClientConfiguration {
     }
 
     /**
-     * 设置空闲连接的时长，连接空闲该时间后关闭，单位毫秒，默认30秒。
-     * @return idleConnectionTime 空闲连接的时长。
+     * 设置空闲连接的时长，连接空闲该时间后关闭，单位毫秒，默认60秒。
      */
     public void setIdleConnectionTime(long idleConnectionTime) {
         this.idleConnectionTime = idleConnectionTime;
@@ -441,6 +447,50 @@ public class ClientConfiguration {
      */
     public int getValidateAfterInactivity() {
         return DEFAULT_VALIDATE_AFTER_INACTIVITY;
+    }
+    
+    /**
+     * 设置线程池退出时间，单位毫秒，默认60秒。
+     */
+    public void setThreadPoolWaitTime(int threadPoolWaitTime) {
+        this.threadPoolWaitTime = threadPoolWaitTime;
+    }
+    
+    /**
+     * 获取线程池退出时间，单位毫秒。
+     */
+    public int getThreadPoolWaitTime() {
+        return threadPoolWaitTime;
+    }
+    
+    /**
+     * 设置请求超时时间，单位毫秒，默认5分钟。
+     */
+    public void setRequestTimeout(int requestTimeout) {
+        this.requestTimeout = requestTimeout;
+    }
+    
+    /**
+     * 获取请求超时时间，单位毫秒。
+     */
+    public int getRequestTimeout() {
+        return requestTimeout;
+    }
+    
+    /**
+     * 获取是否开启RequestTimeout
+     * @return true 开启， false 未开启
+     */
+    public boolean isRequestTimeoutEnabled() {
+        return requestTimeoutEnabled;
+    }
+
+    /**
+     * 设置是否开启RequestTimeout
+     * @param requestTimeoutEnabled
+     */
+    public void setRequestTimeoutEnabled(boolean requestTimeoutEnabled) {
+        this.requestTimeoutEnabled = requestTimeoutEnabled;
     }
     
 }
