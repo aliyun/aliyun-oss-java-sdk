@@ -385,7 +385,7 @@ public class RequestTimeoutTest extends TestBase {
     }
      
     /**
-     * 超时参数不影响原来的参数，测试连接超时、接收超时情况，
+     * 超时参数不影响原来的参数，测试连接超时
      */
     @Test
     public void testClientConfigIndependent() throws Exception {
