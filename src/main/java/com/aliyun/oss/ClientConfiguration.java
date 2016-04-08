@@ -79,7 +79,6 @@ public class ClientConfiguration {
     
     private boolean sldEnabled = false;
     
-    private int threadPoolWaitTime = DEFAULT_THREAD_POOL_WAIT_TIME;
     private int requestTimeout = DEFAULT_REQUEST_TIMEOUT;
     private boolean requestTimeoutEnabled = false;
     
@@ -448,19 +447,21 @@ public class ClientConfiguration {
     public int getValidateAfterInactivity() {
         return DEFAULT_VALIDATE_AFTER_INACTIVITY;
     }
-    
+
     /**
-     * 设置线程池退出时间，单位毫秒，默认60秒。
+     * 获取是否开启了请求超时，默认关闭。
+     * @return true 开启， false 关闭
      */
-    public void setThreadPoolWaitTime(int threadPoolWaitTime) {
-        this.threadPoolWaitTime = threadPoolWaitTime;
+    public boolean isRequestTimeoutEnabled() {
+        return requestTimeoutEnabled;
     }
-    
+
     /**
-     * 获取线程池退出时间，单位毫秒。
+     * 设置是否开启请求超时。
+     * @param requestTimeoutEnabled
      */
-    public int getThreadPoolWaitTime() {
-        return threadPoolWaitTime;
+    public void setRequestTimeoutEnabled(boolean requestTimeoutEnabled) {
+        this.requestTimeoutEnabled = requestTimeoutEnabled;
     }
     
     /**
@@ -475,22 +476,6 @@ public class ClientConfiguration {
      */
     public int getRequestTimeout() {
         return requestTimeout;
-    }
-    
-    /**
-     * 获取是否开启RequestTimeout
-     * @return true 开启， false 未开启
-     */
-    public boolean isRequestTimeoutEnabled() {
-        return requestTimeoutEnabled;
-    }
-
-    /**
-     * 设置是否开启RequestTimeout
-     * @param requestTimeoutEnabled
-     */
-    public void setRequestTimeoutEnabled(boolean requestTimeoutEnabled) {
-        this.requestTimeoutEnabled = requestTimeoutEnabled;
     }
     
 }

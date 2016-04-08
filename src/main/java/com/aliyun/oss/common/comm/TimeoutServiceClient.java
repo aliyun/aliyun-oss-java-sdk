@@ -23,11 +23,13 @@ import static com.aliyun.oss.common.utils.LogUtils.getLog;
 import static com.aliyun.oss.common.utils.LogUtils.logException;
 
 import java.io.IOException;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -49,7 +51,11 @@ public class TimeoutServiceClient extends DefaultServiceClient {
 
     public TimeoutServiceClient(ClientConfiguration config) {
         super(config);
-        executor = Executors.newCachedThreadPool();
+        
+        int processors = Runtime.getRuntime().availableProcessors(); 
+        executor = new ThreadPoolExecutor(0, processors * 10, 60L, TimeUnit.SECONDS, 
+                new ArrayBlockingQueue<Runnable>(processors * 1000),
+                Executors.defaultThreadFactory(), new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
     @Override
@@ -96,10 +102,12 @@ public class TimeoutServiceClient extends DefaultServiceClient {
     public void shutdown() {
         executor.shutdown();
         try {
-            if (!executor.awaitTermination(this.config.getThreadPoolWaitTime(), TimeUnit.MILLISECONDS)) {
+            if (!executor.awaitTermination(ClientConfiguration.DEFAULT_THREAD_POOL_WAIT_TIME, TimeUnit.MILLISECONDS)) {
                 executor.shutdownNow();
-                if (!executor.awaitTermination(this.config.getThreadPoolWaitTime(), TimeUnit.MILLISECONDS))
-                    getLog().warn("Pool did not terminate in 60 seconds");
+                if (!executor.awaitTermination(ClientConfiguration.DEFAULT_THREAD_POOL_WAIT_TIME, TimeUnit.MILLISECONDS)) {
+                    getLog().warn("Pool did not terminate in " + 
+                            ClientConfiguration.DEFAULT_THREAD_POOL_WAIT_TIME / 1000 + " seconds");
+                }
             }
         } catch (InterruptedException ie) {
             executor.shutdownNow();

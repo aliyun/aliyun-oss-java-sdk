@@ -19,15 +19,16 @@
 
 package com.aliyun.oss.integrationtests;
 
-import static com.aliyun.oss.integrationtests.TestUtils.genFixedLengthInputStream;
-
 import java.io.File;
 import java.io.InputStream;
+import java.util.Date;
+import java.util.Random;
 
 import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.aliyun.oss.ClientConfiguration;
@@ -44,19 +45,22 @@ import com.aliyun.oss.model.UploadFileRequest;
 /**
  * 测试请求超时
  */
-//@Ignore
+@Ignore
 public class RequestTimeoutTest extends TestBase {
     
     private final static String endpoint = TestConfig.DEFAULT_ENDPOINT;
     private final static String accessId = TestConfig.DEFAULT_ACCESS_ID_1;
     private final static String accessKey = TestConfig.DEFAULT_ACCESS_KEY_1;
 
-    private final static String bucketName = "oss-test-xyd";
+    private static String bucketName;
     private final static int requestTimeout = 10 * 1000;
     private static OSSClient ossClient;
     
     @Before
     public void setUp() throws Exception {
+        long ticks = new Date().getTime() / 1000 + new Random().nextInt(5000);
+        bucketName = TestConfig.BUCKET_NAME_PREFIX + ticks;
+        
         if (ossClient == null) {
             ClientConfiguration config = new ClientConfiguration();
             config.setRequestTimeout(requestTimeout);
@@ -86,34 +90,17 @@ public class RequestTimeoutTest extends TestBase {
     @Test
     public void testObjectOperationsNormal() throws Exception {
         String key = "test-object-operation-normal";
-        long start = 0;
-        long end = 0;
 
         try {
             // get
-            start = System.currentTimeMillis();
-            ossClient.putObject(bucketName, key, genFixedLengthInputStream(64));
-            end = System.currentTimeMillis();
-            
-            System.out.println("time:" + (end - start));
-            Assert.assertTrue((end - start) < 300);
+            ossClient.putObject(bucketName, key, TestUtils.genFixedLengthInputStream(64));
             
             // put
-            start = System.currentTimeMillis();
             OSSObject ossObject = ossClient.getObject(bucketName, key);
             ossObject.getObjectContent().close();
-            end = System.currentTimeMillis();
-            
-            System.out.println("time:" + (end - start));
-            Assert.assertTrue((end - start) < 200);
             
             // delete
-            start = System.currentTimeMillis();
             ossClient.deleteObject(bucketName, key);
-            end = System.currentTimeMillis();
-            
-            System.out.println("time:" + (end - start));
-            Assert.assertTrue((end - start) < 200);
             
             // upload
             File file = createSampleFile(key, 1024 * 500);
@@ -123,12 +110,7 @@ public class RequestTimeoutTest extends TestBase {
             uploadFileRequest.setTaskNum(10);
             uploadFileRequest.setEnableCheckpoint(true);
             
-            start = System.currentTimeMillis();
             ossClient.uploadFile(uploadFileRequest);
-            end = System.currentTimeMillis();
-            
-            System.out.println("time:" + (end - start));
-            Assert.assertTrue((end - start) < 1000);
             
             // download
             DownloadFileRequest downloadFileRequest = new DownloadFileRequest(bucketName, key);
@@ -136,12 +118,7 @@ public class RequestTimeoutTest extends TestBase {
             downloadFileRequest.setTaskNum(10);
             downloadFileRequest.setEnableCheckpoint(true);
             
-            start = System.currentTimeMillis();
             ossClient.downloadFile(downloadFileRequest);
-            end = System.currentTimeMillis();
-            
-            System.out.println("time:" + (end - start));
-            Assert.assertTrue((end - start) < 500);
             
             ossClient.deleteObject(bucketName, key);
             file.delete();
@@ -225,8 +202,8 @@ public class RequestTimeoutTest extends TestBase {
         try {
             
             try {
-                ossClient.getClientConfiguration().setRequestTimeout(10);
-                ossClient.putObject(bucketName, key, genFixedLengthInputStream(64));
+                ossClient.getClientConfiguration().setRequestTimeout(1);
+                ossClient.putObject(bucketName, key, TestUtils.genFixedLengthInputStream(64));
                 Assert.fail("Get object should not be successful");
             } catch (ClientException e) {
                 Assert.assertEquals(OSSErrorCode.REQUEST_TIMEOUT, e.getErrorCode());
@@ -234,7 +211,7 @@ public class RequestTimeoutTest extends TestBase {
                 ossClient.getClientConfiguration().setRequestTimeout(requestTimeout);
             }
 
-            ossClient.putObject(bucketName, key, genFixedLengthInputStream(64));
+            ossClient.putObject(bucketName, key, TestUtils.genFixedLengthInputStream(64));
             OSSObject ossObject = ossClient.getObject(bucketName, key);
             ossObject.getObjectContent().close();
             ossClient.deleteObject(bucketName, key);
@@ -256,10 +233,18 @@ public class RequestTimeoutTest extends TestBase {
         try {
             File file = createSampleFile(key, 1024 * 1024 * 200);
 
-            System.out.println("start disconnect");
+            //System.out.println("start disconnect");
             ossClient.getClientConfiguration().setRequestTimeout(60 * 60 * 1000);
-            ossClient.putObject(bucketName, key, file);
             
+            try {
+                ossClient.putObject(bucketName, key, file);
+                Assert.fail("Get object should not be successful");
+            } catch (ClientException e) {
+                Assert.assertEquals(OSSErrorCode.REQUEST_TIMEOUT, e.getErrorCode());
+            } finally {
+                ossClient.getClientConfiguration().setRequestTimeout(requestTimeout);
+            }
+
             ObjectListing objectListing = ossClient.listObjects(bucketName, key);
             Assert.assertEquals(objectListing.getObjectSummaries().size(), 1);
             
@@ -287,7 +272,6 @@ public class RequestTimeoutTest extends TestBase {
                 threads[i] = new OperationThread(key + i);
             }
             
-            long start = System.currentTimeMillis();
             for (int i = 0; i < 100; i++) {
                 threads[i].start();
             }
@@ -295,10 +279,6 @@ public class RequestTimeoutTest extends TestBase {
             for (int i = 0; i < 100; i++) {
                 threads[i].join();
             }
-            long end = System.currentTimeMillis();
-            
-            System.out.println("time:" + (end - start));
-            Assert.assertTrue((end - start) < 30000);
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -317,7 +297,7 @@ public class RequestTimeoutTest extends TestBase {
         public void run() {
             for (int i = 0; i < 100; i++) {
                 try {
-                    ossClient.putObject(bucketName, key, genFixedLengthInputStream(1024 * 10));
+                    ossClient.putObject(bucketName, key, TestUtils.genFixedLengthInputStream(1024 * 10));
                     OSSObject ossObject = ossClient.getObject(bucketName, key);
                     ossObject.getObjectContent().close();
                     ossClient.deleteObject(bucketName, key);
@@ -339,7 +319,7 @@ public class RequestTimeoutTest extends TestBase {
 
         try {
             ClientConfiguration config = new ClientConfiguration();
-            config.setRequestTimeout(10);
+            config.setRequestTimeout(1);
             config.setRequestTimeoutEnabled(true);
             config.setMaxConnections(1);
 
@@ -347,7 +327,7 @@ public class RequestTimeoutTest extends TestBase {
                         
             Thread threads[] = new Thread[10];
             for (int i = 0; i < 10; i++) {
-                if (i < 5) {
+                if (i % 2 == 0) {
                     threads[i] = new TimeoutOperationThread(client, key + i);
                 } else {
                     threads[i] = new OperationThread(key + i); 
@@ -381,7 +361,7 @@ public class RequestTimeoutTest extends TestBase {
         public void run() {
             for (int i = 0; i < 100; i++) {
                 try {
-                    client.putObject(bucketName, key, genFixedLengthInputStream(1024 * 10));
+                    client.putObject(bucketName, key, TestUtils.genFixedLengthInputStream(1024 * 10));
                     Assert.fail("Put object should not be successful");
                 } catch (ClientException e) {
                     Assert.assertEquals(OSSErrorCode.REQUEST_TIMEOUT, e.getErrorCode());
@@ -419,7 +399,7 @@ public class RequestTimeoutTest extends TestBase {
         OSSClient client = new OSSClient(endpoint, accessId, accessKey, config);
 
         try {
-            client.putObject(bucketName, key, genFixedLengthInputStream(1024));
+            client.putObject(bucketName, key, TestUtils.genFixedLengthInputStream(1024));
             Assert.fail("Put object should not be successful");
         } catch (ClientException e) {
             Assert.assertEquals(ClientErrorCode.CONNECTION_TIMEOUT, e.getErrorCode());
@@ -444,7 +424,7 @@ public class RequestTimeoutTest extends TestBase {
         OSSClient client = new OSSClient(endpoint, accessId, accessKey, config);
 
         try {
-            client.putObject(bucketName, key, genFixedLengthInputStream(1024 * 10));
+            client.putObject(bucketName, key, TestUtils.genFixedLengthInputStream(1024 * 10));
             Assert.fail("Put object should not be successful");
         } catch (ClientException e) {
             Assert.assertEquals(OSSErrorCode.REQUEST_TIMEOUT, e.getErrorCode());
