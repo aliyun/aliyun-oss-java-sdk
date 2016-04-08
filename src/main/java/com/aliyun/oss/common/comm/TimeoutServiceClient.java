@@ -54,7 +54,7 @@ public class TimeoutServiceClient extends DefaultServiceClient {
         
         int processors = Runtime.getRuntime().availableProcessors(); 
         executor = new ThreadPoolExecutor(0, processors * 10, 60L, TimeUnit.SECONDS, 
-                new ArrayBlockingQueue<Runnable>(processors * 1000),
+                new ArrayBlockingQueue<Runnable>(processors * 100),
                 Executors.defaultThreadFactory(), new ThreadPoolExecutor.CallerRunsPolicy());
     }
 

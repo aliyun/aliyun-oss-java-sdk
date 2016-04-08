@@ -49,6 +49,7 @@ public class ClientConfiguration {
     public static final int DEFAULT_VALIDATE_AFTER_INACTIVITY = 2 * 1000;
     public static final int DEFAULT_THREAD_POOL_WAIT_TIME = 60 * 1000;
     public static final int DEFAULT_REQUEST_TIMEOUT = 5 * 60 * 1000;
+    public static final long DEFAULT_SLOW_REQUESTS_THRESHOLD = 5 * 60 * 1000;
 
     public static final boolean DEFAULT_USE_REAPER = true;
     
@@ -81,7 +82,7 @@ public class ClientConfiguration {
     
     private int requestTimeout = DEFAULT_REQUEST_TIMEOUT;
     private boolean requestTimeoutEnabled = false;
-    
+    private long slowRequestsThreshold = DEFAULT_SLOW_REQUESTS_THRESHOLD;
 
     /**
      * 构造用户代理。
@@ -476,6 +477,20 @@ public class ClientConfiguration {
      */
     public int getRequestTimeout() {
         return requestTimeout;
+    }
+    
+    /**
+     * 设置慢请求阈值，用时超过该阈值的请求将打印到日志中，单位毫秒，默认5分钟。
+     */
+    public long getSlowRequestsThreshold() {
+        return slowRequestsThreshold;
+    }
+
+    /**
+     * 获取慢请求阈值，用时超过该阈值的请求将打印到日志中，单位毫秒。
+     */
+    public void setSlowRequestsThreshold(long slowRequestsThreshold) {
+        this.slowRequestsThreshold = slowRequestsThreshold;
     }
     
 }
