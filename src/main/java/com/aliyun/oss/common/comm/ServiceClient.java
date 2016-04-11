@@ -37,6 +37,7 @@ import com.aliyun.oss.ClientException;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.ServiceException;
 import com.aliyun.oss.common.utils.HttpUtil;
+import com.aliyun.oss.common.utils.LogUtils;
 import com.aliyun.oss.internal.OSSConstants;
 
 /**
@@ -118,7 +119,12 @@ public abstract class ServiceClient {
                 Request httpRequest = buildRequest(request, context);
                 
                 // Step 3. Send HTTP request to OSS.
+                long startTime = System.currentTimeMillis();
                 response = sendRequestCore(httpRequest, context);
+                long duration = System.currentTimeMillis() - startTime;
+                if (duration > config.getSlowRequestsThreshold()) {
+                    LogUtils.getLog().warn(formatSlowRequestLog(request, response, duration));
+                }
                 
                 // Step 4. Preprocess HTTP response.
                 handleResponse(response, context.getResponseHandlers());
@@ -292,6 +298,14 @@ public abstract class ServiceClient {
                 /* silently close the response. */ 
             }
         }
+    }
+    
+    private String formatSlowRequestLog(RequestMessage request, ResponseMessage response, 
+            long useTimesMs) {
+        return String.format("Request cost %d seconds, endpoint %s, resourcePath %s, "
+                + "method %s, statusCode %d, requestId %s.", 
+                useTimesMs / 1000, request.getEndpoint(), request.getResourcePath(), 
+                request.getMethod(), response.getStatusCode(), response.getRequestId());
     }
     
     protected abstract RetryStrategy getDefaultRetryStrategy();

@@ -65,13 +65,13 @@ import com.aliyun.oss.common.utils.IOUtils;
  * Default implementation of {@link ServiceClient}.
  */
 public class DefaultServiceClient extends ServiceClient {
-    private static HttpRequestFactory httpRequestFactory = new HttpRequestFactory();
+    protected static HttpRequestFactory httpRequestFactory = new HttpRequestFactory();
 
-    private CloseableHttpClient httpClient;
-    private HttpClientConnectionManager connectionManager;
-    private RequestConfig requestConfig;
-    private CredentialsProvider credentialsProvider;
-    private HttpHost proxyHttpHost;
+    protected CloseableHttpClient httpClient;
+    protected HttpClientConnectionManager connectionManager;
+    protected RequestConfig requestConfig;
+    protected CredentialsProvider credentialsProvider;
+    protected HttpHost proxyHttpHost;
 
     public DefaultServiceClient(ClientConfiguration config) {
         super(config);
@@ -119,7 +119,7 @@ public class DefaultServiceClient extends ServiceClient {
         return buildResponse(request, httpResponse);
     }
     
-    private static ResponseMessage buildResponse(ServiceClient.Request request, 
+    protected static ResponseMessage buildResponse(ServiceClient.Request request, 
             CloseableHttpResponse httpResponse) throws IOException {
         
         assert(httpResponse != null);
