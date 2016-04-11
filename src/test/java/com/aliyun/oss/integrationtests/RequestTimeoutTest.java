@@ -139,7 +139,7 @@ public class RequestTimeoutTest extends TestBase {
         String key = "test-request-timeout-effective";
         
         try {
-            ossClient.getClientConfiguration().setRequestTimeout(10);
+            ossClient.getClientConfiguration().setRequestTimeout(1);
             ossClient.getObject(bucketName, key);
             Assert.fail("Get object should not be successful");
         } catch (ClientException e) {
@@ -181,7 +181,7 @@ public class RequestTimeoutTest extends TestBase {
         }
         
         try {
-            ossClient.getClientConfiguration().setRequestTimeout(10);
+            ossClient.getClientConfiguration().setRequestTimeout(1);
             ossClient.getObject(bucketName, key);
             Assert.fail("Get object should not be successful");
         } catch (ClientException e) {
