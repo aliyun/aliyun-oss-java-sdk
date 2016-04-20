@@ -116,6 +116,7 @@ public abstract class OSSOperation {
                     throws OSSException, ClientException {
         
         final WebServiceRequest originalRequest = request.getOriginalRequest();
+        request.getHeaders().putAll(client.getClientConfiguration().getDefaultHeaders());
         request.getHeaders().putAll(originalRequest.getHeaders());
         request.getParameters().putAll(originalRequest.getParameters());
         
