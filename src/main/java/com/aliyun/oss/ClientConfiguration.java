@@ -21,7 +21,9 @@ package com.aliyun.oss;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -83,6 +85,8 @@ public class ClientConfiguration {
     private int requestTimeout = DEFAULT_REQUEST_TIMEOUT;
     private boolean requestTimeoutEnabled = false;
     private long slowRequestsThreshold = DEFAULT_SLOW_REQUESTS_THRESHOLD;
+    
+    private Map<String, String> defaultHeaders = new LinkedHashMap<String, String>();
 
     /**
      * 构造用户代理。
@@ -491,6 +495,30 @@ public class ClientConfiguration {
      */
     public void setSlowRequestsThreshold(long slowRequestsThreshold) {
         this.slowRequestsThreshold = slowRequestsThreshold;
+    }
+    
+    /**
+     * 获取默认请求头，每个请求发送到时会添加默认请求头。具体操作请求头与默认请求头有重复时，前者覆盖后者，具体请求头优先级更高。
+     */
+    public Map<String, String> getDefaultHeaders() {
+        return defaultHeaders;
+    }
+
+    /**
+     * 设置默认请求头，每个请求发送到时会添加默认请求头。具体操作请求头与默认请求头有重复时，前者覆盖后者，具体请求头优先级更高。
+     * @param defaultHeaders 默认请求头
+     */
+    public void setDefaultHeaders(Map<String, String> defaultHeaders) {
+        this.defaultHeaders = defaultHeaders;
+    }
+
+    /**
+     * 添加默认请求头，每个请求发送到时会添加默认请求头。具体操作请求头与默认请求头有重复时，前者覆盖后者，具体请求头优先级更高。
+     * @param key 默认请求头
+     * @param value 默认请求头的值
+     */
+    public void addDefaultHeader(String key, String value) {
+        this.defaultHeaders.put(key, value);
     }
     
 }
