@@ -6,42 +6,47 @@ import java.io.IOException;
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.OSSException;
-import com.aliyun.oss.model.OSSObject;
+import com.aliyun.oss.model.Callback;
+import com.aliyun.oss.model.Callback.CalbackBodyType;
+import com.aliyun.oss.model.PutObjectRequest;
+import com.aliyun.oss.model.PutObjectResult;
 
 /**
- * This sample demonstrates how to create an empty folder under 
- * specfied bucket to Aliyun OSS using the OSS SDK for Java.
+ * 上传回调使用示例
+ *
  */
-public class CreateFolderSample {
+public class CallbackSample {
     
     private static String endpoint = "*** Provide OSS endpoint ***";
     private static String accessKeyId = "*** Provide your AccessKeyId ***";
     private static String accessKeySecret = "*** Provide your AccessKeySecret ***";
-
     private static String bucketName = "*** Provide bucket name ***";
+    // 您的回调服务器地址，如http://oss-demo.aliyuncs.com:23450或http://30.2.36.126:9090
+    private static final String callbackUrl = "<yourCallbackServerUrl>";
+    
 
     public static void main(String[] args) throws IOException {        
-        /*
-         * Constructs a client instance with your account for accessing OSS
-         */
-        OSSClient client = new OSSClient(endpoint, accessKeyId, accessKeySecret);
+
+        OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
         
         try {
-            /*
-             * Create an empty folder without request body, note that the key must be 
-             * suffixed with a slash
-             */
-            final String keySuffixWithSlash = "MyObjectKey/";
-            client.putObject(bucketName, keySuffixWithSlash, new ByteArrayInputStream(new byte[0]));
-            System.out.println("Creating an empty folder " + keySuffixWithSlash + "\n");
+            String content = "Hello OSS";
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, "key", 
+                    new ByteArrayInputStream(content.getBytes())); 
             
-            /*
-             * Verify whether the size of the empty folder is zero 
-             */
-            OSSObject object = client.getObject(bucketName, keySuffixWithSlash);
-            System.out.println("Size of the empty folder '" + object.getKey() + "' is " + 
-                    object.getObjectMetadata().getContentLength());
-            object.getObjectContent().close();
+            Callback callback = new Callback();
+            callback.setCallbackUrl(callbackUrl);
+            callback.setCallbackHost("oss-cn-hangzhou.aliyuncs.com");
+            callback.setCallbackBody("{\\\"mimeType\\\":${mimeType},\\\"size\\\":${size}}");
+            callback.setCalbackBodyType(CalbackBodyType.JSON);
+            callback.addCallbackVar("x:var1", "value1");
+            callback.addCallbackVar("x:var2", "value2");
+            putObjectRequest.setCallback(callback);
+            
+            PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
+            byte[] buffer = new byte[1024];
+            putObjectResult.getCallbackResponseBody().read(buffer);
+            putObjectResult.getCallbackResponseBody().close();
 
         } catch (OSSException oe) {
             System.out.println("Caught an OSSException, which means your request made it to OSS, "
@@ -56,10 +61,7 @@ public class CreateFolderSample {
                     + "such as not being able to access the network.");
             System.out.println("Error Message: " + ce.getMessage());
         } finally {
-            /*
-             * Do not forget to shut down the client finally to release all allocated resources.
-             */
-            client.shutdown();
+            ossClient.shutdown();
         }
     }
 }
