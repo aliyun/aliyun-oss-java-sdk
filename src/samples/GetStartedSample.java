@@ -29,9 +29,9 @@ import com.aliyun.oss.model.PutObjectRequest;
 public class GetStartedSample {
     
     private static String endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
-    private static String accessKeyId = "ik3rP0m8QmsLwnVH";
-    private static String accessKeySecret = "G3ADnVCjZqPHzeK4ukpFuJHrJLMJtq";
-    private static String bucketName = "oss-test-xyd";
+    private static String accessKeyId = "<accessKeyId>";
+    private static String accessKeySecret = "<accessKeySecret>";
+    private static String bucketName = "<bucketName>";
     
     private static String key = "MyObjectKey";
     

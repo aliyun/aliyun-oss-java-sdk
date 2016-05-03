@@ -20,14 +20,14 @@ import java.util.Map.Entry;
 public class PostObjectSample {
 
     // 需要上传的本地文件，确保该文件存在
-    private String localFilePath = "D:\\work\\oss\\java-sdk\\java-sdk-sample\\src\\samples\\HelloOSS.java";
+    private String localFilePath = "<localFile>";
     // OSS域名，如http://oss-cn-hangzhou.aliyuncs.com
     private String endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
     // AccessKey请登录https://ak-console.aliyun.com/#/查看
-    private String accessKeyId = "2NeLUvmJFYbrj2Eb";
-    private String accessKeySecret = "tpKbdpzCavhbYghxHih5urCw5lkBdx";
+    private String accessKeyId = "<accessKeyId>";
+    private String accessKeySecret = "<accessKeySecret>";
     // 你之前创建的bucket，确保这个bucket已经创建
-    private String bucketName = "oss-test-byb";
+    private String bucketName = "<bucketName>";
     // 上传文件后的object名称
     private String key = "yourKey";
 
