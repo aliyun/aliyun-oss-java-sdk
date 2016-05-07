@@ -19,7 +19,6 @@
 
 package com.aliyun.oss.integrationtests;
 
-import static com.aliyun.oss.integrationtests.TestConstants.BUCKET_ACCESS_DENIED_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.INVALID_DIGEST_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.INVALID_ENCRYPTION_ALGO_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.INVALID_OBJECT_NAME_ERR;
@@ -256,7 +255,6 @@ public class PutObjectTest extends TestBase {
             Assert.fail("Put object should not be successful");
         } catch (OSSException ex) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, ex.getErrorCode());
-            Assert.assertTrue(ex.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         } 
         
         // Try to put object with length exceeding max limit(5GB)
@@ -346,7 +344,7 @@ public class PutObjectTest extends TestBase {
         final String key = "put-object-by-urlsignature";
         final String metaKey0 = "author";
         final String metaValue0 = "aliy";
-        final String expirationString = "Sun, 12 Apr 2016 12:00:00 GMT";
+        final String expirationString = "Sun, 12 Apr 2018 12:00:00 GMT";
         final long inputStreamLength = 128 * 1024; //128KB
         
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.PUT);

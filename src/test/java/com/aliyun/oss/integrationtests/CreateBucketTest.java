@@ -334,7 +334,7 @@ public class CreateBucketTest extends TestBase {
         }
     }
     
-    @Test
+    @Ignore
     public void testPutWithStorageType() {
         final String bucketName = "bucket-with-storage-type";
         
@@ -356,7 +356,7 @@ public class CreateBucketTest extends TestBase {
         }
     }
     
-    @Test
+    @Ignore
     public void testPutWithStorageTypeFunc() {
         final String bucketName = "bucket-with-storage-type-func";
         
@@ -401,7 +401,7 @@ public class CreateBucketTest extends TestBase {
         }
     }
     
-    @Test
+    @Ignore
     public void testPutWithStorageTypeModify() {
         final String bucketName = "bucket-with-storage-type-modify";
         
@@ -460,20 +460,6 @@ public class CreateBucketTest extends TestBase {
             Assert.fail(ex.getMessage());
         } finally {
             defaultClient.deleteBucket(bucketName);
-        }
-    }
-    
-    @Test
-    public void testPutWithStorageTypeUnsupported() {
-        final String bucketName = "bucket-with-storage-type-unsupported";
-    
-        CreateBucketRequest request = new CreateBucketRequest(bucketName);
-        request.setStorageClass(StorageClass.Standard);
-        try {
-            defaultClient.createBucket(request);
-            Assert.fail("Create bucket should not be successful.");
-        } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.MALFORMED_XML, e.getErrorCode());
         }
     }
     

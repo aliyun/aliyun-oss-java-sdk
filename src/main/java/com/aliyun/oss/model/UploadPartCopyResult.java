@@ -19,7 +19,7 @@
 
 package com.aliyun.oss.model;
 
-public class UploadPartCopyResult {
+public class UploadPartCopyResult extends GenericResult {
 
     private int partNumber;
 

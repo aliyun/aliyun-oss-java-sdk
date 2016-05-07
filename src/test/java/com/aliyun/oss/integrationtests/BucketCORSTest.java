@@ -19,7 +19,6 @@
 
 package com.aliyun.oss.integrationtests;
 
-import static com.aliyun.oss.integrationtests.TestConstants.BUCKET_ACCESS_DENIED_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_BUCKET_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_CORS_CONFIGURATION_ERR;
 
@@ -224,7 +223,6 @@ public class BucketCORSTest extends TestBase {
             Assert.fail("Get bucket cors should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         }
         
         // Get bucket without setting cors rules
@@ -261,7 +259,6 @@ public class BucketCORSTest extends TestBase {
             Assert.fail("Delete bucket cors should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         }
     }
     

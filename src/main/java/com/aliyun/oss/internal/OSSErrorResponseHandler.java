@@ -61,8 +61,7 @@ public class OSSErrorResponseHandler implements ResponseHandler {
             } else if (statusCode == HttpStatus.SC_PRECONDITION_FAILED) {
                 throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.PRECONDITION_FAILED, "Precondition Failed");
             } else {
-                throw ExceptionFactory.createInvalidResponseException(requestId,
-                        COMMON_RESOURCE_MANAGER.getString("ServerReturnsUnknownError"));                
+                throw ExceptionFactory.createUnknownOSSException(requestId, statusCode);                
             }
         }
 

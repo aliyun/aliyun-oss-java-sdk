@@ -19,7 +19,6 @@
 
 package com.aliyun.oss.integrationtests;
 
-import static com.aliyun.oss.integrationtests.TestConstants.BUCKET_ACCESS_DENIED_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_BUCKET_ERR;
 import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 
@@ -132,7 +131,6 @@ public class BucketRefererTest extends TestBase {
                 Assert.fail("Set bucket referer should not be successful");
             } catch (OSSException e) {
                 Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
             }
             
             // Not allow referer list to be empty but we set it empty on purpose.
@@ -169,7 +167,6 @@ public class BucketRefererTest extends TestBase {
             Assert.fail("Get bucket referer should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         }
         
         // Get bucket without setting referer list

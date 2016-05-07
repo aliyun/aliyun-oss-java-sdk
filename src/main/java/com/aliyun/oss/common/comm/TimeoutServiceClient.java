@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -47,15 +46,16 @@ import com.aliyun.oss.common.utils.ExceptionFactory;
  * Default implementation of {@link ServiceClient}.
  */
 public class TimeoutServiceClient extends DefaultServiceClient {
-    protected ExecutorService executor;
+    protected ThreadPoolExecutor executor;
 
     public TimeoutServiceClient(ClientConfiguration config) {
         super(config);
         
         int processors = Runtime.getRuntime().availableProcessors(); 
-        executor = new ThreadPoolExecutor(0, processors * 10, 60L, TimeUnit.SECONDS, 
+        executor = new ThreadPoolExecutor(processors * 5, processors * 10, 60L, TimeUnit.SECONDS, 
                 new ArrayBlockingQueue<Runnable>(processors * 100),
                 Executors.defaultThreadFactory(), new ThreadPoolExecutor.CallerRunsPolicy());
+        executor.allowCoreThreadTimeOut(true);
     }
 
     @Override

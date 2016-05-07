@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Successful response for deleting multiple objects.
  */
-public class DeleteObjectsResult {
+public class DeleteObjectsResult extends GenericResult {
     
     /* Successfully deleted objects */
     private final List<String> deletedObjects = new ArrayList<String>();

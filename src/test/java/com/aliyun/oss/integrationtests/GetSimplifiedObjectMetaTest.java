@@ -26,6 +26,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.GetObjectRequest;
@@ -39,7 +40,7 @@ public class GetSimplifiedObjectMetaTest extends TestBase {
     @Test
     public void testNormalGetSimplifiedObjectMeta() {
         final String key = "normal-get-simplified-object-meta";
-        final long inputStreamLength = 128 * 1024; //128KB
+        final long inputStreamLength = 1024;
         
         try {
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, 
@@ -53,7 +54,11 @@ public class GetSimplifiedObjectMetaTest extends TestBase {
             Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
             o.getObjectContent().close();
             
+            long start = System.currentTimeMillis();
             SimplifiedObjectMeta objectMeta = secondClient.getSimplifiedObjectMeta(bucketName, key);
+            long end = System.currentTimeMillis();
+            System.out.println("GetSimplifiedObjectMeta use time:" + (end - start));
+            Assert.assertTrue((end - start) < 10000);
             Assert.assertEquals(inputStreamLength, objectMeta.getSize());
             Assert.assertEquals(putObjectResult.getETag(), objectMeta.getETag());
             Assert.assertNotNull(objectMeta.getLastModified());
@@ -84,5 +89,18 @@ public class GetSimplifiedObjectMetaTest extends TestBase {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, ex.getErrorCode());
             Assert.assertTrue(ex.getMessage().startsWith(NO_SUCH_KEY_ERR));
         }
+        
+        // SignatureDoesNotMatch 
+        OSSClient client = new OSSClient(TestConfig.SECOND_ENDPOINT, TestConfig.SECOND_ACCESS_ID, 
+                TestConfig.SECOND_ACCESS_KEY + " ");
+        try {
+            client.getSimplifiedObjectMeta(bucketName, nonexistentKey);
+            Assert.fail("Get simplified object meta should not be successful");
+        } catch (OSSException ex) {
+            Assert.assertEquals(OSSErrorCode.SIGNATURE_DOES_NOT_MATCH, ex.getErrorCode());
+        } finally {
+            client.shutdown();
+        } 
+        
     }
 }

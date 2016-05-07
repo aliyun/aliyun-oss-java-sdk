@@ -40,6 +40,8 @@ public class CompleteMultipartUploadResult extends WebServiceRequest implements 
     
     /** 回调返回的消息体 */
     private InputStream callbackResponseBody;
+    
+    private String requestId;
 
     /**
      * 返回标识Multipart上传的{@link OSSObject}的URL地址。
@@ -124,6 +126,14 @@ public class CompleteMultipartUploadResult extends WebServiceRequest implements 
     @Override
     public void setCallbackResponseBody(InputStream callbackResponseBody) {
         this.callbackResponseBody = callbackResponseBody;
+    }
+    
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 
 }

@@ -23,7 +23,7 @@ package com.aliyun.oss.model;
 /**
  * Successful response of append object operation.
  */
-public class AppendObjectResult {
+public class AppendObjectResult extends GenericResult {
     
     /* Indicates that which position to append at next time. */
     private Long nextPosition;

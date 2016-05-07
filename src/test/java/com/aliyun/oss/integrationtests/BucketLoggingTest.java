@@ -19,7 +19,6 @@
 
 package com.aliyun.oss.integrationtests;
 
-import static com.aliyun.oss.integrationtests.TestConstants.BUCKET_ACCESS_DENIED_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_BUCKET_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.INVALID_TARGET_BUCKET_FOR_LOGGING_ERR;
 import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
@@ -178,7 +177,6 @@ public class BucketLoggingTest extends TestBase {
             Assert.fail("Get bucket logging should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         }
         
         // Get bucket without setting logging rule
@@ -215,7 +213,6 @@ public class BucketLoggingTest extends TestBase {
             Assert.fail("Delete bucket logging should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         }
         
         // Delete bucket without setting logging rule
