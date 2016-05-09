@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 
-public class InitiateMultipartUploadResult extends WebServiceRequest {
+public class InitiateMultipartUploadResult extends GenericResult {
 
     private String bucketName;
 
@@ -28,8 +28,6 @@ public class InitiateMultipartUploadResult extends WebServiceRequest {
 
     private String uploadId;
     
-    private String requestId;
-
     public String getBucketName() {
         return bucketName;
     }
@@ -52,14 +50,6 @@ public class InitiateMultipartUploadResult extends WebServiceRequest {
 
     public void setUploadId(String uploadId) {
         this.uploadId = uploadId;
-    }
-    
-    public String getRequestId() {
-        return requestId;
-    }
-
-    public void setRequestId(String requestId) {
-        this.requestId = requestId;
     }
     
 }

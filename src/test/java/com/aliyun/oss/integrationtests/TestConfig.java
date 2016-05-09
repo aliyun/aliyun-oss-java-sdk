@@ -37,7 +37,7 @@ public final class TestConfig {
     public static final String SECOND_ACCESS_ID = "<valid access id>";
     public static final String SECOND_ACCESS_KEY = "<valid access key>";
     
-    public static final String SECOND_REPLICATION_ENDPOINT = "http://10.101.166.37";
+    public static final String SECOND_REPLICATION_ENDPOINT = "http://InvalidEndpoint";
     public static final String SECOND_REPLICATION_LOCATION = "oss-cn-qingdao";
     public static final String SECOND_REPLICATION_ACCESS_ID = "<valid access id>";
     public static final String SECOND_REPLICATION_ACCESS_KEY = "<valid access key>";
@@ -77,8 +77,8 @@ public final class TestConfig {
     public static final String DOWNLOAD_DIRECOTRY = USER_DIR + File.separator + "download" + File.separator;
     
     // Configurations for STS.
-    public static final String STS_USER = "1287905056319499";
-    public static final String STS_HOST = "10.101.88.247";
+    public static final String STS_USER = "<STS_USER>";
+    public static final String STS_HOST = "<STS_HOST>";
     public static final int STS_PORT = 8200;
     public static final int STS_DURATION_SECONDS = 3600;
     public static final String STS_GET_TOKEN_URI = "/api/GetFederationToken";

@@ -20,8 +20,6 @@
 package com.aliyun.oss.internal;
 
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
-import static com.aliyun.oss.internal.OSSUtils.COMMON_RESOURCE_MANAGER;
-
 import org.apache.http.HttpStatus;
 
 import com.aliyun.oss.ClientException;

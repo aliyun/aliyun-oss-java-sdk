@@ -330,6 +330,77 @@ public class UploadPartTest extends TestBase {
     }
     
     @Test
+    public void testNormalListPartsWithEncoding() {
+        final String key = "normal-list-parts-常记溪亭日暮，沉醉不知归路";
+        final int partSize = 128 * 1024;
+        final int partCount = 25;
+        
+        try {
+            String uploadId = claimUploadId(secondClient, bucketName, key);
+            
+            // List parts under empty bucket
+            ListPartsRequest listPartsRequest = new ListPartsRequest(bucketName, key, uploadId);
+            PartListing partListing = secondClient.listParts(listPartsRequest);
+            Assert.assertEquals(0, partListing.getParts().size());
+            Assert.assertEquals(bucketName, partListing.getBucketName());
+            Assert.assertEquals(key, partListing.getKey());
+            Assert.assertEquals(uploadId, partListing.getUploadId());
+            Assert.assertEquals(LIST_PART_MAX_RETURNS, partListing.getMaxParts().intValue());
+            Assert.assertNull(partListing.getNextPartNumberMarker());
+            Assert.assertFalse(partListing.isTruncated());
+            
+            // Upload parts
+            List<PartETag> partETags = new ArrayList<PartETag>();
+            for (int i = 0; i < partCount; i++) {
+                InputStream instream = genFixedLengthInputStream(partSize);
+                UploadPartRequest uploadPartRequest = new UploadPartRequest();
+                uploadPartRequest.setBucketName(bucketName);
+                uploadPartRequest.setKey(key);
+                uploadPartRequest.setInputStream(instream);
+                uploadPartRequest.setPartNumber(i + 1);
+                uploadPartRequest.setPartSize(partSize);
+                uploadPartRequest.setUploadId(uploadId);
+                UploadPartResult uploadPartResult = secondClient.uploadPart(uploadPartRequest);                
+                partETags.add(uploadPartResult.getPartETag());
+            }
+            
+            // List parts with encoding
+            listPartsRequest = new ListPartsRequest(bucketName, key, uploadId);
+            listPartsRequest.setEncodingType(DEFAULT_ENCODING_TYPE);
+            partListing = secondClient.listParts(listPartsRequest);
+            Assert.assertEquals(partCount, partListing.getParts().size());
+            for (int i = 0; i < partCount; i++) {
+                PartSummary ps = partListing.getParts().get(i);
+                PartETag eTag = partETags.get(i);
+                Assert.assertEquals(eTag.getPartNumber(), ps.getPartNumber());
+                Assert.assertEquals(eTag.getETag(), ps.getETag());
+            }
+            Assert.assertEquals(bucketName, partListing.getBucketName());
+            Assert.assertEquals(key, URLDecoder.decode(partListing.getKey(), "UTF-8"));            
+            Assert.assertEquals(uploadId, partListing.getUploadId());
+            Assert.assertEquals(LIST_PART_MAX_RETURNS, partListing.getMaxParts().intValue());
+            Assert.assertEquals(partCount, partListing.getNextPartNumberMarker().intValue());
+            Assert.assertFalse(partListing.isTruncated());
+            
+            // Complete multipart upload
+            CompleteMultipartUploadRequest completeMultipartUploadRequest = 
+                    new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
+            CompleteMultipartUploadResult completeMultipartUploadResult =
+                    secondClient.completeMultipartUpload(completeMultipartUploadRequest);
+            Assert.assertEquals(composeLocation(secondClient, SECOND_ENDPOINT, bucketName, key), 
+                    completeMultipartUploadResult.getLocation());
+            Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
+            Assert.assertEquals(key, completeMultipartUploadResult.getKey());
+            Assert.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
+            
+            secondClient.deleteObject(bucketName, key);
+            
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+    
+    @Test
     public void testUnormalListParts() {
         final String key = "unormal-list-parts-object";
         

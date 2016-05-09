@@ -25,7 +25,7 @@ import java.io.InputStream;
  * 包含完成一个Multipart上传事件的返回结果。
  *
  */
-public class CompleteMultipartUploadResult extends WebServiceRequest implements CallbackResult {
+public class CompleteMultipartUploadResult extends GenericResult implements CallbackResult {
 
     /** The name of the bucket containing the completed multipart upload. */
     private String bucketName;
@@ -40,8 +40,6 @@ public class CompleteMultipartUploadResult extends WebServiceRequest implements 
     
     /** 回调返回的消息体 */
     private InputStream callbackResponseBody;
-    
-    private String requestId;
 
     /**
      * 返回标识Multipart上传的{@link OSSObject}的URL地址。
@@ -126,14 +124,6 @@ public class CompleteMultipartUploadResult extends WebServiceRequest implements 
     @Override
     public void setCallbackResponseBody(InputStream callbackResponseBody) {
         this.callbackResponseBody = callbackResponseBody;
-    }
-    
-    public String getRequestId() {
-        return requestId;
-    }
-
-    public void setRequestId(String requestId) {
-        this.requestId = requestId;
     }
 
 }

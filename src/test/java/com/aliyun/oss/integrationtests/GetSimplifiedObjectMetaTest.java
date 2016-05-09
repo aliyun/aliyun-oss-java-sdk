@@ -54,11 +54,7 @@ public class GetSimplifiedObjectMetaTest extends TestBase {
             Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
             o.getObjectContent().close();
             
-            long start = System.currentTimeMillis();
             SimplifiedObjectMeta objectMeta = secondClient.getSimplifiedObjectMeta(bucketName, key);
-            long end = System.currentTimeMillis();
-            System.out.println("GetSimplifiedObjectMeta use time:" + (end - start));
-            Assert.assertTrue((end - start) < 10000);
             Assert.assertEquals(inputStreamLength, objectMeta.getSize());
             Assert.assertEquals(putObjectResult.getETag(), objectMeta.getETag());
             Assert.assertNotNull(objectMeta.getLastModified());

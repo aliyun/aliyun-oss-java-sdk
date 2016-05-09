@@ -617,7 +617,6 @@ public class OSSClient implements OSS {
         return objectOperation.getObject(getObjectRequest);
     }
     
-
     @Override
     public SimplifiedObjectMeta getSimplifiedObjectMeta(String bucketName, String key)
             throws OSSException, ClientException {

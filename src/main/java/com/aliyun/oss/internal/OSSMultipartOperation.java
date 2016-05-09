@@ -467,6 +467,10 @@ public class OSSMultipartOperation extends OSSOperation {
             }
             params.put(PART_NUMBER_MARKER, partNumberMarker.toString());
         }
+        
+        if (listPartsRequest.getEncodingType() != null) {
+            params.put(ENCODING_TYPE, listPartsRequest.getEncodingType());
+        }
     }
     
     private static void populateCopyPartRequestHeaders(UploadPartCopyRequest uploadPartCopyRequest, 
