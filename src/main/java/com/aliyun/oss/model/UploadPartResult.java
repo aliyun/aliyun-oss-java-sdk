@@ -23,7 +23,7 @@ package com.aliyun.oss.model;
  * 包含向OSS上传Multipart分块（Part）的结果信息。
  *
  */
-public class UploadPartResult {
+public class UploadPartResult extends GenericResult {
 
     private int partNumber;
 

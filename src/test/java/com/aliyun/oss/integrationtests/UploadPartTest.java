@@ -36,6 +36,7 @@ import static com.aliyun.oss.integrationtests.TestUtils.removeFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -329,6 +330,77 @@ public class UploadPartTest extends TestBase {
     }
     
     @Test
+    public void testNormalListPartsWithEncoding() {
+        final String key = "normal-list-parts-常记溪亭日暮，沉醉不知归路";
+        final int partSize = 128 * 1024;
+        final int partCount = 25;
+        
+        try {
+            String uploadId = claimUploadId(secondClient, bucketName, key);
+            
+            // List parts under empty bucket
+            ListPartsRequest listPartsRequest = new ListPartsRequest(bucketName, key, uploadId);
+            PartListing partListing = secondClient.listParts(listPartsRequest);
+            Assert.assertEquals(0, partListing.getParts().size());
+            Assert.assertEquals(bucketName, partListing.getBucketName());
+            Assert.assertEquals(key, partListing.getKey());
+            Assert.assertEquals(uploadId, partListing.getUploadId());
+            Assert.assertEquals(LIST_PART_MAX_RETURNS, partListing.getMaxParts().intValue());
+            Assert.assertNull(partListing.getNextPartNumberMarker());
+            Assert.assertFalse(partListing.isTruncated());
+            
+            // Upload parts
+            List<PartETag> partETags = new ArrayList<PartETag>();
+            for (int i = 0; i < partCount; i++) {
+                InputStream instream = genFixedLengthInputStream(partSize);
+                UploadPartRequest uploadPartRequest = new UploadPartRequest();
+                uploadPartRequest.setBucketName(bucketName);
+                uploadPartRequest.setKey(key);
+                uploadPartRequest.setInputStream(instream);
+                uploadPartRequest.setPartNumber(i + 1);
+                uploadPartRequest.setPartSize(partSize);
+                uploadPartRequest.setUploadId(uploadId);
+                UploadPartResult uploadPartResult = secondClient.uploadPart(uploadPartRequest);                
+                partETags.add(uploadPartResult.getPartETag());
+            }
+            
+            // List parts with encoding
+            listPartsRequest = new ListPartsRequest(bucketName, key, uploadId);
+            listPartsRequest.setEncodingType(DEFAULT_ENCODING_TYPE);
+            partListing = secondClient.listParts(listPartsRequest);
+            Assert.assertEquals(partCount, partListing.getParts().size());
+            for (int i = 0; i < partCount; i++) {
+                PartSummary ps = partListing.getParts().get(i);
+                PartETag eTag = partETags.get(i);
+                Assert.assertEquals(eTag.getPartNumber(), ps.getPartNumber());
+                Assert.assertEquals(eTag.getETag(), ps.getETag());
+            }
+            Assert.assertEquals(bucketName, partListing.getBucketName());
+            Assert.assertEquals(key, URLDecoder.decode(partListing.getKey(), "UTF-8"));            
+            Assert.assertEquals(uploadId, partListing.getUploadId());
+            Assert.assertEquals(LIST_PART_MAX_RETURNS, partListing.getMaxParts().intValue());
+            Assert.assertEquals(partCount, partListing.getNextPartNumberMarker().intValue());
+            Assert.assertFalse(partListing.isTruncated());
+            
+            // Complete multipart upload
+            CompleteMultipartUploadRequest completeMultipartUploadRequest = 
+                    new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
+            CompleteMultipartUploadResult completeMultipartUploadResult =
+                    secondClient.completeMultipartUpload(completeMultipartUploadRequest);
+            Assert.assertEquals(composeLocation(secondClient, SECOND_ENDPOINT, bucketName, key), 
+                    completeMultipartUploadResult.getLocation());
+            Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
+            Assert.assertEquals(key, completeMultipartUploadResult.getKey());
+            Assert.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
+            
+            secondClient.deleteObject(bucketName, key);
+            
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+    
+    @Test
     public void testUnormalListParts() {
         final String key = "unormal-list-parts-object";
         
@@ -571,6 +643,80 @@ public class UploadPartTest extends TestBase {
             Assert.assertNull(multipartUploadListing.getPrefix());
             Assert.assertNull(multipartUploadListing.getKeyMarker());
             Assert.assertNull(multipartUploadListing.getUploadIdMarker());
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+    
+    @Test
+    public void testNormalListMultipartUploadsWithEncoding() {
+        try {
+            // Add LIST_UPLOAD_MAX_RETURNS + 1 + lv2KeyCount objects to bucket
+            List<String> existingKeys = new ArrayList<String>();
+            final int lv2KeyCount = 11;
+            final int multipartUploadCount = LIST_UPLOAD_MAX_RETURNS + 1 + lv2KeyCount;
+            final String lv0KeyPrefix = "常记溪亭日暮，沉醉不知归路。";
+            final String lv1KeyPrefix = "常记溪亭日暮，沉醉不知归路。/昨夜雨疏风骤，浓睡不消残酒。-";
+            final String lv2KeyPrefix = "常记溪亭日暮，沉醉不知归路。/昨夜雨疏风骤，浓睡不消残酒。/湖上风来波浩渺，秋已暮、红稀香少。-";
+            for (int i = 0; i <= LIST_UPLOAD_MAX_RETURNS; i++) {
+                if (i % 10 != 0) {
+                    existingKeys.add(lv0KeyPrefix + i);
+                } else {
+                    existingKeys.add(lv1KeyPrefix + i);
+                    if (i % 100 == 0) {                        
+                        existingKeys.add(lv2KeyPrefix + i);
+                    }
+                }
+            }
+            
+            // Upload single part for each multipart upload
+            final int partSize = 128;     //128B
+            List<String> uploadIds = new ArrayList<String>(multipartUploadCount);
+            for (int i = 0; i < multipartUploadCount; i++) {
+                String key = existingKeys.get(i);
+                
+                String uploadId = claimUploadId(secondClient, bucketName, key);
+                uploadIds.add(uploadId);
+                
+                InputStream instream = genFixedLengthInputStream(partSize);
+                UploadPartRequest uploadPartRequest = new UploadPartRequest();
+                uploadPartRequest.setBucketName(bucketName);
+                uploadPartRequest.setKey(key);
+                uploadPartRequest.setInputStream(instream);
+                uploadPartRequest.setPartNumber(1);
+                uploadPartRequest.setPartSize(partSize);
+                uploadPartRequest.setUploadId(uploadId);
+                UploadPartResult uploadPartResult = secondClient.uploadPart(uploadPartRequest);
+                Assert.assertEquals(1, uploadPartResult.getPartNumber());
+            }
+        
+            // List multipart uploads without any conditions
+            ListMultipartUploadsRequest listMultipartUploadsRequest = new ListMultipartUploadsRequest(bucketName);
+            listMultipartUploadsRequest.setEncodingType(DEFAULT_ENCODING_TYPE);
+            MultipartUploadListing multipartUploadListing = secondClient.listMultipartUploads(listMultipartUploadsRequest);
+            Assert.assertEquals(bucketName, multipartUploadListing.getBucketName());
+            Assert.assertEquals(LIST_UPLOAD_MAX_RETURNS, multipartUploadListing.getMaxUploads());
+            Assert.assertTrue(multipartUploadListing.isTruncated());
+            Assert.assertNotNull(multipartUploadListing.getNextKeyMarker());
+            Assert.assertNotNull(multipartUploadListing.getNextUploadIdMarker());
+            Assert.assertNull(multipartUploadListing.getDelimiter());
+            Assert.assertNull(multipartUploadListing.getPrefix());
+            Assert.assertNull(multipartUploadListing.getKeyMarker());
+            Assert.assertNull(multipartUploadListing.getUploadIdMarker());
+            List<MultipartUpload> multipartUploads = multipartUploadListing.getMultipartUploads();
+            Assert.assertEquals(LIST_UPLOAD_MAX_RETURNS, multipartUploads.size());
+            for (int i = 0; i < LIST_UPLOAD_MAX_RETURNS; i++) {
+                Assert.assertTrue(existingKeys.contains(URLDecoder.decode(multipartUploads.get(i).getKey(), "UTF-8")));
+                Assert.assertTrue(uploadIds.contains(multipartUploads.get(i).getUploadId()));
+            }
+            
+            // Abort all incompleted multipart uploads 
+            for (int i = 0; i < multipartUploadCount; i++) {
+                AbortMultipartUploadRequest abortMultipartUploadRequest = 
+                        new AbortMultipartUploadRequest(bucketName, existingKeys.get(i), uploadIds.get(i));
+                secondClient.abortMultipartUpload(abortMultipartUploadRequest);
+            }
+            
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }

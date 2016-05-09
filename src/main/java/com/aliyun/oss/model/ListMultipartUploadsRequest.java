@@ -34,6 +34,8 @@ public class ListMultipartUploadsRequest extends GenericRequest {
     private String keyMarker;
 
     private String uploadIdMarker;
+    
+    private String encodingType;
 
     /**
      * 构造函数。
@@ -110,6 +112,26 @@ public class ListMultipartUploadsRequest extends GenericRequest {
 
     public void setPrefix(String prefix) {
         this.prefix = prefix;
+    }
+    
+    /**
+     * 获取应用于请求响应体中Object名称的编码方式。
+
+     * @return 请求响应体中Object名称的编码方式。
+     */
+    public String getEncodingType() {
+        return encodingType;
+    }
+
+    /**
+     * 设置应用于请求响应体中Object名称的编码方式。
+     * 
+     * @param encodingType
+     *            请求响应体中Object名称的编码方式。
+     *            有效值: null (不进行编码处理) 或 "url".
+     */
+    public void setEncodingType(String encodingType) {
+        this.encodingType = encodingType;
     }
 
 }

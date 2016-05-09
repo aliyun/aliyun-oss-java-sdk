@@ -334,6 +334,12 @@ public class OSSUtils {
         } catch(IOException e) { }
     }
     
+    public static void mandatoryCloseResponse(ResponseMessage response) {
+        try {
+            response.abort();
+        } catch(IOException e) { }
+    }
+    
     public static long determineInputStreamLength(InputStream instream, long hintLength) {
         
         if (hintLength <= 0 || !instream.markSupported()) {

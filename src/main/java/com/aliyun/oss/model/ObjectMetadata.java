@@ -281,4 +281,12 @@ public class ObjectMetadata {
     public Map<String, Object> getRawMetadata() {
         return Collections.unmodifiableMap(metadata);
     }
+    
+    /**
+     * 获取RequestId。
+     * @return RequestId。
+     */
+    public String getRequestId() {
+        return (String)metadata.get(OSSHeaders.OSS_HEADER_REQUEST_ID);
+    }
 }

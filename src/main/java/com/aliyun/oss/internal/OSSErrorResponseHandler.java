@@ -20,8 +20,6 @@
 package com.aliyun.oss.internal;
 
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
-import static com.aliyun.oss.internal.OSSUtils.COMMON_RESOURCE_MANAGER;
-
 import org.apache.http.HttpStatus;
 
 import com.aliyun.oss.ClientException;
@@ -61,8 +59,7 @@ public class OSSErrorResponseHandler implements ResponseHandler {
             } else if (statusCode == HttpStatus.SC_PRECONDITION_FAILED) {
                 throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.PRECONDITION_FAILED, "Precondition Failed");
             } else {
-                throw ExceptionFactory.createInvalidResponseException(requestId,
-                        COMMON_RESOURCE_MANAGER.getString("ServerReturnsUnknownError"));                
+                throw ExceptionFactory.createUnknownOSSException(requestId, statusCode);                
             }
         }
 

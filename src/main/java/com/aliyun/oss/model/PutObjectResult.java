@@ -24,7 +24,7 @@ import java.io.InputStream;
 /**
  * 上传object操作的返回结果。
  */
-public class PutObjectResult implements CallbackResult {
+public class PutObjectResult extends GenericResult implements CallbackResult {
 
     // Object的ETag值。
     private String eTag;

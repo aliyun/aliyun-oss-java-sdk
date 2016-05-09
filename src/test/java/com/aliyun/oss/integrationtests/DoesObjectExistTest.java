@@ -31,6 +31,8 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import com.aliyun.oss.ClientErrorCode;
+import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.HeadObjectRequest;
@@ -205,4 +207,22 @@ public class DoesObjectExistTest extends TestBase {
             headObjectRequest.setModifiedSinceConstraint(null);
         }
     }
+    
+    @Test
+    public void testUnormalDoesObjectExist() {
+        final String nonexistentKey = "test-unormal-does-object-exist";
+        
+        // SignatureDoesNotMatch 
+        OSSClient client = new OSSClient(TestConfig.SECOND_ENDPOINT, TestConfig.SECOND_ACCESS_ID, 
+                TestConfig.SECOND_ACCESS_KEY + " ");
+        try {
+            client.doesObjectExist(bucketName, nonexistentKey);
+            Assert.fail("Does object exist should not be successful");
+        } catch (OSSException ex) {
+            Assert.assertEquals(ClientErrorCode.UNKNOWN, ex.getErrorCode());
+        } finally {
+            client.shutdown();
+        } 
+    }
+    
 }

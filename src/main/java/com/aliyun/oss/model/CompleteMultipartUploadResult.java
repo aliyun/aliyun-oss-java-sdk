@@ -25,7 +25,7 @@ import java.io.InputStream;
  * 包含完成一个Multipart上传事件的返回结果。
  *
  */
-public class CompleteMultipartUploadResult extends WebServiceRequest implements CallbackResult {
+public class CompleteMultipartUploadResult extends GenericResult implements CallbackResult {
 
     /** The name of the bucket containing the completed multipart upload. */
     private String bucketName;

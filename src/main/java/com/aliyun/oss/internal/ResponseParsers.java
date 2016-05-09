@@ -401,6 +401,7 @@ public final class ResponseParsers {
             PutObjectResult result = new PutObjectResult();
             try {
                 result.setETag(trimQuotes(response.getHeaders().get(OSSHeaders.ETAG)));
+                result.setRequestId(response.getRequestId());
                 return result;
             } finally {
                 safeCloseResponse(response);
@@ -415,6 +416,7 @@ public final class ResponseParsers {
         public PutObjectResult parse(ResponseMessage response)
                 throws ResponseParseException {
             PutObjectResult result = new PutObjectResult();
+            result.setRequestId(response.getRequestId());
             result.setETag(trimQuotes(response.getHeaders().get(OSSHeaders.ETAG)));
             result.setCallbackResponseBody(response.getContent());
             return result;
@@ -428,6 +430,7 @@ public final class ResponseParsers {
         public AppendObjectResult parse(ResponseMessage response)
                 throws ResponseParseException {
             AppendObjectResult result = new AppendObjectResult();
+            result.setRequestId(response.getRequestId());
             try {
                 String nextPosition = response.getHeaders().get(OSSHeaders.OSS_NEXT_APPEND_POSITION);
                 if (nextPosition != null) {
@@ -460,6 +463,7 @@ public final class ResponseParsers {
             ossObject.setBucketName(this.bucketName);
             ossObject.setKey(this.key);
             ossObject.setObjectContent(response.getContent());
+            ossObject.setRequestId(response.getRequestId());
             try {
                 ossObject.setObjectMetadata(parseObjectMetadata(response.getHeaders()));
                 return ossObject;
@@ -497,7 +501,7 @@ public final class ResponseParsers {
             try {
                 return parseSimplifiedObjectMeta(response.getHeaders());
             } finally {
-                //safeCloseResponse(response);                
+                OSSUtils.mandatoryCloseResponse(response);  
             }
         }
         
@@ -523,7 +527,9 @@ public final class ResponseParsers {
         public CopyObjectResult parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-                return parseCopyObjectResult(response.getContent());
+                CopyObjectResult result = parseCopyObjectResult(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
             } finally {
                 safeCloseResponse(response);
             }
@@ -538,11 +544,15 @@ public final class ResponseParsers {
                 throws ResponseParseException {
             // Occurs when deleting multiple objects in quiet mode.
             if (response.getContentLength() == 0) {
-                return new DeleteObjectsResult(null);
+                DeleteObjectsResult result = new DeleteObjectsResult(null);
+                result.setRequestId(response.getRequestId());
+                return result;
             }
             
             try {
-                return parseDeleteObjectsResult(response.getContent());
+                DeleteObjectsResult result = parseDeleteObjectsResult(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
             } finally {
                 safeCloseResponse(response);
             }
@@ -556,7 +566,9 @@ public final class ResponseParsers {
         public CompleteMultipartUploadResult parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-                return parseCompleteMultipartUpload(response.getContent());
+                CompleteMultipartUploadResult result = parseCompleteMultipartUpload(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
             } finally {
                 safeCloseResponse(response);                
             }
@@ -570,6 +582,7 @@ public final class ResponseParsers {
         public CompleteMultipartUploadResult parse(ResponseMessage response)
                 throws ResponseParseException {
             CompleteMultipartUploadResult result = new CompleteMultipartUploadResult();
+            result.setRequestId(response.getRequestId());
             result.setCallbackResponseBody(response.getContent());
             return result;
         }
@@ -582,7 +595,9 @@ public final class ResponseParsers {
         public InitiateMultipartUploadResult parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-                return parseInitiateMultipartUpload(response.getContent());
+                InitiateMultipartUploadResult result = parseInitiateMultipartUpload(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
             } finally {
                 safeCloseResponse(response);                
             }
@@ -633,6 +648,7 @@ public final class ResponseParsers {
                 UploadPartCopyResult result = new UploadPartCopyResult();
                 result.setPartNumber(partNumber);
                 result.setETag(trimQuotes(parseUploadPartCopy(response.getContent())));
+                result.setRequestId(response.getRequestId());
                 return result;
             } finally {
                 safeCloseResponse(response);                
@@ -952,6 +968,8 @@ public final class ResponseParsers {
                     objectMeta.setSize(value);
                 } else if (key.equals(OSSHeaders.ETAG)) {
                     objectMeta.setETag(trimQuotes(headers.get(key)));
+                } else if (key.equals(OSSHeaders.OSS_HEADER_REQUEST_ID)) {
+                    objectMeta.setRequestId(headers.get(key));
                 }
             }
 

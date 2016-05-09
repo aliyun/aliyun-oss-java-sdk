@@ -42,6 +42,19 @@ public class UploadPartRequest extends GenericRequest {
     
     public UploadPartRequest() { }
     
+    public UploadPartRequest(String bucketName, String key) {
+        super(bucketName, key);
+    }
+    
+    public UploadPartRequest(String bucketName, String key, String uploadId, int partNumber,
+            InputStream inputStream, long partSize) {
+        super(bucketName, key);
+        this.uploadId = uploadId;
+        this.partNumber = partNumber;
+        this.inputStream = inputStream;
+        this.partSize = partSize;
+    }
+    
     /**
      * 设置包含上传分块内容的数据流。
      * @param inputStream

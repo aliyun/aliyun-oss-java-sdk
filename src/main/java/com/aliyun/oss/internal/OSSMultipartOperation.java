@@ -353,6 +353,7 @@ public class OSSMultipartOperation extends OSSOperation {
         UploadPartResult result = new UploadPartResult();
         result.setPartNumber(partNumber);
         result.setETag(trimQuotes(response.getHeaders().get(OSSHeaders.ETAG)));
+        result.setRequestId(response.getRequestId());
         return result;
     }
     
@@ -438,6 +439,10 @@ public class OSSMultipartOperation extends OSSOperation {
         if (listMultipartUploadsRequest.getUploadIdMarker() != null) {
             params.put(UPLOAD_ID_MARKER, listMultipartUploadsRequest.getUploadIdMarker());
         }
+        
+        if (listMultipartUploadsRequest.getEncodingType() != null) {
+            params.put(ENCODING_TYPE, listMultipartUploadsRequest.getEncodingType());
+        }
     }
     
     private static void populateListPartsRequestParameters(ListPartsRequest listPartsRequest,
@@ -461,6 +466,10 @@ public class OSSMultipartOperation extends OSSOperation {
                         "PartNumberMarkerOutOfRange"));
             }
             params.put(PART_NUMBER_MARKER, partNumberMarker.toString());
+        }
+        
+        if (listPartsRequest.getEncodingType() != null) {
+            params.put(ENCODING_TYPE, listPartsRequest.getEncodingType());
         }
     }
     

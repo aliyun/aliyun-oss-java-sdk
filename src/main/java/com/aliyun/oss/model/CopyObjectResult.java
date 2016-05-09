@@ -24,7 +24,7 @@ import java.util.Date;
 /**
  * 拷贝一个在OSS上已经存在的Object成另外一个Object的请求结果。
  */
-public class CopyObjectResult {
+public class CopyObjectResult extends GenericResult {
 
     // 新Object的ETag值。
     private String etag;

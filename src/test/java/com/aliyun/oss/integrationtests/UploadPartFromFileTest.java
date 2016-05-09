@@ -47,11 +47,11 @@ public class UploadPartFromFileTest extends TestBase {
     
     @Test
     public void testMultipartUploadSample() throws IOException {
-        int thrs = 10;
+        int thrs = 20;
         UploadThread[] uploadThrs = new UploadThread[thrs];
-        long fileSize = 1024 * 1024 * 10;
-        long partSize = 1024 * 1024;
-        int  keyNum = 2;
+        long fileSize = 1024 * 1024 * 1;
+        long partSize = 1024 * 1024 * 100;
+        int  keyNum = 10;
         
         System.out.println("File size " + fileSize + ",part size " + partSize + ",key num " + keyNum);
         

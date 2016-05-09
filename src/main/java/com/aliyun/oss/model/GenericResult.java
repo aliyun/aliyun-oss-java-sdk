@@ -19,37 +19,19 @@
 
 package com.aliyun.oss.model;
 
+/**
+ * A generic result that contains some basic response options, such as requestId.
+ */
+public abstract class GenericResult {
+   
+    public String getRequestId() {
+        return requestId;
+    }
 
-public class InitiateMultipartUploadResult extends GenericResult {
-
-    private String bucketName;
-
-    private String key;
-
-    private String uploadId;
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
     
-    public String getBucketName() {
-        return bucketName;
-    }
-
-    public void setBucketName(String bucketName) {
-        this.bucketName = bucketName;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public String getUploadId() {
-        return uploadId;
-    }
-
-    public void setUploadId(String uploadId) {
-        this.uploadId = uploadId;
-    }
+    private String requestId;
     
 }

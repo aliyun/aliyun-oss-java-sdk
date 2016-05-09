@@ -38,7 +38,7 @@ import java.io.InputStream;
  * </p>
  *
  */
-public class OSSObject {
+public class OSSObject extends GenericResult {
 
     // Object key (name)
     private String key;

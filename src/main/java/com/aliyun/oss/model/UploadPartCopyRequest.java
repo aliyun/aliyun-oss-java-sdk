@@ -61,6 +61,28 @@ public class UploadPartCopyRequest extends WebServiceRequest {
         setSourceKey(sourceKey);
     }
     
+    public UploadPartCopyRequest(String sourceBucketName, String sourceKey, 
+            String targetBucketName, String targetKey, String uploadId) {
+        this.bucketName = targetBucketName;
+        this.key = targetKey;
+        this.sourceBucketName = sourceBucketName;
+        this.sourceKey = sourceKey;
+        this.uploadId = uploadId;
+    }
+    
+    public UploadPartCopyRequest(String sourceBucketName, String sourceKey, 
+            String targetBucketName, String targetKey, String uploadId,
+             int partNumber, Long beginIndex, Long partSize) {
+        this.bucketName = targetBucketName;
+        this.key = targetKey;
+        this.sourceBucketName = sourceBucketName;
+        this.sourceKey = sourceKey;
+        this.uploadId = uploadId;
+        this.partNumber = partNumber;
+        this.beginIndex = beginIndex;
+        this.partSize = partSize;
+    }
+    
     /**
      * 返回{@link Bucket}名称。
      * @return Bucket名称。

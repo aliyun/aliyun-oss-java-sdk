@@ -25,7 +25,7 @@ import java.util.Date;
  * 表示某一Object的基本元信息，包括该Object的ETag、Size（文件大小）、
  * LastModified（最后修改时间）。
  */
-public class SimplifiedObjectMeta {
+public class SimplifiedObjectMeta extends GenericResult {
 
     private String eTag;
     private long size;

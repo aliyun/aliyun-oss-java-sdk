@@ -19,7 +19,6 @@
 
 package com.aliyun.oss.integrationtests;
 
-import static com.aliyun.oss.integrationtests.TestConstants.BUCKET_ACCESS_DENIED_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_BUCKET_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_LIFECYCLE_ERR;
 import static com.aliyun.oss.integrationtests.TestUtils.genRandomString;
@@ -189,7 +188,6 @@ public class BucketLifecycleTest extends TestBase {
                 Assert.fail("Set bucket lifecycle should not be successful");
             } catch (OSSException e) {
                 Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
             }
             
             // Set length of rule id exceeding RULE_ID_MAX_LENGTH(255)
@@ -299,7 +297,6 @@ public class BucketLifecycleTest extends TestBase {
             Assert.fail("Get bucket lifecycle should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         }
         
         // Get bucket without setting lifecycle configuration
@@ -337,7 +334,6 @@ public class BucketLifecycleTest extends TestBase {
             Assert.fail("Delete bucket lifecycle should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         }
         
         // Delete bucket without setting lifecycle configuration
