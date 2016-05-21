@@ -62,6 +62,7 @@ import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.HttpHeaders;
 import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.internal.CORSOperation;
+import com.aliyun.oss.internal.LiveChannelOperation;
 import com.aliyun.oss.internal.OSSBucketOperation;
 import com.aliyun.oss.internal.OSSDownloadOperation;
 import com.aliyun.oss.internal.OSSHeaders;
@@ -88,6 +89,8 @@ import com.aliyun.oss.model.CompleteMultipartUploadResult;
 import com.aliyun.oss.model.CopyObjectRequest;
 import com.aliyun.oss.model.CopyObjectResult;
 import com.aliyun.oss.model.CreateBucketRequest;
+import com.aliyun.oss.model.CreateLiveChannelRequest;
+import com.aliyun.oss.model.CreateLiveChannelResult;
 import com.aliyun.oss.model.DeleteBucketCnameRequest;
 import com.aliyun.oss.model.DeleteBucketReplicationRequest;
 import com.aliyun.oss.model.DeleteObjectsRequest;
@@ -95,9 +98,19 @@ import com.aliyun.oss.model.DeleteObjectsResult;
 import com.aliyun.oss.model.DownloadFileRequest;
 import com.aliyun.oss.model.DownloadFileResult;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
+import com.aliyun.oss.model.GeneratePushflowUrlRequest;
+import com.aliyun.oss.model.GenerateVodPlaylistRequest;
 import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.GetBucketImageResult;
 import com.aliyun.oss.model.GetBucketReplicationProgressRequest;
+import com.aliyun.oss.model.ListLiveChannelsRequest;
+import com.aliyun.oss.model.LiveChannel;
+import com.aliyun.oss.model.LiveChannelGenericRequest;
+import com.aliyun.oss.model.LiveChannelInfo;
+import com.aliyun.oss.model.LiveChannelListing;
+import com.aliyun.oss.model.LiveChannelStat;
+import com.aliyun.oss.model.LiveChannelStatus;
+import com.aliyun.oss.model.LiveRecord;
 import com.aliyun.oss.model.ReplicationRule;
 import com.aliyun.oss.model.GetImageStyleResult;
 import com.aliyun.oss.model.GetObjectRequest;
@@ -123,6 +136,7 @@ import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
 import com.aliyun.oss.model.SetBucketAclRequest;
 import com.aliyun.oss.model.SetBucketCORSRequest;
+import com.aliyun.oss.model.SetLiveChannelRequest;
 import com.aliyun.oss.model.UploadFileRequest;
 import com.aliyun.oss.model.UploadFileResult;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
@@ -165,6 +179,7 @@ public class OSSClient implements OSS {
     private CORSOperation corsOperation;
     private OSSUploadOperation uploadOperation;
     private OSSDownloadOperation downloadOperation;
+    private LiveChannelOperation liveChannelOperation;
 
     /**
      * 使用默认的OSS Endpoint(http://oss-cn-hangzhou.aliyuncs.com)及
@@ -300,6 +315,7 @@ public class OSSClient implements OSS {
         this.objectOperation.setEndpoint(uri);
         this.multipartOperation.setEndpoint(uri);
         this.corsOperation.setEndpoint(uri);
+        this.liveChannelOperation.setEndpoint(uri);
     }
     
     /**
@@ -345,6 +361,7 @@ public class OSSClient implements OSS {
         this.corsOperation = new CORSOperation(this.serviceClient, this.credsProvider);
         this.uploadOperation = new OSSUploadOperation(this.multipartOperation);
         this.downloadOperation = new OSSDownloadOperation(objectOperation);
+        this.liveChannelOperation = new LiveChannelOperation(this.serviceClient, this.credsProvider);
     }
     
     @Override
@@ -1257,6 +1274,116 @@ public class OSSClient implements OSS {
     @Override
     public DownloadFileResult downloadFile(DownloadFileRequest downloadFileRequest) throws Throwable {
         return downloadOperation.downloadFile(downloadFileRequest);
+    }
+    
+    @Override
+    public CreateLiveChannelResult createLiveChannel(CreateLiveChannelRequest createLiveChannelRequest) 
+            throws OSSException, ClientException {
+        return liveChannelOperation.createLiveChannel(createLiveChannelRequest);
+    }
+    
+    @Override
+    public void setLiveChannelStatus(String bucketName, String liveChannel, LiveChannelStatus status) 
+            throws OSSException, ClientException {
+        this.setLiveChannelStatus(new SetLiveChannelRequest(bucketName, liveChannel, status));
+    }
+    
+    @Override
+    public void setLiveChannelStatus(SetLiveChannelRequest setLiveChannelRequest) 
+            throws OSSException, ClientException {
+        liveChannelOperation.setLiveChannelStatus(setLiveChannelRequest);
+    }
+    
+    @Override
+    public LiveChannelInfo getLiveChannelInfo(String bucketName, String liveChannel) 
+            throws OSSException, ClientException {
+        return this.getLiveChannelInfo(new LiveChannelGenericRequest(bucketName, liveChannel));
+    }
+    
+    @Override
+    public LiveChannelInfo getLiveChannelInfo(LiveChannelGenericRequest liveChannelGenericRequest) 
+            throws OSSException, ClientException {
+        return liveChannelOperation.getLiveChannelInfo(liveChannelGenericRequest);
+    }
+    
+    @Override
+    public LiveChannelStat getLiveChannelStat(String bucketName, String liveChannel) 
+            throws OSSException, ClientException {
+        return this.getLiveChannelStat(new LiveChannelGenericRequest(bucketName, liveChannel));
+    }
+    
+    @Override
+    public LiveChannelStat getLiveChannelStat(LiveChannelGenericRequest liveChannelGenericRequest) 
+            throws OSSException, ClientException {
+        return liveChannelOperation.getLiveChannelStat(liveChannelGenericRequest);
+    }
+    
+    @Override
+    public void deleteLiveChannel(String bucketName, String liveChannel) 
+            throws OSSException, ClientException {
+        this.deleteLiveChannel(new LiveChannelGenericRequest(bucketName, liveChannel));
+    }
+    
+    @Override
+    public void deleteLiveChannel(LiveChannelGenericRequest liveChannelGenericRequest) 
+            throws OSSException, ClientException {
+        liveChannelOperation.deleteLiveChannel(liveChannelGenericRequest);
+    }
+    
+    @Override
+    public List<LiveChannel> listLiveChannels(String bucketName) throws OSSException, ClientException {
+        return liveChannelOperation.listLiveChannels(bucketName);
+    }
+    
+    @Override
+    public LiveChannelListing listLiveChannels(ListLiveChannelsRequest listLiveChannelRequest) 
+            throws OSSException, ClientException {
+        return liveChannelOperation.listLiveChannels(listLiveChannelRequest);
+    }
+    
+    @Override
+    public List<LiveRecord> getLiveChannelHistory(String bucketName, String liveChannel) 
+            throws OSSException, ClientException {
+        return this.getLiveChannelHistory(new LiveChannelGenericRequest(bucketName, liveChannel));
+    }
+    
+    @Override
+    public List<LiveRecord> getLiveChannelHistory(LiveChannelGenericRequest liveChannelGenericRequest) 
+            throws OSSException, ClientException {
+        return liveChannelOperation.getLiveChannelHistory(liveChannelGenericRequest);
+    }
+    
+    @Override
+    public void GenerateVodPlaylist(String bucketName, String liveChannelName, String PlaylistName,
+            long startTime, long endTime) throws OSSException, ClientException {
+        this.GenerateVodPlaylist(new GenerateVodPlaylistRequest(bucketName, liveChannelName,
+                PlaylistName, startTime, endTime));
+    }
+    
+    @Override
+    public void GenerateVodPlaylist(GenerateVodPlaylistRequest generateVodPlaylistRequest) 
+            throws OSSException, ClientException {
+        liveChannelOperation.GenerateVodPlaylist(generateVodPlaylistRequest);
+    }
+   
+    @Override
+    public String GeneratePushflowUri(String bucketName, String liveChannelName, String PlaylistName,
+            long expires) throws OSSException, ClientException {
+        return this.GeneratePushflowUri(new GeneratePushflowUrlRequest(bucketName, liveChannelName,
+                PlaylistName, expires, null));
+    }
+    
+    @Override
+    public String GeneratePushflowUri(String bucketName, String liveChannelName, String PlaylistName,
+            long expires, Map<String, String> parameters) throws OSSException, ClientException {
+        return this.GeneratePushflowUri(new GeneratePushflowUrlRequest(bucketName, liveChannelName,
+                PlaylistName, expires, parameters));
+    }
+    
+    @Override
+    public String GeneratePushflowUri(GeneratePushflowUrlRequest generatePushflowUrlRequest) 
+            throws OSSException, ClientException {
+        return liveChannelOperation.GeneratePushflowUrl(generatePushflowUrlRequest);
     }
     
     @Override

@@ -395,7 +395,7 @@ public class TestUtils {
         String tokenPolicy = jsonizeTokenPolicy(actions, resources, true);
         StsToken token = getStsToken(STS_USER, STS_GRANTEE, STS_DURATION_SECONDS, tokenPolicy);
         return new OSSClient(SECOND_ENDPOINT, token.accessKeyId, token.secretAccessKey, token.securityToken,
-                new ClientConfiguration().setSupportCname(false).setSLDEnabled(true));
+                new ClientConfiguration().setSupportCname(false));
     }
     
     public static String jsonizeTokenPolicy(List<String> actions, List<String> resources, boolean allow) {

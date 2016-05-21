@@ -62,8 +62,7 @@ public class BucketReplicationTest extends TestBase {
                     SECOND_REPLICATION_ACCESS_ID, SECOND_REPLICATION_ACCESS_KEY);
             replicationClient = new OSSClient(SECOND_REPLICATION_ENDPOINT,
                     new DefaultCredentialProvider(secondCreds),
-                    new ClientConfiguration().setSupportCname(false)
-                            .setSLDEnabled(true));
+                    new ClientConfiguration().setSupportCname(false));
             
           replicationClient.createBucket(targetBucketName);
             

@@ -55,9 +55,9 @@ import com.aliyun.oss.model.WebServiceRequest;
  */
 public abstract class OSSOperation {
     
-    private volatile URI endpoint;
-    private CredentialsProvider credsProvider;
-    private ServiceClient client;
+    protected volatile URI endpoint;
+    protected CredentialsProvider credsProvider;
+    protected ServiceClient client;
     
     protected static OSSErrorResponseHandler errorResponseHandler = new OSSErrorResponseHandler();
     protected static EmptyResponseParser emptyResponseParser = new EmptyResponseParser();

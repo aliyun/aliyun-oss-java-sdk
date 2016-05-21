@@ -44,6 +44,11 @@ import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_CNAME;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_BUCKET_INFO;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_COMP;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_OBJECTMETA;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_LIVE;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_STATUS;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_VOD;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_START_TIME;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_END_TIME;
 import static com.aliyun.oss.internal.RequestParameters.UPLOAD_ID;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_QOS;
 import static com.aliyun.oss.model.ResponseHeaderOverrides.RESPONSE_HEADER_CACHE_CONTROL;
@@ -78,6 +83,8 @@ public class SignUtils {
             SUBRESOURCE_REPLICATION, SUBRESOURCE_REPLICATION_PROGRESS,
             SUBRESOURCE_REPLICATION_LOCATION, SUBRESOURCE_CNAME, 
             SUBRESOURCE_BUCKET_INFO, SUBRESOURCE_COMP, SUBRESOURCE_QOS,
+            SUBRESOURCE_LIVE, SUBRESOURCE_STATUS, SUBRESOURCE_VOD, 
+            SUBRESOURCE_START_TIME, SUBRESOURCE_END_TIME,
     });
     
     public static String buildCanonicalString(String method, String resourcePath,
@@ -137,6 +144,28 @@ public class SignUtils {
         
         // Append canonical resource to canonical string
         canonicalString.append(buildCanonicalizedResource(resourcePath, request.getParameters()));
+        
+        return canonicalString.toString();
+    }
+    
+    public static String buildRtmpCanonicalString(String canonicalizedResource, RequestMessage request, 
+            String expires) {
+        
+        StringBuilder canonicalString = new StringBuilder();
+        
+        // Append expires
+        canonicalString.append(expires + NEW_LINE);
+        
+        // Append canonicalized parameters        
+        for(Map.Entry<String, String> entry : request.getParameters().entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            canonicalString.append(key).append(':').append(value);
+            canonicalString.append(NEW_LINE);
+        }
+        
+        // Append canonicalized resource
+        canonicalString.append(canonicalizedResource);
         
         return canonicalString.toString();
     }

@@ -33,11 +33,13 @@ import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.CompleteMultipartUploadRequest;
 import com.aliyun.oss.model.CreateBucketRequest;
+import com.aliyun.oss.model.CreateLiveChannelRequest;
 import com.aliyun.oss.model.DeleteBucketCnameRequest;
 import com.aliyun.oss.model.DeleteObjectsRequest;
 import com.aliyun.oss.model.LifecycleRule;
 import com.aliyun.oss.model.LifecycleRule.AbortMultipartUpload;
 import com.aliyun.oss.model.LifecycleRule.RuleStatus;
+import com.aliyun.oss.model.LiveChannelTarget;
 import com.aliyun.oss.model.PartETag;
 import com.aliyun.oss.model.PutBucketImageRequest;
 import com.aliyun.oss.model.PutImageStyleRequest;
@@ -78,6 +80,7 @@ public final class RequestMarshallers {
     public static final DeleteBucketCnameRequestMarshaller deleteBucketCnameRequestMarshaller = new DeleteBucketCnameRequestMarshaller();    
     public static final SetBucketQosRequestMarshaller setBucketQosRequestMarshaller = new SetBucketQosRequestMarshaller();    
     public static final CompleteMultipartUploadRequestMarshaller completeMultipartUploadRequestMarshaller = new CompleteMultipartUploadRequestMarshaller();
+    public static final CreateLiveChannelRequestMarshaller createLiveChannelRequestMarshaller = new CreateLiveChannelRequestMarshaller();
     
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
         
@@ -565,6 +568,35 @@ public final class RequestMarshallers {
                 xmlBody.append("<StorageCapacity>" + userQos.getStorageCapacity() + "</StorageCapacity>");
             }
             xmlBody.append("</BucketUserQos>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+        
+    }
+    
+    public static final class CreateLiveChannelRequestMarshaller implements RequestMarshaller2<CreateLiveChannelRequest> {
+
+        @Override
+        public byte[] marshall(CreateLiveChannelRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<LiveChannelConfiguration>");
+            xmlBody.append("<Description>" + request.getLiveChannelDescription() + "</Description>");
+            xmlBody.append("<Status>" + request.getLiveChannelStatus() + "</Status>");
+            
+            LiveChannelTarget target = request.getLiveChannelTarget();
+            xmlBody.append("<Target>");
+            xmlBody.append("<Type>" + target.getType() + "</Type>");
+            xmlBody.append("<FragDuration>" + target.getFragDuration() + "</FragDuration>");
+            xmlBody.append("<FragCount>" + target.getFragCount() + "</FragCount>");
+            xmlBody.append("<PlaylistName>" + target.getPlaylistName() + "</PlaylistName>");
+            xmlBody.append("</Target>");
+            xmlBody.append("</LiveChannelConfiguration>");
 
             byte[] rawData = null;
             try {

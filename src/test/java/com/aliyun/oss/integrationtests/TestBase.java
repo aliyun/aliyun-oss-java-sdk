@@ -97,19 +97,20 @@ public class TestBase {
     
     public static OSSClient getDefaultClient() {
         if (defaultClient == null) {
+            ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);
             defaultClient = new OSSClient(DEFAULT_ENDPOINT, 
                     new DefaultCredentialProvider(defaultCreds), 
-                    new ClientConfiguration().setSupportCname(false).setSLDEnabled(true));
+                    conf);
         }
         return defaultClient;
     }
     
     public static OSSClient getSecondClient() {
         if (secondClient == null) {
+            ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);
             secondClient = new OSSClient(SECOND_ENDPOINT, 
                     new DefaultCredentialProvider(secondCreds),
-                    new ClientConfiguration().setSupportCname(false).setSLDEnabled(true));
-        }
+                    conf);}
         return secondClient;
     }
     

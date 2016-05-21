@@ -52,8 +52,18 @@ import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.CnameConfiguration;
 import com.aliyun.oss.model.CompleteMultipartUploadResult;
 import com.aliyun.oss.model.CopyObjectResult;
+import com.aliyun.oss.model.CreateLiveChannelResult;
 import com.aliyun.oss.model.DeleteObjectsResult;
 import com.aliyun.oss.model.GetBucketImageResult;
+import com.aliyun.oss.model.LiveChannel;
+import com.aliyun.oss.model.LiveChannelInfo;
+import com.aliyun.oss.model.LiveChannelListing;
+import com.aliyun.oss.model.LiveChannelStat;
+import com.aliyun.oss.model.LiveRecord;
+import com.aliyun.oss.model.LiveChannelStat.AudioStat;
+import com.aliyun.oss.model.LiveChannelStat.VideoStat;
+import com.aliyun.oss.model.LiveChannelStatus;
+import com.aliyun.oss.model.LiveChannelTarget;
 import com.aliyun.oss.model.ReplicationRule;
 import com.aliyun.oss.model.GetImageStyleResult;
 import com.aliyun.oss.model.GroupGrantee;
@@ -76,6 +86,7 @@ import com.aliyun.oss.model.PartListing;
 import com.aliyun.oss.model.PartSummary;
 import com.aliyun.oss.model.Permission;
 import com.aliyun.oss.model.PutObjectResult;
+import com.aliyun.oss.model.PushflowStatus;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
 import com.aliyun.oss.model.SimplifiedObjectMeta;
 import com.aliyun.oss.model.Style;
@@ -122,6 +133,12 @@ public final class ResponseParsers {
     public static final InitiateMultipartUploadResponseParser initiateMultipartUploadResponseParser = new InitiateMultipartUploadResponseParser();    
     public static final ListMultipartUploadsResponseParser listMultipartUploadsResponseParser = new ListMultipartUploadsResponseParser();    
     public static final ListPartsResponseParser listPartsResponseParser = new ListPartsResponseParser();    
+    
+    public static final CreateLiveChannelResponseParser createLiveChannelResponseParser = new CreateLiveChannelResponseParser();
+    public static final GetLiveChannelInfoResponseParser getLiveChannelInfoResponseParser = new GetLiveChannelInfoResponseParser();
+    public static final GetLiveChannelStatResponseParser getLiveChannelStatResponseParser = new GetLiveChannelStatResponseParser();
+    public static final GetLiveChannelHistoryResponseParser getLiveChannelHistoryResponseParser = new GetLiveChannelHistoryResponseParser();
+    public static final ListLiveChannelsReponseParser listLiveChannelsReponseParser = new ListLiveChannelsReponseParser();    
     
     public static final class EmptyResponseParser implements ResponseParser<ResponseMessage> {
 
@@ -302,6 +319,76 @@ public final class ResponseParsers {
                 throws ResponseParseException {
             try {
                 return parseGetUserQos(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+        
+    }
+    
+    public static final class CreateLiveChannelResponseParser implements ResponseParser<CreateLiveChannelResult> {
+        
+        @Override
+        public CreateLiveChannelResult parse(ResponseMessage response)
+                throws ResponseParseException {
+            try {
+                return parseCreateLiveChannel(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+        
+    }
+    
+    public static final class GetLiveChannelInfoResponseParser implements ResponseParser<LiveChannelInfo> {
+        
+        @Override
+        public LiveChannelInfo parse(ResponseMessage response)
+                throws ResponseParseException {
+            try {
+                return parseGetLiveChannelInfo(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+        
+    }
+    
+    public static final class GetLiveChannelStatResponseParser implements ResponseParser<LiveChannelStat> {
+        
+        @Override
+        public LiveChannelStat parse(ResponseMessage response)
+                throws ResponseParseException {
+            try {
+                return parseGetLiveChannelStat(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+        
+    }
+    
+    public static final class GetLiveChannelHistoryResponseParser implements ResponseParser<List<LiveRecord>> {
+        
+        @Override
+        public List<LiveRecord> parse(ResponseMessage response)
+                throws ResponseParseException {
+            try {
+                return parseGetLiveChannelHistory(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+        
+    }
+    
+    public static final class ListLiveChannelsReponseParser implements ResponseParser<LiveChannelListing> {
+        
+        @Override
+        public LiveChannelListing parse(ResponseMessage response)
+                throws ResponseParseException {
+            try {
+                return parseListLiveChannels(response.getContent());
             } finally {
                 safeCloseResponse(response);
             }
@@ -1605,6 +1692,207 @@ public final class ResponseParsers {
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
+    }
+    
+    /**
+     * Unmarshall create live channel response body to corresponding result.
+     */
+    @SuppressWarnings("unchecked")
+    public static CreateLiveChannelResult parseCreateLiveChannel(InputStream responseBody) 
+            throws ResponseParseException {
+        
+        try {
+            Element root = getXmlRootElement(responseBody);
+            CreateLiveChannelResult result = new CreateLiveChannelResult();
+            
+            List<String> publishUrls = new ArrayList<String>();            
+            List<Element> publishElems = root.getChild("PublishUrls").getChildren("Url"); 
+            for (Element urlElem : publishElems) {                
+                publishUrls.add(urlElem.getText());
+            }
+            result.setPublishUrls(publishUrls);
+            
+            List<String> playUrls = new ArrayList<String>();
+            List<Element> playElems = root.getChild("PlayUrls").getChildren("Url");
+            for (Element urlElem : playElems) {
+                playUrls.add(urlElem.getText());
+            }
+            result.setPlayUrls(playUrls);
+            
+            return result;
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+        
+    }
+    
+    /**
+     * Unmarshall get live channel info response body to corresponding result.
+     */
+    public static LiveChannelInfo parseGetLiveChannelInfo(InputStream responseBody) 
+            throws ResponseParseException {
+        
+        try {
+            Element root = getXmlRootElement(responseBody);
+            LiveChannelInfo result = new LiveChannelInfo();
+            
+            result.setDescription(root.getChildText("Description"));
+            result.setStatus(LiveChannelStatus.parse(root.getChildText("Status")));  
+
+            Element targetElem = root.getChild("Target");
+            LiveChannelTarget target = new LiveChannelTarget();
+            target.setType(targetElem.getChildText("Type"));
+            target.setFragDuration(Integer.parseInt(targetElem.getChildText("FragDuration")));
+            target.setFragCount(Integer.parseInt(targetElem.getChildText("FragCount")));
+            target.setPlaylistName(targetElem.getChildText("PlaylistName"));
+            result.setTarget(target);
+            
+            return result;
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+        
+    }
+    
+    /**
+     * Unmarshall get live channel stat response body to corresponding result.
+     */
+    public static LiveChannelStat parseGetLiveChannelStat(InputStream responseBody) 
+            throws ResponseParseException {
+        
+        try {
+            Element root = getXmlRootElement(responseBody);
+            LiveChannelStat result = new LiveChannelStat();
+            
+            result.setPushflowStatus(PushflowStatus.parse(root.getChildText("Status")));
+            
+            if (root.getChild("ConnectedTime") != null) {
+                result.setConnectedDate(DateUtil.parseIso8601Date(root.getChildText("ConnectedTime")));
+            }
+            
+            if (root.getChild("RemoteAddr") != null) {
+                result.setRemoteAddress(root.getChildText("RemoteAddr"));
+            }
+
+            Element videoElem = root.getChild("Video");
+            if (videoElem != null) {
+                VideoStat videoStat = new VideoStat();
+                videoStat.setWidth(Integer.parseInt(videoElem.getChildText("Width")));
+                videoStat.setHeight(Integer.parseInt(videoElem.getChildText("Height")));
+                videoStat.setFrameRate(Integer.parseInt(videoElem.getChildText("FrameRate")));
+                videoStat.setBandWidth(Integer.parseInt(videoElem.getChildText("Bandwidth")));
+                videoStat.setCodec(videoElem.getChildText("Codec"));
+                result.setVideoStat(videoStat);
+            }
+            
+            Element audioElem = root.getChild("Audio");
+            if (audioElem != null) {
+                AudioStat audioStat = new AudioStat();
+                audioStat.setBandWidth(Integer.parseInt(audioElem.getChildText("Bandwidth")));
+                audioStat.setSampleRate(Integer.parseInt(audioElem.getChildText("SampleRate")));
+                audioStat.setCodec(audioElem.getChildText("Codec"));
+                result.setAudioStat(audioStat);
+            }
+            
+            return result;
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+        
+    }
+    
+    /**
+     * Unmarshall get live channel history response body to corresponding result.
+     */
+    @SuppressWarnings("unchecked")
+    public static List<LiveRecord> parseGetLiveChannelHistory(InputStream responseBody) 
+            throws ResponseParseException {
+        
+        try {
+            Element root = getXmlRootElement(responseBody);
+
+            List<LiveRecord> liveRecords = new ArrayList<LiveRecord>();
+            List<Element> recordElements = root.getChildren("LiveRecord");
+            
+            for (Element recordElem : recordElements) {
+                LiveRecord record = new LiveRecord();
+                record.setStartDate(DateUtil.parseIso8601Date(recordElem.getChildText("StartTime")));
+                record.setEndDate(DateUtil.parseIso8601Date(recordElem.getChildText("EndTime")));
+                record.setRemoteAddress(recordElem.getChildText("RemoteAddr"));
+                liveRecords.add(record);
+            }
+            
+            return liveRecords;
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+        
+    }
+    
+    /**
+     * Unmarshall list live channels response body to live channel listing.
+     */
+    @SuppressWarnings("unchecked")
+    public static LiveChannelListing parseListLiveChannels(InputStream responseBody) 
+            throws ResponseParseException {
+        
+        try {
+            Element root = getXmlRootElement(responseBody);
+
+            LiveChannelListing liveChannelListing = new LiveChannelListing();
+            liveChannelListing.setTruncated(Boolean.valueOf(root.getChildText("IsTruncated")));
+            
+            if (root.getChild("Prefix") != null) {
+                String prefix = root.getChildText("Prefix");
+                liveChannelListing.setPrefix(isNullOrEmpty(prefix) ? null : prefix);                
+            }
+            
+            if (root.getChild("Marker") != null) {
+                String marker = root.getChildText("Marker");
+                liveChannelListing.setMarker(isNullOrEmpty(marker) ? null : marker);                
+            }
+            
+            if (root.getChild("MaxKeys") != null) {
+                String maxKeys = root.getChildText("MaxKeys");
+                liveChannelListing.setMaxKeys(Integer.valueOf(maxKeys));
+            }
+            
+            if (root.getChild("NextMarker") != null) {
+                String nextMarker = root.getChildText("NextMarker");
+                liveChannelListing.setNextMarker(isNullOrEmpty(nextMarker) ? null : nextMarker);           
+            }
+
+            List<Element> liveChannelElems = root.getChildren("LiveChannel");
+            for (Element elem : liveChannelElems) {
+                LiveChannel liveChannel = new LiveChannel();
+                
+                liveChannel.setName(elem.getChildText("Id"));
+                liveChannel.setDescription(elem.getChildText("Description"));
+                liveChannel.setStatus(LiveChannelStatus.parse(elem.getChildText("Status")));
+                liveChannel.setLastModified(DateUtil.parseIso8601Date(elem.getChildText("LastModified")));
+                
+                List<String> publishUrls = new ArrayList<String>();            
+                List<Element> publishElems = elem.getChild("PublishUrls").getChildren("Url"); 
+                for (Element urlElem : publishElems) {                
+                    publishUrls.add(urlElem.getText());
+                }
+                liveChannel.setPublishUrls(publishUrls);
+                
+                List<String> playUrls = new ArrayList<String>();
+                List<Element> playElems = elem.getChild("PlayUrls").getChildren("Url");
+                for (Element urlElem : playElems) {
+                    playUrls.add(urlElem.getText());
+                }
+                liveChannel.setPlayUrls(playUrls);
+                
+                liveChannelListing.addLiveChannel(liveChannel);
+            }
+
+            return liveChannelListing;
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
     }
     
     /**

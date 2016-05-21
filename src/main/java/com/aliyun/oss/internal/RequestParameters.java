@@ -42,6 +42,11 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_COMP = "comp";
     public static final String SUBRESOURCE_OBJECTMETA = "objectMeta";
     public static final String SUBRESOURCE_QOS = "qos";
+    public static final String SUBRESOURCE_LIVE = "live";
+    public static final String SUBRESOURCE_STATUS = "status";
+    public static final String SUBRESOURCE_VOD = "vod";
+    public static final String SUBRESOURCE_START_TIME = "startTime";
+    public static final String SUBRESOURCE_END_TIME = "endTime";
 
     public static final String PREFIX = "prefix";
     public static final String DELIMITER = "delimiter";
@@ -69,5 +74,9 @@ public final class RequestParameters {
     
     public static final String COMP_ADD = "add";
     public static final String COMP_DELETE = "delete";
-
+    
+    public static final String STAT = "stat";
+    public static final String HISTORY = "history";
+    public static final String PLAYLIST_NAME = "playlistName";
+    
 }
