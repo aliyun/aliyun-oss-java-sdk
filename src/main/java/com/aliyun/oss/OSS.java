@@ -55,7 +55,7 @@ import com.aliyun.oss.model.DeleteObjectsResult;
 import com.aliyun.oss.model.DownloadFileRequest;
 import com.aliyun.oss.model.DownloadFileResult;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
-import com.aliyun.oss.model.GeneratePushflowUrlRequest;
+import com.aliyun.oss.model.GenerateRtmpUriRequest;
 import com.aliyun.oss.model.GenerateVodPlaylistRequest;
 import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.GetBucketImageResult;
@@ -1614,7 +1614,7 @@ public interface OSS {
      * @throws OSSException OSS Server异常信息。
      * @throws ClientException OSS Client异常信息。
      */
-    public String GeneratePushflowUri(String bucketName, String liveChannelName, String PlaylistName,
+    public String GenerateRtmpUri(String bucketName, String liveChannelName, String PlaylistName,
             long expires) throws OSSException, ClientException;
     
     /**
@@ -1628,7 +1628,7 @@ public interface OSS {
      * @throws OSSException OSS Server异常信息。
      * @throws ClientException OSS Client异常信息。
      */
-    public String GeneratePushflowUri(String bucketName, String liveChannelName, String PlaylistName,
+    public String GenerateRtmpUri(String bucketName, String liveChannelName, String PlaylistName,
             long expires, Map<String, String> parameters) throws OSSException, ClientException;
     
     /**
@@ -1638,7 +1638,7 @@ public interface OSS {
      * @throws OSSException OSS Server异常信息。
      * @throws ClientException OSS Client异常信息。
      */
-    public String GeneratePushflowUri(GeneratePushflowUrlRequest generatePushflowUrlRequest) 
+    public String GenerateRtmpUri(GenerateRtmpUriRequest generatePushflowUrlRequest) 
             throws OSSException, ClientException;
 
 }

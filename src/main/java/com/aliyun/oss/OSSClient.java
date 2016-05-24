@@ -98,7 +98,7 @@ import com.aliyun.oss.model.DeleteObjectsResult;
 import com.aliyun.oss.model.DownloadFileRequest;
 import com.aliyun.oss.model.DownloadFileResult;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
-import com.aliyun.oss.model.GeneratePushflowUrlRequest;
+import com.aliyun.oss.model.GenerateRtmpUriRequest;
 import com.aliyun.oss.model.GenerateVodPlaylistRequest;
 import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.GetBucketImageResult;
@@ -1367,21 +1367,21 @@ public class OSSClient implements OSS {
     }
    
     @Override
-    public String GeneratePushflowUri(String bucketName, String liveChannelName, String PlaylistName,
+    public String GenerateRtmpUri(String bucketName, String liveChannelName, String PlaylistName,
             long expires) throws OSSException, ClientException {
-        return this.GeneratePushflowUri(new GeneratePushflowUrlRequest(bucketName, liveChannelName,
+        return this.GenerateRtmpUri(new GenerateRtmpUriRequest(bucketName, liveChannelName,
                 PlaylistName, expires, null));
     }
     
     @Override
-    public String GeneratePushflowUri(String bucketName, String liveChannelName, String PlaylistName,
+    public String GenerateRtmpUri(String bucketName, String liveChannelName, String PlaylistName,
             long expires, Map<String, String> parameters) throws OSSException, ClientException {
-        return this.GeneratePushflowUri(new GeneratePushflowUrlRequest(bucketName, liveChannelName,
+        return this.GenerateRtmpUri(new GenerateRtmpUriRequest(bucketName, liveChannelName,
                 PlaylistName, expires, parameters));
     }
     
     @Override
-    public String GeneratePushflowUri(GeneratePushflowUrlRequest generatePushflowUrlRequest) 
+    public String GenerateRtmpUri(GenerateRtmpUriRequest generatePushflowUrlRequest) 
             throws OSSException, ClientException {
         return liveChannelOperation.GeneratePushflowUrl(generatePushflowUrlRequest);
     }

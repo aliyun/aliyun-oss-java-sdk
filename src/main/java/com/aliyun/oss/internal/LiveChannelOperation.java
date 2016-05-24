@@ -55,7 +55,7 @@ import com.aliyun.oss.common.utils.HttpHeaders;
 import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.model.CreateLiveChannelRequest;
 import com.aliyun.oss.model.CreateLiveChannelResult;
-import com.aliyun.oss.model.GeneratePushflowUrlRequest;
+import com.aliyun.oss.model.GenerateRtmpUriRequest;
 import com.aliyun.oss.model.GenerateVodPlaylistRequest;
 import com.aliyun.oss.model.ListLiveChannelsRequest;
 import com.aliyun.oss.model.LiveChannel;
@@ -336,7 +336,7 @@ public class LiveChannelOperation extends OSSOperation {
         doOperation(request, emptyResponseParser, bucketName, key);
     }
     
-    public String GeneratePushflowUrl(GeneratePushflowUrlRequest request) 
+    public String GeneratePushflowUrl(GenerateRtmpUriRequest request) 
             throws OSSException, ClientException {
         
         assertParameterNotNull(request, "request");

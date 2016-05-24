@@ -558,7 +558,7 @@ public class RtmpTest extends TestBase {
 
             // generate rtmp url
             long expires = System.currentTimeMillis() / 1000 + 3600;
-            String uri = secondClient.GeneratePushflowUri(bucketName, liveChannel, 
+            String uri = secondClient.GenerateRtmpUri(bucketName, liveChannel, 
                     liveChannelInfo.getTarget().getPlaylistName(), expires);
             
             Assert.assertTrue(uri.startsWith("rtmp://" + bucketName));
@@ -568,7 +568,7 @@ public class RtmpTest extends TestBase {
             // ./ffmpeg \-re \-i allstar.flv \-c copy \-f flv "<RTMP_URI>"
             
             // generate without parameters
-            String uri2 = secondClient.GeneratePushflowUri(bucketName, liveChannel, 
+            String uri2 = secondClient.GenerateRtmpUri(bucketName, liveChannel, 
                     liveChannelInfo.getTarget().getPlaylistName(), expires, null);
             
             Assert.assertEquals(uri, uri2);
@@ -576,7 +576,7 @@ public class RtmpTest extends TestBase {
             // generate with parameters
             Map<String, String> params = new HashMap<String, String>();
             params.put("mykey", "myvalue");
-            String uri3 = secondClient.GeneratePushflowUri(bucketName, liveChannel, 
+            String uri3 = secondClient.GenerateRtmpUri(bucketName, liveChannel, 
                     liveChannelInfo.getTarget().getPlaylistName(), expires, params);
             
             Assert.assertTrue(uri3.endsWith("mykey=myvalue"));
