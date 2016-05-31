@@ -109,7 +109,7 @@ public class OSSUtils {
     }
     
     public static void ensureLiveChannelNameValid(String liveChannelName) {
-        if (!validateBucketName(liveChannelName)) {
+        if (!validateObjectKey(liveChannelName)) {
             throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getFormattedString(
                     "LiveChannelNameInvalid", liveChannelName));
         }
