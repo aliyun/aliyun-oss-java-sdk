@@ -103,6 +103,7 @@ import com.aliyun.oss.model.GenerateVodPlaylistRequest;
 import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.GetBucketImageResult;
 import com.aliyun.oss.model.GetBucketReplicationProgressRequest;
+import com.aliyun.oss.model.ImageProcessConf;
 import com.aliyun.oss.model.ListLiveChannelsRequest;
 import com.aliyun.oss.model.LiveChannel;
 import com.aliyun.oss.model.LiveChannelGenericRequest;
@@ -111,6 +112,7 @@ import com.aliyun.oss.model.LiveChannelListing;
 import com.aliyun.oss.model.LiveChannelStat;
 import com.aliyun.oss.model.LiveChannelStatus;
 import com.aliyun.oss.model.LiveRecord;
+import com.aliyun.oss.model.PutImageProcessConfRequest;
 import com.aliyun.oss.model.ReplicationRule;
 import com.aliyun.oss.model.GetImageStyleResult;
 import com.aliyun.oss.model.GetObjectRequest;
@@ -1013,6 +1015,24 @@ public class OSSClient implements OSS {
     		throws OSSException, ClientException {
             return bucketOperation.listImageStyle(bucketName, genericRequest);
     }
+	
+	@Override
+    public void putBucketImageProcessConf(PutImageProcessConfRequest putImageProcessConfRequest)
+            throws OSSException, ClientException {
+	    bucketOperation.putBucketImageProcessConf(putImageProcessConfRequest);
+	}
+    
+	@Override
+    public ImageProcessConf getBucketImageProcessConf(String bucketName)
+            throws OSSException, ClientException {
+	    return this.getBucketImageProcessConf(new GenericRequest(bucketName));
+	}
+    
+	@Override
+    public ImageProcessConf getBucketImageProcessConf(GenericRequest genericRequest) 
+            throws OSSException, ClientException {
+	    return bucketOperation.getBucketImageProcessConf(genericRequest);
+	}
 
     @Override
     public void setBucketWebsite(SetBucketWebsiteRequest setBucketWebSiteRequest)

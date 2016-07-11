@@ -26,7 +26,7 @@ package com.aliyun.oss.model;
 public class UploadPartResult extends GenericResult {
 
     private int partNumber;
-
+    private long partSize;
     private String eTag;
 
     /**
@@ -84,6 +84,23 @@ public class UploadPartResult extends GenericResult {
      * @return 包含Part标识号码和ETag值的{@link PartETag}对象。
      */
     public PartETag getPartETag() {
-        return new PartETag(partNumber, eTag);
+        return new PartETag(partNumber, eTag, partSize, getClientCRC64());
     }
+    
+    /**
+     * 返回分片大小
+     * @return 分片大小
+     */
+    public long getPartSize() {
+        return partSize;
+    }
+
+    /**
+     * 设置分片大小
+     * @param partSize 分片大小
+     */
+    public void setPartSize(long partSize) {
+        this.partSize = partSize;
+    }
+    
 }

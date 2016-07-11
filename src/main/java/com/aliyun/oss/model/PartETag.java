@@ -29,8 +29,9 @@ public class PartETag implements Serializable {
     private static final long serialVersionUID = 2471854027355307627L;
 
     private int partNumber;
-
     private String eTag;
+    private long partSize;
+    private Long partCRC64;
 
     /**
      * 构造函数。
@@ -42,6 +43,24 @@ public class PartETag implements Serializable {
     public PartETag(int partNumber, String eTag) {
         this.partNumber = partNumber;
         this.eTag = eTag;
+    }
+    
+    /**
+     * 构造函数。
+     * @param partNumber
+     *          Part标识号码。
+     * @param eTag
+     *          Part的ETag值。
+     * @param partSize
+     *          分片大小。
+     * @param partCRC64
+     *          分片的CRC64值。       
+     */
+    public PartETag(int partNumber, String eTag, long partSize, Long partCRC64) {
+        this.partNumber = partNumber;
+        this.eTag = eTag;
+        this.partSize = partSize;
+        this.partCRC64 = partCRC64;
     }
 
     /**
@@ -76,6 +95,22 @@ public class PartETag implements Serializable {
      */
     public void setETag(String eTag) {
         this.eTag = eTag;
+    }
+    
+    public long getPartSize() {
+        return partSize;
+    }
+
+    public void setPartSize(long partSize) {
+        this.partSize = partSize;
+    }
+
+    public Long getPartCRC64() {
+        return partCRC64;
+    }
+
+    public void setPartCRC64(Long partCRC64) {
+        this.partCRC64 = partCRC64;
     }
     
     @Override

@@ -36,6 +36,7 @@ import com.aliyun.oss.model.CreateBucketRequest;
 import com.aliyun.oss.model.CreateLiveChannelRequest;
 import com.aliyun.oss.model.DeleteBucketCnameRequest;
 import com.aliyun.oss.model.DeleteObjectsRequest;
+import com.aliyun.oss.model.ImageProcessConf;
 import com.aliyun.oss.model.LifecycleRule;
 import com.aliyun.oss.model.LifecycleRule.AbortMultipartUpload;
 import com.aliyun.oss.model.LifecycleRule.RuleStatus;
@@ -72,7 +73,8 @@ public final class RequestMarshallers {
     public static final SetBucketLifecycleRequestMarshaller setBucketLifecycleRequestMarshaller = new SetBucketLifecycleRequestMarshaller();
 	public static final PutBucketImageRequestMarshaller putBucketImageRequestMarshaller = new PutBucketImageRequestMarshaller();
 	public static final PutImageStyleRequestMarshaller putImageStyleRequestMarshaller = new PutImageStyleRequestMarshaller();
-    public static final SetBucketCORSRequestMarshaller setBucketCORSRequestMarshaller = new SetBucketCORSRequestMarshaller();
+	public static final BucketImageProcessConfMarshaller bucketImageProcessConfMarshaller = new BucketImageProcessConfMarshaller();
+	public static final SetBucketCORSRequestMarshaller setBucketCORSRequestMarshaller = new SetBucketCORSRequestMarshaller();
     public static final SetBucketTaggingRequestMarshaller setBucketTaggingRequestMarshaller = new SetBucketTaggingRequestMarshaller();
     public static final AddBucketReplicationRequestMarshaller addBucketReplicationRequestMarshaller = new AddBucketReplicationRequestMarshaller();
     public static final DeleteBucketReplicationRequestMarshaller deleteBucketReplicationRequestMarshaller = new DeleteBucketReplicationRequestMarshaller();    
@@ -121,6 +123,27 @@ public final class RequestMarshallers {
 	        return stringMarshaller.marshall(xmlBody.toString());
 		}
 	}
+	
+    public static final class BucketImageProcessConfMarshaller implements RequestMarshaller<ImageProcessConf> {
+
+        @Override
+        public FixedLengthInputStream marshall(ImageProcessConf imageProcessConf) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<BucketProcessConfiguration>");
+            xmlBody.append("<CompliedHost>" + imageProcessConf.getCompliedHost() + "</CompliedHost>");
+            if (imageProcessConf.isSourceFileProtect() ) {
+                xmlBody.append("<SourceFileProtect>Enabled</SourceFileProtect>");
+            } else {
+                xmlBody.append("<SourceFileProtect>Disabled</SourceFileProtect>");
+            }
+            xmlBody.append("<SourceFileProtectSuffix>" + imageProcessConf.getSourceFileProtectSuffix() 
+                    + "</SourceFileProtectSuffix>");
+            xmlBody.append("<StyleDelimiters>" + imageProcessConf.getStyleDelimiters() + "</StyleDelimiters>");
+            xmlBody.append("</BucketProcessConfiguration>");
+            return stringMarshaller.marshall(xmlBody.toString());
+        }
+        
+    }
 
 	public static final class PutBucketImageRequestMarshaller  implements RequestMarshaller<PutBucketImageRequest> {
 		@Override

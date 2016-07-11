@@ -32,6 +32,7 @@ import static com.aliyun.oss.common.parser.RequestMarshallers.deleteBucketReplic
 import static com.aliyun.oss.common.parser.RequestMarshallers.addBucketCnameRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.deleteBucketCnameRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketQosRequestMarshaller;
+import static com.aliyun.oss.common.parser.RequestMarshallers.bucketImageProcessConfMarshaller;
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
 import static com.aliyun.oss.internal.RequestParameters.DELIMITER;
@@ -50,6 +51,7 @@ import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_REFERER;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_STYLE;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_TAGGING;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_WEBSITE;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_PROCESS_CONF;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketAclResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketLifecycleResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketLocationResponseParser;
@@ -68,6 +70,7 @@ import static com.aliyun.oss.internal.ResponseParsers.listObjectsReponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketImageResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getImageStyleResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.listImageStyleResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getBucketImageProcessConfResponseParser;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
@@ -100,6 +103,8 @@ import com.aliyun.oss.model.DeleteBucketReplicationRequest;
 import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.GetBucketImageResult;
 import com.aliyun.oss.model.GetBucketReplicationProgressRequest;
+import com.aliyun.oss.model.ImageProcessConf;
+import com.aliyun.oss.model.PutImageProcessConfRequest;
 import com.aliyun.oss.model.ReplicationRule;
 import com.aliyun.oss.model.GetImageStyleResult;
 import com.aliyun.oss.model.LifecycleRule;
@@ -503,7 +508,6 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * put image style
      */
-    
     public void putImageStyle(PutImageStyleRequest putImageStyleRequest)
     		throws OSSException, ClientException {
     	assertParameterNotNull(putImageStyleRequest, "putImageStyleRequest");
@@ -591,6 +595,56 @@ public class OSSBucketOperation extends OSSOperation {
 		        .build();
         
         return doOperation(request, listImageStyleResponseParser, bucketName, null, true);
+    }
+    
+    public void putBucketImageProcessConf(PutImageProcessConfRequest putImageProcessConfRequest)
+            throws OSSException, ClientException {
+        
+        assertParameterNotNull(putImageProcessConfRequest, "putImageProcessConfRequest");
+        
+        ImageProcessConf imageProcessConf = putImageProcessConfRequest.getImageProcessConf();
+        assertParameterNotNull(imageProcessConf, "imageProcessConf");
+        
+        String bucketName = putImageProcessConfRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_PROCESS_CONF, null);
+        
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT)
+                .setBucket(bucketName)
+                .setParameters(params)
+                .setInputStreamWithLength(bucketImageProcessConfMarshaller.marshall(imageProcessConf))
+                .setOriginalRequest(putImageProcessConfRequest)
+                .build();
+        
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+    
+    public ImageProcessConf getBucketImageProcessConf(GenericRequest genericRequest) 
+            throws OSSException, ClientException {
+
+        assertParameterNotNull(genericRequest, "genericRequest");
+        
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_PROCESS_CONF, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET)
+                .setBucket(bucketName)
+                .setParameters(params)
+                .setOriginalRequest(genericRequest)
+                .build();
+        
+        return doOperation(request, getBucketImageProcessConfResponseParser , bucketName, null, true);
     }
     
     /**

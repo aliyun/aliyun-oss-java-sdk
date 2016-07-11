@@ -62,6 +62,7 @@ import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.comm.ResponseHandler;
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.comm.ServiceClient;
+import com.aliyun.oss.common.utils.CRC64;
 import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.event.ProgressEventType;
 import com.aliyun.oss.event.ProgressListener;
@@ -75,6 +76,7 @@ import com.aliyun.oss.model.InitiateMultipartUploadResult;
 import com.aliyun.oss.model.ListMultipartUploadsRequest;
 import com.aliyun.oss.model.ListPartsRequest;
 import com.aliyun.oss.model.MultipartUploadListing;
+import com.aliyun.oss.model.PartETag;
 import com.aliyun.oss.model.PartListing;
 import com.aliyun.oss.model.UploadPartCopyRequest;
 import com.aliyun.oss.model.UploadPartCopyResult;
@@ -168,12 +170,17 @@ public class OSSMultipartOperation extends OSSOperation {
         List<ResponseHandler> reponseHandlers = new ArrayList<ResponseHandler>();
         reponseHandlers.add(new OSSCallbackErrorResponseHandler());
         
+        CompleteMultipartUploadResult result = null;
         if (completeMultipartUploadRequest.getCallback() == null) {
-            return doOperation(request, completeMultipartUploadResponseParser, bucketName, key, true);
+            result = doOperation(request, completeMultipartUploadResponseParser, bucketName, key, true);
         } else {
-            return doOperation(request, completeMultipartUploadCallbackResponseParser, bucketName, key, true, null, reponseHandlers);
+            result =  doOperation(request, completeMultipartUploadCallbackResponseParser, bucketName, key, true, null, reponseHandlers);
         }
+        result.setClientCRC64(calcObjectCRC64FromParts(completeMultipartUploadRequest.getPartETags()));
+        return result;
     }
+    
+    
 
     /**
      * Initiate multipart upload.
@@ -354,6 +361,8 @@ public class OSSMultipartOperation extends OSSOperation {
         result.setPartNumber(partNumber);
         result.setETag(trimQuotes(response.getHeaders().get(OSSHeaders.ETAG)));
         result.setRequestId(response.getRequestId());
+        result.setPartSize(uploadPartRequest.getPartSize());
+        ResponseParsers.setCRC64(result, response);
         return result;
     }
     
@@ -529,6 +538,17 @@ public class OSSMultipartOperation extends OSSOperation {
         if (cannedACL != null) {
             headers.put(OSSHeaders.OSS_OBJECT_ACL, cannedACL.toString());      
         }
+    }
+    
+    private static Long calcObjectCRC64FromParts(List<PartETag> partETags) {
+        Long crc = 0L;
+        for (PartETag partETag : partETags) {
+            if (partETag.getPartCRC64() == null) {
+                return null;
+            }
+            crc = CRC64.combine(crc, partETag.getPartCRC64(), partETag.getPartSize());
+        }
+        return crc;
     }
     
 }

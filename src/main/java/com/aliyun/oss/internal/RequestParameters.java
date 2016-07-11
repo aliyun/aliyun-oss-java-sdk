@@ -47,7 +47,9 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_VOD = "vod";
     public static final String SUBRESOURCE_START_TIME = "startTime";
     public static final String SUBRESOURCE_END_TIME = "endTime";
-
+    public static final String SUBRESOURCE_PROCESS_CONF = "processConfiguration";
+    public static final String SUBRESOURCE_PROCESS = "x-oss-process";
+    
     public static final String PREFIX = "prefix";
     public static final String DELIMITER = "delimiter";
     public static final String MARKER = "marker";    

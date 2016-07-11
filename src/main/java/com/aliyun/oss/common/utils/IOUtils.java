@@ -31,6 +31,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.zip.CheckedInputStream;
 
 import com.aliyun.oss.common.comm.io.BoundedInputStream;
 import com.aliyun.oss.common.comm.io.RepeatableBoundedFileInputStream;
@@ -151,6 +152,13 @@ public class IOUtils {
             repeatable = original;
         }
         return repeatable;
+    }
+    
+    public static Long getCRC64Value(InputStream inputStream) {
+        if (inputStream instanceof CheckedInputStream) {
+            return ((CheckedInputStream) inputStream).getChecksum().getValue();
+        }
+        return null;
     }
     
 }

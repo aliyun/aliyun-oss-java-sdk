@@ -49,6 +49,8 @@ import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_STATUS;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_VOD;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_START_TIME;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_END_TIME;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_PROCESS_CONF;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_PROCESS;
 import static com.aliyun.oss.internal.RequestParameters.UPLOAD_ID;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_QOS;
 import static com.aliyun.oss.model.ResponseHeaderOverrides.RESPONSE_HEADER_CACHE_CONTROL;
@@ -84,7 +86,8 @@ public class SignUtils {
             SUBRESOURCE_REPLICATION_LOCATION, SUBRESOURCE_CNAME, 
             SUBRESOURCE_BUCKET_INFO, SUBRESOURCE_COMP, SUBRESOURCE_QOS,
             SUBRESOURCE_LIVE, SUBRESOURCE_STATUS, SUBRESOURCE_VOD, 
-            SUBRESOURCE_START_TIME, SUBRESOURCE_END_TIME,
+            SUBRESOURCE_START_TIME, SUBRESOURCE_END_TIME, SUBRESOURCE_PROCESS,
+            SUBRESOURCE_PROCESS_CONF, 
     });
     
     public static String buildCanonicalString(String method, String resourcePath,

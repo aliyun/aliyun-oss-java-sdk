@@ -22,14 +22,15 @@ package com.aliyun.oss.internal;
 import static com.aliyun.oss.common.utils.CodingUtils.isNullOrEmpty;
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
 import static com.aliyun.oss.internal.OSSUtils.trimQuotes;
-
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.CheckedInputStream;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -54,7 +55,9 @@ import com.aliyun.oss.model.CompleteMultipartUploadResult;
 import com.aliyun.oss.model.CopyObjectResult;
 import com.aliyun.oss.model.CreateLiveChannelResult;
 import com.aliyun.oss.model.DeleteObjectsResult;
+import com.aliyun.oss.model.GenericResult;
 import com.aliyun.oss.model.GetBucketImageResult;
+import com.aliyun.oss.model.ImageProcessConf;
 import com.aliyun.oss.model.LiveChannel;
 import com.aliyun.oss.model.LiveChannelInfo;
 import com.aliyun.oss.model.LiveChannelListing;
@@ -110,7 +113,8 @@ public final class ResponseParsers {
     public static final GetBucketCorsResponseParser getBucketCorsResponseParser = new GetBucketCorsResponseParser();
     public static final GetBucketImageResponseParser getBucketImageResponseParser = new GetBucketImageResponseParser();
 	public static final GetImageStyleResponseParser getImageStyleResponseParser = new GetImageStyleResponseParser();
-    public static final GetBucketTaggingResponseParser getBucketTaggingResponseParser = new GetBucketTaggingResponseParser();    
+	public static final GetBucketImageProcessConfResponseParser getBucketImageProcessConfResponseParser = new GetBucketImageProcessConfResponseParser();
+	public static final GetBucketTaggingResponseParser getBucketTaggingResponseParser = new GetBucketTaggingResponseParser();    
     public static final GetBucketReplicationResponseParser getBucketReplicationResponseParser = new GetBucketReplicationResponseParser();    
     public static final GetBucketReplicationProgressResponseParser getBucketReplicationProgressResponseParser = new GetBucketReplicationProgressResponseParser();    
     public static final GetBucketReplicationLocationResponseParser getBucketReplicationLocationResponseParser = new GetBucketReplicationLocationResponseParser();
@@ -256,6 +260,21 @@ public final class ResponseParsers {
 			}
 		}
 	}
+	
+    public static final class GetBucketImageProcessConfResponseParser implements ResponseParser<ImageProcessConf> {
+        
+        @Override
+        public ImageProcessConf parse(ResponseMessage response)
+                throws ResponseParseException {
+            try {
+                return parseGetBucketImageProcessConf(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+        
+    }
+    
     public static final class GetBucketWebsiteResponseParser implements ResponseParser<BucketWebsiteResult> {
 
         @Override
@@ -489,6 +508,7 @@ public final class ResponseParsers {
             try {
                 result.setETag(trimQuotes(response.getHeaders().get(OSSHeaders.ETAG)));
                 result.setRequestId(response.getRequestId());
+                setCRC64(result, response);
                 return result;
             } finally {
                 safeCloseResponse(response);
@@ -524,6 +544,7 @@ public final class ResponseParsers {
                     result.setNextPosition(Long.valueOf(nextPosition));                    
                 }
                 result.setObjectCRC64(response.getHeaders().get(OSSHeaders.OSS_HASH_CRC64_ECMA));
+                setCRC64(result, response);
                 return result;
             } catch (Exception e) {
                 throw new ResponseParseException(e.getMessage(), e);
@@ -553,6 +574,7 @@ public final class ResponseParsers {
             ossObject.setRequestId(response.getRequestId());
             try {
                 ossObject.setObjectMetadata(parseObjectMetadata(response.getHeaders()));
+                setServerCRC64(ossObject, response);
                 return ossObject;
             } catch (ResponseParseException e) {
                 // Close response only when parsing exception thrown. Otherwise, 
@@ -655,6 +677,7 @@ public final class ResponseParsers {
             try {
                 CompleteMultipartUploadResult result = parseCompleteMultipartUpload(response.getContent());
                 result.setRequestId(response.getRequestId());
+                setServerCRC64(result, response);
                 return result;
             } finally {
                 safeCloseResponse(response);                
@@ -742,6 +765,30 @@ public final class ResponseParsers {
             }
         }
         
+    }
+    
+    public static <ResultType extends GenericResult> void setCRC64(ResultType result, 
+            ResponseMessage response) {
+        InputStream inputStream = response.getRequest().getContent();
+        if (inputStream instanceof CheckedInputStream) {
+            CheckedInputStream checkedInputStream = (CheckedInputStream)inputStream;
+            result.setClientCRC64(checkedInputStream.getChecksum().getValue());
+        }
+        
+        String strSrvCrc64 = response.getHeaders().get(OSSHeaders.OSS_HASH_CRC64_ECMA);
+        if (strSrvCrc64 != null) {
+            BigInteger bi = new BigInteger(strSrvCrc64);
+            result.setServerCRC64(bi.longValue());
+        }
+    }
+    
+    public static <ResultType extends GenericResult> void setServerCRC64(ResultType result, 
+            ResponseMessage response) {        
+        String strSrvCrc64 = response.getHeaders().get(OSSHeaders.OSS_HASH_CRC64_ECMA);
+        if (strSrvCrc64 != null) {
+            BigInteger bi = new BigInteger(strSrvCrc64);
+            result.setServerCRC64(bi.longValue());
+        }
     }
     
     private static Element getXmlRootElement(InputStream responseBody) throws Exception {
@@ -1354,6 +1401,31 @@ public final class ResponseParsers {
         }
     }
     
+    
+    /**
+     * Unmarshall get bucket image process conf response body to image process conf.
+     */
+    public static ImageProcessConf parseGetBucketImageProcessConf(InputStream responseBody)
+            throws ResponseParseException {
+        
+        try {
+            Element root = getXmlRootElement(responseBody);
+            
+            String compliedHost = root.getChildText("CompliedHost");
+            boolean sourceFileProtect = false;
+            if (root.getChildText("SourceFileProtect").equals("Enabled")) {
+                sourceFileProtect = true;
+            }
+            String sourceFileProtectSuffix = root.getChildText("SourceFileProtectSuffix");
+            String styleDelimiters = root.getChildText("StyleDelimiters");
+
+            return new ImageProcessConf(compliedHost, sourceFileProtect, sourceFileProtectSuffix,
+                    styleDelimiters);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+    
     /**
      * Unmarshall get bucket website response body to corresponding result.
      */
@@ -1866,7 +1938,7 @@ public final class ResponseParsers {
             for (Element elem : liveChannelElems) {
                 LiveChannel liveChannel = new LiveChannel();
                 
-                liveChannel.setName(elem.getChildText("Id"));
+                liveChannel.setName(elem.getChildText("Name"));
                 liveChannel.setDescription(elem.getChildText("Description"));
                 liveChannel.setStatus(LiveChannelStatus.parse(elem.getChildText("Status")));
                 liveChannel.setLastModified(DateUtil.parseIso8601Date(elem.getChildText("LastModified")));

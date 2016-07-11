@@ -19,36 +19,20 @@
 
 package com.aliyun.oss.model;
 
-/**
- * A generic result that contains some basic response options, such as requestId.
- */
-public abstract class GenericResult {
-   
-    public String getRequestId() {
-        return requestId;
-    }
-
-    public void setRequestId(String requestId) {
-        this.requestId = requestId;
+public class PutImageProcessConfRequest extends GenericRequest {
+    
+    public PutImageProcessConfRequest(String bucketName, ImageProcessConf imageProcessConf) {
+        super(bucketName);
+        this.imageProcessConf = imageProcessConf;
     }
     
-    public Long getClientCRC64() {
-        return clientCRC64;
+    public ImageProcessConf getImageProcessConf() {
+        return imageProcessConf;
     }
 
-    public void setClientCRC64(Long clientCRC64) {
-        this.clientCRC64 = clientCRC64;
+    public void setImageProcessConf(ImageProcessConf imageProcessConf) {
+        this.imageProcessConf = imageProcessConf;
     }
 
-    public Long getServerCRC64() {
-        return serverCRC64;
-    }
-
-    public void setServerCRC64(Long serverCRC64) {
-        this.serverCRC64 = serverCRC64;
-    }
-    
-    private String requestId;
-    private Long clientCRC64;
-    private Long serverCRC64;
+    private ImageProcessConf imageProcessConf;
 }

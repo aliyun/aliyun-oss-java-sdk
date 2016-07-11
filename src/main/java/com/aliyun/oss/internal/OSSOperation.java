@@ -35,9 +35,11 @@ import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.auth.RequestSigner;
 import com.aliyun.oss.common.comm.ExecutionContext;
 import com.aliyun.oss.common.comm.NoRetryStrategy;
+import com.aliyun.oss.common.comm.RequestChecksumHanlder;
 import com.aliyun.oss.common.comm.RequestHandler;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.comm.RequestProgressHanlder;
+import com.aliyun.oss.common.comm.ResponseChecksumHandler;
 import com.aliyun.oss.common.comm.ResponseHandler;
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.comm.ResponseProgressHandler;
@@ -126,17 +128,20 @@ public abstract class OSSOperation {
             request.addHeader(OSSHeaders.OSS_SECURITY_TOKEN, context.getCredentials().getSecurityToken());
         }
         
+        
         context.addRequestHandler(new RequestProgressHanlder());
         if (requestHandlers != null) {
             for (RequestHandler handler : requestHandlers)
                 context.addRequestHandler(handler);
         }
+        context.addRequestHandler(new RequestChecksumHanlder());
         
         context.addResponseHandler(new ResponseProgressHandler(originalRequest));
         if (reponseHandlers != null) {
             for (ResponseHandler handler : reponseHandlers)
                 context.addResponseHandler(handler);
         }
+        context.addResponseHandler(new ResponseChecksumHandler());
         
         ResponseMessage response = send(request, context, keepResponseOpen);
         
