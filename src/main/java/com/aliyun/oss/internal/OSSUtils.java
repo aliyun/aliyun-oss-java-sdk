@@ -108,6 +108,13 @@ public class OSSUtils {
         }
     }
     
+    public static void ensureLiveChannelNameValid(String liveChannelName) {
+        if (!validateObjectKey(liveChannelName)) {
+            throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getFormattedString(
+                    "LiveChannelNameInvalid", liveChannelName));
+        }
+    }
+    
     /**
      * Make a third-level domain by appending bucket name to front of original endpoint 
      * if no binding to CNAME, otherwise use original endpoint as second-level domain directly.

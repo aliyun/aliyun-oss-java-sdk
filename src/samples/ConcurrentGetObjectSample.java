@@ -78,7 +78,7 @@ public class ConcurrentGetObjectSample {
             for (int i = 0; i < blockCount; i++) {
                 long startPos = i * blockSize;
                 long endPos = (i + 1 == blockCount) ? objectSize : (i + 1) * blockSize;
-                executorService.execute(new BlockFetcher(startPos, endPos, i + 1));
+                executorService.execute(new BlockFetcher(startPos, endPos - 1, i + 1));
             }
             
             /*

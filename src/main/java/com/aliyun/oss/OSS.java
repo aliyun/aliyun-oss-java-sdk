@@ -46,6 +46,8 @@ import com.aliyun.oss.model.CompleteMultipartUploadResult;
 import com.aliyun.oss.model.CopyObjectRequest;
 import com.aliyun.oss.model.CopyObjectResult;
 import com.aliyun.oss.model.CreateBucketRequest;
+import com.aliyun.oss.model.CreateLiveChannelRequest;
+import com.aliyun.oss.model.CreateLiveChannelResult;
 import com.aliyun.oss.model.DeleteBucketCnameRequest;
 import com.aliyun.oss.model.DeleteBucketReplicationRequest;
 import com.aliyun.oss.model.DeleteObjectsRequest;
@@ -53,9 +55,19 @@ import com.aliyun.oss.model.DeleteObjectsResult;
 import com.aliyun.oss.model.DownloadFileRequest;
 import com.aliyun.oss.model.DownloadFileResult;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
+import com.aliyun.oss.model.GenerateRtmpUriRequest;
+import com.aliyun.oss.model.GenerateVodPlaylistRequest;
 import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.GetBucketImageResult;
 import com.aliyun.oss.model.GetBucketReplicationProgressRequest;
+import com.aliyun.oss.model.ListLiveChannelsRequest;
+import com.aliyun.oss.model.LiveChannel;
+import com.aliyun.oss.model.LiveChannelGenericRequest;
+import com.aliyun.oss.model.LiveChannelInfo;
+import com.aliyun.oss.model.LiveChannelListing;
+import com.aliyun.oss.model.LiveChannelStat;
+import com.aliyun.oss.model.LiveChannelStatus;
+import com.aliyun.oss.model.LiveRecord;
 import com.aliyun.oss.model.ReplicationRule;
 import com.aliyun.oss.model.GetImageStyleResult;
 import com.aliyun.oss.model.GetObjectRequest;
@@ -86,6 +98,7 @@ import com.aliyun.oss.model.SetBucketRefererRequest;
 import com.aliyun.oss.model.AddBucketReplicationRequest;
 import com.aliyun.oss.model.SetBucketStorageCapacityRequest;
 import com.aliyun.oss.model.SetBucketTaggingRequest;
+import com.aliyun.oss.model.SetLiveChannelRequest;
 import com.aliyun.oss.model.SetObjectAclRequest;
 import com.aliyun.oss.model.SimplifiedObjectMeta;
 import com.aliyun.oss.model.TagSet;
@@ -1419,4 +1432,213 @@ public interface OSS {
      */
     public DownloadFileResult downloadFile(DownloadFileRequest downloadFileRequest) throws Throwable;
     
+    /**
+     * 创建Live Channel。
+     * 
+     * OSS通过Live Channel，即“直播频道”，来管理RTMP推流；用户想要推送RTMP流到OSS，必须先通过本接口来创建Live Channel。
+     * 
+     * @param createLiveChannelRequest 请求参数。
+     * @return 请求结果{@link CreateLiveChannelResult}实例。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public CreateLiveChannelResult createLiveChannel(CreateLiveChannelRequest createLiveChannelRequest) 
+            throws OSSException, ClientException;
+    
+    /**
+     * 设置Live Channel的状态。
+     * 
+     * 通过修改LiveChannel的状态，可实现“禁播”功能。
+     * 
+     * @param bucketName Bucket名称。
+     * @param liveChannel Live Channel名称。
+     * @param status Live Channel状态，可选值包括enabled、disabled。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public void setLiveChannelStatus(String bucketName, String liveChannel, LiveChannelStatus status) 
+            throws OSSException, ClientException;
+
+    /**
+     * 设置Live Channel的状态。
+     * 
+     * 通过修改LiveChannel的状态，可实现“禁播”功能。
+     *      
+     * @param setLiveChannelRequest 请求参数。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public void setLiveChannelStatus(SetLiveChannelRequest setLiveChannelRequest) 
+            throws OSSException, ClientException;
+   
+    /**
+     * 获取Live Channel的配置信息。
+     * @param bucketName Bucket名称。
+     * @param liveChannel Live Channel名称。
+     * @return 请求结果{@link LiveChannelInfo}实例。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public LiveChannelInfo getLiveChannelInfo(String bucketName, String liveChannel) 
+            throws OSSException, ClientException;
+    
+    /**
+     * 获取Live Channel的配置信息。
+     * @param liveChannelGenericRequest 请求参数。
+     * @return 请求结果{@link LiveChannelInfo}实例。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public LiveChannelInfo getLiveChannelInfo(LiveChannelGenericRequest liveChannelGenericRequest) 
+            throws OSSException, ClientException;
+
+    /**
+     * 获取Live Channel的推流状态。
+     * @param bucketName Bucket名称。
+     * @param liveChannel Live Channel名称。
+     * @return 请求结果{@link LiveChannelStat}实例。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public LiveChannelStat getLiveChannelStat(String bucketName, String liveChannel) 
+            throws OSSException, ClientException;
+    
+    /**
+     * 获取Live Channel的推流状态。
+     * @param liveChannelGenericRequest 请求参数。
+     * @return 请求结果{@link LiveChannelStat}实例。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public LiveChannelStat getLiveChannelStat(LiveChannelGenericRequest liveChannelGenericRequest) 
+            throws OSSException, ClientException;
+    
+    /**
+     * 删除Live Channel。
+     * @param bucketName Bucket名称。
+     * @param liveChannel Live Channel名称。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public void deleteLiveChannel(String bucketName, String liveChannel) 
+            throws OSSException, ClientException;
+    
+    /**
+     * 删除Live Channel。
+     * 
+     * 删除指定的直播频道。删除频道时，该频道历史上直播生成的视频文件仍然保留。
+     * 
+     * @param liveChannelGenericRequest 请求参数。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public void deleteLiveChannel(LiveChannelGenericRequest liveChannelGenericRequest) 
+            throws OSSException, ClientException;
+    
+    /**
+     * 列出指定Bucket下的所有{@link LiveChannel}的列表。
+     * 
+     * @param bucketName Bucket名称。
+     * @return 所有{@link LiveChannel}的列表。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public List<LiveChannel> listLiveChannels(String bucketName) throws OSSException, ClientException;
+    
+    /**
+     * 按照请求参数要求返回的{@link LiveChannel}列表。
+     * @param listLiveChannelRequest 请求参数。
+     * @return 符合请求参数要求的{@link LiveChannel}列表。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public LiveChannelListing listLiveChannels(ListLiveChannelsRequest listLiveChannelRequest) 
+            throws OSSException, ClientException;
+    
+    /**
+     * 获取指定Live Channel的推流记录。
+     * 
+     * OSS为每个Live Channel保存最近的10次推流记录。
+     * 
+     * @param bucketName Bucket名称。
+     * @param liveChannel Live Channel名称。
+     * @return 最近的推流记录。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public List<LiveRecord> getLiveChannelHistory(String bucketName, String liveChannel) 
+            throws OSSException, ClientException;
+    
+    /**
+     * 获取指定Live Channel的推流记录。
+     * 
+     * OSS为每个LiveChannel保存最近的10次推流记录。
+     *      
+     * @param liveChannelGenericRequest 请求参数。
+     * @return 最近的次推流记录。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public List<LiveRecord> getLiveChannelHistory(LiveChannelGenericRequest liveChannelGenericRequest) 
+            throws OSSException, ClientException;
+    
+    /**
+     * 为指定时间段内的ts文件生成一个点播的播放列表（m3u8文件）。
+     * @param bucketName Bucket名称。
+     * @param liveChannel Live Channel名称。
+     * @param PlaylistName 生成的点播用m3u8文件的basename，例如playlist.m3u8。
+     * @param startTime 播放列表的开始时间，格式采用epoch time，例如1459922563。
+     * @param endTime 播放列表的结束时间，格式采用epoch time，例如1459922563。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public void GenerateVodPlaylist(String bucketName, String liveChannelName, String PlaylistName,
+            long startTime, long endTime) throws OSSException, ClientException;
+    
+    /**
+     * 为指定时间段内的ts文件生成一个点播的播放列表（m3u8文件）。
+     * @param generateVodPlaylistRequest 请求参数。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public void GenerateVodPlaylist(GenerateVodPlaylistRequest generateVodPlaylistRequest) 
+            throws OSSException, ClientException;
+   
+    /**
+     * 生成Live Channel的RTMP推流地址。
+     * @param bucketName Bucket名称。
+     * @param liveChannel Live Channel名称。
+     * @param PlaylistName 生成的点播用m3u8文件的basename，例如playlist.m3u8。
+     * @param expires 期望的过期时间，格式采用epoch time，例如1459922563。
+     * @return Live Channel的RTMP推流地址。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public String GenerateRtmpUri(String bucketName, String liveChannelName, String PlaylistName,
+            long expires) throws OSSException, ClientException;
+    
+    /**
+     * 生成Live Channel的RTMP推流地址。
+     * @param bucketName Bucket名称。
+     * @param liveChannel Live Channel名称。
+     * @param PlaylistName 生成的点播用m3u8文件的basename，例如playlist.m3u8。
+     * @param expires 期望的过期时间，格式采用epoch time，例如1459922563。
+     * @param parameters 用户自定义参数，没有填null。
+     * @return Live Channel的RTMP推流地址。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public String GenerateRtmpUri(String bucketName, String liveChannelName, String PlaylistName,
+            long expires, Map<String, String> parameters) throws OSSException, ClientException;
+    
+    /**
+     * 生成Live Channel的RTMP推流地址。
+     * @param generatePushflowUrlRequest 请求参数。
+     * @return Live Channel的RTMP推流地址。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public String GenerateRtmpUri(GenerateRtmpUriRequest generatePushflowUrlRequest) 
+            throws OSSException, ClientException;
+
 }

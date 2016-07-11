@@ -46,4 +46,8 @@ public final class OSSConstants {
     public static final String OSS_AUTHORIZATION_SEPERATOR = ":";
     
     public static final String LOGGER_PACKAGE_NAME = "com.aliyun.oss";
+    
+    public static final String PROTOCOL_HTTP = "http://";
+    public static final String PROTOCOL_HTTPS = "https://";
+    public static final String PROTOCOL_RTMP = "rtmp://";
 }
