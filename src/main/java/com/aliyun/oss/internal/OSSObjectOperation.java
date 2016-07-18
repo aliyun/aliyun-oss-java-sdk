@@ -70,6 +70,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.CheckedInputStream;
 
 import org.apache.http.HttpStatus;
 
@@ -86,6 +87,7 @@ import com.aliyun.oss.common.comm.ServiceClient;
 import com.aliyun.oss.common.comm.io.RepeatableFileInputStream;
 import com.aliyun.oss.common.parser.ResponseParser;
 import com.aliyun.oss.common.utils.BinaryUtil;
+import com.aliyun.oss.common.utils.CRC64;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.ExceptionFactory;
 import com.aliyun.oss.common.utils.HttpHeaders;
@@ -166,7 +168,12 @@ public class OSSObjectOperation extends OSSOperation {
     public AppendObjectResult appendObject(AppendObjectRequest appendObjectRequest) 
             throws OSSException, ClientException {
         assertParameterNotNull(appendObjectRequest, "appendObjectRequest");
-        return writeObjectInternal(WriteMode.APPEND, appendObjectRequest, appendObjectResponseParser);
+        AppendObjectResult result = writeObjectInternal(WriteMode.APPEND, appendObjectRequest, appendObjectResponseParser); 
+        if (appendObjectRequest.getPreviousCRC64() != null && result.getClientCRC64() != null) {
+            result.setClientCRC64(CRC64.combine(appendObjectRequest.getPreviousCRC64(), result.getClientCRC64(), 
+                    (result.getNextPosition() - appendObjectRequest.getPosition())));
+        }
+        return result;
     }
 
     /**
@@ -228,7 +235,9 @@ public class OSSObjectOperation extends OSSOperation {
                     publishProgress(getListener(), ProgressEventType.TRANSFER_COMPLETED_EVENT);
                 };
             };
-            ossObject.setObjectContent(progressInputStream);
+            CRC64 crc = new CRC64();
+            CheckedInputStream checkedInputstream = new CheckedInputStream(progressInputStream, crc);            
+            ossObject.setObjectContent(checkedInputstream);
         } catch (RuntimeException e) {
             publishProgress(listener, ProgressEventType.TRANSFER_FAILED_EVENT);
             throw e;

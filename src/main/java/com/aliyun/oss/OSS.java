@@ -60,6 +60,7 @@ import com.aliyun.oss.model.GenerateVodPlaylistRequest;
 import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.GetBucketImageResult;
 import com.aliyun.oss.model.GetBucketReplicationProgressRequest;
+import com.aliyun.oss.model.ImageProcessConf;
 import com.aliyun.oss.model.ListLiveChannelsRequest;
 import com.aliyun.oss.model.LiveChannel;
 import com.aliyun.oss.model.LiveChannelGenericRequest;
@@ -68,6 +69,7 @@ import com.aliyun.oss.model.LiveChannelListing;
 import com.aliyun.oss.model.LiveChannelStat;
 import com.aliyun.oss.model.LiveChannelStatus;
 import com.aliyun.oss.model.LiveRecord;
+import com.aliyun.oss.model.PutImageProcessConfRequest;
 import com.aliyun.oss.model.ReplicationRule;
 import com.aliyun.oss.model.GetImageStyleResult;
 import com.aliyun.oss.model.GetObjectRequest;
@@ -880,11 +882,40 @@ public interface OSS {
     /**
      * 列出 {@link Bucket} bucketName下的所有样式
      * @param bucketName
-     * @throws OSSException
-     * @throws ClientException
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
      */
     public List<Style> listImageStyle(String bucketName, GenericRequest genericRequest) 
     		throws OSSException, ClientException;
+    
+    /**
+     * 创建图片处理属性
+     * @param putImageProcessConfRequest 请求信息。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public void putBucketImageProcessConf(PutImageProcessConfRequest putImageProcessConfRequest)
+            throws OSSException, ClientException;
+    
+    /**
+     * 读取图片处理属性
+     * @param bucketName Bucket名称。
+     * @return 图片处理属性
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public ImageProcessConf getBucketImageProcessConf(String bucketName)
+            throws OSSException, ClientException;
+    
+    /**
+     * 读取图片处理属性    
+     * @param genericRequest 请求信息。
+     * @return 图片处理属性
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public ImageProcessConf getBucketImageProcessConf(GenericRequest genericRequest) 
+            throws OSSException, ClientException;
 
     /**
      * 初始化一个Multipart上传事件。

@@ -17,38 +17,27 @@
  * under the License.
  */
 
-package com.aliyun.oss.model;
+package com.aliyun.oss.common.comm;
 
-/**
- * A generic result that contains some basic response options, such as requestId.
- */
-public abstract class GenericResult {
-   
-    public String getRequestId() {
-        return requestId;
-    }
+import java.io.InputStream;
+import java.util.zip.CheckedInputStream;
 
-    public void setRequestId(String requestId) {
-        this.requestId = requestId;
-    }
-    
-    public Long getClientCRC64() {
-        return clientCRC64;
-    }
+import com.aliyun.oss.ClientException;
+import com.aliyun.oss.OSSException;
+import com.aliyun.oss.common.utils.CRC64;
 
-    public void setClientCRC64(Long clientCRC64) {
-        this.clientCRC64 = clientCRC64;
-    }
+public class ResponseChecksumHandler implements ResponseHandler {
 
-    public Long getServerCRC64() {
-        return serverCRC64;
+    @Override
+    public void handle(ResponseMessage response) throws OSSException, ClientException {
+        InputStream originalInputStream = response.getContent();
+        if (originalInputStream == null) {
+            return;
+        }
+        
+        CRC64 crc = new CRC64();
+        CheckedInputStream checkedInputstream = new CheckedInputStream(originalInputStream, crc);
+        response.setContent(checkedInputstream);
     }
 
-    public void setServerCRC64(Long serverCRC64) {
-        this.serverCRC64 = serverCRC64;
-    }
-    
-    private String requestId;
-    private Long clientCRC64;
-    private Long serverCRC64;
 }
