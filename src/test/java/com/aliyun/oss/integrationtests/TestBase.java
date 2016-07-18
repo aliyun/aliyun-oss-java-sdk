@@ -50,7 +50,6 @@ import com.aliyun.oss.model.DeleteObjectsRequest;
 import com.aliyun.oss.model.ListBucketsRequest;
 import com.aliyun.oss.model.ListMultipartUploadsRequest;
 import com.aliyun.oss.model.ListObjectsRequest;
-import com.aliyun.oss.model.LiveChannel;
 import com.aliyun.oss.model.MultipartUpload;
 import com.aliyun.oss.model.MultipartUploadListing;
 import com.aliyun.oss.model.OSSObjectSummary;
@@ -144,11 +143,11 @@ public class TestBase {
             }
         }
         
-        // 
-        List<LiveChannel> channels = ossClient.listLiveChannels(bucketName);
-        for (LiveChannel channel : channels) {
-            ossClient.deleteLiveChannel(bucketName, channel.getName());
-        }
+        // delete live channels
+//        List<LiveChannel> channels = ossClient.listLiveChannels(bucketName);
+//        for (LiveChannel channel : channels) {
+//            ossClient.deleteLiveChannel(bucketName, channel.getName());
+//        }
         
         // delete bucket
         client.deleteBucket(bucketName);

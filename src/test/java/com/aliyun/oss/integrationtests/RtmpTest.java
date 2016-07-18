@@ -45,13 +45,12 @@ import com.aliyun.oss.model.LiveChannelStatus;
 import com.aliyun.oss.model.LiveChannelTarget;
 import com.aliyun.oss.model.LiveRecord;
 import com.aliyun.oss.model.PushflowStatus;
-import com.aliyun.oss.model.Snapshot;
 
 /**
  * Test rtmp
  * RTMP尚未上线，case暂时忽略。
  */
-//@Ignore
+@Ignore
 public class RtmpTest extends TestBase {
     
     //private static String bucketName = "oss-live-channel-1";
@@ -116,47 +115,7 @@ public class RtmpTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-	
-	@Test
-    public void testCreateLiveChannelWithSnapshot() {
-        final String liveChannel = "normal-create-live-channel-snapshot";
-        final String liveChannelDesc = "my test live channel";
-
-        try {
-            LiveChannelTarget target = new LiveChannelTarget("HLS", 100, 99, "myplaylist.m3u8");
-            Snapshot snapshot = new Snapshot("roleforossmaru", bucketName, "test-lc-topic", 100);
-            CreateLiveChannelRequest createLiveChannelRequest = new CreateLiveChannelRequest(
-                    bucketName, liveChannel, liveChannelDesc, LiveChannelStatus.Disabled, target);
-            createLiveChannelRequest.setSnapshot(snapshot);
-            
-            CreateLiveChannelResult createLiveChannelResult = ossClient.createLiveChannel(createLiveChannelRequest);
-            Assert.assertEquals(createLiveChannelResult.getPublishUrls().size(), 1);
-            Assert.assertTrue(createLiveChannelResult.getPublishUrls().get(0).startsWith("rtmp://"));
-            Assert.assertTrue(createLiveChannelResult.getPublishUrls().get(0).endsWith("live/" + liveChannel));
-            Assert.assertEquals(createLiveChannelResult.getPlayUrls().size(), 1);
-            Assert.assertTrue(createLiveChannelResult.getPlayUrls().get(0).startsWith("http://"));
-            Assert.assertTrue(createLiveChannelResult.getPlayUrls().get(0).endsWith(liveChannel + "/myplaylist.m3u8"));
-            
-            LiveChannelInfo liveChannelInfo = ossClient.getLiveChannelInfo(bucketName, liveChannel);
-            Assert.assertEquals(liveChannelInfo.getDescription(), liveChannelDesc);
-            Assert.assertEquals(liveChannelInfo.getStatus(), LiveChannelStatus.Disabled);
-            Assert.assertEquals(liveChannelInfo.getTarget().getType(), "HLS");
-            Assert.assertEquals(liveChannelInfo.getTarget().getFragDuration(), 100);
-            Assert.assertEquals(liveChannelInfo.getTarget().getFragCount(), 99);
-            Assert.assertEquals(liveChannelInfo.getTarget().getPlaylistName(), "myplaylist.m3u8");
-            
-            Assert.assertEquals(liveChannelInfo.getSnapshot().getRoleName(), "roleforossmaru");
-            Assert.assertEquals(liveChannelInfo.getSnapshot().getDestBucket(), bucketName);
-            Assert.assertEquals(liveChannelInfo.getSnapshot().getNotifyTopic(), "test-lc-topic");
-            Assert.assertEquals(liveChannelInfo.getSnapshot().getInterval(), 100);
-            
-            ossClient.deleteLiveChannel(bucketName, liveChannel);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
-    
+	    
     @Test
     public void testUnormalCreateLiveChannel() {
         final String liveChannel = "unnormal-create-live-channel";
