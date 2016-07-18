@@ -19,7 +19,7 @@
 
 package com.aliyun.oss.integrationtests;
 
-import static com.aliyun.oss.integrationtests.TestConfig.SECOND_LOCATION;
+import static com.aliyun.oss.integrationtests.TestConfig.OSS_TEST_REGION;
 import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class ListBucketsTest extends TestBase {
         
         try {
             List<String> existingBuckets = new ArrayList<String>();
-            List<Bucket> returnedBuckets = secondClient.listBuckets();
+            List<Bucket> returnedBuckets = ossClient.listBuckets();
             for (Bucket bkt : returnedBuckets) {
                 existingBuckets.add(bkt.getName());
             }
@@ -55,11 +55,11 @@ public class ListBucketsTest extends TestBase {
             for (int i = 0; i < remaindingAllowed; i++) {
                 String bucketName = bucketNamePrefix + i;
                 try {
-                    secondClient.createBucket(bucketName);
+                    ossClient.createBucket(bucketName);
                     newlyBuckets.add(bucketName);
                     waitForCacheExpiration(5);
-                    String loc = secondClient.getBucketLocation(bucketName);
-                    Assert.assertEquals(SECOND_LOCATION, loc);
+                    String loc = ossClient.getBucketLocation(bucketName);
+                    Assert.assertEquals(OSS_TEST_REGION, loc);
                 } catch (Exception e) {
                     Assert.fail(e.getMessage());
                 }
@@ -68,7 +68,7 @@ public class ListBucketsTest extends TestBase {
             waitForCacheExpiration(5);
             
             // List all existing buckets
-            returnedBuckets = secondClient.listBuckets();
+            returnedBuckets = ossClient.listBuckets();
             existingBuckets.clear();
             for (Bucket bkt : returnedBuckets) {
                 existingBuckets.add(bkt.getName());
@@ -76,7 +76,7 @@ public class ListBucketsTest extends TestBase {
             Assert.assertEquals(MAX_BUCKETS_ALLOWED, existingBuckets.size());
             
             // List all existing buckets prefix with 'normal-list-buckets-'
-            BucketList bucketList = secondClient.listBuckets(bucketNamePrefix, null, null);
+            BucketList bucketList = ossClient.listBuckets(bucketNamePrefix, null, null);
             Assert.assertEquals(remaindingAllowed, bucketList.getBucketList().size());
             for (Bucket bkt : bucketList.getBucketList()) {
                 Assert.assertTrue(bkt.getName().startsWith(bucketNamePrefix));
@@ -84,12 +84,12 @@ public class ListBucketsTest extends TestBase {
             
             // List 'max-keys' buckets each time
             final int maxKeys = 3;
-            bucketList = secondClient.listBuckets(bucketNamePrefix, null, maxKeys);
+            bucketList = ossClient.listBuckets(bucketNamePrefix, null, maxKeys);
             Assert.assertTrue(bucketList.getBucketList().size() <= 3);
             returnedBuckets.clear();
             returnedBuckets.addAll(bucketList.getBucketList());
             while (bucketList.isTruncated()) {
-                bucketList = secondClient.listBuckets(
+                bucketList = ossClient.listBuckets(
                         new ListBucketsRequest(bucketNamePrefix, bucketList.getNextMarker(), maxKeys));                
                 Assert.assertTrue(bucketList.getBucketList().size() <= 3);
                 returnedBuckets.addAll(bucketList.getBucketList());
@@ -100,7 +100,7 @@ public class ListBucketsTest extends TestBase {
             }
             
             for (String bkt : newlyBuckets) {
-                secondClient.deleteBucket(bkt);
+                ossClient.deleteBucket(bkt);
             }
         } catch (Exception e) {
             Assert.fail(e.getMessage());
@@ -113,11 +113,11 @@ public class ListBucketsTest extends TestBase {
         
         try {            
             // List all existing buckets prefix with 'nonexistent-bucket-name-prefix-'
-            BucketList bucketList = secondClient.listBuckets(nonexistentBucketNamePrefix, null, null);
+            BucketList bucketList = ossClient.listBuckets(nonexistentBucketNamePrefix, null, null);
             Assert.assertEquals(0, bucketList.getBucketList().size());
             
             // Set 'max-keys' equal zero(MUST be between 1 and 1000)
-            bucketList = secondClient.listBuckets(null, null, 0);
+            bucketList = ossClient.listBuckets(null, null, 0);
             Assert.fail("List bucket should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());

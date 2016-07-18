@@ -45,10 +45,10 @@ public class ListObjectsTest extends TestBase {
         final String bucketName = "normal-list-objects";
         
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             // List objects under empty bucket
-            ObjectListing objectListing = secondClient.listObjects(bucketName);
+            ObjectListing objectListing = ossClient.listObjects(bucketName);
             Assert.assertEquals(0, objectListing.getObjectSummaries().size());
             Assert.assertEquals(DEFAULT_MAX_RETURNED_KEYS, objectListing.getMaxKeys());
             Assert.assertEquals(0, objectListing.getCommonPrefixes().size());
@@ -78,12 +78,12 @@ public class ListObjectsTest extends TestBase {
                 }
             }
             
-            if (!batchPutObject(secondClient, bucketName, existingKeys)) {
+            if (!batchPutObject(ossClient, bucketName, existingKeys)) {
                 Assert.fail("batch put object failed");
             }
             
             // List objects under nonempty bucket
-            objectListing = secondClient.listObjects(bucketName);
+            objectListing = ossClient.listObjects(bucketName);
             Assert.assertEquals(DEFAULT_MAX_RETURNED_KEYS, objectListing.getObjectSummaries().size());
             Assert.assertEquals(DEFAULT_MAX_RETURNED_KEYS, objectListing.getMaxKeys());
             Assert.assertEquals(0, objectListing.getCommonPrefixes().size());
@@ -95,7 +95,7 @@ public class ListObjectsTest extends TestBase {
             Assert.assertTrue(objectListing.isTruncated());
             
             // List objects with lv1KeyPrefix under nonempty bucket
-            objectListing = secondClient.listObjects(bucketName, lv1KeyPrefix);
+            objectListing = ossClient.listObjects(bucketName, lv1KeyPrefix);
             Assert.assertEquals(DEFAULT_MAX_RETURNED_KEYS, objectListing.getObjectSummaries().size());
             Assert.assertEquals(DEFAULT_MAX_RETURNED_KEYS, objectListing.getMaxKeys());
             Assert.assertEquals(0, objectListing.getCommonPrefixes().size());
@@ -107,7 +107,7 @@ public class ListObjectsTest extends TestBase {
             Assert.assertTrue(objectListing.isTruncated());
             
             // List objects with lv0KeyPrefix under nonempty bucket
-            objectListing = secondClient.listObjects(bucketName, lv0KeyPrefix);
+            objectListing = ossClient.listObjects(bucketName, lv0KeyPrefix);
             Assert.assertEquals(DEFAULT_MAX_RETURNED_KEYS, objectListing.getObjectSummaries().size());
             Assert.assertEquals(DEFAULT_MAX_RETURNED_KEYS, objectListing.getMaxKeys());
             Assert.assertEquals(0, objectListing.getCommonPrefixes().size());
@@ -120,7 +120,7 @@ public class ListObjectsTest extends TestBase {
             
             // List object with 'prefix' and 'marker' under nonempty bucket
             String marker = objectListing.getNextMarker();
-            objectListing = secondClient.listObjects(new ListObjectsRequest(bucketName, lv0KeyPrefix, marker, null, null));
+            objectListing = ossClient.listObjects(new ListObjectsRequest(bucketName, lv0KeyPrefix, marker, null, null));
             Assert.assertEquals(DEFAULT_MAX_RETURNED_KEYS, objectListing.getObjectSummaries().size());
             Assert.assertEquals(DEFAULT_MAX_RETURNED_KEYS, objectListing.getMaxKeys());
             Assert.assertEquals(0, objectListing.getCommonPrefixes().size());
@@ -135,7 +135,7 @@ public class ListObjectsTest extends TestBase {
             final String delimiter = "/";
             final String keyPrefix0 = "normal-list-lv0-objects/";
             final String keyPrefix1 = "normal-list-lv0-objects/lv1-objects/";
-            objectListing = secondClient.listObjects(
+            objectListing = ossClient.listObjects(
                     new ListObjectsRequest(bucketName, keyPrefix0, null, delimiter, MAX_RETURNED_KEYS_LIMIT));
             Assert.assertEquals(lv1KeyCount, objectListing.getObjectSummaries().size());
             Assert.assertEquals(MAX_RETURNED_KEYS_LIMIT, objectListing.getMaxKeys());
@@ -150,7 +150,7 @@ public class ListObjectsTest extends TestBase {
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
-            deleteBucketWithObjects(secondClient, bucketName);
+            deleteBucketWithObjects(ossClient, bucketName);
         }
     }
 
@@ -159,12 +159,12 @@ public class ListObjectsTest extends TestBase {
         final String bucketName = "unormal-list-objects";
         
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             // List objects under non-existent bucket
             final String nonexistentBucket = "unormal-list-objects-bucket";
             try {
-                secondClient.listObjects(nonexistentBucket);
+                ossClient.listObjects(nonexistentBucket);
                 Assert.fail("List objects should not be successful");
             } catch (OSSException e) {
                 Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
@@ -173,7 +173,7 @@ public class ListObjectsTest extends TestBase {
             // List objects under bucket without ownership
             final String bucketWithoutOwnership = "oss";
             try {
-                secondClient.listObjects(bucketWithoutOwnership);
+                ossClient.listObjects(bucketWithoutOwnership);
                 Assert.fail("List objects should not be successful");
             } catch (OSSException e) {
                 Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
@@ -190,7 +190,7 @@ public class ListObjectsTest extends TestBase {
                 }
             }
             
-            if (!batchPutObject(secondClient, bucketName, existingKeys)) {
+            if (!batchPutObject(ossClient, bucketName, existingKeys)) {
                 Assert.fail("batch put object failed");
             }
             
@@ -198,7 +198,7 @@ public class ListObjectsTest extends TestBase {
             final String nonexistentMarker = keyPrefix + unluckyNumber;
             try {
                 ListObjectsRequest request = new ListObjectsRequest(bucketName, null, nonexistentMarker, null, null);
-                ObjectListing objectListing = secondClient.listObjects(request);
+                ObjectListing objectListing = ossClient.listObjects(request);
                 Assert.assertTrue(objectListing.getObjectSummaries().size() < keyCount);
                 Assert.assertEquals(DEFAULT_MAX_RETURNED_KEYS, objectListing.getMaxKeys());
                 Assert.assertEquals(0, objectListing.getCommonPrefixes().size());
@@ -232,7 +232,7 @@ public class ListObjectsTest extends TestBase {
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
-            deleteBucketWithObjects(secondClient, bucketName);
+            deleteBucketWithObjects(ossClient, bucketName);
         }
     }
     
@@ -246,13 +246,13 @@ public class ListObjectsTest extends TestBase {
             existingKeys.add(objectPrefix + "\001\007");
             existingKeys.add(objectPrefix + "\002\007");
             
-            if (!batchPutObject(secondClient, bucketName, existingKeys)) {
+            if (!batchPutObject(ossClient, bucketName, existingKeys)) {
                 Assert.fail("batch put object failed");
             }
             
             ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucketName);
             try {
-                secondClient.listObjects(listObjectsRequest);
+                ossClient.listObjects(listObjectsRequest);
             } catch (Exception e) {
                 Assert.assertTrue(e instanceof OSSException);
                 Assert.assertEquals(OSSErrorCode.INVALID_RESPONSE, ((OSSException)e).getErrorCode());
@@ -261,7 +261,7 @@ public class ListObjectsTest extends TestBase {
             // List objects under nonempty bucket
             listObjectsRequest = new ListObjectsRequest(bucketName);
             listObjectsRequest.setEncodingType(DEFAULT_ENCODING_TYPE);
-            ObjectListing objectListing = secondClient.listObjects(listObjectsRequest);
+            ObjectListing objectListing = ossClient.listObjects(listObjectsRequest);
             for (OSSObjectSummary s : objectListing.getObjectSummaries()) {
                 String decodedKey = URLDecoder.decode(s.getKey(), "UTF-8");
                 Assert.assertTrue(existingKeys.contains(decodedKey));

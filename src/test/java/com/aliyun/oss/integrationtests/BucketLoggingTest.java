@@ -36,64 +36,64 @@ public class BucketLoggingTest extends TestBase {
 
     @Test
     public void testNormalSetBucketLogging() {
-        final String sourceBucket = "normal-set-bucket-logging-source";
-        final String targetBucket = "normal-set-bucket-logging-target";
+        final String sourceBucket = "normal-set-bucket-logging-source-1";
+        final String targetBucket = "normal-set-bucket-logging-target-1";
         final String targetPrefix = "normal-set-bucket-logging-prefix";
         
         try {
-            secondClient.createBucket(sourceBucket);
-            secondClient.createBucket(targetBucket);
+            ossClient.createBucket(sourceBucket);
+            ossClient.createBucket(targetBucket);
             
             // Set target bucket not same as source bucket
             SetBucketLoggingRequest request = new SetBucketLoggingRequest(sourceBucket);
             request.setTargetBucket(targetBucket);
             request.setTargetPrefix(targetPrefix);
-            secondClient.setBucketLogging(request);
+            ossClient.setBucketLogging(request);
             
-            BucketLoggingResult result = secondClient.getBucketLogging(sourceBucket);
+            BucketLoggingResult result = ossClient.getBucketLogging(sourceBucket);
             Assert.assertEquals(targetBucket, result.getTargetBucket());
             Assert.assertEquals(targetPrefix, result.getTargetPrefix());
             
-            secondClient.deleteBucketLogging(sourceBucket);
+            ossClient.deleteBucketLogging(sourceBucket);
             
             // Set target bucket same as source bucket
             request.setTargetBucket(sourceBucket);
             request.setTargetPrefix(targetPrefix);
-            secondClient.setBucketLogging(request);
+            ossClient.setBucketLogging(request);
             
             waitForCacheExpiration(5);
             
-            result = secondClient.getBucketLogging(sourceBucket);
+            result = ossClient.getBucketLogging(sourceBucket);
             Assert.assertEquals(sourceBucket, result.getTargetBucket());
             Assert.assertEquals(targetPrefix, result.getTargetPrefix());
             
-            secondClient.deleteBucketLogging(sourceBucket);
+            ossClient.deleteBucketLogging(sourceBucket);
             
             // Set target prefix null
             request.setTargetBucket(targetBucket);
             request.setTargetPrefix(null);
-            secondClient.setBucketLogging(request);
+            ossClient.setBucketLogging(request);
             
-            result = secondClient.getBucketLogging(sourceBucket);
+            result = ossClient.getBucketLogging(sourceBucket);
             Assert.assertEquals(targetBucket, result.getTargetBucket());
             Assert.assertTrue(result.getTargetPrefix().isEmpty());
             
-            secondClient.deleteBucketLogging(sourceBucket);
+            ossClient.deleteBucketLogging(sourceBucket);
             
             // Close bucket logging functionality
             request.setTargetBucket(null);
             request.setTargetPrefix(null);
-            secondClient.setBucketLogging(request);
+            ossClient.setBucketLogging(request);
             
-            result = secondClient.getBucketLogging(sourceBucket);
+            result = ossClient.getBucketLogging(sourceBucket);
             Assert.assertTrue(result.getTargetBucket() == null);
             Assert.assertTrue(result.getTargetPrefix() == null);
             
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(sourceBucket);
-            secondClient.deleteBucket(targetBucket);
+            ossClient.deleteBucket(sourceBucket);
+            ossClient.deleteBucket(targetBucket);
         }
     }
     
@@ -104,8 +104,8 @@ public class BucketLoggingTest extends TestBase {
         final String targetPrefix = "unormal-set-bucket-logging-prefix";
         
         try {
-            secondClient.createBucket(sourceBucket);
-            secondClient.createBucket(targetBucket);
+            ossClient.createBucket(sourceBucket);
+            ossClient.createBucket(targetBucket);
             
             // Set non-existent source bucket 
             final String nonexistentSourceBucket = "nonexistent-source-bucket";            
@@ -113,7 +113,7 @@ public class BucketLoggingTest extends TestBase {
                 SetBucketLoggingRequest request = new SetBucketLoggingRequest(nonexistentSourceBucket);
                 request.setTargetBucket(targetBucket);
                 request.setTargetPrefix(targetPrefix);
-                secondClient.setBucketLogging(request);
+                ossClient.setBucketLogging(request);
                 
                 Assert.fail("Set bucket logging should not be successful");
             } catch (OSSException e) {
@@ -127,7 +127,7 @@ public class BucketLoggingTest extends TestBase {
                 SetBucketLoggingRequest request = new SetBucketLoggingRequest(sourceBucket);
                 request.setTargetBucket(nonexistentTargetBucket);
                 request.setTargetPrefix(targetPrefix);
-                secondClient.setBucketLogging(request);
+                ossClient.setBucketLogging(request);
                 
                 Assert.fail("Set bucket logging should not be successful");
             } catch (OSSException e) {
@@ -135,26 +135,9 @@ public class BucketLoggingTest extends TestBase {
                 Assert.assertTrue(e.getMessage().startsWith(INVALID_TARGET_BUCKET_FOR_LOGGING_ERR));                
             }
             
-            // Set location of source bucket not same as target bucket
-            final String targetBucketWithDiffLocation = "target-bucket-with-diff-location";
-            try {
-                defaultClient.createBucket(targetBucketWithDiffLocation);
-                
-                SetBucketLoggingRequest request = new SetBucketLoggingRequest(sourceBucket);
-                request.setTargetBucket(targetBucketWithDiffLocation);
-                request.setTargetPrefix(targetPrefix);
-                secondClient.setBucketLogging(request);
-                
-                Assert.fail("Set bucket logging should not be successful");
-            } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.INVALID_TARGET_BUCKET_FOR_LOGGING, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(INVALID_TARGET_BUCKET_FOR_LOGGING_ERR));
-            } finally {
-                defaultClient.deleteBucket(targetBucketWithDiffLocation);
-            }
         } finally {
-            secondClient.deleteBucket(sourceBucket);
-            secondClient.deleteBucket(targetBucket);
+            ossClient.deleteBucket(sourceBucket);
+            ossClient.deleteBucket(targetBucket);
         }
     }
     
@@ -163,7 +146,7 @@ public class BucketLoggingTest extends TestBase {
         // Get non-existent bucket
         final String nonexistentBucket = "unormal-get-bucket-logging";
         try {
-            secondClient.getBucketLogging(nonexistentBucket);
+            ossClient.getBucketLogging(nonexistentBucket);
             Assert.fail("Get bucket logging should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
@@ -173,7 +156,7 @@ public class BucketLoggingTest extends TestBase {
         // Get bucket without ownership
         final String bucketWithoutOwnership = "oss";
         try {
-            secondClient.getBucketLogging(bucketWithoutOwnership);
+            ossClient.getBucketLogging(bucketWithoutOwnership);
             Assert.fail("Get bucket logging should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
@@ -182,15 +165,15 @@ public class BucketLoggingTest extends TestBase {
         // Get bucket without setting logging rule
         final String bucketWithoutLoggingRule = "bucket-without-logging-rule";
         try {
-            secondClient.createBucket(bucketWithoutLoggingRule);
+            ossClient.createBucket(bucketWithoutLoggingRule);
             
-            BucketLoggingResult result = secondClient.getBucketLogging(bucketWithoutLoggingRule);
+            BucketLoggingResult result = ossClient.getBucketLogging(bucketWithoutLoggingRule);
             Assert.assertTrue(result.getTargetBucket() == null);
             Assert.assertTrue(result.getTargetPrefix() == null);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketWithoutLoggingRule);
+            ossClient.deleteBucket(bucketWithoutLoggingRule);
         }
     }
     
@@ -199,7 +182,7 @@ public class BucketLoggingTest extends TestBase {
         // Delete non-existent bucket
         final String nonexistentBucket = "unormal-delete-bucket-logging";
         try {
-            secondClient.deleteBucketLogging(nonexistentBucket);
+            ossClient.deleteBucketLogging(nonexistentBucket);
             Assert.fail("Delete bucket logging should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
@@ -209,7 +192,7 @@ public class BucketLoggingTest extends TestBase {
         // Delete bucket without ownership
         final String bucketWithoutOwnership = "oss";
         try {
-            secondClient.deleteBucketLogging(bucketWithoutOwnership);
+            ossClient.deleteBucketLogging(bucketWithoutOwnership);
             Assert.fail("Delete bucket logging should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
@@ -218,13 +201,13 @@ public class BucketLoggingTest extends TestBase {
         // Delete bucket without setting logging rule
         final String bucketWithoutLoggingRule = "bucket-without-logging-rule";
         try {
-            secondClient.createBucket(bucketWithoutLoggingRule);
+            ossClient.createBucket(bucketWithoutLoggingRule);
             
-            secondClient.deleteBucketLogging(bucketWithoutLoggingRule);
+            ossClient.deleteBucketLogging(bucketWithoutLoggingRule);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketWithoutLoggingRule);
+            ossClient.deleteBucket(bucketWithoutLoggingRule);
         }
     }
 }

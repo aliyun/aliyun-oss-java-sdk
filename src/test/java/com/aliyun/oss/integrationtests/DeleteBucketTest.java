@@ -41,8 +41,8 @@ public class DeleteBucketTest extends TestBase {
         final String bucketName = "delete-existing-bucket";
         
         try {
-            secondClient.createBucket(bucketName);
-            secondClient.deleteBucket(bucketName);
+            ossClient.createBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -53,7 +53,7 @@ public class DeleteBucketTest extends TestBase {
         final String bucketName = "delete-nonexistent-bucket";
         
         try {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
             Assert.fail("Delete bucket should not be successful.");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
@@ -67,21 +67,21 @@ public class DeleteBucketTest extends TestBase {
         final String key = "delete-nonempty-bucket-key";
         
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             List<String> keys = new ArrayList<String>();
             keys.add(key);
-            if (!batchPutObject(secondClient, bucketName, keys)) {
+            if (!batchPutObject(ossClient, bucketName, keys)) {
                 Assert.fail("batch put object failed");
             }
             
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
             Assert.fail("Delete bucket should not be successful.");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.BUCKET_NOT_EMPTY, e.getErrorCode());
             Assert.assertTrue(e.getMessage().startsWith(BUCKET_NOT_EMPTY_ERR));
         } finally {
-            deleteBucketWithObjects(secondClient, bucketName);
+            deleteBucketWithObjects(ossClient, bucketName);
         }
     }
     
@@ -90,7 +90,7 @@ public class DeleteBucketTest extends TestBase {
         final String bucketWithoutOwnership = "oss";
         
         try {
-            secondClient.deleteBucket(bucketWithoutOwnership);
+            ossClient.deleteBucket(bucketWithoutOwnership);
             Assert.fail("Delete bucket should not be successful.");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());

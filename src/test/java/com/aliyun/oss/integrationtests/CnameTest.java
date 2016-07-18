@@ -58,7 +58,7 @@ public class CnameTest {
         Assert.assertTrue(currentExcludeList.contains("aliyun-inc.com"));
         Assert.assertTrue(currentExcludeList.contains("aliyun.com"));
         
-        OSSClient client = new OSSClient(SECOND_ENDPOINT, SECOND_ACCESS_ID, SECOND_ACCESS_KEY, cc);
+        OSSClient client = new OSSClient(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET, cc);
         // Do some operations with client here...
     }
 

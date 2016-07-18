@@ -39,19 +39,19 @@ public class BucketTaggingTest extends TestBase {
             SetBucketTaggingRequest request = new SetBucketTaggingRequest(bucketName);
             request.setTag("tk1", "tv1");
             request.setTag("tk2", "tv2");
-            secondClient.setBucketTagging(request);
+            ossClient.setBucketTagging(request);
             
-            TagSet tagSet = secondClient.getBucketTagging(new GenericRequest(bucketName));
+            TagSet tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
             Map<String, String> tags = tagSet.getAllTags();
             Assert.assertEquals(2, tags.size());
             Assert.assertTrue(tags.containsKey("tk1"));
             Assert.assertTrue(tags.containsKey("tk2"));
             
-            secondClient.deleteBucketTagging(new GenericRequest(bucketName));
+            ossClient.deleteBucketTagging(new GenericRequest(bucketName));
           
             waitForCacheExpiration(5);
             
-            tagSet = secondClient.getBucketTagging(new GenericRequest(bucketName));
+            tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
             tags = tagSet.getAllTags();
             Assert.assertTrue(tags.isEmpty());
         } catch (Exception e) {

@@ -49,12 +49,12 @@ public class BucketAclTest extends TestBase {
         final String bucketName = "normal-set-bucket-acl";
         
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             for (CannedAccessControlList acl : acls) {
-                secondClient.setBucketAcl(bucketName, acl);
+                ossClient.setBucketAcl(bucketName, acl);
                 
-                AccessControlList returnedAcl = secondClient.getBucketAcl(bucketName);
+                AccessControlList returnedAcl = ossClient.getBucketAcl(bucketName);
                 if (acl != null && !acl.equals(CannedAccessControlList.Private)) {
                     Set<Grant> grants = returnedAcl.getGrants();
                     Assert.assertEquals(1, grants.size());
@@ -73,7 +73,7 @@ public class BucketAclTest extends TestBase {
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -82,12 +82,12 @@ public class BucketAclTest extends TestBase {
         final String bucketName = "unormal-set-bucket-acl";
         
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             // Set non-existent bucket
             final String nonexistentBucket = "unormal-set-bucket-acl";
             try {
-                secondClient.setBucketAcl(nonexistentBucket, CannedAccessControlList.Private);
+                ossClient.setBucketAcl(nonexistentBucket, CannedAccessControlList.Private);
                 // TODO: Why not failed with NO_SUCK_BUCKET error code ?
                 //Assert.fail("Set bucket acl should not be successful");
             } catch (Exception e) {
@@ -97,7 +97,7 @@ public class BucketAclTest extends TestBase {
             // Set bucket without ownership
             final String bucketWithoutOwnership = "oss";
             try {
-                secondClient.setBucketAcl(bucketWithoutOwnership, CannedAccessControlList.Private);
+                ossClient.setBucketAcl(bucketWithoutOwnership, CannedAccessControlList.Private);
                 Assert.fail("Set bucket acl should not be successful");
             } catch (OSSException e) {
                 Assert.assertEquals(OSSErrorCode.BUCKET_ALREADY_EXISTS, e.getErrorCode());
@@ -115,7 +115,7 @@ public class BucketAclTest extends TestBase {
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -124,7 +124,7 @@ public class BucketAclTest extends TestBase {
         // Get non-existent bucket
         final String nonexistentBucket = "unormal-get-bucket-acl";
         try {
-            secondClient.getBucketAcl(nonexistentBucket);
+            ossClient.getBucketAcl(nonexistentBucket);
             Assert.fail("Get bucket acl should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
@@ -134,7 +134,7 @@ public class BucketAclTest extends TestBase {
         // Get bucket without ownership
         final String bucketWithoutOwnership = "oss";
         try {
-            secondClient.getBucketAcl(bucketWithoutOwnership);
+            ossClient.getBucketAcl(bucketWithoutOwnership);
             Assert.fail("Get bucket referer should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
@@ -143,16 +143,16 @@ public class BucketAclTest extends TestBase {
         // Get bucket using default acl
         final String bucketUsingDefaultAcl = "bucket-using-default-acl";
         try {
-            secondClient.createBucket(bucketUsingDefaultAcl);
+            ossClient.createBucket(bucketUsingDefaultAcl);
             
-            AccessControlList returnedACL = secondClient.getBucketAcl(bucketUsingDefaultAcl);
+            AccessControlList returnedACL = ossClient.getBucketAcl(bucketUsingDefaultAcl);
             Set<Grant> grants = returnedACL.getGrants();
             // No grants when using default acl
             Assert.assertEquals(0, grants.size());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketUsingDefaultAcl);
+            ossClient.deleteBucket(bucketUsingDefaultAcl);
         }
     }
 }

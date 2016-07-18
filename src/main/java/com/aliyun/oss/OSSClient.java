@@ -1374,36 +1374,36 @@ public class OSSClient implements OSS {
     }
     
     @Override
-    public void GenerateVodPlaylist(String bucketName, String liveChannelName, String PlaylistName,
+    public void generateVodPlaylist(String bucketName, String liveChannelName, String PlaylistName,
             long startTime, long endTime) throws OSSException, ClientException {
-        this.GenerateVodPlaylist(new GenerateVodPlaylistRequest(bucketName, liveChannelName,
+        this.generateVodPlaylist(new GenerateVodPlaylistRequest(bucketName, liveChannelName,
                 PlaylistName, startTime, endTime));
     }
     
     @Override
-    public void GenerateVodPlaylist(GenerateVodPlaylistRequest generateVodPlaylistRequest) 
+    public void generateVodPlaylist(GenerateVodPlaylistRequest generateVodPlaylistRequest) 
             throws OSSException, ClientException {
-        liveChannelOperation.GenerateVodPlaylist(generateVodPlaylistRequest);
+        liveChannelOperation.generateVodPlaylist(generateVodPlaylistRequest);
     }
    
     @Override
-    public String GenerateRtmpUri(String bucketName, String liveChannelName, String PlaylistName,
+    public String generateRtmpUri(String bucketName, String liveChannelName, String PlaylistName,
             long expires) throws OSSException, ClientException {
-        return this.GenerateRtmpUri(new GenerateRtmpUriRequest(bucketName, liveChannelName,
+        return this.generateRtmpUri(new GenerateRtmpUriRequest(bucketName, liveChannelName,
                 PlaylistName, expires, null));
     }
     
     @Override
-    public String GenerateRtmpUri(String bucketName, String liveChannelName, String PlaylistName,
+    public String generateRtmpUri(String bucketName, String liveChannelName, String PlaylistName,
             long expires, Map<String, String> parameters) throws OSSException, ClientException {
-        return this.GenerateRtmpUri(new GenerateRtmpUriRequest(bucketName, liveChannelName,
+        return this.generateRtmpUri(new GenerateRtmpUriRequest(bucketName, liveChannelName,
                 PlaylistName, expires, parameters));
     }
     
     @Override
-    public String GenerateRtmpUri(GenerateRtmpUriRequest generatePushflowUrlRequest) 
+    public String generateRtmpUri(GenerateRtmpUriRequest generatePushflowUrlRequest) 
             throws OSSException, ClientException {
-        return liveChannelOperation.GeneratePushflowUrl(generatePushflowUrlRequest);
+        return liveChannelOperation.generatePushflowUrl(generatePushflowUrlRequest);
     }
     
     @Override

@@ -153,7 +153,7 @@ public class UploadPartFromFileTest extends TestBase {
         
         private String claimUploadId() {
             InitiateMultipartUploadRequest request = new InitiateMultipartUploadRequest(bucketName, key);
-            InitiateMultipartUploadResult result = secondClient.initiateMultipartUpload(request);
+            InitiateMultipartUploadResult result = ossClient.initiateMultipartUpload(request);
             return result.getUploadId();
         }
         
@@ -172,7 +172,7 @@ public class UploadPartFromFileTest extends TestBase {
                 uploadPartRequest.setPartSize(partSize);
                 uploadPartRequest.setPartNumber(partNumber);
 
-                UploadPartResult uploadPartResult = secondClient.uploadPart(uploadPartRequest);
+                UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
                 partETags.add(uploadPartResult.getPartETag());
             } catch (Exception e) {
                 e.printStackTrace();
@@ -199,7 +199,7 @@ public class UploadPartFromFileTest extends TestBase {
 
             CompleteMultipartUploadRequest completeMultipartUploadRequest = 
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
-            secondClient.completeMultipartUpload(completeMultipartUploadRequest);
+            ossClient.completeMultipartUpload(completeMultipartUploadRequest);
         }
     }
     

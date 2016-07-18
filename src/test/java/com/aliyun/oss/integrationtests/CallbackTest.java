@@ -75,13 +75,13 @@ public class CallbackTest extends TestBase {
             callback.setCallbackBody("put-object-callback");
             putObjectRequest.setCallback(callback);
             
-            PutObjectResult putObjectResult = secondClient.putObject(putObjectRequest);
+            PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
             byte[] buffer = new byte[bufferLength];
             int nRead = putObjectResult.getCallbackResponseBody().read(buffer);
             putObjectResult.getCallbackResponseBody().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
                     
-            OSSObject obj = secondClient.getObject(bucketName, key);
+            OSSObject obj = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, obj.getKey());
             Assert.assertEquals(instreamLength, obj.getObjectMetadata().getContentLength());
 
@@ -108,13 +108,13 @@ public class CallbackTest extends TestBase {
             callback.setCalbackBodyType(CalbackBodyType.URL);
             putObjectRequest.setCallback(callback);
             
-            PutObjectResult putObjectResult = secondClient.putObject(putObjectRequest);
+            PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
             byte[] buffer = new byte[bufferLength];
             int nRead = putObjectResult.getCallbackResponseBody().read(buffer);
             putObjectResult.getCallbackResponseBody().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
             
-            OSSObject obj = secondClient.getObject(bucketName, key);
+            OSSObject obj = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, obj.getKey());
             Assert.assertEquals(instreamLength, obj.getObjectMetadata().getContentLength());
 
@@ -141,13 +141,13 @@ public class CallbackTest extends TestBase {
             callback.setCalbackBodyType(CalbackBodyType.JSON);
             putObjectRequest.setCallback(callback);
             
-            PutObjectResult putObjectResult = secondClient.putObject(putObjectRequest);
+            PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
             byte[] buffer = new byte[bufferLength];
             int nRead = putObjectResult.getCallbackResponseBody().read(buffer);
             putObjectResult.getCallbackResponseBody().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
             
-            OSSObject obj = secondClient.getObject(bucketName, key);
+            OSSObject obj = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, obj.getKey());
             Assert.assertEquals(instreamLength, obj.getObjectMetadata().getContentLength());
 
@@ -176,13 +176,13 @@ public class CallbackTest extends TestBase {
             callback.addCallbackVar("x:var2", "value2");
             putObjectRequest.setCallback(callback);
             
-            PutObjectResult putObjectResult = secondClient.putObject(putObjectRequest);
+            PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
             byte[] buffer = new byte[bufferLength];
             int nRead = putObjectResult.getCallbackResponseBody().read(buffer);
             putObjectResult.getCallbackResponseBody().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
             
-            OSSObject obj = secondClient.getObject(bucketName, key);
+            OSSObject obj = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, obj.getKey());
             Assert.assertEquals(instreamLength, obj.getObjectMetadata().getContentLength());
 
@@ -212,13 +212,13 @@ public class CallbackTest extends TestBase {
             callback.addCallbackVar("x:键值2", "值2：长记曾携手处，千树压、西湖寒碧。");
             putObjectRequest.setCallback(callback);
             
-            PutObjectResult putObjectResult = secondClient.putObject(putObjectRequest);
+            PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
             byte[] buffer = new byte[bufferLength];
             int nRead = putObjectResult.getCallbackResponseBody().read(buffer);
             putObjectResult.getCallbackResponseBody().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
             
-            OSSObject obj = secondClient.getObject(bucketName, key);
+            OSSObject obj = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, obj.getKey());
             Assert.assertEquals(instreamLength, obj.getObjectMetadata().getContentLength());
 
@@ -247,13 +247,13 @@ public class CallbackTest extends TestBase {
             callback.addCallbackVar("x:键值2", "值2：长记曾携手处，千树压、西湖寒碧。");
             putObjectRequest.setCallback(callback);
             
-            PutObjectResult putObjectResult = secondClient.putObject(putObjectRequest);
+            PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
             byte[] buffer = new byte[bufferLength];
             int nRead = putObjectResult.getCallbackResponseBody().read(buffer);
             putObjectResult.getCallbackResponseBody().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
             
-            OSSObject obj = secondClient.getObject(bucketName, key);
+            OSSObject obj = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, obj.getKey());
             Assert.assertEquals(instreamLength, obj.getObjectMetadata().getContentLength());
 
@@ -279,7 +279,7 @@ public class CallbackTest extends TestBase {
             callback.setCallbackBody("put-object-callback");
             putObjectRequest.setCallback(callback);
             
-            secondClient.putObject(putObjectRequest);
+            ossClient.putObject(putObjectRequest);
             
             Assert.fail("PutObject callback should not be successful.");
         } catch (OSSException e) {
@@ -295,7 +295,7 @@ public class CallbackTest extends TestBase {
             callback.setCallbackBody("put-object-callback");
             putObjectRequest.setCallback(callback);
             
-            secondClient.putObject(putObjectRequest);
+            ossClient.putObject(putObjectRequest);
             
             Assert.fail("PutObject callback should not be successful.");
         } catch (OSSException e) {
@@ -311,7 +311,7 @@ public class CallbackTest extends TestBase {
             callback.setCallbackBody("put-object-callback");
             putObjectRequest.setCallback(callback);
             
-            secondClient.putObject(putObjectRequest);
+            ossClient.putObject(putObjectRequest);
             
             Assert.fail("PutObject callback should not be successful.");
         } catch (OSSException e) {
@@ -328,7 +328,7 @@ public class CallbackTest extends TestBase {
             callback.setCallbackBody("");
             putObjectRequest.setCallback(callback);
             
-            secondClient.putObject(putObjectRequest);
+            ossClient.putObject(putObjectRequest);
             
             Assert.fail("PutObject callback should not be successful.");
         } catch (OSSException e) {
@@ -345,7 +345,7 @@ public class CallbackTest extends TestBase {
             callback.setCallbackBody("bucket=${bucket}&object=$(object)");
             putObjectRequest.setCallback(callback);
             
-            secondClient.putObject(putObjectRequest);
+            ossClient.putObject(putObjectRequest);
             
             Assert.fail("PutObject callback should not be successful.");
         } catch (OSSException e) {
@@ -368,7 +368,7 @@ public class CallbackTest extends TestBase {
                 callback.addCallbackVar("x:var" + i, new String(bigArr));
             }
             
-            secondClient.putObject(putObjectRequest);
+            ossClient.putObject(putObjectRequest);
             
             Assert.fail("PutObject callback should not be successful.");
         } catch (OSSException e) {
@@ -385,7 +385,7 @@ public class CallbackTest extends TestBase {
             callback.setCallbackBody("put-object-callback");
             putObjectRequest.setCallback(callback);
             
-            secondClient.putObject(putObjectRequest);
+            ossClient.putObject(putObjectRequest);
             
             Assert.fail("PutObject callback should not be successful.");
         } catch (OSSException e) {
@@ -402,7 +402,7 @@ public class CallbackTest extends TestBase {
         String key = "multipart-upload-callback-default";
         
         try {
-            String uploadId = claimUploadId(secondClient, bucketName, key);
+            String uploadId = claimUploadId(ossClient, bucketName, key);
             InputStream instream = genFixedLengthInputStream(instreamLength);
             List<PartETag> partETags = new ArrayList<PartETag>();
             
@@ -413,7 +413,7 @@ public class CallbackTest extends TestBase {
             uploadPartRequest.setPartNumber(1);
             uploadPartRequest.setPartSize(instreamLength);
             uploadPartRequest.setUploadId(uploadId);
-            UploadPartResult uploadPartResult = secondClient.uploadPart(uploadPartRequest);
+            UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
             partETags.add(uploadPartResult.getPartETag());
             
             Callback callback = new Callback();
@@ -424,14 +424,14 @@ public class CallbackTest extends TestBase {
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             completeMultipartUploadRequest.setCallback(callback);
             CompleteMultipartUploadResult completeMultipartUploadResult =
-                    secondClient.completeMultipartUpload(completeMultipartUploadRequest);
+                    ossClient.completeMultipartUpload(completeMultipartUploadRequest);
                         
             byte[] buffer = new byte[bufferLength];
             int nRead = completeMultipartUploadResult.getCallbackResponseBody().read(buffer);
             completeMultipartUploadResult.getCallbackResponseBody().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
                     
-            OSSObject obj = secondClient.getObject(bucketName, key);
+            OSSObject obj = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, obj.getKey());
             Assert.assertEquals(instreamLength, obj.getObjectMetadata().getContentLength());
 
@@ -448,7 +448,7 @@ public class CallbackTest extends TestBase {
       String key = "multipart-upload-callback-body";
         
         try {
-            String uploadId = claimUploadId(secondClient, bucketName, key);
+            String uploadId = claimUploadId(ossClient, bucketName, key);
             InputStream instream = genFixedLengthInputStream(instreamLength);
             List<PartETag> partETags = new ArrayList<PartETag>();
             
@@ -459,7 +459,7 @@ public class CallbackTest extends TestBase {
             uploadPartRequest.setPartNumber(1);
             uploadPartRequest.setPartSize(instreamLength);
             uploadPartRequest.setUploadId(uploadId);
-            UploadPartResult uploadPartResult = secondClient.uploadPart(uploadPartRequest);
+            UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
             partETags.add(uploadPartResult.getPartETag());
             
             Callback callback = new Callback();
@@ -472,14 +472,14 @@ public class CallbackTest extends TestBase {
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             completeMultipartUploadRequest.setCallback(callback);
             CompleteMultipartUploadResult completeMultipartUploadResult =
-                    secondClient.completeMultipartUpload(completeMultipartUploadRequest);
+                    ossClient.completeMultipartUpload(completeMultipartUploadRequest);
                         
             byte[] buffer = new byte[bufferLength];
             int nRead = completeMultipartUploadResult.getCallbackResponseBody().read(buffer);
             completeMultipartUploadResult.getCallbackResponseBody().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
                     
-            OSSObject obj = secondClient.getObject(bucketName, key);
+            OSSObject obj = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, obj.getKey());
             Assert.assertEquals(instreamLength, obj.getObjectMetadata().getContentLength());
 
@@ -496,7 +496,7 @@ public class CallbackTest extends TestBase {
       String key = "multipart-upload-callback-body-type";
         
         try {
-            String uploadId = claimUploadId(secondClient, bucketName, key);
+            String uploadId = claimUploadId(ossClient, bucketName, key);
             InputStream instream = genFixedLengthInputStream(instreamLength);
             List<PartETag> partETags = new ArrayList<PartETag>();
             
@@ -507,7 +507,7 @@ public class CallbackTest extends TestBase {
             uploadPartRequest.setPartNumber(1);
             uploadPartRequest.setPartSize(instreamLength);
             uploadPartRequest.setUploadId(uploadId);
-            UploadPartResult uploadPartResult = secondClient.uploadPart(uploadPartRequest);
+            UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
             partETags.add(uploadPartResult.getPartETag());
             
             Callback callback = new Callback();
@@ -520,14 +520,14 @@ public class CallbackTest extends TestBase {
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             completeMultipartUploadRequest.setCallback(callback);
             CompleteMultipartUploadResult completeMultipartUploadResult =
-                    secondClient.completeMultipartUpload(completeMultipartUploadRequest);
+                    ossClient.completeMultipartUpload(completeMultipartUploadRequest);
                         
             byte[] buffer = new byte[bufferLength];
             int nRead = completeMultipartUploadResult.getCallbackResponseBody().read(buffer);
             completeMultipartUploadResult.getCallbackResponseBody().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
                     
-            OSSObject obj = secondClient.getObject(bucketName, key);
+            OSSObject obj = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, obj.getKey());
             Assert.assertEquals(instreamLength, obj.getObjectMetadata().getContentLength());
 
@@ -544,7 +544,7 @@ public class CallbackTest extends TestBase {
       String key = "multipart-upload-callback-var";
         
         try {
-            String uploadId = claimUploadId(secondClient, bucketName, key);
+            String uploadId = claimUploadId(ossClient, bucketName, key);
             InputStream instream = genFixedLengthInputStream(instreamLength);
             List<PartETag> partETags = new ArrayList<PartETag>();
             
@@ -555,7 +555,7 @@ public class CallbackTest extends TestBase {
             uploadPartRequest.setPartNumber(1);
             uploadPartRequest.setPartSize(instreamLength);
             uploadPartRequest.setUploadId(uploadId);
-            UploadPartResult uploadPartResult = secondClient.uploadPart(uploadPartRequest);
+            UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
             partETags.add(uploadPartResult.getPartETag());
             
             Callback callback = new Callback();
@@ -570,14 +570,14 @@ public class CallbackTest extends TestBase {
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             completeMultipartUploadRequest.setCallback(callback);
             CompleteMultipartUploadResult completeMultipartUploadResult =
-                    secondClient.completeMultipartUpload(completeMultipartUploadRequest);
+                    ossClient.completeMultipartUpload(completeMultipartUploadRequest);
                         
             byte[] buffer = new byte[bufferLength];
             int nRead = completeMultipartUploadResult.getCallbackResponseBody().read(buffer);
             completeMultipartUploadResult.getCallbackResponseBody().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
                     
-            OSSObject obj = secondClient.getObject(bucketName, key);
+            OSSObject obj = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, obj.getKey());
             Assert.assertEquals(instreamLength, obj.getObjectMetadata().getContentLength());
 
@@ -594,7 +594,7 @@ public class CallbackTest extends TestBase {
       String key = "multipart-upload-callback-url-char";
         
         try {
-            String uploadId = claimUploadId(secondClient, bucketName, key);
+            String uploadId = claimUploadId(ossClient, bucketName, key);
             InputStream instream = genFixedLengthInputStream(instreamLength);
             List<PartETag> partETags = new ArrayList<PartETag>();
             
@@ -605,7 +605,7 @@ public class CallbackTest extends TestBase {
             uploadPartRequest.setPartNumber(1);
             uploadPartRequest.setPartSize(instreamLength);
             uploadPartRequest.setUploadId(uploadId);
-            UploadPartResult uploadPartResult = secondClient.uploadPart(uploadPartRequest);
+            UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
             partETags.add(uploadPartResult.getPartETag());
             
             Callback callback = new Callback();
@@ -620,14 +620,14 @@ public class CallbackTest extends TestBase {
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             completeMultipartUploadRequest.setCallback(callback);
             CompleteMultipartUploadResult completeMultipartUploadResult =
-                    secondClient.completeMultipartUpload(completeMultipartUploadRequest);
+                    ossClient.completeMultipartUpload(completeMultipartUploadRequest);
                         
             byte[] buffer = new byte[bufferLength];
             int nRead = completeMultipartUploadResult.getCallbackResponseBody().read(buffer);
             completeMultipartUploadResult.getCallbackResponseBody().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
                     
-            OSSObject obj = secondClient.getObject(bucketName, key);
+            OSSObject obj = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, obj.getKey());
             Assert.assertEquals(instreamLength, obj.getObjectMetadata().getContentLength());
 
@@ -644,7 +644,7 @@ public class CallbackTest extends TestBase {
       String key = "multipart-upload-callback-json-char";
         
         try {
-            String uploadId = claimUploadId(secondClient, bucketName, key);
+            String uploadId = claimUploadId(ossClient, bucketName, key);
             InputStream instream = genFixedLengthInputStream(instreamLength);
             List<PartETag> partETags = new ArrayList<PartETag>();
             
@@ -655,7 +655,7 @@ public class CallbackTest extends TestBase {
             uploadPartRequest.setPartNumber(1);
             uploadPartRequest.setPartSize(instreamLength);
             uploadPartRequest.setUploadId(uploadId);
-            UploadPartResult uploadPartResult = secondClient.uploadPart(uploadPartRequest);
+            UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
             partETags.add(uploadPartResult.getPartETag());
             
             Callback callback = new Callback();
@@ -670,14 +670,14 @@ public class CallbackTest extends TestBase {
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             completeMultipartUploadRequest.setCallback(callback);
             CompleteMultipartUploadResult completeMultipartUploadResult =
-                    secondClient.completeMultipartUpload(completeMultipartUploadRequest);
+                    ossClient.completeMultipartUpload(completeMultipartUploadRequest);
                         
             byte[] buffer = new byte[bufferLength];
             int nRead = completeMultipartUploadResult.getCallbackResponseBody().read(buffer);
             completeMultipartUploadResult.getCallbackResponseBody().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
                     
-            OSSObject obj = secondClient.getObject(bucketName, key);
+            OSSObject obj = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, obj.getKey());
             Assert.assertEquals(instreamLength, obj.getObjectMetadata().getContentLength());
 

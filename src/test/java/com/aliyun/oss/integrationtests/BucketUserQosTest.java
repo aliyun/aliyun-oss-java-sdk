@@ -25,7 +25,6 @@ import org.junit.Test;
 
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
-import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.SetBucketStorageCapacityRequest;
 import com.aliyun.oss.model.UserQos;
 
@@ -36,10 +35,7 @@ public class BucketUserQosTest extends TestBase {
         try {
             UserQos userQos = new UserQos();
             
-            userQos = secondClient.getBucketStorageCapacity(bucketName);
-            Assert.assertEquals(userQos.getStorageCapacity(), -1);
-
-            userQos = defaultClient.getBucketStorageCapacity(new GenericRequest(bucketName));
+            userQos = ossClient.getBucketStorageCapacity(bucketName);
             Assert.assertEquals(userQos.getStorageCapacity(), -1);
             
         } catch (Exception e) {
@@ -52,27 +48,15 @@ public class BucketUserQosTest extends TestBase {
     public void testSetBucketStorageCapacity() {
         try {
             UserQos userQos = new UserQos(-1);
-            secondClient.setBucketStorageCapacity(bucketName, userQos);
+            ossClient.setBucketStorageCapacity(bucketName, userQos);
             
-            userQos = secondClient.getBucketStorageCapacity(bucketName);
+            userQos = ossClient.getBucketStorageCapacity(bucketName);
             Assert.assertEquals(userQos.getStorageCapacity(), -1);
             
             userQos.setStorageCapacity(10000);
-            secondClient.setBucketStorageCapacity(new SetBucketStorageCapacityRequest(bucketName).withUserQos(userQos));
+            ossClient.setBucketStorageCapacity(new SetBucketStorageCapacityRequest(bucketName).withUserQos(userQos));
             
-            userQos = secondClient.getBucketStorageCapacity(bucketName);
-            Assert.assertEquals(userQos.getStorageCapacity(), 10000);
-            
-            userQos.setStorageCapacity(-1);
-            defaultClient.setBucketStorageCapacity(new SetBucketStorageCapacityRequest(bucketName).withUserQos(userQos));
-     
-            userQos = defaultClient.getBucketStorageCapacity(bucketName);
-            Assert.assertEquals(userQos.getStorageCapacity(), -1);
-            
-            userQos.setStorageCapacity(10000);
-            defaultClient.setBucketStorageCapacity(bucketName, userQos);
-            
-            userQos = defaultClient.getBucketStorageCapacity(new GenericRequest(bucketName));
+            userQos = ossClient.getBucketStorageCapacity(bucketName);
             Assert.assertEquals(userQos.getStorageCapacity(), 10000);
 
         } catch (Exception e) {
@@ -85,7 +69,7 @@ public class BucketUserQosTest extends TestBase {
         
         try {
             UserQos userQos = new UserQos(-2);
-            secondClient.setBucketStorageCapacity(bucketName, userQos);
+            ossClient.setBucketStorageCapacity(bucketName, userQos);
             Assert.fail("Set bucket storage capacity should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
@@ -93,7 +77,7 @@ public class BucketUserQosTest extends TestBase {
         
         try {
             UserQos userQos = new UserQos(-3);
-            secondClient.setBucketStorageCapacity(new SetBucketStorageCapacityRequest(bucketName).withUserQos(userQos));
+            ossClient.setBucketStorageCapacity(new SetBucketStorageCapacityRequest(bucketName).withUserQos(userQos));
             Assert.fail("Set bucket storage capacity should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());

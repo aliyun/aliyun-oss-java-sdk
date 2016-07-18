@@ -297,7 +297,7 @@ public class LiveChannelOperation extends OSSOperation {
         return doOperation(request, getLiveChannelHistoryResponseParser, bucketName, liveChannelName, true);
     }
     
-    public void GenerateVodPlaylist(GenerateVodPlaylistRequest generateVodPlaylistRequest) 
+    public void generateVodPlaylist(GenerateVodPlaylistRequest generateVodPlaylistRequest) 
             throws OSSException, ClientException {
         
         assertParameterNotNull(generateVodPlaylistRequest, "generateVodPlaylistRequest");
@@ -336,7 +336,7 @@ public class LiveChannelOperation extends OSSOperation {
         doOperation(request, emptyResponseParser, bucketName, key);
     }
     
-    public String GeneratePushflowUrl(GenerateRtmpUriRequest request) 
+    public String generatePushflowUrl(GenerateRtmpUriRequest request) 
             throws OSSException, ClientException {
         
         assertParameterNotNull(request, "request");

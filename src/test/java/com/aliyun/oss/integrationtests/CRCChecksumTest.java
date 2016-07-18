@@ -29,6 +29,7 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.aliyun.oss.common.utils.IOUtils;
@@ -46,6 +47,7 @@ import com.aliyun.oss.model.PutObjectResult;
 import com.aliyun.oss.model.UploadPartRequest;
 import com.aliyun.oss.model.UploadPartResult;
 
+@Ignore
 public class CRCChecksumTest extends TestBase {
     
     @Test
@@ -55,30 +57,30 @@ public class CRCChecksumTest extends TestBase {
         
         try {
             // 测试字符串上传
-            PutObjectResult putObjectResult = secondClient.putObject(bucketName, key, 
+            PutObjectResult putObjectResult = ossClient.putObject(bucketName, key, 
                     new ByteArrayInputStream(content.getBytes()));
             checkCRC(putObjectResult);
-            secondClient.deleteObject(bucketName, key);
+            ossClient.deleteObject(bucketName, key);
             
             // 测试文件上传
             File file = createSampleFile(key, 1024 * 500);
-            putObjectResult = secondClient.putObject(bucketName, key, file);
+            putObjectResult = ossClient.putObject(bucketName, key, file);
             checkCRC(putObjectResult);
-            secondClient.deleteObject(bucketName, key);
+            ossClient.deleteObject(bucketName, key);
             file.delete();
             
             // 测试文件流上传
             file = createSampleFile(key, 1024 * 1000);
-            putObjectResult = secondClient.putObject(bucketName, key, new FileInputStream(file));
+            putObjectResult = ossClient.putObject(bucketName, key, new FileInputStream(file));
             checkCRC(putObjectResult);
-            secondClient.deleteObject(bucketName, key);
+            ossClient.deleteObject(bucketName, key);
             file.delete();
             
             // 测试网络流上传
             InputStream inputStream = new URL("https://www.aliyun.com/product/oss").openStream();
-            putObjectResult = secondClient.putObject(bucketName, key, inputStream);
+            putObjectResult = ossClient.putObject(bucketName, key, inputStream);
             checkCRC(putObjectResult);
-            secondClient.deleteObject(bucketName, key);
+            ossClient.deleteObject(bucketName, key);
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -97,24 +99,24 @@ public class CRCChecksumTest extends TestBase {
             
             // 第一次追加
             appendObjectRequest.setPreviousCRC64(0L);
-            AppendObjectResult appendObjectResult = secondClient.appendObject(appendObjectRequest);
+            AppendObjectResult appendObjectResult = ossClient.appendObject(appendObjectRequest);
             checkCRC(appendObjectResult);
             
             // 第二次追加，合并有问题，客户端计算的CRC是本次上传的，但是服务器返回的是object的
             appendObjectRequest = new AppendObjectRequest(bucketName, key, new ByteArrayInputStream(content.getBytes()));
             appendObjectRequest.setPosition(appendObjectResult.getNextPosition());
             appendObjectRequest.setPreviousCRC64(appendObjectResult.getClientCRC64());
-            appendObjectResult = secondClient.appendObject(appendObjectRequest);
+            appendObjectResult = ossClient.appendObject(appendObjectRequest);
             checkCRC(appendObjectResult);
             
             // 第三次追加
             appendObjectRequest = new AppendObjectRequest(bucketName, key, new ByteArrayInputStream(content.getBytes()));
             appendObjectRequest.setPosition(appendObjectResult.getNextPosition());
             appendObjectRequest.setPreviousCRC64(appendObjectResult.getClientCRC64());
-            appendObjectResult = secondClient.appendObject(appendObjectRequest);
+            appendObjectResult = ossClient.appendObject(appendObjectRequest);
             checkCRC(appendObjectResult);
             
-            secondClient.deleteObject(bucketName, key);
+            ossClient.deleteObject(bucketName, key);
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());
@@ -132,7 +134,7 @@ public class CRCChecksumTest extends TestBase {
             InitiateMultipartUploadRequest initiateMultipartUploadRequest = 
                     new InitiateMultipartUploadRequest(bucketName, key);
             InitiateMultipartUploadResult initiateMultipartUploadResult = 
-                    secondClient.initiateMultipartUpload(initiateMultipartUploadRequest);
+                    ossClient.initiateMultipartUpload(initiateMultipartUploadRequest);
             String uploadId = initiateMultipartUploadResult.getUploadId();
 
             // 上传分片
@@ -141,7 +143,7 @@ public class CRCChecksumTest extends TestBase {
                 String filePath = TestUtils.genFixedLengthFile(fileLen);
                 UploadPartRequest request = new UploadPartRequest(bucketName, key, uploadId, i + 1, 
                         new FileInputStream(filePath), fileLen);
-                UploadPartResult uploadPartResult = secondClient.uploadPart(request);
+                UploadPartResult uploadPartResult = ossClient.uploadPart(request);
                 partETags.add(uploadPartResult.getPartETag());
                 checkCRC(uploadPartResult);
             }
@@ -150,10 +152,10 @@ public class CRCChecksumTest extends TestBase {
             CompleteMultipartUploadRequest CompleteMultipartUploadRequest = 
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags); 
             CompleteMultipartUploadResult completeMultipartUploadResult =
-                    secondClient.completeMultipartUpload(CompleteMultipartUploadRequest);
+                    ossClient.completeMultipartUpload(CompleteMultipartUploadRequest);
             checkCRC(completeMultipartUploadResult);
             
-            secondClient.deleteObject(bucketName, key);
+            ossClient.deleteObject(bucketName, key);
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());
@@ -166,10 +168,10 @@ public class CRCChecksumTest extends TestBase {
 
         try {
             InputStream inputStream = TestUtils.genFixedLengthInputStream(1024 * 100);
-            PutObjectResult putObjectResult = secondClient.putObject(bucketName, key, inputStream);
+            PutObjectResult putObjectResult = ossClient.putObject(bucketName, key, inputStream);
             checkCRC(putObjectResult);
             
-            OSSObject ossObject = secondClient.getObject(bucketName, key);
+            OSSObject ossObject = ossClient.getObject(bucketName, key);
             Assert.assertNull(ossObject.getClientCRC64());
             Assert.assertNotNull(ossObject.getServerCRC64());
             
@@ -184,12 +186,12 @@ public class CRCChecksumTest extends TestBase {
             // 范围CRC上不支持
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             getObjectRequest.setRange(100, 10000);
-            OSSObject ossRangeObject = secondClient.getObject(getObjectRequest);
+            OSSObject ossRangeObject = ossClient.getObject(getObjectRequest);
             Assert.assertNull(ossRangeObject.getClientCRC64());
             Assert.assertNotNull(ossRangeObject.getServerCRC64());
             Assert.assertEquals(ossObject.getServerCRC64(), ossRangeObject.getServerCRC64());
                         
-            secondClient.deleteObject(bucketName, key);
+            ossClient.deleteObject(bucketName, key);
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());
@@ -203,24 +205,24 @@ public class CRCChecksumTest extends TestBase {
 
         try {
             // put
-            PutObjectResult putObjectResult = secondClient.putObject(bucketName, key,
+            PutObjectResult putObjectResult = ossClient.putObject(bucketName, key,
                     new ByteArrayInputStream(new String("").getBytes()));
             Assert.assertTrue(putObjectResult.getClientCRC64() == 0L);
             Assert.assertTrue(putObjectResult.getServerCRC64() == 0L);
             
             String localFile = TestUtils.genFixedLengthFile(0);
-            putObjectResult = secondClient.putObject(bucketName, key, new FileInputStream(localFile));
+            putObjectResult = ossClient.putObject(bucketName, key, new FileInputStream(localFile));
             Assert.assertEquals(putObjectResult.getClientCRC64(), putObjectResult.getServerCRC64());
             Assert.assertTrue(putObjectResult.getClientCRC64() == 0L);
             Assert.assertTrue(putObjectResult.getServerCRC64() == 0L);
             
-            putObjectResult = secondClient.putObject(bucketName, key, new File(localFile));
+            putObjectResult = ossClient.putObject(bucketName, key, new File(localFile));
             Assert.assertEquals(putObjectResult.getClientCRC64(), putObjectResult.getServerCRC64());
             Assert.assertTrue(putObjectResult.getClientCRC64() == 0L);
             Assert.assertTrue(putObjectResult.getServerCRC64() == 0L);
 
             // get
-            OSSObject ossObject = secondClient.getObject(bucketName, key);
+            OSSObject ossObject = ossClient.getObject(bucketName, key);
             Assert.assertNull(ossObject.getClientCRC64());
             Assert.assertNotNull(ossObject.getServerCRC64());
             
@@ -235,7 +237,7 @@ public class CRCChecksumTest extends TestBase {
             Assert.assertTrue(putObjectResult.getServerCRC64() == 0L);
             content.close();
             
-            secondClient.deleteObject(bucketName, key);
+            ossClient.deleteObject(bucketName, key);
             TestUtils.removeFile(localFile);
         } catch (Exception e) {
             e.printStackTrace();

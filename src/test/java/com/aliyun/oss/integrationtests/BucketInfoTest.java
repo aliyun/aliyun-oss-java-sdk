@@ -36,27 +36,19 @@ public class BucketInfoTest extends TestBase {
     @Test
     public void testGetBucketInfo() {
         try {
-            secondClient.setBucketAcl(bucketName, CannedAccessControlList.PublicRead);
+            ossClient.setBucketAcl(bucketName, CannedAccessControlList.PublicRead);
             
-            BucketInfo info = secondClient.getBucketInfo(bucketName);
+            BucketInfo info = ossClient.getBucketInfo(bucketName);
             Assert.assertEquals(info.getBucket().getName(), bucketName);
-            Assert.assertEquals(info.getBucket().getLocation(), "oss-cn-hangzhou");
+            Assert.assertEquals(info.getBucket().getLocation(), TestConfig.OSS_TEST_REGION);
             Assert.assertEquals(info.getBucket().getCreationDate().toString().endsWith("CST 2016"), true);
-            Assert.assertEquals(info.getBucket().getOwner().getId(), "sdk_6");
-            Assert.assertEquals(info.getBucket().getOwner().getDisplayName(), "sdk_6");
+            Assert.assertTrue(info.getBucket().getOwner().getId().length() > 0);
+            Assert.assertEquals(info.getBucket().getOwner().getDisplayName(), info.getBucket().getOwner().getId());
             Assert.assertEquals(info.getGrants().size(), 1);
             for (Grant grant : info.getGrants()) {
                 Assert.assertEquals(grant.getGrantee(), GroupGrantee.AllUsers);
                 Assert.assertEquals(grant.getPermission(), Permission.Read);
             }
-                        
-            info = defaultClient.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
-            Assert.assertEquals(info.getBucket().getLocation(), "oss-cn-hangzhou");
-            Assert.assertEquals(info.getBucket().getCreationDate().toString().endsWith("CST 2016"), true);
-            Assert.assertEquals(info.getBucket().getOwner().getId(), "1148930107246818");
-            Assert.assertEquals(info.getBucket().getOwner().getDisplayName(), "1148930107246818");
-            Assert.assertEquals(info.getGrants().size(), 0);
             
         } catch (Exception e) {
             Assert.fail(e.getMessage());
@@ -70,21 +62,12 @@ public class BucketInfoTest extends TestBase {
             listBucketsRequest.setPrefix(bucketName);
             listBucketsRequest.setMaxKeys(1);
             
-            BucketList buckets = secondClient.listBuckets(listBucketsRequest);
+            BucketList buckets = ossClient.listBuckets(listBucketsRequest);
             Assert.assertEquals(buckets.getBucketList().size(), 1);
-            Assert.assertEquals(buckets.getBucketList().get(0).getExtranetEndpoint(), 
-                    "oss-test.aliyun-inc.com");
-            Assert.assertEquals(buckets.getBucketList().get(0).getIntranetEndpoint(),
-                    "oss-test.aliyun-inc.com");
-           
-            buckets = defaultClient.listBuckets(bucketName, "", 1); 
-            Assert.assertEquals(buckets.getBucketList().size(), 1);
-            Assert.assertEquals(buckets.getBucketList().get(0).getExtranetEndpoint(), 
-                    "oss-cn-hangzhou.aliyuncs.com");
-            Assert.assertEquals(buckets.getBucketList().get(0).getIntranetEndpoint(),
-                    "oss-cn-hangzhou-internal.aliyuncs.com");
-            
+            Assert.assertTrue(buckets.getBucketList().get(0).getExtranetEndpoint().endsWith(".aliyuncs.com"));
+            Assert.assertTrue(buckets.getBucketList().get(0).getIntranetEndpoint().endsWith(".aliyuncs.com"));
         } catch (Exception e) {
+            e.printStackTrace();
             Assert.fail(e.getMessage());
         }
     }
@@ -98,13 +81,11 @@ public class BucketInfoTest extends TestBase {
             listBucketsRequest.setMaxKeys(1);
             listBucketsRequest.setBid("26842");
             
-            BucketList buckets = secondClient.listBuckets(listBucketsRequest);
-            Assert.assertEquals(buckets.getBucketList().size(), 0);
-           
-            buckets = defaultClient.listBuckets(listBucketsRequest); 
+            BucketList buckets = ossClient.listBuckets(listBucketsRequest);
             Assert.assertEquals(buckets.getBucketList().size(), 1);
             
         } catch (Exception e) {
+            e.printStackTrace();
             Assert.fail(e.getMessage());
         }
     }

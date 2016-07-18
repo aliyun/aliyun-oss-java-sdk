@@ -45,16 +45,16 @@ public class GetSimplifiedObjectMetaTest extends TestBase {
         try {
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, 
                     genFixedLengthInputStream(inputStreamLength), null);
-            PutObjectResult putObjectResult = secondClient.putObject(putObjectRequest);
+            PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
             
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
-            OSSObject o = secondClient.getObject(getObjectRequest);
+            OSSObject o = ossClient.getObject(getObjectRequest);
             Assert.assertEquals(bucketName, o.getBucketName());
             Assert.assertEquals(key, o.getKey());
             Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
             o.getObjectContent().close();
             
-            SimplifiedObjectMeta objectMeta = secondClient.getSimplifiedObjectMeta(bucketName, key);
+            SimplifiedObjectMeta objectMeta = ossClient.getSimplifiedObjectMeta(bucketName, key);
             Assert.assertEquals(inputStreamLength, objectMeta.getSize());
             Assert.assertEquals(putObjectResult.getETag(), objectMeta.getETag());
             Assert.assertNotNull(objectMeta.getLastModified());
@@ -69,7 +69,7 @@ public class GetSimplifiedObjectMetaTest extends TestBase {
         final String key = "unormal-get-simplified-object-meta";
         final String nonexistentBucket = "nonexistent-bukcet";
         try {
-            secondClient.getSimplifiedObjectMeta(nonexistentBucket, key);
+            ossClient.getSimplifiedObjectMeta(nonexistentBucket, key);
             Assert.fail("Get simplified object meta should not be successful");
         } catch (OSSException ex) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, ex.getErrorCode());
@@ -79,7 +79,7 @@ public class GetSimplifiedObjectMetaTest extends TestBase {
         // Try to get nonexistent object
         final String nonexistentKey = "nonexistent-object";
         try {
-            secondClient.getSimplifiedObjectMeta(bucketName, nonexistentKey);
+            ossClient.getSimplifiedObjectMeta(bucketName, nonexistentKey);
             Assert.fail("Get simplified object meta should not be successful");
         } catch (OSSException ex) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, ex.getErrorCode());
@@ -87,8 +87,8 @@ public class GetSimplifiedObjectMetaTest extends TestBase {
         }
         
         // SignatureDoesNotMatch 
-        OSSClient client = new OSSClient(TestConfig.SECOND_ENDPOINT, TestConfig.SECOND_ACCESS_ID, 
-                TestConfig.SECOND_ACCESS_KEY + " ");
+        OSSClient client = new OSSClient(TestConfig.OSS_TEST_ENDPOINT, TestConfig.OSS_TEST_ACCESS_KEY_ID, 
+                TestConfig.OSS_TEST_ACCESS_KEY_SECRET + " ");
         try {
             client.getSimplifiedObjectMeta(bucketName, nonexistentKey);
             Assert.fail("Get simplified object meta should not be successful");
