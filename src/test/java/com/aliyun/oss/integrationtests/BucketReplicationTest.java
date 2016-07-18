@@ -19,9 +19,9 @@
 
 package com.aliyun.oss.integrationtests;
 
-import static com.aliyun.oss.integrationtests.TestConfig.SECOND_REPLICATION_ENDPOINT;
-import static com.aliyun.oss.integrationtests.TestConfig.SECOND_REPLICATION_ACCESS_ID;
-import static com.aliyun.oss.integrationtests.TestConfig.SECOND_REPLICATION_ACCESS_KEY;
+import static com.aliyun.oss.integrationtests.TestConfig.OSS_TEST_REPLICATION_ENDPOINT;
+import static com.aliyun.oss.integrationtests.TestConfig.OSS_TEST_REPLICATION_ACCESS_KEY_ID;
+import static com.aliyun.oss.integrationtests.TestConfig.OSS_TEST_REPLICATION_ACCESS_KEY_SECRET;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -34,13 +34,9 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
-import com.aliyun.oss.common.auth.Credentials;
-import com.aliyun.oss.common.auth.DefaultCredentialProvider;
-import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.model.BucketList;
 import com.aliyun.oss.model.BucketReplicationProgress;
 import com.aliyun.oss.model.DeleteBucketReplicationRequest;
@@ -58,11 +54,9 @@ public class BucketReplicationTest extends TestBase {
     @BeforeClass
     public static void beforeClass() {
         if (replicationClient == null) {
-            Credentials secondCreds = new DefaultCredentials(
-                    SECOND_REPLICATION_ACCESS_ID, SECOND_REPLICATION_ACCESS_KEY);
-            replicationClient = new OSSClient(SECOND_REPLICATION_ENDPOINT,
-                    new DefaultCredentialProvider(secondCreds),
-                    new ClientConfiguration().setSupportCname(false));
+            replicationClient = new OSSClient(OSS_TEST_REPLICATION_ENDPOINT,
+                    OSS_TEST_REPLICATION_ACCESS_KEY_ID, 
+                    OSS_TEST_REPLICATION_ACCESS_KEY_SECRET);
             
           replicationClient.createBucket(targetBucketName);
             
@@ -83,16 +77,16 @@ public class BucketReplicationTest extends TestBase {
         final String ruleId = "bucket-replication-rule-id";
 
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             AddBucketReplicationRequest request = new AddBucketReplicationRequest(bucketName);
             request.setReplicationRuleID(ruleId);
             request.setTargetBucketName(targetBucketName);
             request.setTargetBucketLocation(targetBucketLoc);
             
-            secondClient.addBucketReplication(request);
+            ossClient.addBucketReplication(request);
                         
-            List<ReplicationRule> rules = secondClient.getBucketReplication(bucketName);
+            List<ReplicationRule> rules = ossClient.getBucketReplication(bucketName);
             Assert.assertEquals(rules.size(), 1);
                                     
             ReplicationRule r0 = rules.get(0);
@@ -101,7 +95,7 @@ public class BucketReplicationTest extends TestBase {
             Assert.assertEquals(r0.getTargetBucketLocation(), targetBucketLoc);
             Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
             
-            BucketReplicationProgress progress = secondClient.getBucketReplicationProgress(bucketName, ruleId);
+            BucketReplicationProgress progress = ossClient.getBucketReplicationProgress(bucketName, ruleId);
             Assert.assertEquals(progress.getReplicationRuleID(), ruleId);
             Assert.assertEquals(progress.getTargetBucketName(), targetBucketName);
             Assert.assertEquals(progress.getTargetBucketLocation(), targetBucketLoc);
@@ -110,9 +104,9 @@ public class BucketReplicationTest extends TestBase {
             Assert.assertEquals(progress.isEnableHistoricalObjectReplication(), true);
             Assert.assertEquals(progress.getNewObjectProgress(), null);
                         
-            secondClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, ruleId));
+            ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, ruleId));
                         
-            rules = secondClient.getBucketReplication(bucketName);
+            rules = ossClient.getBucketReplication(bucketName);
             Assert.assertEquals(rules.size(), 1);
             
             r0 = rules.get(0);
@@ -121,14 +115,14 @@ public class BucketReplicationTest extends TestBase {
             Assert.assertEquals(r0.getTargetBucketLocation(), targetBucketLoc);
             Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Closing);
             
-            List <String> locations = secondClient.getBucketReplicationLocation(bucketName);
+            List <String> locations = ossClient.getBucketReplicationLocation(bucketName);
             Assert.assertEquals(locations.size() > 0, true);
             
         } catch (OSSException e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -137,14 +131,14 @@ public class BucketReplicationTest extends TestBase {
         final String bucketName = "test-bucket-replication-default-ruleid";
 
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             AddBucketReplicationRequest request = new AddBucketReplicationRequest(bucketName);
             request.setTargetBucketName(targetBucketName);
             request.setTargetBucketLocation(targetBucketLoc);
-            secondClient.addBucketReplication(request);
+            ossClient.addBucketReplication(request);
                         
-            List<ReplicationRule> rules = secondClient.getBucketReplication(bucketName);
+            List<ReplicationRule> rules = ossClient.getBucketReplication(bucketName);
             Assert.assertEquals(rules.size(), 1);
             
             ReplicationRule r0 = rules.get(0);
@@ -154,12 +148,12 @@ public class BucketReplicationTest extends TestBase {
             Assert.assertEquals(r0.isEnableHistoricalObjectReplication(), true);
             Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
             
-            secondClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, r0.getReplicationRuleID()));
+            ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, r0.getReplicationRuleID()));
                         
         } catch (OSSException e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -169,16 +163,16 @@ public class BucketReplicationTest extends TestBase {
         final String repRuleID = "~`!@#$%^&*()-_+=|\\[]{}<>:;\"',./?";
 
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
                         
             AddBucketReplicationRequest request = new AddBucketReplicationRequest(bucketName);
             request.setReplicationRuleID(repRuleID);
             request.setTargetBucketName(targetBucketName);
             request.setTargetBucketLocation(targetBucketLoc);
             request.setEnableHistoricalObjectReplication(false);
-            secondClient.addBucketReplication(request);
+            ossClient.addBucketReplication(request);
                                     
-            List<ReplicationRule> rules = secondClient.getBucketReplication(bucketName);
+            List<ReplicationRule> rules = ossClient.getBucketReplication(bucketName);
             Assert.assertEquals(rules.size(), 1);
                         
             ReplicationRule r0 = rules.get(0);
@@ -188,19 +182,19 @@ public class BucketReplicationTest extends TestBase {
             Assert.assertEquals(r0.isEnableHistoricalObjectReplication(), false);
             Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
             
-            BucketReplicationProgress process = secondClient.getBucketReplicationProgress(bucketName, repRuleID);
+            BucketReplicationProgress process = ossClient.getBucketReplicationProgress(bucketName, repRuleID);
             Assert.assertEquals(process.getReplicationRuleID(), repRuleID);
             Assert.assertEquals(process.getTargetBucketName(), targetBucketName);
             Assert.assertEquals(process.getTargetBucketLocation(), targetBucketLoc);
             Assert.assertEquals(process.getReplicationStatus(), ReplicationStatus.Starting);
             Assert.assertEquals(process.getHistoricalObjectProgress(), Float.valueOf(0));
             
-            secondClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, repRuleID));
+            ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, repRuleID));
                         
         } catch (OSSException e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -210,22 +204,22 @@ public class BucketReplicationTest extends TestBase {
         final String repRuleID = "test-replication-ruleid";
 
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             AddBucketReplicationRequest request = new AddBucketReplicationRequest(bucketName);
             request.setReplicationRuleID(repRuleID);
             request.setTargetBucketName(targetBucketName);
             request.setTargetBucketLocation(targetBucketLoc);
-            secondClient.addBucketReplication(request);
+            ossClient.addBucketReplication(request);
             
-            List<ReplicationRule> rules = secondClient.getBucketReplication(bucketName);
+            List<ReplicationRule> rules = ossClient.getBucketReplication(bucketName);
             Assert.assertEquals(rules.size(), 1);
             ReplicationRule r0 = rules.get(0);
             Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
             
-            secondClient.deleteBucketReplication(bucketName, repRuleID);
+            ossClient.deleteBucketReplication(bucketName, repRuleID);
             
-            rules = secondClient.getBucketReplication(bucketName);
+            rules = ossClient.getBucketReplication(bucketName);
             Assert.assertEquals(rules.size(), 1);
             r0 = rules.get(0);
             Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Closing);
@@ -233,7 +227,7 @@ public class BucketReplicationTest extends TestBase {
         } catch (OSSException e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -243,22 +237,22 @@ public class BucketReplicationTest extends TestBase {
         final String repRuleID = "test-replication-ruleid";
 
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             AddBucketReplicationRequest request = new AddBucketReplicationRequest(bucketName);
             request.setReplicationRuleID(repRuleID);
             request.setTargetBucketName(targetBucketName);
             request.setTargetBucketLocation(targetBucketLoc);
-            secondClient.addBucketReplication(request);
+            ossClient.addBucketReplication(request);
             
-            List<ReplicationRule> rules = secondClient.getBucketReplication(bucketName);
+            List<ReplicationRule> rules = ossClient.getBucketReplication(bucketName);
             Assert.assertEquals(rules.size(), 1);
             ReplicationRule r0 = rules.get(0);
             Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
             
-            secondClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName).withReplicationRuleID(repRuleID));
+            ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName).withReplicationRuleID(repRuleID));
             
-            rules = secondClient.getBucketReplication(bucketName);
+            rules = ossClient.getBucketReplication(bucketName);
             Assert.assertEquals(rules.size(), 1);
             r0 = rules.get(0);
             Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Closing);
@@ -266,7 +260,7 @@ public class BucketReplicationTest extends TestBase {
         } catch (OSSException e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -276,15 +270,15 @@ public class BucketReplicationTest extends TestBase {
         final String repRuleID = "test-replication-progress-ruleid";
         
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             AddBucketReplicationRequest request = new AddBucketReplicationRequest(bucketName);
             request.setReplicationRuleID(repRuleID);
             request.setTargetBucketName(targetBucketName);
             request.setTargetBucketLocation(targetBucketLoc);
-            secondClient.addBucketReplication(request);
+            ossClient.addBucketReplication(request);
             
-            List<ReplicationRule> rules = secondClient.getBucketReplication(bucketName);
+            List<ReplicationRule> rules = ossClient.getBucketReplication(bucketName);
             Assert.assertEquals(rules.size(), 1);
             ReplicationRule r0 = rules.get(0);
             Assert.assertEquals(r0.getReplicationRuleID(), repRuleID);
@@ -293,7 +287,7 @@ public class BucketReplicationTest extends TestBase {
             Assert.assertEquals(r0.isEnableHistoricalObjectReplication(), true);
             Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
             
-            BucketReplicationProgress process = secondClient.getBucketReplicationProgress(bucketName, repRuleID);
+            BucketReplicationProgress process = ossClient.getBucketReplicationProgress(bucketName, repRuleID);
             Assert.assertEquals(process.getReplicationRuleID(), repRuleID);
             Assert.assertEquals(process.getTargetBucketName(), targetBucketName);
             Assert.assertEquals(process.getTargetBucketLocation(), targetBucketLoc);
@@ -302,11 +296,11 @@ public class BucketReplicationTest extends TestBase {
             Assert.assertEquals(process.getHistoricalObjectProgress(), Float.valueOf(0));
             Assert.assertEquals(process.getNewObjectProgress(), null);
                         
-            secondClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, repRuleID));
+            ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, repRuleID));
         } catch (OSSException e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -317,16 +311,16 @@ public class BucketReplicationTest extends TestBase {
 //        Date now = Calendar.getInstance().getTime();
 
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
 
             AddBucketReplicationRequest request = new AddBucketReplicationRequest(bucketName);
             request.setReplicationRuleID(repRuleID);
             request.setTargetBucketName(targetBucketName);
             request.setTargetBucketLocation(targetBucketLoc);
             request.setEnableHistoricalObjectReplication(false);
-            secondClient.addBucketReplication(request);
+            ossClient.addBucketReplication(request);
 
-            List<ReplicationRule> rules = secondClient.getBucketReplication(bucketName);
+            List<ReplicationRule> rules = ossClient.getBucketReplication(bucketName);
             Assert.assertEquals(rules.size(), 1);
             ReplicationRule r0 = rules.get(0);
             Assert.assertEquals(r0.getReplicationRuleID(), repRuleID);
@@ -335,7 +329,7 @@ public class BucketReplicationTest extends TestBase {
             Assert.assertEquals(r0.isEnableHistoricalObjectReplication(), false);
             Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
 
-            BucketReplicationProgress process = secondClient
+            BucketReplicationProgress process = ossClient
                     .getBucketReplicationProgress(new GetBucketReplicationProgressRequest(
                             bucketName).withReplicationRuleID(repRuleID));
             Assert.assertEquals(process.getReplicationRuleID(), repRuleID);
@@ -347,12 +341,12 @@ public class BucketReplicationTest extends TestBase {
             Assert.assertEquals(process.getNewObjectProgress(), null);
             // Assert.assertEquals(diffSecond(process.getNewObjectProgress(), now) < 5, true);
 
-            secondClient.deleteBucketReplication(new DeleteBucketReplicationRequest(
+            ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(
                             bucketName, repRuleID));
         } catch (OSSException e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -361,9 +355,9 @@ public class BucketReplicationTest extends TestBase {
         final String bucketName = "test-bucket-replication-location";
 
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
-            List<String> locations = secondClient.getBucketReplicationLocation(bucketName);
+            List<String> locations = ossClient.getBucketReplicationLocation(bucketName);
             Assert.assertEquals(locations.size() > 0, true);
             
             for (String loc : locations) {
@@ -373,7 +367,7 @@ public class BucketReplicationTest extends TestBase {
         } catch (OSSException e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -384,28 +378,28 @@ public class BucketReplicationTest extends TestBase {
         final String ruleId = "bucket-replication-rule-id";
 
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             AddBucketReplicationRequest request = new AddBucketReplicationRequest(bucketName);
             request.setTargetBucketName(targetBucketName);
             request.setTargetBucketLocation(targetBucketLoc);
             request.setReplicationRuleID(ruleId);
-            secondClient.addBucketReplication(request);
+            ossClient.addBucketReplication(request);
             
             try {
-                secondClient.addBucketReplication(request);
+                ossClient.addBucketReplication(request);
                 Assert.fail("Set bucket replication should not be successful.");
             } catch (OSSException e) {
                 Assert.assertEquals(e.getErrorCode(), "InvalidArgument");
                 Assert.assertEquals(e.getMessage().startsWith("Rule ID is not unique."), true);
             }
             
-            secondClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, ruleId));
+            ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, ruleId));
                         
         } catch (OSSException e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -415,7 +409,7 @@ public class BucketReplicationTest extends TestBase {
         final String ruleId = "bucket-replication-rule-id";
 
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             AddBucketReplicationRequest request = new AddBucketReplicationRequest(bucketName);
             request.setTargetBucketName(targetBucketName);
@@ -423,7 +417,7 @@ public class BucketReplicationTest extends TestBase {
             request.setReplicationRuleID(ruleId);
             
             try {
-                secondClient.addBucketReplication(request);
+                ossClient.addBucketReplication(request);
                 Assert.fail("Set bucket replication should not be successful.");
             } catch (OSSException e) {
                 Assert.assertEquals(e.getErrorCode(), "InvalidTargetLocation");
@@ -433,7 +427,7 @@ public class BucketReplicationTest extends TestBase {
         } catch (OSSException e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -442,10 +436,10 @@ public class BucketReplicationTest extends TestBase {
         final String bucketName = "test-unormal-get-bucket-replication";
 
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
                      
             try {
-                secondClient.getBucketReplication(bucketName);
+                ossClient.getBucketReplication(bucketName);
                 Assert.fail("Get bucket replication should not be successful.");
             } catch (OSSException e) {
                 Assert.assertEquals(e.getErrorCode(), "NoSuchReplicationConfiguration");
@@ -455,7 +449,7 @@ public class BucketReplicationTest extends TestBase {
         } catch (OSSException e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -465,10 +459,10 @@ public class BucketReplicationTest extends TestBase {
         final String repRuleID = "test-replication-progress-ruleid";
         
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             try {
-                secondClient.getBucketReplicationProgress(bucketName, repRuleID);
+                ossClient.getBucketReplicationProgress(bucketName, repRuleID);
                 Assert.fail("Get bucket replication should not be successful.");
             } catch (OSSException e) {
                 Assert.assertEquals(e.getErrorCode(), "NoSuchReplicationRule");
@@ -478,7 +472,7 @@ public class BucketReplicationTest extends TestBase {
         } catch (OSSException e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -487,7 +481,7 @@ public class BucketReplicationTest extends TestBase {
         final String bucketName = "test-unormal-bucket-replication-location";
 
         try {
-            secondClient.getBucketReplicationLocation(bucketName);
+            ossClient.getBucketReplicationLocation(bucketName);
             Assert.fail("Get bucket replication location should not be successful.");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
@@ -501,13 +495,13 @@ public class BucketReplicationTest extends TestBase {
         final String bucketName = "test-unormal-bucket-delete-replication-param";
         
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
                      
             AddBucketReplicationRequest request = new AddBucketReplicationRequest(bucketName);
             request.setTargetBucketName(targetBucketName);
                 
             try {
-                secondClient.addBucketReplication(request);
+                ossClient.addBucketReplication(request);
                 Assert.fail("Get bucket replication should not be successful.");
             } catch (NullPointerException e) {
             }
@@ -515,7 +509,7 @@ public class BucketReplicationTest extends TestBase {
         } catch (OSSException e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -525,26 +519,26 @@ public class BucketReplicationTest extends TestBase {
         final String ruleId = "bucket-replication-rule-id";
         
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
                      
             AddBucketReplicationRequest request = new AddBucketReplicationRequest(bucketName);
             request.setTargetBucketName(targetBucketName);
             request.setTargetBucketLocation(targetBucketLoc);
             request.setReplicationRuleID(ruleId);
-            secondClient.addBucketReplication(request);
+            ossClient.addBucketReplication(request);
                 
             try {
-                secondClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName));
+                ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName));
                 Assert.fail("Get bucket replication should not be successful.");
             } catch (NullPointerException e) {
             }
             
-            secondClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, ruleId));
+            ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, ruleId));
             
         } catch (OSSException e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -554,26 +548,26 @@ public class BucketReplicationTest extends TestBase {
         final String ruleId = "bucket-replication-rule-id";
         
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
                      
             AddBucketReplicationRequest request = new AddBucketReplicationRequest(bucketName);
             request.setTargetBucketName(targetBucketName);
             request.setTargetBucketLocation(targetBucketLoc);
             request.setReplicationRuleID(ruleId);
-            secondClient.addBucketReplication(request);
+            ossClient.addBucketReplication(request);
                 
             try {
-                secondClient.getBucketReplicationProgress(new GetBucketReplicationProgressRequest(bucketName));
+                ossClient.getBucketReplicationProgress(new GetBucketReplicationProgressRequest(bucketName));
                 Assert.fail("Get bucket replication should not be successful.");
             } catch (NullPointerException e) {
             }
             
-            secondClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, ruleId));
+            ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, ruleId));
             
         } catch (OSSException e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     

@@ -34,52 +34,46 @@ public class UploadFileTest extends TestBase {
 
     @Test
     public void testUploadFileWithoutCheckpoint() {
-        final String bucketName = "bucket-upload-file-wcp";
         final String key = "obj-upload-file-wcp";
         
-        try {
-            secondClient.createBucket(bucketName);
-            
+        try {            
             File file = createSampleFile(key, 1024 * 500);
              
             UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
             uploadFileRequest.setUploadFile(file.getAbsolutePath());
             uploadFileRequest.setTaskNum(10);
             
-            UploadFileResult uploadRes = secondClient.uploadFile(uploadFileRequest);
+            UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
             Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
             Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
                 
-            ObjectListing objects = secondClient.listObjects(bucketName, key);
+            ObjectListing objects = ossClient.listObjects(bucketName, key);
             Assert.assertEquals(objects.getObjectSummaries().size(), 1);
             Assert.assertEquals(objects.getObjectSummaries().get(0).getKey(), key);
             Assert.assertEquals(objects.getObjectSummaries().get(0).getSize(), file.length());
 
-            ObjectMetadata meta = secondClient.getObjectMetadata(bucketName, key);
+            ObjectMetadata meta = ossClient.getObjectMetadata(bucketName, key);
             Assert.assertEquals(meta.getContentLength(), file.length());
             
             File fileNew = new File(key + "-new.txt");
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
-            secondClient.getObject(getObjectRequest, fileNew);
+            ossClient.getObject(getObjectRequest, fileNew);
             Assert.assertEquals(file.length(), fileNew.length());
             
-            secondClient.deleteObject(bucketName, key);
+            ossClient.deleteObject(bucketName, key);
             fileNew.delete();
         } catch (Throwable e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
     @Test
     public void testUploadFileWithCheckpoint() {
-        final String bucketName = "bucket-upload-file-cp";
         final String key = "obj-upload-file-cp";
         
-        try {
-            secondClient.createBucket(bucketName);
-            
+        try {            
             File file = createSampleFile(key, 1024 * 500);
              
             UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
@@ -87,40 +81,37 @@ public class UploadFileTest extends TestBase {
             uploadFileRequest.setTaskNum(10);
             uploadFileRequest.setEnableCheckpoint(true);
             
-            UploadFileResult uploadRes = secondClient.uploadFile(uploadFileRequest);
+            UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
             Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
             Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
                 
-            ObjectListing objects = secondClient.listObjects(bucketName, key);
+            ObjectListing objects = ossClient.listObjects(bucketName, key);
             Assert.assertEquals(objects.getObjectSummaries().size(), 1);
             Assert.assertEquals(objects.getObjectSummaries().get(0).getKey(), key);
             Assert.assertEquals(objects.getObjectSummaries().get(0).getSize(), file.length());
 
-            ObjectMetadata meta = secondClient.getObjectMetadata(bucketName, key);
+            ObjectMetadata meta = ossClient.getObjectMetadata(bucketName, key);
             Assert.assertEquals(meta.getContentLength(), file.length());
             
             File fileNew = new File(key + "-new.txt");
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
-            secondClient.getObject(getObjectRequest, fileNew);
+            ossClient.getObject(getObjectRequest, fileNew);
             Assert.assertEquals(file.length(), fileNew.length());
             
-            secondClient.deleteObject(bucketName, key);
+            ossClient.deleteObject(bucketName, key);
             fileNew.delete();
         } catch (Throwable e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
 
     @Test
     public void testUploadFileWithCheckpointFile() {
-        final String bucketName = "bucket-upload-file-cpf";
         final String key = "obj-upload-file-cpf";
         
-        try {
-            secondClient.createBucket(bucketName);
-            
+        try {            
             File file = createSampleFile(key, 1024 * 500);
              
             UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
@@ -129,29 +120,29 @@ public class UploadFileTest extends TestBase {
             uploadFileRequest.setEnableCheckpoint(true);
             uploadFileRequest.setCheckpointFile("BingWallpaper.ucp");
             
-            UploadFileResult uploadRes = secondClient.uploadFile(uploadFileRequest);
+            UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
             Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
             Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
                 
-            ObjectListing objects = secondClient.listObjects(bucketName, key);
+            ObjectListing objects = ossClient.listObjects(bucketName, key);
             Assert.assertEquals(objects.getObjectSummaries().size(), 1);
             Assert.assertEquals(objects.getObjectSummaries().get(0).getKey(), key);
             Assert.assertEquals(objects.getObjectSummaries().get(0).getSize(), file.length());
 
-            ObjectMetadata meta = secondClient.getObjectMetadata(bucketName, key);
+            ObjectMetadata meta = ossClient.getObjectMetadata(bucketName, key);
             Assert.assertEquals(meta.getContentLength(), file.length());
             
             File fileNew = new File(key + "-new.txt");
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
-            secondClient.getObject(getObjectRequest, fileNew);
+            ossClient.getObject(getObjectRequest, fileNew);
             Assert.assertEquals(file.length(), fileNew.length());
             
-            secondClient.deleteObject(bucketName, key);
+            ossClient.deleteObject(bucketName, key);
             fileNew.delete();
         } catch (Throwable e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     

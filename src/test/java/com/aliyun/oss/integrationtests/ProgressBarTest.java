@@ -220,9 +220,9 @@ public class ProgressBarTest extends TestBase {
         
         try {
             File fileToUpload = new File(genFixedLengthFile(instreamLength));
-            secondClient.putObject(new PutObjectRequest(bucketName, key, fileToUpload).
+            ossClient.putObject(new PutObjectRequest(bucketName, key, fileToUpload).
                     <PutObjectRequest>withProgressListener(new PutObjectProgressListener()));
-            ObjectMetadata metadata = secondClient.getObject(new GetObjectRequest(bucketName, key).
+            ObjectMetadata metadata = ossClient.getObject(new GetObjectRequest(bucketName, key).
                     <GetObjectRequest>withProgressListener(new GetObjectProgressListener()), new File(filePath));
             Assert.assertEquals(instreamLength, metadata.getContentLength());
         } catch (Exception ex) {
@@ -238,7 +238,7 @@ public class ProgressBarTest extends TestBase {
         ExecutorService executorService = Executors.newFixedThreadPool(5);
         List<PartETag> partETags = Collections.synchronizedList(new ArrayList<PartETag>());
 
-        String uploadId = TestUtils.claimUploadId(secondClient, bucketName, key);
+        String uploadId = TestUtils.claimUploadId(ossClient, bucketName, key);
         
         final long partSize = 5 * 1024 * 1024L;   // 5MB
         final File tempFile = new File(genFixedLengthFile(instreamLength));
@@ -277,7 +277,7 @@ public class ProgressBarTest extends TestBase {
         try {
             CompleteMultipartUploadRequest completeMultipartUploadRequest = 
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
-            secondClient.completeMultipartUpload(completeMultipartUploadRequest);
+            ossClient.completeMultipartUpload(completeMultipartUploadRequest);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -324,7 +324,7 @@ public class ProgressBarTest extends TestBase {
                 uploadPartRequest.setPartNumber(this.partNumber);
                 uploadPartRequest.setProgressListener(this.listener);
                 
-                UploadPartResult uploadPartResult = secondClient.uploadPart(uploadPartRequest);
+                UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
                 synchronized (this.partETags) {
                     this.partETags.add(uploadPartResult.getPartETag());
                 }

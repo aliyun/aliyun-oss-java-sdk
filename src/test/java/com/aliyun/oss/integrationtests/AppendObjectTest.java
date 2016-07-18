@@ -51,8 +51,8 @@ public class AppendObjectTest extends TestBase {
                 InputStream instream = genFixedLengthInputStream(instreamLength);
                 AppendObjectRequest appendObjectRequest = new AppendObjectRequest(bucketName, key, instream, null);
                 appendObjectRequest.setPosition(2 * i * instreamLength);
-                AppendObjectResult appendObjectResult = secondClient.appendObject(appendObjectRequest);
-                OSSObject o = secondClient.getObject(bucketName, key);
+                AppendObjectResult appendObjectResult = ossClient.appendObject(appendObjectRequest);
+                OSSObject o = ossClient.getObject(bucketName, key);
                 Assert.assertEquals(key, o.getKey());
                 Assert.assertEquals((2 * i + 1) * instreamLength, o.getObjectMetadata().getContentLength());
                 Assert.assertEquals(APPENDABLE_OBJECT_TYPE, o.getObjectMetadata().getObjectType());
@@ -64,8 +64,8 @@ public class AppendObjectTest extends TestBase {
                 final String filePath = genFixedLengthFile(instreamLength);
                 appendObjectRequest = new AppendObjectRequest(bucketName, key, new File(filePath));
                 appendObjectRequest.setPosition(appendObjectResult.getNextPosition());
-                appendObjectResult = secondClient.appendObject(appendObjectRequest);
-                o = secondClient.getObject(bucketName, key);
+                appendObjectResult = ossClient.appendObject(appendObjectRequest);
+                o = ossClient.getObject(bucketName, key);
                 Assert.assertEquals(instreamLength * 2 * (i + 1), o.getObjectMetadata().getContentLength());
                 Assert.assertEquals(APPENDABLE_OBJECT_TYPE, o.getObjectMetadata().getObjectType());
                 if (appendObjectResult.getNextPosition() != null) {                
@@ -84,8 +84,8 @@ public class AppendObjectTest extends TestBase {
         
         try {
             InputStream instream = genFixedLengthInputStream(instreamLength);
-            defaultClient.putObject(bucketName, key, instream, null);
-            OSSObject o = defaultClient.getObject(bucketName, key);
+            ossClient.putObject(bucketName, key, instream, null);
+            OSSObject o = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, o.getKey());
             Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
             o.getObjectContent().close();
@@ -94,7 +94,7 @@ public class AppendObjectTest extends TestBase {
                 instream = genFixedLengthInputStream(instreamLength);
                 AppendObjectRequest appendObjectRequest = new AppendObjectRequest(bucketName, key, instream, null);
                 appendObjectRequest.setPosition(instreamLength);
-                defaultClient.appendObject(appendObjectRequest);
+                ossClient.appendObject(appendObjectRequest);
             } catch (OSSException ex) {
                 Assert.assertEquals(OSSErrorCode.OBJECT_NOT_APPENDALBE, ex.getErrorCode());
                 Assert.assertTrue(ex.getMessage().startsWith(OBJECT_NOT_APPENDABLE_ERR));
@@ -113,8 +113,8 @@ public class AppendObjectTest extends TestBase {
             InputStream instream = genFixedLengthInputStream(instreamLength);
             AppendObjectRequest appendObjectRequest = new AppendObjectRequest(bucketName, key, instream, null);
             appendObjectRequest.setPosition(0L);
-            AppendObjectResult appendObjectResult = defaultClient.appendObject(appendObjectRequest);
-            OSSObject o = defaultClient.getObject(bucketName, key);
+            AppendObjectResult appendObjectResult = ossClient.appendObject(appendObjectRequest);
+            OSSObject o = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, o.getKey());
             Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
             Assert.assertEquals(APPENDABLE_OBJECT_TYPE, o.getObjectMetadata().getObjectType());
@@ -128,7 +128,7 @@ public class AppendObjectTest extends TestBase {
                 appendObjectRequest = new AppendObjectRequest(bucketName, key, instream, null);
                 // Set illegal postion to append, here should be 'instreamLength' rather than other positions.
                 appendObjectRequest.setPosition(instreamLength - 1);        
-                defaultClient.appendObject(appendObjectRequest);
+                ossClient.appendObject(appendObjectRequest);
             } catch (OSSException ex) {
                 Assert.assertEquals(OSSErrorCode.POSITION_NOT_EQUAL_TO_LENGTH, ex.getErrorCode());
                 Assert.assertTrue(ex.getMessage().startsWith(POSITION_NOT_EQUAL_TO_LENGTH_ERROR));
@@ -144,11 +144,11 @@ public class AppendObjectTest extends TestBase {
         final long instreamLength = 128 * 1024;
         
         try {
-            Assert.assertEquals(true, defaultClient.doesBucketExist(bucketName));
+            Assert.assertEquals(true, ossClient.doesBucketExist(bucketName));
             InputStream instream = genFixedLengthInputStream(instreamLength);
             AppendObjectRequest appendObjectRequest = new AppendObjectRequest(bucketName, key, instream, null);
             // Missing required parameter 'postition'
-            defaultClient.appendObject(appendObjectRequest);
+            ossClient.appendObject(appendObjectRequest);
         } catch (OSSException ex) {
             Assert.assertEquals(OSSErrorCode.MISSING_ARGUMENT, ex.getErrorCode());
             Assert.assertTrue(ex.getMessage().startsWith(MISSING_ARGUMENT_ERR));

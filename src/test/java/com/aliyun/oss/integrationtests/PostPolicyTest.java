@@ -36,9 +36,7 @@ public class PostPolicyTest extends TestBase {
     public void testGenPostPolicy() {    
         final String bucketName = "gen-post-policy";
         
-        try {
-            secondClient.createBucket(bucketName);
-            
+        try {            
             Date expiration = DateUtil.parseIso8601Date("2015-03-19T03:44:06.476Z");
             
             PolicyConditions policyConds = new PolicyConditions();
@@ -49,7 +47,7 @@ public class PostPolicyTest extends TestBase {
             policyConds.addConditionItem(MatchMode.StartWith, "x-oss-meta-tag", "dummy_etag");
             policyConds.addConditionItem(PolicyConditions.COND_CONTENT_LENGTH_RANGE, 1, 1024);
 
-            String actualPostPolicy = secondClient.generatePostPolicy(expiration, policyConds);
+            String actualPostPolicy = ossClient.generatePostPolicy(expiration, policyConds);
             String expectedPostPolicy = String.format("{\"expiration\":\"2015-03-19T03:44:06.476Z\",\"conditions\":[{\"bucket\":\"%s\"},"
                     + "[\"eq\",\"$key\",\"user/eric/\\${filename}\"],[\"starts-with\",\"$key\",\"user/eric\"],[\"starts-with\",\"$x-oss-meta-tag\","
                     + "\"dummy_etag\"],[\"content-length-range\",1,1024]]}", bucketName);
@@ -64,13 +62,11 @@ public class PostPolicyTest extends TestBase {
                     + "VudC1sZW5ndGgtcmFuZ2UiLDEsMTAyNF1dfQ==";
             Assert.assertEquals(expectedEncodedPolicy, actualEncodedPolicy);
             
-            String actualPostSignature = secondClient.calculatePostSignature(actualPostPolicy);
-            String expectedPostSignature = "4j8RKOVq7f0Sbz3h2COVuu47914=";
+            String actualPostSignature = ossClient.calculatePostSignature(actualPostPolicy);
+            String expectedPostSignature = "88kD3wGu1W5isVAdWSG765DRPKY=";
             Assert.assertEquals(expectedPostSignature, actualPostSignature);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
-        } finally {
-            secondClient.deleteBucket(bucketName);
         }
     }
 

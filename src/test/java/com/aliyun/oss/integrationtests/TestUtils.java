@@ -19,39 +19,8 @@
 
 package com.aliyun.oss.integrationtests;
 
-import static com.aliyun.oss.integrationtests.TestConfig.BEIJING_ACCESS_ID;
-import static com.aliyun.oss.integrationtests.TestConfig.BEIJING_ACCESS_KEY;
-import static com.aliyun.oss.integrationtests.TestConfig.BEIJING_ENDPOINT;
-import static com.aliyun.oss.integrationtests.TestConfig.DEFAULT_ACCESS_ID_1;
-import static com.aliyun.oss.integrationtests.TestConfig.DEFAULT_ACCESS_KEY_1;
-import static com.aliyun.oss.integrationtests.TestConfig.DEFAULT_ENDPOINT;
-import static com.aliyun.oss.integrationtests.TestConfig.DOWNLOAD_DIRECOTRY;
-import static com.aliyun.oss.integrationtests.TestConfig.HONGKONG_ACCESS_ID;
-import static com.aliyun.oss.integrationtests.TestConfig.HONGKONG_ACCESS_KEY;
-import static com.aliyun.oss.integrationtests.TestConfig.HONGKONG_ENDPOINT;
-import static com.aliyun.oss.integrationtests.TestConfig.POP_PWD;
-import static com.aliyun.oss.integrationtests.TestConfig.POP_USER;
-import static com.aliyun.oss.integrationtests.TestConfig.QINGDAO_ACCESS_ID;
-import static com.aliyun.oss.integrationtests.TestConfig.QINGDAO_ACCESS_KEY;
-import static com.aliyun.oss.integrationtests.TestConfig.QINGDAO_ENDPOINT;
-import static com.aliyun.oss.integrationtests.TestConfig.SECOND_ENDPOINT;
-import static com.aliyun.oss.integrationtests.TestConfig.SHENZHEN_ACCESS_ID;
-import static com.aliyun.oss.integrationtests.TestConfig.SHENZHEN_ACCESS_KEY;
-import static com.aliyun.oss.integrationtests.TestConfig.SHENZHEN_ENDPOINT;
-import static com.aliyun.oss.integrationtests.TestConfig.STS_DURATION_SECONDS;
-import static com.aliyun.oss.integrationtests.TestConfig.STS_GET_TOKEN_URI;
-import static com.aliyun.oss.integrationtests.TestConfig.STS_GRANTEE;
-import static com.aliyun.oss.integrationtests.TestConfig.STS_HOST;
-import static com.aliyun.oss.integrationtests.TestConfig.STS_PORT;
-import static com.aliyun.oss.integrationtests.TestConfig.STS_USER;
-import static com.aliyun.oss.integrationtests.TestConfig.STS_VERSION;
-import static com.aliyun.oss.integrationtests.TestConfig.UPLOAD_DIRECOTRY;
+import static com.aliyun.oss.integrationtests.TestConfig.OSS_TEST_ENDPOINT;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
-import static com.aliyun.oss.model.LocationConstraint.OSS_CN_BEIJING;
-import static com.aliyun.oss.model.LocationConstraint.OSS_CN_HANGZHOU;
-import static com.aliyun.oss.model.LocationConstraint.OSS_CN_HONGKONG;
-import static com.aliyun.oss.model.LocationConstraint.OSS_CN_QINGDAO;
-import static com.aliyun.oss.model.LocationConstraint.OSS_CN_SHENZHEN;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -105,7 +74,7 @@ public class TestUtils {
         'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
     };
-    
+     
     private static final int MAX_RANDOM_LENGTH = 1 * 1024 * 1024 * 1024; // 1GB
     
     private static Random rand = new Random();
@@ -157,24 +126,6 @@ public class TestUtils {
         return new String(data);
     }
     
-    public static OSSClient createClientByLocation(final String location) {
-        OSSClient client = null;
-        if (OSS_CN_BEIJING.equals(location)) {
-            client = new OSSClient(BEIJING_ENDPOINT, BEIJING_ACCESS_ID, BEIJING_ACCESS_KEY);
-        } else if (OSS_CN_HANGZHOU.equals(location)) {
-            client = new OSSClient(DEFAULT_ENDPOINT, DEFAULT_ACCESS_ID_1, DEFAULT_ACCESS_KEY_1);
-        } else if (OSS_CN_HONGKONG.equals(location)) {
-            client = new OSSClient(HONGKONG_ENDPOINT, HONGKONG_ACCESS_ID, HONGKONG_ACCESS_KEY);
-        } else if (OSS_CN_QINGDAO.equals(location)) {
-            client = new OSSClient(QINGDAO_ENDPOINT, QINGDAO_ACCESS_ID, QINGDAO_ACCESS_KEY);
-        } else if (OSS_CN_SHENZHEN.equals(location)) {
-            client = new OSSClient(SHENZHEN_ENDPOINT, SHENZHEN_ACCESS_ID, SHENZHEN_ACCESS_KEY);
-        } else {
-            throw new IllegalArgumentException("Unsupported location " + location);
-        }
-        return client;
-    }
-    
     public static String buildObjectKey(String keyPrefix, int seqNum) {
         return keyPrefix + seqNum;
     }
@@ -192,8 +143,8 @@ public class TestUtils {
     }
     
     public static String genFixedLengthFile(long fixedLength) throws IOException {
-        ensureDirExist(UPLOAD_DIRECOTRY);
-        String filePath = UPLOAD_DIRECOTRY + System.currentTimeMillis();
+        ensureDirExist(TestBase.UPLOAD_DIR);
+        String filePath = TestBase.UPLOAD_DIR + System.currentTimeMillis();
         RandomAccessFile raf = new RandomAccessFile(filePath, "rw");
         FileChannel fc = raf.getChannel();
         
@@ -215,13 +166,13 @@ public class TestUtils {
     }
     
     public static String buildFilePath() {
-        ensureDirExist(DOWNLOAD_DIRECOTRY);
-        return DOWNLOAD_DIRECOTRY + System.currentTimeMillis();
+        ensureDirExist(TestBase.DOWNLOAD_DIR);
+        return TestBase.DOWNLOAD_DIR + System.currentTimeMillis();
     }
     
     public static String genRandomLengthFile() throws IOException {
-        ensureDirExist(UPLOAD_DIRECOTRY);
-        String filePath = UPLOAD_DIRECOTRY + System.currentTimeMillis();
+        ensureDirExist(TestBase.UPLOAD_DIR);
+        String filePath = TestBase.UPLOAD_DIR + System.currentTimeMillis();
         RandomAccessFile raf = new RandomAccessFile(filePath, "rw");
         FileChannel fc = raf.getChannel();
         
@@ -393,8 +344,8 @@ public class TestUtils {
     
     public static OSSClient createSessionClient(List<String> actions, List<String> resources) {
         String tokenPolicy = jsonizeTokenPolicy(actions, resources, true);
-        StsToken token = getStsToken(STS_USER, STS_GRANTEE, STS_DURATION_SECONDS, tokenPolicy);
-        return new OSSClient(SECOND_ENDPOINT, token.accessKeyId, token.secretAccessKey, token.securityToken,
+        StsToken token = getStsToken("", "", 3600, tokenPolicy);
+        return new OSSClient(OSS_TEST_ENDPOINT, token.accessKeyId, token.secretAccessKey, token.securityToken,
                 new ClientConfiguration().setSupportCname(false));
     }
     
@@ -408,7 +359,7 @@ public class TestUtils {
         stmtJsonArray.add(0, stmtJsonObject);
 
         JSONObject policyJsonObject = new JSONObject();
-        policyJsonObject.put("Version", STS_VERSION);
+        policyJsonObject.put("Version", "1");
         policyJsonObject.put("Statement", stmtJsonArray);
         
         return policyJsonObject.toString();
@@ -417,18 +368,18 @@ public class TestUtils {
     public static StsToken getStsToken(String grantor, String grantee, 
             long durationSeconds, String policy) {
         try {
-            URI apiUri = new URI(Protocol.HTTPS.toString(), null, STS_HOST, STS_PORT, 
-                    STS_GET_TOKEN_URI, null, null);
+            URI apiUri = new URI(Protocol.HTTPS.toString(), null, "", 80,
+                    "", null, null);
             
             HttpPost httpPost = new HttpPost(apiUri);
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();  
-            nvps.add(new BasicNameValuePair("STSVERSION", STS_VERSION));  
+            nvps.add(new BasicNameValuePair("STSVERSION", "1"));
             nvps.add(new BasicNameValuePair("CALLERUID", grantor));  
             nvps.add(new BasicNameValuePair("GRANTEE", grantee));  
             nvps.add(new BasicNameValuePair("DURATIONSECONDS", String.valueOf(durationSeconds)));  
             nvps.add(new BasicNameValuePair("POLICY", policy));  
-            nvps.add(new BasicNameValuePair("APIUSERNAME", POP_USER));  
-            nvps.add(new BasicNameValuePair("APIPASSWORD", POP_PWD));
+            nvps.add(new BasicNameValuePair("APIUSERNAME", ""));
+            nvps.add(new BasicNameValuePair("APIPASSWORD", ""));
             nvps.add(new BasicNameValuePair("MFAPresent", "false"));
             nvps.add(new BasicNameValuePair("OwnerId", grantor));
             nvps.add(new BasicNameValuePair("CallerType", "customer"));
@@ -460,17 +411,5 @@ public class TestUtils {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
-    }
-
-    public static void __main(String[] args) {
-        List<String> actions = new ArrayList<String>();
-        actions.add("oss:GetObject");
-        actions.add("oss:PutObject");        
-        List<String> resources = new ArrayList<String>();
-        resources.add("acs:oss:*:" + STS_USER + ":test-sts/*");
-        resources.add("acs:oss:*:" + STS_USER + ":test-sts/abc*");
-        
-        String tokenPolicy = TestUtils.jsonizeTokenPolicy(actions, resources, true);
-        TestUtils.getStsToken(STS_USER, "testuser1", 3600, tokenPolicy);
     }
 }

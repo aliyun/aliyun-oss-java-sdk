@@ -48,9 +48,9 @@ import com.aliyun.oss.model.UploadFileRequest;
 @Ignore
 public class RequestTimeoutTest extends TestBase {
     
-    private final static String endpoint = TestConfig.DEFAULT_ENDPOINT;
-    private final static String accessId = TestConfig.DEFAULT_ACCESS_ID_1;
-    private final static String accessKey = TestConfig.DEFAULT_ACCESS_KEY_1;
+    private final static String endpoint = TestConfig.OSS_TEST_ENDPOINT;
+    private final static String accessId = TestConfig.OSS_TEST_ACCESS_KEY_ID;
+    private final static String accessKey = TestConfig.OSS_TEST_ACCESS_KEY_SECRET;
 
     private static String bucketName;
     private final static int requestTimeout = 10 * 1000;
@@ -59,7 +59,7 @@ public class RequestTimeoutTest extends TestBase {
     @Before
     public void setUp() throws Exception {
         long ticks = new Date().getTime() / 1000 + new Random().nextInt(5000);
-        bucketName = TestConfig.BUCKET_NAME_PREFIX + ticks;
+        bucketName = BUCKET_NAME_PREFIX + ticks;
         
         if (ossClient == null) {
             ClientConfiguration config = new ClientConfiguration();

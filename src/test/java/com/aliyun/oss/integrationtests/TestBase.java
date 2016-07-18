@@ -19,13 +19,6 @@
 
 package com.aliyun.oss.integrationtests;
 
-import static com.aliyun.oss.integrationtests.TestConfig.BUCKET_NAME_PREFIX;
-import static com.aliyun.oss.integrationtests.TestConfig.DEFAULT_ACCESS_ID_1;
-import static com.aliyun.oss.integrationtests.TestConfig.DEFAULT_ACCESS_KEY_1;
-import static com.aliyun.oss.integrationtests.TestConfig.DEFAULT_ENDPOINT;
-import static com.aliyun.oss.integrationtests.TestConfig.SECOND_ACCESS_ID;
-import static com.aliyun.oss.integrationtests.TestConfig.SECOND_ACCESS_KEY;
-import static com.aliyun.oss.integrationtests.TestConfig.SECOND_ENDPOINT;
 import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 import static com.aliyun.oss.model.DeleteObjectsRequest.DELETE_OBJECTS_ONETIME_LIMIT;
 
@@ -57,6 +50,7 @@ import com.aliyun.oss.model.DeleteObjectsRequest;
 import com.aliyun.oss.model.ListBucketsRequest;
 import com.aliyun.oss.model.ListMultipartUploadsRequest;
 import com.aliyun.oss.model.ListObjectsRequest;
+import com.aliyun.oss.model.LiveChannel;
 import com.aliyun.oss.model.MultipartUpload;
 import com.aliyun.oss.model.MultipartUploadListing;
 import com.aliyun.oss.model.OSSObjectSummary;
@@ -65,23 +59,23 @@ import com.aliyun.oss.model.ObjectListing;
 public class TestBase {
     
     protected static String bucketName;
-    
-    protected static OSSClient defaultClient;
-    protected static OSSClient secondClient;
-    
-    private static final Credentials defaultCreds = 
-            new DefaultCredentials(DEFAULT_ACCESS_ID_1, DEFAULT_ACCESS_KEY_1);
-    private static final Credentials secondCreds = 
-            new DefaultCredentials(SECOND_ACCESS_ID, SECOND_ACCESS_KEY);
+    protected static OSSClient ossClient;
     
     protected static final String DEFAULT_ENCODING_TYPE = "url";
     protected static final String APPENDABLE_OBJECT_TYPE = "Appendable";
     protected static final int LIST_PART_MAX_RETURNS = 1000;
+    protected static final String INVALID_ENDPOINT = "http://InvalidEndpoint";
+    protected static final String INVALID_ACCESS_ID = "InvalidAccessId";
+    protected static final String INVALID_ACCESS_KEY = "InvalidAccessKey";
     
+    protected static final String BUCKET_NAME_PREFIX = "oss-java-sdk-";
+    protected static final String USER_DIR = System.getProperty("user.dir");
+    protected static final String UPLOAD_DIR = USER_DIR + File.separator + "upload" + File.separator;
+    protected static final String DOWNLOAD_DIR = USER_DIR + File.separator + "download" + File.separator;
+   
     @BeforeClass
     public static void oneTimeSetUp() {
-        cleanUpAllBuckets(getDefaultClient(), BUCKET_NAME_PREFIX);
-        cleanUpAllBuckets(getSecondClient(), BUCKET_NAME_PREFIX);
+        cleanUpAllBuckets(getOSSClient(), BUCKET_NAME_PREFIX);
     }
     
     @Before
@@ -95,39 +89,27 @@ public class TestBase {
         cleanUp();
     }
     
-    public static OSSClient getDefaultClient() {
-        if (defaultClient == null) {
+    public static OSSClient getOSSClient() {
+        if (ossClient == null) {
+            resetTestConfig();
             ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);
-            defaultClient = new OSSClient(DEFAULT_ENDPOINT, 
-                    new DefaultCredentialProvider(defaultCreds), 
-                    conf);
+            Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
+            ossClient = new OSSClient(TestConfig.OSS_TEST_ENDPOINT, new DefaultCredentialProvider(credentials), conf);
         }
-        return defaultClient;
-    }
-    
-    public static OSSClient getSecondClient() {
-        if (secondClient == null) {
-            ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);
-            secondClient = new OSSClient(SECOND_ENDPOINT, 
-                    new DefaultCredentialProvider(secondCreds),
-                    conf);}
-        return secondClient;
+        return ossClient;
     }
     
     public static String createBucket() {
         long ticks = new Date().getTime() / 1000 + new Random().nextInt(5000);
         String bucketName = BUCKET_NAME_PREFIX + ticks;
-        getDefaultClient().createBucket(bucketName);
-        getSecondClient().createBucket(bucketName);
+        getOSSClient().createBucket(bucketName);
         waitForCacheExpiration(2);
         return bucketName;
     }
     
     public static void deleteBucket(String bucketName) {
-        abortAllMultipartUploads(defaultClient, bucketName);
-        deleteBucketWithObjects(defaultClient, bucketName);
-        abortAllMultipartUploads(secondClient, bucketName);
-        deleteBucketWithObjects(secondClient, bucketName);
+        abortAllMultipartUploads(getOSSClient(), bucketName);
+        deleteBucketWithObjects(getOSSClient(), bucketName);
     }
     
     protected static void deleteBucketWithObjects(OSSClient client, String bucketName) {
@@ -135,6 +117,7 @@ public class TestBase {
             return;
         }
 
+        // delete objects
         List<String> allObjects = listAllObjects(client, bucketName);
         int total = allObjects.size();
         if (total > 0) {
@@ -160,6 +143,14 @@ public class TestBase {
                 client.deleteObjects(deleteObjectsRequest);
             }
         }
+        
+        // 
+        List<LiveChannel> channels = ossClient.listLiveChannels(bucketName);
+        for (LiveChannel channel : channels) {
+            ossClient.deleteLiveChannel(bucketName, channel.getName());
+        }
+        
+        // delete bucket
         client.deleteBucket(bucketName);
     }
     
@@ -246,22 +237,10 @@ public class TestBase {
         }
     }
     
-    public static void restoreDefaultCredentials() {
-        getDefaultClient().switchCredentials(defaultCreds);
-    }
-    
-    public static void restoreDefaultEndpoint() {
-        getDefaultClient().setEndpoint(DEFAULT_ENDPOINT);
-    }
-    
     public static void cleanUp() {
-        if (defaultClient != null) {
-            defaultClient.shutdown();
-            defaultClient = null;
-        }
-        if (secondClient != null) {
-            secondClient.shutdown();
-            secondClient = null;
+        if (ossClient != null) {
+            ossClient.shutdown();
+            ossClient = null;
         }
     }
      
@@ -322,6 +301,65 @@ public class TestBase {
         writer.close();
 
         return file;
+    }
+    
+    public static void resetTestConfig() {
+      // test config
+      if (TestConfig.OSS_TEST_ENDPOINT == null) {
+          TestConfig.OSS_TEST_ENDPOINT = System.getenv().get("OSS_TEST_ENDPOINT");
+      }
+      
+      if (TestConfig.OSS_TEST_REGION == null) {
+          TestConfig.OSS_TEST_REGION = System.getenv().get("OSS_TEST_REGION");
+      }   
+      
+      if (TestConfig.OSS_TEST_ACCESS_KEY_ID == null) {
+          TestConfig.OSS_TEST_ACCESS_KEY_ID = System.getenv().get("OSS_TEST_ACCESS_KEY_ID");
+      }
+      
+      if (TestConfig.OSS_TEST_ACCESS_KEY_SECRET == null) {
+          TestConfig.OSS_TEST_ACCESS_KEY_SECRET = System.getenv().get("OSS_TEST_ACCESS_KEY_SECRET");
+      }
+      
+      if (TestConfig.OSS_TEST_ACCESS_KEY_ID_1 == null) {
+          TestConfig.OSS_TEST_ACCESS_KEY_ID_1 = System.getenv().get("OSS_TEST_ACCESS_KEY_ID_1");
+          if (TestConfig.OSS_TEST_ACCESS_KEY_ID_1 == null) {
+              TestConfig.OSS_TEST_ACCESS_KEY_ID_1 = TestConfig.OSS_TEST_ACCESS_KEY_ID;
+          }
+      }
+      
+      if (TestConfig.OSS_TEST_ACCESS_KEY_SECRET_1 == null) {
+          TestConfig.OSS_TEST_ACCESS_KEY_SECRET_1 = System.getenv().get("OSS_TEST_ACCESS_KEY_SECRET_1");
+          if (TestConfig.OSS_TEST_ACCESS_KEY_SECRET_1 == null) {
+              TestConfig.OSS_TEST_ACCESS_KEY_SECRET_1 = TestConfig.OSS_TEST_ACCESS_KEY_SECRET;
+          }
+      }
+      
+      // replacation config
+      if (TestConfig.OSS_TEST_REPLICATION_ENDPOINT == null) {
+          TestConfig.OSS_TEST_REPLICATION_ENDPOINT = System.getenv().get("OSS_TEST_REPLICATION_ENDPOINT");
+      }
+      
+      if (TestConfig.OSS_TEST_REPLICATION_ACCESS_KEY_ID == null) {
+          TestConfig.OSS_TEST_REPLICATION_ACCESS_KEY_ID = System.getenv().get("OSS_TEST_REPLICATION_ACCESS_KEY_ID");
+      }
+      
+      if (TestConfig.OSS_TEST_REPLICATION_ACCESS_KEY_SECRET == null) {
+          TestConfig.OSS_TEST_REPLICATION_ACCESS_KEY_SECRET = System.getenv().get("OSS_TEST_REPLICATION_ACCESS_KEY_SECRET");
+      }
+      
+      // sts test
+      if (TestConfig.STS_TEST_ENDPOINT == null) {
+          TestConfig.STS_TEST_ENDPOINT = System.getenv().get("STS_TEST_ENDPOINT");
+      }
+      
+      if (TestConfig.STS_TEST_ROLE == null) {
+          TestConfig.STS_TEST_ROLE = System.getenv().get("STS_TEST_ROLE");
+      }
+      
+      if (TestConfig.STS_TEST_BUCKET == null) {
+          TestConfig.STS_TEST_BUCKET = System.getenv().get("STS_TEST_BUCKET");
+      }
     }
 
 }

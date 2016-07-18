@@ -19,9 +19,9 @@
 
 package com.aliyun.oss.integrationtests;
 
-import static com.aliyun.oss.integrationtests.TestConfig.SECOND_ACCESS_ID;
-import static com.aliyun.oss.integrationtests.TestConfig.SECOND_ACCESS_KEY;
-import static com.aliyun.oss.integrationtests.TestConfig.SECOND_ENDPOINT;
+import static com.aliyun.oss.integrationtests.TestConfig.OSS_TEST_ACCESS_KEY_ID;
+import static com.aliyun.oss.integrationtests.TestConfig.OSS_TEST_ACCESS_KEY_SECRET;
+import static com.aliyun.oss.integrationtests.TestConfig.OSS_TEST_ENDPOINT;
 
 import java.io.InputStream;
 
@@ -42,7 +42,7 @@ public class MultiInstanceClientTest extends TestBase {
             @Override
             public void run() {
                 for (int i = 0; i < 100; i++) {
-                    OSSClient client0 = new OSSClient(SECOND_ENDPOINT, SECOND_ACCESS_ID, SECOND_ACCESS_KEY);
+                    OSSClient client0 = new OSSClient(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET);
                     InputStream content = TestUtils.genFixedLengthInputStream(128 * 1024);
                     String key = TestUtils.buildObjectKey(keyPrefix, i);
                     
@@ -68,7 +68,7 @@ public class MultiInstanceClientTest extends TestBase {
             @Override
             public void run() {
                 for (int i = 0; i < 100; i++) {
-                    OSSClient client1 = new OSSClient(SECOND_ENDPOINT, SECOND_ACCESS_ID, SECOND_ACCESS_KEY);
+                    OSSClient client1 = new OSSClient(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET);
                     InputStream content = TestUtils.genFixedLengthInputStream(1 * 1024 * 1024);
                     String key = TestUtils.buildObjectKey(keyPrefix, i);
                     
@@ -99,7 +99,7 @@ public class MultiInstanceClientTest extends TestBase {
     @Test
     public void keepUsingAfterClose() {
         final String key = "key0";
-        OSSClient client = new OSSClient(SECOND_ENDPOINT, SECOND_ACCESS_ID, SECOND_ACCESS_KEY);
+        OSSClient client = new OSSClient(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET);
         InputStream content = TestUtils.genFixedLengthInputStream(128 * 1024);
         client.putObject(bucketName, key, content, null);
         

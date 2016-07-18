@@ -41,39 +41,39 @@ public class BucketWebsiteTest extends TestBase {
         final String errorDocument = "error.html";
         
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             // Set both index document and error document
             SetBucketWebsiteRequest request = new SetBucketWebsiteRequest(bucketName);
             request.setIndexDocument(indexDocument);
             request.setErrorDocument(errorDocument);
-            secondClient.setBucketWebsite(request);
+            ossClient.setBucketWebsite(request);
             
             waitForCacheExpiration(5);
             
-            BucketWebsiteResult result = secondClient.getBucketWebsite(bucketName);
+            BucketWebsiteResult result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
             Assert.assertEquals(errorDocument, result.getErrorDocument());
             
-            secondClient.deleteBucketWebsite(bucketName);
+            ossClient.deleteBucketWebsite(bucketName);
             
             // Set index document only
             request = new SetBucketWebsiteRequest(bucketName);
             request.setIndexDocument(indexDocument);
             request.setErrorDocument(null);
-            secondClient.setBucketWebsite(request);
+            ossClient.setBucketWebsite(request);
             
             waitForCacheExpiration(5);
             
-            result = secondClient.getBucketWebsite(bucketName);
+            result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
             Assert.assertTrue(result.getErrorDocument() == null);
             
-            secondClient.deleteBucketWebsite(bucketName);
+            ossClient.deleteBucketWebsite(bucketName);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -83,7 +83,7 @@ public class BucketWebsiteTest extends TestBase {
         final String indexDocument = "index.html";
         
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             // Set index document and mirror
             SetBucketWebsiteRequest request = new SetBucketWebsiteRequest(bucketName);
@@ -95,12 +95,12 @@ public class BucketWebsiteTest extends TestBase {
             
             request.setIndexDocument(indexDocument);
             request.AddRoutingRule(rule);
-            secondClient.setBucketWebsite(request);
+            ossClient.setBucketWebsite(request);
             
             waitForCacheExpiration(5);
             
             // check
-            BucketWebsiteResult result = secondClient.getBucketWebsite(bucketName);
+            BucketWebsiteResult result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
             Assert.assertEquals(result.getRoutingRules().size(), 1);
             RoutingRule rr = result.getRoutingRules().get(0);
@@ -109,7 +109,7 @@ public class BucketWebsiteTest extends TestBase {
             Assert.assertEquals(rr.getRedirect().getRedirectType(), RoutingRule.RedirectType.Mirror);
             Assert.assertEquals(rr.getRedirect().getMirrorURL(), "http://oss-test.aliyun-inc.com/mirror-test-source/");
             
-            secondClient.deleteBucketWebsite(bucketName);
+            ossClient.deleteBucketWebsite(bucketName);
             
             // set mirror with key prefix
             request = new SetBucketWebsiteRequest(bucketName);
@@ -122,12 +122,12 @@ public class BucketWebsiteTest extends TestBase {
             
             request.setIndexDocument(indexDocument);
             request.AddRoutingRule(rule);
-            secondClient.setBucketWebsite(request);
+            ossClient.setBucketWebsite(request);
             
             waitForCacheExpiration(5);
             
             // check
-            result = secondClient.getBucketWebsite(bucketName);
+            result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
             Assert.assertEquals(result.getRoutingRules().size(), 1);
             rr = result.getRoutingRules().get(0);
@@ -137,12 +137,12 @@ public class BucketWebsiteTest extends TestBase {
             Assert.assertEquals(rr.getRedirect().getRedirectType(), RoutingRule.RedirectType.Mirror);
             Assert.assertEquals(rr.getRedirect().getMirrorURL(), "http://oss-test.aliyun-inc.com/mirror-test/");
             
-            secondClient.deleteBucketWebsite(bucketName);
+            ossClient.deleteBucketWebsite(bucketName);
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -152,7 +152,7 @@ public class BucketWebsiteTest extends TestBase {
         final String indexDocument = "index.html";
         
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             // Set RoutingRule
             SetBucketWebsiteRequest request = new SetBucketWebsiteRequest(bucketName);
@@ -169,11 +169,11 @@ public class BucketWebsiteTest extends TestBase {
             
             request.setIndexDocument(indexDocument);
             request.AddRoutingRule(rule);
-            secondClient.setBucketWebsite(request);
+            ossClient.setBucketWebsite(request);
             
             waitForCacheExpiration(5);
             
-            BucketWebsiteResult result = secondClient.getBucketWebsite(bucketName);
+            BucketWebsiteResult result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
             Assert.assertEquals(result.getRoutingRules().size(), 1);
             RoutingRule rr = result.getRoutingRules().get(0);
@@ -187,7 +187,7 @@ public class BucketWebsiteTest extends TestBase {
             Assert.assertEquals(rr.getRedirect().getReplaceKeyWith(), "${key}.jpg");
             Assert.assertEquals(rr.getRedirect().getHttpRedirectCode().intValue(), 302);
             
-            secondClient.deleteBucketWebsite(bucketName);
+            ossClient.deleteBucketWebsite(bucketName);
             
             // Set RoutingRule 
             request = new SetBucketWebsiteRequest(bucketName);
@@ -211,11 +211,11 @@ public class BucketWebsiteTest extends TestBase {
             request.AddRoutingRule(rule);
             
             request.setIndexDocument(indexDocument);
-            secondClient.setBucketWebsite(request);
+            ossClient.setBucketWebsite(request);
             
             waitForCacheExpiration(5);
             
-            result = secondClient.getBucketWebsite(bucketName);
+            result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
             Assert.assertEquals(result.getRoutingRules().size(), 2);
             
@@ -237,13 +237,13 @@ public class BucketWebsiteTest extends TestBase {
             Assert.assertEquals(rr.getRedirect().getReplaceKeyPrefixWith(), "~!@#$%^&*()-_=+|\\[]{}<>,./?`~");
             Assert.assertEquals(rr.getRedirect().getHttpRedirectCode().intValue(), 303);
             
-            secondClient.deleteBucketWebsite(bucketName);
+            ossClient.deleteBucketWebsite(bucketName);
             
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -253,7 +253,7 @@ public class BucketWebsiteTest extends TestBase {
         final String indexDocument = "index.html";
         
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             // Set RoutingRule
             SetBucketWebsiteRequest request = new SetBucketWebsiteRequest(bucketName);
@@ -270,11 +270,11 @@ public class BucketWebsiteTest extends TestBase {
             
             request.setIndexDocument(indexDocument);
             request.AddRoutingRule(rule);
-            secondClient.setBucketWebsite(request);
+            ossClient.setBucketWebsite(request);
             
             waitForCacheExpiration(5);
             
-            BucketWebsiteResult result = secondClient.getBucketWebsite(bucketName);
+            BucketWebsiteResult result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
             Assert.assertEquals(result.getRoutingRules().size(), 1);
             RoutingRule rr = result.getRoutingRules().get(0);
@@ -288,7 +288,7 @@ public class BucketWebsiteTest extends TestBase {
             Assert.assertEquals(rr.getRedirect().getReplaceKeyWith(), "${key}.jpg");
             Assert.assertEquals(rr.getRedirect().getHttpRedirectCode().intValue(), 302);
             
-            secondClient.deleteBucketWebsite(bucketName);
+            ossClient.deleteBucketWebsite(bucketName);
             
             // Set RoutingRule 
             request = new SetBucketWebsiteRequest(bucketName);
@@ -312,11 +312,11 @@ public class BucketWebsiteTest extends TestBase {
             request.AddRoutingRule(rule);
             
             request.setIndexDocument(indexDocument);
-            secondClient.setBucketWebsite(request);
+            ossClient.setBucketWebsite(request);
             
             waitForCacheExpiration(5);
             
-            result = secondClient.getBucketWebsite(bucketName);
+            result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
             Assert.assertEquals(result.getRoutingRules().size(), 2);
             
@@ -338,13 +338,13 @@ public class BucketWebsiteTest extends TestBase {
             Assert.assertEquals(rr.getRedirect().getReplaceKeyPrefixWith(), "~!@#$%^&*()-_=+|\\[]{}<>,./?`~");
             Assert.assertEquals(rr.getRedirect().getHttpRedirectCode().intValue(), 303);
             
-            secondClient.deleteBucketWebsite(bucketName);
+            ossClient.deleteBucketWebsite(bucketName);
             
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -354,7 +354,7 @@ public class BucketWebsiteTest extends TestBase {
         final String indexDocument = "index.html";
         
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             SetBucketWebsiteRequest request = new SetBucketWebsiteRequest(bucketName);
             RoutingRule rule = new RoutingRule();
@@ -414,7 +414,7 @@ public class BucketWebsiteTest extends TestBase {
             request.AddRoutingRule(rule);
             
             try {    
-                secondClient.setBucketWebsite(request);
+                ossClient.setBucketWebsite(request);
                 Assert.fail("Set bucket website should not be successful");
             } catch (OSSException e) {
                 Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
@@ -424,7 +424,7 @@ public class BucketWebsiteTest extends TestBase {
             e.printStackTrace();
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -434,7 +434,7 @@ public class BucketWebsiteTest extends TestBase {
         final String indexDocument = "index.html";
         
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             SetBucketWebsiteRequest request = new SetBucketWebsiteRequest(bucketName);
             RoutingRule rule = new RoutingRule();
@@ -488,7 +488,7 @@ public class BucketWebsiteTest extends TestBase {
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -499,7 +499,7 @@ public class BucketWebsiteTest extends TestBase {
         final String errorDocument = "error.html";
         
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             // Set non-existent bucket 
             final String nonexistentBucket = "nonexistent-bucket";            
@@ -507,7 +507,7 @@ public class BucketWebsiteTest extends TestBase {
                 SetBucketWebsiteRequest request = new SetBucketWebsiteRequest(nonexistentBucket);
                 request.setIndexDocument(indexDocument);
                 request.setErrorDocument(errorDocument);
-                secondClient.setBucketWebsite(request);
+                ossClient.setBucketWebsite(request);
                 
                 Assert.fail("Set bucket website should not be successful");
             } catch (OSSException e) {
@@ -520,14 +520,14 @@ public class BucketWebsiteTest extends TestBase {
                 SetBucketWebsiteRequest request = new SetBucketWebsiteRequest(nonexistentBucket);
                 request.setIndexDocument(null);
                 request.setErrorDocument(null);
-                secondClient.setBucketWebsite(request);
+                ossClient.setBucketWebsite(request);
                 
                 Assert.fail("Set bucket website should not be successful");
             } catch (Exception e) {
                 Assert.assertTrue(e instanceof IllegalArgumentException);
             }
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -536,7 +536,7 @@ public class BucketWebsiteTest extends TestBase {
         // Get non-existent bucket
         final String nonexistentBucket = "unormal-get-bucket-website";
         try {
-            secondClient.getBucketWebsite(nonexistentBucket);
+            ossClient.getBucketWebsite(nonexistentBucket);
             Assert.fail("Get bucket website should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
@@ -546,7 +546,7 @@ public class BucketWebsiteTest extends TestBase {
         // Get bucket without ownership
         final String bucketWithoutOwnership = "oss";
         try {
-            secondClient.getBucketLogging(bucketWithoutOwnership);
+            ossClient.getBucketLogging(bucketWithoutOwnership);
             Assert.fail("Get bucket website should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
@@ -555,15 +555,15 @@ public class BucketWebsiteTest extends TestBase {
         // Get bucket without setting website configuration
         final String bucketWithoutWebsiteConfiguration = "bucket-without-website-configuration";
         try {
-            secondClient.createBucket(bucketWithoutWebsiteConfiguration);
+            ossClient.createBucket(bucketWithoutWebsiteConfiguration);
             
-            secondClient.getBucketWebsite(bucketWithoutWebsiteConfiguration);
+            ossClient.getBucketWebsite(bucketWithoutWebsiteConfiguration);
             Assert.fail("Get bucket website should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_WEBSITE_CONFIGURATION, e.getErrorCode());
             Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_WEBSITE_CONFIGURATION_ERR));
         } finally {
-            secondClient.deleteBucket(bucketWithoutWebsiteConfiguration);
+            ossClient.deleteBucket(bucketWithoutWebsiteConfiguration);
         }
     }
     
@@ -572,7 +572,7 @@ public class BucketWebsiteTest extends TestBase {
         // Delete non-existent bucket
         final String nonexistentBucket = "unormal-delete-bucket-website";
         try {
-            secondClient.deleteBucketWebsite(nonexistentBucket);
+            ossClient.deleteBucketWebsite(nonexistentBucket);
             Assert.fail("Delete bucket website should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
@@ -582,7 +582,7 @@ public class BucketWebsiteTest extends TestBase {
         // Delete bucket without ownership
         final String bucketWithoutOwnership = "oss";
         try {
-            secondClient.deleteBucketWebsite(bucketWithoutOwnership);
+            ossClient.deleteBucketWebsite(bucketWithoutOwnership);
             Assert.fail("Delete bucket website should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
@@ -591,12 +591,12 @@ public class BucketWebsiteTest extends TestBase {
         // Delete bucket without setting website configuration
         final String bucketWithoutWebsiteConfiguration = "bucket-without-website-configuration";
         try {
-            secondClient.createBucket(bucketWithoutWebsiteConfiguration);
-            secondClient.deleteBucketWebsite(bucketWithoutWebsiteConfiguration);
+            ossClient.createBucket(bucketWithoutWebsiteConfiguration);
+            ossClient.deleteBucketWebsite(bucketWithoutWebsiteConfiguration);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketWithoutWebsiteConfiguration);
+            ossClient.deleteBucket(bucketWithoutWebsiteConfiguration);
         }
     }
 }

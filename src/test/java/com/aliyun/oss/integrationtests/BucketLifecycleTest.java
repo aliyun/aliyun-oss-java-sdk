@@ -58,7 +58,7 @@ public class BucketLifecycleTest extends TestBase {
         final String matchPrefix4 = "temporary2/";
         
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(bucketName);
             request.AddLifecycleRule(new LifecycleRule(ruleId0, matchPrefix0, RuleStatus.Enabled, 3));
@@ -80,9 +80,9 @@ public class BucketLifecycleTest extends TestBase {
             rule = new LifecycleRule(ruleId4, matchPrefix4, RuleStatus.Enabled);
             rule.setCreatedBeforeDate(DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z"));
             request.AddLifecycleRule(rule);
-            secondClient.setBucketLifecycle(request);
+            ossClient.setBucketLifecycle(request);
             
-            List<LifecycleRule> rules = secondClient.getBucketLifecycle(bucketName);
+            List<LifecycleRule> rules = ossClient.getBucketLifecycle(bucketName);
             Assert.assertEquals(rules.size(), 5);
             
             LifecycleRule r0 = rules.get(0);
@@ -127,11 +127,11 @@ public class BucketLifecycleTest extends TestBase {
             final String nullRuleId = null;
             request.clearLifecycles();
             request.AddLifecycleRule(new LifecycleRule(nullRuleId, matchPrefix0, RuleStatus.Enabled, 7));
-            secondClient.setBucketLifecycle(request);
+            ossClient.setBucketLifecycle(request);
             
             waitForCacheExpiration(5);
             
-            rules = secondClient.getBucketLifecycle(bucketName);
+            rules = ossClient.getBucketLifecycle(bucketName);
             Assert.assertEquals(rules.size(), 1);
             
             r0 = rules.get(0);
@@ -139,11 +139,11 @@ public class BucketLifecycleTest extends TestBase {
             Assert.assertEquals(r0.getStatus(), RuleStatus.Enabled);
             Assert.assertEquals(r0.getExpirationDays(), 7);
             
-            secondClient.deleteBucketLifecycle(bucketName);
+            ossClient.deleteBucketLifecycle(bucketName);
             
             // Try get bucket lifecycle again
             try {
-                secondClient.getBucketLifecycle(bucketName);
+                ossClient.getBucketLifecycle(bucketName);
             } catch (OSSException e) {
                 Assert.assertEquals(OSSErrorCode.NO_SUCH_LIFECYCLE, e.getErrorCode());
                 Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_LIFECYCLE_ERR));
@@ -151,7 +151,7 @@ public class BucketLifecycleTest extends TestBase {
         } catch (OSSException e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -162,7 +162,7 @@ public class BucketLifecycleTest extends TestBase {
         final String matchPrefix0 = "obsoleted/";
         
         try {
-            secondClient.createBucket(bucketName);
+            ossClient.createBucket(bucketName);
             
             // Set non-existent bucket 
             final String nonexistentBucket = "nonexistent-bucket";            
@@ -170,7 +170,7 @@ public class BucketLifecycleTest extends TestBase {
             try {                
                 SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(nonexistentBucket);
                 request.AddLifecycleRule(r);
-                secondClient.setBucketLifecycle(request);
+                ossClient.setBucketLifecycle(request);
                 
                 Assert.fail("Set bucket lifecycle should not be successful");
             } catch (OSSException e) {
@@ -183,7 +183,7 @@ public class BucketLifecycleTest extends TestBase {
             try {
                 SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(bucketWithoutOwnership);
                 request.AddLifecycleRule(r);
-                secondClient.setBucketLifecycle(request);
+                ossClient.setBucketLifecycle(request);
                 
                 Assert.fail("Set bucket lifecycle should not be successful");
             } catch (OSSException e) {
@@ -219,7 +219,7 @@ public class BucketLifecycleTest extends TestBase {
             try {
                 SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(bucketName);
                 request.AddLifecycleRule(new LifecycleRule(nullRuleId, nullMatchPrefix, RuleStatus.Enabled, 3));
-                secondClient.setBucketLifecycle(request);
+                ossClient.setBucketLifecycle(request);
             } catch (Exception e) {
                 Assert.fail(e.getMessage());
             }
@@ -274,7 +274,7 @@ public class BucketLifecycleTest extends TestBase {
             }
             
         } finally {
-            secondClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
     
@@ -283,7 +283,7 @@ public class BucketLifecycleTest extends TestBase {
         // Get non-existent bucket
         final String nonexistentBucket = "unormal-get-bucket-lifecycle";
         try {
-            secondClient.getBucketLifecycle(nonexistentBucket);
+            ossClient.getBucketLifecycle(nonexistentBucket);
             Assert.fail("Get bucket lifecycle should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
@@ -293,7 +293,7 @@ public class BucketLifecycleTest extends TestBase {
         // Get bucket without ownership
         final String bucketWithoutOwnership = "oss";
         try {
-            secondClient.getBucketLogging(bucketWithoutOwnership);
+            ossClient.getBucketLogging(bucketWithoutOwnership);
             Assert.fail("Get bucket lifecycle should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
@@ -302,16 +302,16 @@ public class BucketLifecycleTest extends TestBase {
         // Get bucket without setting lifecycle configuration
         final String bucketWithoutLifecycleConfiguration = "bucket-without-lifecycle-configuration";
         try {
-            secondClient.createBucket(bucketWithoutLifecycleConfiguration);
+            ossClient.createBucket(bucketWithoutLifecycleConfiguration);
             
-            secondClient.getBucketLifecycle(bucketWithoutLifecycleConfiguration);
+            ossClient.getBucketLifecycle(bucketWithoutLifecycleConfiguration);
             Assert.fail("Get bucket lifecycle should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_LIFECYCLE, e.getErrorCode());
             Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_LIFECYCLE_ERR));
         } finally {
             TestUtils.waitForCacheExpiration(5);
-            secondClient.deleteBucket(bucketWithoutLifecycleConfiguration);
+            ossClient.deleteBucket(bucketWithoutLifecycleConfiguration);
         }
     }
     
@@ -320,7 +320,7 @@ public class BucketLifecycleTest extends TestBase {
         // Delete non-existent bucket
         final String nonexistentBucket = "unormal-delete-bucket-lifecycle";
         try {
-            secondClient.deleteBucketLifecycle(nonexistentBucket);
+            ossClient.deleteBucketLifecycle(nonexistentBucket);
             Assert.fail("Delete bucket lifecycle should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
@@ -330,7 +330,7 @@ public class BucketLifecycleTest extends TestBase {
         // Delete bucket without ownership
         final String bucketWithoutOwnership = "oss";
         try {
-            secondClient.deleteBucketLifecycle(bucketWithoutOwnership);
+            ossClient.deleteBucketLifecycle(bucketWithoutOwnership);
             Assert.fail("Delete bucket lifecycle should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
@@ -339,13 +339,13 @@ public class BucketLifecycleTest extends TestBase {
         // Delete bucket without setting lifecycle configuration
         final String bucketWithoutLifecycleConfiguration = "bucket-without-lifecycle-configuration";
         try {
-            secondClient.createBucket(bucketWithoutLifecycleConfiguration);
-            secondClient.deleteBucketLifecycle(bucketWithoutLifecycleConfiguration);
+            ossClient.createBucket(bucketWithoutLifecycleConfiguration);
+            ossClient.deleteBucketLifecycle(bucketWithoutLifecycleConfiguration);
             // TODO: Why not throw exception with NO_SUCH_LIFECYCLE error code?
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
-            secondClient.deleteBucket(bucketWithoutLifecycleConfiguration);
+            ossClient.deleteBucket(bucketWithoutLifecycleConfiguration);
         }
     }
     

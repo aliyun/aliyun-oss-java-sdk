@@ -41,7 +41,7 @@ public class HttpUtil {
         try {
             String encoded = URLEncoder.encode(value, encoding);
             return encoded.replace("+", "%20").replace("*", "%2A")
-                    .replace("%7E", "~").replace("%2F", "/");
+                    .replace("~", "%7E").replace("/", "%2F");
         } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getString("FailedToEncodeUri"), e);
         }

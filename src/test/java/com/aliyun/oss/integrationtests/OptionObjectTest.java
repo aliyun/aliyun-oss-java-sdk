@@ -41,7 +41,7 @@ public class OptionObjectTest extends TestBase {
         final String key = "option-object";
         existingKeys.add(key);
         
-        if (!batchPutObject(secondClient, bucketName, existingKeys)) {
+        if (!batchPutObject(ossClient, bucketName, existingKeys)) {
             Assert.fail("batch put object failed");
         }
         
@@ -54,7 +54,7 @@ public class OptionObjectTest extends TestBase {
         
         // Disable bucket cors, return 403 Forbidden 
         try {
-            secondClient.optionsObject(optionsRequest);
+            ossClient.optionsObject(optionsRequest);
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, e.getErrorCode());
         }

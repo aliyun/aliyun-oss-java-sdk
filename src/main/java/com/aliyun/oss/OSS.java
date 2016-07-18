@@ -1623,7 +1623,7 @@ public interface OSS {
      * @throws OSSException OSS Server异常信息。
      * @throws ClientException OSS Client异常信息。
      */
-    public void GenerateVodPlaylist(String bucketName, String liveChannelName, String PlaylistName,
+    public void generateVodPlaylist(String bucketName, String liveChannelName, String PlaylistName,
             long startTime, long endTime) throws OSSException, ClientException;
     
     /**
@@ -1632,7 +1632,7 @@ public interface OSS {
      * @throws OSSException OSS Server异常信息。
      * @throws ClientException OSS Client异常信息。
      */
-    public void GenerateVodPlaylist(GenerateVodPlaylistRequest generateVodPlaylistRequest) 
+    public void generateVodPlaylist(GenerateVodPlaylistRequest generateVodPlaylistRequest) 
             throws OSSException, ClientException;
    
     /**
@@ -1645,7 +1645,7 @@ public interface OSS {
      * @throws OSSException OSS Server异常信息。
      * @throws ClientException OSS Client异常信息。
      */
-    public String GenerateRtmpUri(String bucketName, String liveChannelName, String PlaylistName,
+    public String generateRtmpUri(String bucketName, String liveChannelName, String PlaylistName,
             long expires) throws OSSException, ClientException;
     
     /**
@@ -1659,7 +1659,7 @@ public interface OSS {
      * @throws OSSException OSS Server异常信息。
      * @throws ClientException OSS Client异常信息。
      */
-    public String GenerateRtmpUri(String bucketName, String liveChannelName, String PlaylistName,
+    public String generateRtmpUri(String bucketName, String liveChannelName, String PlaylistName,
             long expires, Map<String, String> parameters) throws OSSException, ClientException;
     
     /**
@@ -1669,7 +1669,7 @@ public interface OSS {
      * @throws OSSException OSS Server异常信息。
      * @throws ClientException OSS Client异常信息。
      */
-    public String GenerateRtmpUri(GenerateRtmpUriRequest generatePushflowUrlRequest) 
+    public String generateRtmpUri(GenerateRtmpUriRequest generatePushflowUrlRequest) 
             throws OSSException, ClientException;
 
 }

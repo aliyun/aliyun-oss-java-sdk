@@ -19,7 +19,6 @@
 
 package com.aliyun.oss.integrationtests;
 
-import static com.aliyun.oss.integrationtests.TestConfig.STS_USER;
 import static com.aliyun.oss.integrationtests.TestConstants.SECURITY_TOKEN_ACCESS_DENIED_ERR;
 import static com.aliyun.oss.integrationtests.TestUtils.createSessionClient;
 import static com.aliyun.oss.integrationtests.TestUtils.genFixedLengthInputStream;
@@ -33,6 +32,7 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.aliyun.oss.OSSClient;
@@ -64,9 +64,11 @@ import com.aliyun.oss.model.SetBucketWebsiteRequest;
 import com.aliyun.oss.model.UploadPartRequest;
 import com.aliyun.oss.model.UploadPartResult;
 
+@Ignore
 public class SecurityTokenTest {
     
     private static final String DUMMY_SUFFIX = "xyz";
+    private static final String STS_USER = "sts";
 
     @Test
     public void testBucketOperationsWithToken() {
