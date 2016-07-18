@@ -1408,7 +1408,10 @@ public class OSSClient implements OSS {
     
     @Override
     public void shutdown() {
-        serviceClient.shutdown();
+        try {
+            serviceClient.shutdown();
+        } catch(Exception e) {
+        }
     }
     
 }

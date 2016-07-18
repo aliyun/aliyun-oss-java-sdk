@@ -29,6 +29,7 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 
@@ -63,6 +64,22 @@ public class OSSClientTest {
         request.setContentMD5("md5");
         url = client.generatePresignedUrl(request);
         assertTrue(!url.getQuery().equals("Expires=1422720000&OSSAccessKeyId=id&Signature=XA8ThdVKdJQ4vlkoggdzCs5s1RY%3D"));
+    }
+    
+    @Test
+    public void testProxyHost() {
+        String endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
+        String accessKeyId = "accessKeyId";
+        String accessKeySecret = "accessKeySecret";
+
+        ClientConfiguration conf = new ClientConfiguration();
+        conf.setProxyHost(endpoint);
+        conf.setProxyPort(80);
+        conf.setProxyUsername("user");
+        conf.setProxyPassword("passwd");
+
+        OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret, conf);
+        ossClient.shutdown();
     }
 }
 

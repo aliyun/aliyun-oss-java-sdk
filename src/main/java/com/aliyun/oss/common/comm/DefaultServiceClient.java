@@ -46,6 +46,7 @@ import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -93,6 +94,7 @@ public class DefaultServiceClient extends ServiceClient {
             String proxyDomain = config.getProxyDomain();
             String proxyWorkstation = config.getProxyWorkstation();
             if (proxyUsername != null && proxyPassword != null){
+                this.credentialsProvider = new BasicCredentialsProvider();
                 this.credentialsProvider.setCredentials(new AuthScope(proxyHost, proxyPort),
                         new NTCredentials(proxyUsername, proxyPassword, proxyWorkstation, proxyDomain));
             }
