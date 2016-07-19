@@ -21,6 +21,7 @@ package com.aliyun.oss;
 
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.common.utils.IOUtils.checkFile;
+import static com.aliyun.oss.common.utils.LogUtils.logException;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_OSS_ENDPOINT;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
@@ -1408,7 +1409,11 @@ public class OSSClient implements OSS {
     
     @Override
     public void shutdown() {
-        serviceClient.shutdown();
+        try {
+            serviceClient.shutdown();
+        } catch(Exception e) {
+            logException("shutdown throw exception: ", e);
+        }
     }
     
 }

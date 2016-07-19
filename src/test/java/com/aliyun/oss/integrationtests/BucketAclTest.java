@@ -79,19 +79,16 @@ public class BucketAclTest extends TestBase {
     
     @Test
     public void testUnormalSetBucketAcl() {
-        final String bucketName = "unormal-set-bucket-acl";
+        final String nonexistentBucket = "unormal-set-bucket-acl";
         
-        try {
-            ossClient.createBucket(bucketName);
-            
-            // Set non-existent bucket
-            final String nonexistentBucket = "unormal-set-bucket-acl";
+        try {            
+            // set non-existent bucket
             try {
                 ossClient.setBucketAcl(nonexistentBucket, CannedAccessControlList.Private);
-                // TODO: Why not failed with NO_SUCK_BUCKET error code ?
                 //Assert.fail("Set bucket acl should not be successful");
-            } catch (Exception e) {
-                Assert.fail(e.getMessage());
+            } catch (OSSException e) {
+                Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+                Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
             }
             
             // Set bucket without ownership
@@ -115,7 +112,7 @@ public class BucketAclTest extends TestBase {
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
-            ossClient.deleteBucket(bucketName);
+            ossClient.deleteBucket(nonexistentBucket);
         }
     }
     
@@ -155,4 +152,5 @@ public class BucketAclTest extends TestBase {
             ossClient.deleteBucket(bucketUsingDefaultAcl);
         }
     }
+        
 }

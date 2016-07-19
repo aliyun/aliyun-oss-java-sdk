@@ -245,11 +245,15 @@ public class OSSBucketOperation extends OSSOperation {
         Map<String, String> headers = new HashMap<String, String>();
         addOptionalACLHeader(headers, setBucketAclRequest.getCannedACL());
         
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_ACL, null);
+        
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
                 .setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.PUT)
                 .setBucket(bucketName)
                 .setHeaders(headers)
+                .setParameters(params)
                 .setOriginalRequest(setBucketAclRequest)
                 .build();
         

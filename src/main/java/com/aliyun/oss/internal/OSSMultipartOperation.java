@@ -49,6 +49,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -155,6 +157,14 @@ public class OSSMultipartOperation extends OSSOperation {
         
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(UPLOAD_ID, uploadId);
+        
+        List<PartETag> partETags = completeMultipartUploadRequest.getPartETags();
+        Collections.sort(partETags, new Comparator<PartETag>() {
+            @Override
+            public int compare(PartETag p1, PartETag p2) {
+                return p1.getPartNumber() - p2.getPartNumber();
+            }
+        });
         
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
                 .setEndpoint(getEndpoint())

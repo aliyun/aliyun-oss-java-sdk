@@ -561,13 +561,15 @@ public class OSSClientRequestTest {
     public void testCompleteMultipartUploadRequest(){
         String uploadId = "upload123";
         List<PartETag> partETags = new LinkedList<PartETag>();
-        partETags.add(new PartETag(1, "PART1ABCD"));
         partETags.add(new PartETag(2, "PART2ABCD"));
+        partETags.add(new PartETag(1, "PART1ABCD"));
+        partETags.add(new PartETag(3, "PART3ABCD"));
         final CompleteMultipartUploadRequest request =
                 new CompleteMultipartUploadRequest(bucketName, objectKey, uploadId, partETags);
         String requestXml = "<CompleteMultipartUpload>"
                 + "<Part><PartNumber>1</PartNumber><ETag>&quot;PART1ABCD&quot;</ETag></Part>"
                 + "<Part><PartNumber>2</PartNumber><ETag>&quot;PART2ABCD&quot;</ETag></Part>"
+                + "<Part><PartNumber>3</PartNumber><ETag>&quot;PART3ABCD&quot;</ETag></Part>"
                 + "</CompleteMultipartUpload>";
 
         TestAction test1 = new TestAction(){
