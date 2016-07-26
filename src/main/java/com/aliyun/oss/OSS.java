@@ -36,6 +36,7 @@ import com.aliyun.oss.model.Bucket;
 import com.aliyun.oss.model.BucketInfo;
 import com.aliyun.oss.model.BucketList;
 import com.aliyun.oss.model.BucketLoggingResult;
+import com.aliyun.oss.model.BucketProcess;
 import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.BucketReplicationProgress;
 import com.aliyun.oss.model.BucketWebsiteResult;
@@ -60,7 +61,6 @@ import com.aliyun.oss.model.GenerateVodPlaylistRequest;
 import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.GetBucketImageResult;
 import com.aliyun.oss.model.GetBucketReplicationProgressRequest;
-import com.aliyun.oss.model.ImageProcessConf;
 import com.aliyun.oss.model.ListLiveChannelsRequest;
 import com.aliyun.oss.model.LiveChannel;
 import com.aliyun.oss.model.LiveChannelGenericRequest;
@@ -69,7 +69,6 @@ import com.aliyun.oss.model.LiveChannelListing;
 import com.aliyun.oss.model.LiveChannelStat;
 import com.aliyun.oss.model.LiveChannelStatus;
 import com.aliyun.oss.model.LiveRecord;
-import com.aliyun.oss.model.PutImageProcessConfRequest;
 import com.aliyun.oss.model.ReplicationRule;
 import com.aliyun.oss.model.GetImageStyleResult;
 import com.aliyun.oss.model.GetObjectRequest;
@@ -96,6 +95,7 @@ import com.aliyun.oss.model.PutObjectResult;
 import com.aliyun.oss.model.SetBucketAclRequest;
 import com.aliyun.oss.model.SetBucketCORSRequest;
 import com.aliyun.oss.model.AddBucketCnameRequest;
+import com.aliyun.oss.model.SetBucketProcessRequest;
 import com.aliyun.oss.model.SetBucketRefererRequest;
 import com.aliyun.oss.model.AddBucketReplicationRequest;
 import com.aliyun.oss.model.SetBucketStorageCapacityRequest;
@@ -890,11 +890,11 @@ public interface OSS {
     
     /**
      * 创建图片处理属性
-     * @param putImageProcessConfRequest 请求信息。
+     * @param setBucketProcessRequest 请求信息。
      * @throws OSSException OSS Server异常信息。
      * @throws ClientException OSS Client异常信息。
      */
-    public void putBucketImageProcessConf(PutImageProcessConfRequest putImageProcessConfRequest)
+    public void setBucketProcess(SetBucketProcessRequest setBucketProcessRequest)
             throws OSSException, ClientException;
     
     /**
@@ -904,7 +904,7 @@ public interface OSS {
      * @throws OSSException OSS Server异常信息。
      * @throws ClientException OSS Client异常信息。
      */
-    public ImageProcessConf getBucketImageProcessConf(String bucketName)
+    public BucketProcess getBucketProcess(String bucketName)
             throws OSSException, ClientException;
     
     /**
@@ -914,7 +914,7 @@ public interface OSS {
      * @throws OSSException OSS Server异常信息。
      * @throws ClientException OSS Client异常信息。
      */
-    public ImageProcessConf getBucketImageProcessConf(GenericRequest genericRequest) 
+    public BucketProcess getBucketProcess(GenericRequest genericRequest) 
             throws OSSException, ClientException;
 
     /**

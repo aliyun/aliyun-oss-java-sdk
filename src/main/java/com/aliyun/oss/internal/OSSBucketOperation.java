@@ -92,6 +92,7 @@ import com.aliyun.oss.model.Bucket;
 import com.aliyun.oss.model.BucketInfo;
 import com.aliyun.oss.model.BucketList;
 import com.aliyun.oss.model.BucketLoggingResult;
+import com.aliyun.oss.model.BucketProcess;
 import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.BucketReplicationProgress;
 import com.aliyun.oss.model.BucketWebsiteResult;
@@ -103,8 +104,7 @@ import com.aliyun.oss.model.DeleteBucketReplicationRequest;
 import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.GetBucketImageResult;
 import com.aliyun.oss.model.GetBucketReplicationProgressRequest;
-import com.aliyun.oss.model.ImageProcessConf;
-import com.aliyun.oss.model.PutImageProcessConfRequest;
+import com.aliyun.oss.model.ImageProcess;
 import com.aliyun.oss.model.ReplicationRule;
 import com.aliyun.oss.model.GetImageStyleResult;
 import com.aliyun.oss.model.LifecycleRule;
@@ -117,6 +117,7 @@ import com.aliyun.oss.model.SetBucketAclRequest;
 import com.aliyun.oss.model.AddBucketCnameRequest;
 import com.aliyun.oss.model.SetBucketLifecycleRequest;
 import com.aliyun.oss.model.SetBucketLoggingRequest;
+import com.aliyun.oss.model.SetBucketProcessRequest;
 import com.aliyun.oss.model.SetBucketRefererRequest;
 import com.aliyun.oss.model.AddBucketReplicationRequest;
 import com.aliyun.oss.model.SetBucketStorageCapacityRequest;
@@ -601,15 +602,15 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, listImageStyleResponseParser, bucketName, null, true);
     }
     
-    public void putBucketImageProcessConf(PutImageProcessConfRequest putImageProcessConfRequest)
+    public void setBucketProcess(SetBucketProcessRequest setBucketProcessRequest)
             throws OSSException, ClientException {
         
-        assertParameterNotNull(putImageProcessConfRequest, "putImageProcessConfRequest");
+        assertParameterNotNull(setBucketProcessRequest, "setBucketProcessRequest");
         
-        ImageProcessConf imageProcessConf = putImageProcessConfRequest.getImageProcessConf();
+        ImageProcess imageProcessConf = setBucketProcessRequest.getImageProcess();
         assertParameterNotNull(imageProcessConf, "imageProcessConf");
         
-        String bucketName = putImageProcessConfRequest.getBucketName();
+        String bucketName = setBucketProcessRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         
@@ -622,13 +623,13 @@ public class OSSBucketOperation extends OSSOperation {
                 .setBucket(bucketName)
                 .setParameters(params)
                 .setInputStreamWithLength(bucketImageProcessConfMarshaller.marshall(imageProcessConf))
-                .setOriginalRequest(putImageProcessConfRequest)
+                .setOriginalRequest(setBucketProcessRequest)
                 .build();
         
         doOperation(request, emptyResponseParser, bucketName, null);
     }
     
-    public ImageProcessConf getBucketImageProcessConf(GenericRequest genericRequest) 
+    public BucketProcess getBucketProcess(GenericRequest genericRequest) 
             throws OSSException, ClientException {
 
         assertParameterNotNull(genericRequest, "genericRequest");
