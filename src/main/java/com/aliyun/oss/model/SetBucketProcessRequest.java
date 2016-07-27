@@ -19,20 +19,20 @@
 
 package com.aliyun.oss.model;
 
-public class PutImageProcessConfRequest extends GenericRequest {
+public class SetBucketProcessRequest extends GenericRequest {
     
-    public PutImageProcessConfRequest(String bucketName, ImageProcessConf imageProcessConf) {
+    public SetBucketProcessRequest(String bucketName, ImageProcess imageProcess) {
         super(bucketName);
-        this.imageProcessConf = imageProcessConf;
+        this.imageProcess = imageProcess;
     }
     
-    public ImageProcessConf getImageProcessConf() {
-        return imageProcessConf;
+    public ImageProcess getImageProcess() {
+        return imageProcess;
     }
 
-    public void setImageProcessConf(ImageProcessConf imageProcessConf) {
-        this.imageProcessConf = imageProcessConf;
+    public void setImageProcess(ImageProcess imageProcessConf) {
+        this.imageProcess = imageProcessConf;
     }
 
-    private ImageProcessConf imageProcessConf;
+    private ImageProcess imageProcess;
 }

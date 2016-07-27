@@ -19,9 +19,9 @@
 
 package com.aliyun.oss.model;
 
-public class ImageProcessConf {
+public class ImageProcess {
 
-    public ImageProcessConf(String compliedHost, boolean sourceFileProtect,
+    public ImageProcess(String compliedHost, boolean sourceFileProtect,
             String sourceFileProtectSuffix, String styleDelimiters) {
         this.compliedHost = compliedHost;
         this.sourceFileProtect = sourceFileProtect;
@@ -61,8 +61,17 @@ public class ImageProcessConf {
         this.styleDelimiters = styleDelimiters;
     }
 
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
     private String compliedHost;
     private boolean sourceFileProtect;
     private String sourceFileProtectSuffix;
     private String styleDelimiters;
+    private Integer version;
 }

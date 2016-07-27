@@ -36,7 +36,7 @@ import com.aliyun.oss.model.CreateBucketRequest;
 import com.aliyun.oss.model.CreateLiveChannelRequest;
 import com.aliyun.oss.model.DeleteBucketCnameRequest;
 import com.aliyun.oss.model.DeleteObjectsRequest;
-import com.aliyun.oss.model.ImageProcessConf;
+import com.aliyun.oss.model.ImageProcess;
 import com.aliyun.oss.model.LifecycleRule;
 import com.aliyun.oss.model.LifecycleRule.AbortMultipartUpload;
 import com.aliyun.oss.model.LifecycleRule.RuleStatus;
@@ -124,10 +124,10 @@ public final class RequestMarshallers {
 		}
 	}
 	
-    public static final class BucketImageProcessConfMarshaller implements RequestMarshaller<ImageProcessConf> {
+    public static final class BucketImageProcessConfMarshaller implements RequestMarshaller<ImageProcess> {
 
         @Override
-        public FixedLengthInputStream marshall(ImageProcessConf imageProcessConf) {
+        public FixedLengthInputStream marshall(ImageProcess imageProcessConf) {
             StringBuffer xmlBody = new StringBuffer();
             xmlBody.append("<BucketProcessConfiguration>");
             xmlBody.append("<CompliedHost>" + imageProcessConf.getCompliedHost() + "</CompliedHost>");

@@ -22,6 +22,7 @@ package com.aliyun.oss.internal;
 import static com.aliyun.oss.common.utils.CodingUtils.isNullOrEmpty;
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
 import static com.aliyun.oss.internal.OSSUtils.trimQuotes;
+
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.text.ParseException;
@@ -46,6 +47,7 @@ import com.aliyun.oss.model.Bucket;
 import com.aliyun.oss.model.BucketInfo;
 import com.aliyun.oss.model.BucketList;
 import com.aliyun.oss.model.BucketLoggingResult;
+import com.aliyun.oss.model.BucketProcess;
 import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.BucketReplicationProgress;
 import com.aliyun.oss.model.BucketWebsiteResult;
@@ -57,7 +59,7 @@ import com.aliyun.oss.model.CreateLiveChannelResult;
 import com.aliyun.oss.model.DeleteObjectsResult;
 import com.aliyun.oss.model.GenericResult;
 import com.aliyun.oss.model.GetBucketImageResult;
-import com.aliyun.oss.model.ImageProcessConf;
+import com.aliyun.oss.model.ImageProcess;
 import com.aliyun.oss.model.LiveChannel;
 import com.aliyun.oss.model.LiveChannelInfo;
 import com.aliyun.oss.model.LiveChannelListing;
@@ -261,10 +263,10 @@ public final class ResponseParsers {
 		}
 	}
 	
-    public static final class GetBucketImageProcessConfResponseParser implements ResponseParser<ImageProcessConf> {
+    public static final class GetBucketImageProcessConfResponseParser implements ResponseParser<BucketProcess> {
         
         @Override
-        public ImageProcessConf parse(ResponseMessage response)
+        public BucketProcess parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
                 return parseGetBucketImageProcessConf(response.getContent());
@@ -1403,9 +1405,9 @@ public final class ResponseParsers {
     
     
     /**
-     * Unmarshall get bucket image process conf response body to image process conf.
+     * Unmarshall get bucket process response body to bucket process.
      */
-    public static ImageProcessConf parseGetBucketImageProcessConf(InputStream responseBody)
+    public static BucketProcess parseGetBucketImageProcessConf(InputStream responseBody)
             throws ResponseParseException {
         
         try {
@@ -1419,8 +1421,13 @@ public final class ResponseParsers {
             String sourceFileProtectSuffix = root.getChildText("SourceFileProtectSuffix");
             String styleDelimiters = root.getChildText("StyleDelimiters");
 
-            return new ImageProcessConf(compliedHost, sourceFileProtect, sourceFileProtectSuffix,
+            ImageProcess imageProcess = new ImageProcess(compliedHost, sourceFileProtect, sourceFileProtectSuffix,
                     styleDelimiters);
+            if (root.getChildText("Version") != null) {
+                imageProcess.setVersion(Integer.parseInt(root.getChildText("Version")));
+            }
+            
+            return new BucketProcess(imageProcess);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
