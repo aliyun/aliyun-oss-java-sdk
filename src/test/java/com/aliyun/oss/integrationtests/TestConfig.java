@@ -39,4 +39,10 @@ public final class TestConfig {
     public static String STS_TEST_ROLE = null;
     public static String STS_TEST_BUCKET = null;
     
+    // OSS proxy test
+    public static String PROXY_HOST = null;
+    public static int PROXY_PORT = -1;
+    public static String PROXY_USER = null;
+    public static String PROXY_PASSWORD = null;
+    
 }

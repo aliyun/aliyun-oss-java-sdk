@@ -359,6 +359,27 @@ public class TestBase {
       if (TestConfig.STS_TEST_BUCKET == null) {
           TestConfig.STS_TEST_BUCKET = System.getenv().get("STS_TEST_BUCKET");
       }
+      
+      // proxy test
+      if (TestConfig.PROXY_HOST == null) {
+          TestConfig.PROXY_HOST = System.getenv().get("PROXY_HOST");
+      }
+      
+      if (TestConfig.PROXY_PORT == -1) {
+         TestConfig.PROXY_PORT = 3128;
+         String portStr = System.getenv().get("PROXY_PORT");
+         if (portStr != null) {
+             TestConfig.PROXY_PORT = Integer.parseInt(portStr);
+         } 
+      }
+      
+      if (TestConfig.PROXY_USER == null) {
+          TestConfig.PROXY_USER = System.getenv().get("PROXY_USER");
+      }
+      
+      if (TestConfig.PROXY_PASSWORD == null) {
+          TestConfig.PROXY_PASSWORD = System.getenv().get("PROXY_PASSWORD");
+      }
     }
 
 }

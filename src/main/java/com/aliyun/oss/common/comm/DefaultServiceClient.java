@@ -27,11 +27,14 @@ import java.security.cert.X509Certificate;
 
 import javax.net.ssl.SSLContext;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpStatus;
+import org.apache.http.auth.AUTH;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.NTCredentials;
+import org.apache.http.client.AuthCache;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -46,6 +49,8 @@ import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -73,6 +78,7 @@ public class DefaultServiceClient extends ServiceClient {
     protected RequestConfig requestConfig;
     protected CredentialsProvider credentialsProvider;
     protected HttpHost proxyHttpHost;
+    protected AuthCache authCache;
 
     public DefaultServiceClient(ClientConfiguration config) {
         super(config);
@@ -97,6 +103,9 @@ public class DefaultServiceClient extends ServiceClient {
                 this.credentialsProvider = new BasicCredentialsProvider();
                 this.credentialsProvider.setCredentials(new AuthScope(proxyHost, proxyPort),
                         new NTCredentials(proxyUsername, proxyPassword, proxyWorkstation, proxyDomain));
+                
+                this.authCache = new BasicAuthCache();
+                authCache.put(this.proxyHttpHost, new BasicScheme());
             }
         }
         
@@ -107,7 +116,8 @@ public class DefaultServiceClient extends ServiceClient {
     public ResponseMessage sendRequestCore(ServiceClient.Request request, ExecutionContext context)
             throws IOException {        
         HttpRequestBase httpRequest = httpRequestFactory.createHttpRequest(request, context);
-        HttpClientContext httpContext = HttpClientContext.create();
+        setProxyAuthorizationIfNeed(httpRequest);
+        HttpClientContext httpContext = createHttpContext();
         httpContext.setRequestConfig(this.requestConfig);
 
         CloseableHttpResponse httpResponse = null;
@@ -255,8 +265,18 @@ public class DefaultServiceClient extends ServiceClient {
         httpContext.setRequestConfig(this.requestConfig);
         if (this.credentialsProvider != null) {
             httpContext.setCredentialsProvider(this.credentialsProvider);
+            httpContext.setAuthCache(this.authCache);
         }
         return httpContext;
+    }
+    
+    private void setProxyAuthorizationIfNeed(HttpRequestBase httpRequest) { 
+        if (this.credentialsProvider != null) {
+            String auth = this.config.getProxyUsername() + ":" + this.config.getProxyPassword();
+            byte[] encodedAuth = Base64.encodeBase64(auth.getBytes());
+            String authHeader = "Basic " + new String(encodedAuth);            
+            httpRequest.addHeader(AUTH.PROXY_AUTH_RESP, authHeader);
+        }
     }
 
     @Override
