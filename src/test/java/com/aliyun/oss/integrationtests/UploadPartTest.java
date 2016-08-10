@@ -23,7 +23,6 @@ import static com.aliyun.oss.integrationtests.TestConfig.OSS_TEST_ENDPOINT;
 import static com.aliyun.oss.integrationtests.TestConstants.BUCKET_NOT_EMPTY_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.ENTITY_TOO_SMALL_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.INVALID_PART_ERR;
-import static com.aliyun.oss.integrationtests.TestConstants.INVALID_PART_ORDER_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_BUCKET_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_UPLOAD_ERR;
 import static com.aliyun.oss.integrationtests.TestUtils.calcMultipartsETag;
@@ -911,25 +910,6 @@ public class UploadPartTest extends TestBase {
                 Assert.assertTrue(e.getMessage().startsWith(INVALID_PART_ERR));
             } finally {
                 partETags.set(partNumber - 1, originalPartETag);
-            }
-            
-            // Invalid part number order(MUST be in ascending order)
-            final int swapFrom = 2;
-            final int swapTo = 5;
-            PartETag tmp = partETags.get(swapTo);
-            partETags.set(swapTo, partETags.get(2));
-            partETags.set(swapFrom, tmp);
-            try {
-                CompleteMultipartUploadRequest completeMultipartUploadRequest = 
-                        new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
-                ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-                Assert.fail("Complete multipart upload should not be successful");
-            } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.INVALID_PART_ORDER, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(INVALID_PART_ORDER_ERR));
-            } finally {
-                partETags.set(swapFrom, partETags.get(swapTo));
-                partETags.set(swapTo, tmp);
             }
             
             // Try to complete multipart upload with non-existent part

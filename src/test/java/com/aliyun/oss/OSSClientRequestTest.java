@@ -178,7 +178,7 @@ public class OSSClientRequestTest {
                 bucketOp.setBucketAcl(new SetBucketAclRequest(bucketName, null));
             }
         };
-        executeTest(test1, HttpMethod.PUT, bucketName + "." + endpoint.getHost(), "",
+        executeTest(test1, HttpMethod.PUT, bucketName + "." + endpoint.getHost(), "?acl",
                 new HashMap<String, String>(){
             {
             }
@@ -189,7 +189,7 @@ public class OSSClientRequestTest {
                 bucketOp.setBucketAcl(new SetBucketAclRequest(bucketName, CannedAccessControlList.PublicRead));
             }
         };
-        executeTest(test2, HttpMethod.PUT, bucketName + "." + endpoint.getHost(), "",
+        executeTest(test2, HttpMethod.PUT, bucketName + "." + endpoint.getHost(), "?acl",
                 new HashMap<String, String>(){
             {
                 put("x-oss-acl", "public-read");
@@ -201,7 +201,7 @@ public class OSSClientRequestTest {
                 bucketOp.setBucketAcl(new SetBucketAclRequest(bucketName, CannedAccessControlList.PublicReadWrite));
             }
         };
-        executeTest(test3, HttpMethod.PUT, bucketName + "." + endpoint.getHost(), "",
+        executeTest(test3, HttpMethod.PUT, bucketName + "." + endpoint.getHost(), "?acl",
                 new HashMap<String, String>(){
             {
                 put("x-oss-acl", "public-read-write");
@@ -213,7 +213,7 @@ public class OSSClientRequestTest {
                 bucketOp.setBucketAcl(new SetBucketAclRequest(bucketName, CannedAccessControlList.Private));
             }
         };
-        executeTest(test4, HttpMethod.PUT, bucketName + "." + endpoint.getHost(), "",
+        executeTest(test4, HttpMethod.PUT, bucketName + "." + endpoint.getHost(), "?acl",
                 new HashMap<String, String>(){
             {
                 put("x-oss-acl", "private");

@@ -19,9 +19,6 @@
 
 package com.aliyun.oss.model;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 /**
  * 生成带有签名信息的推流地址的请求
  */
@@ -33,15 +30,6 @@ public class GenerateRtmpUriRequest {
         this.liveChannelName = liveChannelName;
         this.playlistName = playlistName;
         this.expires = expires;
-    }
-    
-    public GenerateRtmpUriRequest(String bucketName, String liveChannelName, 
-            String playlistName, long expires, Map<String, String> parameters) {
-        this.bucketName = bucketName;
-        this.liveChannelName = liveChannelName;
-        this.playlistName = playlistName;
-        this.expires = expires;
-        this.parameters = parameters;
     }
 
     public String getBucketName() {
@@ -76,22 +64,9 @@ public class GenerateRtmpUriRequest {
         this.expires = expires;
     }
 
-    public Map<String, String> getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(Map<String, String> params) {
-        this.parameters = params;
-    }
-    
-    public void addParameter(String key, String value) {
-        this.parameters.put(key, value);
-    }
-
     private String bucketName;
     private String liveChannelName;
     private String playlistName;
     private Long expires;
-    private Map<String, String> parameters = new LinkedHashMap<String, String>();
     
 }

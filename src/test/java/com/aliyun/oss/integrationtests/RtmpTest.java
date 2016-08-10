@@ -21,10 +21,7 @@ package com.aliyun.oss.integrationtests;
 
 import java.text.ParseException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import junit.framework.Assert;
 
 import org.junit.Ignore;
@@ -571,17 +568,10 @@ public class RtmpTest extends TestBase {
             
             // generate without parameters
             String uri2 = ossClient.generateRtmpUri(bucketName, liveChannel, 
-                    liveChannelInfo.getTarget().getPlaylistName(), expires, null);
+                    liveChannelInfo.getTarget().getPlaylistName(), expires);
             
             Assert.assertEquals(uri, uri2);
             
-            // generate with parameters
-            Map<String, String> params = new HashMap<String, String>();
-            params.put("mykey", "myvalue");
-            String uri3 = ossClient.generateRtmpUri(bucketName, liveChannel, 
-                    liveChannelInfo.getTarget().getPlaylistName(), expires, params);
-            
-            Assert.assertTrue(uri3.endsWith("mykey=myvalue"));
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }

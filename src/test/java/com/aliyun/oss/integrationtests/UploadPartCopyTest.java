@@ -339,7 +339,7 @@ public class UploadPartCopyTest extends TestBase {
         final String sourceBucket = "normal-upload-part-copy-by-range-bucket-source";
         final String targetBucket = "normal-upload-part-copy-by-range-bucket-target";
         final String sourceKey = "测\\r试-中.~,+\"'*&￥#@%！（文）+字符|？/.zip";
-        final String targetKey = "测\\r试-中.~,+\"'*&￥#@%！（文）+字符|？/-2.zip";
+        final String targetKey = "测\\r试-中.~,+\"'*&￥#@%！（文）+字符|？-2.zip";
         final long partSize = 128 * 1024;     //128KB
         
         try {
