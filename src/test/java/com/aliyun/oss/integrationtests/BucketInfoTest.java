@@ -64,8 +64,8 @@ public class BucketInfoTest extends TestBase {
             
             BucketList buckets = ossClient.listBuckets(listBucketsRequest);
             Assert.assertEquals(buckets.getBucketList().size(), 1);
-            Assert.assertTrue(buckets.getBucketList().get(0).getExtranetEndpoint().endsWith(".aliyuncs.com"));
-            Assert.assertTrue(buckets.getBucketList().get(0).getIntranetEndpoint().endsWith(".aliyuncs.com"));
+            Assert.assertNotNull(buckets.getBucketList().get(0).getExtranetEndpoint());
+            Assert.assertNotNull(buckets.getBucketList().get(0).getIntranetEndpoint());
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());

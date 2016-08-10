@@ -336,7 +336,7 @@ public class LiveChannelOperation extends OSSOperation {
         doOperation(request, emptyResponseParser, bucketName, key);
     }
     
-    public String generatePushflowUrl(GenerateRtmpUriRequest request) 
+    public String generateRtmpUri(GenerateRtmpUriRequest request) 
             throws OSSException, ClientException {
         
         assertParameterNotNull(request, "request");
@@ -368,11 +368,6 @@ public class LiveChannelOperation extends OSSOperation {
         
         // Parameters
         requestMessage.addParameter(RequestParameters.PLAYLIST_NAME, playlistName);
-        if (request.getParameters() != null && request.getParameters().size() > 0) {
-            for (Map.Entry<String, String> entry : request.getParameters().entrySet()) {
-                requestMessage.addParameter(entry.getKey(), entry.getValue());
-            }
-        }
         
         if (useSecurityToken) {
             requestMessage.addParameter(SECURITY_TOKEN, currentCreds.getSecurityToken());

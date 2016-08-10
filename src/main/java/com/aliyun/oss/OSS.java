@@ -1650,20 +1650,6 @@ public interface OSS {
     
     /**
      * 生成Live Channel的RTMP推流地址。
-     * @param bucketName Bucket名称。
-     * @param liveChannel Live Channel名称。
-     * @param PlaylistName 生成的点播用m3u8文件的basename，例如playlist.m3u8。
-     * @param expires 期望的过期时间，格式采用epoch time，例如1459922563。
-     * @param parameters 用户自定义参数，没有填null。
-     * @return Live Channel的RTMP推流地址。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
-     */
-    public String generateRtmpUri(String bucketName, String liveChannelName, String PlaylistName,
-            long expires, Map<String, String> parameters) throws OSSException, ClientException;
-    
-    /**
-     * 生成Live Channel的RTMP推流地址。
      * @param generatePushflowUrlRequest 请求参数。
      * @return Live Channel的RTMP推流地址。
      * @throws OSSException OSS Server异常信息。

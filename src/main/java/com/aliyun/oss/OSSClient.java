@@ -1391,20 +1391,13 @@ public class OSSClient implements OSS {
     public String generateRtmpUri(String bucketName, String liveChannelName, String PlaylistName,
             long expires) throws OSSException, ClientException {
         return this.generateRtmpUri(new GenerateRtmpUriRequest(bucketName, liveChannelName,
-                PlaylistName, expires, null));
+                PlaylistName, expires));
     }
     
     @Override
-    public String generateRtmpUri(String bucketName, String liveChannelName, String PlaylistName,
-            long expires, Map<String, String> parameters) throws OSSException, ClientException {
-        return this.generateRtmpUri(new GenerateRtmpUriRequest(bucketName, liveChannelName,
-                PlaylistName, expires, parameters));
-    }
-    
-    @Override
-    public String generateRtmpUri(GenerateRtmpUriRequest generatePushflowUrlRequest) 
+    public String generateRtmpUri(GenerateRtmpUriRequest generateRtmpUriRequest) 
             throws OSSException, ClientException {
-        return liveChannelOperation.generatePushflowUrl(generatePushflowUrlRequest);
+        return liveChannelOperation.generateRtmpUri(generateRtmpUriRequest);
     }
     
     @Override
