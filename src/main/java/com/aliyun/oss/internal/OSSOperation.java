@@ -128,20 +128,23 @@ public abstract class OSSOperation {
             request.addHeader(OSSHeaders.OSS_SECURITY_TOKEN, context.getCredentials().getSecurityToken());
         }
         
-        
         context.addRequestHandler(new RequestProgressHanlder());
         if (requestHandlers != null) {
             for (RequestHandler handler : requestHandlers)
                 context.addRequestHandler(handler);
         }
-        context.addRequestHandler(new RequestChecksumHanlder());
+        if (client.getClientConfiguration().isCrcCheckEnabled()) {
+            context.addRequestHandler(new RequestChecksumHanlder());
+        }
         
         context.addResponseHandler(new ResponseProgressHandler(originalRequest));
         if (reponseHandlers != null) {
             for (ResponseHandler handler : reponseHandlers)
                 context.addResponseHandler(handler);
         }
-        context.addResponseHandler(new ResponseChecksumHandler());
+        if (client.getClientConfiguration().isCrcCheckEnabled()) {
+            context.addResponseHandler(new ResponseChecksumHandler());
+        }
         
         ResponseMessage response = send(request, context, keepResponseOpen);
         

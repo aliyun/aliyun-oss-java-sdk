@@ -29,7 +29,6 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.aliyun.oss.common.utils.IOUtils;
@@ -47,7 +46,7 @@ import com.aliyun.oss.model.PutObjectResult;
 import com.aliyun.oss.model.UploadPartRequest;
 import com.aliyun.oss.model.UploadPartResult;
 
-@Ignore
+
 public class CRCChecksumTest extends TestBase {
     
     @Test
