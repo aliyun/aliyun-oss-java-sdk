@@ -88,6 +88,8 @@ public class ClientConfiguration {
     
     private Map<String, String> defaultHeaders = new LinkedHashMap<String, String>();
 
+    private boolean crcCheckEnabled = true;
+
     /**
      * 构造用户代理。
      * @return 用户代理。
@@ -519,6 +521,22 @@ public class ClientConfiguration {
      */
     public void addDefaultHeader(String key, String value) {
         this.defaultHeaders.put(key, value);
+    }
+    
+    /**
+     * 获取是否启动CRC校验，启动后上传下载请求数据会启动CRC校验。默认启用。
+     * @return true 开启， false 关闭
+     */
+    public boolean isCrcCheckEnabled() {
+        return crcCheckEnabled;
+    }
+
+    /**
+     * 设置是否启动CRC校验，启动后上传下载请求数据会启动CRC校验。默认启用。
+     * @param crcCheckEnabled
+     */
+    public void setCrcCheckEnabled(boolean crcCheckEnabled) {
+        this.crcCheckEnabled = crcCheckEnabled;
     }
     
 }
