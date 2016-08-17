@@ -122,15 +122,6 @@ public class SignUtils {
             headersToSign.put(HttpHeaders.CONTENT_MD5.toLowerCase(), "");
         }
         
-        // Add all parameters that prefixed with "x-oss-" into headers to sign
-        if (request.getParameters() != null) {
-            for(Map.Entry<String, String> p : request.getParameters().entrySet()) {
-                if (p.getKey().startsWith(OSSHeaders.OSS_PREFIX)) {
-                    headersToSign.put(p.getKey(), p.getValue());
-                }
-            }
-        }
-        
         // Append all headers to sign to canonical string
         for(Map.Entry<String, String> entry : headersToSign.entrySet()) {
             String key = entry.getKey();

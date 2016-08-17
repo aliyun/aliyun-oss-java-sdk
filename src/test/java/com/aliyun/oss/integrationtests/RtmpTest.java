@@ -45,13 +45,9 @@ import com.aliyun.oss.model.PushflowStatus;
 
 /**
  * Test rtmp
- * RTMP尚未上线，case暂时忽略。
  */
-@Ignore
 public class RtmpTest extends TestBase {
-    
-    //private static String bucketName = "oss-live-channel-1";
-    
+        
     @Test
     public void testCreateLiveChannelDefault() {
         final String liveChannel = "normal-create-live-channel-default";
