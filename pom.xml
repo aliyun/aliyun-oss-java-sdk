@@ -8,7 +8,7 @@
         <version>1.0.2</version>
     </parent>
 	-->
-    
+
     <groupId>com.aliyun.oss</groupId>
     <artifactId>aliyun-sdk-oss</artifactId>
     <version>2.3.0</version>
@@ -16,7 +16,8 @@
     <name>Aliyun OSS SDK for Java</name>
     <description>The Aliyun OSS SDK for Java used for accessing Aliyun Object Storage Service</description>
     <url>http://www.aliyun.com/product/oss</url>
-    
+
+
     <dependencies>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -28,11 +29,11 @@
             <artifactId>jdom</artifactId>
             <version>1.1</version>
         </dependency>
-        <dependency>    
-            <groupId>net.sf.json-lib</groupId>    
-            <artifactId>json-lib</artifactId>    
-            <version>2.4</version>    
-            <classifier>jdk15</classifier>    
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <version>2.4</version>
+            <classifier>jdk15</classifier>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -41,7 +42,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
     <reporting>
         <plugins>
               <plugin>
@@ -51,7 +52,7 @@
               </plugin>
         </plugins>
       </reporting>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -120,6 +121,33 @@
                             <placement>X</placement>
                         </tag>
                     </tags>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <format>xml</format>
+                    <maxmem>256m</maxmem>
+                    <!-- aggregated reports for multi-module projects -->
+                    <aggregate>true</aggregate>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>4.2.0</version>
+                <configuration>
+                    <sourceEncoding>UTF-8</sourceEncoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>3.2.1</version>
+                <configuration>
+                    <sourceEncoding>UTF-8</sourceEncoding>
                 </configuration>
             </plugin>
         </plugins>
