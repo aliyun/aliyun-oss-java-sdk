@@ -22,12 +22,18 @@ package com.aliyun.oss.integrationtests;
 public final class TestConfig {
 
     // OSS test configuration
-    public static String OSS_TEST_ENDPOINT = null;
-    public static String OSS_TEST_REGION = null;
-    public static String OSS_TEST_ACCESS_KEY_ID = null;
-    public static String OSS_TEST_ACCESS_KEY_SECRET = null;
-    public static String OSS_TEST_ACCESS_KEY_ID_1 = null;
-    public static String OSS_TEST_ACCESS_KEY_SECRET_1 = null;
+//    public static String OSS_TEST_ENDPOINT = null;
+//    public static String OSS_TEST_REGION = null;
+//    public static String OSS_TEST_ACCESS_KEY_ID = null;
+//    public static String OSS_TEST_ACCESS_KEY_SECRET = null;
+//    public static String OSS_TEST_ACCESS_KEY_ID_1 = null;
+//    public static String OSS_TEST_ACCESS_KEY_SECRET_1 = null;
+  public static String OSS_TEST_ENDPOINT = "http://oss-us-west-1.aliyuncs.com";
+  public static String OSS_TEST_REGION = "oss-us-west-1";
+  public static String OSS_TEST_ACCESS_KEY_ID = "2NeLUvmJFYbrj2Eb";
+  public static String OSS_TEST_ACCESS_KEY_SECRET = "tpKbdpzCavhbYghxHih5urCw5lkBdx";
+  public static String OSS_TEST_ACCESS_KEY_ID_1 = OSS_TEST_ACCESS_KEY_ID;
+  public static String OSS_TEST_ACCESS_KEY_SECRET_1 = OSS_TEST_ACCESS_KEY_SECRET;
     
     // OSS replication test configuration
     public static String OSS_TEST_REPLICATION_ENDPOINT = null;
