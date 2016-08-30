@@ -307,6 +307,8 @@ public class RtmpTest extends TestBase {
             Assert.assertTrue(liveChannelStat.getAudioStat().getBandWidth() > 4000);
             Assert.assertEquals(liveChannelStat.getAudioStat().getSampleRate(), 22050);
             Assert.assertEquals(liveChannelStat.getAudioStat().getCodec(), "AAC");
+            
+            ossClient.deleteLiveChannel(bucketName, liveChannel);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -532,6 +534,8 @@ public class RtmpTest extends TestBase {
                 Assert.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
                 Assert.assertTrue(e.getMessage().indexOf("No ts file found in specified time span.") > -1);
             }
+            
+            ossClient.deleteLiveChannel(bucketName, liveChannel);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -567,6 +571,8 @@ public class RtmpTest extends TestBase {
                     liveChannelInfo.getTarget().getPlaylistName(), expires);
             
             Assert.assertEquals(uri, uri2);
+            
+            ossClient.deleteLiveChannel(bucketName, liveChannel);
             
         } catch (Exception e) {
             Assert.fail(e.getMessage());
