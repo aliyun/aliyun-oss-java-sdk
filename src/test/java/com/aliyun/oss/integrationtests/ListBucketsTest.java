@@ -41,7 +41,7 @@ public class ListBucketsTest extends TestBase {
     
     @Test
     public void testNormalListBuckets() {
-        final String bucketNamePrefix = "normal-list-buckets-";
+        final String bucketNamePrefix = BUCKET_NAME_PREFIX + "normal-list-buckets-";
         
         try {
             List<String> existingBuckets = new ArrayList<String>();
@@ -71,7 +71,9 @@ public class ListBucketsTest extends TestBase {
             returnedBuckets = ossClient.listBuckets();
             existingBuckets.clear();
             for (Bucket bkt : returnedBuckets) {
-                existingBuckets.add(bkt.getName());
+                if (bkt.getName().startsWith(bucketNamePrefix)) {
+                    existingBuckets.add(bkt.getName());
+                }
             }
             Assert.assertEquals(MAX_BUCKETS_ALLOWED, existingBuckets.size());
             
