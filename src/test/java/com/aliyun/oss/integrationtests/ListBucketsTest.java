@@ -44,10 +44,20 @@ public class ListBucketsTest extends TestBase {
         final String bucketNamePrefix = BUCKET_NAME_PREFIX + "normal-list-buckets-";
         
         try {
-            List<String> existingBuckets = new ArrayList<String>();
             List<Bucket> returnedBuckets = ossClient.listBuckets();
             for (Bucket bkt : returnedBuckets) {
-                existingBuckets.add(bkt.getName());
+                if (bkt.getName().startsWith(bucketNamePrefix)) {
+                    ossClient.deleteBucket(bkt.getName());
+                }
+            }
+            waitForCacheExpiration(5);
+            
+            List<String> existingBuckets = new ArrayList<String>();
+            returnedBuckets = ossClient.listBuckets();
+            for (Bucket bkt : returnedBuckets) {
+                if (bkt.getName().startsWith(bucketNamePrefix)) {
+                    existingBuckets.add(bkt.getName());
+                }
             }
             
             int remaindingAllowed = MAX_BUCKETS_ALLOWED - existingBuckets.size();            
