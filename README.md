@@ -1,5 +1,9 @@
 # OSS SDK for Java Developers
 
+[![GitHub version](https://badge.fury.io/gh/aliyun%2Faliyun-oss-java-sdk.svg)](https://badge.fury.io/gh/aliyun%2Faliyun-oss-java-sdk)
+[![Build Status](https://travis-ci.org/aliyun/aliyun-oss-java-sdk.svg?branch=master)](https://travis-ci.org/aliyun/aliyun-oss-java-sdk)
+[![Coverage Status](https://coveralls.io/repos/github/aliyun/aliyun-oss-java-sdk/badge.svg?branch=master)](https://coveralls.io/github/aliyun/aliyun-oss-java-sdk?branch=master)
+
 ## Requirements
 
 - Java 6+

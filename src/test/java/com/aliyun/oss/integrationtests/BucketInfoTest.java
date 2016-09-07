@@ -41,7 +41,7 @@ public class BucketInfoTest extends TestBase {
             BucketInfo info = ossClient.getBucketInfo(bucketName);
             Assert.assertEquals(info.getBucket().getName(), bucketName);
             Assert.assertEquals(info.getBucket().getLocation(), TestConfig.OSS_TEST_REGION);
-            Assert.assertEquals(info.getBucket().getCreationDate().toString().endsWith("CST 2016"), true);
+            Assert.assertNotNull(info.getBucket().getCreationDate());
             Assert.assertTrue(info.getBucket().getOwner().getId().length() > 0);
             Assert.assertEquals(info.getBucket().getOwner().getDisplayName(), info.getBucket().getOwner().getId());
             Assert.assertEquals(info.getGrants().size(), 1);
