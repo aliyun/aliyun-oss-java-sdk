@@ -241,7 +241,7 @@ public class DefaultServiceClient extends ServiceClient {
             throw new ClientException(e.getMessage());
         }
         
-        SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
+        SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext, new NoopHostnameVerifier());
         Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register(Protocol.HTTP.toString(), PlainConnectionSocketFactory.getSocketFactory())
                 .register(Protocol.HTTPS.toString(), sslSocketFactory)
