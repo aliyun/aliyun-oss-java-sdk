@@ -22,17 +22,17 @@ package com.aliyun.oss.integrationtests;
 public final class TestConfig {
 
     // OSS test configuration
-    public static String OSS_TEST_ENDPOINT = null;
-    public static String OSS_TEST_REGION = null;
-    public static String OSS_TEST_ACCESS_KEY_ID = null;
-    public static String OSS_TEST_ACCESS_KEY_SECRET = null;
+    public static String OSS_TEST_ENDPOINT = "http://oss-cn-hangzhou.aliyuncs.com";
+    public static String OSS_TEST_REGION = "oss-cn-hanzhou";
+    public static String OSS_TEST_ACCESS_KEY_ID = "2NeLUvmJFYbrj2Eb";
+    public static String OSS_TEST_ACCESS_KEY_SECRET = "tpKbdpzCavhbYghxHih5urCw5lkBdx";
     public static String OSS_TEST_ACCESS_KEY_ID_1 = null;
     public static String OSS_TEST_ACCESS_KEY_SECRET_1 = null;
     
     // OSS replication test configuration
-    public static String OSS_TEST_REPLICATION_ENDPOINT = null;
-    public static String OSS_TEST_REPLICATION_ACCESS_KEY_ID = null;
-    public static String OSS_TEST_REPLICATION_ACCESS_KEY_SECRET = null;
+    public static String OSS_TEST_REPLICATION_ENDPOINT = "http://oss-cn-qingdao.aliyuncs.com";
+    public static String OSS_TEST_REPLICATION_ACCESS_KEY_ID = OSS_TEST_ACCESS_KEY_ID;
+    public static String OSS_TEST_REPLICATION_ACCESS_KEY_SECRET = OSS_TEST_ACCESS_KEY_SECRET;
    
     // OSS sts test configuration
     public static String STS_TEST_ENDPOINT = null;

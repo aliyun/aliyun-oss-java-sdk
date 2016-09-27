@@ -302,7 +302,7 @@ public class CreateBucketTest extends TestBase {
         final String bucketName = "bucket-with-storage-type";
         
         CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
-        createBucketRequest.setStorageClass(StorageClass.Nearline);
+        createBucketRequest.setStorageClass(StorageClass.IA);
         try {
             ossClient.createBucket(createBucketRequest);
             AccessControlList returnedAcl = ossClient.getBucketAcl(bucketName);
@@ -311,7 +311,7 @@ public class CreateBucketTest extends TestBase {
             
             BucketList buckets = ossClient.listBuckets(bucketName, "", 100);
             Assert.assertEquals(1, buckets.getBucketList().size());
-            Assert.assertEquals(StorageClass.Nearline, buckets.getBucketList().get(0).getStorageClass());
+            Assert.assertEquals(StorageClass.IA, buckets.getBucketList().get(0).getStorageClass());
         } catch (Exception ex) {
             Assert.fail(ex.getMessage());
         } finally {
@@ -324,14 +324,14 @@ public class CreateBucketTest extends TestBase {
         final String bucketName = "bucket-with-storage-type-func";
         
         try {
-            ossClient.createBucket(new CreateBucketRequest(bucketName).withStorageType(StorageClass.Nearline));
+            ossClient.createBucket(new CreateBucketRequest(bucketName).withStorageType(StorageClass.IA));
             AccessControlList returnedAcl = ossClient.getBucketAcl(bucketName);
             Set<Grant> grants = returnedAcl.getGrants();
             Assert.assertEquals(0, grants.size());
             
             BucketList buckets = ossClient.listBuckets(bucketName, "", 100);
             Assert.assertEquals(1, buckets.getBucketList().size());
-            Assert.assertEquals(StorageClass.Nearline, buckets.getBucketList().get(0).getStorageClass());
+            Assert.assertEquals(StorageClass.IA, buckets.getBucketList().get(0).getStorageClass());
         } catch (Exception ex) {
             Assert.fail(ex.getMessage());
         } finally {
@@ -377,7 +377,7 @@ public class CreateBucketTest extends TestBase {
             Assert.assertEquals(StorageClass.Standard, buckets.getBucketList().get(0).getStorageClass());
            
             try {
-                createBucketRequest.setStorageClass(StorageClass.Nearline);
+                createBucketRequest.setStorageClass(StorageClass.IA);
                 ossClient.createBucket(createBucketRequest);
                 Assert.fail("Create bucket should not be successful.");
             } catch (OSSException oe) {

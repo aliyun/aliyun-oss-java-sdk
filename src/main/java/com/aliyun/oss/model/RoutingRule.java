@@ -46,7 +46,11 @@ public class RoutingRule {
             return httpErrorCodeReturnedEquals;
         }
 
-        public void setHttpErrorCodeReturnedEquals(int httpErrorCodeReturnedEquals) {
+        public void setHttpErrorCodeReturnedEquals(Integer httpErrorCodeReturnedEquals) {
+            if (httpErrorCodeReturnedEquals == null) {
+                return;
+            }
+            
             if (httpErrorCodeReturnedEquals <= 0) {
                 throw new IllegalArgumentException(MessageFormat.format("HttpErrorCodeReturnedEqualsInvalid",
                         "HttpErrorCodeReturnedEquals should be greater than 0"));
@@ -74,7 +78,7 @@ public class RoutingRule {
     
     public static enum RedirectType {
         /**
-         * Internal模式暂时不开发
+         * Internal模式尚未支持
          */
         //Internal("Internal"),
         
@@ -192,7 +196,11 @@ public class RoutingRule {
             return httpRedirectCode;
         }
 
-        public void setHttpRedirectCode(int httpRedirectCode) {
+        public void setHttpRedirectCode(Integer httpRedirectCode) {
+            if (httpRedirectCode == null) {
+                return;
+            }
+            
             if (httpRedirectCode < 300 || httpRedirectCode > 399) {
                 throw new IllegalArgumentException(MessageFormat.format("RedirectHttpRedirectCodeInvalid",
                         "HttpRedirectCode must be a valid HTTP 3xx status code."));
@@ -207,6 +215,38 @@ public class RoutingRule {
 
         public void setMirrorURL(String mirrorURL) {
             this.mirrorURL = mirrorURL;
+        }
+        
+        public String getMirrorSecondaryURL() {
+            return mirrorSecondaryURL;
+        }
+
+        public void setMirrorSecondaryURL(String mirrorSecondaryURL) {
+            this.mirrorSecondaryURL = mirrorSecondaryURL;
+        }
+
+        public String getMirrorProbeURL() {
+            return mirrorProbeURL;
+        }
+
+        public void setMirrorProbeURL(String mirrorProbeURL) {
+            this.mirrorProbeURL = mirrorProbeURL;
+        }
+
+        public Boolean isPassQueryString() {
+            return passQueryString;
+        }
+
+        public void setPassQueryString(Boolean passQueryString) {
+            this.passQueryString = passQueryString;
+        }
+
+        public Boolean isPassOriginalSlashes() {
+            return passOriginalSlashes;
+        }
+
+        public void setPassOriginalSlashes(Boolean passOriginalSlashes) {
+            this.passOriginalSlashes = passOriginalSlashes;
         }
         
         /**
@@ -280,13 +320,34 @@ public class RoutingRule {
          * MirrorURL is effective when RedirectType is Mirror
          */
         private String mirrorURL;
+
+        /**
+         * 镜像主备切换的从源站，与MirrorURL的格式要求相同，当主源站访问出错时，OSS会自动切换到此从源站。
+         */
+        private String mirrorSecondaryURL;
+        
+        /**
+         * 镜像主备切换的探测URL，用于探测主源站的连通情况。OSS会周期性的使用HEAD探测此URL，
+         * 如果返回非200，则切换到从源站，否则切换到主源站。
+         */
+        private String mirrorProbeURL;
+        
+        /**
+         * 镜像时是否将请求中的QueryString传递给源站，默认false。
+         */
+        private Boolean passQueryString;
+        
+        /**
+         * 镜像时是否要将OSS请求中host与uri之间多余的斜杠传递给源站，默认false。
+         */
+        private Boolean passOriginalSlashes;
     }
 
     public Integer getNumber() {
         return number;
     }
     
-    public void setNumber(int number) {
+    public void setNumber(Integer number) {
         this.number = number;
     }
     

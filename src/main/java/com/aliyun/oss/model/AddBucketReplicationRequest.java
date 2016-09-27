@@ -19,10 +19,59 @@
 
 package com.aliyun.oss.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 设置跨区域复制请求。
  */
 public class AddBucketReplicationRequest extends GenericRequest {
+    
+    public static enum ReplicationAction {
+        /**
+         * ALL表示所有操作（PUT、DELETE、ABORT）都复制到目标Bucket，默认动作。
+         */
+        ALL("ALL"),
+        
+        /**
+         * PUT表示所有写入类操作会被复制到目标Bucket，包括PutObject/PostObject/AppendObject/CopyObject/PutObjectACL/
+         * InitiateMultipartUpload/UploadPart/UploadPartCopy/CompleteMultipartUpload。
+         */
+        PUT("PUT"),
+        
+        /**
+         * DELETE表示所有删除类操作会被复制到目标Bucket，包括DeleteObject/DeleteMultipleObjects。
+         */
+        DELETE("DELETE"),
+        
+        /**
+         * ABORT，表示对于未Complete的Upload，AbortMultipartUpload操作会被复制到目标Bucket中。
+         */
+        ABORT("ABORT");
+        
+        private String replicationAction;
+        
+        private ReplicationAction(String replicationAction){
+            this.replicationAction = replicationAction;
+        }
+
+        @Override
+        public String toString() {
+            return this.replicationAction;
+        }
+        
+        public static ReplicationAction parse(String replicationAction) {
+            for(ReplicationAction rt : ReplicationAction.values()) {
+                if (rt.toString().equals(replicationAction)) {
+                    return rt;
+                }
+            }
+            
+            throw new IllegalArgumentException("Unable to parse " + replicationAction);
+        }
+    }
+    
+    
     public AddBucketReplicationRequest(String bucketName) {
         super(bucketName);
     }
@@ -59,9 +108,33 @@ public class AddBucketReplicationRequest extends GenericRequest {
             boolean enableHistoricalObjectReplication) {
         this.enableHistoricalObjectReplication = enableHistoricalObjectReplication;
     }
+    
+    public List<String> getObjectPrefixList() {
+        return objectPrefixList;
+    }
+    
+    public void setObjectPrefixList(List<String> objectPrefixList) {
+        this.objectPrefixList.clear();
+        if (objectPrefixList != null && !objectPrefixList.isEmpty()) {
+            this.objectPrefixList.addAll(objectPrefixList);
+        }
+    }
+    
+    public List<ReplicationAction> getReplicationActionList() {
+        return replicationActionList;
+    }
+    
+    public void setReplicationActionList(List<ReplicationAction> replicationActionList) {
+        this.replicationActionList.clear();
+        if (replicationActionList != null && !replicationActionList.isEmpty()) {
+            this.replicationActionList.addAll(replicationActionList);
+        }
+    }
 
     private String replicationRuleID = "";
     private String targetBucketName;
     private String targetBucketLocation;
     private boolean enableHistoricalObjectReplication = true;
+    private List<String> objectPrefixList = new ArrayList<String>();
+    private List<ReplicationAction> replicationActionList = new ArrayList<ReplicationAction>();
 }

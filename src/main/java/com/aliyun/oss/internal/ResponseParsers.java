@@ -42,6 +42,7 @@ import com.aliyun.oss.common.parser.ResponseParseException;
 import com.aliyun.oss.common.parser.ResponseParser;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.model.AccessControlList;
+import com.aliyun.oss.model.AddBucketReplicationRequest.ReplicationAction;
 import com.aliyun.oss.model.AppendObjectResult;
 import com.aliyun.oss.model.Bucket;
 import com.aliyun.oss.model.BucketInfo;
@@ -1483,6 +1484,16 @@ public final class ResponseParsers {
                             Integer.parseInt(redirectElem.getChildText("HttpRedirectCode"))); 
                     }
                     rule.getRedirect().setMirrorURL(redirectElem.getChildText("MirrorURL"));
+                    rule.getRedirect().setMirrorSecondaryURL(redirectElem.getChildText("MirrorURLSlave"));
+                    rule.getRedirect().setMirrorProbeURL(redirectElem.getChildText("MirrorURLProbe"));
+                    if (redirectElem.getChildText("MirrorPassQueryString") != null) {
+                        rule.getRedirect().setPassQueryString(Boolean.valueOf(
+                                redirectElem.getChildText("MirrorPassQueryString")));
+                    }
+                    if (redirectElem.getChildText("MirrorPassOriginalSlashes") != null) {
+                        rule.getRedirect().setPassOriginalSlashes(Boolean.valueOf(
+                                redirectElem.getChildText("MirrorPassOriginalSlashes")));
+                    }
                     
                     result.AddRoutingRule(rule);
                 }
@@ -1654,6 +1665,24 @@ public final class ResponseParsers {
                     repRule.setEnableHistoricalObjectReplication(true);
                 } else {
                     repRule.setEnableHistoricalObjectReplication(false);
+                }
+                
+                if (ruleElem.getChild("PrefixSet") != null) {
+                    List<String> objectPrefixes = new ArrayList<String>(); 
+                    List<Element> prefixElems = ruleElem.getChild("PrefixSet").getChildren("Prefix");
+                    for (Element prefixElem : prefixElems) {
+                        objectPrefixes.add(prefixElem.getText());
+                    }
+                    repRule.setObjectPrefixList(objectPrefixes);
+                }
+                
+                if (ruleElem.getChild("Action") != null) {
+                    String[] actionStrs = ruleElem.getChildText("Action").split(",");
+                    List<ReplicationAction> repActions = new ArrayList<ReplicationAction>();
+                    for (String actionStr : actionStrs) {
+                        repActions.add(ReplicationAction.parse(actionStr));
+                    }
+                    repRule.setReplicationActionList(repActions);
                 }
                 
                 repRules.add(repRule);
