@@ -72,9 +72,13 @@ public final class IdleConnectionReaper extends Thread {
                 getLog().debug("Shutting down reaper thread.");
                 return;
             }
+            
             try {
                 Thread.sleep(REAP_INTERVAL_MILLISECONDS);
-
+            } catch (InterruptedException e) {
+            }
+            
+            try {
                 List<HttpClientConnectionManager> connectionManagers = null;
                 synchronized (IdleConnectionReaper.class) {
                     connectionManagers = (List<HttpClientConnectionManager>)IdleConnectionReaper.connectionManagers.clone();
