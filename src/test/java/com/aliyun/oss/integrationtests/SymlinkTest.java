@@ -31,30 +31,30 @@ import org.junit.Test;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.OSSObject;
-import com.aliyun.oss.model.OSSSymbolicLink;
+import com.aliyun.oss.model.OSSSymlink;
 import com.aliyun.oss.model.ObjectMetadata;
 
 /**
  * Test Symbolic Link 
  */
-public class SymbolicLinkTest extends TestBase {
+public class SymlinkTest extends TestBase {
     
     final private static String targetObject = "oss/+< >[]/世界/中国.txt";
     final private static String content = "Hello OSS";
 
     @Test
-    public void testNormalCreateSymbolicLink() {
+    public void testNormalCreateSymlink() {
         final String symLink = "normal-create-sym-link";
 
         try {
             ossClient.putObject(bucketName, targetObject,
                     new ByteArrayInputStream(content.getBytes()));
 
-            ossClient.createSymbolicLink(bucketName, symLink, targetObject);
+            ossClient.createSymlink(bucketName, symLink, targetObject);
 
-            OSSSymbolicLink symbolicLink = ossClient.getSymbolicLink(bucketName, symLink);
-            Assert.assertEquals(symbolicLink.getSymbolicLink(), symLink);
-            Assert.assertEquals(symbolicLink.getTargetObject(), targetObject);
+            OSSSymlink symbolicLink = ossClient.getSymlink(bucketName, symLink);
+            Assert.assertEquals(symbolicLink.getSymlink(), symLink);
+            Assert.assertEquals(symbolicLink.getTarget(), targetObject);
                         
             ossClient.deleteObject(bucketName, symLink);
             ossClient.deleteObject(bucketName, targetObject);
@@ -64,18 +64,18 @@ public class SymbolicLinkTest extends TestBase {
     }
     
     @Test
-    public void testNormalCreateSymbolicLinkChar() {
+    public void testNormalCreateSymlinkChar() {
         final String symLink = "normal-create-sym-link-[]< >=-?/世界/中国.txt";
 
         try {
             ossClient.putObject(bucketName, targetObject,
                     new ByteArrayInputStream(content.getBytes()));
 
-            ossClient.createSymbolicLink(bucketName, symLink, targetObject);
+            ossClient.createSymlink(bucketName, symLink, targetObject);
 
-            OSSSymbolicLink symbolicLink = ossClient.getSymbolicLink(bucketName, symLink);
-            Assert.assertEquals(symbolicLink.getSymbolicLink(), symLink);
-            Assert.assertEquals(symbolicLink.getTargetObject(), targetObject);
+            OSSSymlink symbolicLink = ossClient.getSymlink(bucketName, symLink);
+            Assert.assertEquals(symbolicLink.getSymlink(), symLink);
+            Assert.assertEquals(symbolicLink.getTarget(), targetObject);
                         
             ossClient.deleteObject(bucketName, symLink);
             ossClient.deleteObject(bucketName, targetObject);
@@ -85,16 +85,16 @@ public class SymbolicLinkTest extends TestBase {
     }
     
     @Test
-    public void testUnnormalCreateSymbolicLink() {
+    public void testUnnormalCreateSymlink() {
         final String symLink = "unnormal-create-sym-link";
 
         try {
-            ossClient.createSymbolicLink(bucketName, symLink, symLink);
+            ossClient.createSymlink(bucketName, symLink, symLink);
             
-            OSSSymbolicLink symbolicLink = ossClient.getSymbolicLink(
+            OSSSymlink symbolicLink = ossClient.getSymlink(
                     bucketName, symLink);
-            Assert.assertEquals(symbolicLink.getSymbolicLink(), symLink);
-            Assert.assertEquals(symbolicLink.getTargetObject(), symLink);
+            Assert.assertEquals(symbolicLink.getSymlink(), symLink);
+            Assert.assertEquals(symbolicLink.getTarget(), symLink);
             
             try {
                 ossClient.getObject(bucketName, symLink);
@@ -109,18 +109,18 @@ public class SymbolicLinkTest extends TestBase {
     }
     
     @Test
-    public void testUnnormalGetSymbolicLink() {
+    public void testUnnormalgetSymlink() {
         final String symLink = "unnormal-get-sym-link";
 
         try {
-            OSSSymbolicLink symbolicLink = ossClient.getSymbolicLink(bucketName, symLink);
-            Assert.assertNull(symbolicLink.getSymbolicLink());
+            OSSSymlink symbolicLink = ossClient.getSymlink(bucketName, symLink);
+            Assert.assertNull(symbolicLink.getSymlink());
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
         }
         
         try {
-            ossClient.createSymbolicLink(bucketName, symLink, targetObject);
+            ossClient.createSymlink(bucketName, symLink, targetObject);
             ossClient.getObject(bucketName, symLink);
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_SYM_LINK_TARGET, e.getErrorCode());
@@ -128,19 +128,19 @@ public class SymbolicLinkTest extends TestBase {
     }
     
     @Test
-    public void testNormalGetSymbolicLinkContent() {
+    public void testNormalgetSymlinkContent() {
         final String symLink = "normal-create-sym-link-content";
 
         try {
             ossClient.putObject(bucketName, targetObject,
                     new ByteArrayInputStream(content.getBytes()));
 
-            ossClient.createSymbolicLink(bucketName, symLink, targetObject);
+            ossClient.createSymlink(bucketName, symLink, targetObject);
 
-            OSSSymbolicLink symbolicLink = ossClient.getSymbolicLink(
+            OSSSymlink symbolicLink = ossClient.getSymlink(
                     bucketName, symLink);
-            Assert.assertEquals(symbolicLink.getSymbolicLink(), symLink);
-            Assert.assertEquals(symbolicLink.getTargetObject(), targetObject);
+            Assert.assertEquals(symbolicLink.getSymlink(), symLink);
+            Assert.assertEquals(symbolicLink.getTarget(), targetObject);
 
             // content
             OSSObject ossObject = ossClient.getObject(bucketName, symLink);
@@ -169,7 +169,7 @@ public class SymbolicLinkTest extends TestBase {
     }
     
     @Test
-    public void testNormalHeaderSymbolicLink() {
+    public void testNormalHeaderSymlink() {
         final String symLink = "normal-create-sym-link-content";
 
         try {
@@ -182,7 +182,7 @@ public class SymbolicLinkTest extends TestBase {
             ossClient.putObject(bucketName, targetObject,
                     new ByteArrayInputStream(content.getBytes()), metadata);
 
-            ossClient.createSymbolicLink(bucketName, symLink, targetObject);
+            ossClient.createSymlink(bucketName, symLink, targetObject);
 
             ObjectMetadata meta = ossClient.getObjectMetadata(bucketName, symLink);
             Assert.assertNull(meta.getUserMetadata().get("meta"));

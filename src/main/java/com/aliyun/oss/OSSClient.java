@@ -95,7 +95,7 @@ import com.aliyun.oss.model.CopyObjectResult;
 import com.aliyun.oss.model.CreateBucketRequest;
 import com.aliyun.oss.model.CreateLiveChannelRequest;
 import com.aliyun.oss.model.CreateLiveChannelResult;
-import com.aliyun.oss.model.CreateSymbolicLinkRequest;
+import com.aliyun.oss.model.CreateSymlinkRequest;
 import com.aliyun.oss.model.DeleteBucketCnameRequest;
 import com.aliyun.oss.model.DeleteBucketReplicationRequest;
 import com.aliyun.oss.model.DeleteObjectsRequest;
@@ -128,7 +128,7 @@ import com.aliyun.oss.model.LiveChannelStatus;
 import com.aliyun.oss.model.LiveRecord;
 import com.aliyun.oss.model.MultipartUploadListing;
 import com.aliyun.oss.model.OSSObject;
-import com.aliyun.oss.model.OSSSymbolicLink;
+import com.aliyun.oss.model.OSSSymlink;
 import com.aliyun.oss.model.ObjectAcl;
 import com.aliyun.oss.model.ObjectListing;
 import com.aliyun.oss.model.ObjectMetadata;
@@ -1403,28 +1403,28 @@ public class OSSClient implements OSS {
     }
     
     @Override
-    public void createSymbolicLink(String bucketName, String symLink, String targetObject)
+    public void createSymlink(String bucketName, String symLink, String targetObject)
             throws OSSException, ClientException {
-        this.createSymbolicLink(new CreateSymbolicLinkRequest(
+        this.createSymlink(new CreateSymlinkRequest(
                 bucketName, symLink, targetObject));
     }
 
     @Override
-    public void createSymbolicLink(CreateSymbolicLinkRequest createSymbolicLinkRequest)
+    public void createSymlink(CreateSymlinkRequest createSymlinkRequest)
             throws OSSException, ClientException {
-        objectOperation.createSymbolicLink(createSymbolicLinkRequest);
+        objectOperation.createSymlink(createSymlinkRequest);
     }
 
     @Override
-    public OSSSymbolicLink getSymbolicLink(String bucketName, String symLink)
+    public OSSSymlink getSymlink(String bucketName, String symLink)
             throws OSSException, ClientException {
-        return this.getSymbolicLink(new GenericRequest(bucketName, symLink));
+        return this.getSymlink(new GenericRequest(bucketName, symLink));
     }
     
     @Override
-    public OSSSymbolicLink getSymbolicLink(GenericRequest genericRequest)
+    public OSSSymlink getSymlink(GenericRequest genericRequest)
             throws OSSException, ClientException {
-        return objectOperation.getSymbolicLink(genericRequest);
+        return objectOperation.getSymlink(genericRequest);
     }
     
     @Override

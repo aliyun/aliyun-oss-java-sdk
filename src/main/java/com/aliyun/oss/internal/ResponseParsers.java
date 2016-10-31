@@ -70,7 +70,7 @@ import com.aliyun.oss.model.LiveChannelStat.AudioStat;
 import com.aliyun.oss.model.LiveChannelStat.VideoStat;
 import com.aliyun.oss.model.LiveChannelStatus;
 import com.aliyun.oss.model.LiveChannelTarget;
-import com.aliyun.oss.model.OSSSymbolicLink;
+import com.aliyun.oss.model.OSSSymlink;
 import com.aliyun.oss.model.ReplicationRule;
 import com.aliyun.oss.model.GetImageStyleResult;
 import com.aliyun.oss.model.GroupGrantee;
@@ -773,10 +773,10 @@ public final class ResponseParsers {
         
     }
     
-    public static final class GetSymbolicLinkResponseParser implements ResponseParser<OSSSymbolicLink> {
+    public static final class GetSymbolicLinkResponseParser implements ResponseParser<OSSSymlink> {
         
         @Override
-        public OSSSymbolicLink parse(ResponseMessage response)
+        public OSSSymlink parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
                 return parseSymbolicLink(response.getHeaders());
@@ -1136,16 +1136,16 @@ public final class ResponseParsers {
     /**
      * Unmarshall symbolic link from response headers.
      */
-    public static OSSSymbolicLink parseSymbolicLink(Map<String, String> headers) 
+    public static OSSSymlink parseSymbolicLink(Map<String, String> headers) 
             throws ResponseParseException {
 
         try {
-            OSSSymbolicLink smyLink = null;
+            OSSSymlink smyLink = null;
             String targetObject = headers.get(OSSHeaders.OSS_HEADER_SYMLINK_TARGET);
             
             if (targetObject != null) {
                 targetObject = HttpUtil.urlDecode(targetObject, "UTF-8");
-                smyLink = new OSSSymbolicLink(null, targetObject); 
+                smyLink = new OSSSymlink(null, targetObject); 
             }
             
             return smyLink;

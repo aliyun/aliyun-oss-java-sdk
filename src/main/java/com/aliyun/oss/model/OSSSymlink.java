@@ -20,34 +20,42 @@
 package com.aliyun.oss.model;
 
 /**
- * 创建符号链接请求
+ * OSS符号链接
  * 
  */
-public class CreateSymbolicLinkRequest extends GenericRequest {
+public class OSSSymlink {
     
-    public CreateSymbolicLinkRequest(String bucketName, String symbolicLink, 
-            String targetObject) {
-        super(bucketName, symbolicLink);
-        this.targetObject = targetObject;
-    }
-    
-    public String getSymbolicLink() {
-        return this.getKey();
+    public OSSSymlink(String symlink, String target) {
+        this.symlink = symlink;
+        this.target = target;
     }
 
-    public void setSymbolicLink(String symbolicLink) {
-        this.setKey(symbolicLink);
+    public String getSymlink() {
+        return this.symlink;
     }
 
-    public String getTargetObject() {
-        return this.targetObject;
+    public void setSymlink(String symlink) {
+        this.symlink = symlink;
     }
 
-    public void setTargetObject(String targetObject) {
-        this.targetObject = targetObject;
+    public String getTarget() {
+        return this.target;
     }
+
+    public void setTarget(String target) {
+        this.target = target;
+    }
+
+    @Override
+    public String toString() {
+        return "OSSSymlink [symlink=" + getSymlink()
+            + ", target=" + getTarget() + "]";
+    }
+
+    // 符号链接
+    private String symlink;
 
     // 目标文件
-    private String targetObject;
+    private String target;
 
 }
