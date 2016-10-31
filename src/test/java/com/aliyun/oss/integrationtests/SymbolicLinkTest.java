@@ -64,6 +64,51 @@ public class SymbolicLinkTest extends TestBase {
     }
     
     @Test
+    public void testNormalCreateSymbolicLinkChar() {
+        final String symLink = "normal-create-sym-link-[]< >=-?/世界/中国.txt";
+
+        try {
+            ossClient.putObject(bucketName, targetObject,
+                    new ByteArrayInputStream(content.getBytes()));
+
+            ossClient.createSymbolicLink(bucketName, symLink, targetObject);
+
+            OSSSymbolicLink symbolicLink = ossClient.getSymbolicLink(bucketName, symLink);
+            Assert.assertEquals(symbolicLink.getSymbolicLink(), symLink);
+            Assert.assertEquals(symbolicLink.getTargetObject(), targetObject);
+                        
+            ossClient.deleteObject(bucketName, symLink);
+            ossClient.deleteObject(bucketName, targetObject);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+    
+    @Test
+    public void testUnnormalCreateSymbolicLink() {
+        final String symLink = "unnormal-create-sym-link";
+
+        try {
+            ossClient.createSymbolicLink(bucketName, symLink, symLink);
+            
+            OSSSymbolicLink symbolicLink = ossClient.getSymbolicLink(
+                    bucketName, symLink);
+            Assert.assertEquals(symbolicLink.getSymbolicLink(), symLink);
+            Assert.assertEquals(symbolicLink.getTargetObject(), symLink);
+            
+            try {
+                ossClient.getObject(bucketName, symLink);
+            } catch (OSSException e) {
+                Assert.assertEquals("InvalidTargetType", e.getErrorCode());
+            }
+
+            ossClient.deleteObject(bucketName, symLink);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+    
+    @Test
     public void testUnnormalGetSymbolicLink() {
         final String symLink = "unnormal-get-sym-link";
 
