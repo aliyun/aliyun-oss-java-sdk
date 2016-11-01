@@ -1,13 +1,16 @@
 package samples;
 
 import javax.activation.MimetypesFileTypeMap;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -20,51 +23,63 @@ import java.util.Map.Entry;
 public class PostObjectSample {
 
     // 需要上传的本地文件，确保该文件存在
-    private String localFilePath = "<localFile>";
+    private String localFilePath = "C:\\Users\\yubin.byb\\Desktop\\images.png";
     // OSS域名，如http://oss-cn-hangzhou.aliyuncs.com
     private String endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
     // AccessKey请登录https://ak-console.aliyun.com/#/查看
-    private String accessKeyId = "<accessKeyId>";
-    private String accessKeySecret = "<accessKeySecret>";
+    private String accessKeyId = "2NeLUvmJFYbrj2Eb";
+    private String accessKeySecret = "tpKbdpzCavhbYghxHih5urCw5lkBdx";
     // 你之前创建的bucket，确保这个bucket已经创建
-    private String bucketName = "<bucketName>";
+    private String bucketName = "mingdi-hz";
     // 上传文件后的object名称
-    private String key = "yourKey";
+    private String key = "md/conf/test-key";
 
     
     private void PostObject() throws Exception {
         // 提交表单的URL为bucket域名
         String urlStr = endpoint.replace("http://", "http://" + bucketName+ ".");
+        
         // 表单域
-        Map<String, String> textMap = new LinkedHashMap<String, String>();
+        Map<String, String> formFields = new LinkedHashMap<String, String>();
         
         // key
-        textMap.put("key", this.key);
+        formFields.put("key", this.key);
         // Content-Disposition
-        textMap.put("Content-Disposition", "attachment;filename="
+        formFields.put("Content-Disposition", "attachment;filename="
                 + localFilePath);
         // OSSAccessKeyId
-        textMap.put("OSSAccessKeyId", accessKeyId);
+        formFields.put("OSSAccessKeyId", accessKeyId);
         // policy
         String policy = "{\"expiration\": \"2120-01-01T12:00:00.000Z\",\"conditions\": [[\"content-length-range\", 0, 104857600]]}";
         String encodePolicy = new String(Base64.encodeBase64(policy.getBytes()));
-        textMap.put("policy", encodePolicy);
+        formFields.put("policy", encodePolicy);
         // Signature
-        String signaturecom = com.aliyun.oss.common.auth.ServiceSignature
-                .create().computeSignature(accessKeySecret, encodePolicy);
-        textMap.put("Signature", signaturecom);
+        String signaturecom = computeSignature(accessKeySecret, encodePolicy);
+        formFields.put("Signature", signaturecom);
 
-        Map<String, String> fileMap = new HashMap<String, String>();
-        fileMap.put("file", localFilePath);
-
-        String ret = formUpload(urlStr, textMap, fileMap);
+        String ret = formUpload(urlStr, formFields, localFilePath);
         
         System.out.println("Post Object [" + this.key + "] to bucket [" + bucketName + "]");
         System.out.println("post reponse:" + ret);
     }
+    
+    private static String computeSignature(String accessKeySecret, String encodePolicy) 
+            throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+        // convert to UTF-8
+        byte[] key = accessKeySecret.getBytes("UTF-8");
+        byte[] data = encodePolicy.getBytes("UTF-8");
+        
+        // hmac-sha1
+        Mac mac = Mac.getInstance("HmacSHA1");
+        mac.init(new SecretKeySpec(key, "HmacSHA1"));
+        byte[] sha = mac.doFinal(data);
+        
+        // base64
+        return new String(Base64.encodeBase64(sha));
+    }
 
-    private static String formUpload(String urlStr, Map<String, String> textMap, 
-            Map<String, String> fileMap) throws Exception {
+    private static String formUpload(String urlStr, Map<String, String> formFields, String localFile)
+            throws Exception {
         String res = "";
         HttpURLConnection conn = null;
         String boundary = "9431149156168";
@@ -84,9 +99,9 @@ public class PostObjectSample {
             OutputStream out = new DataOutputStream(conn.getOutputStream());
             
             // text
-            if (textMap != null) {
+            if (formFields != null) {
                 StringBuffer strBuf = new StringBuffer();
-                Iterator<Entry<String, String>> iter = textMap.entrySet().iterator();
+                Iterator<Entry<String, String>> iter = formFields.entrySet().iterator();
                 int i = 0;
                 
                 while (iter.hasNext()) {
@@ -116,47 +131,29 @@ public class PostObjectSample {
             }
 
             // file
-            if (fileMap != null) {
-                Iterator<Entry<String, String>> iter = fileMap.entrySet().iterator();
-                
-                while (iter.hasNext()) {
-                    Entry<String, String> entry = iter.next();
-                    String inputName = (String) entry.getKey();
-                    String inputValue = (String) entry.getValue();
-                    
-                    if (inputValue == null) {
-                        continue;
-                    }
-                    
-                    File file = new File(inputValue);
-                    String filename = file.getName();
-                    String contentType = new MimetypesFileTypeMap().getContentType(file);
-                    if (contentType == null || contentType.equals("")) {
-                        contentType = "application/octet-stream";
-                    }
-
-                    StringBuffer strBuf = new StringBuffer();
-                    strBuf.append("\r\n").append("--").append(boundary)
-                            .append("\r\n");
-                    strBuf.append("Content-Disposition: form-data; name=\""
-                            + inputName + "\"; filename=\"" + filename
-                            + "\"\r\n");
-                    strBuf.append("Content-Type: " + contentType + "\r\n\r\n");
-
-                    out.write(strBuf.toString().getBytes());
-
-                    DataInputStream in = new DataInputStream(new FileInputStream(file));
-                    int bytes = 0;
-                    byte[] bufferOut = new byte[1024];
-                    while ((bytes = in.read(bufferOut)) != -1) {
-                        out.write(bufferOut, 0, bytes);
-                    }
-                    in.close();
-                }
-                
-                StringBuffer strBuf = new StringBuffer();
-                out.write(strBuf.toString().getBytes());
+            File file = new File(localFile);
+            String filename = file.getName();
+            String contentType = new MimetypesFileTypeMap().getContentType(file);
+            if (contentType == null || contentType.equals("")) {
+                contentType = "application/octet-stream";
             }
+
+            StringBuffer strBuf = new StringBuffer();
+            strBuf.append("\r\n").append("--").append(boundary)
+                    .append("\r\n");
+            strBuf.append("Content-Disposition: form-data; name=\"file\"; "
+                    + "filename=\"" + filename + "\"\r\n");
+            strBuf.append("Content-Type: " + contentType + "\r\n\r\n");
+
+            out.write(strBuf.toString().getBytes());
+
+            DataInputStream in = new DataInputStream(new FileInputStream(file));
+            int bytes = 0;
+            byte[] bufferOut = new byte[1024];
+            while ((bytes = in.read(bufferOut)) != -1) {
+                out.write(bufferOut, 0, bytes);
+            }
+            in.close();
 
             byte[] endData = ("\r\n--" + boundary + "--\r\n").getBytes();
             out.write(endData);
@@ -164,7 +161,7 @@ public class PostObjectSample {
             out.close();
 
             // 读取返回数据
-            StringBuffer strBuf = new StringBuffer();
+            strBuf = new StringBuffer();
             BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line = null;
             while ((line = reader.readLine()) != null) {
