@@ -20,7 +20,6 @@ public class GetProgressSample {
     
     /**
      * 获取上传进度回调
-     *
      */
     static class PutObjectProgressListener implements ProgressListener {
 
@@ -75,7 +74,6 @@ public class GetProgressSample {
     
     /**
      * 获取下载进度回调
-     *
      */
     static class GetObjectProgressListener implements ProgressListener {
         

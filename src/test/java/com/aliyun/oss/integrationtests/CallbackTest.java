@@ -29,7 +29,6 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.aliyun.oss.OSSErrorCode;
@@ -48,13 +47,10 @@ import com.aliyun.oss.model.UploadPartResult;
 /**
  * Test callBack of PutObject and MultipartUpload
  * 
- * 注意：测试前需要先启动回调服务器，python2.7 cbsrv.py -p 9090
- *     或者使用公共的回调服务器  http://oss-demo.aliyuncs.com:23450
  */
-@Ignore
 public class CallbackTest extends TestBase {
     
-    private static final String callbackUrl = "30.2.36.126:9090";
+    private static final String callbackUrl = "oss-demo.aliyuncs.com:23450";
     private static final int instreamLength = 1024;
     private static final int bufferLength = 1024;
     private static final String callbackResponse = "{\"Status\":\"OK\"}";

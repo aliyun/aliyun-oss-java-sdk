@@ -21,7 +21,8 @@ public class CallbackSample {
     private static String accessKeyId = "*** Provide your AccessKeyId ***";
     private static String accessKeySecret = "*** Provide your AccessKeySecret ***";
     private static String bucketName = "*** Provide bucket name ***";
-    // 您的回调服务器地址，如http://oss-demo.aliyuncs.com:23450或http://30.2.36.126:9090
+    
+    // 您的回调服务器地址，如http://oss-demo.aliyuncs.com:23450或http://0.0.0.0:9090
     private static final String callbackUrl = "<yourCallbackServerUrl>";
     
 

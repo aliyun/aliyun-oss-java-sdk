@@ -48,6 +48,7 @@ import static com.aliyun.oss.internal.RequestParameters.ENCODING_TYPE;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_ACL;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_DELETE;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_OBJECTMETA;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_SYMLINK;
 import static com.aliyun.oss.internal.ResponseParsers.appendObjectResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.copyObjectResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.deleteObjectsResponseParser;
@@ -56,6 +57,9 @@ import static com.aliyun.oss.internal.ResponseParsers.getObjectMetadataResponseP
 import static com.aliyun.oss.internal.ResponseParsers.putObjectReponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.putObjectCallbackReponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getSimplifiedObjectMetaResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getSymbolicLinkResponseParser;
+
+
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -102,12 +106,14 @@ import com.aliyun.oss.model.AppendObjectResult;
 import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.CopyObjectRequest;
 import com.aliyun.oss.model.CopyObjectResult;
+import com.aliyun.oss.model.CreateSymlinkRequest;
 import com.aliyun.oss.model.DeleteObjectsRequest;
 import com.aliyun.oss.model.DeleteObjectsResult;
 import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.HeadObjectRequest;
 import com.aliyun.oss.model.OSSObject;
+import com.aliyun.oss.model.OSSSymlink;
 import com.aliyun.oss.model.ObjectAcl;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectRequest;
@@ -534,6 +540,76 @@ public class OSSObjectOperation extends OSSOperation {
                 .build();
         
         return doOperation(request, getObjectAclResponseParser, bucketName, key, true);
+    }
+    
+    public OSSSymlink getSymlink(GenericRequest genericRequest)
+            throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+        
+        String bucketName = genericRequest.getBucketName();
+        String symlink = genericRequest.getKey();
+        
+        assertParameterNotNull(bucketName, "bucketName");
+        assertParameterNotNull(symlink, "symlink");
+        ensureBucketNameValid(bucketName);
+        ensureObjectKeyValid(symlink);
+        
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_SYMLINK, null);
+        
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET)
+                .setBucket(bucketName)
+                .setKey(symlink)
+                .setParameters(params)
+                .setOriginalRequest(genericRequest)
+                .build();
+        
+        OSSSymlink symbolicLink = doOperation(
+                request, getSymbolicLinkResponseParser, bucketName, symlink, true);
+        
+        if (symbolicLink != null) {
+            symbolicLink.setSymlink(new String(symlink));
+        }
+        
+        return symbolicLink;
+    }
+    
+    public void createSymlink(CreateSymlinkRequest createSymlinkRequest)
+            throws OSSException, ClientException {
+
+        assertParameterNotNull(createSymlinkRequest, "createSymlinkRequest");
+
+        String bucketName = createSymlinkRequest.getBucketName();
+        String symlink = createSymlinkRequest.getSymlink();
+        String target = createSymlinkRequest.getTarget();
+        
+        assertParameterNotNull(bucketName, "bucketName");
+        assertParameterNotNull(symlink, "symlink");
+        assertParameterNotNull(target, "target");
+        ensureBucketNameValid(bucketName);
+        ensureObjectKeyValid(symlink);
+        ensureObjectKeyValid(target);
+        
+        Map<String, String> headers = new HashMap<String, String>();
+        String encodeTargetObject = HttpUtil.urlEncode(target, DEFAULT_CHARSET_NAME);
+        headers.put(OSSHeaders.OSS_HEADER_SYMLINK_TARGET, encodeTargetObject);
+        
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_SYMLINK, null);
+        
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT)
+                .setBucket(bucketName)
+                .setKey(symlink)
+                .setHeaders(headers)
+                .setParameters(params)
+                .setOriginalRequest(createSymlinkRequest)
+                .build();
+        
+        doOperation(request, emptyResponseParser, bucketName, symlink);
     }
     
     private static enum MetadataDirective {

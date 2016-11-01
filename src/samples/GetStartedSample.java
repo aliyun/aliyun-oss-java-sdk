@@ -28,12 +28,11 @@ import com.aliyun.oss.model.PutObjectRequest;
  */
 public class GetStartedSample {
     
-    private static String endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
+    private static String endpoint = "<endpoint, http://oss-cn-hangzhou.aliyuncs.com>";
     private static String accessKeyId = "<accessKeyId>";
     private static String accessKeySecret = "<accessKeySecret>";
     private static String bucketName = "<bucketName>";
-    
-    private static String key = "MyObjectKey";
+    private static String key = "<key>";
     
     public static void main(String[] args) throws IOException {
         /*
