@@ -95,6 +95,7 @@ import com.aliyun.oss.model.CopyObjectResult;
 import com.aliyun.oss.model.CreateBucketRequest;
 import com.aliyun.oss.model.CreateLiveChannelRequest;
 import com.aliyun.oss.model.CreateLiveChannelResult;
+import com.aliyun.oss.model.CreateSymlinkRequest;
 import com.aliyun.oss.model.DeleteBucketCnameRequest;
 import com.aliyun.oss.model.DeleteBucketReplicationRequest;
 import com.aliyun.oss.model.DeleteObjectsRequest;
@@ -127,6 +128,7 @@ import com.aliyun.oss.model.LiveChannelStatus;
 import com.aliyun.oss.model.LiveRecord;
 import com.aliyun.oss.model.MultipartUploadListing;
 import com.aliyun.oss.model.OSSObject;
+import com.aliyun.oss.model.OSSSymlink;
 import com.aliyun.oss.model.ObjectAcl;
 import com.aliyun.oss.model.ObjectListing;
 import com.aliyun.oss.model.ObjectMetadata;
@@ -1398,6 +1400,31 @@ public class OSSClient implements OSS {
     public String generateRtmpUri(GenerateRtmpUriRequest generateRtmpUriRequest) 
             throws OSSException, ClientException {
         return liveChannelOperation.generateRtmpUri(generateRtmpUriRequest);
+    }
+    
+    @Override
+    public void createSymlink(String bucketName, String symLink, String targetObject)
+            throws OSSException, ClientException {
+        this.createSymlink(new CreateSymlinkRequest(
+                bucketName, symLink, targetObject));
+    }
+
+    @Override
+    public void createSymlink(CreateSymlinkRequest createSymlinkRequest)
+            throws OSSException, ClientException {
+        objectOperation.createSymlink(createSymlinkRequest);
+    }
+
+    @Override
+    public OSSSymlink getSymlink(String bucketName, String symLink)
+            throws OSSException, ClientException {
+        return this.getSymlink(new GenericRequest(bucketName, symLink));
+    }
+    
+    @Override
+    public OSSSymlink getSymlink(GenericRequest genericRequest)
+            throws OSSException, ClientException {
+        return objectOperation.getSymlink(genericRequest);
     }
     
     @Override

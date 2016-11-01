@@ -41,6 +41,7 @@ import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.parser.ResponseParseException;
 import com.aliyun.oss.common.parser.ResponseParser;
 import com.aliyun.oss.common.utils.DateUtil;
+import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.model.AccessControlList;
 import com.aliyun.oss.model.AppendObjectResult;
 import com.aliyun.oss.model.Bucket;
@@ -69,6 +70,7 @@ import com.aliyun.oss.model.LiveChannelStat.AudioStat;
 import com.aliyun.oss.model.LiveChannelStat.VideoStat;
 import com.aliyun.oss.model.LiveChannelStatus;
 import com.aliyun.oss.model.LiveChannelTarget;
+import com.aliyun.oss.model.OSSSymlink;
 import com.aliyun.oss.model.ReplicationRule;
 import com.aliyun.oss.model.GetImageStyleResult;
 import com.aliyun.oss.model.GroupGrantee;
@@ -145,6 +147,8 @@ public final class ResponseParsers {
     public static final GetLiveChannelStatResponseParser getLiveChannelStatResponseParser = new GetLiveChannelStatResponseParser();
     public static final GetLiveChannelHistoryResponseParser getLiveChannelHistoryResponseParser = new GetLiveChannelHistoryResponseParser();
     public static final ListLiveChannelsReponseParser listLiveChannelsReponseParser = new ListLiveChannelsReponseParser();    
+    
+    public static final GetSymbolicLinkResponseParser getSymbolicLinkResponseParser = new GetSymbolicLinkResponseParser();    
     
     public static final class EmptyResponseParser implements ResponseParser<ResponseMessage> {
 
@@ -769,6 +773,20 @@ public final class ResponseParsers {
         
     }
     
+    public static final class GetSymbolicLinkResponseParser implements ResponseParser<OSSSymlink> {
+        
+        @Override
+        public OSSSymlink parse(ResponseMessage response)
+                throws ResponseParseException {
+            try {
+                return parseSymbolicLink(response.getHeaders());
+            } finally {
+                OSSUtils.mandatoryCloseResponse(response);  
+            }
+        }
+        
+    }
+    
     public static <ResultType extends GenericResult> void setCRC64(ResultType result, 
             ResponseMessage response) {
         InputStream inputStream = response.getRequest().getContent();
@@ -1110,6 +1128,27 @@ public final class ResponseParsers {
             }
 
             return objectMeta;
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Unmarshall symbolic link from response headers.
+     */
+    public static OSSSymlink parseSymbolicLink(Map<String, String> headers) 
+            throws ResponseParseException {
+
+        try {
+            OSSSymlink smyLink = null;
+            String targetObject = headers.get(OSSHeaders.OSS_HEADER_SYMLINK_TARGET);
+            
+            if (targetObject != null) {
+                targetObject = HttpUtil.urlDecode(targetObject, "UTF-8");
+                smyLink = new OSSSymlink(null, targetObject); 
+            }
+            
+            return smyLink;
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }

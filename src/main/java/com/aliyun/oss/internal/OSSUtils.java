@@ -38,6 +38,7 @@ import java.util.Map.Entry;
 
 import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.common.comm.ResponseMessage;
+import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.CodingUtils;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.HttpUtil;
@@ -453,18 +454,16 @@ public class OSSUtils {
     /**
      * 回调参数放入消息头
      */
-    @SuppressWarnings("restriction")
     public static void populateRequestCallback(Map<String, String> headers, Callback callback) {
         if (callback != null) {
             String jsonCb = jsonizeCallback(callback);
-            String base64Cb = (new sun.misc.BASE64Encoder()).encode(jsonCb.getBytes());
-            // Java的base64库会76后字符后加上换行，这个行为不是我们希望的，去除换行
-            base64Cb = base64Cb.replaceAll("\n", "").replaceAll("\r", "");
+            String base64Cb = BinaryUtil.toBase64String(jsonCb.getBytes());
+
             headers.put(OSSHeaders.OSS_HEADER_CALLBACK, base64Cb);
             
             if (callback.hasCallbackVar()) {
                 String jsonCbVar = jsonizeCallbackVar(callback);
-                String base64CbVar = (new sun.misc.BASE64Encoder()).encode(jsonCbVar.getBytes());
+                String base64CbVar = BinaryUtil.toBase64String(jsonCbVar.getBytes());
                 base64CbVar = base64CbVar.replaceAll("\n", "").replaceAll("\r", "");
                 headers.put(OSSHeaders.OSS_HEADER_CALLBACK_VAR, base64CbVar);
             }

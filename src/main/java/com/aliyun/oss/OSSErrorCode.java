@@ -238,5 +238,10 @@ public interface OSSErrorCode {
      * Live channel不存在。
      */
     static final String NO_SUCH_LIVE_CHANNEL = "NoSuchLiveChannel";
-
+    
+    /**
+     * 连接的目标文件不存在
+     */
+    static final String NO_SUCH_SYM_LINK_TARGET = "SymlinkTargetNotExist";
+    
 }
