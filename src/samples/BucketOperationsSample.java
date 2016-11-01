@@ -43,10 +43,6 @@ public class BucketOperationsSample {
     
     public static void main(String[] args) throws IOException {
         
-        System.out.println("===========================================");
-        System.out.println("Start to do bucket-related operations with OSS SDK for Java");
-        System.out.println("===========================================\n");
-        
         /*
          * Constructs a client instance with your account for accessing OSS
          */
