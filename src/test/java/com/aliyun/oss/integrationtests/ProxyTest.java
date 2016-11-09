@@ -24,17 +24,19 @@ import java.io.InputStream;
 
 import junit.framework.Assert;
 
-import org.junit.Test;
-
+import org.junit.Ignore;
 import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.BucketInfo;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.ObjectMetadata;
 
+/**
+ * Test proxy
+ */
 public class ProxyTest extends TestBase {
 
-    @Test
+    @Ignore
     public void testProxy() {
         String key = "test/test.txt";
         String content = "Hello OSS.";
