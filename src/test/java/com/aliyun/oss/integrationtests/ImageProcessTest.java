@@ -37,7 +37,7 @@ import com.aliyun.oss.utils.ResourceUtils;
 /**
  * 图片处理服务测试
  */
-public class ImageTest extends TestBase {
+public class ImageProcessTest extends TestBase {
     
     final private static String originalImage = "oss/example.jpg";
     final private static String newImage = "oss/new-example.jpg";
@@ -61,7 +61,7 @@ public class ImageTest extends TestBase {
         
         try {
             GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
-            request.addParameter("x-oss-process", style);
+            request.setProcess(style);
             
             OSSObject ossObject = ossClient.getObject(request);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
@@ -83,7 +83,7 @@ public class ImageTest extends TestBase {
         
         try {
             GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
-            request.addParameter("x-oss-process", style);
+            request.setProcess(style);
             
             OSSObject ossObject = ossClient.getObject(request);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
@@ -107,7 +107,7 @@ public class ImageTest extends TestBase {
         try {
             GetObjectRequest request = new GetObjectRequest(bucketName,
                     originalImage);
-            request.addParameter("x-oss-process", style);
+            request.setProcess(style);
 
             OSSObject ossObject = ossClient.getObject(request);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
@@ -136,7 +136,7 @@ public class ImageTest extends TestBase {
 
         try {
             GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
-            request.addParameter("x-oss-process", style);
+            request.setProcess(style);
 
             OSSObject ossObject = ossClient.getObject(request);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
@@ -159,7 +159,7 @@ public class ImageTest extends TestBase {
 
         try {
             GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
-            request.addParameter("x-oss-process", style);
+            request.setProcess(style);
 
             OSSObject ossObject = ossClient.getObject(request);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
@@ -182,7 +182,7 @@ public class ImageTest extends TestBase {
 
         try {
             GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
-            request.addParameter("x-oss-process", style);
+            request.setProcess(style);
 
             OSSObject ossObject = ossClient.getObject(request);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
@@ -201,7 +201,7 @@ public class ImageTest extends TestBase {
     
     private static ImageInfo getImageInfo(final String bucket, final String image) throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         GetObjectRequest request = new GetObjectRequest(bucketName, image);
-        request.addParameter("x-oss-process", "image/info");
+        request.setProcess("image/info");
         OSSObject ossObject = ossClient.getObject(request);
         
         String jsonStr = IOUtils.readStreamAsString(ossObject.getObjectContent(), "UTF-8");

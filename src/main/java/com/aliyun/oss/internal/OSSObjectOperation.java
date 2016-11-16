@@ -211,6 +211,11 @@ public class OSSObjectOperation extends OSSOperation {
             Map<String, String> params = new HashMap<String, String>();
             populateResponseHeaderParameters(params, getObjectRequest.getResponseHeaders());
             
+            String process = getObjectRequest.getProcess();
+            if (process != null) {
+            	params.put(RequestParameters.SUBRESOURCE_PROCESS, process);
+            }
+            
             request = new OSSRequestMessageBuilder(getInnerClient())
                     .setEndpoint(getEndpoint())
                     .setMethod(HttpMethod.GET)

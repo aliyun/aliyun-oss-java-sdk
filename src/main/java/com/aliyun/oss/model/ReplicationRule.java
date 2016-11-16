@@ -19,6 +19,11 @@
 
 package com.aliyun.oss.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.aliyun.oss.model.AddBucketReplicationRequest.ReplicationAction;
+
 /**
  * Bucket上已设置的跨区域复制规则。
  */
@@ -64,10 +69,34 @@ public class ReplicationRule {
             boolean enableHistoricalObjectReplication) {
         this.enableHistoricalObjectReplication = enableHistoricalObjectReplication;
     }
+    
+    public List<String> getObjectPrefixList() {
+        return objectPrefixList;
+    }
+    
+    public void setObjectPrefixList(List<String> objectPrefixList) {
+        this.objectPrefixList = new ArrayList<String>();
+        if (objectPrefixList != null && !objectPrefixList.isEmpty()) {
+            this.objectPrefixList.addAll(objectPrefixList);
+        }
+    }
+    
+    public List<ReplicationAction> getReplicationActionList() {
+        return replicationActionList;
+    }
+    
+    public void setReplicationActionList(List<ReplicationAction> replicationActionList) {
+        this.replicationActionList = new ArrayList<ReplicationAction>();
+        if (replicationActionList != null && !replicationActionList.isEmpty()) {
+            this.replicationActionList.addAll(replicationActionList);
+        }
+    }
 
     private String replicationRuleID;
     private ReplicationStatus replicationStatus;
     private String targetBucketName;
     private String targetBucketLocation;
     private boolean enableHistoricalObjectReplication;
+    private List<String> objectPrefixList;
+    private List<ReplicationAction> replicationActionList;
 }

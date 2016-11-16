@@ -29,49 +29,49 @@ public class ImageSample {
             // 缩放
             String style = "image/resize,m_fixed,w_100,h_100";  
             GetObjectRequest request = new GetObjectRequest(bucketName, key);
-            request.addParameter("x-oss-process", style);
+            request.setProcess(style);
             
             ossClient.getObject(request, new File("example-resize.jpg"));
             
             // 裁剪
             style = "image/crop,w_100,h_100,x_100,y_100,r_1"; 
             request = new GetObjectRequest(bucketName, key);
-            request.addParameter("x-oss-process", style);
+            request.setProcess(style);
             
             ossClient.getObject(request, new File("example-crop.jpg"));
             
             // 旋转
             style = "image/rotate,90"; 
             request = new GetObjectRequest(bucketName, key);
-            request.addParameter("x-oss-process", style);
+            request.setProcess(style);
             
             ossClient.getObject(request, new File("example-rotate.jpg"));
             
             // 锐化
             style = "image/sharpen,100"; 
             request = new GetObjectRequest(bucketName, key);
-            request.addParameter("x-oss-process", style);
+            request.setProcess(style);
             
             ossClient.getObject(request, new File("example-sharpen.jpg"));
             
             // 水印
             style = "image/watermark,text_SGVsbG8g5Zu-54mH5pyN5YqhIQ"; 
             request = new GetObjectRequest(bucketName, key);
-            request.addParameter("x-oss-process", style);
+            request.setProcess(style);
             
             ossClient.getObject(request, new File("example-watermark.jpg"));
             
             // 格式转换
             style = "image/format,png"; 
             request = new GetObjectRequest(bucketName, key);
-            request.addParameter("x-oss-process", style);
+            request.setProcess(style);
             
             ossClient.getObject(request, new File("example-format.png"));
             
             // 图片信息
             style = "image/info"; 
             request = new GetObjectRequest(bucketName, key);
-            request.addParameter("x-oss-process", style);
+            request.setProcess(style);
             
             ossClient.getObject(request, new File("example-info.txt"));
             
