@@ -154,7 +154,7 @@ public class IOUtils {
         return repeatable;
     }
     
-    public static Long getCRC64Value(InputStream inputStream) {
+    public static Long getCRCValue(InputStream inputStream) {
         if (inputStream instanceof CheckedInputStream) {
             return ((CheckedInputStream) inputStream).getChecksum().getValue();
         }

@@ -46,7 +46,7 @@ public class AppendObjectSample {
             AppendObjectResult appendObjectResult = client.appendObject(
                     new AppendObjectRequest(bucketName, key, instream).withPosition(0L));
             System.out.println("\tNext position=" + appendObjectResult.getNextPosition() + 
-                    ", CRC64=" + appendObjectResult.getObjectCRC64() + "\n");
+                    ", CRC64=" + appendObjectResult.getObjectCRC() + "\n");
             
             /*
              * Continue to append the object from specfied file descriptor at last position
@@ -57,7 +57,7 @@ public class AppendObjectSample {
                     new AppendObjectRequest(bucketName, key, createTempFile())
                     .withPosition(nextPosition));
             System.out.println("\tNext position=" + appendObjectResult.getNextPosition() + 
-                    ", CRC64=" + appendObjectResult.getObjectCRC64());
+                    ", CRC64=" + appendObjectResult.getObjectCRC());
             
             /*
              * View object type of the appendable object

@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.aliyun.oss.ClientConfiguration;
+import com.aliyun.oss.InconsistentException;
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.CodingUtils;
@@ -468,6 +469,16 @@ public class OSSUtils {
                 headers.put(OSSHeaders.OSS_HEADER_CALLBACK_VAR, base64CbVar);
             }
         }
+    }
+    
+    /**
+     * 检测OSS和SDK计算的校验和是否相同，不同抛异常InconsistentException
+     */
+    public static void checkChecksum(Long clientChecksum, Long serverChecksum, String requestId) {
+    	if (clientChecksum != null && serverChecksum != null && 
+    			!clientChecksum.equals(serverChecksum)) {
+    		throw new InconsistentException(clientChecksum, serverChecksum, requestId);
+    	}
     }
     
 }

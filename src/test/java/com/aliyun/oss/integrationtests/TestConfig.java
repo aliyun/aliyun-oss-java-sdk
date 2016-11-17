@@ -28,7 +28,7 @@ public final class TestConfig {
     public static String OSS_TEST_ACCESS_KEY_SECRET = null;
     public static String OSS_TEST_ACCESS_KEY_ID_1 = null;
     public static String OSS_TEST_ACCESS_KEY_SECRET_1 = null;
-    
+	    
     // OSS replication test configuration
     public static String OSS_TEST_REPLICATION_ENDPOINT = null;
     public static String OSS_TEST_REPLICATION_ACCESS_KEY_ID = null;

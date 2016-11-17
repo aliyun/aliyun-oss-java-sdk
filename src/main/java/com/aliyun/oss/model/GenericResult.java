@@ -32,23 +32,23 @@ public abstract class GenericResult {
         this.requestId = requestId;
     }
     
-    public Long getClientCRC64() {
-        return clientCRC64;
+    public Long getClientCRC() {
+        return clientCRC;
     }
 
-    public void setClientCRC64(Long clientCRC64) {
-        this.clientCRC64 = clientCRC64;
+    public void setClientCRC(Long clientCRC) {
+        this.clientCRC = clientCRC;
     }
 
-    public Long getServerCRC64() {
-        return serverCRC64;
+    public Long getServerCRC() {
+        return serverCRC;
     }
 
-    public void setServerCRC64(Long serverCRC64) {
-        this.serverCRC64 = serverCRC64;
+    public void setServerCRC(Long serverCRC) {
+        this.serverCRC = serverCRC;
     }
     
     private String requestId;
-    private Long clientCRC64;
-    private Long serverCRC64;
+    private Long clientCRC;
+    private Long serverCRC;
 }

@@ -71,6 +71,7 @@ import com.aliyun.oss.internal.OSSMultipartOperation;
 import com.aliyun.oss.internal.OSSObjectOperation;
 import com.aliyun.oss.internal.OSSUploadOperation;
 import com.aliyun.oss.internal.OSSUtils;
+import com.aliyun.oss.internal.RequestParameters;
 import com.aliyun.oss.internal.SignUtils;
 import com.aliyun.oss.model.AbortMultipartUploadRequest;
 import com.aliyun.oss.model.AccessControlList;
@@ -786,10 +787,10 @@ public class OSSClient implements OSS {
         requestMessage.setResourcePath(resourcePath);
         
         requestMessage.addHeader(HttpHeaders.DATE, expires);
-        if (request.getContentType() != null && request.getContentType().trim() != "") {
+        if (request.getContentType() != null && !request.getContentType().trim().equals("")) {
             requestMessage.addHeader(HttpHeaders.CONTENT_TYPE, request.getContentType());
         }
-        if (request.getContentMD5() != null && request.getContentMD5().trim() != "") {
+        if (request.getContentMD5() != null && request.getContentMD5().trim().equals("")) {
             requestMessage.addHeader(HttpHeaders.CONTENT_MD5, request.getContentMD5());
         }
         for (Map.Entry<String, String> h : request.getUserMetadata().entrySet()) {
@@ -806,6 +807,10 @@ public class OSSClient implements OSS {
             for (Map.Entry<String, String> entry : request.getQueryParameter().entrySet()) {
                 requestMessage.addParameter(entry.getKey(), entry.getValue());
             }
+        }
+        
+        if (request.getProcess() != null && !request.getProcess().trim().equals("")) {
+        	requestMessage.addParameter(RequestParameters.SUBRESOURCE_PROCESS, request.getProcess());
         }
         
         if (useSecurityToken) {

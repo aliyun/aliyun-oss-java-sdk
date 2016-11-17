@@ -25,7 +25,7 @@ import java.io.InputStream;
 public class AppendObjectRequest extends PutObjectRequest {
     
     private Long position;
-    private Long previousCRC64;
+    private Long initCRC;
 
     public AppendObjectRequest(String bucketName, String key, File file) {
         this(bucketName, key, file, null);
@@ -51,12 +51,12 @@ public class AppendObjectRequest extends PutObjectRequest {
         this.position = position;
     }
     
-    public Long getPreviousCRC64() {
-        return previousCRC64;
+    public Long getInitCRC() {
+        return initCRC;
     }
 
-    public void setPreviousCRC64(Long previousCRC64) {
-        this.previousCRC64 = previousCRC64;
+    public void setInitCRC(Long iniCRC) {
+        this.initCRC = iniCRC;
     }
     
     public AppendObjectRequest withPosition(Long position) {
@@ -64,8 +64,8 @@ public class AppendObjectRequest extends PutObjectRequest {
         return this;
     }
     
-    public AppendObjectRequest withPreviousCRC64(Long previousCRC64) {
-        setPreviousCRC64(previousCRC64);
+    public AppendObjectRequest withInitCRC(Long iniCRC) {
+        setInitCRC(iniCRC);
         return this;
     }
     

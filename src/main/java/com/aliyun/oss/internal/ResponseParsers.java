@@ -515,7 +515,7 @@ public final class ResponseParsers {
             try {
                 result.setETag(trimQuotes(response.getHeaders().get(OSSHeaders.ETAG)));
                 result.setRequestId(response.getRequestId());
-                setCRC64(result, response);
+                setCRC(result, response);
                 return result;
             } finally {
                 safeCloseResponse(response);
@@ -550,8 +550,8 @@ public final class ResponseParsers {
                 if (nextPosition != null) {
                     result.setNextPosition(Long.valueOf(nextPosition));                    
                 }
-                result.setObjectCRC64(response.getHeaders().get(OSSHeaders.OSS_HASH_CRC64_ECMA));
-                setCRC64(result, response);
+                result.setObjectCRC(response.getHeaders().get(OSSHeaders.OSS_HASH_CRC64_ECMA));
+                setCRC(result, response);
                 return result;
             } catch (Exception e) {
                 throw new ResponseParseException(e.getMessage(), e);
@@ -581,7 +581,7 @@ public final class ResponseParsers {
             ossObject.setRequestId(response.getRequestId());
             try {
                 ossObject.setObjectMetadata(parseObjectMetadata(response.getHeaders()));
-                setServerCRC64(ossObject, response);
+                setServerCRC(ossObject, response);
                 return ossObject;
             } catch (ResponseParseException e) {
                 // Close response only when parsing exception thrown. Otherwise, 
@@ -684,7 +684,7 @@ public final class ResponseParsers {
             try {
                 CompleteMultipartUploadResult result = parseCompleteMultipartUpload(response.getContent());
                 result.setRequestId(response.getRequestId());
-                setServerCRC64(result, response);
+                setServerCRC(result, response);
                 return result;
             } finally {
                 safeCloseResponse(response);                
@@ -788,27 +788,27 @@ public final class ResponseParsers {
         
     }
     
-    public static <ResultType extends GenericResult> void setCRC64(ResultType result, 
+    public static <ResultType extends GenericResult> void setCRC(ResultType result, 
             ResponseMessage response) {
         InputStream inputStream = response.getRequest().getContent();
         if (inputStream instanceof CheckedInputStream) {
             CheckedInputStream checkedInputStream = (CheckedInputStream)inputStream;
-            result.setClientCRC64(checkedInputStream.getChecksum().getValue());
+            result.setClientCRC(checkedInputStream.getChecksum().getValue());
         }
         
-        String strSrvCrc64 = response.getHeaders().get(OSSHeaders.OSS_HASH_CRC64_ECMA);
-        if (strSrvCrc64 != null) {
-            BigInteger bi = new BigInteger(strSrvCrc64);
-            result.setServerCRC64(bi.longValue());
+        String strSrvCrc = response.getHeaders().get(OSSHeaders.OSS_HASH_CRC64_ECMA);
+        if (strSrvCrc != null) {
+            BigInteger bi = new BigInteger(strSrvCrc);
+            result.setServerCRC(bi.longValue());
         }
     }
     
-    public static <ResultType extends GenericResult> void setServerCRC64(ResultType result, 
+    public static <ResultType extends GenericResult> void setServerCRC(ResultType result, 
             ResponseMessage response) {        
-        String strSrvCrc64 = response.getHeaders().get(OSSHeaders.OSS_HASH_CRC64_ECMA);
-        if (strSrvCrc64 != null) {
-            BigInteger bi = new BigInteger(strSrvCrc64);
-            result.setServerCRC64(bi.longValue());
+        String strSrvCrc = response.getHeaders().get(OSSHeaders.OSS_HASH_CRC64_ECMA);
+        if (strSrvCrc != null) {
+            BigInteger bi = new BigInteger(strSrvCrc);
+            result.setServerCRC(bi.longValue());
         }
     }
     

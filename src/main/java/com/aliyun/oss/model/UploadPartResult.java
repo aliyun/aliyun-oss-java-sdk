@@ -84,7 +84,7 @@ public class UploadPartResult extends GenericResult {
      * @return 包含Part标识号码和ETag值的{@link PartETag}对象。
      */
     public PartETag getPartETag() {
-        return new PartETag(partNumber, eTag, partSize, getClientCRC64());
+        return new PartETag(partNumber, eTag, partSize, getClientCRC());
     }
     
     /**
