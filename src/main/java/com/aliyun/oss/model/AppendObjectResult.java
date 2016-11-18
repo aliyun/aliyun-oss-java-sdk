@@ -29,7 +29,7 @@ public class AppendObjectResult extends GenericResult {
     private Long nextPosition;
     
     /* Returned value of the appended object crc64 */
-    private String objectCRC64;
+    private String objectCRC;
 
     public Long getNextPosition() {
         return nextPosition;
@@ -39,11 +39,11 @@ public class AppendObjectResult extends GenericResult {
         this.nextPosition = nextPosition;
     }
 
-    public String getObjectCRC64() {
-        return objectCRC64;
+    public String getObjectCRC() {
+        return objectCRC;
     }
 
-    public void setObjectCRC64(String objectCRC64) {
-        this.objectCRC64 = objectCRC64;
+    public void setObjectCRC(String objectCRC) {
+        this.objectCRC = objectCRC;
     }
 }

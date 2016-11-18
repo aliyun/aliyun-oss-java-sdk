@@ -25,14 +25,14 @@ package com.aliyun.oss.model;
 public enum StorageClass {
     
     /**
-     * standard
+     * Standard
      */
     Standard("Standard"),
     
     /**
-     * nearline
+     * Infrequent Access
      */
-    Nearline("Nearline"),
+    IA("IA"),
     
     /**
      * Unknown

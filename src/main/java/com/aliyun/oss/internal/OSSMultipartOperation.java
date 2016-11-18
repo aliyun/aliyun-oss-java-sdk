@@ -186,7 +186,12 @@ public class OSSMultipartOperation extends OSSOperation {
         } else {
             result =  doOperation(request, completeMultipartUploadCallbackResponseParser, bucketName, key, true, null, reponseHandlers);
         }
-        result.setClientCRC64(calcObjectCRC64FromParts(completeMultipartUploadRequest.getPartETags()));
+        
+        result.setClientCRC(calcObjectCRCFromParts(completeMultipartUploadRequest.getPartETags()));
+        if (getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
+        	OSSUtils.checkChecksum(result.getClientCRC(), result.getServerCRC(), result.getRequestId());
+        }
+        
         return result;
     }
     
@@ -372,7 +377,12 @@ public class OSSMultipartOperation extends OSSOperation {
         result.setETag(trimQuotes(response.getHeaders().get(OSSHeaders.ETAG)));
         result.setRequestId(response.getRequestId());
         result.setPartSize(uploadPartRequest.getPartSize());
-        ResponseParsers.setCRC64(result, response);
+        ResponseParsers.setCRC(result, response);
+        
+        if (getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
+        	OSSUtils.checkChecksum(result.getClientCRC(), result.getServerCRC(), result.getRequestId());
+        }
+        
         return result;
     }
     
@@ -550,15 +560,15 @@ public class OSSMultipartOperation extends OSSOperation {
         }
     }
     
-    private static Long calcObjectCRC64FromParts(List<PartETag> partETags) {
-        Long crc = 0L;
+    private static Long calcObjectCRCFromParts(List<PartETag> partETags) {
+        long crc = 0;
         for (PartETag partETag : partETags) {
-            if (partETag.getPartCRC64() == null) {
+            if (partETag.getPartCRC() == null || partETag.getPartSize() <= 0) {
                 return null;
             }
-            crc = CRC64.combine(crc, partETag.getPartCRC64(), partETag.getPartSize());
+            crc = CRC64.combine(crc, partETag.getPartCRC(), partETag.getPartSize());
         }
-        return crc;
+        return new Long(crc);
     }
     
 }

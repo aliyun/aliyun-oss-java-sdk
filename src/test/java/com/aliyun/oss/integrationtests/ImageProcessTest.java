@@ -22,6 +22,8 @@ package com.aliyun.oss.integrationtests;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.util.Date;
 
 import junit.framework.Assert;
 import net.sf.json.JSONObject;
@@ -29,7 +31,10 @@ import net.sf.json.JSONObject;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Test;
 
+import com.aliyun.oss.HttpMethod;
+import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.IOUtils;
+import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.utils.ResourceUtils;
@@ -37,7 +42,7 @@ import com.aliyun.oss.utils.ResourceUtils;
 /**
  * 图片处理服务测试
  */
-public class ImageTest extends TestBase {
+public class ImageProcessTest extends TestBase {
     
     final private static String originalImage = "oss/example.jpg";
     final private static String newImage = "oss/new-example.jpg";
@@ -61,7 +66,7 @@ public class ImageTest extends TestBase {
         
         try {
             GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
-            request.addParameter("x-oss-process", style);
+            request.setProcess(style);
             
             OSSObject ossObject = ossClient.getObject(request);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
@@ -83,7 +88,7 @@ public class ImageTest extends TestBase {
         
         try {
             GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
-            request.addParameter("x-oss-process", style);
+            request.setProcess(style);
             
             OSSObject ossObject = ossClient.getObject(request);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
@@ -107,7 +112,7 @@ public class ImageTest extends TestBase {
         try {
             GetObjectRequest request = new GetObjectRequest(bucketName,
                     originalImage);
-            request.addParameter("x-oss-process", style);
+            request.setProcess(style);
 
             OSSObject ossObject = ossClient.getObject(request);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
@@ -136,7 +141,7 @@ public class ImageTest extends TestBase {
 
         try {
             GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
-            request.addParameter("x-oss-process", style);
+            request.setProcess(style);
 
             OSSObject ossObject = ossClient.getObject(request);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
@@ -159,7 +164,7 @@ public class ImageTest extends TestBase {
 
         try {
             GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
-            request.addParameter("x-oss-process", style);
+            request.setProcess(style);
 
             OSSObject ossObject = ossClient.getObject(request);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
@@ -182,7 +187,7 @@ public class ImageTest extends TestBase {
 
         try {
             GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
-            request.addParameter("x-oss-process", style);
+            request.setProcess(style);
 
             OSSObject ossObject = ossClient.getObject(request);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
@@ -199,9 +204,35 @@ public class ImageTest extends TestBase {
         } 
     }
     
+    @Test
+	public void testGeneratePresignedUrlWithProcess() {
+		String style = "image/resize,m_fixed,w_100,h_100"; // 缩放
+
+		try {
+			Date expiration = DateUtil.parseRfc822Date("Wed, 21 Dec 2022 14:20:00 GMT");
+			GeneratePresignedUrlRequest req = new GeneratePresignedUrlRequest(bucketName, originalImage, HttpMethod.GET);
+			req.setExpiration(expiration);
+			req.setProcess(style);
+
+			URL signedUrl = ossClient.generatePresignedUrl(req);
+			System.out.println(signedUrl);
+
+			OSSObject ossObject = ossClient.getObject(signedUrl, null);
+			ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
+
+			ImageInfo imageInfo = getImageInfo(bucketName, newImage);
+			Assert.assertEquals(imageInfo.getHeight(), 100);
+			Assert.assertEquals(imageInfo.getWidth(), 100);
+			Assert.assertEquals(imageInfo.getFormat(), "jpg");
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+    
     private static ImageInfo getImageInfo(final String bucket, final String image) throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         GetObjectRequest request = new GetObjectRequest(bucketName, image);
-        request.addParameter("x-oss-process", "image/info");
+        request.setProcess("image/info");
         OSSObject ossObject = ossClient.getObject(request);
         
         String jsonStr = IOUtils.readStreamAsString(ossObject.getObjectContent(), "UTF-8");

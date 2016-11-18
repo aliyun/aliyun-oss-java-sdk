@@ -135,12 +135,22 @@ public class OSSObjectOperation extends OSSOperation {
      */
     public PutObjectResult putObject(PutObjectRequest putObjectRequest) 
             throws OSSException, ClientException {
+    	
         assertParameterNotNull(putObjectRequest, "putObjectRequest");
+        
+        PutObjectResult result = null;
+        
         if (putObjectRequest.getCallback() == null) {
-            return writeObjectInternal(WriteMode.OVERWRITE, putObjectRequest, putObjectReponseParser);
+            result = writeObjectInternal(WriteMode.OVERWRITE, putObjectRequest, putObjectReponseParser);
         } else {
-            return writeObjectInternal(WriteMode.OVERWRITE, putObjectRequest, putObjectCallbackReponseParser);
+            result = writeObjectInternal(WriteMode.OVERWRITE, putObjectRequest, putObjectCallbackReponseParser);
         }
+        
+        if (getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
+        	OSSUtils.checkChecksum(result.getClientCRC(), result.getServerCRC(), result.getRequestId());
+        }
+        
+        return result;
     }
     
     /**
@@ -173,12 +183,21 @@ public class OSSObjectOperation extends OSSOperation {
      */
     public AppendObjectResult appendObject(AppendObjectRequest appendObjectRequest) 
             throws OSSException, ClientException {
+    	
         assertParameterNotNull(appendObjectRequest, "appendObjectRequest");
+        
         AppendObjectResult result = writeObjectInternal(WriteMode.APPEND, appendObjectRequest, appendObjectResponseParser); 
-        if (appendObjectRequest.getPreviousCRC64() != null && result.getClientCRC64() != null) {
-            result.setClientCRC64(CRC64.combine(appendObjectRequest.getPreviousCRC64(), result.getClientCRC64(), 
+        
+        if (appendObjectRequest.getInitCRC() != null && result.getClientCRC() != null) {
+            result.setClientCRC(CRC64.combine(appendObjectRequest.getInitCRC(), result.getClientCRC(), 
                     (result.getNextPosition() - appendObjectRequest.getPosition())));
         }
+        
+        if (getInnerClient().getClientConfiguration().isCrcCheckEnabled() && 
+        		appendObjectRequest.getInitCRC() != null) {
+        	OSSUtils.checkChecksum(result.getClientCRC(), result.getServerCRC(), result.getRequestId());
+        }
+        
         return result;
     }
 
@@ -210,6 +229,11 @@ public class OSSObjectOperation extends OSSOperation {
 
             Map<String, String> params = new HashMap<String, String>();
             populateResponseHeaderParameters(params, getObjectRequest.getResponseHeaders());
+            
+            String process = getObjectRequest.getProcess();
+            if (process != null) {
+            	params.put(RequestParameters.SUBRESOURCE_PROCESS, process);
+            }
             
             request = new OSSRequestMessageBuilder(getInnerClient())
                     .setEndpoint(getEndpoint())

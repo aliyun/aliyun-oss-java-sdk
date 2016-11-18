@@ -30,6 +30,7 @@ import java.util.Map;
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.common.comm.io.FixedLengthInputStream;
 import com.aliyun.oss.common.utils.DateUtil;
+import com.aliyun.oss.model.AddBucketReplicationRequest.ReplicationAction;
 import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.CompleteMultipartUploadRequest;
 import com.aliyun.oss.model.CreateBucketRequest;
@@ -315,6 +316,18 @@ public final class RequestMarshallers {
                     if (redirect.getMirrorURL() != null) {
                         xmlBody.append("<MirrorURL>" + redirect.getMirrorURL() + "</MirrorURL>");
                     }
+                    if (redirect.getMirrorSecondaryURL() != null) {
+                        xmlBody.append("<MirrorURLSlave>" + redirect.getMirrorSecondaryURL() + "</MirrorURLSlave>");
+                    }
+                    if (redirect.getMirrorProbeURL() != null) {
+                        xmlBody.append("<MirrorURLProbe>" + redirect.getMirrorProbeURL() + "</MirrorURLProbe>");
+                    }
+                    if (redirect.isPassQueryString() != null) {
+                        xmlBody.append("<MirrorPassQueryString>" + redirect.isPassQueryString() + "</MirrorPassQueryString>");
+                    }
+                    if (redirect.isPassOriginalSlashes() != null) {
+                        xmlBody.append("<MirrorPassOriginalSlashes>" + redirect.isPassOriginalSlashes() + "</MirrorPassOriginalSlashes>");
+                    }
                     xmlBody.append("</Redirect>");
                     xmlBody.append("</RoutingRule>");
                 }
@@ -509,6 +522,17 @@ public final class RequestMarshallers {
                 xmlBody.append("<HistoricalObjectReplication>" + "enabled" + "</HistoricalObjectReplication>");
             } else {
                 xmlBody.append("<HistoricalObjectReplication>" + "disabled" + "</HistoricalObjectReplication>");
+            }
+            if (request.getObjectPrefixList() != null && request.getObjectPrefixList().size() > 0) {
+                xmlBody.append("<PrefixSet>");
+                for (String prefix : request.getObjectPrefixList()) {
+                    xmlBody.append("<Prefix>" + prefix + "</Prefix>");
+                }
+                xmlBody.append("</PrefixSet>");
+            }
+            if (request.getReplicationActionList() != null && request.getReplicationActionList().size() > 0) {
+                xmlBody.append("<Action>" + RequestMarshallers.joinRepliationAction(
+                        request.getReplicationActionList()) + "</Action>");
             }
             xmlBody.append("</Rule>");
             xmlBody.append("</ReplicationConfiguration>");
@@ -715,6 +739,22 @@ public final class RequestMarshallers {
         }
         
         return builder.toString();
+    }
+    
+    private static String joinRepliationAction(List <ReplicationAction> actions) {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        
+        for (ReplicationAction action : actions) {
+            if (!first) {
+                sb.append(",");
+            }
+            sb.append(action);
+            
+            first = false;
+        }
+
+        return sb.toString();
     }
     
 }

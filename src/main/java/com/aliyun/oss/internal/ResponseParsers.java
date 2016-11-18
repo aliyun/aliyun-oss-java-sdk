@@ -43,6 +43,7 @@ import com.aliyun.oss.common.parser.ResponseParser;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.model.AccessControlList;
+import com.aliyun.oss.model.AddBucketReplicationRequest.ReplicationAction;
 import com.aliyun.oss.model.AppendObjectResult;
 import com.aliyun.oss.model.Bucket;
 import com.aliyun.oss.model.BucketInfo;
@@ -514,7 +515,7 @@ public final class ResponseParsers {
             try {
                 result.setETag(trimQuotes(response.getHeaders().get(OSSHeaders.ETAG)));
                 result.setRequestId(response.getRequestId());
-                setCRC64(result, response);
+                setCRC(result, response);
                 return result;
             } finally {
                 safeCloseResponse(response);
@@ -549,8 +550,8 @@ public final class ResponseParsers {
                 if (nextPosition != null) {
                     result.setNextPosition(Long.valueOf(nextPosition));                    
                 }
-                result.setObjectCRC64(response.getHeaders().get(OSSHeaders.OSS_HASH_CRC64_ECMA));
-                setCRC64(result, response);
+                result.setObjectCRC(response.getHeaders().get(OSSHeaders.OSS_HASH_CRC64_ECMA));
+                setCRC(result, response);
                 return result;
             } catch (Exception e) {
                 throw new ResponseParseException(e.getMessage(), e);
@@ -580,7 +581,7 @@ public final class ResponseParsers {
             ossObject.setRequestId(response.getRequestId());
             try {
                 ossObject.setObjectMetadata(parseObjectMetadata(response.getHeaders()));
-                setServerCRC64(ossObject, response);
+                setServerCRC(ossObject, response);
                 return ossObject;
             } catch (ResponseParseException e) {
                 // Close response only when parsing exception thrown. Otherwise, 
@@ -683,7 +684,7 @@ public final class ResponseParsers {
             try {
                 CompleteMultipartUploadResult result = parseCompleteMultipartUpload(response.getContent());
                 result.setRequestId(response.getRequestId());
-                setServerCRC64(result, response);
+                setServerCRC(result, response);
                 return result;
             } finally {
                 safeCloseResponse(response);                
@@ -787,27 +788,27 @@ public final class ResponseParsers {
         
     }
     
-    public static <ResultType extends GenericResult> void setCRC64(ResultType result, 
+    public static <ResultType extends GenericResult> void setCRC(ResultType result, 
             ResponseMessage response) {
         InputStream inputStream = response.getRequest().getContent();
         if (inputStream instanceof CheckedInputStream) {
             CheckedInputStream checkedInputStream = (CheckedInputStream)inputStream;
-            result.setClientCRC64(checkedInputStream.getChecksum().getValue());
+            result.setClientCRC(checkedInputStream.getChecksum().getValue());
         }
         
-        String strSrvCrc64 = response.getHeaders().get(OSSHeaders.OSS_HASH_CRC64_ECMA);
-        if (strSrvCrc64 != null) {
-            BigInteger bi = new BigInteger(strSrvCrc64);
-            result.setServerCRC64(bi.longValue());
+        String strSrvCrc = response.getHeaders().get(OSSHeaders.OSS_HASH_CRC64_ECMA);
+        if (strSrvCrc != null) {
+            BigInteger bi = new BigInteger(strSrvCrc);
+            result.setServerCRC(bi.longValue());
         }
     }
     
-    public static <ResultType extends GenericResult> void setServerCRC64(ResultType result, 
+    public static <ResultType extends GenericResult> void setServerCRC(ResultType result, 
             ResponseMessage response) {        
-        String strSrvCrc64 = response.getHeaders().get(OSSHeaders.OSS_HASH_CRC64_ECMA);
-        if (strSrvCrc64 != null) {
-            BigInteger bi = new BigInteger(strSrvCrc64);
-            result.setServerCRC64(bi.longValue());
+        String strSrvCrc = response.getHeaders().get(OSSHeaders.OSS_HASH_CRC64_ECMA);
+        if (strSrvCrc != null) {
+            BigInteger bi = new BigInteger(strSrvCrc);
+            result.setServerCRC(bi.longValue());
         }
     }
     
@@ -1522,6 +1523,16 @@ public final class ResponseParsers {
                             Integer.parseInt(redirectElem.getChildText("HttpRedirectCode"))); 
                     }
                     rule.getRedirect().setMirrorURL(redirectElem.getChildText("MirrorURL"));
+                    rule.getRedirect().setMirrorSecondaryURL(redirectElem.getChildText("MirrorURLSlave"));
+                    rule.getRedirect().setMirrorProbeURL(redirectElem.getChildText("MirrorURLProbe"));
+                    if (redirectElem.getChildText("MirrorPassQueryString") != null) {
+                        rule.getRedirect().setPassQueryString(Boolean.valueOf(
+                                redirectElem.getChildText("MirrorPassQueryString")));
+                    }
+                    if (redirectElem.getChildText("MirrorPassOriginalSlashes") != null) {
+                        rule.getRedirect().setPassOriginalSlashes(Boolean.valueOf(
+                                redirectElem.getChildText("MirrorPassOriginalSlashes")));
+                    }
                     
                     result.AddRoutingRule(rule);
                 }
@@ -1693,6 +1704,24 @@ public final class ResponseParsers {
                     repRule.setEnableHistoricalObjectReplication(true);
                 } else {
                     repRule.setEnableHistoricalObjectReplication(false);
+                }
+                
+                if (ruleElem.getChild("PrefixSet") != null) {
+                    List<String> objectPrefixes = new ArrayList<String>(); 
+                    List<Element> prefixElems = ruleElem.getChild("PrefixSet").getChildren("Prefix");
+                    for (Element prefixElem : prefixElems) {
+                        objectPrefixes.add(prefixElem.getText());
+                    }
+                    repRule.setObjectPrefixList(objectPrefixes);
+                }
+                
+                if (ruleElem.getChild("Action") != null) {
+                    String[] actionStrs = ruleElem.getChildText("Action").split(",");
+                    List<ReplicationAction> repActions = new ArrayList<ReplicationAction>();
+                    for (String actionStr : actionStrs) {
+                        repActions.add(ReplicationAction.parse(actionStr));
+                    }
+                    repRule.setReplicationActionList(repActions);
                 }
                 
                 repRules.add(repRule);

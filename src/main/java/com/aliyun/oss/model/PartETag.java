@@ -31,7 +31,7 @@ public class PartETag implements Serializable {
     private int partNumber;
     private String eTag;
     private long partSize;
-    private Long partCRC64;
+    private Long partCRC;
 
     /**
      * 构造函数。
@@ -53,14 +53,14 @@ public class PartETag implements Serializable {
      *          Part的ETag值。
      * @param partSize
      *          分片大小。
-     * @param partCRC64
-     *          分片的CRC64值。       
+     * @param partCRC
+     *          分片的CRC值。       
      */
-    public PartETag(int partNumber, String eTag, long partSize, Long partCRC64) {
+    public PartETag(int partNumber, String eTag, long partSize, Long partCRC) {
         this.partNumber = partNumber;
         this.eTag = eTag;
         this.partSize = partSize;
-        this.partCRC64 = partCRC64;
+        this.partCRC = partCRC;
     }
 
     /**
@@ -105,12 +105,12 @@ public class PartETag implements Serializable {
         this.partSize = partSize;
     }
 
-    public Long getPartCRC64() {
-        return partCRC64;
+    public Long getPartCRC() {
+        return partCRC;
     }
 
-    public void setPartCRC64(Long partCRC64) {
-        this.partCRC64 = partCRC64;
+    public void setPartCRC(Long partCRC) {
+        this.partCRC = partCRC;
     }
     
     @Override

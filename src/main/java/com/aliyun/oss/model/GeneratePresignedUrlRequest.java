@@ -44,8 +44,11 @@ public class GeneratePresignedUrlRequest {
 
     /** Content-MD5 */
     private String contentMD5;
+    
+    /** process */
+    private String process;
 
-    /**
+	/**
      * An optional expiration date at which point the generated pre-signed URL
      * will no longer be accepted by OSS. If not specified, a default
      * value will be supplied.
@@ -248,9 +251,14 @@ public class GeneratePresignedUrlRequest {
         this.userMetadata.put(key, value);
     }
 
+    /**
+     * 返回QueryParameter
+     * @return Query Parameter
+     */
     public Map<String,String> getQueryParameter(){
         return this.queryParam;
     }
+    
     /**
      * 用户请求参数，Query String。
      * @param queryParam
@@ -270,5 +278,21 @@ public class GeneratePresignedUrlRequest {
     public void addQueryParameter(String key, String value) {
         this.queryParam.put(key, value);
     }
+    
+    /**
+     * 返回process
+     * @return process
+     */
+    public String getProcess() {
+		return process;
+	}
+
+    /**
+     * 设置process
+     * @param process
+     */
+	public void setProcess(String process) {
+		this.process = process;
+	}
 
 }

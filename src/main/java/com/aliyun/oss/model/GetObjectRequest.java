@@ -33,8 +33,9 @@ public class GetObjectRequest extends GenericRequest {
     private List<String> nonmatchingEtagConstraints = new ArrayList<String>();
     private Date unmodifiedSinceConstraint;
     private Date modifiedSinceConstraint;
+    private String process;
 
-    private long[] range;
+	private long[] range;
 
     private ResponseHeaderOverrides responseHeaders;
     
@@ -248,4 +249,12 @@ public class GetObjectRequest extends GenericRequest {
         this.useUrlSignature = useUrlSignature;
     }
     
+    public String getProcess() {
+		return process;
+	}
+
+	public void setProcess(String process) {
+		this.process = process;
+	}
+	
 }
