@@ -21,12 +21,22 @@ package com.aliyun.oss.model;
 
 public class ImageProcess {
 
-    public ImageProcess(String compliedHost, boolean sourceFileProtect,
+    public ImageProcess(String compliedHost, Boolean sourceFileProtect,
             String sourceFileProtectSuffix, String styleDelimiters) {
         this.compliedHost = compliedHost;
         this.sourceFileProtect = sourceFileProtect;
         this.sourceFileProtectSuffix = sourceFileProtectSuffix;
         this.styleDelimiters = styleDelimiters;
+    }
+    
+    public ImageProcess(String compliedHost, Boolean sourceFileProtect,
+            String sourceFileProtectSuffix, String styleDelimiters, 
+            Boolean domainSupportProcess) {
+        this.compliedHost = compliedHost;
+        this.sourceFileProtect = sourceFileProtect;
+        this.sourceFileProtectSuffix = sourceFileProtectSuffix;
+        this.styleDelimiters = styleDelimiters;
+        this.domainSupportProcess = domainSupportProcess;
     }
 
     public String getCompliedHost() {
@@ -37,11 +47,11 @@ public class ImageProcess {
         this.compliedHost = compliedHost;
     }
 
-    public boolean isSourceFileProtect() {
+    public Boolean isSourceFileProtect() {
         return sourceFileProtect;
     }
 
-    public void setSourceFileProtect(boolean sourceFileProtect) {
+    public void setSourceFileProtect(Boolean sourceFileProtect) {
         this.sourceFileProtect = sourceFileProtect;
     }
 
@@ -68,10 +78,26 @@ public class ImageProcess {
     public void setVersion(Integer version) {
         this.version = version;
     }
+    
+	public Boolean isDomainSupportProcess() {
+		return domainSupportProcess;
+	}
 
+	public void setDomainSupportProcess(Boolean domainSupportProcess) {
+		this.domainSupportProcess = domainSupportProcess;
+	}
+
+	// Img表示设置的样式分隔符，只有Img能用；Both表示oss也能用Img的样式分隔符
     private String compliedHost;
-    private boolean sourceFileProtect;
+    // 是否开启原图保护
+    private Boolean sourceFileProtect;
+    // 原图保护的后缀，*表示所有
     private String sourceFileProtectSuffix;
+    // 自定义样式分隔符
     private String styleDelimiters;
+    // 图片服务的版本目前是2，只能读取不能设置
     private Integer version;
+    // 用户是否能够通过OSS域名使用老版图片处理接口。默认Disabled
+    private Boolean domainSupportProcess;
+    
 }

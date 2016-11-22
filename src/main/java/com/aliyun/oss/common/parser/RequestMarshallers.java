@@ -132,7 +132,8 @@ public final class RequestMarshallers {
             StringBuffer xmlBody = new StringBuffer();
             xmlBody.append("<BucketProcessConfiguration>");
             xmlBody.append("<CompliedHost>" + imageProcessConf.getCompliedHost() + "</CompliedHost>");
-            if (imageProcessConf.isSourceFileProtect() ) {
+            if (imageProcessConf.isSourceFileProtect() != null && 
+            		imageProcessConf.isSourceFileProtect().booleanValue() ) {
                 xmlBody.append("<SourceFileProtect>Enabled</SourceFileProtect>");
             } else {
                 xmlBody.append("<SourceFileProtect>Disabled</SourceFileProtect>");
@@ -140,6 +141,12 @@ public final class RequestMarshallers {
             xmlBody.append("<SourceFileProtectSuffix>" + imageProcessConf.getSourceFileProtectSuffix() 
                     + "</SourceFileProtectSuffix>");
             xmlBody.append("<StyleDelimiters>" + imageProcessConf.getStyleDelimiters() + "</StyleDelimiters>");
+            if (imageProcessConf.isDomainSupportProcess() != null && 
+            		imageProcessConf.isDomainSupportProcess().booleanValue()) {
+                xmlBody.append("<OssDomainSupportAtProcess>Enabled</OssDomainSupportAtProcess>");
+            } else {
+                xmlBody.append("<OssDomainSupportAtProcess>Disabled</OssDomainSupportAtProcess>");
+            }
             xmlBody.append("</BucketProcessConfiguration>");
             return stringMarshaller.marshall(xmlBody.toString());
         }

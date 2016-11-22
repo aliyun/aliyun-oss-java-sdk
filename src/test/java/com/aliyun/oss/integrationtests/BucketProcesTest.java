@@ -21,7 +21,6 @@ package com.aliyun.oss.integrationtests;
 
 import junit.framework.Assert;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.aliyun.oss.OSSErrorCode;
@@ -31,7 +30,6 @@ import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.ImageProcess;
 import com.aliyun.oss.model.SetBucketProcessRequest;
 
-@Ignore
 public class BucketProcesTest extends TestBase {
 
     @Test
@@ -44,6 +42,7 @@ public class BucketProcesTest extends TestBase {
             Assert.assertEquals(bucketProcess.getImageProcess().getSourceFileProtectSuffix(), "");
             Assert.assertEquals(bucketProcess.getImageProcess().getStyleDelimiters(), "");
             Assert.assertEquals(bucketProcess.getImageProcess().getVersion().intValue(), 2);
+            Assert.assertEquals(bucketProcess.getImageProcess().isDomainSupportProcess(), null);
             
             // put 1
             ImageProcess imageProcess = new ImageProcess("Img", true, "jpg,png", "/,-");
@@ -57,6 +56,7 @@ public class BucketProcesTest extends TestBase {
             Assert.assertEquals(bucketProcess.getImageProcess().getSourceFileProtectSuffix(), "jpg,png");
             Assert.assertEquals(bucketProcess.getImageProcess().getStyleDelimiters(), "-,/");
             Assert.assertEquals(bucketProcess.getImageProcess().getVersion().intValue(), 2);
+            Assert.assertEquals(bucketProcess.getImageProcess().isDomainSupportProcess(), null);
             
             // put 2
             imageProcess = new ImageProcess("Both", false, "gif", "-");
@@ -70,9 +70,10 @@ public class BucketProcesTest extends TestBase {
             Assert.assertEquals(bucketProcess.getImageProcess().getSourceFileProtectSuffix(), "");
             Assert.assertEquals(bucketProcess.getImageProcess().getStyleDelimiters(), "-");
             Assert.assertEquals(bucketProcess.getImageProcess().getVersion().intValue(), 2);
+            Assert.assertEquals(bucketProcess.getImageProcess().isDomainSupportProcess(), null);
             
             // put 3
-            imageProcess = new ImageProcess("Img", true, "*", "/");
+            imageProcess = new ImageProcess("Img", true, "*", "/", true);
             request = new SetBucketProcessRequest(bucketName, imageProcess);
             ossClient.setBucketProcess(request);
             
@@ -83,6 +84,7 @@ public class BucketProcesTest extends TestBase {
             Assert.assertEquals(bucketProcess.getImageProcess().getSourceFileProtectSuffix(), "*");
             Assert.assertEquals(bucketProcess.getImageProcess().getStyleDelimiters(), "/");
             Assert.assertEquals(bucketProcess.getImageProcess().getVersion().intValue(), 2);
+            Assert.assertEquals(bucketProcess.getImageProcess().isDomainSupportProcess(), null);
             
         } catch (Exception e) {
             Assert.fail(e.getMessage());
