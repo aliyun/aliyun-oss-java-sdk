@@ -23,20 +23,27 @@ import static com.aliyun.oss.integrationtests.TestUtils.claimUploadId;
 import static com.aliyun.oss.integrationtests.TestUtils.genFixedLengthInputStream;
 
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
 
+import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
+import com.aliyun.oss.internal.OSSUtils;
 import com.aliyun.oss.model.Callback;
 import com.aliyun.oss.model.Callback.CalbackBodyType;
 import com.aliyun.oss.model.CompleteMultipartUploadRequest;
 import com.aliyun.oss.model.CompleteMultipartUploadResult;
+import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.PartETag;
 import com.aliyun.oss.model.PutObjectRequest;
@@ -678,6 +685,56 @@ public class CallbackTest extends TestBase {
             Assert.assertEquals(instreamLength, obj.getObjectMetadata().getContentLength());
 
         } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        }
+    }
+    
+    @Test  
+    public void testGeneratePresignedUrlWithCallback() {  
+      String key = "generate-presigned-url-callback";
+        
+        try {
+        	// callback 
+            Callback callback = new Callback();
+            callback.setCallbackUrl(callbackUrl);
+            callback.setCallbackHost("oss-cn-hangzhou.aliyuncs.com");
+            callback.setCallbackBody("bucket=${bucket}&object=${object}&etag=${etag}&size=${size}&"
+            		+ "mimeType=${mimeType}&my_var1=${x:var1}&my_var2=${x:var2}");
+            callback.addCallbackVar("x:var1", "value1");
+            callback.addCallbackVar("x:var2", "value2");
+            callback.setCalbackBodyType(CalbackBodyType.URL);
+        	
+            // generate put url
+            Map<String, String> cbHeaders = new HashMap<String, String>();  
+            OSSUtils.populateRequestCallback(cbHeaders, callback);
+            
+            Date expiration = new Date(new Date().getTime() + 3600 * 1000);
+			GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.PUT);
+			request.setExpiration(expiration);
+			request.setContentType("text/plain");
+			request.setHeaders(cbHeaders);
+			request.addHeader("x-oss-meta-author", "mingdi");
+			
+			URL signedUrl = ossClient.generatePresignedUrl(request);
+            
+        	// put with url
+			Map<String, String> customHeaders = new HashMap<String, String>(cbHeaders);
+			customHeaders.put("Content-Type", "text/plain");
+			customHeaders.put("x-oss-meta-author", "mingdi");
+			
+        	InputStream instream = genFixedLengthInputStream(instreamLength);
+        	PutObjectResult putResult = ossClient.putObject(signedUrl, instream, instreamLength, customHeaders);
+        	Assert.assertNull(putResult.getCallbackResponseBody());
+            
+            // get object and check
+            OSSObject ossObject = ossClient.getObject(bucketName, key);
+            Assert.assertEquals(key, ossObject.getKey());
+            Assert.assertEquals(instreamLength, ossObject.getObjectMetadata().getContentLength());
+            Assert.assertEquals("mingdi", ossObject.getObjectMetadata().getUserMetadata().get("author"));
+            ossObject.getObjectContent().close();
+            
+        } catch (Exception ex) {
+        	ex.printStackTrace();
             Assert.fail(ex.getMessage());
         }
     }

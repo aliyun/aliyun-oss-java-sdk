@@ -785,6 +785,7 @@ public class OSSClient implements OSS {
         requestMessage.setEndpoint(OSSUtils.determineFinalEndpoint(endpoint, bucketName, config));
         requestMessage.setMethod(method);
         requestMessage.setResourcePath(resourcePath);
+        requestMessage.setHeaders(request.getHeaders());
         
         requestMessage.addHeader(HttpHeaders.DATE, expires);
         if (request.getContentType() != null && !request.getContentType().trim().equals("")) {

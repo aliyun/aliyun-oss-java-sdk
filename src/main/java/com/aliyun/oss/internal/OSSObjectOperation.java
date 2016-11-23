@@ -175,7 +175,7 @@ public class OSSObjectOperation extends OSSOperation {
         request.setHeaders(requestHeaders);
         request.setUseChunkEncoding(useChunkEncoding);
         
-        return doOperation(request, putObjectReponseParser, null, null, true);
+        return doOperation(request, putObjectReponseParser, null, null, true);       
     }
     
     /**

@@ -62,6 +62,9 @@ public class GeneratePresignedUrlRequest {
     private Map<String, String> userMetadata = new HashMap<String, String>();
     
     private Map<String, String> queryParam = new HashMap<String, String>(); 
+    
+    private Map<String, String> headers = new HashMap<String, String>();  
+    
     /**
      * 构造函数。默认的HTTP Method为{@link HttpMethod#GET}。
      * @param bucketName
@@ -294,5 +297,33 @@ public class GeneratePresignedUrlRequest {
 	public void setProcess(String process) {
 		this.process = process;
 	}
+	
+    /**
+     * 返回HTTP Headers
+     * @return HTTP Headers
+     */
+    public Map<String,String> getHeaders(){
+        return this.headers;
+    }
+    
+    /**
+     * HTTP请求头，HTTP Header。
+     * @param headers 
+     *          HTTP Headers。
+     */
+    public void setHeaders(Map<String, String> headers) {
+        if (headers == null){
+            throw new NullPointerException("参数'queryParameter'为空指针。");
+        }
+        this.headers = headers;
+    }
+    
+    /**
+     * @param paramter key
+     * @param value
+     */
+    public void addHeader(String key, String value) {
+        this.headers.put(key, value);
+    }
 
 }
