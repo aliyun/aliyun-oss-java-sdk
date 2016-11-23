@@ -27,17 +27,17 @@ public class ImageProcess {
         this.sourceFileProtect = sourceFileProtect;
         this.sourceFileProtectSuffix = sourceFileProtectSuffix;
         this.styleDelimiters = styleDelimiters;
-        this.domainSupportAt = null;
+        this.supportAtStyle = null;
     }
     
     public ImageProcess(String compliedHost, Boolean sourceFileProtect,
             String sourceFileProtectSuffix, String styleDelimiters, 
-            Boolean domainSupportAt) {
+            Boolean supportAtStyle) {
         this.compliedHost = compliedHost;
         this.sourceFileProtect = sourceFileProtect;
         this.sourceFileProtectSuffix = sourceFileProtectSuffix;
         this.styleDelimiters = styleDelimiters;
-        this.domainSupportAt = domainSupportAt;
+        this.supportAtStyle = supportAtStyle;
     }
 
     public String getCompliedHost() {
@@ -80,12 +80,12 @@ public class ImageProcess {
         this.version = version;
     }
     
-	public Boolean isDomainSupportAt() {
-		return domainSupportAt;
+	public Boolean isSupportAtStyle() {
+		return supportAtStyle;
 	}
 
-	public void setDomainSupportAt(Boolean domainSupportAt) {
-		this.domainSupportAt = domainSupportAt;
+	public void setSupportAtStyle(Boolean supportAtStyle) {
+		this.supportAtStyle = supportAtStyle;
 	}
 
 	// Img表示设置的样式分隔符，只有Img能用；Both表示oss也能用Img的样式分隔符
@@ -99,6 +99,6 @@ public class ImageProcess {
     // 图片服务的版本目前是2，只能读取不能设置
     private Integer version;
     // 用户是否能够通过OSS域名使用老版图片处理接口，@格式。默认Disabled
-    private Boolean domainSupportAt;
+    private Boolean supportAtStyle;
     
 }
