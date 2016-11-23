@@ -141,8 +141,8 @@ public final class RequestMarshallers {
             xmlBody.append("<SourceFileProtectSuffix>" + imageProcessConf.getSourceFileProtectSuffix() 
                     + "</SourceFileProtectSuffix>");
             xmlBody.append("<StyleDelimiters>" + imageProcessConf.getStyleDelimiters() + "</StyleDelimiters>");
-            if (imageProcessConf.isDomainSupportProcess() != null && 
-            		imageProcessConf.isDomainSupportProcess().booleanValue()) {
+            if (imageProcessConf.isDomainSupportAt() != null && 
+            		imageProcessConf.isDomainSupportAt().booleanValue()) {
                 xmlBody.append("<OssDomainSupportAtProcess>Enabled</OssDomainSupportAtProcess>");
             } else {
                 xmlBody.append("<OssDomainSupportAtProcess>Disabled</OssDomainSupportAtProcess>");

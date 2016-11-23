@@ -42,7 +42,7 @@ public class BucketProcesTest extends TestBase {
             Assert.assertEquals(bucketProcess.getImageProcess().getSourceFileProtectSuffix(), "");
             Assert.assertEquals(bucketProcess.getImageProcess().getStyleDelimiters(), "");
             Assert.assertEquals(bucketProcess.getImageProcess().getVersion().intValue(), 2);
-            Assert.assertEquals(bucketProcess.getImageProcess().isDomainSupportProcess(), null);
+            Assert.assertEquals(bucketProcess.getImageProcess().isDomainSupportAt(), null);
             
             // put 1
             ImageProcess imageProcess = new ImageProcess("Img", true, "jpg,png", "/,-");
@@ -56,7 +56,7 @@ public class BucketProcesTest extends TestBase {
             Assert.assertEquals(bucketProcess.getImageProcess().getSourceFileProtectSuffix(), "jpg,png");
             Assert.assertEquals(bucketProcess.getImageProcess().getStyleDelimiters(), "-,/");
             Assert.assertEquals(bucketProcess.getImageProcess().getVersion().intValue(), 2);
-            Assert.assertEquals(bucketProcess.getImageProcess().isDomainSupportProcess(), null);
+            Assert.assertEquals(bucketProcess.getImageProcess().isDomainSupportAt(), null);
             
             // put 2
             imageProcess = new ImageProcess("Both", false, "gif", "-");
@@ -70,7 +70,7 @@ public class BucketProcesTest extends TestBase {
             Assert.assertEquals(bucketProcess.getImageProcess().getSourceFileProtectSuffix(), "");
             Assert.assertEquals(bucketProcess.getImageProcess().getStyleDelimiters(), "-");
             Assert.assertEquals(bucketProcess.getImageProcess().getVersion().intValue(), 2);
-            Assert.assertEquals(bucketProcess.getImageProcess().isDomainSupportProcess(), null);
+            Assert.assertEquals(bucketProcess.getImageProcess().isDomainSupportAt(), null);
             
             // put 3
             imageProcess = new ImageProcess("Img", true, "*", "/", true);
@@ -84,7 +84,7 @@ public class BucketProcesTest extends TestBase {
             Assert.assertEquals(bucketProcess.getImageProcess().getSourceFileProtectSuffix(), "*");
             Assert.assertEquals(bucketProcess.getImageProcess().getStyleDelimiters(), "/");
             Assert.assertEquals(bucketProcess.getImageProcess().getVersion().intValue(), 2);
-            Assert.assertEquals(bucketProcess.getImageProcess().isDomainSupportProcess(), null);
+            Assert.assertEquals(bucketProcess.getImageProcess().isDomainSupportAt(), null);
             
         } catch (Exception e) {
             Assert.fail(e.getMessage());
