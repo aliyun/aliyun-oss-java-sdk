@@ -38,7 +38,9 @@ public class CallbackSample {
             Callback callback = new Callback();
             callback.setCallbackUrl(callbackUrl);
             callback.setCallbackHost("oss-cn-hangzhou.aliyuncs.com");
-            callback.setCallbackBody("{\\\"mimeType\\\":${mimeType},\\\"size\\\":${size}}");
+            callback.setCallbackBody("{\\\"bucket\\\":${bucket},\\\"object\\\":${object},"
+                    + "\\\"mimeType\\\":${mimeType},\\\"size\\\":${size},"
+                    + "\\\"my_var1\\\":${x:var1},\\\"my_var2\\\":${x:var2}}");
             callback.setCalbackBodyType(CalbackBodyType.JSON);
             callback.addCallbackVar("x:var1", "value1");
             callback.addCallbackVar("x:var2", "value2");
