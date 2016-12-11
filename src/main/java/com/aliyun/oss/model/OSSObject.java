@@ -19,6 +19,8 @@
 
 package com.aliyun.oss.model;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -38,7 +40,7 @@ import java.io.InputStream;
  * </p>
  *
  */
-public class OSSObject extends GenericResult {
+public class OSSObject extends GenericResult implements Closeable {
 
     // Object key (name)
     private String key;
@@ -118,6 +120,13 @@ public class OSSObject extends GenericResult {
      */
     public void setKey(String key) {
         this.key = key;
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (objectContent != null) {
+            objectContent.close();
+        }
     }
 
     @Override
