@@ -1,80 +1,96 @@
 package samples;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import com.aliyun.oss.ClientException;
+import com.aliyun.oss.InconsistentException;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.OSSException;
-import com.aliyun.oss.model.GetObjectRequest;
+import com.aliyun.oss.common.utils.IOUtils;
+import com.aliyun.oss.internal.OSSUtils;
+import com.aliyun.oss.model.AppendObjectRequest;
+import com.aliyun.oss.model.AppendObjectResult;
+import com.aliyun.oss.model.OSSObject;
+import com.aliyun.oss.model.UploadFileRequest;
+import junit.framework.Assert;
 
 /**
- * 断点续传下载用法示例
+ * 上传/下载数据校验用法示例
  *
  */
-public class ImageSample {
+public class CRCSample {
     
     private static String endpoint = "<endpoint, http://oss-cn-hangzhou.aliyuncs.com>";
     private static String accessKeyId = "<accessKeyId>";
     private static String accessKeySecret = "<accessKeySecret>";
     private static String bucketName = "<bucketName>";
-    private static String key = "example.jpg";
-    
-    
-    public static void main(String[] args) throws IOException {        
+    private static String uploadFile = "<uploadFile>";
+    private static String key = "crc-sample.txt";    
 
+    
+    public static void main(String[] args) throws IOException { 
+    	
+    	String content = "Hello OSS, Hi OSS, OSS OK.";
+
+    	// 上传/下载默认开启CRC校验，如果不需要，请关闭CRC校验功能
+    	// ClientConfiguration config = new ClientConfiguration();
+    	// config.setCrcCheckEnabled(false);    	
+    	// OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
         OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
         
         try {
-            // 缩放
-            String style = "image/resize,m_fixed,w_100,h_100";  
-            GetObjectRequest request = new GetObjectRequest(bucketName, key);
-            request.setProcess(style);
+        	
+        	// 开启CRC校验后，上传(putObject/uploadPart/uploadFile)自动开启CRC校验，使用方法与原来相同。
+        	// appendObject需要出AppendObjectRequest.setInitCRC才会CRC校验
+            ossClient.putObject(bucketName, key, new ByteArrayInputStream(content.getBytes()));
+            ossClient.deleteObject(bucketName, key);
             
-            ossClient.getObject(request, new File("example-resize.jpg"));
+            // 追加上传，第一次追加
+            AppendObjectRequest appendObjectRequest = new AppendObjectRequest(bucketName, key, 
+                    new ByteArrayInputStream(content.getBytes())).withPosition(0L);
             
-            // 裁剪
-            style = "image/crop,w_100,h_100,x_100,y_100,r_1"; 
-            request = new GetObjectRequest(bucketName, key);
-            request.setProcess(style);
+            appendObjectRequest.setInitCRC(0L);
+            AppendObjectResult appendObjectResult = ossClient.appendObject(appendObjectRequest);
             
-            ossClient.getObject(request, new File("example-crop.jpg"));
+            // 追加上传，第二次追加
+            appendObjectRequest = new AppendObjectRequest(bucketName, key, 
+            		new ByteArrayInputStream(content.getBytes()));
+            appendObjectRequest.setPosition(appendObjectResult.getNextPosition());
+            appendObjectRequest.setInitCRC(appendObjectResult.getClientCRC());
+            appendObjectResult = ossClient.appendObject(appendObjectRequest);
             
-            // 旋转
-            style = "image/rotate,90"; 
-            request = new GetObjectRequest(bucketName, key);
-            request.setProcess(style);
+            ossClient.deleteObject(bucketName, key);
             
-            ossClient.getObject(request, new File("example-rotate.jpg"));
+            // 断点续传上传，支持CRC校验
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
+            // 待上传的本地文件
+            uploadFileRequest.setUploadFile(uploadFile);
+            // 设置并发下载数，默认1
+            uploadFileRequest.setTaskNum(5);
+            // 设置分片大小，默认100KB
+            uploadFileRequest.setPartSize(1024 * 1024 * 1);
+            // 开启断点续传，默认关闭
+            uploadFileRequest.setEnableCheckpoint(true);
             
-            // 锐化
-            style = "image/sharpen,100"; 
-            request = new GetObjectRequest(bucketName, key);
-            request.setProcess(style);
+            ossClient.uploadFile(uploadFileRequest);
             
-            ossClient.getObject(request, new File("example-sharpen.jpg"));
+            // 下载CRC校验，注意范围下载不支持CRC校验，downloadFile不支持CRC校验
+            OSSObject ossObject = ossClient.getObject(bucketName, key);
+            Assert.assertNull(ossObject.getClientCRC());
+            Assert.assertNotNull(ossObject.getServerCRC());
             
-            // 水印
-            style = "image/watermark,text_SGVsbG8g5Zu-54mH5pyN5YqhIQ"; 
-            request = new GetObjectRequest(bucketName, key);
-            request.setProcess(style);
+            InputStream stream = ossObject.getObjectContent();
+            while (stream.read() != -1) {
+            }
+            stream.close();
             
-            ossClient.getObject(request, new File("example-watermark.jpg"));
+            // 校验CRC是否一致
+            OSSUtils.checkChecksum(IOUtils.getCRCValue(stream), ossObject.getServerCRC(), ossObject.getRequestId());
             
-            // 格式转换
-            style = "image/format,png"; 
-            request = new GetObjectRequest(bucketName, key);
-            request.setProcess(style);
-            
-            ossClient.getObject(request, new File("example-format.png"));
-            
-            // 图片信息
-            style = "image/info"; 
-            request = new GetObjectRequest(bucketName, key);
-            request.setProcess(style);
-            
-            ossClient.getObject(request, new File("example-info.txt"));
-            
+            ossClient.deleteObject(bucketName, key);
+                        
         } catch (OSSException oe) {
             System.out.println("Caught an OSSException, which means your request made it to OSS, "
                     + "but was rejected with an error response for some reason.");
@@ -87,6 +103,9 @@ public class ImageSample {
                     + "a serious internal problem while trying to communicate with OSS, "
                     + "such as not being able to access the network.");
             System.out.println("Error Message: " + ce.getMessage());
+        } catch (InconsistentException ie) {
+        	System.out.println("Caught an OSSException");
+        	System.out.println("Request ID:      " + ie.getRequestId());
         } catch (Throwable e) {
             e.printStackTrace();
         } finally {
