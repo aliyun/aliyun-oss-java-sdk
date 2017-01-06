@@ -38,6 +38,7 @@ import org.junit.Test;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
+import com.aliyun.oss.internal.OSSHeaders;
 import com.aliyun.oss.internal.OSSUtils;
 import com.aliyun.oss.model.Callback;
 import com.aliyun.oss.model.Callback.CalbackBodyType;
@@ -55,6 +56,7 @@ import com.aliyun.oss.model.UploadPartResult;
  * Test callBack of PutObject and MultipartUpload
  * 
  */
+@SuppressWarnings("unused")
 public class CallbackTest extends TestBase {
     
     private static final String callbackUrl = "callback.oss-demo.com:23450";
@@ -716,6 +718,7 @@ public class CallbackTest extends TestBase {
 			request.addHeader("x-oss-meta-author", "mingdi");
 			
 			URL signedUrl = ossClient.generatePresignedUrl(request);
+			System.out.println("SignedUrl:" + signedUrl);
             
         	// put with url
 			Map<String, String> customHeaders = new HashMap<String, String>(cbHeaders);
@@ -724,7 +727,12 @@ public class CallbackTest extends TestBase {
 			
         	InputStream instream = genFixedLengthInputStream(instreamLength);
         	PutObjectResult putResult = ossClient.putObject(signedUrl, instream, instreamLength, customHeaders);
-        	Assert.assertNull(putResult.getCallbackResponseBody());
+        	
+        	// check callback body
+            byte[] buffer = new byte[bufferLength];
+            int nRead = putResult.getCallbackResponseBody().read(buffer);
+            putResult.getCallbackResponseBody().close();
+            Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
             
             // get object and check
             OSSObject ossObject = ossClient.getObject(bucketName, key);
