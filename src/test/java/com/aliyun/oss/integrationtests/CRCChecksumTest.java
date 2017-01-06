@@ -19,6 +19,8 @@
 
 package com.aliyun.oss.integrationtests;
 
+import static com.aliyun.oss.integrationtests.TestUtils.genFixedLengthFile;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -210,6 +212,32 @@ public class CRCChecksumTest extends TestBase {
             Assert.assertNull(ossRangeObject.getClientCRC());
             Assert.assertNotNull(ossRangeObject.getServerCRC());
             Assert.assertEquals(ossObject.getServerCRC(), ossRangeObject.getServerCRC());
+                        
+            ossClient.deleteObject(bucketName, key);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+    }
+    
+    @Test
+    public void testGetObjectToFileCRC() {
+        String key = "get-object-to-file-crc";
+
+        try {
+            InputStream inputStream = TestUtils.genFixedLengthInputStream(1024 * 100);
+            PutObjectResult putObjectResult = ossClient.putObject(bucketName, key, inputStream);
+            checkCRC(putObjectResult);
+            
+            String filePath = genFixedLengthFile(0);
+            GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
+            ossClient.getObject(getObjectRequest, new File(filePath));
+            
+            // 范围CRC上不支持
+            getObjectRequest.setRange(100, 10000);
+            getObjectRequest = new GetObjectRequest(bucketName, key);
+            ossClient.getObject(getObjectRequest, new File(filePath));
                         
             ossClient.deleteObject(bucketName, key);
         } catch (Exception e) {

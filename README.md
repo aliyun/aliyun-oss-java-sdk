@@ -2,11 +2,10 @@
 
 [![GitHub version](https://badge.fury.io/gh/aliyun%2Faliyun-oss-java-sdk.svg)](https://badge.fury.io/gh/aliyun%2Faliyun-oss-java-sdk)
 [![Build Status](https://travis-ci.org/aliyun/aliyun-oss-java-sdk.svg?branch=master)](https://travis-ci.org/aliyun/aliyun-oss-java-sdk)
-[![Coverage Status](https://coveralls.io/repos/github/aliyun/aliyun-oss-java-sdk/badge.svg?branch=master)](https://coveralls.io/github/aliyun/aliyun-oss-java-sdk?branch=master)
 
 ## Requirements
 
-- Java 6+
+- Java 1.6+
 
 ## Build
 
@@ -18,7 +17,7 @@ mvn clean package -DskipTests
 
 - to run function tests, you will have to config user account in src/test/java/com/aliyun/oss/integrationtests/TestConfig.java
 
-## Authors && Contributors
+## Authors
 
 - [Yubin Bai](https://github.com/baiyubin)
 - [Mengbang Xing](https://github.com/xingfeng2510)

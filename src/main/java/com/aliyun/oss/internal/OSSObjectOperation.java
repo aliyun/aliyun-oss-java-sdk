@@ -96,6 +96,7 @@ import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.ExceptionFactory;
 import com.aliyun.oss.common.utils.HttpHeaders;
 import com.aliyun.oss.common.utils.HttpUtil;
+import com.aliyun.oss.common.utils.IOUtils;
 import com.aliyun.oss.common.utils.RangeSpec;
 import com.aliyun.oss.event.ProgressEventType;
 import com.aliyun.oss.event.ProgressInputStream;
@@ -146,7 +147,7 @@ public class OSSObjectOperation extends OSSOperation {
             result = writeObjectInternal(WriteMode.OVERWRITE, putObjectRequest, putObjectCallbackReponseParser);
         }
         
-        if (getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
+        if (isCrcCheckEnabled()) {
         	OSSUtils.checkChecksum(result.getClientCRC(), result.getServerCRC(), result.getRequestId());
         }
         
@@ -175,7 +176,18 @@ public class OSSObjectOperation extends OSSOperation {
         request.setHeaders(requestHeaders);
         request.setUseChunkEncoding(useChunkEncoding);
         
-        return doOperation(request, putObjectReponseParser, null, null, true);       
+        PutObjectResult result = null;
+        if (requestHeaders.get(OSSHeaders.OSS_HEADER_CALLBACK) == null) {
+            result = doOperation(request, putObjectReponseParser, null, null, true);    
+        } else {
+            result = doOperation(request, putObjectCallbackReponseParser, null, null, true);    
+        }
+        
+        if (isCrcCheckEnabled()) {
+        	OSSUtils.checkChecksum(result.getClientCRC(), result.getServerCRC(), result.getRequestId());
+        }
+        
+        return result;       
     }
     
     /**
@@ -193,8 +205,7 @@ public class OSSObjectOperation extends OSSOperation {
                     (result.getNextPosition() - appendObjectRequest.getPosition())));
         }
         
-        if (getInnerClient().getClientConfiguration().isCrcCheckEnabled() && 
-        		appendObjectRequest.getInitCRC() != null) {
+        if (isCrcCheckEnabled() && appendObjectRequest.getInitCRC() != null) {
         	OSSUtils.checkChecksum(result.getClientCRC(), result.getServerCRC(), result.getRequestId());
         }
         
@@ -293,6 +304,11 @@ public class OSSObjectOperation extends OSSOperation {
             int bytesRead;
             while ((bytesRead = ossObject.getObjectContent().read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
+            }
+            
+            if (isCrcCheckEnabled() && !hasRangeInRequest(getObjectRequest)) {
+            	Long clientCRC = IOUtils.getCRCValue(ossObject.getObjectContent());
+            	OSSUtils.checkChecksum(clientCRC, ossObject.getServerCRC(), ossObject.getRequestId());
             }
             
             return ossObject.getObjectMetadata();
@@ -782,6 +798,14 @@ public class OSSObjectOperation extends OSSOperation {
         }
         return result;
     }
+    
+    private boolean isCrcCheckEnabled() {
+    	return getInnerClient().getClientConfiguration().isCrcCheckEnabled();
+    }
+    
+    private boolean hasRangeInRequest(GetObjectRequest getObjectRequest) {
+    	return getObjectRequest.getHeaders().get(OSSHeaders.RANGE) != null;
+    }    
 
     private static void populateCopyObjectHeaders(CopyObjectRequest copyObjectRequest,
             Map<String, String> headers) {
