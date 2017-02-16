@@ -40,7 +40,7 @@ import static com.aliyun.oss.internal.OSSUtils.trimQuotes;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_FILE_SIZE_LIMIT;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
 import static com.aliyun.oss.internal.ResponseParsers.completeMultipartUploadResponseParser;
-import static com.aliyun.oss.internal.ResponseParsers.completeMultipartUploadCallbackResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.completeMultipartUploadProcessResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.initiateMultipartUploadResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.listMultipartUploadsResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.listPartsResponseParser;
@@ -181,10 +181,10 @@ public class OSSMultipartOperation extends OSSOperation {
         reponseHandlers.add(new OSSCallbackErrorResponseHandler());
         
         CompleteMultipartUploadResult result = null;
-        if (completeMultipartUploadRequest.getCallback() == null) {
+        if (!isNeedReturnResponse(completeMultipartUploadRequest)) {
             result = doOperation(request, completeMultipartUploadResponseParser, bucketName, key, true);
         } else {
-            result =  doOperation(request, completeMultipartUploadCallbackResponseParser, bucketName, key, true, null, reponseHandlers);
+            result =  doOperation(request, completeMultipartUploadProcessResponseParser, bucketName, key, true, null, reponseHandlers);
         }
         
         result.setClientCRC(calcObjectCRCFromParts(completeMultipartUploadRequest.getPartETags()));
@@ -571,4 +571,11 @@ public class OSSMultipartOperation extends OSSOperation {
         return new Long(crc);
     }
     
+    private static boolean isNeedReturnResponse(CompleteMultipartUploadRequest completeMultipartUploadRequest) {
+    	if (completeMultipartUploadRequest.getCallback() != null || 
+    			completeMultipartUploadRequest.getProcess() != null) {
+    		return true;
+    	}
+    	return false;
+    }
 }

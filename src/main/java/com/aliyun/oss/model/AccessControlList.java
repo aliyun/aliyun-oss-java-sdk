@@ -34,7 +34,8 @@ public class AccessControlList implements Serializable {
     private static final long serialVersionUID = 211267925081748283L;
 
     private HashSet<Grant> grants = new HashSet<Grant>();
-    private Owner owner;
+    private CannedAccessControlList cannedACL;
+	private Owner owner;
 
     /**
      * 返回所有者{@link Owner}。
@@ -92,14 +93,31 @@ public class AccessControlList implements Serializable {
      * 返回该{@link AccessControlList}中包含的所有授权信息{@link Grant}。
      * @return 该{@link AccessControlList}中包含的所有授权信息。
      */
+    @Deprecated
     public Set<Grant> getGrants() {
         return this.grants;
     }
+    
+    /**
+     * 返回权限
+     * @return cannedACL
+     */
+    public CannedAccessControlList getCannedACL() {
+		return cannedACL;
+	}
+
+    /**
+     * 设置权限
+     * @param cannedACL
+     */
+	public void setCannedACL(CannedAccessControlList cannedACL) {
+		this.cannedACL = cannedACL;
+	}
 
     /**
      * 返回该对象的字符串表示。
      */
     public String toString() {
-        return "AccessControlList [owner=" + owner + ", grants=" + getGrants() + "]";
+        return "AccessControlList [owner=" + owner + ", ACL=" + getCannedACL() + "]";
     }
 }

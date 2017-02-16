@@ -39,6 +39,7 @@ import com.aliyun.oss.model.BucketLoggingResult;
 import com.aliyun.oss.model.BucketProcess;
 import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.BucketReplicationProgress;
+import com.aliyun.oss.model.BucketStat;
 import com.aliyun.oss.model.BucketWebsiteResult;
 import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.CnameConfiguration;
@@ -1399,6 +1400,26 @@ public interface OSS {
             throws OSSException, ClientException;
     
     /**
+     * 获取{@link Bucket}的存储信息。
+     * @param bucketName 指定Bucket名称。
+     * @return Bucket信息。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public BucketStat getBucketStat(String bucketName)
+            throws OSSException, ClientException;
+    
+    /**
+     * 获取{@link Bucket}的存储信息。
+     * @param genericRequest 请求信息。
+     * @return Bucket信息。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public BucketStat getBucketStat(GenericRequest genericRequest)
+            throws OSSException, ClientException;
+    
+    /**
      * 设置{@link Bucket}的容量。
      * @param bucketName 指定Bucket名称。
      * @param userQos 包括的容量的Bucket Qos。
@@ -1661,7 +1682,7 @@ public interface OSS {
             throws OSSException, ClientException;
 
     /**
-
+	 * 创建符号链接。
      * @param bucketName Bucket名称。
      * @param symlink 符号链接。
      * @param target 目标文件。
