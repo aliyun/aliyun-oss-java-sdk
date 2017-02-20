@@ -29,8 +29,10 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.HttpMethod;
@@ -51,6 +53,7 @@ public class OSSRequestMessageBuilder {
     private String key;
     private Map<String, String> headers = new HashMap<String, String>();
     private Map<String, String> parameters = new LinkedHashMap<String, String>();
+    private Set<String> signatureFields = new HashSet<String>();
     private InputStream inputStream;
     private long inputSize = 0; 
     private ServiceClient innerClient;
@@ -126,6 +129,15 @@ public class OSSRequestMessageBuilder {
         return this;
     }
     
+    public Set<String> getSignatureFields() {
+		return signatureFields;
+	}
+
+	public OSSRequestMessageBuilder setSignatureFields(Set<String> signatureFields) {
+		this.signatureFields = signatureFields;
+		return this;
+	}
+    
     public InputStream getInputStream() {
         return inputStream;
     }
@@ -170,6 +182,7 @@ public class OSSRequestMessageBuilder {
         Map<String, String> sentHeaders = new HashMap<String, String>(this.headers);
         sentHeaders.put(OSSHeaders.DATE, DateUtil.formatRfc822Date(new Date()));        
         Map<String, String> sentParameters = new LinkedHashMap<String, String>(this.parameters);
+        Set<String> signFields = new HashSet<String>(this.signatureFields);
         
         RequestMessage request = new RequestMessage(this.originalRequest);
         ClientConfiguration clientCofig = this.innerClient.getClientConfiguration();
@@ -177,6 +190,7 @@ public class OSSRequestMessageBuilder {
         request.setResourcePath(determineResourcePath(this.bucket, this.key, clientCofig.isSLDEnabled()));
         request.setHeaders(sentHeaders);
         request.setParameters(sentParameters);
+        request.setSignatureFields(signFields);
         request.setMethod(this.method);
         request.setContent(this.inputStream);
         request.setContentLength(this.inputSize);

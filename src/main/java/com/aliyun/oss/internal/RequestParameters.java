@@ -50,6 +50,7 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_PROCESS_CONF = "processConfiguration";
     public static final String SUBRESOURCE_PROCESS = "x-oss-process";
     public static final String SUBRESOURCE_SYMLINK = "symlink"; 
+    public static final String SUBRESOURCE_STAT = "stat";
     
     public static final String PREFIX = "prefix";
     public static final String DELIMITER = "delimiter";
@@ -66,11 +67,17 @@ public final class RequestParameters {
     public static final String MAX_PARTS = "max-parts";    
     public static final String PART_NUMBER_MARKER = "part-number-marker";
     public static final String RULE_ID = "rule-id";
-
+    
+    public static final String EXPIRES = "Expires";
     public static final String SIGNATURE = "Signature";
     public static final String OSS_ACCESS_KEY_ID = "OSSAccessKeyId";
+    public static final String EXPIRES_V2 = "x-oss-expires";
+    public static final String SIGNATURE_V2 = "x-oss-signature";
+    public static final String OSS_ACCESS_KEY_ID_V2 = "x-oss-access-key-id";
+    public static final String OSS_SIGNATURE_VERSION_V2 = "x-oss-signature-version";
     
     public static final String SECURITY_TOKEN = "security-token";
+    public static final String SECURITY_TOKEN_V2 = "x-oss-security-token";
     
     public static final String POSITION = "position";
     public static final String STYLE_NAME = "styleName";

@@ -25,7 +25,7 @@ import com.aliyun.oss.common.auth.RequestSigner;
 import com.aliyun.oss.common.auth.ServiceSignature;
 import com.aliyun.oss.common.comm.RequestMessage;
 
-public class OSSRequestSigner implements RequestSigner {
+public class OSSRequestSignerV2 implements RequestSigner {
 
     private String httpMethod;
     
@@ -33,21 +33,21 @@ public class OSSRequestSigner implements RequestSigner {
     private String resourcePath;
     private Credentials creds;
 
-    public OSSRequestSigner(String httpMethod, String resourcePath, Credentials creds) {
+    public OSSRequestSignerV2(String httpMethod, String resourcePath, Credentials creds) {
         this.httpMethod = httpMethod;
         this.resourcePath = resourcePath;
         this.creds = creds;
     }
 
     @Override
-    public void sign(RequestMessage request) throws ClientException {
+    public void sign(RequestMessage request) throws ClientException {    	
         String accessKeyId = creds.getAccessKeyId();
         String secretAccessKey = creds.getSecretAccessKey();
 
         if (accessKeyId.length() > 0 && secretAccessKey.length() > 0) {
-            String canonicalString = SignUtils.buildCanonicalString(httpMethod, resourcePath, request);
-            String signature = ServiceSignature.create().computeSignature(secretAccessKey, canonicalString);
-            request.addHeader(OSSHeaders.AUTHORIZATION, SignUtils.composeRequestAuthorization(accessKeyId, signature));
+            String canonicalString = SignUtils.buildCanonicalStringV2(httpMethod, resourcePath, request);
+            String signature = ServiceSignature.createV2().computeSignature(secretAccessKey, canonicalString);
+            request.addHeader(OSSHeaders.AUTHORIZATION, SignUtils.composeRequestAuthorizationV2(accessKeyId, signature, request.getSignatureFields()));
         } 
     }
 }

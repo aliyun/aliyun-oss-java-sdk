@@ -38,7 +38,6 @@ import org.junit.Test;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
-import com.aliyun.oss.internal.OSSHeaders;
 import com.aliyun.oss.internal.OSSUtils;
 import com.aliyun.oss.model.Callback;
 import com.aliyun.oss.model.Callback.CalbackBodyType;
@@ -46,6 +45,7 @@ import com.aliyun.oss.model.CompleteMultipartUploadRequest;
 import com.aliyun.oss.model.CompleteMultipartUploadResult;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 import com.aliyun.oss.model.OSSObject;
+import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PartETag;
 import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
@@ -56,13 +56,14 @@ import com.aliyun.oss.model.UploadPartResult;
  * Test callBack of PutObject and MultipartUpload
  * 
  */
-@SuppressWarnings("unused")
+@SuppressWarnings("deprecation")
 public class CallbackTest extends TestBase {
     
     private static final String callbackUrl = "callback.oss-demo.com:23450";
     private static final int instreamLength = 1024;
     private static final int bufferLength = 1024;
     private static final String callbackResponse = "{\"Status\":\"OK\"}";
+    private static final String bucketName = "mingdi-hz-3";
     
     /**
      * 默认值测试，指定url、body，其它使用默认值
@@ -80,6 +81,11 @@ public class CallbackTest extends TestBase {
             callback.setCallbackBody("put-object-callback");
             putObjectRequest.setCallback(callback);
             
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.addUserMetadata("key", "value");
+            putObjectRequest.setMetadata(metadata);
+            putObjectRequest.addSignatureField("x-oss-meta-key");
+            
             PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
             byte[] buffer = new byte[bufferLength];
             int nRead = putObjectResult.getCallbackResponseBody().read(buffer);
@@ -89,8 +95,10 @@ public class CallbackTest extends TestBase {
             OSSObject obj = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, obj.getKey());
             Assert.assertEquals(instreamLength, obj.getObjectMetadata().getContentLength());
+            obj.forcedClose();
 
         } catch (Exception ex) {
+        	ex.printStackTrace();
             Assert.fail(ex.getMessage());
         }
     }
@@ -122,6 +130,7 @@ public class CallbackTest extends TestBase {
             OSSObject obj = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, obj.getKey());
             Assert.assertEquals(instreamLength, obj.getObjectMetadata().getContentLength());
+            obj.close();
 
         } catch (Exception ex) {
             Assert.fail(ex.getMessage());
@@ -183,8 +192,8 @@ public class CallbackTest extends TestBase {
             
             PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
             byte[] buffer = new byte[bufferLength];
-            int nRead = putObjectResult.getCallbackResponseBody().read(buffer);
-            putObjectResult.getCallbackResponseBody().close();
+            int nRead = putObjectResult.getResponse().getContent().read(buffer);
+            putObjectResult.getResponse().getContent().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
             
             OSSObject obj = ossClient.getObject(bucketName, key);
@@ -480,13 +489,14 @@ public class CallbackTest extends TestBase {
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
                         
             byte[] buffer = new byte[bufferLength];
-            int nRead = completeMultipartUploadResult.getCallbackResponseBody().read(buffer);
-            completeMultipartUploadResult.getCallbackResponseBody().close();
+            int nRead = completeMultipartUploadResult.getResponse().getContent().read(buffer);
+            completeMultipartUploadResult.getResponse().getContent().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
                     
             OSSObject obj = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, obj.getKey());
             Assert.assertEquals(instreamLength, obj.getObjectMetadata().getContentLength());
+            obj.forcedClose();
 
         } catch (Exception ex) {
             Assert.fail(ex.getMessage());
@@ -535,6 +545,7 @@ public class CallbackTest extends TestBase {
             OSSObject obj = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, obj.getKey());
             Assert.assertEquals(instreamLength, obj.getObjectMetadata().getContentLength());
+            obj.close();
 
         } catch (Exception ex) {
             Assert.fail(ex.getMessage());

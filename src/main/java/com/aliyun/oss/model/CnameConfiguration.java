@@ -56,6 +56,14 @@ public class CnameConfiguration {
         this.lastMofiedTime = lastMofiedTime;
     }
     
+	public Boolean getPurgeCdnCache() {
+		return purgeCdnCache;
+	}
+
+	public void setPurgeCdnCache(Boolean purgeCdnCache) {
+		this.purgeCdnCache = purgeCdnCache;
+	}
+    
     @Override
     public String toString() {
         return "CnameConfiguration [domain=" + domain + 
@@ -66,5 +74,5 @@ public class CnameConfiguration {
     private String domain;
     private CnameStatus status;
     private Date lastMofiedTime;
-
+    private Boolean purgeCdnCache;
 }

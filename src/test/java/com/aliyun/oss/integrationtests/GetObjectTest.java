@@ -496,11 +496,12 @@ public class GetObjectTest extends TestBase {
     
     @Test
     public void testGetObjectWithSpecialChars() {
-        final String key = "测\\r试-中.~,+\"'*&￥#@%！（文）+字符|？/.zip";
+        final String key = "测\\r试-中.~,+\"'*&￥#@%！（文）+字符|？/-_+.zip";
         final long inputStreamLength = 128 * 1024; //128KB
         //TODO: With chinese characters will be failed. 
         final String metaKey0 = "tag";
         final String metaValue0 = "元值0";
+        final String bucketName = "mingdi-hz-3";
         
         try {
             ObjectMetadata metadata = new ObjectMetadata();

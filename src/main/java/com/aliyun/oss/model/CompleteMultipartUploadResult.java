@@ -109,10 +109,11 @@ public class CompleteMultipartUploadResult extends GenericResult implements Call
     }
     
     /**
-     * 获取回调返回的消息体，需要close。
+     * 获取回调返回的消息体，需要close，使用this.getResponse().getContent()代替。。
      * @return 回调返回的消息体
      */
     @Override
+    @Deprecated
     public InputStream getCallbackResponseBody() {
         return callbackResponseBody;
     }

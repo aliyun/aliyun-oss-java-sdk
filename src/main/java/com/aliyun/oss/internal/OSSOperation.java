@@ -49,6 +49,7 @@ import com.aliyun.oss.common.parser.ResponseParseException;
 import com.aliyun.oss.common.parser.ResponseParser;
 import com.aliyun.oss.common.utils.ExceptionFactory;
 import com.aliyun.oss.internal.ResponseParsers.EmptyResponseParser;
+import com.aliyun.oss.model.SignatureVersion;
 import com.aliyun.oss.model.WebServiceRequest;
 
 /**
@@ -152,19 +153,32 @@ public abstract class OSSOperation {
             return parser.parse(response);
         } catch (ResponseParseException rpe) {
             OSSException oe = ExceptionFactory.createInvalidResponseException(
-                    response.getRequestId(), response.getErrorResponseAsString(), rpe);
-            logException("Unable to parse response error: ", oe);
+                    response.getRequestId(), rpe.getMessage(), rpe);
+            logException("Unable to parse response error: ", rpe);
             throw oe;
         }
     }
     
-    private static RequestSigner createSigner(HttpMethod method, String bucketName,
+    private RequestSigner createSigner(HttpMethod method, String bucketName,
             String key, Credentials creds) {
+    	RequestSigner requestSigner = null;
         String resourcePath = "/" 
                 + ((bucketName != null) ? bucketName + "/" : "") 
                 + ((key != null ? key : ""));
         
-        return new OSSRequestSigner(method.toString(), resourcePath, creds);
+        SignatureVersion signVersion = this.client.getClientConfiguration().getSignVersion();
+        switch (signVersion) { 
+        case V1: 
+        	requestSigner =  new OSSRequestSigner(method.toString(), resourcePath, creds);
+            break; 
+        case V2: 
+        	requestSigner =  new OSSRequestSignerV2(method.toString(), resourcePath, creds);
+            break; 
+        default: 
+        	requestSigner =  new OSSRequestSigner(method.toString(), resourcePath, creds);
+            break; 
+        }
+        return requestSigner;
     }
     
     protected ExecutionContext createDefaultContext(HttpMethod method, String bucketName, String key) {

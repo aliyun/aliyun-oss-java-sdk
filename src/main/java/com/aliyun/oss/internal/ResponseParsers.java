@@ -35,6 +35,7 @@ import java.util.zip.CheckedInputStream;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.input.JDOMParseException;
 import org.jdom.input.SAXBuilder;
 
 import com.aliyun.oss.common.comm.ResponseMessage;
@@ -52,6 +53,7 @@ import com.aliyun.oss.model.BucketLoggingResult;
 import com.aliyun.oss.model.BucketProcess;
 import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.BucketReplicationProgress;
+import com.aliyun.oss.model.BucketStat;
 import com.aliyun.oss.model.BucketWebsiteResult;
 import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.CnameConfiguration;
@@ -124,12 +126,13 @@ public final class ResponseParsers {
     public static final GetBucketReplicationProgressResponseParser getBucketReplicationProgressResponseParser = new GetBucketReplicationProgressResponseParser();    
     public static final GetBucketReplicationLocationResponseParser getBucketReplicationLocationResponseParser = new GetBucketReplicationLocationResponseParser();
     public static final GetBucketCnameResponseParser getBucketCnameResponseParser = new GetBucketCnameResponseParser();    
-    public static final GetBucketInfoResponseParser getBucketInfoResponseParser = new GetBucketInfoResponseParser();    
+    public static final GetBucketInfoResponseParser getBucketInfoResponseParser = new GetBucketInfoResponseParser(); 
+    public static final GetBucketStatResponseParser getBucketStatResponseParser = new GetBucketStatResponseParser();    
     public static final GetBucketQosResponseParser getBucketQosResponseParser = new GetBucketQosResponseParser();
     
     public static final ListObjectsReponseParser listObjectsReponseParser = new ListObjectsReponseParser();    
     public static final PutObjectReponseParser putObjectReponseParser = new PutObjectReponseParser();
-    public static final PutObjectCallbackReponseParser putObjectCallbackReponseParser = new PutObjectCallbackReponseParser();
+    public static final PutObjectProcessReponseParser putObjectProcessReponseParser = new PutObjectProcessReponseParser();
     public static final AppendObjectResponseParser appendObjectResponseParser = new AppendObjectResponseParser();
     public static final GetObjectMetadataResponseParser getObjectMetadataResponseParser = new GetObjectMetadataResponseParser();    
     public static final CopyObjectResponseParser copyObjectResponseParser = new CopyObjectResponseParser();    
@@ -138,7 +141,7 @@ public final class ResponseParsers {
     public static final GetSimplifiedObjectMetaResponseParser getSimplifiedObjectMetaResponseParser = new GetSimplifiedObjectMetaResponseParser();
     
     public static final CompleteMultipartUploadResponseParser completeMultipartUploadResponseParser = new CompleteMultipartUploadResponseParser();    
-    public static final CompleteMultipartUploadCallbackResponseParser completeMultipartUploadCallbackResponseParser = new CompleteMultipartUploadCallbackResponseParser();    
+    public static final CompleteMultipartUploadProcessResponseParser completeMultipartUploadProcessResponseParser = new CompleteMultipartUploadProcessResponseParser();    
     public static final InitiateMultipartUploadResponseParser initiateMultipartUploadResponseParser = new InitiateMultipartUploadResponseParser();    
     public static final ListMultipartUploadsResponseParser listMultipartUploadsResponseParser = new ListMultipartUploadsResponseParser();    
     public static final ListPartsResponseParser listPartsResponseParser = new ListPartsResponseParser();    
@@ -338,6 +341,20 @@ public final class ResponseParsers {
         
     }
     
+    public static final class GetBucketStatResponseParser implements ResponseParser<BucketStat> {
+        
+        @Override
+        public BucketStat parse(ResponseMessage response)
+                throws ResponseParseException {
+            try {
+                return parseGetBucketStat(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+        
+    }
+    
     public static final class GetBucketQosResponseParser implements ResponseParser<UserQos> {
         
         @Override
@@ -524,7 +541,7 @@ public final class ResponseParsers {
         
     }
     
-    public static final class PutObjectCallbackReponseParser implements ResponseParser<PutObjectResult> {
+    public static final class PutObjectProcessReponseParser implements ResponseParser<PutObjectResult> {
         
         @Override
         public PutObjectResult parse(ResponseMessage response)
@@ -533,6 +550,7 @@ public final class ResponseParsers {
             result.setRequestId(response.getRequestId());
             result.setETag(trimQuotes(response.getHeaders().get(OSSHeaders.ETAG)));
             result.setCallbackResponseBody(response.getContent());
+            result.setResponse(response);
             return result;
         }
         
@@ -553,8 +571,6 @@ public final class ResponseParsers {
                 result.setObjectCRC(response.getHeaders().get(OSSHeaders.OSS_HASH_CRC64_ECMA));
                 setCRC(result, response);
                 return result;
-            } catch (Exception e) {
-                throw new ResponseParseException(e.getMessage(), e);
             } finally {
                 safeCloseResponse(response);
             }
@@ -579,6 +595,7 @@ public final class ResponseParsers {
             ossObject.setKey(this.key);
             ossObject.setObjectContent(response.getContent());
             ossObject.setRequestId(response.getRequestId());
+            ossObject.setResponse(response);
             try {
                 ossObject.setObjectMetadata(parseObjectMetadata(response.getHeaders()));
                 setServerCRC(ossObject, response);
@@ -693,7 +710,7 @@ public final class ResponseParsers {
         
     }
     
-    public static final class CompleteMultipartUploadCallbackResponseParser implements ResponseParser<CompleteMultipartUploadResult> {
+    public static final class CompleteMultipartUploadProcessResponseParser implements ResponseParser<CompleteMultipartUploadResult> {
 
         @Override
         public CompleteMultipartUploadResult parse(ResponseMessage response)
@@ -701,6 +718,7 @@ public final class ResponseParsers {
             CompleteMultipartUploadResult result = new CompleteMultipartUploadResult();
             result.setRequestId(response.getRequestId());
             result.setCallbackResponseBody(response.getContent());
+            result.setResponse(response);
             return result;
         }
         
@@ -886,6 +904,8 @@ public final class ResponseParsers {
             }
 
             return objectListing;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -910,21 +930,22 @@ public final class ResponseParsers {
 
             String aclString = root.getChild("AccessControlList").getChildText("Grant");
             CannedAccessControlList cacl = CannedAccessControlList.parse(aclString);
+            acl.setCannedACL(cacl);
             
             switch (cacl) {
             case PublicRead:
                 acl.grantPermission(GroupGrantee.AllUsers, Permission.Read);
-                break;
-                
+                break; 
             case PublicReadWrite:
                 acl.grantPermission(GroupGrantee.AllUsers, Permission.FullControl);
                 break;
-                    
             default:
                 break;
             }
             
             return acl;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -950,6 +971,8 @@ public final class ResponseParsers {
             acl.setPermission(ObjectPermission.parsePermission(grantString));
             
             return acl;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -977,6 +1000,8 @@ public final class ResponseParsers {
                 }
             }
             return new BucketReferer(allowEmptyReferer, refererList);
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -990,7 +1015,9 @@ public final class ResponseParsers {
 
         try {
             Element root = getXmlRootElement(responseBody);
-            return  root.getChildText("ETag");            
+            return  root.getChildText("ETag");   
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1051,6 +1078,8 @@ public final class ResponseParsers {
             bucketList.setBucketList(buckets);
             
             return bucketList;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1078,6 +1107,8 @@ public final class ResponseParsers {
                 styleList.add(style);
             }
             return styleList;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
         	throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1094,6 +1125,8 @@ public final class ResponseParsers {
         try {
             Element root = getXmlRootElement(responseBody);
             return root.getText();
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1215,6 +1248,8 @@ public final class ResponseParsers {
             }
 
             return result;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1279,7 +1314,6 @@ public final class ResponseParsers {
             
             List<Element> uploadElems = root.getChildren("Upload");
             for (Element elem : uploadElems) {
-                // TODO: Occurs when multipart uploads cannot be fully listed ?
                 if (elem.getChild("Initiated") == null) {
                     continue;
                 }
@@ -1301,6 +1335,8 @@ public final class ResponseParsers {
             }
 
             return multipartUploadListing;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1351,6 +1387,8 @@ public final class ResponseParsers {
             }            
 
             return partListing;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1373,6 +1411,8 @@ public final class ResponseParsers {
             result.setLocation(root.getChildText("Location"));
 
             return result;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1396,6 +1436,8 @@ public final class ResponseParsers {
             }
 
             return result;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1419,6 +1461,8 @@ public final class ResponseParsers {
         	result.SetIsUseStyleOnly(root.getChildText("UseStyleOnly").equals("True"));
         	result.SetIsUseSrcFormat(root.getChildText("UseSrcFormat").equals("True"));
         	return result;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
         	throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1438,6 +1482,8 @@ public final class ResponseParsers {
     		result.SetLastModifyTime(DateUtil.parseRfc822Date(root.getChildText("LastModifyTime")));
     		result.SetCreationDate(DateUtil.parseRfc822Date(root.getChildText("CreateTime")));
     		return result;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
     	} catch (Exception e) {
         	throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1468,6 +1514,8 @@ public final class ResponseParsers {
             }
             
             return new BucketProcess(imageProcess);
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1539,6 +1587,8 @@ public final class ResponseParsers {
             }
 
             return result;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1587,6 +1637,8 @@ public final class ResponseParsers {
             deleteObjectsResult.setDeletedObjects(deletedObjects);
 
             return deleteObjectsResult;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1637,6 +1689,8 @@ public final class ResponseParsers {
             }
 
             return corsRules;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1671,6 +1725,8 @@ public final class ResponseParsers {
             }
             
             return tagSet;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1728,6 +1784,8 @@ public final class ResponseParsers {
             }
             
             return repRules;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1767,6 +1825,8 @@ public final class ResponseParsers {
             }
                         
             return progress;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1789,6 +1849,8 @@ public final class ResponseParsers {
             }
             
             return locationList;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1812,9 +1874,10 @@ public final class ResponseParsers {
             bucket.setOwner(owner);
             
             // bucket
-            bucket.setOwner(owner);
             bucket.setName(bucketElem.getChildText("Name"));
             bucket.setLocation(bucketElem.getChildText("Location"));
+            bucket.setExtranetEndpoint(bucketElem.getChildText("ExtranetEndpoint"));
+            bucket.setIntranetEndpoint(bucketElem.getChildText("IntranetEndpoint"));
             bucket.setCreationDate(DateUtil.parseIso8601Date(bucketElem.getChildText("CreationDate")));
             if (bucketElem.getChild("StorageClass") != null) {
                 bucket.setStorageClass(StorageClass.parse(bucketElem.getChildText("StorageClass")));
@@ -1823,8 +1886,9 @@ public final class ResponseParsers {
             
             // acl
             String aclString = bucketElem.getChild("AccessControlList").getChildText("Grant");
-            CannedAccessControlList cacl = CannedAccessControlList.parse(aclString);
-            switch (cacl) {
+            CannedAccessControlList acl = CannedAccessControlList.parse(aclString);
+            bucketInfo.setCannedACL(acl);
+            switch (acl) {
             case PublicRead:
                 bucketInfo.grantPermission(GroupGrantee.AllUsers, Permission.Read);
                 break;
@@ -1836,6 +1900,27 @@ public final class ResponseParsers {
             }
 
             return bucketInfo;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Unmarshall get bucket info response body to bucket stat.
+     */
+    public static BucketStat parseGetBucketStat(InputStream responseBody) 
+            throws ResponseParseException {
+        try {
+            Element root = getXmlRootElement(responseBody);            
+            Long storage = Long.parseLong(root.getChildText("Storage"));
+            Long objectCount = Long.parseLong(root.getChildText("ObjectCount"));
+            Long multipartUploadCount = Long.parseLong(root.getChildText("MultipartUploadCount"));
+            BucketStat bucketStat = new BucketStat(storage, objectCount, multipartUploadCount);
+            return bucketStat;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1867,6 +1952,8 @@ public final class ResponseParsers {
             result.setPlayUrls(playUrls);
             
             return result;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1895,6 +1982,8 @@ public final class ResponseParsers {
             result.setTarget(target);
             
             return result;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1942,6 +2031,8 @@ public final class ResponseParsers {
             }
             
             return result;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -1970,6 +2061,8 @@ public final class ResponseParsers {
             }
             
             return liveRecords;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -2036,6 +2129,8 @@ public final class ResponseParsers {
             }
 
             return liveChannelListing;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -2057,6 +2152,8 @@ public final class ResponseParsers {
             }
 
             return userQos;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -2118,6 +2215,8 @@ public final class ResponseParsers {
             }
             
             return lifecycleRules;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
@@ -2143,10 +2242,17 @@ public final class ResponseParsers {
                 cname.setStatus(CnameConfiguration.CnameStatus.valueOf(cnameElem.getChildText("Status")));
                 cname.setLastMofiedTime(DateUtil.parseIso8601Date(cnameElem.getChildText("LastModified")));
                 
+                if (cnameElem.getChildText("IsPurgeCdnCache") != null) {
+                    boolean purgeCdnCache = Boolean.valueOf(cnameElem.getChildText("IsPurgeCdnCache"));
+                    cname.setPurgeCdnCache(purgeCdnCache);
+                }
+                
                 cnames.add(cname);
             }
             
             return cnames;
+        } catch (JDOMParseException e) {
+        	throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }

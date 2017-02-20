@@ -21,6 +21,8 @@ package com.aliyun.oss.model;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.aliyun.oss.event.ProgressListener;
 
@@ -32,8 +34,9 @@ public abstract class WebServiceRequest {
     
     private Map<String, String> parameters = new LinkedHashMap<String, String>();
     private Map<String, String> headers = new LinkedHashMap<String, String>();
+    private Set<String> signatureFields = new TreeSet<String>();
     
-    public void setProgressListener(ProgressListener progressListener) {
+	public void setProgressListener(ProgressListener progressListener) {
         this.progressListener = (progressListener == null) ? 
                 ProgressListener.NOOP : progressListener;
     }
@@ -72,4 +75,16 @@ public abstract class WebServiceRequest {
     public void addHeader(String key, String value) {
         this.headers.put(key, value);
     }
+    
+    public Set<String> getSignatureFields() {
+		return signatureFields;
+	}
+
+	public void addSignatureField(String signatureField) {
+		this.signatureFields.add(signatureField);
+	}
+	
+	public void setSignatureFields(Set<String> signatureFields) {
+		this.signatureFields = signatureFields;
+	}
 }

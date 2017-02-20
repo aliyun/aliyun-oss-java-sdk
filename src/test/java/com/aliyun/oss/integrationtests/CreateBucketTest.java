@@ -48,6 +48,7 @@ import com.aliyun.oss.model.GroupGrantee;
 import com.aliyun.oss.model.Permission;
 import com.aliyun.oss.model.StorageClass;
 
+@SuppressWarnings("deprecation")
 public class CreateBucketTest extends TestBase {
     
     private static final int MAX_BUCKETS_ALLOWED = 10;
@@ -224,6 +225,7 @@ public class CreateBucketTest extends TestBase {
             AccessControlList returnedAcl = ossClient.getBucketAcl(bucketName);
             Set<Grant> grants = returnedAcl.getGrants();
             Assert.assertEquals(0, grants.size());
+            Assert.assertEquals(returnedAcl.getCannedACL(), CannedAccessControlList.Private);
             
             // Try to create existing bucket without setting acl
             ossClient.createBucket(bucketName);
@@ -242,6 +244,7 @@ public class CreateBucketTest extends TestBase {
             Grant grant = (Grant) grants.toArray()[0];
             Assert.assertEquals(GroupGrantee.AllUsers, grant.getGrantee());
             Assert.assertEquals(Permission.Read, grant.getPermission());
+            Assert.assertEquals(returnedAcl.getCannedACL(), CannedAccessControlList.PublicRead);
             
             // Try to create existing bucket without setting acl
             ossClient.createBucket(bucketName);
@@ -263,6 +266,7 @@ public class CreateBucketTest extends TestBase {
             grant = (Grant) grants.toArray()[0];
             Assert.assertEquals(GroupGrantee.AllUsers, grant.getGrantee());
             Assert.assertEquals(Permission.FullControl, grant.getPermission());
+            Assert.assertEquals(returnedAcl.getCannedACL(), CannedAccessControlList.PublicReadWrite);
             
             // Try to create existing bucket without setting acl
             ossClient.createBucket(bucketName);

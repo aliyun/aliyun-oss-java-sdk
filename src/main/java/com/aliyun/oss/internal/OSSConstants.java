@@ -45,6 +45,14 @@ public final class OSSConstants {
     public static final String OSS_AUTHORIZATION_PREFIX = "OSS ";
     public static final String OSS_AUTHORIZATION_SEPERATOR = ":";
     
+    public static final String OSS_AUTHORIZATION_ACCESSKEYID = "AccessKeyId:";
+    public static final String OSS_AUTHORIZATION_ADDITIONAL_HEADERS = "AdditionalHeaders:";
+    public static final String OSS_AUTHORIZATION_SIGNATURE = "Signature:";
+    
+    public static final String OSS_AUTHORIZATION_PREFIX_V2 = "OSS2 ";
+    public static final String OSS_AUTHORIZATION_SEPERATOR_V2 = ",";
+    public static final String OSS_AUTHORIZATION_FIELD_SEPERATOR_V2 = ";";
+    
     public static final String LOGGER_PACKAGE_NAME = "com.aliyun.oss";
     
     public static final String PROTOCOL_HTTP = "http://";

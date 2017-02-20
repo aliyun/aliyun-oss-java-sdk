@@ -73,6 +73,10 @@ public class DownloadFileRequest extends GenericRequest {
     public String getDownloadFile() {
         return downloadFile;
     }
+    
+    public String getTempDownloadFile() {
+        return downloadFile + ".tmp";
+    }
 
     public void setDownloadFile(String downloadFile) {
         this.downloadFile = downloadFile;

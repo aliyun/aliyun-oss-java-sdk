@@ -106,7 +106,8 @@ public class OSSResponseParserTest {
 
     }
 
-    @Test
+    @SuppressWarnings("deprecation")
+	@Test
     public void testParseGetBucketAcl() throws Exception {
 
         String filename = "getBucketAcl.xml";

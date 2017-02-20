@@ -51,4 +51,12 @@ public abstract class ServiceSignature {
     public static ServiceSignature create() {
         return new HmacSHA1Signature();
     }
+    
+    /**
+     * 创建V2的<code>ServiceSignature</code>实例。
+     * @return V2的<code>ServiceSignature</code>实现。
+     */
+    public static ServiceSignature createV2() {
+        return new HmacSHA256Signature();
+    }
 }
