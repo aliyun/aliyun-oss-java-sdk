@@ -55,7 +55,7 @@ import static com.aliyun.oss.internal.ResponseParsers.deleteObjectsResponseParse
 import static com.aliyun.oss.internal.ResponseParsers.getObjectAclResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getObjectMetadataResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.putObjectReponseParser;
-import static com.aliyun.oss.internal.ResponseParsers.putObjectCallbackReponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.putObjectProcessReponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getSimplifiedObjectMetaResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getSymbolicLinkResponseParser;
 
@@ -141,10 +141,10 @@ public class OSSObjectOperation extends OSSOperation {
         
         PutObjectResult result = null;
         
-        if (putObjectRequest.getCallback() == null) {
+        if (!isNeedReturnResponse(putObjectRequest)) {
             result = writeObjectInternal(WriteMode.OVERWRITE, putObjectRequest, putObjectReponseParser);
         } else {
-            result = writeObjectInternal(WriteMode.OVERWRITE, putObjectRequest, putObjectCallbackReponseParser);
+            result = writeObjectInternal(WriteMode.OVERWRITE, putObjectRequest, putObjectProcessReponseParser);
         }
         
         if (isCrcCheckEnabled()) {
@@ -180,7 +180,7 @@ public class OSSObjectOperation extends OSSOperation {
         if (requestHeaders.get(OSSHeaders.OSS_HEADER_CALLBACK) == null) {
             result = doOperation(request, putObjectReponseParser, null, null, true);    
         } else {
-            result = doOperation(request, putObjectCallbackReponseParser, null, null, true);    
+            result = doOperation(request, putObjectProcessReponseParser, null, null, true);    
         }
         
         if (isCrcCheckEnabled()) {
@@ -254,6 +254,7 @@ public class OSSObjectOperation extends OSSOperation {
                     .setHeaders(headers)
                     .setParameters(params)
                     .setOriginalRequest(getObjectRequest)
+                    .setSignatureFields(getObjectRequest.getSignatureFields())
                     .build();
         } else {
             request = new RequestMessage(getObjectRequest);
@@ -777,6 +778,7 @@ public class OSSObjectOperation extends OSSOperation {
                 .setInputStream(repeatableInputStream)
                 .setInputSize(determineInputStreamLength(repeatableInputStream, metadata.getContentLength()))
                 .setOriginalRequest(originalRequest)
+                .setSignatureFields(originalRequest.getSignatureFields())
                 .build();
         
         List<ResponseHandler> reponseHandlers = new ArrayList<ResponseHandler>();
@@ -899,4 +901,12 @@ public class OSSObjectOperation extends OSSOperation {
             params.put(RequestParameters.POSITION, String.valueOf(appendObjectRequest.getPosition()));            
         }
     }
+    
+    private static boolean isNeedReturnResponse(PutObjectRequest putObjectRequest) {
+    	if (putObjectRequest.getCallback() != null || putObjectRequest.getProcess() != null) {
+    		return true;
+    	}
+    	return false;
+    }
+    
 }

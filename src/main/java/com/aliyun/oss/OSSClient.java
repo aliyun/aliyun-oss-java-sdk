@@ -27,10 +27,6 @@ import static com.aliyun.oss.internal.OSSConstants.DEFAULT_OSS_ENDPOINT;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
 import static com.aliyun.oss.internal.OSSUtils.populateResponseHeaderParameters;
-import static com.aliyun.oss.internal.RequestParameters.OSS_ACCESS_KEY_ID;
-import static com.aliyun.oss.internal.RequestParameters.SECURITY_TOKEN;
-import static com.aliyun.oss.internal.RequestParameters.SIGNATURE;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -86,6 +82,7 @@ import com.aliyun.oss.model.BucketLoggingResult;
 import com.aliyun.oss.model.BucketProcess;
 import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.BucketReplicationProgress;
+import com.aliyun.oss.model.BucketStat;
 import com.aliyun.oss.model.BucketWebsiteResult;
 import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.CnameConfiguration;
@@ -153,6 +150,7 @@ import com.aliyun.oss.model.SetBucketTaggingRequest;
 import com.aliyun.oss.model.SetBucketWebsiteRequest;
 import com.aliyun.oss.model.SetLiveChannelRequest;
 import com.aliyun.oss.model.SetObjectAclRequest;
+import com.aliyun.oss.model.SignatureVersion;
 import com.aliyun.oss.model.SimplifiedObjectMeta;
 import com.aliyun.oss.model.Style;
 import com.aliyun.oss.model.TagSet;
@@ -814,22 +812,35 @@ public class OSSClient implements OSS {
         	requestMessage.addParameter(RequestParameters.SUBRESOURCE_PROCESS, request.getProcess());
         }
         
-        if (useSecurityToken) {
-            requestMessage.addParameter(SECURITY_TOKEN, currentCreds.getSecurityToken());
-        }
-
+        /* Signature */
         String canonicalResource = "/" + ((bucketName != null) ? bucketName : "") 
                 + ((key != null ? "/" + key : ""));
-        String canonicalString = SignUtils.buildCanonicalString(method.toString(), canonicalResource, 
-                requestMessage, expires);
-        String signature = ServiceSignature.create().computeSignature(accessKey, canonicalString);
-
         Map<String, String> params = new LinkedHashMap<String, String>();
-        params.put(HttpHeaders.EXPIRES, expires);
-        params.put(OSS_ACCESS_KEY_ID, accessId);
-        params.put(SIGNATURE, signature);
+        SignatureVersion signVersion = this.getClientConfiguration().getSignVersion();
+        if (signVersion == SignatureVersion.V1) {
+            if (useSecurityToken) {
+                requestMessage.addParameter(RequestParameters.SECURITY_TOKEN, currentCreds.getSecurityToken());
+            }
+            String canonicalString = SignUtils.buildCanonicalString(method.toString(), canonicalResource, requestMessage);
+            String signature = ServiceSignature.create().computeSignature(accessKey, canonicalString);
+            params.put(RequestParameters.EXPIRES, expires);
+            params.put(RequestParameters.OSS_ACCESS_KEY_ID, accessId);
+            params.put(RequestParameters.SIGNATURE, signature);
+        } else if (signVersion == SignatureVersion.V2) {
+            if (useSecurityToken) {
+            	params.put(RequestParameters.SECURITY_TOKEN_V2, currentCreds.getSecurityToken());
+            }
+            params.put(RequestParameters.EXPIRES_V2, expires);
+            params.put(RequestParameters.OSS_ACCESS_KEY_ID_V2, accessId);
+            params.put(RequestParameters.OSS_SIGNATURE_VERSION_V2, "OSS2");
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                requestMessage.addParameter(entry.getKey(), entry.getValue());
+            }
+            String canonicalString = SignUtils.buildCanonicalStringV2(method.toString(), canonicalResource, requestMessage);
+            String signature = ServiceSignature.createV2().computeSignature(accessKey, canonicalString);
+            params.put(RequestParameters.SIGNATURE_V2, signature);
+        }
         params.putAll(requestMessage.getParameters());
-
         String queryString = HttpUtil.paramToQueryString(params, DEFAULT_CHARSET_NAME);
 
         /* Compse HTTP request uri. */
@@ -1269,6 +1280,18 @@ public class OSSClient implements OSS {
     public BucketInfo getBucketInfo(GenericRequest genericRequest)
             throws OSSException, ClientException {
         return this.bucketOperation.getBucketInfo(genericRequest);
+    }
+    
+    @Override
+    public BucketStat getBucketStat(String bucketName)
+            throws OSSException, ClientException {
+    	return this.getBucketStat(new GenericRequest(bucketName));
+    }
+    
+    @Override
+    public BucketStat getBucketStat(GenericRequest genericRequest)
+            throws OSSException, ClientException {
+    	return this.bucketOperation.getBucketStat(genericRequest);
     }
     
     @Override

@@ -45,9 +45,9 @@ public class OSSRequestSigner implements RequestSigner {
         String secretAccessKey = creds.getSecretAccessKey();
 
         if (accessKeyId.length() > 0 && secretAccessKey.length() > 0) {
-            String canonicalString = SignUtils.buildCanonicalString(httpMethod, resourcePath, request, null);
+            String canonicalString = SignUtils.buildCanonicalString(httpMethod, resourcePath, request);
             String signature = ServiceSignature.create().computeSignature(secretAccessKey, canonicalString);
-            request.addHeader(OSSHeaders.AUTHORIZATION, OSSUtils.composeRequestAuthorization(accessKeyId, signature));
+            request.addHeader(OSSHeaders.AUTHORIZATION, SignUtils.composeRequestAuthorization(accessKeyId, signature));
         } 
     }
 }

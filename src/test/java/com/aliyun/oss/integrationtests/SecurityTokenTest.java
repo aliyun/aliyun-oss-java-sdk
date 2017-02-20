@@ -70,7 +70,8 @@ public class SecurityTokenTest {
     private static final String DUMMY_SUFFIX = "xyz";
     private static final String STS_USER = "sts";
 
-    @Test
+    @SuppressWarnings("deprecation")
+	@Test
     public void testBucketOperationsWithToken() {
         List<String> actions = new ArrayList<String>();
         actions.add("oss:ListBuckets");

@@ -19,6 +19,8 @@
 
 package com.aliyun.oss.model;
 
+import com.aliyun.oss.common.comm.ResponseMessage;
+
 /**
  * A generic result that contains some basic response options, such as requestId.
  */
@@ -48,7 +50,16 @@ public abstract class GenericResult {
         this.serverCRC = serverCRC;
     }
     
+	public ResponseMessage getResponse() {
+		return response;
+	}
+
+	public void setResponse(ResponseMessage response) {
+		this.response = response;
+	}
+	
     private String requestId;
     private Long clientCRC;
     private Long serverCRC;
+    ResponseMessage response;
 }

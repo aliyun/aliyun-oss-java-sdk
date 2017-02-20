@@ -32,12 +32,13 @@ import com.aliyun.oss.common.comm.Protocol;
 import com.aliyun.oss.common.utils.ResourceManager;
 import com.aliyun.oss.common.utils.VersionInfoUtils;
 import com.aliyun.oss.internal.OSSConstants;
+import com.aliyun.oss.model.SignatureVersion;
 
 /**
  * Client configurations for accessing to OSS services.
  */
 public class ClientConfiguration {
-
+	
     private static final String DEFAULT_USER_AGENT = VersionInfoUtils.getDefaultUserAgent();
     
     private static final int DEFAULT_MAX_RETRIES = 3;
@@ -89,8 +90,10 @@ public class ClientConfiguration {
     private Map<String, String> defaultHeaders = new LinkedHashMap<String, String>();
 
     private boolean crcCheckEnabled = true;
+    
+    private SignatureVersion signVersion = SignatureVersion.V1;
 
-    /**
+	/**
      * 构造用户代理。
      * @return 用户代理。
      */
@@ -539,4 +542,11 @@ public class ClientConfiguration {
         this.crcCheckEnabled = crcCheckEnabled;
     }
     
+    public SignatureVersion getSignVersion() {
+		return signVersion;
+	}
+
+	public void setSignVersion(SignatureVersion signVersion) {
+		this.signVersion = signVersion;
+	}
 }

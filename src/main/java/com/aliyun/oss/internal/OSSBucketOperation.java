@@ -64,6 +64,7 @@ import static com.aliyun.oss.internal.ResponseParsers.getBucketReplicationProgre
 import static com.aliyun.oss.internal.ResponseParsers.getBucketReplicationLocationResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketCnameResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketInfoResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getBucketStatResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketQosResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.listBucketResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.listObjectsReponseParser;
@@ -95,6 +96,7 @@ import com.aliyun.oss.model.BucketLoggingResult;
 import com.aliyun.oss.model.BucketProcess;
 import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.BucketReplicationProgress;
+import com.aliyun.oss.model.BucketStat;
 import com.aliyun.oss.model.BucketWebsiteResult;
 import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.CnameConfiguration;
@@ -1209,6 +1211,29 @@ public class OSSBucketOperation extends OSSOperation {
                 .build();
         
         return doOperation(request, getBucketInfoResponseParser, bucketName, null, true);
+    }
+    
+    public BucketStat getBucketStat(GenericRequest genericRequest)
+            throws OSSException, ClientException {
+        
+        assertParameterNotNull(genericRequest, "genericRequest");
+        
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_STAT, null);
+        
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET)
+                .setBucket(bucketName)
+                .setParameters(params)
+                .setOriginalRequest(genericRequest)
+                .build();
+        
+        return doOperation(request, getBucketStatResponseParser, bucketName, null, true);
     }
     
     public void setBucketStorageCapacity(SetBucketStorageCapacityRequest setBucketStorageCapacityRequest)

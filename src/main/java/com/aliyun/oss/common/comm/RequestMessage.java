@@ -23,6 +23,8 @@ import java.net.URI;
 import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.model.WebServiceRequest;
@@ -55,8 +57,11 @@ public class RequestMessage extends HttpMesssage {
     
     /* The original request provided by user */
     private final WebServiceRequest originalRequest;
+    
+    /* The fields specified to signature */
+    private Set<String> signatureFields = new TreeSet<String>();
 
-    public RequestMessage() {
+	public RequestMessage() {
         this(null);
     }
     
@@ -148,5 +153,18 @@ public class RequestMessage extends HttpMesssage {
     public WebServiceRequest getOriginalRequest() {
         return originalRequest;
     }
+    
+    public Set<String> getSignatureFields() {
+		return signatureFields;
+	}
 
+	public void setSignatureFields(Set<String> signatureFields) {
+		if (signatureFields != null) {
+			this.signatureFields = signatureFields;
+		}
+	}
+	
+	public void addSignatureField(String signatureField) {
+		this.signatureFields.add(signatureField);
+	}
 }

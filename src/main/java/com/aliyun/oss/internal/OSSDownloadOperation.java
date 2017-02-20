@@ -46,6 +46,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import com.aliyun.oss.ClientException;
 import com.aliyun.oss.model.DownloadFileRequest;
 import com.aliyun.oss.model.DownloadFileResult;
 import com.aliyun.oss.model.GenericRequest;
@@ -341,6 +342,11 @@ public class OSSDownloadOperation {
             }
         }
         
+        // 重命名临时文件
+        if (!rename(downloadFileRequest.getTempDownloadFile(), downloadFileRequest.getDownloadFile())) {
+        	throw new ClientException("Remove file failed:" + downloadFileRequest.getDownloadFile());
+        }
+        
         // 开启了断点下载，成功上传后删除checkpoint文件
         if (downloadFileRequest.isEnableCheckpoint()) {
             remove(downloadFileRequest.getCheckpointFile());
@@ -360,7 +366,7 @@ public class OSSDownloadOperation {
         downloadCheckPoint.downloadParts = splitFile(downloadCheckPoint.objectStat.size, 
                 downloadFileRequest.getPartSize());
         
-        createFixedFile(downloadFileRequest.getDownloadFile(), downloadCheckPoint.objectStat.size);
+        createFixedFile(downloadFileRequest.getTempDownloadFile(), downloadCheckPoint.objectStat.size);
     }
     
     public static void createFixedFile(String filePath, long length) throws IOException {
@@ -445,7 +451,7 @@ public class OSSDownloadOperation {
                 DownloadPart downloadPart = downloadCheckPoint.downloadParts.get(partIndex);
                 tr = new PartResult(partIndex + 1, downloadPart.start, downloadPart.end);
                 
-                output = new RandomAccessFile(downloadFileRequest.getDownloadFile(), "rw");  
+                output = new RandomAccessFile(downloadFileRequest.getTempDownloadFile(), "rw");  
                 output.seek(downloadPart.start);
 
                 GetObjectRequest getObjectRequest = new GetObjectRequest(downloadFileRequest.getBucketName(),
@@ -539,5 +545,11 @@ public class OSSDownloadOperation {
         return flag;  
     }
     
+    private boolean rename(String oldFilePath, String newFilePath) {
+        File oldfile =new File(oldFilePath);
+        File newfile =new File(newFilePath);
+        return oldfile.renameTo(newfile);
+    }
+        
     private OSSObjectOperation objectOperation;
 }
