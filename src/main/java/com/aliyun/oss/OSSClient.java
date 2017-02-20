@@ -86,6 +86,7 @@ import com.aliyun.oss.model.BucketLoggingResult;
 import com.aliyun.oss.model.BucketProcess;
 import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.BucketReplicationProgress;
+import com.aliyun.oss.model.BucketStat;
 import com.aliyun.oss.model.BucketWebsiteResult;
 import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.CnameConfiguration;
@@ -1269,6 +1270,18 @@ public class OSSClient implements OSS {
     public BucketInfo getBucketInfo(GenericRequest genericRequest)
             throws OSSException, ClientException {
         return this.bucketOperation.getBucketInfo(genericRequest);
+    }
+    
+    @Override
+    public BucketStat getBucketStat(String bucketName)
+            throws OSSException, ClientException {
+    	return this.getBucketStat(new GenericRequest(bucketName));
+    }
+    
+    @Override
+    public BucketStat getBucketStat(GenericRequest genericRequest)
+            throws OSSException, ClientException {
+    	return this.bucketOperation.getBucketStat(genericRequest);
     }
     
     @Override

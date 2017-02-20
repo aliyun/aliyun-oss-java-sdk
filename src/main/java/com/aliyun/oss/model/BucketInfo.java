@@ -34,6 +34,7 @@ public class BucketInfo {
         this.bucket = bucket;
     }
 
+    @Deprecated
     public Set<Grant> getGrants() {
         return this.grants;
     }
@@ -45,8 +46,16 @@ public class BucketInfo {
         
         grants.add(new Grant(grantee, permission));
     }
+    
+	public CannedAccessControlList getCannedACL() {
+		return cannedACL;
+	}
+
+	public void setCannedACL(CannedAccessControlList cannedACL) {
+		this.cannedACL = cannedACL;
+	}
 
     private Bucket bucket;
     private Set<Grant> grants = new HashSet<Grant>();
-
+    private CannedAccessControlList cannedACL;
 }

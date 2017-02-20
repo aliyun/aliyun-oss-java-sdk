@@ -152,8 +152,8 @@ public abstract class OSSOperation {
             return parser.parse(response);
         } catch (ResponseParseException rpe) {
             OSSException oe = ExceptionFactory.createInvalidResponseException(
-                    response.getRequestId(), response.getErrorResponseAsString(), rpe);
-            logException("Unable to parse response error: ", oe);
+                    response.getRequestId(), rpe.getMessage(), rpe);
+            logException("Unable to parse response error: ", rpe);
             throw oe;
         }
     }

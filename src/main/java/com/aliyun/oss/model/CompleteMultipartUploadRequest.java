@@ -38,6 +38,9 @@ public class CompleteMultipartUploadRequest extends GenericRequest {
     
     /** callback */
     private Callback callback;
+    
+    /** process **/
+    private String process;
 
     /**
      * 构造函数。
@@ -116,4 +119,11 @@ public class CompleteMultipartUploadRequest extends GenericRequest {
         this.callback = callback;
     }
     
+    public String getProcess() {
+		return process;
+	}
+
+	public void setProcess(String process) {
+		this.process = process;
+	}
 }

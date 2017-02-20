@@ -82,7 +82,7 @@ public class OSSUtils {
      */
     public static boolean validateObjectKey(String key) {
         
-        if (key == null) {
+        if (key == null || key.length() == 0) {
             return false;
         }
         
@@ -222,22 +222,26 @@ public class OSSUtils {
         Map<String, Object> rawMetadata = metadata.getRawMetadata();
         if (rawMetadata != null) {
             for (Entry<String, Object> entry : rawMetadata.entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue().toString();
-                if (key != null) key = key.trim();
-                if (value != null) value = value.trim();
-                headers.put(key, value);
+            	if (entry.getKey() != null && entry.getValue() != null) {
+					String key = entry.getKey();
+					String value = entry.getValue().toString();
+					if (key != null) key = key.trim();
+					if (value != null) value = value.trim();
+					headers.put(key, value);
+            	}
             }
         }
 
         Map<String, String> userMetadata = metadata.getUserMetadata();
         if (userMetadata != null) {
             for (Entry<String, String> entry : userMetadata.entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue();
-                if (key != null) key = key.trim();
-                if (value != null) value = value.trim();
-                headers.put(OSSHeaders.OSS_USER_METADATA_PREFIX + key, value);
+            	if (entry.getKey() != null && entry.getValue() != null) {
+	                String key = entry.getKey();
+	                String value = entry.getValue();
+	                if (key != null) key = key.trim();
+	                if (value != null) value = value.trim();
+	                headers.put(OSSHeaders.OSS_USER_METADATA_PREFIX + key, value);
+            	}
             }
         }
     }

@@ -147,6 +147,7 @@ ez    application/andrew-inset
 gram    application/srgs
 grxml    application/srgs+xml
 gz    application/x-gzip
+tgz   application/x-gzip
 htm    text/html
 html    text/html
 ico    image/x-icon

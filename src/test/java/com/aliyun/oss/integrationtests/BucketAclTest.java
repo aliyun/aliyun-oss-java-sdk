@@ -35,6 +35,7 @@ import com.aliyun.oss.model.Grant;
 import com.aliyun.oss.model.GroupGrantee;
 import com.aliyun.oss.model.Permission;
 
+@SuppressWarnings("deprecation")
 public class BucketAclTest extends TestBase {
 
     private static final CannedAccessControlList[] acls = {
@@ -67,6 +68,10 @@ public class BucketAclTest extends TestBase {
                         Assert.assertEquals(GroupGrantee.AllUsers, grant.getGrantee());
                         Assert.assertEquals(Permission.FullControl, grant.getPermission());
                     }
+                }
+                
+                if (acl != null ) {
+                    Assert.assertEquals(returnedAcl.getCannedACL(), acl);
                 }
             }
             

@@ -30,6 +30,7 @@ public class PutObjectRequest extends GenericRequest {
     private ObjectMetadata metadata;
     
     private Callback callback;
+    private String process;
 
     public PutObjectRequest(String bucketName, String key, File file) {
         this(bucketName, key, file, null);
@@ -83,4 +84,11 @@ public class PutObjectRequest extends GenericRequest {
         this.callback = callback;
     }
     
+    public String getProcess() {
+		return process;
+	}
+
+	public void setProcess(String process) {
+		this.process = process;
+	}
 }
