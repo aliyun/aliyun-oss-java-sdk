@@ -27,11 +27,13 @@ import static com.aliyun.oss.internal.OSSUtils.ensureObjectKeyValid;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -46,7 +48,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import com.aliyun.oss.ClientException;
 import com.aliyun.oss.model.DownloadFileRequest;
 import com.aliyun.oss.model.DownloadFileResult;
 import com.aliyun.oss.model.GenericRequest;
@@ -343,9 +344,7 @@ public class OSSDownloadOperation {
         }
         
         // 重命名临时文件
-        if (!rename(downloadFileRequest.getTempDownloadFile(), downloadFileRequest.getDownloadFile())) {
-        	throw new ClientException("Remove file failed:" + downloadFileRequest.getDownloadFile());
-        }
+        renameTo(downloadFileRequest.getTempDownloadFile(), downloadFileRequest.getDownloadFile());
         
         // 开启了断点下载，成功上传后删除checkpoint文件
         if (downloadFileRequest.isEnableCheckpoint()) {
@@ -545,11 +544,59 @@ public class OSSDownloadOperation {
         return flag;  
     }
     
-    private boolean rename(String oldFilePath, String newFilePath) {
-        File oldfile =new File(oldFilePath);
-        File newfile =new File(newFilePath);
-        return oldfile.renameTo(newfile);
+    private static void renameTo(String srcFilePath, String destFilePath) throws IOException {
+        File srcfile =new File(srcFilePath);
+        File destfile =new File(destFilePath);
+        moveFile(srcfile, destfile);
     }
+    
+	private static void moveFile(final File srcFile, final File destFile) throws IOException {
+		if (srcFile == null) {
+			throw new NullPointerException("Source must not be null");
+		}
+		if (destFile == null) {
+			throw new NullPointerException("Destination must not be null");
+		}
+		if (!srcFile.exists()) {
+			throw new FileNotFoundException("Source '" + srcFile + "' does not exist");
+		}
+		if (srcFile.isDirectory()) {
+			throw new IOException("Source '" + srcFile + "' is a directory");
+		}
+		if (destFile.isDirectory()) {
+			throw new IOException("Destination '" + destFile + "' is a directory");
+		}
+		if (destFile.exists()) {
+			if (!destFile.delete()) {
+				throw new IOException("Failed to delete original file '" + srcFile + "'");
+			}
+		}
+
+		final boolean rename = srcFile.renameTo(destFile);
+		if (!rename) {
+			copyFile(srcFile, destFile);
+			if (!srcFile.delete()) {
+				throw new IOException("Failed to delete original file '" + srcFile + "' after copy to '" + destFile + "'");
+			}
+		}
+	}
+        
+	private static void copyFile(File source, File dest) throws IOException {
+		InputStream is = null;
+		OutputStream os = null;
+		try {
+			is = new FileInputStream(source);
+			os = new FileOutputStream(dest);
+			byte[] buffer = new byte[4096];
+			int length;
+			while ((length = is.read(buffer)) > 0) {
+				os.write(buffer, 0, length);
+			}
+		} finally {
+			is.close();
+			os.close();
+		}
+	}
         
     private OSSObjectOperation objectOperation;
 }
