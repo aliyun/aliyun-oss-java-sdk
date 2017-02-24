@@ -6,7 +6,7 @@
 The Aliyun OSS SDK for Java enables Java developers to easily work with Aliyun OSS. You can get started in minutes using ***Maven*** or by downloading a [single zip file](https://help.aliyun.com/document_detail/32170.html).
 
 - [SDK Homepage](https://help.aliyun.com/document_detail/32008.html)
-- [API Docs](https://help.aliyun.com/document_detail/31947.html)
+- [API Docs](https://gosspublic.alicdn.com/AliyunJavaSDK/latest/javadoc/index.html)
 - [Developer Guide](https://help.aliyun.com/document_detail/31827.html)
 - [Issues](https://github.com/aliyun/aliyun-oss-java-sdk/issues)
 - [Release](https://github.com/aliyun/aliyun-oss-java-sdk/releases)
@@ -24,7 +24,7 @@ The recommended way to use the Aliyun OSS SDK for Java in your project is to con
 <dependency>
     <groupId>com.aliyun.oss</groupId>
     <artifactId>aliyun-sdk-oss</artifactId>
-    <version>2.4.0</version>
+    <version>2.5.0</version>
 </dependency>
 ```
 
