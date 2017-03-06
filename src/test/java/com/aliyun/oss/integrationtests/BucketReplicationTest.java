@@ -22,7 +22,6 @@ package com.aliyun.oss.integrationtests;
 import static com.aliyun.oss.integrationtests.TestConfig.OSS_TEST_REPLICATION_ENDPOINT;
 import static com.aliyun.oss.integrationtests.TestConfig.OSS_TEST_REPLICATION_ACCESS_KEY_ID;
 import static com.aliyun.oss.integrationtests.TestConfig.OSS_TEST_REPLICATION_ACCESS_KEY_SECRET;
-
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,7 +49,7 @@ import com.aliyun.oss.model.AddBucketReplicationRequest;
 @Ignore
 public class BucketReplicationTest extends TestBase {
     protected static OSSClient replicationClient;
-    final static String targetBucketName = "java-sdk-test-qd-15";
+    final static String targetBucketName = "java-sdk-test-qd-32";
     final String targetBucketLoc = "oss-cn-qingdao";
     
     @BeforeClass
@@ -127,7 +126,7 @@ public class BucketReplicationTest extends TestBase {
             e.printStackTrace();
             Assert.fail(e.getMessage());
         } finally {
-            ossClient.deleteBucket(bucketName);
+            //ossClient.deleteBucket(bucketName);
         }
     }
     
