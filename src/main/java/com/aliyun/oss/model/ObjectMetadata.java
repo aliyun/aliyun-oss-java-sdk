@@ -118,7 +118,8 @@ public class ObjectMetadata {
      * @throws ParseException 无法将Expires解析为Rfc822格式，抛出该异常。
      */
     public Date getExpirationTime() throws ParseException {
-        return DateUtil.parseRfc822Date((String)metadata.get(OSSHeaders.EXPIRES));
+        String expiresValue = getRawExpiresValue();
+        return expiresValue == null ? null : DateUtil.parseRfc822Date(expiresValue);
     }
     
     /**
