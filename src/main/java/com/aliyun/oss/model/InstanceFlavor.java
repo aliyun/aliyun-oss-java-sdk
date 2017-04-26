@@ -20,48 +20,39 @@
 package com.aliyun.oss.model;
 
 /**
- * 存储类型。
+ * Instance Flavor
+ * 
+ * Udf Applacation的运行环境，详见请参看ECS。
+ * 
  */
-public enum StorageClass {
+public class InstanceFlavor {
     
-    /**
-     * Standard
-     */
-    Standard("Standard"),
+    public static final String DEFAULT_INSTANCE_TYPE = "ecs.n1.small";
+    public static final String DEFAULT_IO_OPTIMIZED = "optimized";
     
-    /**
-     * Infrequent Access
-     */
-    IA("IA"),
+    public InstanceFlavor(String instanceType, String ioOptimized) {
+        this.instanceType = instanceType;
+        this.ioOptimized = ioOptimized;
+    }
     
-    /**
-     * Archive
-     */
-    Archive("Archive"),
-    
-    /**
-     * Unknown
-     */
-    Unknown("Unknown");
-
-    private String storageClassString;
-    
-    private StorageClass(String storageClassString){
-        this.storageClassString = storageClassString;
+    public String getInstanceType() {
+        return instanceType;
     }
 
+    public String getIoOptimized() {
+        return ioOptimized;
+    }
+
+    public void setIoOptimized(String ioOptimized) {
+        this.ioOptimized = ioOptimized;
+    }
+    
     @Override
     public String toString() {
-        return this.storageClassString;
+        return "InstanceFlavor [instanceType=" + instanceType + ", ioOptimized=" + ioOptimized + "]";
     }
+
+    private String instanceType;
+    private String ioOptimized;
     
-    public static StorageClass parse(String storageClassString) {
-        for(StorageClass st : StorageClass.values()) {
-            if (st.toString().equals(storageClassString)) {
-                return st;
-            }
-        }
-        
-        throw new IllegalArgumentException("Unable to parse " + storageClassString);
-    }
 }

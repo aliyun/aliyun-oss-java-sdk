@@ -17,22 +17,23 @@
  * under the License.
  */
 
-package com.aliyun.oss.common.utils;
+package com.aliyun.oss.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-
-public class VersionUtilTest {
-    @Test
-    public void testGetDefaultUserAgent() { 
-        String userAgent = VersionInfoUtils.getDefaultUserAgent();
-        assertTrue(userAgent.startsWith("aliyun-sdk-java/2.6.0("));
-        assertEquals(userAgent.split("/").length, 4);
-        assertEquals(userAgent.split(";").length, 2);
-        assertEquals(userAgent.split("\\(").length, 2);
-        assertEquals(userAgent.split("\\)").length, 1);
+public class UpgradeUdfApplicationRequest extends UdfGenericRequest {
+    
+    public UpgradeUdfApplicationRequest(String udfName, Integer imageVersion) {
+        super(udfName);
+        this.imageVersion = imageVersion;
     }
-}
 
+    public Integer getImageVersion() {
+        return imageVersion;
+    }
+
+    public void setImageVersion(Integer imageVersion) {
+        this.imageVersion = imageVersion;
+    }
+
+    private Integer imageVersion;
+    
+}

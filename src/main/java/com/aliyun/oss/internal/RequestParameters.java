@@ -51,6 +51,14 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_PROCESS = "x-oss-process";
     public static final String SUBRESOURCE_SYMLINK = "symlink"; 
     public static final String SUBRESOURCE_STAT = "stat";
+    public static final String SUBRESOURCE_RESTORE = "restore"; 
+    
+    public static final String SUBRESOURCE_UDF = "udf";
+    public static final String SUBRESOURCE_UDF_NAME = "udfName";
+    public static final String SUBRESOURCE_UDF_IMAGE = "udfImage";
+    public static final String SUBRESOURCE_UDF_IMAGE_DESC = "udfImageDesc";
+    public static final String SUBRESOURCE_UDF_APPLICATION = "udfApplication";
+    public static final String SUBRESOURCE_UDF_LOG = "udfApplicationLog";
     
     public static final String PREFIX = "prefix";
     public static final String DELIMITER = "delimiter";
@@ -78,9 +86,14 @@ public final class RequestParameters {
     
     public static final String COMP_ADD = "add";
     public static final String COMP_DELETE = "delete";
+    public static final String COMP_CREATE = "create";
+    public static final String COMP_UPGRADE = "upgrade";
+    public static final String COMP_RESIZE = "resize";
     
     public static final String STAT = "stat";
     public static final String HISTORY = "history";
     public static final String PLAYLIST_NAME = "playlistName";
+    public static final String SINCE = "since";
+    public static final String TAIL = "tail";
     
 }

@@ -1,3 +1,5 @@
+package com.aliyun.oss.model;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,22 +19,29 @@
  * under the License.
  */
 
-package com.aliyun.oss.common.utils;
+/**
+ * A generic request that contains some basic request options, such as
+ * udf name and so on.
+ */
+public class UdfGenericRequest extends WebServiceRequest {
+        
+    public UdfGenericRequest() {
+		super();
+	}
+    
+	public UdfGenericRequest(String name) {
+		super();
+		this.name = name;
+	}
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+	public String getName() {
+		return name;
+	}
 
-import org.junit.Test;
+	public void setName(String name) {
+		this.name = name;
+	}
 
-public class VersionUtilTest {
-    @Test
-    public void testGetDefaultUserAgent() { 
-        String userAgent = VersionInfoUtils.getDefaultUserAgent();
-        assertTrue(userAgent.startsWith("aliyun-sdk-java/2.6.0("));
-        assertEquals(userAgent.split("/").length, 4);
-        assertEquals(userAgent.split(";").length, 2);
-        assertEquals(userAgent.split("\\(").length, 2);
-        assertEquals(userAgent.split("\\)").length, 1);
-    }
+	private String name;
+
 }
-

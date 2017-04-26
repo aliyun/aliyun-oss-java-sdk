@@ -27,8 +27,12 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
+import com.aliyun.oss.common.auth.Credentials;
+import com.aliyun.oss.common.auth.DefaultCredentialProvider;
+import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.model.AccessControlList;
 import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.Grant;
@@ -155,6 +159,20 @@ public class BucketAclTest extends TestBase {
             Assert.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketUsingDefaultAcl);
+        }
+    }
+    
+    @Test
+    public void testUnormalDoesBucketExist() {
+        final String nonexistentBucket = "unormal-does-bucket-exist";
+        
+        try {
+            Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
+            OSSClient ossClient = new OSSClient("http://oss-cn-taikang.aliyuncs.com", new DefaultCredentialProvider(credentials));
+            ossClient.doesBucketExist(nonexistentBucket);
+            Assert.fail("Does bucket exist should not be successful");
+        } catch (Exception e) {
+            Assert.assertEquals("UnknownHost", e.getMessage());
         }
     }
         

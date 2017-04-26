@@ -244,4 +244,8 @@ public interface OSSErrorCode {
      */
     static final String NO_SUCH_SYM_LINK_TARGET = "SymlinkTargetNotExist";
     
+    /**
+     * 冷文件没有预热直接使用。
+     */
+    static final String INVALID_OBJECT_STATE = "InvalidObjectState"; 
 }

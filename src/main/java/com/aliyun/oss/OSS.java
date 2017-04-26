@@ -28,97 +28,8 @@ import java.util.Map;
 
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.comm.ResponseMessage;
-import com.aliyun.oss.model.AbortMultipartUploadRequest;
-import com.aliyun.oss.model.AccessControlList;
-import com.aliyun.oss.model.AppendObjectRequest;
-import com.aliyun.oss.model.AppendObjectResult;
-import com.aliyun.oss.model.Bucket;
-import com.aliyun.oss.model.BucketInfo;
-import com.aliyun.oss.model.BucketList;
-import com.aliyun.oss.model.BucketLoggingResult;
-import com.aliyun.oss.model.BucketProcess;
-import com.aliyun.oss.model.BucketReferer;
-import com.aliyun.oss.model.BucketReplicationProgress;
-import com.aliyun.oss.model.BucketStat;
-import com.aliyun.oss.model.BucketWebsiteResult;
-import com.aliyun.oss.model.CannedAccessControlList;
-import com.aliyun.oss.model.CnameConfiguration;
-import com.aliyun.oss.model.CompleteMultipartUploadRequest;
-import com.aliyun.oss.model.CompleteMultipartUploadResult;
-import com.aliyun.oss.model.CopyObjectRequest;
-import com.aliyun.oss.model.CopyObjectResult;
-import com.aliyun.oss.model.CreateBucketRequest;
-import com.aliyun.oss.model.CreateLiveChannelRequest;
-import com.aliyun.oss.model.CreateLiveChannelResult;
-import com.aliyun.oss.model.CreateSymlinkRequest;
-import com.aliyun.oss.model.DeleteBucketCnameRequest;
-import com.aliyun.oss.model.DeleteBucketReplicationRequest;
-import com.aliyun.oss.model.DeleteObjectsRequest;
-import com.aliyun.oss.model.DeleteObjectsResult;
-import com.aliyun.oss.model.DownloadFileRequest;
-import com.aliyun.oss.model.DownloadFileResult;
-import com.aliyun.oss.model.GeneratePresignedUrlRequest;
-import com.aliyun.oss.model.GenerateRtmpUriRequest;
-import com.aliyun.oss.model.GenerateVodPlaylistRequest;
-import com.aliyun.oss.model.GenericRequest;
-import com.aliyun.oss.model.GetBucketImageResult;
-import com.aliyun.oss.model.GetBucketReplicationProgressRequest;
-import com.aliyun.oss.model.ListLiveChannelsRequest;
-import com.aliyun.oss.model.LiveChannel;
-import com.aliyun.oss.model.LiveChannelGenericRequest;
-import com.aliyun.oss.model.LiveChannelInfo;
-import com.aliyun.oss.model.LiveChannelListing;
-import com.aliyun.oss.model.LiveChannelStat;
-import com.aliyun.oss.model.LiveChannelStatus;
-import com.aliyun.oss.model.LiveRecord;
-import com.aliyun.oss.model.OSSSymlink;
-import com.aliyun.oss.model.ReplicationRule;
-import com.aliyun.oss.model.GetImageStyleResult;
-import com.aliyun.oss.model.GetObjectRequest;
-import com.aliyun.oss.model.HeadObjectRequest;
-import com.aliyun.oss.model.InitiateMultipartUploadRequest;
-import com.aliyun.oss.model.InitiateMultipartUploadResult;
-import com.aliyun.oss.model.LifecycleRule;
-import com.aliyun.oss.model.ListBucketsRequest;
-import com.aliyun.oss.model.ListMultipartUploadsRequest;
-import com.aliyun.oss.model.ListObjectsRequest;
-import com.aliyun.oss.model.ListPartsRequest;
-import com.aliyun.oss.model.MultipartUploadListing;
-import com.aliyun.oss.model.OSSObject;
-import com.aliyun.oss.model.ObjectAcl;
-import com.aliyun.oss.model.ObjectListing;
-import com.aliyun.oss.model.ObjectMetadata;
-import com.aliyun.oss.model.OptionsRequest;
-import com.aliyun.oss.model.PartListing;
-import com.aliyun.oss.model.PolicyConditions;
-import com.aliyun.oss.model.PutBucketImageRequest;
-import com.aliyun.oss.model.PutImageStyleRequest;
-import com.aliyun.oss.model.PutObjectRequest;
-import com.aliyun.oss.model.PutObjectResult;
-import com.aliyun.oss.model.SetBucketAclRequest;
-import com.aliyun.oss.model.SetBucketCORSRequest;
-import com.aliyun.oss.model.AddBucketCnameRequest;
-import com.aliyun.oss.model.SetBucketProcessRequest;
-import com.aliyun.oss.model.SetBucketRefererRequest;
-import com.aliyun.oss.model.AddBucketReplicationRequest;
-import com.aliyun.oss.model.SetBucketStorageCapacityRequest;
-import com.aliyun.oss.model.SetBucketTaggingRequest;
-import com.aliyun.oss.model.SetLiveChannelRequest;
-import com.aliyun.oss.model.SetObjectAclRequest;
-import com.aliyun.oss.model.SimplifiedObjectMeta;
-import com.aliyun.oss.model.TagSet;
-import com.aliyun.oss.model.Style;
-import com.aliyun.oss.model.UploadFileRequest;
-import com.aliyun.oss.model.UploadFileResult;
+import com.aliyun.oss.model.*;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
-import com.aliyun.oss.model.SetBucketLifecycleRequest;
-import com.aliyun.oss.model.SetBucketLoggingRequest;
-import com.aliyun.oss.model.SetBucketWebsiteRequest;
-import com.aliyun.oss.model.UploadPartCopyRequest;
-import com.aliyun.oss.model.UploadPartCopyResult;
-import com.aliyun.oss.model.UploadPartRequest;
-import com.aliyun.oss.model.UploadPartResult;
-import com.aliyun.oss.model.UserQos;
 
 /**
  * 阿里云对象存储服务（Object Storage Service， OSS）的访问接口。
@@ -733,6 +644,23 @@ public interface OSS {
      *             请求信息。
      */
     public ObjectAcl getObjectAcl(GenericRequest genericRequest)
+            throws OSSException, ClientException;
+
+    /**
+     * 唤醒冷化后的数据
+     * @param bucketName Bucket名称。
+     * @param key Object Key。
+     * @return 请求结果{@link RestoreObjectResult}实例。
+     */
+    public RestoreObjectResult restoreObject(String bucketName, String key)
+            throws OSSException, ClientException;
+    
+    /**
+     * 唤醒冷化后的数据
+     * @param genericRequest 请求信息。
+     * @return 请求结果{@link RestoreObjectResult}实例。
+     */
+    public RestoreObjectResult restoreObject(GenericRequest genericRequest)
             throws OSSException, ClientException;
     
     /**
@@ -1720,5 +1648,46 @@ public interface OSS {
      */
     public OSSSymlink getSymlink(GenericRequest genericRequest)
             throws OSSException, ClientException;
-
+    
+    // UDF
+    public void createUdf(CreateUdfRequest createUdfRequest)
+            throws OSSException, ClientException;
+    
+    public UdfInfo getUdfInfo(UdfGenericRequest genericRequest) 
+    		throws OSSException, ClientException;
+    
+    public List<UdfInfo> listUdfs() throws OSSException, ClientException;
+    
+    public void deleteUdf(UdfGenericRequest genericRequest) 
+    		throws OSSException, ClientException;
+    
+    public void uploadUdfImage(UploadUdfImageRequest uploadUdfImageRequest) 
+    		throws OSSException, ClientException;
+    
+    public List<UdfImageInfo> getUdfImageInfo(UdfGenericRequest genericRequest) 
+    		throws OSSException, ClientException;
+    
+    public void deleteUdfImage(UdfGenericRequest genericRequest) 
+    		throws OSSException, ClientException;
+    
+    public void createUdfApplication(CreateUdfApplicationRequest createUdfApplicationRequest) 
+            throws OSSException, ClientException;
+    
+    public UdfApplicationInfo getUdfApplicationInfo(UdfGenericRequest genericRequest) 
+            throws OSSException, ClientException;
+    
+    public List<UdfApplicationInfo> listUdfApplications() throws OSSException, ClientException;
+    
+    public void deleteUdfApplication(UdfGenericRequest genericRequest) 
+            throws OSSException, ClientException;
+ 
+    public void upgradeUdfApplication(UpgradeUdfApplicationRequest upgradeUdfApplicationRequest) 
+            throws OSSException, ClientException;
+    
+    public void resizeUdfApplication(ResizeUdfApplicationRequest resizeUdfApplicationRequest) 
+            throws OSSException, ClientException;
+    
+    public UdfApplicationLog getUdfApplicationLog(GetUdfApplicationLogRequest getUdfApplicationLogRequest) 
+            throws OSSException, ClientException;
+    
 }

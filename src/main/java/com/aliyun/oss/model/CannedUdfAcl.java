@@ -20,48 +20,40 @@
 package com.aliyun.oss.model;
 
 /**
- * 存储类型。
+ * UDF访问权限。
+ *
  */
-public enum StorageClass {
+public enum CannedUdfAcl {
     
     /**
-     * Standard
+     * 只有所有者具有访问权限，其他用无权访问。UDF默认权限。
      */
-    Standard("Standard"),
-    
-    /**
-     * Infrequent Access
-     */
-    IA("IA"),
-    
-    /**
-     * Archive
-     */
-    Archive("Archive"),
-    
-    /**
-     * Unknown
-     */
-    Unknown("Unknown");
+    Private("private"),
 
-    private String storageClassString;
+    /**
+     * 所有者和其他用户均有访问权限。不推荐使用。
+     */
+    Public("public");
+
+
+    private String cannedAclString;
     
-    private StorageClass(String storageClassString){
-        this.storageClassString = storageClassString;
+    private CannedUdfAcl(String cannedAclString){
+        this.cannedAclString = cannedAclString;
     }
 
     @Override
     public String toString() {
-        return this.storageClassString;
+        return this.cannedAclString;
     }
     
-    public static StorageClass parse(String storageClassString) {
-        for(StorageClass st : StorageClass.values()) {
-            if (st.toString().equals(storageClassString)) {
-                return st;
+    public static CannedUdfAcl parse(String acl) {
+        for(CannedUdfAcl cacl : CannedUdfAcl.values()) {
+            if (cacl.toString().equals(acl)) {
+                return cacl;
             }
         }
         
-        throw new IllegalArgumentException("Unable to parse " + storageClassString);
+        throw new IllegalArgumentException("Unable to parse the provided acl " + acl);
     }
 }
