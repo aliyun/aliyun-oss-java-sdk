@@ -35,16 +35,20 @@ import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.CompleteMultipartUploadRequest;
 import com.aliyun.oss.model.CreateBucketRequest;
 import com.aliyun.oss.model.CreateLiveChannelRequest;
+import com.aliyun.oss.model.CreateUdfApplicationRequest;
+import com.aliyun.oss.model.CreateUdfRequest;
 import com.aliyun.oss.model.DeleteBucketCnameRequest;
 import com.aliyun.oss.model.DeleteObjectsRequest;
 import com.aliyun.oss.model.ImageProcess;
 import com.aliyun.oss.model.LifecycleRule;
 import com.aliyun.oss.model.LifecycleRule.AbortMultipartUpload;
 import com.aliyun.oss.model.LifecycleRule.RuleStatus;
+import com.aliyun.oss.model.LifecycleRule.StorageTransition;
 import com.aliyun.oss.model.LiveChannelTarget;
 import com.aliyun.oss.model.PartETag;
 import com.aliyun.oss.model.PutBucketImageRequest;
 import com.aliyun.oss.model.PutImageStyleRequest;
+import com.aliyun.oss.model.ResizeUdfApplicationRequest;
 import com.aliyun.oss.model.SetBucketCORSRequest;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
 import com.aliyun.oss.model.DeleteBucketReplicationRequest;
@@ -56,6 +60,8 @@ import com.aliyun.oss.model.AddBucketReplicationRequest;
 import com.aliyun.oss.model.SetBucketTaggingRequest;
 import com.aliyun.oss.model.SetBucketWebsiteRequest;
 import com.aliyun.oss.model.TagSet;
+import com.aliyun.oss.model.UdfApplicationConfiguration;
+import com.aliyun.oss.model.UpgradeUdfApplicationRequest;
 import com.aliyun.oss.model.UserQos;
 
 /**
@@ -84,6 +90,10 @@ public final class RequestMarshallers {
     public static final SetBucketQosRequestMarshaller setBucketQosRequestMarshaller = new SetBucketQosRequestMarshaller();    
     public static final CompleteMultipartUploadRequestMarshaller completeMultipartUploadRequestMarshaller = new CompleteMultipartUploadRequestMarshaller();
     public static final CreateLiveChannelRequestMarshaller createLiveChannelRequestMarshaller = new CreateLiveChannelRequestMarshaller();
+    public static final CreateUdfRequestMarshaller createUdfRequestMarshaller = new CreateUdfRequestMarshaller();
+    public static final CreateUdfApplicationRequestMarshaller createUdfApplicationRequestMarshaller = new CreateUdfApplicationRequestMarshaller();
+    public static final UpgradeUdfApplicationRequestMarshaller upgradeUdfApplicationRequestMarshaller = new UpgradeUdfApplicationRequestMarshaller();
+    public static final ResizeUdfApplicationRequestMarshaller resizeUdfApplicationRequestMarshaller = new ResizeUdfApplicationRequestMarshaller();
     
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
         
@@ -382,7 +392,7 @@ public final class RequestMarshallers {
                     xmlBody.append("<Expiration><CreatedBeforeDate>" + formatDate + "</CreatedBeforeDate></Expiration>");                    
                 }
                 
-                if (rule.getAbortMultipartUpload() != null) {
+                if (rule.hasAbortMultipartUpload()) {
                     AbortMultipartUpload abortMultipartUpload = rule.getAbortMultipartUpload();
                     if (abortMultipartUpload.getExpirationDays() != 0) {
                         xmlBody.append("<AbortMultipartUpload><Days>" + abortMultipartUpload.getExpirationDays() + "</Days></AbortMultipartUpload>");
@@ -390,6 +400,19 @@ public final class RequestMarshallers {
                         String formatDate = DateUtil.formatIso8601Date(abortMultipartUpload.getCreatedBeforeDate());
                         xmlBody.append("<AbortMultipartUpload><CreatedBeforeDate>" + formatDate + "</CreatedBeforeDate></AbortMultipartUpload>");                    
                     }
+                }
+                
+                if (rule.hasStorageTransition()) {
+                    StorageTransition storageTransition = rule.getStorageTransition();
+                    xmlBody.append("<Transition>");
+                    if (storageTransition.hasExpirationDays()) {
+                        xmlBody.append("<Days>" + storageTransition.getExpirationDays() + "</Days>");
+                    } else if (storageTransition.hasCreatedBeforeDate()) {
+                        String formatDate = DateUtil.formatIso8601Date(storageTransition.getCreatedBeforeDate());
+                        xmlBody.append("<CreatedBeforeDate>" + formatDate + "</CreatedBeforeDate>");                    
+                    }
+                    xmlBody.append("<StorageClass>" + storageTransition.getStorageClass() + "</StorageClass>");
+                    xmlBody.append("</Transition>");
                 }
                 
                 xmlBody.append("</Rule>");
@@ -651,6 +674,103 @@ public final class RequestMarshallers {
             xmlBody.append("<PlaylistName>" + target.getPlaylistName() + "</PlaylistName>");
             xmlBody.append("</Target>");
             xmlBody.append("</LiveChannelConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+        
+    }
+    
+    public static final class CreateUdfRequestMarshaller implements RequestMarshaller2<CreateUdfRequest> {
+    	
+        @Override
+        public byte[] marshall(CreateUdfRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            
+            xmlBody.append("<CreateUDFConfiguration>");
+            xmlBody.append("<Name>" + request.getName() + "</Name>");
+            if (request.getId() != null) {
+            	xmlBody.append("<ID>" + request.getId() + "</ID>");
+            }
+            if (request.getDesc() != null) {
+            	xmlBody.append("<Description>" + request.getDesc() + "</Description>");	
+            }
+            xmlBody.append("</CreateUDFConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+        
+    }
+    
+    public static final class CreateUdfApplicationRequestMarshaller implements RequestMarshaller2<CreateUdfApplicationRequest> {
+        
+        @Override
+        public byte[] marshall(CreateUdfApplicationRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            UdfApplicationConfiguration config = request.getUdfApplicationConfiguration();
+            
+            xmlBody.append("<CreateUDFApplicationConfiguration>");
+            xmlBody.append("<ImageVersion>" + config.getImageVersion() + "</ImageVersion>");
+            xmlBody.append("<InstanceNum>" + config.getInstanceNum() + "</InstanceNum>");
+            xmlBody.append("<Flavor>");
+            xmlBody.append("<InstanceType>" + config.getFlavor().getInstanceType() + "</InstanceType>");
+            xmlBody.append("<IoOptimized>" + config.getFlavor().getIoOptimized() + "</IoOptimized>");
+            xmlBody.append("</Flavor>");
+            xmlBody.append("</CreateUDFApplicationConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+        
+    }
+    
+    public static final class UpgradeUdfApplicationRequestMarshaller implements RequestMarshaller2<UpgradeUdfApplicationRequest> {
+        
+        @Override
+        public byte[] marshall(UpgradeUdfApplicationRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            
+            xmlBody.append("<UpgradeUDFApplicationConfiguration>");
+            xmlBody.append("<ImageVersion>" + request.getImageVersion() + "</ImageVersion>");
+            xmlBody.append("</UpgradeUDFApplicationConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+        
+    }
+    
+    
+    public static final class ResizeUdfApplicationRequestMarshaller implements RequestMarshaller2<ResizeUdfApplicationRequest> {
+        
+        @Override
+        public byte[] marshall(ResizeUdfApplicationRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            
+            xmlBody.append("<ResizeUDFApplicationConfiguration>");
+            xmlBody.append("<InstanceNum>" + request.getInstanceNum() + "</InstanceNum>");
+            xmlBody.append("</ResizeUDFApplicationConfiguration>");
 
             byte[] rawData = null;
             try {

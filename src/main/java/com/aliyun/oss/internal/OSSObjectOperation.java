@@ -119,6 +119,7 @@ import com.aliyun.oss.model.ObjectAcl;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
+import com.aliyun.oss.model.RestoreObjectResult;
 import com.aliyun.oss.model.SetObjectAclRequest;
 import com.aliyun.oss.model.SimplifiedObjectMeta;
 
@@ -580,6 +581,36 @@ public class OSSObjectOperation extends OSSOperation {
                 .build();
         
         return doOperation(request, getObjectAclResponseParser, bucketName, key, true);
+    }
+    
+    public RestoreObjectResult restoreObject(GenericRequest genericRequest)
+            throws OSSException, ClientException {
+        
+        assertParameterNotNull(genericRequest, "genericRequest");
+        
+        String bucketName = genericRequest.getBucketName();
+        String key = genericRequest.getKey();
+        
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        assertParameterNotNull(key, "key");
+        ensureObjectKeyValid(key);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_RESTORE, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.POST)
+                .setBucket(bucketName)
+                .setKey(key)
+                .setParameters(params)
+                .setInputStream(new ByteArrayInputStream(new byte[0]))
+                .setInputSize(0)
+                .setOriginalRequest(genericRequest)
+                .build();
+        
+        return doOperation(request, ResponseParsers.restoreObjectResponseParser, bucketName, key);
     }
     
     public OSSSymlink getSymlink(GenericRequest genericRequest)

@@ -38,6 +38,14 @@ public class LifecycleRule {
         
         public AbortMultipartUpload() { }
         
+        public AbortMultipartUpload(int expirationDays) {
+            this.expirationDays = expirationDays;
+        }
+        
+        public AbortMultipartUpload(Date createdBeforeDate) { 
+            this.createdBeforeDate = createdBeforeDate;
+        }
+        
         public int getExpirationDays() {
             return expirationDays;
         }
@@ -73,6 +81,71 @@ public class LifecycleRule {
         }
     }
     
+    public static class StorageTransition {
+        private Integer expirationDays;
+        private Date createdBeforeDate;
+        private StorageClass storageClass; 
+        
+        public StorageTransition() {}
+        
+        public StorageTransition(Integer expirationDays, StorageClass storageClass) { 
+            this.expirationDays = expirationDays;
+            this.storageClass = storageClass;
+        }
+        
+        public StorageTransition(Date createdBeforeDate, StorageClass storageClass) { 
+            this.createdBeforeDate = createdBeforeDate;
+            this.storageClass = storageClass;
+        }
+        
+        public Integer getExpirationDays() {
+            return expirationDays;
+        }
+        
+        public void setExpirationDays(Integer expirationDays) {
+            this.expirationDays = expirationDays;
+        }
+        
+        public StorageTransition withExpirationDays(Integer expirationDays) {
+            setExpirationDays(expirationDays);
+            return this;
+        }
+        
+        public boolean hasExpirationDays() {
+            return this.expirationDays != null;
+        }
+       
+        public Date getCreatedBeforeDate() {
+            return createdBeforeDate;
+        }
+        
+        public void setCreatedBeforeDate(Date createdBeforeDate) {
+            this.createdBeforeDate = createdBeforeDate;
+        }
+        
+        public StorageTransition withCreatedBeforeDate(Date createdBeforeDate) {
+            setCreatedBeforeDate(createdBeforeDate);
+            return this;
+        }
+        
+        public boolean hasCreatedBeforeDate() {
+            return this.createdBeforeDate != null;
+        }
+        
+        public StorageClass getStorageClass() {
+            return storageClass;
+        }
+
+        public void setStorageClass(StorageClass storageClass) {
+            this.storageClass = storageClass;
+        }
+        
+        public StorageTransition withStrorageClass(StorageClass storageClass) {
+            setStorageClass(storageClass);
+            return this;
+        }
+    }
+    
     private String id;
     private String prefix;
     private RuleStatus status;
@@ -81,23 +154,24 @@ public class LifecycleRule {
     private Date createdBeforeDate;
     
     private AbortMultipartUpload abortMultipartUpload;
+    private StorageTransition storageTransition;
     
     public LifecycleRule() {
         status = RuleStatus.Unknown;
     }
     
     public LifecycleRule(String id, String prefix, RuleStatus status) {
-        this(id, prefix, status, null, null);
+        this(id, prefix, status, null, null, null);
     }
     
     public LifecycleRule(String id, String prefix, RuleStatus status,
             int expirationDays) {
-        this(id, prefix, status, expirationDays, null);
+        this(id, prefix, status, expirationDays, null, null);
     }
 
     public LifecycleRule(String id, String prefix, RuleStatus status,
             Date expirationTime) {
-        this(id, prefix, status, expirationTime, null);
+        this(id, prefix, status, expirationTime, null, null);
     }
     
     public LifecycleRule(String id, String prefix, RuleStatus status,
@@ -116,6 +190,44 @@ public class LifecycleRule {
         this.status = status;
         this.expirationTime = expirationTime;
         this.abortMultipartUpload = abortMultipartUpload;
+    }
+    
+    public LifecycleRule(String id, String prefix, RuleStatus status, int expirationDays, 
+            StorageTransition storageTransition) {
+        this.id = id;
+        this.prefix = prefix;
+        this.status = status;
+        this.expirationDays = expirationDays;
+        this.storageTransition = storageTransition;
+    }
+    
+    public LifecycleRule(String id, String prefix, RuleStatus status, Date expirationTime, 
+            StorageTransition storageTransition) {
+        this.id = id;
+        this.prefix = prefix;
+        this.status = status;
+        this.expirationTime = expirationTime;
+        this.storageTransition = storageTransition;
+    }
+    
+    public LifecycleRule(String id, String prefix, RuleStatus status, int expirationDays, 
+            AbortMultipartUpload abortMultipartUpload, StorageTransition storageTransition) {
+        this.id = id;
+        this.prefix = prefix;
+        this.status = status;
+        this.expirationDays = expirationDays;
+        this.abortMultipartUpload = abortMultipartUpload;
+        this.storageTransition = storageTransition;
+    }
+    
+    public LifecycleRule(String id, String prefix, RuleStatus status, Date expirationTime, 
+            AbortMultipartUpload abortMultipartUpload, StorageTransition storageTransition) {
+        this.id = id;
+        this.prefix = prefix;
+        this.status = status;
+        this.expirationTime = expirationTime;
+        this.abortMultipartUpload = abortMultipartUpload;
+        this.storageTransition = storageTransition;
     }
 
     public String getId() {
@@ -198,5 +310,17 @@ public class LifecycleRule {
     
     public boolean hasAbortMultipartUpload() {
         return this.abortMultipartUpload != null;
+    }
+    
+    public StorageTransition getStorageTransition() {
+        return storageTransition;
+    }
+
+    public void setStorageTransition(StorageTransition storageTransition) {
+        this.storageTransition = storageTransition;
+    }
+    
+    public boolean hasStorageTransition() {
+        return this.storageTransition != null;
     }
 }

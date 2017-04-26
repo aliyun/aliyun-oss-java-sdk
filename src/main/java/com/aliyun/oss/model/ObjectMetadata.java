@@ -289,4 +289,40 @@ public class ObjectMetadata {
     public String getRequestId() {
         return (String)metadata.get(OSSHeaders.OSS_HEADER_REQUEST_ID);
     }
+    
+    /**
+     * 获取文件的存储类型
+     * @return
+     */
+    public StorageClass getObjectStorageClass() {
+        String storageClassString = (String)metadata.get(OSSHeaders.OSS_STORAGE_CLASS);
+        if (storageClassString != null) {
+            return StorageClass.parse(storageClassString);
+        }
+        return StorageClass.Standard;
+    }
+    
+    /**
+     * 获取Archive类型文件Restore状态
+     * @return 文件Restore状态
+     */
+    public String getObjectRawRestore() {
+        return (String)metadata.get(OSSHeaders.OSS_RESTORE);
+    }
+    
+    /**
+     * 获取Archive文件Restore是否完成
+     * @return Restore是否完成
+     */
+    public boolean isRestoreCompleted() {
+        String restoreString = getObjectRawRestore();
+        if (restoreString == null) {
+            throw new NullPointerException();
+        }
+
+        if (restoreString.equals(OSSHeaders.OSS_ONGOING_RESTORE)) {
+            return false;
+        }
+        return true;
+    }
 }

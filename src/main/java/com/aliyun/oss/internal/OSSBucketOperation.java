@@ -390,8 +390,6 @@ public class OSSBucketOperation extends OSSOperation {
            if(oe.getErrorCode().equals(OSSErrorCode.NO_SUCH_BUCKET)) {
                return false;
            }
-        } catch (Exception e) {
-            System.err.println("doesBucketExists " + e.getMessage());
         }
         return true;
     }

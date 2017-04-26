@@ -17,22 +17,48 @@
  * under the License.
  */
 
-package com.aliyun.oss.common.utils;
+package com.aliyun.oss.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+/**
+ * 创建UDF请求
+ * 
+ * 指定Name时创建新的UDF，指定ID创建UDF的别名。
+ * 
+ */
+public class CreateUdfRequest extends UdfGenericRequest {
+	
+	public CreateUdfRequest(String name) {
+		super(name);
+	}
+	
+	public CreateUdfRequest(String name, String desc) {
+		super(name);
+		this.desc = desc;
+	}
+	
+	public CreateUdfRequest(String name, String id, String desc) {
+		super(name);
+		this.id = id;
+		this.desc = desc;
+	}
 
-import org.junit.Test;
+	public String getId() {
+		return id;
+	}
 
-public class VersionUtilTest {
-    @Test
-    public void testGetDefaultUserAgent() { 
-        String userAgent = VersionInfoUtils.getDefaultUserAgent();
-        assertTrue(userAgent.startsWith("aliyun-sdk-java/2.6.0("));
-        assertEquals(userAgent.split("/").length, 4);
-        assertEquals(userAgent.split(";").length, 2);
-        assertEquals(userAgent.split("\\(").length, 2);
-        assertEquals(userAgent.split("\\)").length, 1);
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getDesc() {
+		return desc;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+
+    private String id;
+    private String desc;
+
 }
-

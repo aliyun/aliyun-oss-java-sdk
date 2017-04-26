@@ -72,7 +72,7 @@ public class SetBucketLifecycleRequest extends GenericRequest {
         int expirationDaysFlag = lifecycleRule.hasExpirationDays() ? 1 : 0;
         int createdBeforeDateFlag = lifecycleRule.hasCreatedBeforeDate() ? 1 : 0;
         int flagSum = expirationTimeFlag + expirationDaysFlag + createdBeforeDateFlag;
-        if (flagSum != 1) {
+        if (flagSum > 1) {
             throw new IllegalArgumentException("Only one expiration property should be specified.");
         }
         
@@ -87,6 +87,16 @@ public class SetBucketLifecycleRequest extends GenericRequest {
             flagSum = expirationDaysFlag + createdBeforeDateFlag;
             if (flagSum != 1) {
                 throw new IllegalArgumentException("Only one expiration property for AbortMultipartUpload should be specified.");
+            }
+        }
+        
+        if (lifecycleRule.hasStorageTransition()) {
+            LifecycleRule.StorageTransition storageTransition = lifecycleRule.getStorageTransition();
+            expirationDaysFlag = storageTransition.hasExpirationDays() ? 1 : 0;
+            createdBeforeDateFlag = storageTransition.hasCreatedBeforeDate() ? 1 : 0;
+            flagSum = expirationDaysFlag + createdBeforeDateFlag;
+            if (flagSum != 1) {
+                throw new IllegalArgumentException("Only one expiration property for StorageTransition should be specified.");
             }
         }
         
