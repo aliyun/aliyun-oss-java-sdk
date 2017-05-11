@@ -138,6 +138,13 @@ public class OSSObject extends GenericResult implements Closeable {
     }
     
     @Override
+    public void close() throws IOException {
+        if (objectContent != null) {
+            objectContent.close();
+        }
+    }
+
+    @Override
     public String toString() {
         return "OSSObject [key=" + getKey()
             + ",bucket=" + (bucketName == null ? "<Unknown>" : bucketName)
