@@ -19,7 +19,9 @@
 
 package com.aliyun.oss.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 表示一条Lifecycle规则。
@@ -154,7 +156,7 @@ public class LifecycleRule {
     private Date createdBeforeDate;
     
     private AbortMultipartUpload abortMultipartUpload;
-    private StorageTransition storageTransition;
+    private List<StorageTransition> storageTransitions = new ArrayList<StorageTransition>();
     
     public LifecycleRule() {
         status = RuleStatus.Unknown;
@@ -193,41 +195,49 @@ public class LifecycleRule {
     }
     
     public LifecycleRule(String id, String prefix, RuleStatus status, int expirationDays, 
-            StorageTransition storageTransition) {
+            List<StorageTransition> storageTransitions) {
         this.id = id;
         this.prefix = prefix;
         this.status = status;
         this.expirationDays = expirationDays;
-        this.storageTransition = storageTransition;
+        if (storageTransitions != null && !storageTransitions.isEmpty()) {
+            this.storageTransitions.addAll(storageTransitions);
+        }
     }
     
     public LifecycleRule(String id, String prefix, RuleStatus status, Date expirationTime, 
-            StorageTransition storageTransition) {
+            List<StorageTransition> storageTransitions) {
         this.id = id;
         this.prefix = prefix;
         this.status = status;
         this.expirationTime = expirationTime;
-        this.storageTransition = storageTransition;
+        if (storageTransitions != null && !storageTransitions.isEmpty()) {
+            this.storageTransitions.addAll(storageTransitions);
+        }
     }
     
     public LifecycleRule(String id, String prefix, RuleStatus status, int expirationDays, 
-            AbortMultipartUpload abortMultipartUpload, StorageTransition storageTransition) {
+            AbortMultipartUpload abortMultipartUpload, List<StorageTransition> storageTransitions) {
         this.id = id;
         this.prefix = prefix;
         this.status = status;
         this.expirationDays = expirationDays;
         this.abortMultipartUpload = abortMultipartUpload;
-        this.storageTransition = storageTransition;
+        if (storageTransitions != null && !storageTransitions.isEmpty()) {
+            this.storageTransitions.addAll(storageTransitions);
+        }
     }
     
     public LifecycleRule(String id, String prefix, RuleStatus status, Date expirationTime, 
-            AbortMultipartUpload abortMultipartUpload, StorageTransition storageTransition) {
+            AbortMultipartUpload abortMultipartUpload, List<StorageTransition> storageTransitions) {
         this.id = id;
         this.prefix = prefix;
         this.status = status;
         this.expirationTime = expirationTime;
         this.abortMultipartUpload = abortMultipartUpload;
-        this.storageTransition = storageTransition;
+        if (storageTransitions != null && !storageTransitions.isEmpty()) {
+            this.storageTransitions.addAll(storageTransitions);
+        }
     }
 
     public String getId() {
@@ -312,15 +322,15 @@ public class LifecycleRule {
         return this.abortMultipartUpload != null;
     }
     
-    public StorageTransition getStorageTransition() {
-        return storageTransition;
+    public List<StorageTransition> getStorageTransition() {
+        return this.storageTransitions;
     }
 
-    public void setStorageTransition(StorageTransition storageTransition) {
-        this.storageTransition = storageTransition;
+    public void setStorageTransition(List<StorageTransition> storageTransitions) {
+        this.storageTransitions = storageTransitions;
     }
     
     public boolean hasStorageTransition() {
-        return this.storageTransition != null;
+        return this.storageTransitions != null && !storageTransitions.isEmpty();
     }
 }

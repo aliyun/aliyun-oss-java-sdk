@@ -403,16 +403,17 @@ public final class RequestMarshallers {
                 }
                 
                 if (rule.hasStorageTransition()) {
-                    StorageTransition storageTransition = rule.getStorageTransition();
-                    xmlBody.append("<Transition>");
-                    if (storageTransition.hasExpirationDays()) {
-                        xmlBody.append("<Days>" + storageTransition.getExpirationDays() + "</Days>");
-                    } else if (storageTransition.hasCreatedBeforeDate()) {
-                        String formatDate = DateUtil.formatIso8601Date(storageTransition.getCreatedBeforeDate());
-                        xmlBody.append("<CreatedBeforeDate>" + formatDate + "</CreatedBeforeDate>");                    
+                    for (StorageTransition storageTransition : rule.getStorageTransition()) {
+                        xmlBody.append("<Transition>");
+                        if (storageTransition.hasExpirationDays()) {
+                            xmlBody.append("<Days>" + storageTransition.getExpirationDays() + "</Days>");
+                        } else if (storageTransition.hasCreatedBeforeDate()) {
+                            String formatDate = DateUtil.formatIso8601Date(storageTransition.getCreatedBeforeDate());
+                            xmlBody.append("<CreatedBeforeDate>" + formatDate + "</CreatedBeforeDate>");                    
+                        }
+                        xmlBody.append("<StorageClass>" + storageTransition.getStorageClass() + "</StorageClass>");
+                        xmlBody.append("</Transition>");
                     }
-                    xmlBody.append("<StorageClass>" + storageTransition.getStorageClass() + "</StorageClass>");
-                    xmlBody.append("</Transition>");
                 }
                 
                 xmlBody.append("</Rule>");
