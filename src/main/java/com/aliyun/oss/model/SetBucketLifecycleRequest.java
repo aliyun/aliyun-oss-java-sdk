@@ -22,6 +22,8 @@ package com.aliyun.oss.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aliyun.oss.model.LifecycleRule.StorageTransition;
+
 public class SetBucketLifecycleRequest extends GenericRequest {
     
     public static final int MAX_LIFECYCLE_RULE_LIMIT = 1000;
@@ -72,7 +74,8 @@ public class SetBucketLifecycleRequest extends GenericRequest {
         int expirationDaysFlag = lifecycleRule.hasExpirationDays() ? 1 : 0;
         int createdBeforeDateFlag = lifecycleRule.hasCreatedBeforeDate() ? 1 : 0;
         int flagSum = expirationTimeFlag + expirationDaysFlag + createdBeforeDateFlag;
-        if (flagSum > 1) {
+        if (flagSum > 1 || 
+                (flagSum == 0 && !lifecycleRule.hasAbortMultipartUpload() && !lifecycleRule.hasStorageTransition())) {
             throw new IllegalArgumentException("Only one expiration property should be specified.");
         }
         
@@ -91,12 +94,13 @@ public class SetBucketLifecycleRequest extends GenericRequest {
         }
         
         if (lifecycleRule.hasStorageTransition()) {
-            LifecycleRule.StorageTransition storageTransition = lifecycleRule.getStorageTransition();
-            expirationDaysFlag = storageTransition.hasExpirationDays() ? 1 : 0;
-            createdBeforeDateFlag = storageTransition.hasCreatedBeforeDate() ? 1 : 0;
-            flagSum = expirationDaysFlag + createdBeforeDateFlag;
-            if (flagSum != 1) {
-                throw new IllegalArgumentException("Only one expiration property for StorageTransition should be specified.");
+            for (StorageTransition storageTransition : lifecycleRule.getStorageTransition()) {
+                expirationDaysFlag = storageTransition.hasExpirationDays() ? 1 : 0;
+                createdBeforeDateFlag = storageTransition.hasCreatedBeforeDate() ? 1 : 0;
+                flagSum = expirationDaysFlag + createdBeforeDateFlag;
+                if (flagSum != 1) {
+                    throw new IllegalArgumentException("Only one expiration property for StorageTransition should be specified.");
+                }
             }
         }
         

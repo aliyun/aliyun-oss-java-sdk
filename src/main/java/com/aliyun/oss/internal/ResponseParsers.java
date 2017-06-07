@@ -86,6 +86,7 @@ import com.aliyun.oss.model.RestoreObjectResult;
 import com.aliyun.oss.model.RoutingRule;
 import com.aliyun.oss.model.StorageClass;
 import com.aliyun.oss.model.LifecycleRule.RuleStatus;
+import com.aliyun.oss.model.LifecycleRule.StorageTransition;
 import com.aliyun.oss.model.MultipartUpload;
 import com.aliyun.oss.model.MultipartUploadListing;
 import com.aliyun.oss.model.OSSObject;
@@ -2489,8 +2490,9 @@ public final class ResponseParsers {
                     rule.setAbortMultipartUpload(abortMultipartUpload);
                 }
                 
-                if (ruleElem.getChild("Transition") != null) {
-                    Element transitionElem = ruleElem.getChild("Transition");
+                List<Element> transitionElements = ruleElem.getChildren("Transition");
+                List<StorageTransition> storageTransitions = new ArrayList<StorageTransition>();
+                for (Element transitionElem : transitionElements) {
                     LifecycleRule.StorageTransition storageTransition = new LifecycleRule.StorageTransition();
                     if (transitionElem.getChild("Days") != null) {
                         storageTransition.setExpirationDays(Integer.parseInt(transitionElem.getChildText("Days")));
@@ -2501,8 +2503,9 @@ public final class ResponseParsers {
                     if (transitionElem.getChild("StorageClass") != null) {
                         storageTransition.setStorageClass(StorageClass.parse(transitionElem.getChildText("StorageClass")));
                     }
-                    rule.setStorageTransition(storageTransition);
+                    storageTransitions.add(storageTransition);
                 }
+                rule.setStorageTransition(storageTransitions);
                 
                 lifecycleRules.add(rule);
             }
