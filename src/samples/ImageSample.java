@@ -9,7 +9,7 @@ import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.GetObjectRequest;
 
 /**
- * 断点续传下载用法示例
+ * 图片处理用法示例
  *
  */
 public class ImageSample {
