@@ -17,22 +17,22 @@
  * under the License.
  */
 
-package com.aliyun.oss.common.utils;
+package com.aliyun.oss.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-
-public class VersionUtilTest {
-    @Test
-    public void testGetDefaultUserAgent() { 
-        String userAgent = VersionInfoUtils.getDefaultUserAgent();
-        assertTrue(userAgent.startsWith("aliyun-sdk-java/2.7.0("));
-        assertEquals(userAgent.split("/").length, 4);
-        assertEquals(userAgent.split(";").length, 2);
-        assertEquals(userAgent.split("\\(").length, 2);
-        assertEquals(userAgent.split("\\)").length, 1);
+public class ProcessObjectRequest extends GenericRequest {
+    
+    public ProcessObjectRequest(String bucketName, String key, String process) {
+        super(bucketName, key);
+        this.process = process;
     }
-}
+    
+    public String getProcess() {
+        return process;
+    }
 
+    public void setProcess(String process) {
+        this.process = process;
+    }
+
+    private String process;
+}

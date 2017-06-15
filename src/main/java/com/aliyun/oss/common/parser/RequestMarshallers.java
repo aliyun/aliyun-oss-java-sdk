@@ -30,6 +30,7 @@ import java.util.Map;
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.common.comm.io.FixedLengthInputStream;
 import com.aliyun.oss.common.utils.DateUtil;
+import com.aliyun.oss.internal.RequestParameters;
 import com.aliyun.oss.model.AddBucketReplicationRequest.ReplicationAction;
 import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.CompleteMultipartUploadRequest;
@@ -46,6 +47,7 @@ import com.aliyun.oss.model.LifecycleRule.RuleStatus;
 import com.aliyun.oss.model.LifecycleRule.StorageTransition;
 import com.aliyun.oss.model.LiveChannelTarget;
 import com.aliyun.oss.model.PartETag;
+import com.aliyun.oss.model.ProcessObjectRequest;
 import com.aliyun.oss.model.PutBucketImageRequest;
 import com.aliyun.oss.model.PutImageStyleRequest;
 import com.aliyun.oss.model.ResizeUdfApplicationRequest;
@@ -94,7 +96,8 @@ public final class RequestMarshallers {
     public static final CreateUdfApplicationRequestMarshaller createUdfApplicationRequestMarshaller = new CreateUdfApplicationRequestMarshaller();
     public static final UpgradeUdfApplicationRequestMarshaller upgradeUdfApplicationRequestMarshaller = new UpgradeUdfApplicationRequestMarshaller();
     public static final ResizeUdfApplicationRequestMarshaller resizeUdfApplicationRequestMarshaller = new ResizeUdfApplicationRequestMarshaller();
-    
+    public static final ProcessObjectRequestMarshaller processObjectRequestMarshaller = new ProcessObjectRequestMarshaller();
+
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
         
     }
@@ -726,7 +729,6 @@ public final class RequestMarshallers {
             xmlBody.append("<InstanceNum>" + config.getInstanceNum() + "</InstanceNum>");
             xmlBody.append("<Flavor>");
             xmlBody.append("<InstanceType>" + config.getFlavor().getInstanceType() + "</InstanceType>");
-            xmlBody.append("<IoOptimized>" + config.getFlavor().getIoOptimized() + "</IoOptimized>");
             xmlBody.append("</Flavor>");
             xmlBody.append("</CreateUDFApplicationConfiguration>");
 
@@ -776,6 +778,26 @@ public final class RequestMarshallers {
             byte[] rawData = null;
             try {
                 rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+        
+    }
+    
+    public static final class ProcessObjectRequestMarshaller implements RequestMarshaller2<ProcessObjectRequest> {
+        
+        @Override
+        public byte[] marshall(ProcessObjectRequest request) {
+            StringBuffer processBody = new StringBuffer();
+            
+            processBody.append(RequestParameters.SUBRESOURCE_PROCESS);
+            processBody.append("=" + request.getProcess());
+
+            byte[] rawData = null;
+            try {
+                rawData = processBody.toString().getBytes(DEFAULT_CHARSET_NAME);
             } catch (UnsupportedEncodingException e) {
                 throw new ClientException("Unsupported encoding " + e.getMessage(), e);
             }

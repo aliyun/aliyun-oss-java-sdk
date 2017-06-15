@@ -604,26 +604,28 @@ public class OSSClient implements OSS {
         return objectOperation.deleteObjects(deleteObjectsRequest);
     }
     
-    private void headObject(HeadObjectRequest headObjectRequest)
-            throws OSSException, ClientException {
-        objectOperation.headObject(headObjectRequest);
-    }
-    
     @Override
     public boolean doesObjectExist(String bucketName, String key)
             throws OSSException, ClientException {
-        return doesObjectExist(new HeadObjectRequest(bucketName, key));
+        return doesObjectExist(new GenericRequest(bucketName, key));
     }
     
+    @Deprecated
     @Override
     public boolean doesObjectExist(HeadObjectRequest headObjectRequest)
             throws OSSException, ClientException {
+        return doesObjectExist(new GenericRequest(headObjectRequest.getBucketName(), headObjectRequest.getKey())); 
+    }
+    
+    @Override
+    public boolean doesObjectExist(GenericRequest genericRequest)
+            throws OSSException, ClientException {
         try {
-            headObject(headObjectRequest);
+            getSimplifiedObjectMeta(genericRequest);
             return true;
         } catch (OSSException e) {
-            if (e.getErrorCode() == OSSErrorCode.NO_SUCH_BUCKET 
-                    || e.getErrorCode() == OSSErrorCode.NO_SUCH_KEY) {
+            if (e.getErrorCode().equals(OSSErrorCode.NO_SUCH_BUCKET)
+                    || e.getErrorCode().equals(OSSErrorCode.NO_SUCH_KEY)) {
                 return false;
             }
             throw e;
@@ -1371,6 +1373,12 @@ public class OSSClient implements OSS {
     public OSSSymlink getSymlink(GenericRequest genericRequest)
             throws OSSException, ClientException {
         return objectOperation.getSymlink(genericRequest);
+    }
+    
+    @Override
+    public GenericResult processObject(ProcessObjectRequest processObjectRequest)
+            throws OSSException, ClientException {
+        return this.objectOperation.processObject(processObjectRequest);
     }
     
     @Override

@@ -28,8 +28,7 @@ public class UdfApplicationConfiguration {
     public UdfApplicationConfiguration(Integer imageVersion, Integer instanceNum) {
         this.imageVersion = imageVersion;
         this.instanceNum = instanceNum;
-        this.flavor = new InstanceFlavor(InstanceFlavor.DEFAULT_INSTANCE_TYPE, 
-                InstanceFlavor.DEFAULT_IO_OPTIMIZED);
+        this.flavor = new InstanceFlavor(InstanceFlavor.DEFAULT_INSTANCE_TYPE);
     }
     
     public UdfApplicationConfiguration(Integer imageVersion, Integer instanceNum, InstanceFlavor flavor) {

@@ -148,6 +148,7 @@ public final class ResponseParsers {
     public static final GetObjectAclResponseParser getObjectAclResponseParser = new GetObjectAclResponseParser();
     public static final GetSimplifiedObjectMetaResponseParser getSimplifiedObjectMetaResponseParser = new GetSimplifiedObjectMetaResponseParser();
     public static final RestoreObjectResponseParser restoreObjectResponseParser = new RestoreObjectResponseParser();
+    public static final ProcessObjectResponseParser processObjectResponseParser = new ProcessObjectResponseParser();
 
     public static final CompleteMultipartUploadResponseParser completeMultipartUploadResponseParser = new CompleteMultipartUploadResponseParser();    
     public static final CompleteMultipartUploadProcessResponseParser completeMultipartUploadProcessResponseParser = new CompleteMultipartUploadProcessResponseParser();    
@@ -689,6 +690,19 @@ public final class ResponseParsers {
             } finally {
                 safeCloseResponse(response);
             }
+        }
+        
+    }
+    
+    public static final class ProcessObjectResponseParser implements ResponseParser<GenericResult> {
+        
+        @Override
+        public GenericResult parse(ResponseMessage response)
+                throws ResponseParseException {
+            GenericResult result = new PutObjectResult();
+            result.setRequestId(response.getRequestId());
+            result.setResponse(response);
+            return result;
         }
         
     }
@@ -1416,8 +1430,7 @@ public final class ResponseParsers {
             Date date = DateUtil.parseIso8601Date(root.getChildText("CreationDate"));
             
             String instanceType = root.getChild("Flavor").getChildText("InstanceType");
-            String ioOptimized = root.getChild("Flavor").getChildText("IoOptimized");
-            InstanceFlavor flavor = new InstanceFlavor(instanceType, ioOptimized);
+            InstanceFlavor flavor = new InstanceFlavor(instanceType);
             
             return new UdfApplicationInfo(name, id, region, status, imageVersion, instanceNum, date, flavor);
         } catch (JDOMParseException e) {
@@ -1450,8 +1463,7 @@ public final class ResponseParsers {
                     Date date = DateUtil.parseIso8601Date(elem.getChildText("CreationDate"));
                     
                     String instanceType = elem.getChild("Flavor").getChildText("InstanceType");
-                    String ioOptimized = elem.getChild("Flavor").getChildText("IoOptimized");
-                    InstanceFlavor flavor = new InstanceFlavor(instanceType, ioOptimized);
+                    InstanceFlavor flavor = new InstanceFlavor(instanceType);
                     
                     UdfApplicationInfo udfApp = new UdfApplicationInfo(name, id, region, status, 
                             imageVersion, instanceNum, date, flavor);
