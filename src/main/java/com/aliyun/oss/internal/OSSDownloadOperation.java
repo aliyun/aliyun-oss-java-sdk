@@ -48,6 +48,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import com.aliyun.oss.event.ProgressEventType;
+import com.aliyun.oss.event.ProgressListener;
+import com.aliyun.oss.event.ProgressPublisher;
 import com.aliyun.oss.model.DownloadFileRequest;
 import com.aliyun.oss.model.DownloadFileResult;
 import com.aliyun.oss.model.GenericRequest;
@@ -335,13 +338,21 @@ public class OSSDownloadOperation {
             prepare(downloadCheckPoint, downloadFileRequest);
         }
         
+        // 进度条开始下载数据
+        ProgressListener listener = downloadFileRequest.getProgressListener();
+        ProgressPublisher.publishProgress(listener, ProgressEventType.TRANSFER_STARTED_EVENT);
+        
         // 并发下载分片
         DownloadResult downloadResult = download(downloadCheckPoint, downloadFileRequest);
         for (PartResult partResult : downloadResult.getPartResults()) {
             if (partResult.isFailed()) {
+                ProgressPublisher.publishProgress(listener, ProgressEventType.TRANSFER_PART_FAILED_EVENT);
                 throw partResult.getException();
             }
         }
+        
+        // 进度条下载数据完成
+        ProgressPublisher.publishProgress(listener, ProgressEventType.TRANSFER_COMPLETED_EVENT);
         
         // 重命名临时文件
         renameTo(downloadFileRequest.getTempDownloadFile(), downloadFileRequest.getDownloadFile());
@@ -389,10 +400,23 @@ public class OSSDownloadOperation {
         ExecutorService service = Executors.newFixedThreadPool(downloadFileRequest.getTaskNum());
         ArrayList<Future<PartResult>> futures = new ArrayList<Future<PartResult>>();
         List<Task> tasks = new ArrayList<Task>();
-                
+        ProgressListener listener = downloadFileRequest.getProgressListener();
+        
+        // 计算待下载的数据量
+        long contentLength = 0;
         for (int i = 0; i < downloadCheckPoint.downloadParts.size(); i++) {
             if (!downloadCheckPoint.downloadParts.get(i).isCompleted) {
-                Task task = new Task(i, "download-" + i, downloadCheckPoint, i, downloadFileRequest, objectOperation);
+                long partSize = downloadCheckPoint.downloadParts.get(i).end - downloadCheckPoint.downloadParts.get(i).start + 1;
+                contentLength += partSize;
+            }
+        }
+        ProgressPublisher.publishResponseContentLength(listener, contentLength);
+        downloadFileRequest.setProgressListener(null);
+        
+        // 下载数据分片
+        for (int i = 0; i < downloadCheckPoint.downloadParts.size(); i++) {
+            if (!downloadCheckPoint.downloadParts.get(i).isCompleted) {
+                Task task = new Task(i, "download-" + i, downloadCheckPoint, i, downloadFileRequest, objectOperation, listener);
                 futures.add(service.submit(task));
                 tasks.add(task);
             } else {
@@ -402,17 +426,19 @@ public class OSSDownloadOperation {
         }
         service.shutdown();
         
+        // 等待分片下载完成
         service.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-        
         for (Future<PartResult> future : futures) {
             try {
                 PartResult tr = future.get();
                 taskResults.add(tr);
             } catch (ExecutionException e) {
+                downloadFileRequest.setProgressListener(listener);
                 throw e.getCause();
             }
         }
         
+        // 对PartResult按照分片序号排序
         Collections.sort(taskResults, new Comparator<PartResult>() {
             @Override
             public int compare(PartResult p1, PartResult p2) {
@@ -420,10 +446,12 @@ public class OSSDownloadOperation {
             }
         });
         
+        // 设置返回结果
         downloadResult.setPartResults(taskResults);
         if (tasks.size() > 0) {
             downloadResult.setObjectMetadata(tasks.get(0).GetobjectMetadata());
         }
+        downloadFileRequest.setProgressListener(listener);
 
         return downloadResult;
     }
@@ -431,13 +459,15 @@ public class OSSDownloadOperation {
     static class Task implements Callable<PartResult> {
         
         public Task(int id, String name, DownloadCheckPoint downloadCheckPoint, int partIndex,
-                DownloadFileRequest downloadFileRequest, OSSObjectOperation objectOperation) {
+                DownloadFileRequest downloadFileRequest, OSSObjectOperation objectOperation,
+                ProgressListener progressListener) {
             this.id = id;
             this.name = name;
             this.downloadCheckPoint = downloadCheckPoint;
             this.partIndex = partIndex;
             this.downloadFileRequest = downloadFileRequest;
             this.objectOperation = objectOperation;
+            this.progressListener = progressListener;
         }
         
         @Override
@@ -476,6 +506,8 @@ public class OSSDownloadOperation {
                 if (downloadFileRequest.isEnableCheckpoint()) {
                    downloadCheckPoint.dump(downloadFileRequest.getCheckpointFile()); 
                 }
+                ProgressPublisher.publishResponseBytesTransferred(progressListener, 
+                        (downloadPart.end - downloadPart.start + 1));
             } catch (Exception e) {
                 tr.setFailed(true);
                 tr.setException(e);
@@ -504,6 +536,7 @@ public class OSSDownloadOperation {
         private DownloadFileRequest downloadFileRequest;
         private OSSObjectOperation objectOperation;
         private ObjectMetadata objectMetadata;
+        private ProgressListener progressListener;
     }
     
     private ArrayList<DownloadPart> splitFile(long objectSize, long partSize) {

@@ -43,6 +43,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import com.aliyun.oss.event.ProgressEventType;
+import com.aliyun.oss.event.ProgressListener;
+import com.aliyun.oss.event.ProgressPublisher;
 import com.aliyun.oss.model.CompleteMultipartUploadRequest;
 import com.aliyun.oss.model.CompleteMultipartUploadResult;
 import com.aliyun.oss.model.InitiateMultipartUploadRequest;
@@ -312,13 +315,21 @@ public class OSSUploadOperation {
             prepare(uploadCheckPoint, uploadFileRequest);
         }
         
+        // 进度条开始数据上传
+        ProgressListener listener = uploadFileRequest.getProgressListener();
+        ProgressPublisher.publishProgress(listener, ProgressEventType.TRANSFER_STARTED_EVENT);
+        
         // 并发上传分片
         List<PartResult> partResults = upload(uploadCheckPoint, uploadFileRequest);
         for (PartResult partResult : partResults) {
             if (partResult.isFailed()) {
+                ProgressPublisher.publishProgress(listener, ProgressEventType.TRANSFER_PART_FAILED_EVENT);
                 throw partResult.getException();
             }
         }
+        
+        // 进度条完成数据上传
+        ProgressPublisher.publishProgress(listener, ProgressEventType.TRANSFER_COMPLETED_EVENT);
         
         // 提交上传任务
         CompleteMultipartUploadResult multipartUploadResult = complete(uploadCheckPoint, uploadFileRequest);
@@ -354,11 +365,23 @@ public class OSSUploadOperation {
         ArrayList<PartResult> taskResults = new ArrayList<PartResult>();
         ExecutorService service = Executors.newFixedThreadPool(uploadFileRequest.getTaskNum());
         ArrayList<Future<PartResult>> futures = new ArrayList<Future<PartResult>>();
-                
+        ProgressListener listener = uploadFileRequest.getProgressListener();
+        
+        // 计算待上传的数据量
+        long contentLength = 0;
+        for (int i = 0; i < uploadCheckPoint.uploadParts.size(); i++) {
+            if (!uploadCheckPoint.uploadParts.get(i).isCompleted) {
+                contentLength += uploadCheckPoint.uploadParts.get(i).size;
+            }
+        }
+        ProgressPublisher.publishRequestContentLength(listener, contentLength);
+        uploadFileRequest.setProgressListener(null);
+        
+        // 上传分片
         for (int i = 0; i < uploadCheckPoint.uploadParts.size(); i++) {
             if (!uploadCheckPoint.uploadParts.get(i).isCompleted) {
                 futures.add(service.submit(new Task(i, "upload-" + i, uploadCheckPoint, i, 
-                        uploadFileRequest, multipartOperation)));
+                        uploadFileRequest, multipartOperation, listener)));
             } else {
                 taskResults.add(new PartResult(i + 1, uploadCheckPoint.uploadParts.get(i).offset,
                         uploadCheckPoint.uploadParts.get(i).size));
@@ -366,23 +389,26 @@ public class OSSUploadOperation {
         }
         service.shutdown();
         
+        // 等待分片上传完成
         service.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-        
         for (Future<PartResult> future : futures) {
             try {
                 PartResult tr = future.get();
                 taskResults.add(tr);
             } catch (ExecutionException e) {
+                uploadFileRequest.setProgressListener(listener);
                 throw e.getCause();
             }
         }
         
+        // 对PartResult按照序号排序
         Collections.sort(taskResults, new Comparator<PartResult>() {
             @Override
             public int compare(PartResult p1, PartResult p2) {
                 return p1.getNumber() - p2.getNumber();
             }
         });
+        uploadFileRequest.setProgressListener(listener);
         
         return taskResults;
     }
@@ -390,13 +416,15 @@ public class OSSUploadOperation {
     static class Task implements Callable<PartResult> {
         
         public Task(int id, String name, UploadCheckPoint uploadCheckPoint, int partIndex,
-                UploadFileRequest uploadFileRequest, OSSMultipartOperation multipartOperation) {
+                UploadFileRequest uploadFileRequest, OSSMultipartOperation multipartOperation,
+                ProgressListener progressListener) {
             this.id = id;
             this.name = name;
             this.uploadCheckPoint = uploadCheckPoint;
             this.partIndex = partIndex;
             this.uploadFileRequest = uploadFileRequest;
             this.multipartOperation = multipartOperation;
+            this.progressListener = progressListener;
         }
         
         @Override
@@ -426,6 +454,7 @@ public class OSSUploadOperation {
                 if (uploadFileRequest.isEnableCheckpoint()) {
                    uploadCheckPoint.dump(uploadFileRequest.getCheckpointFile()); 
                 }
+                ProgressPublisher.publishRequestBytesTransferred(progressListener, uploadPart.size);
             } catch (Exception e) {
                 tr.setFailed(true);
                 tr.setException(e);
@@ -445,6 +474,7 @@ public class OSSUploadOperation {
         private int partIndex;
         private UploadFileRequest uploadFileRequest;
         private OSSMultipartOperation multipartOperation;
+        private ProgressListener progressListener;
     }
     
     private CompleteMultipartUploadResult complete(UploadCheckPoint uploadCheckPoint, UploadFileRequest uploadFileRequest) {
