@@ -865,7 +865,7 @@ public final class ResponseParsers {
         public OSSSymlink parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-                return parseSymbolicLink(response.getHeaders());
+                return parseSymbolicLink(response);
             } finally {
                 OSSUtils.mandatoryCloseResponse(response);  
             }
@@ -1307,17 +1307,19 @@ public final class ResponseParsers {
     /**
      * Unmarshall symbolic link from response headers.
      */
-    public static OSSSymlink parseSymbolicLink(Map<String, String> headers) 
+    public static OSSSymlink parseSymbolicLink(ResponseMessage response) 
             throws ResponseParseException {
 
         try {
             OSSSymlink smyLink = null;
-            String targetObject = headers.get(OSSHeaders.OSS_HEADER_SYMLINK_TARGET);
             
+            String targetObject = response.getHeaders().get(OSSHeaders.OSS_HEADER_SYMLINK_TARGET);
             if (targetObject != null) {
                 targetObject = HttpUtil.urlDecode(targetObject, "UTF-8");
                 smyLink = new OSSSymlink(null, targetObject); 
             }
+            
+            smyLink.setMetadata(parseObjectMetadata(response.getHeaders()));
             
             return smyLink;
         } catch (Exception e) {
