@@ -45,6 +45,22 @@ public class OSSSymlink {
     public void setTarget(String target) {
         this.target = target;
     }
+    
+    /**
+     * 获取链接文件的元信息
+     * @return 链接文件的元信息
+     */
+    public ObjectMetadata getMetadata() {
+        return metadata;
+    }
+
+    /**
+     * 设置链接文件的云信息
+     * @param metadata 链接文件的元信息
+     */
+    public void setMetadata(ObjectMetadata metadata) {
+        this.metadata = metadata;
+    }
 
     @Override
     public String toString() {
@@ -52,10 +68,13 @@ public class OSSSymlink {
             + ", target=" + getTarget() + "]";
     }
 
-    // 符号链接
+    // 链接文件
     private String symlink;
 
     // 目标文件
     private String target;
-
+    
+    // 链接文件的元信息
+    private ObjectMetadata metadata;
+    
 }

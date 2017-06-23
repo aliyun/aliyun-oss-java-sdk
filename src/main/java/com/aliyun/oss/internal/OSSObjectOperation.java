@@ -665,9 +665,21 @@ public class OSSObjectOperation extends OSSOperation {
         ensureObjectKeyValid(symlink);
         ensureObjectKeyValid(target);
         
-        Map<String, String> headers = new HashMap<String, String>();
+        ObjectMetadata metadata = createSymlinkRequest.getMetadata();
+        if (metadata == null) {
+            metadata = new ObjectMetadata();
+        }
+       
+        // 设置链接的目标文件
         String encodeTargetObject = HttpUtil.urlEncode(target, DEFAULT_CHARSET_NAME);
-        headers.put(OSSHeaders.OSS_HEADER_SYMLINK_TARGET, encodeTargetObject);
+        metadata.setHeader(OSSHeaders.OSS_HEADER_SYMLINK_TARGET, encodeTargetObject);
+        // 设置链接文件的ContentType，目标文件优先，然后是链接文件
+        if (metadata.getContentType() == null) {
+            metadata.setContentType(Mimetypes.getInstance().getMimetype(target, symlink));
+        }
+        
+        Map<String, String> headers = new HashMap<String, String>();
+        populateRequestMetadata(headers, metadata);
         
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_SYMLINK, null);
@@ -804,7 +816,7 @@ public class OSSObjectOperation extends OSSOperation {
             
             metadata.setContentLength(toUpload.length());
             if (metadata.getContentType() == null) {
-                metadata.setContentType(Mimetypes.getInstance().getMimetype(toUpload));
+                metadata.setContentType(Mimetypes.getInstance().getMimetype(toUpload, key));
             }
             
             try {
