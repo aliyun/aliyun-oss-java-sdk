@@ -50,6 +50,7 @@ import com.aliyun.oss.model.CompleteMultipartUploadRequest;
 import com.aliyun.oss.model.CompleteMultipartUploadResult;
 import com.aliyun.oss.model.InitiateMultipartUploadRequest;
 import com.aliyun.oss.model.InitiateMultipartUploadResult;
+import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PartETag;
 import com.aliyun.oss.model.UploadFileRequest;
 import com.aliyun.oss.model.UploadFileResult;
@@ -351,10 +352,18 @@ public class OSSUploadOperation {
         uploadCheckPoint.uploadParts = splitFile(uploadCheckPoint.uploadFileStat.size, 
                 uploadFileRequest.getPartSize());
         uploadCheckPoint.partETags = new ArrayList<PartETag>();
+        
+        ObjectMetadata metadata = uploadFileRequest.getObjectMetadata();
+        if (metadata == null) {
+            metadata = new ObjectMetadata();
+        }
+        
+        if (metadata.getContentType() == null) {
+            metadata.setContentType(Mimetypes.getInstance().getMimetype(uploadCheckPoint.uploadFile, uploadCheckPoint.key));
+        }
 
         InitiateMultipartUploadRequest initiateUploadRequest = new InitiateMultipartUploadRequest(
-                uploadFileRequest.getBucketName(), uploadFileRequest.getKey(), 
-                uploadFileRequest.getObjectMetadata());
+                uploadFileRequest.getBucketName(), uploadFileRequest.getKey(), metadata);
         InitiateMultipartUploadResult initiateUploadResult = 
                 multipartOperation.initiateMultipartUpload(initiateUploadRequest);
         uploadCheckPoint.uploadID = initiateUploadResult.getUploadId();

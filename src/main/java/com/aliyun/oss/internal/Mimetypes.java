@@ -105,4 +105,31 @@ public class Mimetypes {
        return getMimetype(file.getName());
     }
     
+    public String getMimetype(File file, String key) {
+        return getMimetype(file.getName(), key);
+     }
+    
+    public String getMimetype(String primaryObject, String secondaryObject) {
+        // primary
+        int lastPeriodIndex = primaryObject.lastIndexOf(".");
+        if (lastPeriodIndex > 0 && lastPeriodIndex + 1 < primaryObject.length()) {
+            String ext = primaryObject.substring(lastPeriodIndex + 1).toLowerCase();
+            if (extensionToMimetypeMap.keySet().contains(ext)) {
+                String mimetype = (String) extensionToMimetypeMap.get(ext);
+                return mimetype;
+            }
+        }
+        // secondary
+        lastPeriodIndex = secondaryObject.lastIndexOf(".");
+        if (lastPeriodIndex > 0 && lastPeriodIndex + 1 < secondaryObject.length()) {
+            String ext = secondaryObject.substring(lastPeriodIndex + 1).toLowerCase();
+            if (extensionToMimetypeMap.keySet().contains(ext)) {
+                String mimetype = (String) extensionToMimetypeMap.get(ext);
+                return mimetype;
+            } 
+        }
+        // default
+        return DEFAULT_MIMETYPE;
+    }
+    
 }
