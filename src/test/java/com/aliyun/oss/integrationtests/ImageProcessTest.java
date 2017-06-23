@@ -49,7 +49,6 @@ public class ImageProcessTest extends TestBase {
     
     final private static String originalImage = "oss/example.jpg";
     final private static String newImage = "oss/new-example.jpg";
-    final private static String bucketName = "mingdi-hz";
         
     @Override
     public void setUp() throws Exception {
@@ -77,7 +76,7 @@ public class ImageProcessTest extends TestBase {
             
             ImageInfo imageInfo = getImageInfo(bucketName, newImage);
             Assert.assertEquals(imageInfo.getHeight(), 100);
-            Assert.assertEquals(imageInfo.getWidth(), 100); // 3587
+            Assert.assertEquals(imageInfo.getWidth(), 100);
             Assert.assertEquals(imageInfo.getFormat(), "jpg");
             
         } catch (Exception e) {
@@ -207,9 +206,6 @@ public class ImageProcessTest extends TestBase {
     public void testProcessObject() {
         StringBuilder styleBuilder = new StringBuilder(); 
         String saveAsKey = "saveaskey-process.jpg";
-        String saveAsImageInfo = "{\n    \"fileSize\": 3267,\n    " + 
-                "\"object\": \"saveaskey-process.jpg\",\n    " + 
-                "\"status\": \"OK\"}";
 
         try {
             styleBuilder.append("image/resize,m_fixed,w_100,h_100");  // resize
@@ -223,7 +219,7 @@ public class ImageProcessTest extends TestBase {
             String json = IOUtils.readStreamAsString(processResult.getResponse().getContent(), "UTF-8");
             processResult.getResponse().getContent().close();
             System.out.println(json);
-            Assert.assertEquals(saveAsImageInfo, json);
+            Assert.assertTrue(json.indexOf("\"status\": \"OK\"") > 0);
             
             ImageInfo imageInfo = getImageInfo(bucketName, saveAsKey);
             Assert.assertEquals(imageInfo.getHeight(), 100);
