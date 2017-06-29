@@ -28,31 +28,20 @@ package com.aliyun.oss.model;
 public class InstanceFlavor {
     
     public static final String DEFAULT_INSTANCE_TYPE = "ecs.n1.small";
-    public static final String DEFAULT_IO_OPTIMIZED = "optimized";
     
-    public InstanceFlavor(String instanceType, String ioOptimized) {
+    public InstanceFlavor(String instanceType) {
         this.instanceType = instanceType;
-        this.ioOptimized = ioOptimized;
     }
     
     public String getInstanceType() {
         return instanceType;
     }
-
-    public String getIoOptimized() {
-        return ioOptimized;
-    }
-
-    public void setIoOptimized(String ioOptimized) {
-        this.ioOptimized = ioOptimized;
-    }
     
     @Override
     public String toString() {
-        return "InstanceFlavor [instanceType=" + instanceType + ", ioOptimized=" + ioOptimized + "]";
+        return "InstanceFlavor [instanceType=" + instanceType + "]";
     }
 
     private String instanceType;
-    private String ioOptimized;
     
 }

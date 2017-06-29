@@ -39,15 +39,41 @@ public class CreateSymlinkRequest extends GenericRequest {
         this.setKey(symlink);
     }
 
+    /**
+     * 设置链接文件的目标文件
+     * @return 链接文件的目标文件
+     */
     public String getTarget() {
         return this.target;
     }
 
+    /**
+     * 设置链接文件的目标文件
+     * @param target 目标文件
+     */
     public void setTarget(String target) {
         this.target = target;
+    }
+    
+    /**
+     * 返回链接文件的元信息
+     * @return 链接文件的元信息
+     */
+    public ObjectMetadata getMetadata() {
+        return metadata;
+    }
+
+    /**
+     * 设置链接文件的元信息
+     * @param metadata 链接文件的元信息
+     */
+    public void setMetadata(ObjectMetadata metadata) {
+        this.metadata = metadata;
     }
 
     // 目标文件
     private String target;
-
+    
+    // 链接文件的元信息
+    private ObjectMetadata metadata;
 }

@@ -42,10 +42,13 @@ import com.aliyun.oss.event.ProgressEvent;
 import com.aliyun.oss.event.ProgressEventType;
 import com.aliyun.oss.event.ProgressListener;
 import com.aliyun.oss.model.CompleteMultipartUploadRequest;
+import com.aliyun.oss.model.DownloadFileRequest;
 import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PartETag;
 import com.aliyun.oss.model.PutObjectRequest;
+import com.aliyun.oss.model.SimplifiedObjectMeta;
+import com.aliyun.oss.model.UploadFileRequest;
 import com.aliyun.oss.model.UploadPartRequest;
 import com.aliyun.oss.model.UploadPartResult;
 
@@ -280,6 +283,37 @@ public class ProgressBarTest extends TestBase {
             ossClient.completeMultipartUpload(completeMultipartUploadRequest);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
+        }
+    }
+    
+    @Test
+    public void testDownloadFileProgressBar() throws Throwable {        
+        final String key = "download-file-progress-bar";
+        final int instreamLength = 4 * 1024 * 1024;
+        final String localFile = genFixedLengthFile(instreamLength);
+        
+        try {
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
+            uploadFileRequest.setUploadFile(localFile);
+            uploadFileRequest.setPartSize(1 * 1024 * 1024);
+            uploadFileRequest.setTaskNum(3);
+            uploadFileRequest.setProgressListener(new PutObjectProgressListener());
+            
+            ossClient.uploadFile(uploadFileRequest);
+            
+            SimplifiedObjectMeta metadata = ossClient.getSimplifiedObjectMeta(bucketName, key);            
+            Assert.assertEquals(instreamLength, metadata.getSize());
+            
+            DownloadFileRequest downloadFileRequest = new DownloadFileRequest(bucketName, key);
+            downloadFileRequest.setDownloadFile(localFile + "-df.tmp");
+            downloadFileRequest.setPartSize(1 * 1024 * 1024);
+            downloadFileRequest.setTaskNum(3);
+            downloadFileRequest.setProgressListener(new GetObjectProgressListener());
+            
+            ossClient.downloadFile(downloadFileRequest);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Assert.fail(ex.getMessage());
         }
     }
     

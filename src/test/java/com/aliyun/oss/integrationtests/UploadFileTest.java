@@ -54,6 +54,7 @@ public class UploadFileTest extends TestBase {
 
             ObjectMetadata meta = ossClient.getObjectMetadata(bucketName, key);
             Assert.assertEquals(meta.getContentLength(), file.length());
+            Assert.assertEquals(meta.getContentType(), "text/plain");
             
             File fileNew = new File(key + "-new.txt");
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
@@ -92,6 +93,7 @@ public class UploadFileTest extends TestBase {
 
             ObjectMetadata meta = ossClient.getObjectMetadata(bucketName, key);
             Assert.assertEquals(meta.getContentLength(), file.length());
+            Assert.assertEquals(meta.getContentType(), "text/plain");
             
             File fileNew = new File(key + "-new.txt");
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
@@ -131,6 +133,7 @@ public class UploadFileTest extends TestBase {
 
             ObjectMetadata meta = ossClient.getObjectMetadata(bucketName, key);
             Assert.assertEquals(meta.getContentLength(), file.length());
+            Assert.assertEquals(meta.getContentType(), "text/plain");
             
             File fileNew = new File(key + "-new.txt");
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);

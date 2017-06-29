@@ -597,11 +597,22 @@ public interface OSS {
     
     /**
      * 判断指定的{@link OSSObject}是否存在。
+     * @param genericRequest 
+     *             请求参数{@link GenericRequest}实例。
+     * @return 
+     *             如果存在返回True，不存在则返回False。
+     */
+    public boolean doesObjectExist(GenericRequest genericRequest)
+            throws OSSException, ClientException;
+    
+    /**
+     * 判断指定的{@link OSSObject}是否存在。
      * @param headObjectRequest 
      *             请求参数{@link HeadObjectRequest}实例。
      * @return 
      *             如果存在返回True，不存在则返回False。
      */
+    @Deprecated
     public boolean doesObjectExist(HeadObjectRequest headObjectRequest)
             throws OSSException, ClientException;
     
@@ -1649,7 +1660,26 @@ public interface OSS {
     public OSSSymlink getSymlink(GenericRequest genericRequest)
             throws OSSException, ClientException;
     
-    // UDF
+    /**
+     * 对指定的Object进行处理。
+     * <p>
+     * 处理结果{@link GenericResult}实例，使用完之后需要手动关闭释放请求连接，
+     * 请调用getResponse().getContent().close()关闭。
+     * </p>
+     * @param processObjectRequest 请求，包括指定的处理方式process。
+     * @return 处理结果{@link GenericResult}实例。使用完之后需要手动关闭释放请求连接。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
+    public GenericResult processObject(ProcessObjectRequest processObjectRequest)
+            throws OSSException, ClientException;
+    
+    /**
+     * 创建UDF。
+     * @param createUdfRequest 请求。
+     * @throws OSSException OSS Server异常信息。
+     * @throws ClientException OSS Client异常信息。
+     */
     public void createUdf(CreateUdfRequest createUdfRequest)
             throws OSSException, ClientException;
     

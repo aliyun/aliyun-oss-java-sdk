@@ -32,11 +32,14 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Test;
 
 import com.aliyun.oss.HttpMethod;
+import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.IOUtils;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
+import com.aliyun.oss.model.GenericResult;
 import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.OSSObject;
+import com.aliyun.oss.model.ProcessObjectRequest;
 import com.aliyun.oss.utils.ResourceUtils;
 
 /**
@@ -73,7 +76,7 @@ public class ImageProcessTest extends TestBase {
             
             ImageInfo imageInfo = getImageInfo(bucketName, newImage);
             Assert.assertEquals(imageInfo.getHeight(), 100);
-            Assert.assertEquals(imageInfo.getWidth(), 100); // 3587
+            Assert.assertEquals(imageInfo.getWidth(), 100);
             Assert.assertEquals(imageInfo.getFormat(), "jpg");
             
         } catch (Exception e) {
@@ -96,7 +99,6 @@ public class ImageProcessTest extends TestBase {
             ImageInfo imageInfo = getImageInfo(bucketName, newImage);
             Assert.assertEquals(imageInfo.getHeight(), 100);
             Assert.assertEquals(imageInfo.getWidth(), 100);
-            Assert.assertEquals(imageInfo.getSize(), 2281);
             Assert.assertEquals(imageInfo.getFormat(), "jpg");
             
         } catch (Exception e) {
@@ -126,7 +128,6 @@ public class ImageProcessTest extends TestBase {
             imageInfo = getImageInfo(bucketName, newImage);
             Assert.assertEquals(imageInfo.getHeight(), 400);
             Assert.assertEquals(imageInfo.getWidth(), 267);
-            Assert.assertEquals(imageInfo.getSize(), 21509);
             Assert.assertEquals(imageInfo.getFormat(), "jpg");
 
         } catch (Exception e) {
@@ -149,7 +150,6 @@ public class ImageProcessTest extends TestBase {
             ImageInfo imageInfo = getImageInfo(bucketName, newImage);
             Assert.assertEquals(imageInfo.getHeight(), 267);
             Assert.assertEquals(imageInfo.getWidth(), 400);
-            Assert.assertEquals(imageInfo.getSize(), 24183);
             Assert.assertEquals(imageInfo.getFormat(), "jpg");
 
         } catch (Exception e) {
@@ -172,7 +172,6 @@ public class ImageProcessTest extends TestBase {
             ImageInfo imageInfo = getImageInfo(bucketName, newImage);
             Assert.assertEquals(imageInfo.getHeight(), 267);
             Assert.assertEquals(imageInfo.getWidth(), 400);
-            Assert.assertEquals(imageInfo.getSize(), 26953);
             Assert.assertEquals(imageInfo.getFormat(), "jpg");
 
         } catch (Exception e) {
@@ -195,9 +194,37 @@ public class ImageProcessTest extends TestBase {
             ImageInfo imageInfo = getImageInfo(bucketName, newImage);
             Assert.assertEquals(imageInfo.getHeight(), 267);
             Assert.assertEquals(imageInfo.getWidth(), 400);
-            Assert.assertEquals(imageInfo.getSize(), 160733);
             Assert.assertEquals(imageInfo.getFormat(), "png");
 
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        } 
+    }
+    
+    @Test
+    public void testProcessObject() {
+        StringBuilder styleBuilder = new StringBuilder(); 
+        String saveAsKey = "saveaskey-process.jpg";
+
+        try {
+            styleBuilder.append("image/resize,m_fixed,w_100,h_100");  // resize
+            styleBuilder.append("|sys/saveas,");
+            styleBuilder.append("o_" + BinaryUtil.toBase64String(saveAsKey.getBytes()));
+            styleBuilder.append(",");
+            styleBuilder.append("b_" + BinaryUtil.toBase64String(bucketName.getBytes()));
+            
+            ProcessObjectRequest request = new ProcessObjectRequest(bucketName, originalImage, styleBuilder.toString());
+            GenericResult processResult = ossClient.processObject(request);
+            String json = IOUtils.readStreamAsString(processResult.getResponse().getContent(), "UTF-8");
+            processResult.getResponse().getContent().close();
+            System.out.println(json);
+            Assert.assertTrue(json.indexOf("\"status\": \"OK\"") > 0);
+            
+            ImageInfo imageInfo = getImageInfo(bucketName, saveAsKey);
+            Assert.assertEquals(imageInfo.getHeight(), 100);
+            Assert.assertEquals(imageInfo.getWidth(), 100);
+            Assert.assertEquals(imageInfo.getFormat(), "jpg");
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());

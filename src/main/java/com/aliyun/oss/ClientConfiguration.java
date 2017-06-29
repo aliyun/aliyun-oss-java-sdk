@@ -61,7 +61,7 @@ public class ClientConfiguration {
     private int maxErrorRetry = DEFAULT_MAX_RETRIES;
     private int connectionRequestTimeout = DEFAULT_CONNECTION_REQUEST_TIMEOUT;
     private int connectionTimeout = DEFAULT_CONNECTION_TIMEOUT;
-    private int socketTimeout = DEFAULT_CONNECTION_TIMEOUT;
+    private int socketTimeout = DEFAULT_SOCKET_TIMEOUT;
     private int maxConnections = DEFAULT_MAX_CONNECTIONS;
     private long connectionTTL = DEFAULT_CONNECTION_TTL;
     private boolean useReaper = DEFAULT_USE_REAPER;

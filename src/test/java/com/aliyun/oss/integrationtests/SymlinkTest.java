@@ -30,6 +30,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
+import com.aliyun.oss.model.CreateSymlinkRequest;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.OSSSymlink;
 import com.aliyun.oss.model.ObjectMetadata;
@@ -49,12 +50,20 @@ public class SymlinkTest extends TestBase {
         try {
             ossClient.putObject(bucketName, targetObject,
                     new ByteArrayInputStream(content.getBytes()));
-
-            ossClient.createSymlink(bucketName, symLink, targetObject);
+            
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType("text/plain");
+            metadata.addUserMetadata("property", "property-value");
+            
+            CreateSymlinkRequest createSymlinkRequest = new CreateSymlinkRequest(bucketName, symLink, targetObject);
+            createSymlinkRequest.setMetadata(metadata);
+            ossClient.createSymlink(createSymlinkRequest);
 
             OSSSymlink symbolicLink = ossClient.getSymlink(bucketName, symLink);
             Assert.assertEquals(symbolicLink.getSymlink(), symLink);
             Assert.assertEquals(symbolicLink.getTarget(), targetObject);
+            Assert.assertEquals(symbolicLink.getMetadata().getContentType(), "text/plain");
+            Assert.assertEquals(symbolicLink.getMetadata().getUserMetadata().get("property"), "property-value");   
                         
             ossClient.deleteObject(bucketName, symLink);
             ossClient.deleteObject(bucketName, targetObject);

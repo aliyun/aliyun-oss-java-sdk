@@ -88,15 +88,11 @@ public class Mimetypes {
             }
         }
     }
-
+    
     public String getMimetype(String fileName) {
-        int lastPeriodIndex = fileName.lastIndexOf(".");
-        if (lastPeriodIndex > 0 && lastPeriodIndex + 1 < fileName.length()) {
-            String ext = fileName.substring(lastPeriodIndex + 1).toLowerCase();
-            if (extensionToMimetypeMap.keySet().contains(ext)) {
-                String mimetype = (String) extensionToMimetypeMap.get(ext);
-                return mimetype;
-            } 
+        String mimeType = getMimetypeByExt(fileName);
+        if (mimeType != null) {
+            return mimeType;
         }
         return DEFAULT_MIMETYPE;
     }
@@ -105,4 +101,33 @@ public class Mimetypes {
        return getMimetype(file.getName());
     }
     
+    public String getMimetype(File file, String key) {
+        return getMimetype(file.getName(), key);
+     }
+    
+    public String getMimetype(String primaryObject, String secondaryObject) {
+        String mimeType = getMimetypeByExt(primaryObject);
+        if (mimeType != null) {
+            return mimeType;
+        }
+        
+        mimeType = getMimetypeByExt(secondaryObject);
+        if (mimeType != null) {
+            return mimeType;
+        }
+
+        return DEFAULT_MIMETYPE;
+    }
+    
+    private String getMimetypeByExt(String fileName) {
+        int lastPeriodIndex = fileName.lastIndexOf(".");
+        if (lastPeriodIndex > 0 && lastPeriodIndex + 1 < fileName.length()) {
+            String ext = fileName.substring(lastPeriodIndex + 1).toLowerCase();
+            if (extensionToMimetypeMap.keySet().contains(ext)) {
+                String mimetype = (String) extensionToMimetypeMap.get(ext);
+                return mimetype;
+            } 
+        }
+        return null;
+    }
 }

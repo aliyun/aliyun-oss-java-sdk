@@ -31,7 +31,6 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.aliyun.oss.ClientErrorCode;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
@@ -40,6 +39,7 @@ import com.aliyun.oss.model.PutObjectResult;
 
 public class DoesObjectExistTest extends TestBase {
     
+    @SuppressWarnings("deprecation")
     @Test
     public void testExistingBucketAndObject() {
         List<String> existingKeys = new ArrayList<String>();
@@ -91,7 +91,7 @@ public class DoesObjectExistTest extends TestBase {
         }
     }
     
-    @Test
+    @SuppressWarnings("deprecation")
     public void testObjectWithMiscConstraints() throws Exception {
         final Date beforeModifiedTime = new Date();
         Thread.sleep(3000);
@@ -219,7 +219,7 @@ public class DoesObjectExistTest extends TestBase {
             client.doesObjectExist(bucketName, nonexistentKey);
             Assert.fail("Does object exist should not be successful");
         } catch (OSSException ex) {
-            Assert.assertEquals(ClientErrorCode.UNKNOWN, ex.getErrorCode());
+            Assert.assertEquals(OSSErrorCode.SIGNATURE_DOES_NOT_MATCH, ex.getErrorCode());
         } finally {
             client.shutdown();
         } 

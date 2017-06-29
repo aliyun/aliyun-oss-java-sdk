@@ -148,6 +148,7 @@ public final class ResponseParsers {
     public static final GetObjectAclResponseParser getObjectAclResponseParser = new GetObjectAclResponseParser();
     public static final GetSimplifiedObjectMetaResponseParser getSimplifiedObjectMetaResponseParser = new GetSimplifiedObjectMetaResponseParser();
     public static final RestoreObjectResponseParser restoreObjectResponseParser = new RestoreObjectResponseParser();
+    public static final ProcessObjectResponseParser processObjectResponseParser = new ProcessObjectResponseParser();
 
     public static final CompleteMultipartUploadResponseParser completeMultipartUploadResponseParser = new CompleteMultipartUploadResponseParser();    
     public static final CompleteMultipartUploadProcessResponseParser completeMultipartUploadProcessResponseParser = new CompleteMultipartUploadProcessResponseParser();    
@@ -693,6 +694,19 @@ public final class ResponseParsers {
         
     }
     
+    public static final class ProcessObjectResponseParser implements ResponseParser<GenericResult> {
+        
+        @Override
+        public GenericResult parse(ResponseMessage response)
+                throws ResponseParseException {
+            GenericResult result = new PutObjectResult();
+            result.setRequestId(response.getRequestId());
+            result.setResponse(response);
+            return result;
+        }
+        
+    }
+    
     public static final class GetObjectMetadataResponseParser implements ResponseParser<ObjectMetadata> {
         
         @Override
@@ -851,7 +865,7 @@ public final class ResponseParsers {
         public OSSSymlink parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-                return parseSymbolicLink(response.getHeaders());
+                return parseSymbolicLink(response);
             } finally {
                 OSSUtils.mandatoryCloseResponse(response);  
             }
@@ -1293,17 +1307,19 @@ public final class ResponseParsers {
     /**
      * Unmarshall symbolic link from response headers.
      */
-    public static OSSSymlink parseSymbolicLink(Map<String, String> headers) 
+    public static OSSSymlink parseSymbolicLink(ResponseMessage response) 
             throws ResponseParseException {
 
         try {
             OSSSymlink smyLink = null;
-            String targetObject = headers.get(OSSHeaders.OSS_HEADER_SYMLINK_TARGET);
             
+            String targetObject = response.getHeaders().get(OSSHeaders.OSS_HEADER_SYMLINK_TARGET);
             if (targetObject != null) {
                 targetObject = HttpUtil.urlDecode(targetObject, "UTF-8");
                 smyLink = new OSSSymlink(null, targetObject); 
             }
+            
+            smyLink.setMetadata(parseObjectMetadata(response.getHeaders()));
             
             return smyLink;
         } catch (Exception e) {
@@ -1416,8 +1432,7 @@ public final class ResponseParsers {
             Date date = DateUtil.parseIso8601Date(root.getChildText("CreationDate"));
             
             String instanceType = root.getChild("Flavor").getChildText("InstanceType");
-            String ioOptimized = root.getChild("Flavor").getChildText("IoOptimized");
-            InstanceFlavor flavor = new InstanceFlavor(instanceType, ioOptimized);
+            InstanceFlavor flavor = new InstanceFlavor(instanceType);
             
             return new UdfApplicationInfo(name, id, region, status, imageVersion, instanceNum, date, flavor);
         } catch (JDOMParseException e) {
@@ -1450,8 +1465,7 @@ public final class ResponseParsers {
                     Date date = DateUtil.parseIso8601Date(elem.getChildText("CreationDate"));
                     
                     String instanceType = elem.getChild("Flavor").getChildText("InstanceType");
-                    String ioOptimized = elem.getChild("Flavor").getChildText("IoOptimized");
-                    InstanceFlavor flavor = new InstanceFlavor(instanceType, ioOptimized);
+                    InstanceFlavor flavor = new InstanceFlavor(instanceType);
                     
                     UdfApplicationInfo udfApp = new UdfApplicationInfo(name, id, region, status, 
                             imageVersion, instanceNum, date, flavor);
