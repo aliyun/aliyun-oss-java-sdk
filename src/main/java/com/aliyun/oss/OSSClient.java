@@ -610,6 +610,15 @@ public class OSSClient implements OSS {
         return doesObjectExist(new GenericRequest(bucketName, key));
     }
     
+    @Override
+    public boolean doesObjectExist(String bucketName, String key, boolean isOnlyInOSS) {
+        if (isOnlyInOSS) {
+            return doesObjectExist(bucketName, key);
+        } else {
+            return doesObjectExistWithRedirect(bucketName, key);
+        }
+    }
+    
     @Deprecated
     @Override
     public boolean doesObjectExist(HeadObjectRequest headObjectRequest)
@@ -626,6 +635,20 @@ public class OSSClient implements OSS {
         } catch (OSSException e) {
             if (e.getErrorCode().equals(OSSErrorCode.NO_SUCH_BUCKET)
                     || e.getErrorCode().equals(OSSErrorCode.NO_SUCH_KEY)) {
+                return false;
+            }
+            throw e;
+        }
+    }
+    
+    private boolean doesObjectExistWithRedirect(String bucketName, String key) {
+        try {
+            HeadObjectRequest headObjectRequest = new HeadObjectRequest(bucketName, key);
+            this.objectOperation.headObject(headObjectRequest);
+            return true;
+        } catch (OSSException e) {
+            if (e.getErrorCode() == OSSErrorCode.NO_SUCH_BUCKET 
+                    || e.getErrorCode() == OSSErrorCode.NO_SUCH_KEY) {
                 return false;
             }
             throw e;

@@ -57,6 +57,20 @@ public class DoesObjectExistTest extends TestBase {
             Assert.fail(e.getMessage());
         }
         
+        try {
+            boolean exist = ossClient.doesObjectExist(bucketName, existingKey, true);
+            Assert.assertTrue(exist);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        
+        try {
+            boolean exist = ossClient.doesObjectExist(bucketName, existingKey, false);
+            Assert.assertTrue(exist);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        
         // Test another overrided interface
         try {
             boolean exist = ossClient.doesObjectExist(new HeadObjectRequest(bucketName, existingKey));
