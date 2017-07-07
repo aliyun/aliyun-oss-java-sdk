@@ -584,7 +584,7 @@ public interface OSS {
             throws OSSException, ClientException;
     
     /**
-     * 判断指定{@link Bucket}下是否存在指定的{@link OSSObject}。不受镜像/302跳转的影响。
+     * 判断指定{@link Bucket}下是否存在指定的{@link OSSObject}。不受镜像/302跳转或者其它跳转功能的影响。
      * @param bucketName 
      *             Bucket名称。
      * @param key
@@ -606,10 +606,10 @@ public interface OSS {
             throws OSSException, ClientException;
     
     /**
-     * 判断Object是否存在，并指定是否受镜像/302跳转的影响。
+     * 判断Object是否存在，并指定是否受镜像/302等其它跳转的影响。
      * @param bucketName Bucket名称。
      * @param key Object Key。 
-     * @param isOnlyInOSS true 不受镜像/302跳转的影响，只检查Object是否在OSS中；
+     * @param isOnlyInOSS true 不受镜像/302等其它跳转的影响，只检查Object是否在OSS中；
      *              false 受镜像/302跳转的影响，如果OSS中不存在，会根据镜像/302的配置检查Object是否存在。
      * @return 如果存在返回true，不存在则返回false。
      */

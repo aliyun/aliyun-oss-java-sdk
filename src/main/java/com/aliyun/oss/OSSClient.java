@@ -615,7 +615,7 @@ public class OSSClient implements OSS {
         if (isOnlyInOSS) {
             return doesObjectExist(bucketName, key);
         } else {
-            return doesObjectExistWithRedirect(bucketName, key);
+            return objectOperation.doesObjectExistWithRedirect(bucketName, key);
         }
     }
     
@@ -629,30 +629,7 @@ public class OSSClient implements OSS {
     @Override
     public boolean doesObjectExist(GenericRequest genericRequest)
             throws OSSException, ClientException {
-        try {
-            getSimplifiedObjectMeta(genericRequest);
-            return true;
-        } catch (OSSException e) {
-            if (e.getErrorCode().equals(OSSErrorCode.NO_SUCH_BUCKET)
-                    || e.getErrorCode().equals(OSSErrorCode.NO_SUCH_KEY)) {
-                return false;
-            }
-            throw e;
-        }
-    }
-    
-    private boolean doesObjectExistWithRedirect(String bucketName, String key) {
-        try {
-            HeadObjectRequest headObjectRequest = new HeadObjectRequest(bucketName, key);
-            this.objectOperation.headObject(headObjectRequest);
-            return true;
-        } catch (OSSException e) {
-            if (e.getErrorCode() == OSSErrorCode.NO_SUCH_BUCKET 
-                    || e.getErrorCode() == OSSErrorCode.NO_SUCH_KEY) {
-                return false;
-            }
-            throw e;
-        }
+        return objectOperation.doesObjectExist(genericRequest);
     }
     
     @Override
