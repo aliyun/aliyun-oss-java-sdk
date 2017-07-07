@@ -730,6 +730,44 @@ public class OSSObjectOperation extends OSSOperation {
         
         return doOperation(request, ResponseParsers.processObjectResponseParser, bucketName, key, true);
     }
+    
+    public boolean doesObjectExist(GenericRequest genericRequest)
+            throws OSSException, ClientException {
+        try {
+            this.getSimplifiedObjectMeta(genericRequest);
+            return true;
+        } catch (OSSException e) {
+            if (e.getErrorCode().equals(OSSErrorCode.NO_SUCH_BUCKET)
+                    || e.getErrorCode().equals(OSSErrorCode.NO_SUCH_KEY)) {
+                return false;
+            }
+            throw e;
+        }
+    }
+    
+    public boolean doesObjectExistWithRedirect(String bucketName, String key) 
+            throws OSSException, ClientException {
+        OSSObject ossObject = null;
+        try {
+            GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
+            ossObject = this.getObject(getObjectRequest);
+            return true;
+        } catch (OSSException e) {
+            if (e.getErrorCode() == OSSErrorCode.NO_SUCH_BUCKET 
+                    || e.getErrorCode() == OSSErrorCode.NO_SUCH_KEY) {
+                return false;
+            }
+            throw e;
+        } finally {
+            if (ossObject != null) {
+                try {
+                    ossObject.forcedClose();
+                } catch (IOException e) {
+                    logException("Forced close failed: ", e);
+                }
+            }
+        }
+    }
 
     private static enum MetadataDirective {
         

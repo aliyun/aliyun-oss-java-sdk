@@ -584,7 +584,7 @@ public interface OSS {
             throws OSSException, ClientException;
     
     /**
-     * 判断指定{@link Bucket}下是否存在指定的{@link OSSObject}。
+     * 判断指定{@link Bucket}下是否存在指定的{@link OSSObject}。不受镜像/302跳转或者其它跳转功能的影响。
      * @param bucketName 
      *             Bucket名称。
      * @param key
@@ -596,7 +596,7 @@ public interface OSS {
             throws OSSException, ClientException;
     
     /**
-     * 判断指定的{@link OSSObject}是否存在。
+     * 判断指定的{@link OSSObject}在OSS上是否存在。
      * @param genericRequest 
      *             请求参数{@link GenericRequest}实例。
      * @return 
@@ -604,6 +604,16 @@ public interface OSS {
      */
     public boolean doesObjectExist(GenericRequest genericRequest)
             throws OSSException, ClientException;
+    
+    /**
+     * 判断Object是否存在，并指定是否受镜像/302等其它跳转的影响。
+     * @param bucketName Bucket名称。
+     * @param key Object Key。 
+     * @param isOnlyInOSS true 不受镜像/302等其它跳转的影响，只检查Object是否在OSS中；
+     *              false 受镜像/302跳转的影响，如果OSS中不存在，会根据镜像/302的配置检查Object是否存在。
+     * @return 如果存在返回true，不存在则返回false。
+     */
+    public boolean doesObjectExist(String bucketName, String key, boolean isOnlyInOSS);
     
     /**
      * 判断指定的{@link OSSObject}是否存在。

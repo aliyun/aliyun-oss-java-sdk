@@ -610,6 +610,15 @@ public class OSSClient implements OSS {
         return doesObjectExist(new GenericRequest(bucketName, key));
     }
     
+    @Override
+    public boolean doesObjectExist(String bucketName, String key, boolean isOnlyInOSS) {
+        if (isOnlyInOSS) {
+            return doesObjectExist(bucketName, key);
+        } else {
+            return objectOperation.doesObjectExistWithRedirect(bucketName, key);
+        }
+    }
+    
     @Deprecated
     @Override
     public boolean doesObjectExist(HeadObjectRequest headObjectRequest)
@@ -620,16 +629,7 @@ public class OSSClient implements OSS {
     @Override
     public boolean doesObjectExist(GenericRequest genericRequest)
             throws OSSException, ClientException {
-        try {
-            getSimplifiedObjectMeta(genericRequest);
-            return true;
-        } catch (OSSException e) {
-            if (e.getErrorCode().equals(OSSErrorCode.NO_SUCH_BUCKET)
-                    || e.getErrorCode().equals(OSSErrorCode.NO_SUCH_KEY)) {
-                return false;
-            }
-            throw e;
-        }
+        return objectOperation.doesObjectExist(genericRequest);
     }
     
     @Override
