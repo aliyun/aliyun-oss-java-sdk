@@ -742,16 +742,17 @@ public final class ResponseParsers {
         @Override
         public DeleteObjectsResult parse(ResponseMessage response)
                 throws ResponseParseException {
-            // Occurs when deleting multiple objects in quiet mode.
-            if (response.getContentLength() == 0) {
-                DeleteObjectsResult result = new DeleteObjectsResult(null);
-                result.setRequestId(response.getRequestId());
-                return result;
-            }
-            
             try {
-                DeleteObjectsResult result = parseDeleteObjectsResult(response.getContent());
+                DeleteObjectsResult result = null;
+                
+                // Occurs when deleting multiple objects in quiet mode.
+                if (response.getContentLength() == 0) {
+                    result = new DeleteObjectsResult(null);
+                } else {
+                    result = parseDeleteObjectsResult(response.getContent());
+                }
                 result.setRequestId(response.getRequestId());
+                
                 return result;
             } finally {
                 safeCloseResponse(response);
