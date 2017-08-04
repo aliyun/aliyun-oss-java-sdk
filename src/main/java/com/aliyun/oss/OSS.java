@@ -913,8 +913,8 @@ public interface OSS {
      *          The origin request.
      * @return
      *        A {@link List} of all styles of the Bucket. If there's no style, it will be an empty list.
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public List<Style> listImageStyle(String bucketName, GenericRequest genericRequest) 
     		throws OSSException, ClientException;
@@ -923,8 +923,8 @@ public interface OSS {
      * Creates the image accessing configuration according to the parameter setBucketProcessRequest.
      * @param setBucketProcessRequest A {@link SetBucketTaggingRequest} instance that contains the image accessing
      *                                configuration such as enable original picture protection, etc.
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void setBucketProcess(SetBucketProcessRequest setBucketProcessRequest)
             throws OSSException, ClientException;
@@ -934,8 +934,8 @@ public interface OSS {
      * @param bucketName
      *          Bucket name.
      * @return A {@link BucketProcess} which contains the image accessing configurations if succeeds.
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public BucketProcess getBucketProcess(String bucketName)
             throws OSSException, ClientException;
@@ -945,8 +945,8 @@ public interface OSS {
      * @param genericRequest
      *          A {@link GenericRequest} instance that has the bucket name.
      * @return A {@link BucketProcess} which contains the image accessing configurations if succeeds.
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public BucketProcess getBucketProcess(GenericRequest genericRequest) 
             throws OSSException, ClientException;
@@ -1199,10 +1199,11 @@ public interface OSS {
             throws OSSException, ClientException;
     
     /**
-     * 获取{@link Bucket}的静态网站托管状态。
+     * Gets the {@link Bucket}'s static webite settings.
      * @param genericRequest
-     *          请求信息。
+     *          The {@link GenericRequest} instance which specifies the bucket name.
      * @return
+     *        A {@link BucketWebsiteResult} instance.
      * @throws OSSException
      * @throws ClientException
      */
@@ -1210,8 +1211,9 @@ public interface OSS {
             throws OSSException, ClientException;
     
     /**
-     * 关闭{@link Bucket}的静态网站托管模式。
+     * Deletes the {@link Bucket}'s static website configuration, which means disabling the static website on the bucket.
      * @param bucketName
+     *          Bucket name
      * @throws OSSException
      * @throws ClientException
      */
@@ -1219,9 +1221,9 @@ public interface OSS {
             throws OSSException, ClientException;
     
     /**
-     * 关闭{@link Bucket}的静态网站托管模式。
+     * Deletes the {@link Bucket}'s static website configuration, which means disabling the static website on the bucket.
      * @param genericRequest
-     *          请求信息。
+     *          The {@link GenericRequest} instance which specifies the bucket name.
      * @throws OSSException
      * @throws ClientException
      */
@@ -1229,574 +1231,598 @@ public interface OSS {
             throws OSSException, ClientException;
     
     /**
-     * 生成Post请求的policy表单域。
-     * @param expiration policy过期时间。
-     * @param conds policy条件列表。
-     * @return policy字符串。
+     * Generates the post policy form field in JSON format.
+     * @param expiration Policy expiration time.
+     * @param conds Policy condition lists.
+     * @return Policy string in JSON format.
      */
-    public String generatePostPolicy(Date expiration, PolicyConditions conds) 
+    public String generatePostPolicy(Date expiration, PolicyConditions conds)
             throws ClientException;
     
     /**
-     * 根据Access Key Secret和policy计算签名，OSS依据该签名验证Post请求的合法性。
-     * @param postPolicy 由{@link #generatePostPolicy(Date, PolicyConditions)}生成的policy字符串。
-     * @return post签名。
+     * Calculates the signature based on the policy and access key secret.
+     * @param postPolicy Post policy string in JSON which is generated from {@link #generatePostPolicy(Date, PolicyConditions)}.
+     * @return Post signature in bas464 string.
      */
     public String calculatePostSignature(String postPolicy);
     
     /**
-     * 设置{@link Bucket}的Lifecycle规则。
-     * @param setBucketLifecycleRequest 请求参数。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Sets the {@link Bucket}'s lifecycle rule.
+     * @param setBucketLifecycleRequest A {@link SetBucketWebsiteRequest} instance which specifies the lifecycle rules
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void setBucketLifecycle(SetBucketLifecycleRequest setBucketLifecycleRequest)
             throws OSSException, ClientException;
     
     /**
-     * 获取{@link Bucket}的Lifecycle规则列表。
-     * @param bucketName 指定Bucket名称。
-     * @return Lifecycle规则列表。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Gets the {@link Bucket}'s lifecycle rules.
+     * @param bucketName Bucket name.
+     * @return A list of {@link LifecycleRule}.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public List<LifecycleRule> getBucketLifecycle(String bucketName)
             throws OSSException, ClientException;
     
     /**
-     * 获取{@link Bucket}的Lifecycle规则列表。
+     * Gets the {@link Bucket}'s Lifecycle rules.
      * @param genericRequest
-     *          请求信息。
-     * @return Lifecycle规则列表。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     *          The {@link GenericRequest} instance which specifies the bucket name.
+     * @return A List of {@link LifecycleRule} instances.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public List<LifecycleRule> getBucketLifecycle(GenericRequest genericRequest)
             throws OSSException, ClientException;
     
     /**
-     * 关闭{@link Bucket}的Lifecycle规则。
-     * @param bucketName 指定Bucket名称。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Deletes all the {@link Bucket}'s Lifecycle rules.
+     * @param bucketName The bucket name to operate on.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void deleteBucketLifecycle(String bucketName)
             throws OSSException, ClientException;
     
     /**
-     * 关闭{@link Bucket}的Lifecycle规则。
+     * Deletes all the {@link Bucket}'s Lifecycle rules.
      * @param genericRequest
-     *          请求信息。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     *         The {@link GenericRequest} instance which specifies the bucket name.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void deleteBucketLifecycle(GenericRequest genericRequest)
             throws OSSException, ClientException;
     
     /**
-     * 设置{@link Bucket}的跨区域复制规则。
-     * @param addBucketReplicationRequest 请求参数。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Adds a {@link Bucket}'s cross-region replication rule.
+     * @param addBucketReplicationRequest A {@link AddBucketReplicationRequest} instance which specifies a replication
+     *                                   rule.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void addBucketReplication(AddBucketReplicationRequest addBucketReplicationRequest)
     		throws OSSException, ClientException;
     
     /**
-     * 获取{@link Bucket}已设置的跨区域复制规则。
-     * @param bucketName 指定Bucket名称。
-     * @return 已设置的跨区域复制规则列表。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Gets all the {@link Bucket}'s cross region replication rules.
+     * @param bucketName Bucket name.
+     * @return A list of {@link ReplicationRule} under the bucket.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public List<ReplicationRule> getBucketReplication(String bucketName)
             throws OSSException, ClientException;
     
     /**
-     * 获取{@link Bucket}已设置的跨区域复制规则。
+     * Gets all the {@link Bucket}'s cross region replication rules.
      * @param genericRequest
-     *          请求信息。
-     * @return 已设置的跨区域复制规则列表。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     *          The {@link GenericRequest} instance which specifies the bucket name.
+     * @return A list of {@link ReplicationRule} under the bucket.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public List<ReplicationRule> getBucketReplication(GenericRequest genericRequest)
             throws OSSException, ClientException;
     
     /**
-     * 停止{@link Bucket}的跨区域复制并删除复制配置。
-     * @param bucketName 指定Bucket名称。
-     * @param replicationRuleID 复制规则对应的ID。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Deletes the specified {@link Bucket}'s cross region replication rule.
+     * @param bucketName Bucket name.
+     * @param replicationRuleID Replication Id to delete.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void deleteBucketReplication(String bucketName, String replicationRuleID)
             throws OSSException, ClientException;
     
     /**
-     * 停止{@link Bucket}的跨区域复制并删除复制配置。
+     * Deletes the specified {@link Bucket}'s cross region replication rule.
      * @param deleteBucketReplicationRequest
-     *          请求信息。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     *          The {@link DeleteBucketReplicationRequest} instance which specifies the replication rule Id to delete.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void deleteBucketReplication(DeleteBucketReplicationRequest deleteBucketReplicationRequest)
             throws OSSException, ClientException;
     
     /**
-     * 获取{@link Bucket}的跨区域复制进度。
-     * @param bucketName 指定Bucket名称。
-     * @param replicationRuleID 复制规则对应的ID。
-     * @return 历史数据和新写入数据的复制进度。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Gets the {@link Bucket}'s progress of the specified cross region replication rule.
+     * @param bucketName Bucket name.
+     * @param replicationRuleID Replication Rule Id.
+     * @return The new data's and historical data's replication progress in float.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public BucketReplicationProgress getBucketReplicationProgress(String bucketName, String replicationRuleID)
             throws OSSException, ClientException;
     
     /**
-     * 获取{@link Bucket}的跨区域复制进度。
-     * @param genericRequest
-     *          请求信息。
-     * @return 历史数据和新写入数据的复制进度。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Gets the {@link Bucket}'s progress of the specified cross region replication rule.
+     * @param getBucketReplicationProgressRequest
+     *          The {@link GetBucketReplicationProgressRequest} instance which specifies the replication rule Id and
+     *          bucket name.
+     * @return The new data's and historical data's replication progress in float.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public BucketReplicationProgress getBucketReplicationProgress(
             GetBucketReplicationProgressRequest getBucketReplicationProgressRequest)
             throws OSSException, ClientException;
     
     /**
-     * 获取{@link Bucket}所在的数据中心配对的可复制到的数据中心。
-     * @param bucketName 指定Bucket名称。
-     * @return 可复制到的数据中心列表。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Gets the {@link Bucket}'s replication reachable data centers.
+     * @param bucketName Bucket name.
+     * @return Replication reachable data center list.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public List<String> getBucketReplicationLocation(String bucketName)
             throws OSSException, ClientException;
     
     /**
-     * 获取{@link Bucket}的所在的数据中心配对的可复制到的数据中心。
+     * Gets the {@link Bucket}'s replication reachable data centers.
      * @param genericRequest
-     *          请求信息。
-     * @return 可复制到的数据中心列表。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     *          The {@link GenericRequest} instance that specifies the bucket name.
+     * @return Replication reachable data center list.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public List<String> getBucketReplicationLocation(GenericRequest genericRequest)
             throws OSSException, ClientException;
     
     /**
-     * 添加{@link Bucket}的cname。
-     * @param setBucketCnameRequest 请求参数。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Adds a Cname for the {@link Bucket} instance.
+     * @param addBucketCnameRequest The request specifies the bucket name and the Cname information.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void addBucketCname(AddBucketCnameRequest addBucketCnameRequest)
             throws OSSException, ClientException;
     
     /**
-     * 获取{@link Bucket}已设置的cname。
-     * @param bucketName 指定Bucket名称。
-     * @return 已设置的跨区域复制规则列表。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Gets the {@link Bucket}'s Cnames.
+     * @param bucketName Bucket name.
+     * @return The list of Cnames under the bucket.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public List<CnameConfiguration> getBucketCname(String bucketName)
             throws OSSException, ClientException;
     
     /**
-     * 获取{@link Bucket}已设置的cname。
+     * Gets the {@link Bucket}'s Cnames.
      * @param genericRequest
-     *          请求信息。
-     * @return 已设置的跨区域复制规则列表。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     *          The {@link GenericRequest} instance which specifies the bucket name.
+     * @return The list of Cnames under the bucket.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public List<CnameConfiguration> getBucketCname(GenericRequest genericRequest)
             throws OSSException, ClientException;
     
     /**
-     * 删除{@link Bucket}的指定的cname。
-     * @param bucketName 指定Bucket名称。
+     * Deletes one {@link Bucket}'s Cname specified by the parameter domain.
+     * @param bucketName The bucket name。
      * @param domain cname。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void deleteBucketCname(String bucketName, String domain)
             throws OSSException, ClientException;
     
     /**
-     * 删除{@link Bucket}的指定的cname。
-     * @param deleteBucketCnameRequest 删除cname请求。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Deletes one {@link Bucket}'s specific Cname specified by the parameter domain.
+     * @param deleteBucketCnameRequest  A {@link DeleteBucketCnameRequest} instance that specifies the bucket name and
+     *                                 the domain name to delete
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void deleteBucketCname(DeleteBucketCnameRequest deleteBucketCnameRequest)
             throws OSSException, ClientException;
     
     /**
-     * 获取{@link Bucket}的信息。
-     * @param bucketName 指定Bucket名称。
-     * @return Bucket信息。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Gets the {@link Bucket}'s basic information as well as its ACL.
+     * @param bucketName The bucket name。
+     * @return A {@link BucketInfo} instance.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public BucketInfo getBucketInfo(String bucketName)
             throws OSSException, ClientException;
     
     /**
-     * 获取{@link Bucket}的信息。
-     * @param genericRequest 请求信息。
-     * @return Bucket信息。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Gets the {@link Bucket}'s basic information as well as its ACL.
+     * @param genericRequest The {@link GenericRequest} instance which specifies the bucket name.
+     * @return A {@link BucketInfo} instance.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public BucketInfo getBucketInfo(GenericRequest genericRequest)
             throws OSSException, ClientException;
     
     /**
-     * 获取{@link Bucket}的存储信息。
-     * @param bucketName 指定Bucket名称。
-     * @return Bucket信息。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Gets the {@link Bucket}'s storage information such as object counts, storage size and executing multipart uploads.
+     * @param bucketName The bucket name。
+     * @return A {@link BucketStat} instance.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public BucketStat getBucketStat(String bucketName)
             throws OSSException, ClientException;
     
     /**
-     * 获取{@link Bucket}的存储信息。
-     * @param genericRequest 请求信息。
-     * @return Bucket信息。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Gets the {@link Bucket}'s storage information such as object counts, storage size and executing multipart uploads.
+     * @param genericRequest The {@link GenericRequest} instance which specifies the bucket name.
+     * @return A {@link BucketStat} instance.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public BucketStat getBucketStat(GenericRequest genericRequest)
             throws OSSException, ClientException;
     
     /**
-     * 设置{@link Bucket}的容量。
-     * @param bucketName 指定Bucket名称。
-     * @param userQos 包括的容量的Bucket Qos。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Sets the capacity of the {@link Bucket}.
+     * @param bucketName The bucket name。
+     * @param userQos A {@link UserQos} instance which specifies the capacity in GB
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void setBucketStorageCapacity(String bucketName, UserQos userQos) throws OSSException, ClientException;
     
     /**
-     * 设置{@link Bucket}的容量。
-     * @param setBucketStorageCapacityRequest 请求信息。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Sets the capacity of the {@link Bucket}.
+     * @param setBucketStorageCapacityRequest
+     *         A {@link SetBucketStorageCapacityRequest} instance which specifies the bucket name as well as a
+     *         UserQos instance
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void setBucketStorageCapacity(SetBucketStorageCapacityRequest setBucketStorageCapacityRequest) 
             throws OSSException, ClientException;
     
     /**
-     * 获取{@link Bucket}的容量。
-     * @param bucketName 指定Bucket名称。
-     * @return Bucket的容量配置。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Gets the {@link Bucket}'s capacity
+     * @param bucketName The bucket name。
+     * @return A {@link UserQos} instance which has the capacity information.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public UserQos getBucketStorageCapacity(String bucketName) throws OSSException, ClientException;
     
     /**
-     * 获取{@link Bucket}的容量。
-     * @param genericRequest 请求信息。
-     * @return Bucket的容量配置。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Gets the {@link Bucket}'s capacity
+     * @param genericRequest The {@link GenericRequest} instance which specifies the bucket name.
+     * @return A {@link UserQos} instance which has the capacity information.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public UserQos getBucketStorageCapacity(GenericRequest genericRequest) 
             throws OSSException, ClientException;
 			
     /**
-     * 文件上传
+     * File upload
      * 
-     * 上传的文件分成若干个分片分别上传，最后所有分片都上传 成功后，完成整个文件的上传。
-     * 在上传的过程中会记录当前上传的进度信息，记 录在checkpoint文件中。
-     * 如果上传过程中某一分片上传失败，再次上传时会从 checkpoint文件中记录的点继续上传。
-     * 这要求再次调用时要指定与上次相同的 checkpoint文件。上传完成后checkpoint文件会被删除。
-     * 默认一个线程、不开启checkpoint。
-     * 
-     * @param uploadFileRequest上传文件请求。
-     * @return 文件上传是否成功，及每个分片上传是否成功。
+     * This method will automatically split files into parts and upload them in parallel by a thread pool, though by
+     * default the thread pool only has one thread.
+     * After all parts are uploaded, then it will merge them into one file. But if any one part fails to be uploaded,
+     * the whole upload fails.
+     * Optionally a checkpoint file could be used to track the progress of the upload and resume the upload later upon
+     * failure. Once the upload completes, the checkpoint file would be deleted.
+     * By default checkpoint file is disabled.
+     *
+     * @param uploadFileRequest A {@link UploadFileRequest} instance that specifies the bucket name, object key, file path
+     *                          ,part size (>100K) and thread count (from 1 to 1000) and checkpoint file.
+     * @return A {@link UploadFileRequest} instance which has the new uploaded file's key, ETag, location.
      * @throws Throwable 
      */
     public UploadFileResult uploadFile(UploadFileRequest uploadFileRequest) throws Throwable;
     
     /**
-     * 文件下载
+     * File download
      * 
-     * 实现原理是将要下载的Object分成若干个分片分别下载，最后所有分片都下 载成功后，完成整个文件的下载。
-     * 在下载的过程中会记录当前下载的进度信息 （记录在checkpoint文件中）和已下载的分片，
-     * 如果下载过程中某一分片下载失败，再次下 载时会从checkpoint文件中记录的点继续下载。
-     * 这要求再次调用时要指定与上次 相同的checkpoint文件。下载完成后，checkpoint文件会被删除。
-     * 默认一个线程、不开启checkpoint。
+     * Very similar with file upload, this method will split the OSS object into parts and download them in parallel by
+     * a thread pool, though by default the thread pool only has one thread.
+     * After all parts are downloaded, then the method will merge them into one file. But if any one part fails to be
+     * downloaded, the whole download fails.
+     * Optionally a checkpoint file could be used to track the progress of the download and resume the download later upon
+     * failure. Once the download completes, the checkpoint file would be deleted.
+     * By default checkpoint file is disabled.
      * 
-     * @param downloadFileRequest分片下载请求。
-     * @return 文件上传是否成功、每个分片上传是否成功，及ObjectMetadata。
+     * @param downloadFileRequest A {@link DownloadFileRequest} instance that specifies the bucket name, object key,
+     *                            file path, part size (>100K) and thread count (from 1 to 1000) and checkpoint file. Also
+     *                            it could have the ETag and ModifiedSince constraints.
+     * @return A {@link DownloadFileResult} instance that has the {@link ObjectMetadata} information.
      * @throws Throwable
      */
     public DownloadFileResult downloadFile(DownloadFileRequest downloadFileRequest) throws Throwable;
     
     /**
-     * 创建Live Channel。
+     * Creates a live streaming channel.
+     * OSS could manage the RTMP inbound stream by the "Live Channel". To store the RTMP stream into OSS, this method needs
+     * to be called first to create a "Live Channel".
      * 
-     * OSS通过Live Channel，即“直播频道”，来管理RTMP推流；用户想要推送RTMP流到OSS，必须先通过本接口来创建Live Channel。
-     * 
-     * @param createLiveChannelRequest 请求参数。
-     * @return 请求结果{@link CreateLiveChannelResult}实例。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * @param createLiveChannelRequest A {@link CreateLiveChannelRequest} instance that specifies the target bucket name,
+     *                                 channel name, channel status (Enabled or Disabled),
+     *                                 streaming storage status such as media file name, its .ts file time duration, etc.
+     * @return A {@link CreateLiveChannelResult} instance that specifies the publish url and playback url.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public CreateLiveChannelResult createLiveChannel(CreateLiveChannelRequest createLiveChannelRequest) 
             throws OSSException, ClientException;
     
     /**
-     * 设置Live Channel的状态。
+     * Sets the Live Channel status.
      * 
-     * 通过修改LiveChannel的状态，可实现“禁播”功能。
+     * A Live Channel could be disabled or enabled by setting its status.
      * 
-     * @param bucketName Bucket名称。
-     * @param liveChannel Live Channel名称。
-     * @param status Live Channel状态，可选值包括enabled、disabled。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * @param bucketName Bucket name.
+     * @param liveChannel Live Channel name.
+     * @param status Live Channel status: "Enabled" or "Disabled".
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void setLiveChannelStatus(String bucketName, String liveChannel, LiveChannelStatus status) 
             throws OSSException, ClientException;
 
     /**
-     * 设置Live Channel的状态。
-     * 
-     * 通过修改LiveChannel的状态，可实现“禁播”功能。
+     * Sets the Live Channel status.
+     *
+     * A Live Channel could be disabled or enabled by setting its status.
      *      
-     * @param setLiveChannelRequest 请求参数。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * @param setLiveChannelRequest A {@link SetLiveChannelRequest} instance that specifies the bucket name, the channel
+     *                              name and the Live Channel status.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void setLiveChannelStatus(SetLiveChannelRequest setLiveChannelRequest) 
             throws OSSException, ClientException;
    
     /**
-     * 获取Live Channel的配置信息。
-     * @param bucketName Bucket名称。
-     * @param liveChannel Live Channel名称。
-     * @return 请求结果{@link LiveChannelInfo}实例。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Gets the Live Channel's configuration.
+     * @param bucketName Bucket name.
+     * @param liveChannel Live Channel name.
+     * @return A {@link LiveChannelInfo} instance that contains the Live Channel's name, description, bucket name and its
+     *          streaming storage information.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public LiveChannelInfo getLiveChannelInfo(String bucketName, String liveChannel) 
             throws OSSException, ClientException;
     
     /**
-     * 获取Live Channel的配置信息。
-     * @param liveChannelGenericRequest 请求参数。
-     * @return 请求结果{@link LiveChannelInfo}实例。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Gets the Live Channel's configuration.
+     * @param liveChannelGenericRequest A {@link LiveChannelGenericRequest} instance that specifies the bucket name and
+     *                                 Live Channel name.
+     * @return A {@link LiveChannelInfo} instance that contains the Live Channel's name, description, bucket name and its
+     *          streaming storage information.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public LiveChannelInfo getLiveChannelInfo(LiveChannelGenericRequest liveChannelGenericRequest) 
             throws OSSException, ClientException;
 
     /**
-     * 获取Live Channel的推流状态。
-     * @param bucketName Bucket名称。
-     * @param liveChannel Live Channel名称。
-     * @return 请求结果{@link LiveChannelStat}实例。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Gets Live Channel's streaming information.
+     * @param bucketName Bucket name.
+     * @param liveChannel Live Channel name.
+     * @return A {@link LiveChannelStat} instance that contains the media's resolution, frame rate and bandwidth.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public LiveChannelStat getLiveChannelStat(String bucketName, String liveChannel) 
             throws OSSException, ClientException;
     
     /**
-     * 获取Live Channel的推流状态。
-     * @param liveChannelGenericRequest 请求参数。
-     * @return 请求结果{@link LiveChannelStat}实例。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Gets Live Channel's streaming information.
+     * @param liveChannelGenericRequest A {@link LiveChannelGenericRequest} instance that specifies the bucket name and
+     *                                  channel name.
+     * @return A {@link LiveChannelStat} instance that contains the media's resolution, frame rate and bandwidth.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public LiveChannelStat getLiveChannelStat(LiveChannelGenericRequest liveChannelGenericRequest) 
             throws OSSException, ClientException;
     
     /**
-     * 删除Live Channel。
-     * @param bucketName Bucket名称。
-     * @param liveChannel Live Channel名称。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Deletes the Live Channel.
+     * @param bucketName Bucket name.
+     * @param liveChannel Live Channel name.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void deleteLiveChannel(String bucketName, String liveChannel) 
             throws OSSException, ClientException;
     
     /**
-     * 删除Live Channel。
+     * Deletes the Live Channel。
      * 
-     * 删除指定的直播频道。删除频道时，该频道历史上直播生成的视频文件仍然保留。
+     * After the deletion, the media files are still kept. But the streaming will not work on these files.
      * 
-     * @param liveChannelGenericRequest 请求参数。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * @param liveChannelGenericRequest A {@link LiveChannelGenericRequest} instance that specifies the
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void deleteLiveChannel(LiveChannelGenericRequest liveChannelGenericRequest) 
             throws OSSException, ClientException;
     
     /**
-     * 列出指定Bucket下的所有{@link LiveChannel}的列表。
+     * Lists all Live Channels under a bucket.
      * 
-     * @param bucketName Bucket名称。
-     * @return 所有{@link LiveChannel}的列表。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * @param bucketName Bucket name.
+     * @return A list of all {@link LiveChannel} instances under the bucket.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public List<LiveChannel> listLiveChannels(String bucketName) throws OSSException, ClientException;
     
     /**
-     * 按照请求参数要求返回的{@link LiveChannel}列表。
-     * @param listLiveChannelRequest 请求参数。
-     * @return 符合请求参数要求的{@link LiveChannel}列表。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Lists all Live Channels under a bucket that meets the requirement specified by the parameter listLiveChannelRequest.
+     * @param listLiveChannelRequest A {@link ListLiveChannelsRequest} that specifies the bucket name and its
+     *                               requirement on Live Channel instances to return, such as prefix, marker, max
+     *                               entries to return.
+     * @return A list of {@link LiveChannel} instances that meet the requirements.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public LiveChannelListing listLiveChannels(ListLiveChannelsRequest listLiveChannelRequest) 
             throws OSSException, ClientException;
     
     /**
-     * 获取指定Live Channel的推流记录。
-     * 
-     * OSS为每个Live Channel保存最近的10次推流记录。
-     * 
-     * @param bucketName Bucket名称。
-     * @param liveChannel Live Channel名称。
-     * @return 最近的推流记录。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Gets recent {@link LiveRecord} entries from the specified Live Channel.
+     * OSS saves recent 10 LiveRecord (pushing streaming record) for every Live Channel.
+     *
+     * @param bucketName Bucket name.
+     * @param liveChannel Live Channel name.
+     * @return Recent (up to 10) {@link LiveRecord} for the live channel.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public List<LiveRecord> getLiveChannelHistory(String bucketName, String liveChannel) 
             throws OSSException, ClientException;
     
     /**
-     * 获取指定Live Channel的推流记录。
-     * 
-     * OSS为每个LiveChannel保存最近的10次推流记录。
+     * Gets recent {@link LiveRecord} entries from the specified Live Channel.
+     * OSS saves recent 10 LiveRecord (pushing streaming record) for every Live Channel.
      *      
-     * @param liveChannelGenericRequest 请求参数。
-     * @return 最近的次推流记录。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * @param liveChannelGenericRequest A {@link LiveChannelGenericRequest} instance that specifies the bucket name and
+     *                                  Live Channel name.
+     * @return Recent (up to 10) {@link LiveRecord} for the live channel.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public List<LiveRecord> getLiveChannelHistory(LiveChannelGenericRequest liveChannelGenericRequest) 
             throws OSSException, ClientException;
     
     /**
-     * 为指定时间段内的ts文件生成一个点播的播放列表（m3u8文件）。
-     * @param bucketName Bucket名称。
-     * @param liveChannel Live Channel名称。
-     * @param PlaylistName 生成的点播用m3u8文件的basename，例如playlist.m3u8。
-     * @param startTime 播放列表的开始时间，格式采用epoch time，例如1459922563。
-     * @param endTime 播放列表的结束时间，格式采用epoch time，例如1459922563。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Generates a VOD playlist (*.m3u8 file) for the *.ts files with specified time range under the Live Channel.
+     * @param bucketName Bucket name.
+     * @param liveChannelName Live Channel name.
+     * @param PlaylistName The playlist file name, such as (playlist.m3u8).
+     * @param startTime The start time of the playlist in epoch time (means *.ts files time is same or later than it)
+     * @param endTime The end time of the playlist in epoch time(means *.ts files time is no later than it).
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void generateVodPlaylist(String bucketName, String liveChannelName, String PlaylistName,
             long startTime, long endTime) throws OSSException, ClientException;
     
     /**
-     * 为指定时间段内的ts文件生成一个点播的播放列表（m3u8文件）。
-     * @param generateVodPlaylistRequest 请求参数。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Generates a VOD playlist (*.m3u8 file) for the *.ts files with specified time range under the Live Channel.
+     * @param generateVodPlaylistRequest A {@link GenerateVodPlaylistRequest} instance the specifies the bucket name and
+     *                                   the Live Channel name.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void generateVodPlaylist(GenerateVodPlaylistRequest generateVodPlaylistRequest) 
             throws OSSException, ClientException;
    
     /**
-     * 生成Live Channel的RTMP推流地址。
-     * @param bucketName Bucket名称。
-     * @param liveChannel Live Channel名称。
-     * @param PlaylistName 生成的点播用m3u8文件的basename，例如playlist.m3u8。
-     * @param expires 期望的过期时间，格式采用epoch time，例如1459922563。
-     * @return Live Channel的RTMP推流地址。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Generates a RTMP pushing streaming address in the Live Channel.
+     * @param bucketName Bucket name.
+     * @param liveChannelName Live Channel name.
+     * @param PlaylistName The playlist file name such as playlist.m3u8.
+     * @param expires Expiration time in epoch time, such as 1459922563.
+     * @return Live Channel's RTMP pushing streaming address.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public String generateRtmpUri(String bucketName, String liveChannelName, String PlaylistName,
             long expires) throws OSSException, ClientException;
     
     /**
-     * 生成Live Channel的RTMP推流地址。
-     * @param generatePushflowUrlRequest 请求参数。
-     * @return Live Channel的RTMP推流地址。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Generates a RTMP pushing streaming address in the Live Channel.
+     * @param generatePushflowUrlRequest A {@link GenerateRtmpUriRequest} instance that specifies the bucket name and the
+     *                                   Live Channel name.
+     * @return Live Channel's RTMP pushing streaming address.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public String generateRtmpUri(GenerateRtmpUriRequest generatePushflowUrlRequest) 
             throws OSSException, ClientException;
 
     /**
-	 * 创建符号链接。
-     * @param bucketName Bucket名称。
-     * @param symlink 符号链接。
-     * @param target 目标文件。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+	 * Creates a symbolic link to a target file under the bucket---this is not supported for archive class bucket.
+     * @param bucketName Bucket name.
+     * @param symlink symbolic name.
+     * @param target target file key.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void createSymlink(String bucketName, String symlink, String target)
             throws OSSException, ClientException;
     /**
-     * 创建符号链接。
-     * @param createSymlinkRequest 创建符号链接请求。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Creates a symbol link to a target file under the bucket---this is not supported for archive class bucket.
+     * @param createSymlinkRequest A {@link CreateSymlinkRequest} instance that specifies the bucket name, symbolic name.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void createSymlink(CreateSymlinkRequest createSymlinkRequest)
             throws OSSException, ClientException;
     
     /**
-     * 获取符号链接的相关信息。
-     * @param bucketName Bucket名称。
-     * @param symlink 符号链接。
-     * @return 符号链接相关的信息，包括目标文件等。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Gets the symbolic information for the given symbolic name.
+     * @param bucketName Bucket name.
+     * @param symlink The symbolic name.
+     * @return The symbolic information, including the target file name and its metadata.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public OSSSymlink getSymlink(String bucketName, String symlink)
             throws OSSException, ClientException;
     
     /**
-     * 获取符号链接的相关信息。
-     * @param genericRequest 请求，包括bucketName、symLink。
-     * @return 符号链接相关的信息，包括目标文件等。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Gets the symbolic information for the given symbolic name.
+     * @param genericRequest A {@link GenericRequest} instance which specifies the bucket name and symbolic name.
+     * @return The symbolic information, including the target file name and its metadata.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public OSSSymlink getSymlink(GenericRequest genericRequest)
             throws OSSException, ClientException;
     
     /**
-     * 对指定的Object进行处理。
+     * Apply process on the specified image file.
      * <p>
-     * 处理结果{@link GenericResult}实例，使用完之后需要手动关闭释放请求连接，
-     * 请调用getResponse().getContent().close()关闭。
+     * The supported process includes resize, rotate, crop, watermark, format, udf, customized style, etc.
+     * The {@link GenericResult} instance returned must be closed by the calller to release connection via calling
+     * getResponse().getContent().close().
      * </p>
-     * @param processObjectRequest 请求，包括指定的处理方式process。
-     * @return 处理结果{@link GenericResult}实例。使用完之后需要手动关闭释放请求连接。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * @param processObjectRequest A {@link ProcessObjectRequest} instance that specifies the bucket name, the object key
+     *                             and the process (such as image/resize,w_500)
+     * @return A {@link GenericResult} instance which must be closed after the usage by the caller.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public GenericResult processObject(ProcessObjectRequest processObjectRequest)
             throws OSSException, ClientException;
     
     /**
-     * 创建UDF。
-     * @param createUdfRequest 请求。
-     * @throws OSSException OSS Server异常信息。
-     * @throws ClientException OSS Client异常信息。
+     * Creates UDF
+     * @param createUdfRequest A {@link CreateUdfRequest} instance.
+     * @throws OSSException OSS Server side exception.
+     * @throws ClientException OSS Client side exception.
      */
     public void createUdf(CreateUdfRequest createUdfRequest)
             throws OSSException, ClientException;
