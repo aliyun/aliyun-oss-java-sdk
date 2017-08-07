@@ -22,7 +22,7 @@ package com.aliyun.oss.model;
 import java.util.Date;
 
 /**
- * {@link OSSObject}摘要信息。
+ * {@link OSSObject} summary information.
  */
 public class OSSObjectSummary {
 
@@ -43,129 +43,130 @@ public class OSSObjectSummary {
     private Owner owner;
 
     /**
-     * 初始化一个新的{@link OSSObjectSummary}实例。
+     * Constructor.
      */
     public OSSObjectSummary() {
     }
 
     /**
-     * 返回所在{@link Bucket}的名称。
+     * Gets the {@link Bucket} name.
      * @return
-     *      所在{@link Bucket}的名称。
+     *      The bucket name.
      */
     public String getBucketName() {
         return bucketName;
     }
 
     /**
-     * 设置所在{@link Bucket}的名称。
+     * Sets the {@link Bucket} name.
      * @param bucketName
-     *          所在{@link Bucket}的名称。
+     *          The {@link Bucket} name.
      */
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
     }
 
     /**
-     * 返回Object的Key。
+     * Gets the object key.
      * @return
-     *      Object的Key。
+     *      Object key.
      */
     public String getKey() {
         return key;
     }
 
     /**
-     * 设置Object的Key。
+     * Sets the object key.
      * @param key
-     *          Object的Key。
+     *          Object key.
      */
     public void setKey(String key) {
         this.key = key;
     }
 
     /**
-     * 返回一个值表示与Object相关的hex编码的128位MD5摘要。
+     * Gets the object ETag.
+     * ETag is a 128bit MD5 signature about the object in hex.
      * @return
-     *      与Object相关的hex编码的128位MD5摘要。
+     *      ETag value.
      */
     public String getETag() {
         return eTag;
     }
 
     /**
-     * 设置一个值表示与Object相关的hex编码的128位MD5摘要。
+     * Sets the object ETag.
      * @param eTag
-     *          一个值表示与Object相关的hex编码的128位MD5摘要。
+     *          ETag value.
      */
     public void setETag(String eTag) {
         this.eTag = eTag;
     }
 
     /**
-     * 获取Object的文件字节数。
+     * Gets the object Size
      * @return
-     *      文件字节数。
+     *      Object size.
      */
     public long getSize() {
         return size;
     }
 
     /**
-     * 设置Object的文件字节数。
+     * Sets the object size.
      * @param size
-     *          文件字节数。
+     *          Object size.
      */
     public void setSize(long size) {
         this.size = size;
     }
 
     /**
-     * 返回最后修改时间。
-     * @return 最后修改时间。
+     * Gets the last modified time of the object.
+     * @return The last modified time.
      */
     public Date getLastModified() {
         return lastModified;
     }
 
     /**
-     * 设置最后修改时间。
+     * Sets the last modified time.
      * @param lastModified
-     *          最后修改时间。
+     *          Last modified time.
      */
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
     }
 
     /**
-     * 返回Object的所有者。
-     * @return Object的所有者。
+     * Gets the owner of the object.
+     * @return Object owner.
      */
     public Owner getOwner() {
         return owner;
     }
 
     /**
-     * 设置Object的所有者。
+     * Sets the owner of the object.
      * @param owner
-     *          Object的所有者。
+     *          Object owner.
      */
     public void setOwner(Owner owner) {
         this.owner = owner;
     }
 
     /**
-     * 返回Object的存储类别。
-     * @return Object的存储类别。
+     * Gets the storage class of the object.
+     * @return Object storage class.
      */
     public String getStorageClass() {
         return storageClass;
     }
 
     /**
-     * 设置Object的存储类别。
+     * Sets the storage class of the object.
      * @param storageClass
-     *          Object的存储类别。
+     *          Object storage class.
      */
     public void setStorageClass(String storageClass) {
         this.storageClass = storageClass;

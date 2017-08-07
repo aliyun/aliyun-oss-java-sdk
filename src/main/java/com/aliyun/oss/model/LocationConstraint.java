@@ -21,27 +21,27 @@ package com.aliyun.oss.model;
 
 public class LocationConstraint {
     /**
-     * 杭州数据中心（默认值）
+     * Hangzhou Datacenter (Default value).
      */
     public static final String OSS_CN_HANGZHOU = "oss-cn-hangzhou";
 
     /**
-     * 青岛数据中心
+     * Qingdao datacenter.
      */
     public static final String OSS_CN_QINGDAO = "oss-cn-qingdao";
  
     /**
-     * 北京数据中心
+     * Beijing Datacenter.
      */
     public static final String OSS_CN_BEIJING = "oss-cn-beijing";
  
     /**
-     * 香港数据中心
+     * Hongkong Datacenter.
      */
     public static final String OSS_CN_HONGKONG = "oss-cn-hongkong";
  
     /**
-     * 深圳数据中心
+     * Shenzhen Datacenter.
      */
     public static final String OSS_CN_SHENZHEN = "oss-cn-shenzhen";
 }

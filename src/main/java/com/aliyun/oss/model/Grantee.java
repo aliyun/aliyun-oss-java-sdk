@@ -20,21 +20,21 @@
 package com.aliyun.oss.model;
 
 /**
- * 表示被授权者的信息。
+ * The permission's grantee information.
  *
  */
 public interface Grantee {
 
     /**
-     * 返回被授权者的ID。
-     * @return 被授权者的ID。
+     * Gets the grantee's ID.
+     * @return The grantee's ID.
      */
     public String getIdentifier();
 
     /**
-     * 设置被授权者的ID。
+     * Sets the grantee's ID.
      * @param id
-     *          被授权者的ID。
+     *          The grantee's ID.
      */
     public void setIdentifier(String id);
 }

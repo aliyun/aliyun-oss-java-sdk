@@ -25,11 +25,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 表示一条Conditions项。
+ * One condition item
  */
 class ConditionItem {
     /**
-     * Conditions元组类型，目前支持二元组（{ ... }）、三元组（[ ... ]）。
+     * The condition tuple type: currently only supports Two and Three.
      */
     enum TupleType {
         Two,
@@ -141,7 +141,7 @@ class ConditionItem {
 }
 
 /**
- * Conditions列表，用于指定 Post 请求表单域的合法值。
+ * Policy Conditions. This is to specify the conditions in a post request.
  */
 public class PolicyConditions {
     public final static String COND_CONTENT_LENGTH_RANGE = "content-length-range";
@@ -180,9 +180,9 @@ public class PolicyConditions {
     }
 
     /**
-     * 采用默认匹配方式（精确匹配）添加Conditions项。
-     * @param name Condition名称。
-     * @param value Condition数值。
+     * Adds a condition item with the exact match mode.
+     * @param name Condition name.
+     * @param value Condition value.
      */
     public void addConditionItem(String name, String value) {
         checkMatchModes(MatchMode.Exact, name);
@@ -190,10 +190,10 @@ public class PolicyConditions {
     }
 
     /**
-     * 采用指定匹配模式添加Conditions项。
-     * @param matchMode Conditions匹配方式。
-     * @param name Condition名称。
-     * @param value Condition数值。
+     * Adds a condition item with specified {@link MatchMode} value.
+     * @param matchMode Conditions match mode.
+     * @param name Condition name.
+     * @param value Condition value.
      */
     public void addConditionItem(MatchMode matchMode, String name, String value) {
         checkMatchModes(matchMode, name);
@@ -201,10 +201,10 @@ public class PolicyConditions {
     }
 
     /**
-     * 采用范围匹配模式添加Conditions项。
-     * @param name Condition名称。
-     * @param min 范围最小值。
-     * @param max 范围最小值。
+     * Adds a range match condition.
+     * @param name Condition name
+     * @param min Min value.
+     * @param max Max value.
      */
     public void addConditionItem(String name, long min, long max) {
         if (min > max)

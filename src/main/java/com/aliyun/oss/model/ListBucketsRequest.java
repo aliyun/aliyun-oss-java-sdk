@@ -25,31 +25,32 @@ public class ListBucketsRequest extends WebServiceRequest {
     
     public static final int MAX_RETURNED_KEYS = 1000;
     
-    // prefix限定返回的object key必须以prefix作为前缀。
+    // The prefix filter for the buckets to return. In the other words, all buckets returned must start with this prefix.
     private String prefix;
     
-    // maker用户设定结果从marker之后按字母排序的第一个开始返回。
+    // The maker filter for the buckets to return. In the other words, all buckets returned must be greater than the marker
+    // in the lexicographical order.
     private String marker;
 
-    // 用于限定此次返回bucket的最大数，如果不设定，默认为100。
+    // The max number of buckets to return.By default it's 100.
     private Integer maxKeys;
-    
-    // OSS的BID为26842
+
+    // The OSS's Bid is 26842.
     private String bid;
     
     /**
-     * 构造函数。
+     * Constructor.
      */
     public ListBucketsRequest() { }
 
     /**
-     * 构造函数。
+     * Constructor.
      * @param prefix
-     *          prefix限定返回的bucket name必须以prefix作为前缀。
+     *          Prefix filter, all buckets returned must start with this prefix.
      * @param marker
-     *          maker用户设定结果从marker之后按字母排序的第一个开始返回。
+     *          Maker filter, all buckets returned must be greater than the marker.
      * @param maxKeys
-     *          用于限定此次返回object的最大数，如果不设定，默认为100。
+     *          Max number of buckets to return, by default is 100,
      */
     public ListBucketsRequest(String prefix, String marker, Integer maxKeys) {
         setPrefix(prefix);
@@ -60,27 +61,27 @@ public class ListBucketsRequest extends WebServiceRequest {
     }
 
     /**
-     * 返回prefix，限定返回的bucket name必须以prefix作为前缀。
+     * Gets the prefix filter.
      * @return
-     *      prefix
+     *      The prefix filter.
      */
     public String getPrefix() {
         return prefix;
     }
 
     /**
-     * 设置prefix，限定返回的bucket name必须以prefix作为前缀。
+     * Sets the prefix filter.
      * @param prefix
-     *          前缀prefix。
+     *          The prefix filter.
      */
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
     
     /**
-     * 设置prefix，限定返回的bucket name必须以prefix作为前缀。
+     * Sets the prefix filter and return the current ListBucketsRequest instance (this).
      * @param prefix
-     *          前缀prefix。
+     *          The prefix filter.
      */
     public ListBucketsRequest withPrefix(String prefix) {
         setPrefix(prefix);
@@ -88,27 +89,27 @@ public class ListBucketsRequest extends WebServiceRequest {
     }
 
     /**
-     * 返回marker，用户设定结果从marker之后按字母排序的第一个开始返回。
+     * Gets the marker filter.
      * @return
-     *          marker
+     *         The marker filter.
      */
     public String getMarker() {
         return marker;
     }
 
     /**
-     * 设置marker, 用户设定结果从marker之后按字母排序的第一个开始返回。
+     * Sets the marker filter.
      * @param marker
-     *          marker
+     *          The marker filter.
      */
     public void setMarker(String marker) {
         this.marker = marker;
     }
     
     /**
-     * 设置marker, 用户设定结果从marker之后按字母排序的第一个开始返回。
+     * Sets the marker filter and return the current ListBucketRequest instance (this).
      * @param marker
-     *          marker
+     *          The marker filter.
      */
     public ListBucketsRequest withMarker(String marker) {
         setMarker(marker);
@@ -116,18 +117,18 @@ public class ListBucketsRequest extends WebServiceRequest {
     }
 
     /**
-     * 返回用于限定此次返回bucket的最大数，如果不设定，默认为100。
+     * Gets the max number of buckets to return. By default it's 100.
      * @return
-     *      用于限定此次返回bucket的最大数。
+     *      The max number of buckets.
      */
     public Integer getMaxKeys() {
         return maxKeys;
     }
 
     /**
-     * 设置用于限定此次返回bucket的最大数，如果不设定，默认为100。最大值为1000。
+     * Sets the max number of buckets to return. By default it's 100, the max is 1000.
      * @param maxKeys
-     *      用于限定此次返回bucket的最大数。最大值为1000。
+     *      The max number of buckets.
      */
     public void setMaxKeys(Integer maxKeys) {
         int tmp = maxKeys.intValue();
@@ -139,9 +140,9 @@ public class ListBucketsRequest extends WebServiceRequest {
     }
     
     /**
-     * 设置用于限定此次返回bucket的最大数，如果不设定，默认为100。最大值为1000。
+     * Sets the max number of buckets to return the current ListBucketsRequest instance (this).
      * @param maxKeys
-     *      用于限定此次返回bucket的最大数。最大值为1000。
+     *      The max number of buckets.
      */
     public ListBucketsRequest withMaxKeys(Integer maxKeys) {
         setMaxKeys(maxKeys);
@@ -149,7 +150,7 @@ public class ListBucketsRequest extends WebServiceRequest {
     }
     
     /**
-     * 设置bid。
+     * Sets the bid。
      * @param bid bid。
      */
     public void setBid(String bid) {
@@ -157,7 +158,7 @@ public class ListBucketsRequest extends WebServiceRequest {
     }
     
     /**
-     * 返回用于bid。
+     * Gets the bid.
      * @return bid。
      * 
      */

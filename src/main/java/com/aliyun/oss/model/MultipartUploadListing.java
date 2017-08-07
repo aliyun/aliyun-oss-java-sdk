@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 包含Multipart上传事件的列表。
+ * The entity class that wraps all information about multipart upload.
  */
 public class MultipartUploadListing {
 

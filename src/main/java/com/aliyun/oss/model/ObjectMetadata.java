@@ -29,40 +29,38 @@ import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.internal.OSSHeaders;
 
 /**
- * OSS中Object的元数据。
- * 包含了用户自定义的元数据，也包含了OSS发送的标准HTTP头(如Content-Length, ETag等）。
+ * OSS Object's metadata.
+ * It has the user's custom metadata, as well as some standard http headers sent to OSS, such as Content-Length, ETag, etc.
  */
 public class ObjectMetadata {
 
-    // 用户自定义的元数据，表示以x-oss-meta-为前缀的请求头。
+    // The user's custom metadata, whose prefix in http header is x-oss-meta-.
     private Map<String, String> userMetadata = new HashMap<String, String>();
 
-    // 非用户自定义的元数据。
+    // Other non-custom metadata.
     private Map<String, Object> metadata = new HashMap<String, Object>();
 
     public static final String AES_256_SERVER_SIDE_ENCRYPTION = "AES256";
     
     /**
      * <p>
-     * 获取用户自定义的元数据。
+     * Gets the user's custom metadata.
      * </p>
      * <p>
-     * OSS内部保存用户自定义的元数据时，会以x-oss-meta-为请求头的前缀。
-     * 但用户通过该接口处理用户自定义元数据里，不需要加上前缀“x-oss-meta-”。
-     * 同时，元数据字典的键名是不区分大小写的，并且在从服务器端返回时会全部以小写形式返回，
-     * 即使在设置时给定了大写字母。比如键名为：MyUserMeta，通过getObjectMetadata接口
-     * 返回时键名会变为：myusermeta。
+     * The custom metadata would be appended with x-oss-meta- in the request to OSS.
+     * But here the caller should not use x-oss-meta- as the prefix for the keys of the Map instance returned.
+     * Meanwhile，the keys is case insenstive and all keys returned from OSS server is in lower case.
      * </p>
-     * @return 用户自定义的元数据。
+     * @return User's custom metadata.
      */
     public Map<String, String> getUserMetadata() {
         return userMetadata;
     }
 
     /**
-     * 设置用户自定义的元数据，表示以x-oss-meta-为前缀的请求头。
+     * Sets the user's custom metadata.
      * @param userMetadata
-     *          用户自定义的元数据。
+     *          The user's custom metadata.
      */
     public void setUserMetadata(Map<String, String> userMetadata) {
         this.userMetadata.clear();
@@ -72,76 +70,75 @@ public class ObjectMetadata {
     }
 
     /**
-     * 设置请求头（内部使用）。
+     * Sets the http header (SDK internal usage only).
      * @param key
-     *          请求头的Key。
+     *          The key of header
      * @param value
-     *          请求头的Value。
+     *          The value of the key.
      */
     public void setHeader(String key, Object value) {
         metadata.put(key, value);
     }
 
     /**
-     * 添加一个用户自定义的元数据。
+     * Adds a new custom metadata.
      * @param key
-     *          请求头的Key。
-     *          这个Key不需要包含OSS要求的前缀，即不需要加入“x-oss-meta-”。
+     *          Key of the header (not starting with x-oss-meta-)
      * @param value
-     *          请求头的Value。
+     *          The value for the key.
      */
     public void addUserMetadata(String key, String value) {
         this.userMetadata.put(key, value);
     }
 
     /**
-     * 获取Last-Modified请求头的值，表示Object最后一次修改的时间。
-     * @return Object最后一次修改的时间。
+     * Gets the value of Last-Modified header, which means the last modified time of the object.
+     * @return Object's last modified time.
      */
     public Date getLastModified() {
         return (Date)metadata.get(OSSHeaders.LAST_MODIFIED);
     }
     
     /**
-     * 设置Last-Modified请求头的值，表示Object最后一次修改的时间（内部使用）。
+     * Sets the value of Last-Modified header, which means the last modified time of the object.
      * @param lastModified
-     *          Object最后一次修改的时间。
+     *          Object's last modified time.
      */
     public void setLastModified(Date lastModified) {
         metadata.put(OSSHeaders.LAST_MODIFIED, lastModified);
     }
 
     /**
-     * 获取Expires响应头，返回其Rfc822日期表示形式。
-     * 如果Object没有定义过期时间，则返回null。
-     * @return Expires响应头的Rfc822日期表示形式。
-     * @throws ParseException 无法将Expires解析为Rfc822格式，抛出该异常。
+     * Gets the {@link Date} value of the "Expires" header in Rfc822 format.
+     * If expiration is not set, then the value is null.
+     * @return Expires header's value in Rfc822.
+     * @throws ParseException The value is not in the Rfc822 format.
      */
     public Date getExpirationTime() throws ParseException {
         return DateUtil.parseRfc822Date((String)metadata.get(OSSHeaders.EXPIRES));
     }
     
     /**
-     * 获取原始的Expires响应头，不对其进行日期格式解析，返回其字符串表示形式。
-     * 如果Object没有定义过期时间，则返回null。
-     * @return 原始的Expires响应头。
+     * Gets the string value of the "Expires" header in Rfc822 format.
+     * If expiration is not set, then the value is null.
+     * @return The string value of "Expires" header.
      */
     public String getRawExpiresValue() {
         return (String) metadata.get(OSSHeaders.EXPIRES);
     }
     
     /**
-     * 设置Expires请求头。
+     * Sets the "Expires" header.
      * @param expirationTime
-     *          过期时间。
+     *          Expiration time.
      */
     public void setExpirationTime(Date expirationTime) {
         metadata.put(OSSHeaders.EXPIRES, DateUtil.formatRfc822Date(expirationTime));
     }
     
     /**
-     * 获取Content-Length请求头，表示Object内容的大小。
-     * @return Object内容的大小。
+     * Gets Content-Length header, which is the object content's size.
+     * @return The object content's size.
      */
     public long getContentLength() {
         Long contentLength = (Long)metadata.get(OSSHeaders.CONTENT_LENGTH);        
@@ -149,27 +146,27 @@ public class ObjectMetadata {
     }
 
     /**
-     * 设置Content-Length请求头，表示Object内容的大小。
-     * 当上传Object到OSS时，请总是指定正确的content length。
+     * Sets the Content-Length header to indicate the object's size.
+     * The correct Content-Length header is needed for a file upload.
      * @param contentLength
-     *          Object内容的大小。
+     *          Object content size.
      */
     public void setContentLength(long contentLength) {
         metadata.put(OSSHeaders.CONTENT_LENGTH, contentLength);
     }
 
     /**
-     * 获取Content-Type请求头，表示Object内容的类型，为标准的MIME类型。
-     * @return Object内容的类型，为标准的MIME类型。
+     * Gets the Content-Type header to indicate the object content's type in MIME type format.
+     * @return The content-type header in MIME type format.
      */
     public String getContentType() {
         return (String)metadata.get(OSSHeaders.CONTENT_TYPE);
     }
 
     /**
-     * 获取Content-Type请求头，表示Object内容的类型，为标准的MIME类型。
+     * Sets the Content-Type header to indicate the object content's type in MIME type format.
      * @param contentType
-     *          Object内容的类型，为标准的MIME类型。
+     *          The content-type header in MIME type format.
      */
     public void setContentType(String contentType) {
         metadata.put(OSSHeaders.CONTENT_TYPE, contentType);
@@ -184,115 +181,115 @@ public class ObjectMetadata {
     }
 
     /**
-     * 获取Content-Encoding请求头，表示Object内容的编码方式。
-     * @return Object内容的编码方式。
+     * Gets the Content-Encoding header which is to encode the object content.
+     * @return Object content's encoding.
      */
     public String getContentEncoding() {
         return (String)metadata.get(OSSHeaders.CONTENT_ENCODING);
     }
 
     /**
-     * 设置Content-Encoding请求头，表示Object内容的编码方式。
+     * Sets the Content-Encoding header which is to encode the object content.
      * @param encoding
-     *          表示Object内容的编码方式。
+     *          Object content's encoding.
      */
     public void setContentEncoding(String encoding) {
         metadata.put(OSSHeaders.CONTENT_ENCODING, encoding);
     }
 
     /**
-     * 获取Cache-Control请求头，表示用户指定的HTTP请求/回复链的缓存行为。
-     * @return Cache-Control请求头。
+     * Gets the Cache-Control header. This is the standard http header.
+     * @return Cache-Control header.
      */
     public String getCacheControl() {
         return (String)metadata.get(OSSHeaders.CACHE_CONTROL);
     }
 
     /**
-     * 设置Cache-Control请求头，表示用户指定的HTTP请求/回复链的缓存行为。
+     * Sets the Cache-Control header. This is the standard http header.
      * @param cacheControl
-     *          Cache-Control请求头。
+     *          Cache-Control header.
      */
     public void setCacheControl(String cacheControl) {
         metadata.put(OSSHeaders.CACHE_CONTROL, cacheControl);
     }
 
     /**
-     * 获取Content-Disposition请求头，表示MIME用户代理如何显示附加的文件。
-     * @return Content-Disposition请求头
+     * Gets the Content-Disposition header.This is the standard http header.
+     * @return Content-Disposition header.
      */
     public String getContentDisposition() {
         return (String)metadata.get(OSSHeaders.CONTENT_DISPOSITION);
     }
 
     /**
-     * 设置Content-Disposition请求头，表示MIME用户代理如何显示附加的文件。
+     * Sets Content-Disposition header.
      * @param disposition
-     *          Content-Disposition请求头
+     *          Content-Disposition header.
      */
     public void setContentDisposition(String disposition) {
         metadata.put(OSSHeaders.CONTENT_DISPOSITION, disposition);
     }
 
     /**
-     * 获取一个值表示与Object相关的hex编码的128位MD5摘要。
-     * @return 与Object相关的hex编码的128位MD5摘要。
+     * Gets the ETag of the object.
+     * ETag is the 128bit MD5 signature in Hex.
      */
     public String getETag() {
         return (String)metadata.get(OSSHeaders.ETAG);
     }
     
     /**
-     * 获取一个值表示Object的服务器加密的熵编码
-     * @return 服务器端加密的熵编码，null表示没有进行加密
+     * Gets the object's server side encryption.
+     * @return The server side encryption. Null means no encryption.
      */
     public String getServerSideEncryption() {
         return (String)metadata.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION);
     }
 
     /**
-     * 设置Object服务器端熵编码的类型
-     * @param 服务器端加密的熵编码类型
+     * Sets the object's server side encryption.
+     * @param serverSideEncryption The server side encryption.
      */
     public void setServerSideEncryption(String serverSideEncryption) {
         metadata.put(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION, serverSideEncryption);
     }
     
     /**
-     * 获取Object存储类型，目前支持Normal、Appendable两类。
-     * @return Object存储类型。
+     * Gets the object's storage type, which only supports "normal" and "appendable" for now.
+     * @return Object's storage type.
      */
     public String getObjectType() {
         return (String)metadata.get(OSSHeaders.OSS_OBJECT_TYPE);
     }
     
     /**
-     * 设置Object访问权限，目前支持default, private, public-read, public-read-write四种访问权限。
-     * @param cannedAcl Object访问权限。
+     * Sets the object ACL. For now it only supports default, private, public-read, public-read-write.
+     * @param cannedAcl Object ACL.
      */
     public void setObjectAcl(CannedAccessControlList cannedAcl) {
         metadata.put(OSSHeaders.OSS_OBJECT_ACL, cannedAcl != null ? cannedAcl.toString() : "");
     }
     
     /**
-     * 返回内部保存的请求头的元数据（内部使用）。
-     * @return 内部保存的请求头的元数据（内部使用）。
+     * Gets the raw metadata (SDK internal usage only). The value returned is immutable.
+     * @return The raw metadata object.
      */
     public Map<String, Object> getRawMetadata() {
         return Collections.unmodifiableMap(metadata);
     }
     
     /**
-     * 获取RequestId。
-     * @return RequestId。
+     * Gets the request Id.
+     * @return RequestId.
      */
     public String getRequestId() {
         return (String)metadata.get(OSSHeaders.OSS_HEADER_REQUEST_ID);
     }
     
     /**
-     * 获取文件的存储类型
-     * @return
+     * Gets the object's storage class, which is "standard", "IA" or "Archive".
+     * @return The storage class of the object.
      */
     public StorageClass getObjectStorageClass() {
         String storageClassString = (String)metadata.get(OSSHeaders.OSS_STORAGE_CLASS);
@@ -303,16 +300,16 @@ public class ObjectMetadata {
     }
     
     /**
-     * 获取Archive类型文件Restore状态
-     * @return 文件Restore状态
+     * Gets the restore status of the object of Archive type.
+     * @return Object's restore status.
      */
     public String getObjectRawRestore() {
         return (String)metadata.get(OSSHeaders.OSS_RESTORE);
     }
     
     /**
-     * 获取Archive文件Restore是否完成
-     * @return Restore是否完成
+     * Gets the flag of completeness of restoring the Archive file.
+     * @return The flag of completeness of restoring.
      */
     public boolean isRestoreCompleted() {
         String restoreString = getObjectRawRestore();

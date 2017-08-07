@@ -22,16 +22,16 @@ package com.aliyun.oss.model;
 import java.io.InputStream;
 
 /**
- * 上传UDF Image请求。
+ * This is the request class to upload the UDF image.
  * 
  * UDF Image有格式要求，详见API说明。
  */
 public class UploadUdfImageRequest extends UdfGenericRequest {
 	
 	/**
-	 * 构造函数。
-	 * @param udfName UDF名称。
-	 * @param udfImage Image有格式要求，详见API说明。
+	 * Constructor
+	 * @param udfName UDF name
+	 * @param udfImage UDF image stream. It has the specific format requirement and please check out API references.
 	 */
 	public UploadUdfImageRequest(String udfName, InputStream udfImage) {
 		super(udfName);
@@ -39,10 +39,10 @@ public class UploadUdfImageRequest extends UdfGenericRequest {
 	}
 	
 	/**
-	 * 构造函数。
-	 * @param udfName UDF名称。
-	 * @param udfImageDesc Image描述信息。
-	 * @param udfImage Image有格式要求，详见API说明。
+	 * Constructor.
+	 * @param udfName UDF name
+	 * @param udfImageDesc Image description.
+	 * @param udfImage UDF Image stream. It has the specific format requirement and please check out the API references.
 	 */
 	public UploadUdfImageRequest(String udfName, String udfImageDesc, InputStream udfImage) {
 		super(udfName);

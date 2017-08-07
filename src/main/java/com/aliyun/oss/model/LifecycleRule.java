@@ -24,14 +24,14 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 表示一条Lifecycle规则。
+ * Life cycle rule class.
  */
 public class LifecycleRule {
     
     public static enum RuleStatus {
         Unknown,
-        Enabled,    // 启用规则
-        Disabled    // 禁用规则
+        Enabled,    // The Rule is enabled.
+        Disabled    // The rule is disabled.
     };
     
     public static class AbortMultipartUpload {

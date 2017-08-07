@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 /**
- * 文件分片上传请求
+ * The file upload request to start a multipart upload.
  *
  */
 public class UploadFileRequest extends GenericRequest {
@@ -123,18 +123,18 @@ public class UploadFileRequest extends GenericRequest {
         this.callback = callback;
     }
 
-    // 分片大小，单位字节，默认100KB
+    // Part size, by default it's 100KB.
     private long partSize = 1024 * 100;
-    // 分片上传线程数，默认1
+    // Concurrent parts upload thread count. By default it's 1.
     private int taskNum = 1;
-    // 需要上传的本地文件
+    // The local file path to upload.
     private String uploadFile;
-    // 是否开启断点续传
+    // Enable the checkpoint
     private boolean enableCheckpoint = false;
-    // 断点续传时保存分片上传的信息的本地文件
+    // The checkpoint file's local path.
     private String checkpointFile;
-    // 上传对象的元数据
+    // The metadata of the target file.
     private ObjectMetadata objectMetadata;
-    // 回调
+    // callback entry.
     private Callback callback;
 }

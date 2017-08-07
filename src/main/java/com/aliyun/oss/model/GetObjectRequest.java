@@ -25,7 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 指定从OSS下载Object的请求参数。
+ * This is the request class that is used to download an object from OSS.
+ * It wraps all the information needed to download an object.
  */
 public class GetObjectRequest extends GenericRequest {
    
@@ -46,20 +47,20 @@ public class GetObjectRequest extends GenericRequest {
     private boolean useUrlSignature = false;
 
     /**
-     * 构造函数。
+     * Constructor
      * @param bucketName
-     *          Bucket名称。
+     *          Bucket name.
      * @param key
-     *          Object Key。
+     *          Object Key.
      */
     public GetObjectRequest(String bucketName, String key) {
         super(bucketName, key);
     }
     
     /**
-     * 使用URL签名及用户自定义头作为参数的构造函数。
-     * @param absoluteUri URL签名。
-     * @param requestHeaders 请求头。
+     * Constructor with presigned Url and user's custom headers.
+     * @param absoluteUrl Signed url.
+     * @param requestHeaders Request headers.
      */
     public GetObjectRequest(URL absoluteUrl, Map<String, String> requestHeaders) {
         this.absoluteUrl = absoluteUrl;
@@ -71,27 +72,28 @@ public class GetObjectRequest extends GenericRequest {
     }
     
     /**
-     * 返回一个值表示请求应当返回Object内容的字节范围。
-     * @return 一个值表示请求应当返回Object内容的字节范围。
+     * Gets the range of the object to download. The range is in the form of {start, end}---start and end is position of the
+     * object's content.
+     * @return The range of the object to download.
      */
     public long[] getRange() {
         return range;
     }
 
     /**
-     * 设置一个值表示请求应当返回Object内容的字节范围（可选）。
+     * Sets the range of the object to download (optional).
      * @param start
-     *          <p>范围的起始值。</p>
-     *          <p>当值大于或等于0时，表示起始的字节位置。
-     *          当值为-1时，表示不设置起始的字节位置，此时end参数不能-1，
-     *          例如end为100，Range请求头的值为bytes=-100，表示获取最后100个字节。
+     *          <p>Start position</p>
+     *          <p>When the start is non-negative, it means the starting position to download.
+     *          When the start is -1, it means the range is determined by the end only and the end could not be -1.
+     *          For example, when start is -1 and end is 100. It means the download range will be the last 100 bytes.
      *          </p>
      * @param end
-     *          <p>范围的结束值。</p>
-     *          <p>当值小于或等于0时，表示结束的字节位或最后的字节数。
-     *          当值为-1时，表示不设置结束的字节位置，此时start参数不能为-1，
-     *          例如start为99，Range请求头的值为bytes=99-，表示获取第100个字节及
-     *          以后的所有内容。
+     *          <p>End position</p>
+     *          <p>When the end is non-negative, it means the ending position to download.
+     *          When the end is -1, it means the range is determined by the start only and the start could not be -1.
+     *          For example, when end is -1 and start is 100. It means the download range will be all exception first
+     *          100 bytes.
      *          </p>
      */
     public void setRange(long start, long end) {
@@ -99,19 +101,20 @@ public class GetObjectRequest extends GenericRequest {
     }
     
     /**
-     * 设置一个值表示请求应当返回Object内容的字节范围（可选）。
+     * Sets the range of the object to download and return current GetObjectRequest instance (this).
+     *
      * @param start
-     *          <p>范围的起始值。</p>
-     *          <p>当值大于或等于0时，表示起始的字节位置。
-     *          当值为-1时，表示不设置起始的字节位置，此时end参数不能-1，
-     *          例如end为100，Range请求头的值为bytes=-100，表示获取最后100个字节。
+     *          <p>Start position</p>
+     *          <p>When the start is non-negative, it means the starting position to download.
+     *          When the start is -1, it means the range is determined by the end only and the end could not be -1.
+     *          For example, when start is -1 and end is 100. It means the download range will be the last 100 bytes.
      *          </p>
      * @param end
-     *          <p>范围的结束值。</p>
-     *          <p>当值小于或等于0时，表示结束的字节位或最后的字节数。
-     *          当值为-1时，表示不设置结束的字节位置，此时start参数不能为-1，
-     *          例如start为99，Range请求头的值为bytes=99-，表示获取第100个字节及
-     *          以后的所有内容。
+     *          <p>End position</p>
+     *          <p>When the end is non-negative, it means the ending position to download.
+     *          When the end is -1, it means the range is determined by the start only and the start could not be -1.
+     *          For example, when end is -1 and start is 100. It means the download range will be all exception first
+     *          100 bytes.
      *          </p>
      */
     public GetObjectRequest withRange(long start, long end) {
@@ -120,21 +123,22 @@ public class GetObjectRequest extends GenericRequest {
     }
 
     /**
-     * 返回“If-Match”参数，表示：如果传入期望的 ETag 和 object 的 ETag 匹配，正常的发送文件。
-     * 如果不符合，返回错误。
-     * @return 表示期望object的ETag与之匹配的ETag列表。
+     * Gets the matching Etag constraints.
+     * If the first ETag returned matches the object's ETag, the file would be downloaded. Currently OSS only supports
+     * one ETag.
+     * Otherwise, return precondition failure (412).
+     * @return The list of expected ETags.
      */
     public List<String> getMatchingETagConstraints() {
         return matchingETagConstraints;
     }
 
     /**
-     * 返回“If-Match”参数（可选）。
-     * 表示如果传入期望的 ETag 和 Object 的 ETag 匹配，则正常的发送文件。
-     * 如果不符合，则返回错误。
+     * Sets the matching Etag constraints.
+     * If the first ETag returned matches the object's ETag, the file would be downloaded.
+     * Otherwise, return precondition failure (412).
      * @param eTagList
-     *          表示期望object的ETag与之匹配的ETag列表。
-     *          目前OSS支持传入一个ETag，如果传入多于一个ETag，将只有列表中的第一个有效。
+     *          The expected ETag list. OSS only supports one ETag.
      */
     public void setMatchingETagConstraints(List<String> eTagList) {
         this.matchingETagConstraints.clear();
@@ -148,20 +152,23 @@ public class GetObjectRequest extends GenericRequest {
     }
 
     /**
-     * 返回“If-None-Match”参数，可以用来检查文件是否有更新。
-     * 如果传入的 ETag值和Object的ETag 相同，返回错误；否则正常传输文件。 
-     * @return 表示期望Object的ETag与之不匹配的ETag列表。
+     * Gets the non-matching Etag constraints.
+     * If the first ETag returned does not match the object's ETag, the file would be downloaded.
+     * Currently OSS only supports one ETag.
+     * Otherwise, return precondition failure (412).
+     * @return The list of expected ETags (only the first one matters though).
      */
     public List<String> getNonmatchingETagConstraints() {
         return nonmatchingEtagConstraints;
     }
 
     /**
-     * 返回“If-None-Match”参数，可以用来检查文件是否有更新（可选）。
-     * 如果传入的 ETag值和Object的ETag 相同，返回错误；否则正常传输文件。 
+     * Sets the non-matching Etag constraints.
+     * If the first ETag returned does not match the object's ETag, the file would be downloaded.
+     * Currently OSS only supports one ETag.
+     * Otherwise, returns precondition failure (412).
      * @param eTagList
-     *          表示期望Object的ETag与之不匹配的ETag列表。
-     *          目前OSS支持传入一个ETag，如果传入多于一个ETag，将只有列表中的第一个有效。
+     *          The list of expected ETags (only the first one matters though).
      */
     public void setNonmatchingETagConstraints(List<String> eTagList) {
         this.nonmatchingEtagConstraints.clear();
@@ -175,59 +182,60 @@ public class GetObjectRequest extends GenericRequest {
     }
 
     /**
-     * 返回“If-Unmodified-Since”参数。
-     * 表示：如果传入参数中的时间等于或者晚于文件实际修改时间，则传送文件；
-     * 如果早于实际修改时间，则返回错误。 
-     * @return “If-Unmodified-Since”参数。
+     * Gets the unmodified since constraints.
+     * If the timestamp returned is equal or later than the actual file's modified time, the file would be downloaded.
+     * Otherwise, the download API returns precondition failure (412).
+     * @return The timestamp.
      */
     public Date getUnmodifiedSinceConstraint() {
         return unmodifiedSinceConstraint;
     }
 
     /**
-     * 设置“If-Unmodified-Since”参数（可选）。
-     * 表示：如果传入参数中的时间等于或者晚于文件实际修改时间，则传送文件；
-     * 如果早于实际修改时间，则返回错误。 
+     * Sets the unmodified since constraints.
+     * If the timestamp specified in date parameter is equal or later than the actual file's modified time, the file
+     * would be downloaded.
+     * Otherwise, the download API returns precondition failure (412).
      * @param date
-     *          “If-Unmodified-Since”参数。
+     *          The timestamp.
      */
     public void setUnmodifiedSinceConstraint(Date date) {
         this.unmodifiedSinceConstraint = date;
     }
 
     /**
-     * 返回“If-Modified-Since”参数。
-     * 表示：如果指定的时间早于实际修改时间，则正常传送文件，并返回 200 OK；
-     * 如果参数中的时间和实际修改时间一样或者更晚，会返回错误。
-     * @return “If-Modified-Since”参数。
+     * Gets the modified since constraints.
+     * If the timestamp returned is earlier than the actual file's modified time, the file would be downloaded.
+     * Otherwise, the download API returns precondition failure (412).
+     * @return “If-Modified-Since” timestamp.
      */
     public Date getModifiedSinceConstraint() {
         return modifiedSinceConstraint;
     }
 
     /**
-     * 设置“If-Modified-Since”参数（可选）。
-     * 表示：如果指定的时间早于实际修改时间，则正常传送文件，并返回 200 OK；
-     * 如果参数中的时间和实际修改时间一样或者更晚，会返回错误。
+     * Sets the modified since constraints.
+     * If the timestamp returned is earlier than the actual file's modified time, the file would be downloaded.
+     * Otherwise, the download API returns precondition failure (412).
      * @param date
-     *          “If-Modified-Since”参数。
+     *          “If-Modified-Since” parameter.
      */
     public void setModifiedSinceConstraint(Date date) {
         this.modifiedSinceConstraint = date;
     }
 
     /**
-     * 返回要重载的返回请求头。
-     * @return 要重载的返回请求头。
+     * Gets the response headers to override.
+     * @return The response headers to override.
      */
     public ResponseHeaderOverrides getResponseHeaders() {
         return responseHeaders;
     }
 
     /**
-     * 设置要重载的返回请求头（可选）。
+     * Sets the response headers to override (optional).
      * @param responseHeaders
-     *          要重载的返回请求头。
+     *          The response headers to override.
      */
     public void setResponseHeaders(ResponseHeaderOverrides responseHeaders) {
         this.responseHeaders = responseHeaders;

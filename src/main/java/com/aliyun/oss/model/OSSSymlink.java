@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 /**
- * OSS符号链接
+ * The entity class representing a OSS symbolic file.
  * 
  */
 public class OSSSymlink {
@@ -47,16 +47,16 @@ public class OSSSymlink {
     }
     
     /**
-     * 获取链接文件的元信息
-     * @return 链接文件的元信息
+     * Gets the metadata of the symbolic file
+     * @return The metadata of the symbolic file.
      */
     public ObjectMetadata getMetadata() {
         return metadata;
     }
 
     /**
-     * 设置链接文件的云信息
-     * @param metadata 链接文件的元信息
+     * Sets the metadata of the symbolic file.
+     * @param metadata The metadata of the symbolic file.
      */
     public void setMetadata(ObjectMetadata metadata) {
         this.metadata = metadata;
@@ -68,13 +68,13 @@ public class OSSSymlink {
             + ", target=" + getTarget() + "]";
     }
 
-    // 链接文件
+    // Symbolic file key
     private String symlink;
 
-    // 目标文件
+    // The original file's key
     private String target;
     
-    // 链接文件的元信息
+    // The symbolic file's metadata.
     private ObjectMetadata metadata;
     
 }

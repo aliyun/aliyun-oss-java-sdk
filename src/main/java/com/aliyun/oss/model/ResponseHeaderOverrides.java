@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 /**
- * 包含了在发送OSS GET请求时可以重载的返回请求头。
+ * The class wraps the HTTP Get response headers to override.
  */
 public class ResponseHeaderOverrides {
 
@@ -39,101 +39,101 @@ public class ResponseHeaderOverrides {
     public static final String RESPONSE_HEADER_CONTENT_ENCODING = "response-content-encoding";
     
     /**
-     * 返回重载的content type返回请求头。如果未指定，则返回null。
-     * @return 重载的content type请求头。如果未指定，则返回null。
+     * Gets the content type. If the type is not specified, return null.
+     * @return The override content type. If it's not specified, return null.
      */
     public String getContentType() {
         return contentType;
     }
 
     /**
-     * 设置重载的content type返回请求头。
+     * Sets the content type.
      * @param contentType
-     *          重载的content type返回请求头。
+     *          The override content type.
      */
     public void setContentType(String contentType) {
         this.contentType = contentType;
     }
 
-    /**返回重载的content language返回请求头。如果未指定，则返回null。
-     * @return 重载的content language返回请求头。
+    /**Gets the content language header. If it's not specified, returns null.
+     * @return The override content language.
      */
     public String getContentLangauge() {
         return contentLangauge;
     }
 
     /**
-     * 设置重载的content language返回请求头。
+     * Sets the content language.
      * @param contentLangauge
-     *          重载的content language返回请求头。
+     *          The override content language header.
      */
     public void setContentLangauge(String contentLangauge) {
         this.contentLangauge = contentLangauge;
     }
 
     /**
-     * 返回重载的expires返回请求头。如果未指定，则返回null。
-     * @return 重载的expires返回请求头。
+     * Gets the expires header. If it's not specfied, return null.
+     * @return The override expires header.
      */
     public String getExpires() {
         return expires;
     }
 
     /**
-     * 设置重载的expires返回请求头。
+     * Sets the expires header.
      * @param expires
-     *          重载的expires返回请求头。
+     *          The override expires header.
      */
     public void setExpires(String expires) {
         this.expires = expires;
     }
 
     /**
-     * 返回重载的cacheControl返回请求头。如果未指定，则返回null。
-     * @return 重载的cacheControl返回请求头。
+     * Gets the Cache-Control header. If it's not specified, return null.
+     * @return The override Cache-Control header.
      */
     public String getCacheControl() {
         return cacheControl;
     }
 
     /**
-     * 设置重载的cacheControl返回请求头。
+     * Sets the Cache-Control header.
      * @param cacheControl
-     *          重载的cacheControl返回请求头。
+     *          The override Cache-Control header.
      */
     public void setCacheControl(String cacheControl) {
         this.cacheControl = cacheControl;
     }
 
     /**
-     * 返回重载的contentDisposition返回请求头。如果未指定，则返回null。
-     * @return 重载的contentDisposition返回请求头。
+     * Gets the Content-Disposition header. If it's not specified, return null.
+     * @return The override Content-Disposition header.
      */
     public String getContentDisposition() {
         return contentDisposition;
     }
 
     /**
-     * 设置重载的contentDisposition返回请求头。
+     * Sets the Content-Disposition header.
      * @param contentDisposition
-     *          重载的contentDisposition返回请求头。
+     *          The override Content-Disposition header.
      */
     public void setContentDisposition(String contentDisposition) {
         this.contentDisposition = contentDisposition;
     }
 
     /**
-     * 返回重载的contentEncoding返回请求头。如果未指定，则返回null。
-     * @return 重载的contentEncoding返回请求头。
+     * Gets the Content-Encoding header.
+     * @return The override Content-Encoding header.
      */
     public String getContentEncoding() {
         return contentEncoding;
     }
 
     /**
-     * 设置重载的contentEncoding返回请求头。
+     * Sets the Content-Encoding header.
      * @param contentEncoding
-     *          重载的contentEncoding返回请求头。
+     *          The override Content-Encoding header.
      */
     public void setContentEncoding(String contentEncoding) {
         this.contentEncoding = contentEncoding;

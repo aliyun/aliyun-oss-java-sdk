@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 /**
- * 包含列出Part的请求参数。
+ * This is the request class to list parts of a ongoing multipart upload.
  *
  */
 public class ListPartsRequest extends GenericRequest {
@@ -34,13 +34,13 @@ public class ListPartsRequest extends GenericRequest {
     private String encodingType;
 
     /**
-     * 构造函数。
+     * Constructor
      * @param bucketName
-     *          Bucket名称。
+     *          Bucket name.
      * @param key
-     *          Object key。
+     *          Object key.
      * @param uploadId
-     *          Mutlipart上传事件的Upload ID。
+     *          Mutlipart upload Id.
      */
     public ListPartsRequest(String bucketName, String key, String uploadId) {
         super(bucketName, key);
@@ -48,72 +48,72 @@ public class ListPartsRequest extends GenericRequest {
     }
 
     /**
-     * 返回标识Multipart上传事件的Upload ID。
-     * @return 标识Multipart上传事件的Upload ID。
+     * Gets the upload Id.
+     * @return The upload Id.
      */
     public String getUploadId() {
         return uploadId;
     }
 
     /**
-     * 设置标识Multipart上传事件的Upload ID。
+     * Sets the upload Id for the multipart upload.
      * @param uploadId
-     *          标识Multipart上传事件的Upload ID。
+     *          The upload Id.
      */
     public void setUploadId(String uploadId) {
         this.uploadId = uploadId;
     }
 
     /**
-     * 返回一个值表示最大返回多少条记录。（默认值1000）
-     * @return 最大返回多少条记录。
+     * The max parts count to return. By default it's 1000.
+     * @return The max parts count.
      */
     public Integer getMaxParts() {
         return maxParts;
     }
 
     /**
-     * 设置一个值最大返回多少条记录。（可选）
-     * 最大值和默认值均为1000。
+     * Sets the max parts count (optional).
+     * The default and max value is 1000.
      * @param maxParts
-     *          最大返回多少条记录。
+     *          The max parts count.
      */
     public void setMaxParts(int maxParts) {
         this.maxParts = maxParts;
     }
 
     /**
-     * 返回一个值表示从哪个Part号码开始获取列表。
-     * @return 表示从哪个Part号码开始获取列表。
+     * Gets the part number marker---the parts to return whose part number must be greater than this marker.
+     * @return The part number marker.
      */
     public Integer getPartNumberMarker() {
         return partNumberMarker;
     }
 
     /**
-     * 设置一个值表示从哪个Part号码开始获取列表。
+     * Sets the part number marker---the parts to return whose part number must be greater than this marker.
      * @param partNumberMarker
-     *          表示从哪个Part号码开始获取列表。
+     *          The part number marker.
      */
     public void setPartNumberMarker(Integer partNumberMarker) {
         this.partNumberMarker = partNumberMarker;
     }
     
     /**
-     * 获取应用于请求响应体中Object名称的编码方式。
+     * Gets the encoding type of object names in response.
 
-     * @return 请求响应体中Object名称的编码方式。
+     * @return The encoding type of object names.
      */
     public String getEncodingType() {
         return encodingType;
     }
 
     /**
-     * 设置应用于请求响应体中Object名称的编码方式。
+     * Sets the encoding type of object names in response.
      * 
      * @param encodingType
-     *            请求响应体中Object名称的编码方式。
-     *            有效值: null (不进行编码处理) 或 "url".
+     *            The encoding type of object names.
+     *            The valid values are 'null' or 'url'.
      */
     public void setEncodingType(String encodingType) {
         this.encodingType = encodingType;

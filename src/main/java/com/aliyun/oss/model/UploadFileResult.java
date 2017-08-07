@@ -21,7 +21,7 @@ package com.aliyun.oss.model;
 
 
 /**
- * 上传文件执行结果
+ * The result of a file upload.
  * 
  */
 public class UploadFileResult {

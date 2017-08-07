@@ -20,11 +20,11 @@
 package com.aliyun.oss.model;
 
 /**
- * Post Policy Conditions匹配方式。
+ * The match mode for post policy conditions
  */
 public enum MatchMode {
     Unknown,
-    Exact,  // 精确匹配
+    Exact,  // Exact match
     StartWith,  // Starts With
-    Range   // 指定文件大小
+    Range   // The range of file size
 }

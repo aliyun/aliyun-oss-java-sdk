@@ -23,6 +23,7 @@ import java.util.Date;
 
 /**
  * 包含通过Multipart上传模式上传的Part的摘要信息。
+ * The summary information of the part in a multipart upload.
  *
  */
 public class PartSummary {
@@ -36,74 +37,74 @@ public class PartSummary {
     private long size;
     
     /**
-     * 构造函数。
+     * Constructor
      */
     public PartSummary(){
     }
 
     /**
-     * 返回Part的标识号码。
-     * @return Part的标识号码。
+     * Gets part number.
+     * @return The Part number.
      */
     public int getPartNumber() {
         return partNumber;
     }
 
     /**
-     * 设置Part的标识号码。
+     * Sets the part number.
      * @param partNumber
-     *          Part的标识号码。
+     *          The part number.
      */
     public void setPartNumber(int partNumber) {
         this.partNumber = partNumber;
     }
 
     /**
-     * 返回Part的最后修改时间。
-     * @return Part的最后修改时间。
+     * Gets the last modified time of the part.
+     * @return Part's last modified time.
      */
     public Date getLastModified() {
         return lastModified;
     }
 
     /**
-     * 设置Part的最后修改时间。
+     * Sets the last modified time of the part.
      * @param lastModified
-     *          Part的最后修改时间。
+     *          Part's last modified time.
      */
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
     }
 
     /**
-     * 返回Part的ETag值。
-     * @return Part的ETag值。
+     * Gets the Part's ETag.
+     * @return Part ETag value.
      */
     public String getETag() {
         return eTag;
     }
 
     /**
-     * 设置Part的ETag值。
+     * Sets the Part ETag value.
      * @param eTag
-     *          Part的ETag值。
+     *          Part ETag value.
      */
     public void setETag(String eTag) {
         this.eTag = eTag;
     }
 
     /**
-     * 返回Part数据的字节数。
-     * @return Part数据的字节数。
+     * Gets the size of the part.
+     * @return Part size.
      */
     public long getSize() {
         return size;
     }
 
     /**
-     * 设置Part数据的字节数。
+     * Sets the part data size.
      * @param size
-     *          Part数据的字节数。
+     *          Part data size.
      */
     public void setSize(long size) {
         this.size = size;

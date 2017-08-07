@@ -24,7 +24,7 @@ import java.util.Date;
 public class LiveChannelStat {
     
     /**
-     * 直播流视频信息
+     * The Live Channel's video and audio information
      * 
      */
     public static class VideoStat {
@@ -79,20 +79,20 @@ public class LiveChannelStat {
             this.codec = codec;
         }
 
-        // 直播流视频流的像素宽度
+        // The width of the video.
         private int width;
-        // 直播流视频流的像素高度
+        // The height of the video.
         private int height;
-        // 直播流视频流的帧率，单位帧/秒
+        // The frame rate of the video.
         private int frameRate;
-        // 直播流视频流的码率，单位字节/秒
+        // The bandwidth of the video.
         private int bandWidth;
-        // 直播流视频流的编码方式
+        // The codec of the video.
         private String codec;
     }
     
     /**
-     * 直播流音频流信息
+     * The Live Channel's Audio information
      * 
      */
     public static class AudioStat {
@@ -130,11 +130,11 @@ public class LiveChannelStat {
             this.codec = codec;
         }
 
-        // 直播流音频流的码率，单位字节/秒
+        // The bandwidth of the audio, in bytes/s.
         private int bandWidth;
-        // 直播流音频流的采样率，单位HZ
+        // The sample rate of the audio, in HZ.
         private int sampleRate;
-        // 直播流音频流的编码方式
+        // The codec of the audio.
         private String codec;
     }
     
@@ -178,15 +178,15 @@ public class LiveChannelStat {
         this.audioStat = audioStat;
     }
 
-    // LiveChannel的推流状态
+    // The Live Channel's pusing streaming status.
     private PushflowStatus status;
-    // 当前推流客户端发起连接的时间
+    // The current pushing streaming's start time of client's connection.
     private Date connectedDate;
-    // 当status为Live时，当前推流客户端的地址,包括port
+    // The current pushing streaming's endpoint (including port), when the status is Live.
     private String remoteAddress;
-    // 直播流视频信息
+    // The video information.
     private VideoStat videoStat;
-    // 直播流音频流信息
+    // The audio information.
     private AudioStat audioStat;
     
 }

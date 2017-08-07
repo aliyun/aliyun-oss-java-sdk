@@ -22,18 +22,18 @@ package com.aliyun.oss.model;
 import com.aliyun.oss.internal.OSSUtils;
 
 /**
- * 包含获取Live Channel列表的请求信息。
+ * This is the request class is used to list Live Channels under a bucket.
  */
 public class ListLiveChannelsRequest extends LiveChannelGenericRequest {
     
     private static final int MAX_RETURNED_KEYS_LIMIT = 100;
 
     /**
-     * 构造函数。
-     * @param bucketName bucket名称。
-     * @param prefix prefix限定返回的live channel必须以prefix作为前缀。
-     * @param marker maker用户设定结果从marker之后按字母排序的第一个开始返回。
-     * @param maxKeys 用于限定此次返回live channel的最大数，如果不设定，默认为100。
+     * Constructor.
+     * @param bucketName Bucket name.
+     * @param prefix Prefix filter---returned Live Channels must start with this prefix.
+     * @param marker Marker filter----returned Live Channels must be greater than this marker in lexicographical order.
+     * @param maxKeys Max Live Channels to return, By default it's 100.
      */
     public ListLiveChannelsRequest(String bucketName, String prefix, String marker, int maxKeys) {
         super(bucketName, null);
@@ -53,49 +53,49 @@ public class ListLiveChannelsRequest extends LiveChannelGenericRequest {
     }
 
     /**
-     * 返回prefix，限定返回的live channel必须以prefix作为前缀。
-     * @return prefix
+     * Gets the prefix filter---the returned Live Channels must start with this prefix.
+     * @return The prefix filter.
      */
     public String getPrefix() {
         return prefix;
     }
 
     /**
-     * 设置prefix，限定返回的live channel必须以prefix作为前缀。
+     * Sets the prefix filter---the returned Live Channels must start with this prefix.
      * @param prefix
-     *          前缀prefix。
+     *          The prefix filter.
      */
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
 
     /**
-     * 返回marker，用户设定结果从marker之后按字母排序的第一个开始返回。
-     * @return marker
+     * Gets the marker filter---returned Live Channels must be greater than this marker in lexicographical order.
+     * @return The marker filter.
      */
     public String getMarker() {
         return marker;
     }
 
     /**
-     * 设置marker, 用户设定结果从marker之后按字母排序的第一个开始返回。
-     * @param marker marker
+     * Sets the marker filter---returned Live Channels must be greater than this marker in lexicographical order.
+     * @param marker The marker filter.
      */
     public void setMarker(String marker) {
         this.marker = marker;
     }
 
     /**
-     * 返回用于限定此次返回live channel的最大数，如果不设定，默认为100。
-     * @return 用于限定此次返回live channel最大数。
+     * Gets max number of live channel. By default it's 100.
+     * @return The max number of live channel.
      */
     public Integer getMaxKeys() {
         return maxKeys;
     }
 
     /**
-     * 设置用于限定此次返回live channel的最大数，如果不设定，默认为100。最大值为100。
-     * @param maxKeys 用于限定此次返回live channel的最大数。最大值为100。
+     * Sets max number of live channel. By default it's 100.
+     * @param maxKeys The max number of live channel.
      */
     public void setMaxKeys(int maxKeys) {
         if (maxKeys < 0 || maxKeys > MAX_RETURNED_KEYS_LIMIT) {
@@ -107,9 +107,9 @@ public class ListLiveChannelsRequest extends LiveChannelGenericRequest {
     }
     
     /**
-     * 设置prefix，限定返回的object key必须以prefix作为前缀。
+     * Sets the prefix and returns the current ListLiveChannelsRequest instance (this).
      * @param prefix
-     *          前缀prefix。
+     *          The prefix filter.
      */
     public ListLiveChannelsRequest withPrefix(String prefix) {
         setPrefix(prefix);
@@ -117,8 +117,8 @@ public class ListLiveChannelsRequest extends LiveChannelGenericRequest {
     }
     
     /**
-     * 设置用于限定此次返回object的最大数，如果不设定，默认为100。最大值为100。
-     * @param maxKeys 用于限定此次返回object的最大数。最大值为100。
+     * Sets the max number of Live Channels and returns the current ListLiveChannelsRequest instance(this).
+     * @param maxKeys The max number of Live Channels, by default is 100 and max value is also 100.
      */
     public ListLiveChannelsRequest withMaxKeys(Integer maxKeys) {
         setMaxKeys(maxKeys);
@@ -126,21 +126,21 @@ public class ListLiveChannelsRequest extends LiveChannelGenericRequest {
     }
     
     /**
-     * 设置marker, 用户设定结果从marker之后按字母排序的第一个开始返回。
-     * @param marker marker
+     * Sets the marker filter.
+     * @param marker The marker filter.
      */
     public ListLiveChannelsRequest withMarker(String marker) {
         setMarker(marker);
         return this;
     }
     
-    // prefix限定返回的live channel必须以prefix作为前缀。
+    // The prefix filter.
     private String prefix;
     
-    // maker用户设定结果从marker之后按字母排序的第一个开始返回。
+    // The marker filter.
     private String marker;
 
-    // 用于限定此次返回live channel的最大数，如果不设定，默认为100。
+    // The max number of Live Channels to return.
     private Integer maxKeys;
     
 }

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 包含Multipart上传Part的表示。
+ * The entity class wraps the result of the list parts request.
  *
  */
 public class PartListing {
@@ -47,24 +47,24 @@ public class PartListing {
     private List<PartSummary> parts = new ArrayList<PartSummary>();
 
     /**
-     * 返回{@link Bucket}名称。
-     * @return Bucket名称。
+     * Gets the {@link Bucket} name.
+     * @return Bucket name.
      */
     public String getBucketName() {
         return bucketName;
     }
 
     /**
-     * 设置{@link Bucket}名称。
+     * Sets the {@link Bucket} name.
      * @param bucketName
-     *          Bucket名称。
+     *          Bucket name.
      */
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
     }
 
     /**
-     * 返回{@link OSSObject} key。
+     * Gets the {@link OSSObject} key.
      * @return Object key。
      */
     public String getKey() {
@@ -72,26 +72,26 @@ public class PartListing {
     }
 
     /**
-     * 设置{@link OSSObject} key。
+     * Sets the {@link OSSObject} key.
      * @param key
-     *          Object key。
+     *          Object key.
      */
     public void setKey(String key) {
         this.key = key;
     }
 
     /**
-     * 返回标识Multipart上传事件的Upload ID。
-     * @return 标识Multipart上传事件的Upload ID。
+     * Gets the multipart Upload ID.
+     * @return The multipart upload Id.
      */
     public String getUploadId() {
         return uploadId;
     }
 
     /**
-     * 设置标识Multipart上传事件的Upload ID。
+     * Sets the multipart upload Id.
      * @param uploadId
-     *          标识Multipart上传事件的Upload ID。
+     *          The multipart upload Id.
      */
     public void setUploadId(String uploadId) {
         this.uploadId = uploadId;
@@ -106,85 +106,85 @@ public class PartListing {
     }
 
     /**
-     * 返回请求中给定的{@link ListPartsRequest#getPartNumberMarker()}。
-     * @return Part number marker。
+     * Gets the {@link ListPartsRequest#getPartNumberMarker()}.
+     * @return Part number marker.
      */
     public Integer getPartNumberMarker() {
         return partNumberMarker;
     }
 
     /**
-     * 设置请求中给定的{@link ListPartsRequest#getPartNumberMarker()}。
+     * Sets the part number marker with {@link ListPartsRequest#getPartNumberMarker()}.
      * @param partNumberMarker
-     *          Part number marker。
+     *          Part number marker.
      */
     public void setPartNumberMarker(int partNumberMarker) {
         this.partNumberMarker = partNumberMarker;
     }
 
     /**
-     * 返回一个值表示如果返回结果被截取，那么下一个Part的号码是多少。
-     * @return 值表示如果返回结果被截取，那么下一个Part的号码是多少。
+     * Gets the next part number maker if there's remaining data left in the server.
+     * @return The next part number.
      */
     public Integer getNextPartNumberMarker() {
         return nextPartNumberMarker;
     }
 
     /**
-     * 设置一个值值表示如果返回结果被截取，那么下一个Part的号码是多少。
+     * Sets the next part number maker if there's remaining data left in the server.
      * @param nextPartNumberMarker
-     *          值表示如果返回结果被截取，那么下一个Part的号码是多少。
+     *          The next part number marker.
      */
     public void setNextPartNumberMarker(int nextPartNumberMarker) {
         this.nextPartNumberMarker = nextPartNumberMarker;
     }
 
     /**
-     * 返回请求中指定返回Part的最大个数（{@link ListPartsRequest#getMaxParts()}）。
-     * @return 返回Part的最大个数。
+     * Gets the max parts count to return, the value comes from {@link ListPartsRequest#getMaxParts()}.
+     * @return The max parts count.
      */
     public Integer getMaxParts() {
         return maxParts;
     }
 
     /**
-     * 设置请求中指定返回Part的最大个数（{@link ListPartsRequest#getMaxParts()}）。
+     * Sets the max parts count. The value comes from （{@link ListPartsRequest#getMaxParts()}).
      * @param maxParts
-     *          返回Part的最大个数。返回Part的最大个数。
+     *          The max parts count.
      */
     public void setMaxParts(int maxParts) {
         this.maxParts = maxParts;
     }
 
     /**
-     * 返回一个值表示返回结果是否被截取，即是否还有其他记录没有返回。
-     * @return 返回结果是否被截取，即是否还有其他记录没有返回。
+     * Gets the flag of if the result is truncated. If there's data remaining in the server side, the flag is true.
+     * @return true: the result is truncated; false the result is not truncated.
      */
     public boolean isTruncated() {
         return isTruncated;
     }
 
     /**
-     * 设置一个值表示返回结果是否被截取，即是否还有其他记录没有返回。
+     * Sets the flag of if the result is truncated. If there's data remaining in the server side, the flag is true.
      * @param isTruncated
-     *          返回结果是否被截取，即是否还有其他记录没有返回。
+     *          true: the result is truncated; false the result is not truncated.
      */
     public void setTruncated(boolean isTruncated) {
         this.isTruncated = isTruncated;
     }
 
     /**
-     * 返回{@link PartSummary}的列表。
-     * @return {@link PartSummary}的列表。
+     * Gets the list of {@link PartSummary}.
+     * @return The list of {@link PartSummary}.
      */
     public List<PartSummary> getParts() {
         return parts;
     }
 
     /**
-     * 设置{@link PartSummary}的列表。
+     * Sets the list of {@link PartSummary}.
      * @param parts
-     *      {@link PartSummary}的列表。
+     *      The list of {@link PartSummary}.
      */
     public void setParts(List<PartSummary> parts) {
         this.parts.clear();
@@ -194,9 +194,9 @@ public class PartListing {
     }
     
     /**
-     * 添加{@link PartSummary}实例。
+     * Adds a {@link PartSummary} instance.
      * @param partSummary
-     *      {@link PartSummary}实例。
+     *      A {@link PartSummary} instance.
      */
     public void addPart(PartSummary partSummary) {
         this.parts.add(partSummary);

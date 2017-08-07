@@ -56,10 +56,10 @@ public class LiveRecord {
         this.remoteAddress = remoteAddress;
     }
 
-    // 推流的开始时间
+    // The start time of the pushing streaming.
     private Date startDate;
-    // 推流的结束时间
+    // The end time of the pushing streaming.
     private Date endDate;
-    // 推流的客户端地址
+    // The pushing streaming's client address---from where the streaming is pushed.
     private String remoteAddress;
 }

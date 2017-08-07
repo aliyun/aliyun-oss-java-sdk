@@ -22,7 +22,7 @@ package com.aliyun.oss.model;
 /**
  * Instance Flavor
  * 
- * Udf Applacation的运行环境，详见请参看ECS。
+ * Udf Applacation's runtime.For the detail, please refer ECS document.
  * 
  */
 public class InstanceFlavor {
