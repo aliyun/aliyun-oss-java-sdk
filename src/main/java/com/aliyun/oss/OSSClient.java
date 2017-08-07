@@ -78,7 +78,7 @@ import com.aliyun.oss.model.*;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
 
 /**
- * 访问阿里云对象存储服务（Object Storage Service， OSS）的入口类。
+ * The entry point class of OSS that implements the OSS interface.
  */
 public class OSSClient implements OSS {
 
@@ -102,13 +102,13 @@ public class OSSClient implements OSS {
     private OSSUdfOperation udfOperation;
     
     /**
-     * 使用默认的OSS Endpoint(http://oss-cn-hangzhou.aliyuncs.com)及
-     * 阿里云颁发的Access Id/Access Key构造一个新的{@link OSSClient}对象。
+     * Uses the default OSS Endpoint(http://oss-cn-hangzhou.aliyuncs.com) and Access Id/Access Key
+     * to create a new {@link OSSClient} instance.
      * 
      * @param accessKeyId
-     *            访问OSS的Access Key ID。
+     *            Access Key ID.
      * @param secretAccessKey
-     *            访问OSS的Secret Access Key。
+     *            Secret Access Key.
      */
     @Deprecated
     public OSSClient(String accessKeyId, String secretAccessKey) {
@@ -116,48 +116,48 @@ public class OSSClient implements OSS {
     }
 
     /**
-     * 使用指定的OSS Endpoint、阿里云颁发的Access Id/Access Key构造一个新的{@link OSSClient}对象。
+     * Uses the specified OSS Endpoint and Access Id/Access Key to create a new {@link OSSClient} instance.
      * 
      * @param endpoint
-     *            OSS服务的Endpoint。
+     *            OSS endpoint.
      * @param accessKeyId
-     *            访问OSS的Access Key ID。
+     *            Access Key ID.
      * @param secretAccessKey
-     *            访问OSS的Secret Access Key。
+     *            Secret Access Key.
      */
     public OSSClient(String endpoint, String accessKeyId, String secretAccessKey) {
         this(endpoint, new DefaultCredentialProvider(accessKeyId, secretAccessKey), null);
     }
     
     /**
-     * 使用指定的OSS Endpoint、STS提供的临时Token信息(Access Id/Access Key/Security Token)
-     * 构造一个新的{@link OSSClient}对象。
+     * Uses the specified OSS Endpoint、a security token from AliCloud STS and Access Id/Access Key to create
+     * a new {@link OSSClient} instance.
      * 
      * @param endpoint
-     *            OSS服务的Endpoint。
+     *            OSS Endpoint.
      * @param accessKeyId
-     *            STS提供的临时访问ID。
+     *            Access Id from STS.
      * @param secretAccessKey
-     *            STS提供的访问密钥。
+     *            Access Key from STS
      * @param securityToken
-     *               STS提供的安全令牌。
+     *            Security Token from STS.
      */
     public OSSClient(String endpoint, String accessKeyId, String secretAccessKey, String securityToken) {
         this(endpoint, new DefaultCredentialProvider(accessKeyId, secretAccessKey, securityToken), null);
     }
     
     /**
-     * 使用指定的OSS Endpoint、阿里云颁发的Access Id/Access Key、客户端配置
-     * 构造一个新的{@link OSSClient}对象。
+     * Uses a specified OSS Endpoint、Access Id, Access Key、Client side configuration to create a {@link OSSClient}
+     * instance.
      * 
      * @param endpoint
-     *            OSS服务的Endpoint。
+     *            OSS Endpoint。
      * @param accessKeyId
-     *            访问OSS的Access Key ID。
+     *            Access Key ID。
      * @param secretAccessKey
-     *            访问OSS的Secret Access Key。
+     *            Secret Access Key。
      * @param config
-     *            客户端配置 {@link ClientConfiguration}。 如果为null则会使用默认配置。
+     *            A {@link ClientConfiguration} instance. The method would use default configuration if it's null.
      */
     public OSSClient(String endpoint, String accessKeyId, String secretAccessKey, 
             ClientConfiguration config) {
@@ -165,19 +165,19 @@ public class OSSClient implements OSS {
     }
     
     /**
-     * 使用指定的OSS Endpoint、STS提供的临时Token信息(Access Id/Access Key/Security Token)、
-     * 客户端配置构造一个新的{@link OSSClient}对象。
+     * Uses specified OSS Endpoint, the temporary (Access Id/Access Key/Security Token) from STS and the client
+     * configuration to create a new {@link OSSClient} instance.
      * 
      * @param endpoint
-     *            OSS服务的Endpoint。
+     *            OSS Endpoint。
      * @param accessKeyId
-     *            STS提供的临时访问ID。
+     *            Access Key Id provided by STS.
      * @param secretAccessKey
-     *            STS提供的访问密钥。
+     *            Secret Access Key provided by STS.
      * @param securityToken
-     *               STS提供的安全令牌。
+     *             Security token provided by STS.
      * @param config
-     *            客户端配置 {@link ClientConfiguration}。 如果为null则会使用默认配置。
+     *            A {@link ClientConfiguration} instance. The method would use default configuration if it's null.
      */
     public OSSClient(String endpoint, String accessKeyId, String secretAccessKey, String securityToken, 
             ClientConfiguration config) {
@@ -185,19 +185,20 @@ public class OSSClient implements OSS {
     }
 
     /**
-     * 使用默认配置及指定的{@link CredentialsProvider}与Endpoint构造一个新的{@link OSSClient}对象。
-     * @param endpoint OSS services的Endpoint。
-     * @param credsProvider Credentials提供者。
+     * Uses the specified {@link CredentialsProvider} and OSS Endpoint to create a new {@link OSSClient} instance.
+     * @param endpoint OSS services Endpoint。
+     * @param credsProvider Credentials provider which has access key Id and access Key secret.
      */
     public OSSClient(String endpoint, CredentialsProvider credsProvider) {
         this(endpoint, credsProvider, null);
     }
     
     /**
-     * 使用指定的{@link CredentialsProvider}、配置及Endpoint构造一个新的{@link OSSClient}对象。
-     * @param endpoint OSS services的Endpoint。
-     * @param credsProvider Credentials提供者。
-     * @param config client配置。
+     * Uses the specified {@link CredentialsProvider}, client configuration and OSS endpoint to create a new
+     * {@link OSSClient} instance.
+     * @param endpoint OSS services Endpoint.
+     * @param credsProvider Credentials provider.
+     * @param config client configuration.
      */
     public OSSClient(String endpoint, CredentialsProvider credsProvider, ClientConfiguration config) {
         this.credsProvider = credsProvider;
@@ -212,16 +213,16 @@ public class OSSClient implements OSS {
     }
     
     /**
-     * 获取OSS services的Endpoint。
-     * @return OSS services的Endpoint。
+     * Gets OSS services Endpoint.
+     * @return OSS services Endpoint.
      */
     public synchronized URI getEndpoint() {
         return URI.create(endpoint.toString());
     }
     
     /**
-     * 设置OSS services的Endpoint。
-     * @param endpoint OSS services的Endpoint。
+     * Sets OSS services endpoint.
+     * @param endpoint OSS services endpoint.
      */
     public synchronized void setEndpoint(String endpoint) {
         URI uri = toURI(endpoint);
@@ -240,7 +241,8 @@ public class OSSClient implements OSS {
     }
     
     /**
-     * 判定一个网络地址是否是IP还是域名。IP都是用二级域名，域名(Localhost除外)不使用二级域名。
+     * Checks if the uri is an IP or domain. If it's IP or local host, then it will use secondary domain of Alibaba cloud.
+     * Otherwise, it will use domain directly to access the OSS.
      * @param uri URI。
      */
     private boolean isIpOrLocalhost(URI uri){
@@ -417,7 +419,7 @@ public class OSSClient implements OSS {
     }
 
     /**
-     * 已过时。请使用{@link OSSClient#doesBucketExist(String)}。
+     * Deprecated. Please use {@link OSSClient#doesBucketExist(String)} instead.
      */
     @Deprecated
     public boolean isBucketExist(String bucketName) 

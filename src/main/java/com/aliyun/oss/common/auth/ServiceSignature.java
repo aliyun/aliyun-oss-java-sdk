@@ -20,33 +20,34 @@
 package com.aliyun.oss.common.auth;
 
 /**
- * 表示用于计算访问签名的接口。
+ * The interface to compute the signature of the data.
  */
 public abstract class ServiceSignature {
 
     /**
-     * 获取签名的算法。
-     * @return 签名算法。
+     * Gets the algorithm of signature.
+     * @return The algorithm of the signature.
      */
     public abstract String getAlgorithm();
     
     /**
-     * 获取签名算法的版本信息。
-     * @return 签名算法的版本。
+     * Gets the algorithm version.
+     * @return The algorithm version.
      */
     public abstract String getVersion();
     
     /**
-     * 计算签名。
-     * @param key 签名所需的密钥，对应于访问的Access Key。
-     * @param data 用于计算签名的字符串信息。
-     * @return 签名字符串。
+     * Computes the signature of the data by the given key.
+     * @param key The key for the signature.
+     * @param data The data to compute the signature on.
+     * @return The signature in string.
      */
     public abstract String computeSignature(String key, String data);
 
     /**
-     * 创建默认的<code>ServiceSignature</code>实例。
-     * @return 默认的<code>ServiceSignature</code>实现。
+     *
+     * Creates the default <code>ServiceSignature</code> instance which is {@link HmacSHA1Signature}.
+     * @return  The default <code>ServiceSignature</code> instance
      */
     public static ServiceSignature create() {
         return new HmacSHA1Signature();

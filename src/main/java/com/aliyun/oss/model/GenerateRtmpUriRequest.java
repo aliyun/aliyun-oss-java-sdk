@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 /**
- * 生成带有签名信息的推流地址的请求
+ * This class wraps all the information needed to generate the signed pushing streaming url.
  */
 public class GenerateRtmpUriRequest {
     

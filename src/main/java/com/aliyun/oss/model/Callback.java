@@ -23,9 +23,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 文件上传成功后OSS可以向callbackUrl发送回调请求，请求方法为POST，body为callbackBody指定的内容。
- * 支持CallBack的API接口有：PutObject、PostObject、CompleteMultipartUpload。
- * 
+ * When an upload succeeds, OSS provides the mechanism to send a post message to a callbackurl to trigger some action
+ * defined by that callbackurl.
+ * The message's method must be Post and the body is the callbackBody's content and it must match the callbackurl's
+ * expectation.
+ *
+ * APIs that support callback include PutObject, PstObject, CompleteMultipartUpload.
  */
 public class Callback {
 
@@ -49,14 +52,13 @@ public class Callback {
     }
 
     /**
-     * 文件上传成功后OSS向此url发送回调请求，请求方法为POST，body为callbackBody指定的内容。正常情况下，
-     * 该url需要响应“HTTP/1.1 200 OK”，body必须为JSON格式，响应头Content-Length必须为合法的值，
-     * 且不超过3MB。 
-     * 支持同时配置最多5个url，以";"分割。OSS会依次发送请求直到第一个返回成功为止。 
-     * 如果没有配置或者值为空则认为没有配置callback。 支持HTTPS地址 。
-     * 为了保证正确处理中文等情况，callbackUrl需做url编码处理。
+     * Sets the callback url---the callbackUrl parameter must be Url encoded.
+     * It supports multiple callback urls (separated by ';'). When multiple callback urls are specified, OSS will send
+     * callback request one by one until the first successful response.
+     * After the callback request is sent, OSS expects to get "200 OK" response with a JSON body. The body size should be
+     * no more than 3MB.
      * 
-     * @param callbackUrl OSS回调请求发送地址
+     * @param callbackUrl The callback url(s) in url encoding.
      */
     public void setCallbackUrl(String callbackUrl) {
         this.callbackUrl = callbackUrl;
@@ -67,10 +69,10 @@ public class Callback {
     }
 
     /**
-     * 发起回调请求时Host头的值，只有在设置了callbackUrl时才有效 。如果没有配置 callbckHost，
-     * 则会解析callbackUrl中的url并将解析出的host填充到callbackHost中。
+     * Sets the callback host, only valid when callbackUrl is set.
+     * If this is not set, the host will be extracted from the callbackUrl.
      * 
-     * @param callbackHost OSS回调请求头中的Host值
+     * @param callbackHost The host of OSS callback.
      */
     public void setCallbackHost(String callbackHost) {
         this.callbackHost = callbackHost;
@@ -81,10 +83,10 @@ public class Callback {
     }
 
     /**
-     * OSS发起回调时请求body的值，例如：key=$(key)&etag=$(etag)&my_var=$(x:my_var)。
-     * 支持OSS系统变量、自定义变量和常量 。自定义变量的callbackVar传递。
+     * Sets the callback body.For example: key=$(key)&etag=$(etag)&my_var=$(x:my_var).
+     * It supports the OSS system variable, custom defined variable or constant and custom defined variable's callbackVar.
      * 
-     * @param callbackBody OSS回调请求的Body值
+     * @param callbackBody OSS callback body.
      */
     public void setCallbackBody(String callbackBody) {
         this.callbackBody = callbackBody;
@@ -96,11 +98,12 @@ public class Callback {
     }
 
     /**
-     * OSS发起回调请求的Content-Type，支持application/x-www-form-urlencoded(url)和application/json(json)，
-     * 默认为前者。如果为application/x-www-form-urlencoded，则callbackBody中的变量将会被经过url编码的值替换掉，
-     * 如果为application/json，则会按照json格式替换其中的变量。
-     * 
-     * @param calbackBodyType OSS回调请求头Content-Type值
+     * The content-type header in OSS's callback request.
+     * It supports application/x-www-form-urlencoded(url) and application/json(json).
+     * The default is the former, which means the variable in callback body will be url encoded.
+     * If it's latter, the variable in callback body will be formatted (by the SDK) as json's variable.
+     *
+     * @param calbackBodyType The content-type header in OSS callback request.
      */
     public void setCalbackBodyType(CalbackBodyType calbackBodyType) {
         this.calbackBodyType = calbackBodyType;
@@ -111,13 +114,13 @@ public class Callback {
     }
 
     /**
-     * 用户置自定义参数。
+     * Sets user customized parameter(s).
+     *
+     * Customized parameter is a Map<key,value> instance. In the callback request, OSS would put these parameters into
+     * the post body.
+     * The keys must start with "x:", such as x:my_var.
      * 
-     * 自定义参数是一个Key-Value的Map，用户可以配置自己需要的参数到这个Map。在OSS发起POST回调请求的时，
-     * 会将这些参数和系统参数一起放在POST请求的body中以方便接收回调方获取。
-     * 用户自定义参数的Key一定要以"x:"开头，如 x:my_var。
-     * 
-     * @param callbackVar 用户自定义参数
+     * @param callbackVar A {@link Map} instance that stores the <key, value> pairs.
      */
     public void setCallbackVar(Map<String, String> callbackVar) {
         this.callbackVar.clear();
@@ -127,14 +130,10 @@ public class Callback {
     }
     
     /**
-     * 用户置自定义参数。
+     * Adds a new custom parameter.
      * 
-     * 自定义参数是一个Key-Value的Map，用户可以配置自己需要的参数到这个Map。在OSS发起POST回调请求的时，
-     * 会将这些参数和系统参数一起放在POST请求的body中以方便接收回调方获取。
-     * 用户自定义参数的Key一定要以"x:"开头，如 x:my_var。
-     * 
-     * @param key 用户自定义参数Key
-     * @param value 用户自定义参数Value
+     * @param key Custom key starting with "x:".
+     * @param value The value for the custom key.
      */
     public void addCallbackVar(String key, String value) {
         this.callbackVar.put(key, value);
@@ -148,29 +147,28 @@ public class Callback {
     }
 
     /**
-     * 文件上传成功后OSS向此url发送回调请求，请求方法为POST，body为callbackBody指定的内容。
+     * The callbackUrl after a successful upload
      */
     private String callbackUrl;
     
     /**
-     * 发起回调请求时Host头的值，只有在设置了callbackUrl时才有效; 如果没有配置callbckHost，
-     * 则会解析callbackUrl中的url并将解析出的host填充到callbackHost中。
+     * The callback host, only vaid after the callbackUrl is set.
+     * If callbackHost is null, the SDK will extract the host from the callbackUrl.
      */
     private String callbackHost;
     
     /**
-     * 发起回调时请求body的值，支持OSS系统变量、自定义变量和常量。
+     * The callback body in the request.
      */
     private String callbackBody;
 
     /**
-     * 发起回调请求的Content-Type，支持url和json，默认为前者。
+     * The content-type header in the request. It supports url or json type and url is the default.
      */
     private CalbackBodyType calbackBodyType;
 
     /**
-     * 自定义参数是一个Key-Value的Map，Key一定要以x:开头。OSS发起POST回调请求的时，
-     * 会将自定义参数参数和系统参数一起放在POST请求的body中以方便接收回调方获取。
+     * The custom parameters
      */
     private Map<String, String> callbackVar = new HashMap<String, String>();
 

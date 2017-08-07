@@ -21,6 +21,7 @@ package com.aliyun.oss.model;
 
 /**
  * Bucket Stat
+ * It contains the current bucket's occupant size and file count.
  */
 public class BucketStat {
 
@@ -31,24 +32,24 @@ public class BucketStat {
 	}
 
 	/**
-	 * 返回Bucket存储量，单位byte
-	 * @return Bucket存储量
+	 * Gets the used storage size in bytes.
+	 * @return Bucket used storage size.
 	 */
 	public Long getStorageSize() {
 		return storageSize;
 	}
 
 	/**
-	 * 返回Bucket中Object的数量
-	 * @return Object的数量
+	 * Gets the object count under the bucket.
+	 * @return Object count
 	 */
 	public Long getObjectCount() {
 		return objectCount;
 	}
 
 	/**
-	 * 返回Bucket下未完成的分片上传任务数
-	 * @return 未完成的分片上传任务数
+	 * Gets the unfinished parts uploading count.
+	 * @return The unfinished parts uploading count.
 	 */
 	public Long getMultipartUploadCount() {
 		return multipartUploadCount;

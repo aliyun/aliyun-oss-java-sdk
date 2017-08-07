@@ -22,37 +22,37 @@ package com.aliyun.oss;
 public interface ClientErrorCode {
     
     /**
-     * 未知错误。
+     * Unknown error. This means the error is not expected.
      */
     static final String UNKNOWN = "Unknown"; 
     
     /**
-     * 未知域名。
+     * Unknown host. This error is returned when a {@link java.net.UnknownHostException} is thrown.
      */
     static final String UNKNOWN_HOST = "UnknownHost";
     
     /**
-     * 远程服务连接超时。
+     * connection times out.
      */
     static final String CONNECTION_TIMEOUT = "ConnectionTimeout";
     
     /**
-     * 远程服务socket读写超时。
+     * Socket times out
      */
     static final String SOCKET_TIMEOUT = "SocketTimeout";
     
     /**
-     * 远程服务socket异常。
+     * Socket exception
      */
     static final String SOCKET_EXCEPTION = "SocketException";
     
     /**
-     * 远程服务拒绝连接。
+     * Connection is refused by server side.
      */
     static final String CONNECTION_REFUSED = "ConnectionRefused";
     
     /**
-     * 请求输入流不可重复读取。
+     * The input stream is not repeatable for reading.
      */
     static final String NONREPEATABLE_REQUEST = "NonRepeatableRequest";
     

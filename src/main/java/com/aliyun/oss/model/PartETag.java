@@ -22,7 +22,7 @@ package com.aliyun.oss.model;
 import java.io.Serializable;
 
 /**
- * 包含Multipart上传的Part的返回结果信息。
+ * The result information for a part's upload in a multipart upload.
  *
  */
 public class PartETag implements Serializable {
@@ -34,11 +34,11 @@ public class PartETag implements Serializable {
     private Long partCRC;
 
     /**
-     * 构造函数。
+     * Constructor
      * @param partNumber
-     *          Part标识号码。
+     *          Part number.
      * @param eTag
-     *          Part的ETag值。
+     *          Part ETag.
      */
     public PartETag(int partNumber, String eTag) {
         this.partNumber = partNumber;
@@ -46,15 +46,15 @@ public class PartETag implements Serializable {
     }
     
     /**
-     * 构造函数。
+     * Constructor
      * @param partNumber
-     *          Part标识号码。
+     *          Part number.
      * @param eTag
-     *          Part的ETag值。
+     *          Part ETag.
      * @param partSize
-     *          分片大小。
+     *          Part Size.
      * @param partCRC
-     *          分片的CRC值。       
+     *          Part's CRC value.
      */
     public PartETag(int partNumber, String eTag, long partSize, Long partCRC) {
         this.partNumber = partNumber;
@@ -64,34 +64,34 @@ public class PartETag implements Serializable {
     }
 
     /**
-     * 返回Part标识号码。
-     * @return Part标识号码。
+     * Gets part number.
+     * @return Part number.
      */
     public int getPartNumber() {
         return partNumber;
     }
 
     /**
-     * 设置Part标识号码。
+     * Sets part number.
      * @param partNumber
-     *          Part标识号码。
+     *          Part number.
      */
     public void setPartNumber(int partNumber) {
         this.partNumber = partNumber;
     }
 
     /**
-     * 返回Part的ETag值。
-     * @return Part的ETag值。
+     * Gets the part's ETag
+     * @return Part ETag.
      */
     public String getETag() {
         return eTag;
     }
 
     /**
-     * 设置Part的ETag值。
+     * Sets the part's ETag.
      * @param eTag
-     *          Part的ETag值。
+     *          Part ETag.
      */
     public void setETag(String eTag) {
         this.eTag = eTag;

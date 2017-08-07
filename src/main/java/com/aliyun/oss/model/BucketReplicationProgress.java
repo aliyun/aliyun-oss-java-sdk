@@ -22,10 +22,12 @@ package com.aliyun.oss.model;
 import java.util.Date;
 
 /**
- * 跨区域复制进度。
+ * The progress of cross region bucket replication.
  * <p>
- * 历史数据用已复制文件数目的百分比表示，如0.85表示已经完成85%，仅对开启了历史数据复制的Bucket有效；
- * 新写入复制进度用数据的时间点表示，表示早于这个时间点写入的数据都已复制到目标Bucket。
+ * For historical data, it uses the percentage (e.g. 0.85 means 85%) of copied file count as the progress indicator.
+ * It's only applicable for buckets enabled with historical data replication.
+ * For new coming data, it uses the replicated timestamp as the progress indicator. It means all files which are uploaded
+ * before that timestamp have been replicated to the target bucket.
  * </p>
  */
 public class BucketReplicationProgress {

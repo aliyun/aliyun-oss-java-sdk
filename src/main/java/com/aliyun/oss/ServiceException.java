@@ -21,23 +21,26 @@ package com.aliyun.oss;
 
 /**
  * <p>
- * 表示阿里云服务返回的错误消息。
+ * This is the base exception class to represent any expected or unexpected OSS server side errors.
  * </p>
  * 
  * <p>
- * {@link ServiceException}用于处理阿里云服务返回的错误消息。比如，用于身份验证的Access ID不存在，
- * 则会抛出{@link ServiceException}（严格上讲，会是该类的一个继承类。比如，OSSClient会抛出OSSException）。
- * 异常中包含了错误代码，用于让调用者进行特定的处理。
+ * {@link ServiceException} is converted from error code from OSS response. For example, when OSS tries to authenticate
+ * a request, if Access ID does not exist, the SDK will throw a {@link ServiceException} or its subclass instance
+ * with the specific error code, which the caller could handle that with specific logic.
  * </p>
  * 
  * <p>
- * {@link ClientException}表示的则是在向阿里云服务发送请求时出现的错误，以及客户端无法处理返回结果。
- * 例如，在发送请求时网络连接不可用，则会抛出{@link ClientException}的异常。
+ * On the other side, {@link ClientException} is the class to represent any exception in OSS client side. Generally
+ * ClientException occurs either before sending the request or after receving the response from OSS server side.
+ * For example, if the network is broken when it tries to send a request, then the SDK will throw a {@link ClientException}
+ * instance.
  * </p>
  * 
  * <p>
- * 通常来讲，调用者只需要处理{@link ServiceException}。因为该异常表明请求被服务处理，但处理的结果表明
- * 存在错误。异常中包含了细节的信息，特别是错误代码，可以帮助调用者进行处理。
+ * So generally speaking, the caller only needs to handle {@link ServiceException} properly as it means the request is
+ * processed, but not completely finished due to different errors. The error code in the exception is a good diagnostics
+ * information. Sometimes these exceptions are completely expected.
  * </p>
  */
 public class ServiceException extends RuntimeException {
@@ -52,15 +55,15 @@ public class ServiceException extends RuntimeException {
     private String rawResponseError;
 
     /**
-     * 构造新实例。
+     * Creates a default instance.
      */
     public ServiceException() {
         super();
     }
 
     /**
-     * 用给定的异常信息构造新实例。
-     * @param errorMessage 异常信息。
+     * Creates an instance with the error message.
+     * @param errorMessage Error message.
      */
     public ServiceException(String errorMessage) {
         super((String)null);
@@ -68,17 +71,17 @@ public class ServiceException extends RuntimeException {
     }
 
     /**
-     * 用表示异常原因的对象构造新实例。
-     * @param cause 异常原因。
+     * Creates an instance with a {@link Throwable} instance.
+     * @param cause A {@link Throwable} instance.
      */
     public ServiceException(Throwable cause) {
         super(null, cause);
     }
 
     /**
-     * 用异常消息和表示异常原因的对象构造新实例。
-     * @param errorMessage 异常信息。
-     * @param cause 异常原因。
+     * Creates an instance with a {@link Throwable} instance and error message.
+     * @param errorMessage Error message.
+     * @param cause A {@link Throwable} instance.
      */
     public ServiceException(String errorMessage, Throwable cause) {
         super(null, cause);
@@ -86,23 +89,23 @@ public class ServiceException extends RuntimeException {
     }
 
     /**
-     * 用异常消息和表示异常原因及其他信息的对象构造新实例。
-     * @param errorMessage 异常信息。
-     * @param errorCode 错误代码。
-     * @param requestId Request ID。
-     * @param hostId Host ID。
+     * Creates an instance with error message, error code, request id, host id.
+     * @param errorMessage Error message.
+     * @param errorCode Error code.
+     * @param requestId Request Id.
+     * @param hostId Host Id.
      */
     public ServiceException(String errorMessage, String errorCode, String requestId, String hostId) {
         this(errorMessage, errorCode, requestId, hostId, null);
     }
     
     /**
-     * 用异常消息和表示异常原因及其他信息的对象构造新实例。
-     * @param errorMessage 异常信息。
-     * @param errorCode 错误代码。
-     * @param requestId Request ID。
-     * @param hostId Host ID。
-     * @param cause 异常原因。
+     * Creates an instance with error message, error code, request id, host id.
+     * @param errorMessage Error message.
+     * @param errorCode Error code.
+     * @param requestId Request Id.
+     * @param hostId Host Id.
+     * @param cause A {@link Throwable} instance indicates a specific exception.
      */
     public ServiceException(String errorMessage, String errorCode, String requestId, String hostId, 
             Throwable cause) {
@@ -110,13 +113,13 @@ public class ServiceException extends RuntimeException {
     }
     
     /**
-     * 用异常消息和表示异常原因及其他信息的对象构造新实例。
-     * @param errorMessage 异常信息。
-     * @param errorCode 错误代码。
-     * @param requestId Request ID。
-     * @param hostId Host ID。
-     * @param rawResponseError OSS错误响应体。
-     * @param cause 异常原因。
+     * Creates an instance with error message, error code, request id, host id, OSS response error, and a Throwable instance.
+     * @param errorMessage Error message.
+     * @param errorCode Error code.
+     * @param requestId Request Id.
+     * @param hostId Host Id.
+     * @param rawResponseError OSS error message in response.
+     * @param cause A {@link Throwable} instance indicates a specific exception.
      */
     public ServiceException(String errorMessage, String errorCode, String requestId, String hostId, 
             String rawResponseError, Throwable cause) {
@@ -128,48 +131,48 @@ public class ServiceException extends RuntimeException {
     }
 
     /**
-     * 返回异常信息。
-     * @return 异常信息。
+     * Gets error message.
+     * @return Error message.
      */
     public String getErrorMessage() {
         return errorMessage;
     }
 
     /**
-     * 返回错误代码的字符串表示。
-     * @return 错误代码的字符串表示。
+     * Gets the error code.
+     * @return The error code in string.
      */
     public String getErrorCode() {
         return errorCode;
     }
 
     /**
-     * 返回Request标识。
-     * @return Request标识。
+     * Gets the request id.
+     * @return The request Id in string.
      */
     public String getRequestId() {
         return requestId;
     }
 
     /**
-     * 返回Host标识。
-     * @return Host标识。
+     * Gets the host id.
+     * @return The host Id in string.
      */
     public String getHostId() {
         return hostId;
     }
     
     /**
-     * 返回OSS错误响应体的字符串表示。
-     * @return OSS错误响应体的字符串表示
+     * Gets the error message in OSS response.
+     * @return Error response in string.
      */
     public String getRawResponseError() {
         return rawResponseError;
     }
 
     /**
-     * 设置OSS错误响应体的字符串表示。
-     * @param rawResponseError OSS错误响应体的字符串表示
+     * Sets the error response from OSS.
+     * @param rawResponseError The error response from OSS.
      */
     public void setRawResponseError(String rawResponseError) {
         this.rawResponseError = rawResponseError;

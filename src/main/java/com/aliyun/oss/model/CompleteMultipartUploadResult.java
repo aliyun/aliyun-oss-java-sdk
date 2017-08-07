@@ -22,7 +22,7 @@ package com.aliyun.oss.model;
 import java.io.InputStream;
 
 /**
- * 包含完成一个Multipart上传事件的返回结果。
+ * The result of a multipart upload.
  *
  */
 public class CompleteMultipartUploadResult extends GenericResult implements CallbackResult {
@@ -38,79 +38,81 @@ public class CompleteMultipartUploadResult extends GenericResult implements Call
 
     private String eTag;
     
-    /** 回调返回的消息体 */
+    /** The callback request's response body */
     private InputStream callbackResponseBody;
 
     /**
-     * 返回标识Multipart上传的{@link OSSObject}的URL地址。
-     * @return 标识Multipart上传的{@link OSSObject}的URL地址。
+     * Gets the url of the target file of this multipart upload.
+     * @return The url of the target file of this multipart upload.
      */
     public String getLocation() {
         return location;
     }
 
     /**
-     * 设置标识Multipart上传的{@link OSSObject}的URL地址。
+     * Sets the url of the target file of this multipart upload.
      * @param location
-     *          标识Multipart上传的{@link OSSObject}的URL地址。
+     *          The url of the target file of this multipart upload.
      */
     public void setLocation(String location) {
         this.location = location;
     }
 
     /**
-     * 返回包含Multipart上传的{@link OSSObject}的{@link Bucket}名称。
-     * @return Bucket名称。
+     * Gets the bucket name of the target file of this multipart upload.
+     * @return Bucket name.
      */
     public String getBucketName() {
         return bucketName;
     }
 
     /**
-     * 设置包含Multipart上传的{@link OSSObject}的{@link Bucket}名称。
+     * Sets the bucket name of the target file of this multipart upload.
      * @param bucketName
-     *          Bucket名称。
+     *          Bucket name.
      */
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
     }
 
     /**
-     * 返回新创建的{@link OSSObject}的Key。
-     * @return 新创建的{@link OSSObject}的Key。
+     * Gets the target file's key.
+     * @return The target file's key.
      */
     public String getKey() {
         return key;
     }
 
     /**
-     * 设置新创建的{@link OSSObject}的Key。
+     * Sets the target file's key.
      * @param key
-     *          新创建的{@link OSSObject}的Key。
+     *          The target file's key.
      */
     public void setKey(String key) {
         this.key = key;
     }
 
     /**
-     * 返回ETag值。
-     * @return ETag值。
+     * Gets the ETag of the target file.
+     * @return ETag of the target file.
      */
     public String getETag() {
         return eTag;
     }
 
     /**
-     * 设置ETag值。
-     * @param etag ETag值。
+     * Sets the ETag of the target file.
+     * @param etag ETag of the target file.
      */
     public void setETag(String etag) {
         this.eTag = etag;
     }
     
     /**
-     * 获取回调返回的消息体，需要close，使用this.getResponse().getContent()代替。。
-     * @return 回调返回的消息体
+     * Deprecated.
+     * Gets the callback response body.
+     * The caller needs to close it after usage.
+     * @return The response body.
      */
     @Override
     @Deprecated
@@ -119,8 +121,8 @@ public class CompleteMultipartUploadResult extends GenericResult implements Call
     }
     
     /**
-     * 设置回调返回的消息体。
-     * @param callbackResponseBody 回调返回的消息体。
+     * Sets the callback response body.
+     * @param callbackResponseBody The callback response body.
      */
     @Override
     public void setCallbackResponseBody(InputStream callbackResponseBody) {

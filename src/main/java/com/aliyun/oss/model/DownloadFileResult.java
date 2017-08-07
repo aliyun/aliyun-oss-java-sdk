@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 /**
- * 下载文件执行结果
+ * The result of downloading file.
  * 
  */
 public class DownloadFileResult {

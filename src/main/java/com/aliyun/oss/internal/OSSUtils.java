@@ -398,7 +398,7 @@ public class OSSUtils {
     }
     
     /**
-     * 用JSON格式编码Callback
+     * Encode the callback with JSON.
      */
     public static String jsonizeCallback (Callback callback) {
         StringBuffer jsonBody = new StringBuffer();
@@ -427,7 +427,7 @@ public class OSSUtils {
     }
     
     /**
-     * 用JSON格式编码CallbackVar
+     * Encode CallbackVar with Json.
      */
     public static String jsonizeCallbackVar(Callback callback) {
         StringBuffer jsonBody = new StringBuffer();
@@ -447,7 +447,7 @@ public class OSSUtils {
     }
     
     /**
-     * 确认回调参数有效
+     * Ensure the callback is valid by checking its url and body are not null or empty.
      */
     public static void ensureCallbackValid(Callback callback) {
         if (callback != null) {
@@ -457,7 +457,7 @@ public class OSSUtils {
     }
     
     /**
-     * 回调参数放入消息头
+     * Put the callback parameter into header.
      */
     public static void populateRequestCallback(Map<String, String> headers, Callback callback) {
         if (callback != null) {
@@ -476,7 +476,7 @@ public class OSSUtils {
     }
     
     /**
-     * 检测OSS和SDK计算的校验和是否相同，不同抛异常InconsistentException
+     * Checks if OSS and SDK's checksum is same. If not, throws InconsistentException.
      */
     public static void checkChecksum(Long clientChecksum, Long serverChecksum, String requestId) {
     	if (clientChecksum != null && serverChecksum != null && 

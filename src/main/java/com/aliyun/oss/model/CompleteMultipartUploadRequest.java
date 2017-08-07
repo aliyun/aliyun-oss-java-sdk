@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 包含完成一个Multipart上传事件的请求参数。
+ * The request class that is used to complete a multipart upload.
+ * It wraps all parameters needed to complete a multipart upload.
+ *
  */
 public class CompleteMultipartUploadRequest extends GenericRequest {
 
@@ -43,15 +45,15 @@ public class CompleteMultipartUploadRequest extends GenericRequest {
     private String process;
 
     /**
-     * 构造函数。
+     * Constructor
      * @param bucketName
-     *          Bucket名称。
+     *          Bucket name.
      * @param key
-     *          Object key。
+     *          Object key.
      * @param uploadId
-     *          Mutlipart上传事件的Upload ID。
+     *          Mutlipart upload Id.
      * @param partETags
-     *          标识上传Part结果的{@link PartETag}列表。
+     *          The Etags for the parts.
      */
     public CompleteMultipartUploadRequest(String bucketName, String key, String uploadId, 
             List<PartETag> partETags) {
@@ -62,41 +64,41 @@ public class CompleteMultipartUploadRequest extends GenericRequest {
     }
 
     /**
-     * 返回标识Multipart上传事件的Upload ID。
-     * @return 标识Multipart上传事件的Upload ID。
+     * Gets the multipart upload Id.
+     * @return The multipart upload Id.
      */
     public String getUploadId() {
         return uploadId;
     }
 
     /**
-     * 设置标识Multipart上传事件的Upload ID。
+     * Sets the multipart upload Id.
      * @param uploadId
-     *          标识Multipart上传事件的Upload ID。
+     *          The multipart upload Id.
      */
     public void setUploadId(String uploadId) {
         this.uploadId = uploadId;
     }
 
     /**
-     * 返回标识上传Part结果的{@link PartETag}列表。
-     * @return 标识上传Part结果的{@link PartETag}列表。
+     * Gets the Etags of the parts.
+     * @return A List of {@link PartETag}
      */
     public List<PartETag> getPartETags() {
         return partETags;
     }
 
     /**
-     * 设置标识上传Part结果的{@link PartETag}列表。
+     * Sets the ETags of the parts.
      * @param partETags
-     *          标识上传Part结果的{@link PartETag}列表。
+     *          A list of {@link PartETag}
      */
     public void setPartETags(List<PartETag> partETags) {
         this.partETags = partETags;
     }
     
     /**
-     * 获取Object ACL。
+     * Gets Object ACL。
      * @return Object ACL。
      */
     public CannedAccessControlList getObjectACL() {
@@ -104,7 +106,7 @@ public class CompleteMultipartUploadRequest extends GenericRequest {
     }
 
     /**
-     * 设置Object ACL。
+     * Sets Object ACL。
      * @param Object ACL。
      */
     public void setObjectACL(CannedAccessControlList cannedACL) {

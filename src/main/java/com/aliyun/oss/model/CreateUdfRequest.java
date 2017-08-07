@@ -20,10 +20,7 @@
 package com.aliyun.oss.model;
 
 /**
- * 创建UDF请求
- * 
- * 指定Name时创建新的UDF，指定ID创建UDF的别名。
- * 
+ * The request that is used to create UDF.
  */
 public class CreateUdfRequest extends UdfGenericRequest {
 	

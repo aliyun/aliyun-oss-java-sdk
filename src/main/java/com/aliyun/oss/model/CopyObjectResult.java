@@ -22,50 +22,50 @@ package com.aliyun.oss.model;
 import java.util.Date;
 
 /**
- * 拷贝一个在OSS上已经存在的Object成另外一个Object的请求结果。
+ * The result of copying an existing OSS object.
  */
 public class CopyObjectResult extends GenericResult {
 
-    // 新Object的ETag值。
+    // Target object's ETag
     private String etag;
 
-    // 新Object的最后修改时间。
+    // Target object's last modified time.
     private Date lastModified;
 
     /**
-     * 初始化一个新的{@link CopyObjectResult}实例。
+     * Constructor
      */
     public CopyObjectResult() {}
 
     /**
-     * 返回新Object的ETag值。
-     * @return 新Object的ETag值。
+     * Gets the target object's ETag.
+     * @return Target object's ETag.
      */
     public String getETag() {
         return etag;
     }
 
     /**
-     * 设置新Object的ETag值。
+     * Sets the target object's ETag (used by SDK only)
      * @param etag
-     *          新Object的ETag值。
+     *          Target object's ETag.
      */
     public void setEtag(String etag) {
         this.etag = etag;
     }
 
     /**
-     * 返回新Object的最后修改时间。
-     * @return 新Object的最后修改时间。
+     * Gets the last modified of target object.
+     * @return Target object's last modified.
      */
     public Date getLastModified() {
         return lastModified;
     }
 
     /**
-     * 设置新Object的最后修改时间。
+     * Sets the last modified time on the target object.
      * @param lastModified
-     *          新Object的最后修改时间。
+     *          Target object's last modified time.
      */
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;

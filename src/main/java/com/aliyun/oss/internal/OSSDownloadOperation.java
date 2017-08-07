@@ -71,7 +71,7 @@ public class OSSDownloadOperation {
         private static final String DOWNLOAD_MAGIC = "92611BED-89E2-46B6-89E5-72F273D4B0A3";
         
         /**
-         * 从checkpoint文件中加载checkpoint数据
+         * Loads the checkpoint data from the checkpoint file.
          */
         public synchronized void load(String cpFile) throws IOException, ClassNotFoundException {
             FileInputStream fileIn =new FileInputStream(cpFile);
@@ -83,7 +83,7 @@ public class OSSDownloadOperation {
         }
         
         /**
-         * 把checkpoint数据写到checkpoint文件
+         * Writes the checkpoint data to the checkpoint file.
          */
         public synchronized void dump(String cpFile) throws IOException {
             this.md5 = hashCode();
@@ -95,7 +95,7 @@ public class OSSDownloadOperation {
         }
         
         /**
-         * 分片下载完成，更新分片状态
+         * Updates the part's download status.
          * @throws IOException 
          */
         public synchronized void update(int index, boolean completed) throws IOException {
@@ -103,7 +103,7 @@ public class OSSDownloadOperation {
         }
         
         /**
-         * 判读Object与checkpoint中记录的信息是否相符，即Object是否修改过
+         * Check if the object matches the checkpoint information.
          */
         public synchronized boolean isValid(OSSObjectOperation objectOperation) {
             // 比较checkpoint的magic和md5
@@ -116,7 +116,7 @@ public class OSSDownloadOperation {
             GenericRequest genericRequest = new GenericRequest(bucketName, objectKey);
             SimplifiedObjectMeta meta = objectOperation.getSimplifiedObjectMeta(genericRequest);
             
-            // Object的大小、最后修改时间、ETAG相同
+            // Object's size, last modified time or ETAG are not same as the one in the checkpoint.
             if (this.objectStat.size != meta.getSize() || 
                     !this.objectStat.lastModified.equals(meta.getLastModified()) ||
                     !this.objectStat.digest.equals(meta.getETag())) {
@@ -150,12 +150,12 @@ public class OSSDownloadOperation {
         }
         
         public String magic;  // magic
-        public int md5;  // checkpoint内容的md5
-        public String downloadFile;  // 本地文件
+        public int md5;  // the md5 of checkpoint data.
+        public String downloadFile;  // local path for the download.
         public String bucketName; // bucket name
         public String objectKey;  // object key
         public ObjectStat objectStat;  // object state
-        public ArrayList<DownloadPart> downloadParts;  // 分片
+        public ArrayList<DownloadPart> downloadParts;  // download parts list.
 
     }
     
@@ -186,9 +186,9 @@ public class OSSDownloadOperation {
             return objStat;
         }
         
-        public long size; // 文件大小
-        public Date lastModified; // 文件最后修改时间
-        public String digest; // 文件内容摘要，值为ETAG
+        public long size; // file size
+        public Date lastModified; // file's last modified time.
+        public String digest; // The file's ETag.
     }
     
     static class DownloadPart implements Serializable {
@@ -206,10 +206,10 @@ public class OSSDownloadOperation {
             return result;
         }
 
-        public int index; // 分片序号，从0开始编号
-        public long start; // 分片起始位置
-        public long end; // 分片片结束位置
-        public boolean isCompleted; // 该分片下载是否完成
+        public int index; // part index (starting from 0).
+        public long start; // start index;
+        public long end; // end index;
+        public boolean isCompleted; // flag of part download finished or not.
     }
     
     static class PartResult {
@@ -256,11 +256,11 @@ public class OSSDownloadOperation {
             this.exception = exception;
         }
 
-        private int number; // 分片序号，从1开始编号
-        private long start; // 分片开始位置
-        private long end;  // 分片结束位置
-        private boolean failed; // 分片上传是否失败
-        private Exception exception; // 分片上传异常
+        private int number; // part number, starting from 1.
+        private long start; // start index in the part.
+        private long end;  // end index in the part.
+        private boolean failed; // flag of part upload failure.
+        private Exception exception; // Exception during part upload.
     }
     
     static class DownloadResult {
@@ -299,13 +299,13 @@ public class OSSDownloadOperation {
         assertParameterNotNull(key, "key");
         ensureBucketNameValid(bucketName);
         ensureObjectKeyValid(key);
-        
-        // 没有指定本地文件，使用key作为本地文件名称
+
+        // the download file name is not specified, using the key as the local file name.
         if (downloadFileRequest.getDownloadFile() == null) {
             downloadFileRequest.setDownloadFile(downloadFileRequest.getKey());
         }
         
-        // 开启断点续传，没有指定checkpoint文件，使用默认值
+        // the checkpoint is enabled, but no checkpoint file, using the default checkpoint file name.
         if (downloadFileRequest.isEnableCheckpoint()) {
             if (downloadFileRequest.getCheckpointFile() == null || downloadFileRequest.getCheckpointFile().isEmpty()) {
                 downloadFileRequest.setCheckpointFile(downloadFileRequest.getDownloadFile() + ".dcp");
@@ -319,30 +319,31 @@ public class OSSDownloadOperation {
         DownloadFileResult downloadFileResult = new DownloadFileResult();
         DownloadCheckPoint downloadCheckPoint = new DownloadCheckPoint();
         
-        // 开启断点续传，从checkpoint文件读取上次分片下载的结果
+        // The checkpoint is enabled, downloads the parts download results from checkpoint file.
         if (downloadFileRequest.isEnableCheckpoint()) {
-            // 从checkpoint文件读取上次下载结果，checkpoint文件不存在/文件被篡改/被破坏时，从新下载
+            // read the last download result. If checkpoint file dosx not exist, or the file is updated/corrupted,
+            // re-download again.
             try {
                 downloadCheckPoint.load(downloadFileRequest.getCheckpointFile());
             } catch (Exception e) {
                 remove(downloadFileRequest.getCheckpointFile());
             }
             
-            // 上传的文件修改了，从新下载
+            // The download checkpoint is corrupted, download again.
             if (!downloadCheckPoint.isValid(objectOperation)) {
                 prepare(downloadCheckPoint, downloadFileRequest);
                 remove(downloadFileRequest.getCheckpointFile());
             }
         } else {
-            // 没有开启断点下载功能，从新下载
+            // The checkpoint is not enabled, download the file again.
             prepare(downloadCheckPoint, downloadFileRequest);
         }
-        
-        // 进度条开始下载数据
+
+        // Progress listen starts tracking the progress.
         ProgressListener listener = downloadFileRequest.getProgressListener();
         ProgressPublisher.publishProgress(listener, ProgressEventType.TRANSFER_STARTED_EVENT);
         
-        // 并发下载分片
+        // Concurrently download parts.
         DownloadResult downloadResult = download(downloadCheckPoint, downloadFileRequest);
         for (PartResult partResult : downloadResult.getPartResults()) {
             if (partResult.isFailed()) {
@@ -350,14 +351,14 @@ public class OSSDownloadOperation {
                 throw partResult.getException();
             }
         }
-        
-        // 进度条下载数据完成
+
+        // Publish the complete status.
         ProgressPublisher.publishProgress(listener, ProgressEventType.TRANSFER_COMPLETED_EVENT);
         
-        // 重命名临时文件
+        // rename the temp file.
         renameTo(downloadFileRequest.getTempDownloadFile(), downloadFileRequest.getDownloadFile());
-        
-        // 开启了断点下载，成功上传后删除checkpoint文件
+
+        // The checkpoint is enabled, delete the checkpoint file after a successful download.
         if (downloadFileRequest.isEnableCheckpoint()) {
             remove(downloadFileRequest.getCheckpointFile());
         }
@@ -401,8 +402,8 @@ public class OSSDownloadOperation {
         ArrayList<Future<PartResult>> futures = new ArrayList<Future<PartResult>>();
         List<Task> tasks = new ArrayList<Task>();
         ProgressListener listener = downloadFileRequest.getProgressListener();
-        
-        // 计算待下载的数据量
+
+        // Compute the size of data pending download.
         long contentLength = 0;
         for (int i = 0; i < downloadCheckPoint.downloadParts.size(); i++) {
             if (!downloadCheckPoint.downloadParts.get(i).isCompleted) {
@@ -413,7 +414,7 @@ public class OSSDownloadOperation {
         ProgressPublisher.publishResponseContentLength(listener, contentLength);
         downloadFileRequest.setProgressListener(null);
         
-        // 下载数据分片
+        // Concurrently download parts.
         for (int i = 0; i < downloadCheckPoint.downloadParts.size(); i++) {
             if (!downloadCheckPoint.downloadParts.get(i).isCompleted) {
                 Task task = new Task(i, "download-" + i, downloadCheckPoint, i, downloadFileRequest, objectOperation, listener);
@@ -426,7 +427,7 @@ public class OSSDownloadOperation {
         }
         service.shutdown();
         
-        // 等待分片下载完成
+        // Waiting for all parts download,
         service.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
         for (Future<PartResult> future : futures) {
             try {
@@ -438,7 +439,7 @@ public class OSSDownloadOperation {
             }
         }
         
-        // 对PartResult按照分片序号排序
+        // Sorts the download result by the part number.
         Collections.sort(taskResults, new Comparator<PartResult>() {
             @Override
             public int compare(PartResult p1, PartResult p2) {
@@ -446,7 +447,7 @@ public class OSSDownloadOperation {
             }
         });
         
-        // 设置返回结果
+        // sets the return value.
         downloadResult.setPartResults(taskResults);
         if (tasks.size() > 0) {
             downloadResult.setObjectMetadata(tasks.get(0).GetobjectMetadata());

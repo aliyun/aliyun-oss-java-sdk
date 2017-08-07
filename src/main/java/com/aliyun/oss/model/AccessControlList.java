@@ -25,9 +25,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * 表示OSS的访问控制列表（Access Control List， ACL），
- * 包含了一组为指定被授权者（{@link Grantee}}）
- * 分配特定权限（{@link Permission}）的集合。
+ * The class encapsulates the access control list (ACL) information of OSS.
+ * It includes an owner and a group of <{@link Grantee},{@link Permission}> pair.
  * */
 public class AccessControlList implements Serializable {
     
@@ -38,29 +37,29 @@ public class AccessControlList implements Serializable {
 	private Owner owner;
 
     /**
-     * 返回所有者{@link Owner}。
-     * @return 所有者{@link Owner}。
+     * Gets {@link Owner}.
+     * @return The {@link Owner} instance.
      */
     public Owner getOwner() {
         return owner;
     }
 
     /**
-     * 设置所有者{@link Owner}。
+     * Sets the {@link Owner}.
      * @param owner
-     *          所有者{@link Owner}。
+     *          {@link Owner} instance,
      */
     public void setOwner(Owner owner) {
         this.owner = owner;
     }
 
     /**
-     * 为指定{@link Grantee}授权特定权限（{@link Permission}）。
-     * 目前只支持被授权者为{@link GroupGrantee#AllUsers}。
+     * Grants the {@link Grantee} with the {@link Permission}.
+     * For now the Grantee must be {@link GroupGrantee#AllUsers}.
      * @param grantee
-     *          被授权者。目前只支持被授权者为{@link GroupGrantee#AllUsers}。
+     *          The grantee, it must be {@link GroupGrantee#AllUsers} for now.
      * @param permission
-     *          {@link Permission}中定义的权限。
+     *          The permission defined in {@link Permission}.
      */
     public void grantPermission(Grantee grantee, Permission permission) {
         if (grantee == null || permission == null) {
@@ -71,9 +70,10 @@ public class AccessControlList implements Serializable {
     }
     
     /**
-     * 取消指定{@link Grantee}已分配的所有权限。
+     * Revokes the {@link Grantee} all its permissions.
+     * For now the Grantee must be {@link GroupGrantee#AllUsers}.
      * @param grantee
-     *           被授权者。目前只支持被授权者为{@link GroupGrantee#AllUsers}。
+     *          The grantee, it must be {@link GroupGrantee#AllUsers} for now.
      */
     public void revokeAllPermissions(Grantee grantee) {
         if (grantee == null) {
@@ -90,8 +90,9 @@ public class AccessControlList implements Serializable {
     }
     
     /**
-     * 返回该{@link AccessControlList}中包含的所有授权信息{@link Grant}。
-     * @return 该{@link AccessControlList}中包含的所有授权信息。
+     * Gets all {@link Grant} instances, each {@link Grant} instance specifies a {@link Grantee} and its
+     * {@link Permission}.
+     * @return The set of {@link Grant}.
      */
     @Deprecated
     public Set<Grant> getGrants() {
@@ -99,15 +100,15 @@ public class AccessControlList implements Serializable {
     }
     
     /**
-     * 返回权限
-     * @return cannedACL
+     * Gets the canned ACL.
+     * @return the canned ACL.
      */
     public CannedAccessControlList getCannedACL() {
 		return cannedACL;
 	}
 
     /**
-     * 设置权限
+     * Sets the ACL.
      * @param cannedACL
      */
 	public void setCannedACL(CannedAccessControlList cannedACL) {
@@ -115,7 +116,7 @@ public class AccessControlList implements Serializable {
 	}
 
     /**
-     * 返回该对象的字符串表示。
+     * Serializes the ACL and the owner information to string()). It does not include the {@link Grant} information for now.
      */
     public String toString() {
         return "AccessControlList [owner=" + owner + ", ACL=" + getCannedACL() + "]";

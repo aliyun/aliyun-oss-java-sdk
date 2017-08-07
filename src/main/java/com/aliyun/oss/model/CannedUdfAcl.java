@@ -20,18 +20,19 @@
 package com.aliyun.oss.model;
 
 /**
- * UDF访问权限。
+ * Predefined UDF access control list.
  *
  */
 public enum CannedUdfAcl {
     
     /**
-     * 只有所有者具有访问权限，其他用无权访问。UDF默认权限。
+     * Only the owner has the access.
+     * It's the default Acl.
      */
     Private("private"),
 
     /**
-     * 所有者和其他用户均有访问权限。不推荐使用。
+     * All users have the access, not recommended.
      */
     Public("public");
 

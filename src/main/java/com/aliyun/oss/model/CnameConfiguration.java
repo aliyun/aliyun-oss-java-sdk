@@ -23,9 +23,9 @@ import java.util.Date;
 
 public class CnameConfiguration {
     public static enum CnameStatus {
-        Unknown, // 初始状态
-        Enabled, // 启用规则
-        Disabled // 禁用规则
+        Unknown, // initial state.
+        Enabled, // Enable the CName
+        Disabled // Disable the CName
     };
 
     public CnameConfiguration() {

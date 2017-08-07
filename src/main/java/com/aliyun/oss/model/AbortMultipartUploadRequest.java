@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 /**
- * 包含终止一个Multipart上传事件的请求参数。
+ * The request class which is used to abort a multipart upload.
  *
  */
 public class AbortMultipartUploadRequest extends GenericRequest {
@@ -29,13 +29,13 @@ public class AbortMultipartUploadRequest extends GenericRequest {
     private String uploadId;
 
     /**
-     * 构造函数。
+     * Constructor.
      * @param bucketName
-     *          Bucket名称。
+     *          Bucket name.
      * @param key
      *          Object key。
      * @param uploadId
-     *          标识Multipart上传事件的Upload ID。
+     *          The multipart upload Id.
      */
     public AbortMultipartUploadRequest(String bucketName, String key, String uploadId) {
         super(bucketName, key);
@@ -43,17 +43,17 @@ public class AbortMultipartUploadRequest extends GenericRequest {
     }
 
     /**
-     * 返回标识Multipart上传事件的Upload ID。
-     * @return 标识Multipart上传事件的Upload ID。
+     * Gets the upload Id.
+     * @return The upload Id
      */
     public String getUploadId() {
         return uploadId;
     }
 
     /**
-     * 设置标识Multipart上传事件的Upload ID。
+     * Sets the upload Id.
      * @param uploadId
-     *          标识Multipart上传事件的Upload ID。
+     *          The upload Id.
      */
     public void setUploadId(String uploadId) {
         this.uploadId = uploadId;

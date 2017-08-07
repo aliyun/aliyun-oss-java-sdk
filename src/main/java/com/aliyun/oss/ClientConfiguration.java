@@ -91,50 +91,50 @@ public class ClientConfiguration {
     private boolean crcCheckEnabled = true;
 
     /**
-     * 构造用户代理。
-     * @return 用户代理。
+     * Gets the user agent string.
+     * @return The user agent string.
      */
     public String getUserAgent() {
         return userAgent;
     }
 
     /**
-     * 设置用户代理。
+     * Sets the user agent string.
      * @param userAgent
-     *          用户代理。
+     *          The user agent string.
      */
     public void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
     }
 
     /**
-     * 返回代理服务器主机地址。
-     * @return 代理服务器主机地址。
+     * Gets proxy host.
+     * @return The proxy host in string.
      */
     public String getProxyHost() {
         return proxyHost;
     }
 
     /**
-     * 设置代理服务器主机地址。
+     * Sets the proxy host.
      * @param proxyHost
-     *          代理服务器主机地址。
+     *          The proxy host in string.
      */
     public void setProxyHost(String proxyHost) {
         this.proxyHost = proxyHost;
     }
 
     /**
-     * 返回代理服务器端口。
-     * @return 代理服务器端口。
+     * Gets the proxy host's port.
+     * @return The proxy host.
      */
     public int getProxyPort() {
         return proxyPort;
     }
 
     /**
-     * 设置代理服务器端口。
-     * @param proxyPort 代理服务器端口。
+     * Sets proxy port.
+     * @param proxyPort The proxy port.
      * @throws ClientException
      */
     public void setProxyPort(int proxyPort) throws ClientException {
@@ -146,224 +146,225 @@ public class ClientConfiguration {
     }
 
     /**
-     * 返回代理服务器验证的用户名。
-     * @return 用户名。
+     * Gets the proxy user name.
+     * @return The user name.
      */
     public String getProxyUsername() {
         return proxyUsername;
     }
 
     /**
-     * 设置代理服务器验证的用户名。
+     * Sets the proxy user name.
      * @param proxyUsername
-     *          用户名。
+     *          The user name.
      */
     public void setProxyUsername(String proxyUsername) {
         this.proxyUsername = proxyUsername;
     }
 
     /**
-     * 返回代理服务器验证的密码。
-     * @return 密码。
+     * Gets the proxy user password.
+     * @return The proxy user password.
      */
     public String getProxyPassword() {
         return proxyPassword;
     }
 
     /**
-     * 设置代理服务器验证的密码。
+     * Sets the proxy user password.
      * @param proxyPassword
-     *          密码。
+     *          The proxy user password.
      */
     public void setProxyPassword(String proxyPassword) {
         this.proxyPassword = proxyPassword;
     }
 
     /**
-     * 返回访问NTLM验证的代理服务器的Windows域名（可选）。
-     * @return 域名。
+     * Gets the proxy server's domain, which could do the NTLM authentiation (optional).
+     * @return The proxy domain name.
      */
     public String getProxyDomain() {
         return proxyDomain;
     }
 
     /**
-     * 设置访问NTLM验证的代理服务器的Windows域名（可选）。
+     * Sets the proxy server's domain, which could do the NTLM authentication (optional).
      * @param proxyDomain
-     *          域名。
+     *          The proxy domain name.
      */
     public void setProxyDomain(String proxyDomain) {
         this.proxyDomain = proxyDomain;
     }
 
     /**
-     * 返回NTLM代理服务器的Windows工作站名称。
-     * @return NTLM代理服务器的Windows工作站名称。
+     * Gets the proxy host's NTLM authentication server.
+     * @return The NTLM authentication server name.
      */
     public String getProxyWorkstation() {
         return proxyWorkstation;
     }
 
     /**
-     * 设置NTLM代理服务器的Windows工作站名称。
-     * （可选，如果代理服务器非NTLM，不需要设置该参数）。
+     * Sets the proxy host's NTLM authentication server(optional, if the proxy server does not require
+     * NTLM authentication, then it's not needed).
      * @param proxyWorkstation
-     *          NTLM代理服务器的Windows工作站名称。
+     *          The proxy host's NTLM authentication server name.
      */
     public void setProxyWorkstation(String proxyWorkstation) {
         this.proxyWorkstation = proxyWorkstation;
     }
 
     /**
-     * 返回允许打开的最大HTTP连接数。
-     * @return 最大HTTP连接数。
+     * Gets the max connection count.
+     * @return The max connection count. By default it's 1024.
      */
     public int getMaxConnections() {
         return maxConnections;
     }
 
     /**
-     * 设置允许打开的最大HTTP连接数。
+     * Sets the max connection count.
      * @param maxConnections
-     *          最大HTTP连接数。
+     *          The max connection count.
      */
     public void setMaxConnections(int maxConnections) {
         this.maxConnections = maxConnections;
     }
 
     /**
-     * 返回通过打开的连接传输数据的超时时间（单位：毫秒）。
-     * 0表示无限等待（但不推荐使用）。
-     * @return 通过打开的连接传输数据的超时时间（单位：毫秒）。
+     * Gets the socket timeout in millisecond.
+     * 0 means infinite timeout, not recommended.
+     * @return The socket timeout in millisecond.
      */
     public int getSocketTimeout() {
         return socketTimeout;
     }
 
     /**
-     * 设置通过打开的连接传输数据的超时时间（单位：毫秒）。
-     * 0表示无限等待（但不推荐使用）。
+     * Sets the socket timeout in millisecond.
+     * 0 means infinite timeout, not recommended.
      * @param socketTimeout
-     *          通过打开的连接传输数据的超时时间（单位：毫秒）。
+     *          The socket timeout in millisecond.
      */
     public void setSocketTimeout(int socketTimeout) {
         this.socketTimeout = socketTimeout;
     }
 
     /**
-     * 返回建立连接的超时时间（单位：毫秒）。
-     * @return 建立连接的超时时间（单位：毫秒）。
+     * Gets the socket connection timeout in millisecond.
+     * @return The socket connection timeout in millisecond.
      */
     public int getConnectionTimeout() {
         return connectionTimeout;
     }
 
     /**
-     * 设置建立连接的超时时间（单位：毫秒）。
+     * Sets the socket connection timeout in millisecond.
      * @param connectionTimeout
-     *          建立连接的超时时间（单位：毫秒）。
+     *         The socket connection timeout in millisecond.
      */
     public void setConnectionTimeout(int connectionTimeout) {
         this.connectionTimeout = connectionTimeout;
     }
     
     /**
-     * 返回从连接池中获取连接的超时时间（单位：毫秒）。
-     * 0表示无限等待。负值表示未定义，默认-1。
-     * @return 从连接池中获取连接的超时时间。
+     * Gets the timeout in millisecond for retrieving an available connection from the connection manager.
+     * 0 means infinite and -1 means not defined. By default it's -1.
+     * @return The timeout in millisecond.
      */
     public int getConnectionRequestTimeout() {
         return connectionRequestTimeout;
     }
 
     /**
-     * 设置从连接池中获取连接的超时时间（单位：毫秒）。
+     * Sets the timeout in millisecond for retrieving an available connection from the connection manager.
      * @param connectionRequestTimeout
-     *          设置从连接池中获取连接的超时时间。
+     *         The timeout in millisecond.
      */
     public void setConnectionRequestTimeout(int connectionRequestTimeout) {
         this.connectionRequestTimeout = connectionRequestTimeout;
     }
 
     /**
-     * 返回一个值表示当可重试的请求失败后最大的重试次数。（默认值为3）
-     * @return 当可重试的请求失败后最大的重试次数。
+     * Gets the max retry count upon a retryable error. By default it's 3.
+     * @return The max retry count.
      */
     public int getMaxErrorRetry() {
         return maxErrorRetry;
     }
 
     /**
-     * 设置一个值表示当可重试的请求失败后最大的重试次数。（默认值为3）
+     * Sets the max retry count upon a retryable error. By default it's 3.
      * @param maxErrorRetry
-     *          当可重试的请求失败后最大的重试次数。
+     *          The max retry count.
      */
     public void setMaxErrorRetry(int maxErrorRetry) {
         this.maxErrorRetry = maxErrorRetry;
     }
     
     /**
-     * 获取连接池中连接过期时间。
-     * @return 连接过期时间。
+     * Gets the connection TTL (time to live). Http connection is cached by the connection manager with a TTL.
+     * @return The connection TTL in millisecond.
      */
     public long getConnectionTTL() {
         return connectionTTL;
     }
 
     /**
-     * 设置连接池中连接过期时间。
-     * @param connectionTTL 连接过期时间（单位为毫秒）。
+     * Sets the connection TTL (time to live). Http connection is cached by the connection manager with a TTL.
+     * @param connectionTTL The connection TTL in millisecond.
      */
     public void setConnectionTTL(long connectionTTL) {
         this.connectionTTL = connectionTTL;
     }
 
     /**
-     * 查看是否使用{@link IdleConnectionReaper}管理过期连接。
+     * Gets the flag of using {@link IdleConnectionReaper} to manage expired connection.
      */
     public boolean isUseReaper() {
         return useReaper;
     }
 
     /**
-     * 设置是否使用{@link IdleConnectionReaper}管理过期连接。
+     * Sets the flag of using {@link IdleConnectionReaper} to manage expired connection.
      */
     public void setUseReaper(boolean useReaper) {
         this.useReaper = useReaper;
     }
     
     /**
-     * 获取关闭空闲连接的时长。
-     * @return 关闭空闲连接的时长。
+     * Gets the connection's max idle time. If a connection has been idle for more than this number, it would be closed.
+     * @return The connection's max idle time in millisecond.
      */
     public long getIdleConnectionTime() {
         return idleConnectionTime;
     }
 
     /**
-     * 设置空闲连接的时长，连接空闲该时间后关闭，单位毫秒，默认60秒。
+     * Sets the connection's max idle time. If a connection has been idle for more than this number, it would be closed.
+     * @param  idleConnectionTime The connection's max idle time in millisecond.
      */
     public void setIdleConnectionTime(long idleConnectionTime) {
         this.idleConnectionTime = idleConnectionTime;
     }
 
     /**
-     * 获取连接OSS所采用的协议（HTTP/HTTPS）。 
+     * Gets the OSS's protocol (HTTP or HTTPS).
      */
     public Protocol getProtocol() {
         return protocol;
     }
 
     /**
-     * 设置连接OSS所采用的协议（HTTP/HTTPS）。
+     * Sets the OSS's protocol (HTTP or HTTPS).
      */
     public void setProtocol(Protocol protocol) {
         this.protocol = protocol;
     }
 
     /**
-     * 获取CNAME排除列表（不可修改），以列表元素作为后缀的域名将不进行CNAME解析。
-     * @return CNAME排除列表。
+     * Gets the immutable excluded CName list----any domain ends with an item in this list will not do Cname resolution.
+     * @return The excluded CName list, immutable.
      */
     public List<String> getCnameExcludeList() {
         if (this.cnameExcludeList.size() == 0) {
@@ -377,8 +378,8 @@ public class ClientConfiguration {
     }
 
     /**
-     * 设置CNAME排除列表。
-     * @param cnameExcludeList CNAME排除列表。
+     * Sets the immutable excluded CName list----any domain ends with an item in this list will not do Cname resolution.
+     * @param cnameExcludeList The excluded CName list, immutable.
      */
     public void setCnameExcludeList(List<String> cnameExcludeList) {
         if (cnameExcludeList == null) {
@@ -396,8 +397,8 @@ public class ClientConfiguration {
     }
     
     /**
-     * 添加默认CNAME排除列表至CNAME自定义排除列表。
-     * @param excludeList CNAME自定义排除列表。
+     * Append default excluded CName list.
+     * @param excludeList The excluded CName list.
      */
     private static void AppendDefaultExcludeList(List<String> excludeList) {
         String[] excludes = DEFAULT_CNAME_EXCLUDE_LIST.split(",");
@@ -409,21 +410,23 @@ public class ClientConfiguration {
     }
 
     /**
-     * 获取是否支持Cname作为Endpoint，默认支持该方式。
-     * @return 若支持返回True，否则返回False
+     * Gets the flag if supporting Cname in the endpoint. By default it's true.
+     * @return True if supporting Cname; False if not.
      */
     public boolean isSupportCname() {
         return supportCname;
     }
 
     /**
-     * 设置是否支持Cname作为Endpoint。
+     * Sets the flag if supporting Cname in the endpoint. By default it's true.
      * 
-     * <p>当设置为True时，则先检查Cname排除列表，如果不在其中则认为是Cname，
-     *     否则就认为是三级域名方式访问；当设置为False时，不检查Cname排除列表，
-     * 总是以三级域名方式访问。</p>
+     * <p> If this value is set true, when building a canonical url, the host would be checked against the Cname excluded
+     * list. If that host is found in the list, then it's treated as non-CName and accessed as TLD (third level domain). If the host is found, then it's thought as
+     * CName.
+     *    If this value is set false, then always uses TLD to access the endpoint.
+     * </p>
      * 
-     * @param supportCname 是否支持Cname作为Endpoint。
+     * @param supportCname The flag if supporting CName.
      */
     public ClientConfiguration setSupportCname(boolean supportCname) {
         this.supportCname = supportCname;
@@ -431,16 +434,17 @@ public class ClientConfiguration {
     }
 
     /**
-     * 获取是否开启二级域名（Second Level Domain）的访问方式，默认不开启。
-     * @return 若开启则返回True，否则返回False
+     * Gets the flag of using SLD (Second Level Domain) style to access the endpoint. By default it's false.
+     * When using SLD, then the bucket endpoint would be: http://host/bucket. Otherwise, it will be http://bucket.host
+     * @return True if it's enabled; False if it's disabled.
      */
     public boolean isSLDEnabled() {
         return sldEnabled;
     }
 
     /**
-     * 设置是否开启二级域名（Second Level Domain）的访问方式。
-     * @param enabled 是否开启二级域名访问方式
+     * Sets the flag of using SLD (Second Level Domain) style to access the endpoint. By default it's false.
+     * @param enabled True if it's enabled; False if it's disabled.
      */
     public ClientConfiguration setSLDEnabled(boolean enabled) {
         this.sldEnabled = enabled;
@@ -448,92 +452,97 @@ public class ClientConfiguration {
     }
     
     /**
-     * 连接空闲该时间后，重用前检查该连接的有效性，默认2秒，单位毫秒。
-     * @return 连接空闲时间
+     * The connection idle time threshold in millisecond that triggers the validation. By default it's 2000.
+     * @return The connection idle time threshold.
      */
     public int getValidateAfterInactivity() {
         return DEFAULT_VALIDATE_AFTER_INACTIVITY;
     }
 
     /**
-     * 获取是否开启了请求超时，默认关闭。
-     * @return true 开启， false 关闭
+     * Gets the flag of enabling request timeout. By default it's disabled.
+     * @return true enabled; false disabled.
      */
     public boolean isRequestTimeoutEnabled() {
         return requestTimeoutEnabled;
     }
 
     /**
-     * 设置是否开启请求超时。
+     * Gets the flag of enabling request timeout. By default it's disabled.
      * @param requestTimeoutEnabled
+     *          true to enable; false to disable.
      */
     public void setRequestTimeoutEnabled(boolean requestTimeoutEnabled) {
         this.requestTimeoutEnabled = requestTimeoutEnabled;
     }
     
     /**
-     * 设置请求超时时间，单位毫秒，默认5分钟。
+     * Sets the timeout value in millisecond. By default it's 5 min.
      */
     public void setRequestTimeout(int requestTimeout) {
         this.requestTimeout = requestTimeout;
     }
     
     /**
-     * 获取请求超时时间，单位毫秒。
+     * Gets the timeout value in millisecond.
      */
     public int getRequestTimeout() {
         return requestTimeout;
     }
     
     /**
-     * 设置慢请求阈值，用时超过该阈值的请求将打印到日志中，单位毫秒，默认5分钟。
+     * Sets the slow request's latency threshold. If a request's latency is more than it, the request will be logged.
+     * By default the threshold is 5 min.
      */
     public long getSlowRequestsThreshold() {
         return slowRequestsThreshold;
     }
 
     /**
-     * 获取慢请求阈值，用时超过该阈值的请求将打印到日志中，单位毫秒。
+     * Gets the slow request's latency threshold. If a request's latency is more than it, the request will be logged.
      */
     public void setSlowRequestsThreshold(long slowRequestsThreshold) {
         this.slowRequestsThreshold = slowRequestsThreshold;
     }
     
     /**
-     * 获取默认请求头，每个请求发送到时会添加默认请求头。具体操作请求头与默认请求头有重复时，前者覆盖后者，具体请求头优先级更高。
+     * Gets the default http headers. All these headers would be automatically added in every request.
+     * And if a header is also specified in the request, the default one will be overwritten.
      */
     public Map<String, String> getDefaultHeaders() {
         return defaultHeaders;
     }
 
     /**
-     * 设置默认请求头，每个请求发送到时会添加默认请求头。具体操作请求头与默认请求头有重复时，前者覆盖后者，具体请求头优先级更高。
-     * @param defaultHeaders 默认请求头
+     * Sets the default http headers. All these headers would be automatically added in every request.
+     * And if a header is also specified in the request, the default one will be overwritten.
+     * @param defaultHeaders Default http headers.
      */
     public void setDefaultHeaders(Map<String, String> defaultHeaders) {
         this.defaultHeaders = defaultHeaders;
     }
 
     /**
-     * 添加默认请求头，每个请求发送到时会添加默认请求头。具体操作请求头与默认请求头有重复时，前者覆盖后者，具体请求头优先级更高。
-     * @param key 默认请求头
-     * @param value 默认请求头的值
+     * Add a default header into the default header list.
+     * @param key The default header name.
+     * @param value The default header value.
      */
     public void addDefaultHeader(String key, String value) {
         this.defaultHeaders.put(key, value);
     }
     
     /**
-     * 获取是否启动CRC校验，启动后上传下载请求数据会启动CRC校验。默认启用。
-     * @return true 开启， false 关闭
+     * Gets the flag of enabling CRC checksum on upload and download. By default it's true.
+     * @return true enable CRC;false disable CRC.
      */
     public boolean isCrcCheckEnabled() {
         return crcCheckEnabled;
     }
 
     /**
-     * 设置是否启动CRC校验，启动后上传下载请求数据会启动CRC校验。默认启用。
+     * Sets the flag of enabling CRC checksum on upload and download. By default it's true.
      * @param crcCheckEnabled
+     *          True to enable CRC; False to disable CRC.
      */
     public void setCrcCheckEnabled(boolean crcCheckEnabled) {
         this.crcCheckEnabled = crcCheckEnabled;
