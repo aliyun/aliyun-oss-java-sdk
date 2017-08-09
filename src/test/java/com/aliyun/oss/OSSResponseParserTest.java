@@ -45,15 +45,15 @@ import com.aliyun.oss.model.Permission;
 import com.aliyun.oss.utils.ResourceUtils;
 
 /**
- * 测试OSSResponesParser类
+ * Testing OSSResponseParser class
  */
 public class OSSResponseParserTest {
 
-    // 测试文件名称
+    // Test file name.
     private static final String FILE_FOLDER = "oss"; 
 
     /**
-     * 取测试文件流
+     * Gets test file stream.
      * **/
     private InputStream getInputStream(String filename) throws Exception {
         return ResourceUtils.getTestInputStream(FILE_FOLDER + "/" + filename);

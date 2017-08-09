@@ -43,7 +43,7 @@ import com.aliyun.oss.model.ObjectListing;
 import com.aliyun.oss.model.UploadFileRequest;
 
 /**
- * 测试请求超时
+ * Testing request timeout
  */
 @Ignore
 public class RequestTimeoutTest extends TestBase {
@@ -85,7 +85,7 @@ public class RequestTimeoutTest extends TestBase {
     }
     
     /**
-     * 正常请求时间不变
+     * Testing normal request.
      */
     @Test
     public void testObjectOperationsNormal() throws Exception {
@@ -132,7 +132,7 @@ public class RequestTimeoutTest extends TestBase {
     
     
     /**
-     * 超时生效
+     * Tests request with a new short timeout value
      */
     @Test
     public void testRequestTimeoutEffective() throws Exception {
@@ -151,7 +151,10 @@ public class RequestTimeoutTest extends TestBase {
     
     
     /**
-     * 原来的所有请求正常，各种异常抛出正常
+     * Negative test cases
+     * Reading a non-existing bucket, object.
+     * Uploading a null stream.
+     * Uploading an object with 1ms timeout value.
      */
     @Test
     public void testObjectOperationsNegative() throws Exception {
@@ -193,7 +196,7 @@ public class RequestTimeoutTest extends TestBase {
     
     
     /**
-     * 超时后连接重用正常
+     * The connection should be reused after time out.
      */
     @Test
     public void testOperationsNormalAfterTimeout() throws Exception {
@@ -224,7 +227,8 @@ public class RequestTimeoutTest extends TestBase {
     }
     
     /**
-     * 丢包恢复后不超时，Linux下使用iptables模拟，win下用断网模拟
+     * Test operations after package loss.
+     * To simulate package eloss, we use iptables in linux and cut the network in windows.
      */
     @Test
     public void testOperationsNormalAfterPacketLoss() throws Exception {
@@ -258,7 +262,7 @@ public class RequestTimeoutTest extends TestBase {
     }
     
     /**
-     * 大并发时请求时间不变，正常完成
+     * Massive concurrent requests. The request completion time should be similar.
      */
     @Test
     public void testConcurrentOperationsNormal() throws Exception {
@@ -311,7 +315,10 @@ public class RequestTimeoutTest extends TestBase {
     }
     
     /**
-     * 多个OSSClient，丢包的超时，不丢包的正常完成
+     * Multiple OSSClient instances test.
+     * Each instance should work independently without being impacted by other instances.
+     * So one timeout instance should not make other instances timeout.
+     *
      */
     @Test
     public void testMultiOssClientIndependent() throws Exception {
@@ -385,7 +392,7 @@ public class RequestTimeoutTest extends TestBase {
     }
      
     /**
-     * 超时参数不影响原来的参数，测试连接超时
+     * Testing connection timeout.
      */
     @Test
     public void testClientConfigIndependent() throws Exception {
@@ -410,7 +417,7 @@ public class RequestTimeoutTest extends TestBase {
     }
     
     /**
-     * 超时后正常退出
+     * Testing grace exist after connection timeout
      */
     @Test
     public void testExitNormalAfterTimeout() throws Exception {

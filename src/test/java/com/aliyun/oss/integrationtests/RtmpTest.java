@@ -290,8 +290,8 @@ public class RtmpTest extends TestBase {
                     bucketName, liveChannel);
             ossClient.createLiveChannel(createLiveChannelRequest);
             ossClient.setBucketAcl(bucketName, CannedAccessControlList.PublicReadWrite);
-            
-            // 手动启动推流，执行如下命令，
+
+            // Manually enable pusing streaming with following cmd.
             // ./ffmpeg \-re \-i allstar.flv \-c copy \-f flv "rtmp://oss-live-channel-2.demo-oss-cn-shenzhen.aliyuncs.com/live/normal-get-live-channel-stat?playlistName=playlist.m3u8"
             Thread.sleep(5 * 1000);
             
@@ -499,8 +499,8 @@ public class RtmpTest extends TestBase {
                     bucketName, liveChannel);
             ossClient.createLiveChannel(createLiveChannelRequest);
             ossClient.setBucketAcl(bucketName, CannedAccessControlList.PublicReadWrite);
-            
-            // 手动启动推流，执行如下命令
+
+            // Manually enable pusing streaming with following cmd:
             // ./ffmpeg \-re \-i allstar.flv \-c copy \-f flv "rtmp://oss-live-channel-2.demo-oss-cn-shenzhen.aliyuncs.com/live/normal-get-live-channel-history?playlistName=playlist.m3u8"
             Thread.sleep(5 * 1000);
             
@@ -562,8 +562,8 @@ public class RtmpTest extends TestBase {
             
             Assert.assertTrue(uri.startsWith("rtmp://" + bucketName));
             Assert.assertTrue(uri.endsWith("playlistName=" + liveChannelInfo.getTarget().getPlaylistName()));
-            
-            // 手动用URL验证，执行如下的命令
+
+            // Manually verify by url, with following cmd.
             // ./ffmpeg \-re \-i allstar.flv \-c copy \-f flv "<RTMP_URI>"
             
             // generate without parameters

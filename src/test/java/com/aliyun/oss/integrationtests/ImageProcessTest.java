@@ -43,7 +43,7 @@ import com.aliyun.oss.model.ProcessObjectRequest;
 import com.aliyun.oss.utils.ResourceUtils;
 
 /**
- * 图片处理服务测试
+ * Testing image process
  */
 public class ImageProcessTest extends TestBase {
     

@@ -39,7 +39,7 @@ public class OSSTestUtils {
     }
 
     /**
-     * 取测试文件的路径
+     * Gets test file path.
      * **/
     public static String getTestFilePath(){
         Class<?> clazz = OSSTestUtils.class;
@@ -64,11 +64,11 @@ public class OSSTestUtils {
             throws OSSException, ClientException{
         assert (client != null && bucketName != null);
         if (client.doesBucketExist(bucketName)){
-            // 如果存在，查看bucket是否为空
+            // Check if the bucket is empty.
             ObjectListing ObjectListing = client.listObjects(bucketName);
             for (OSSObjectSummary objSummary : ObjectListing
                     .getObjectSummaries()) {
-                // 如果不为空，先删除bucket下的Object
+                // If the bucket is not empty, delete the files first.
                 client.deleteObject(bucketName, objSummary.getKey());
             }
 

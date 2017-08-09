@@ -64,7 +64,7 @@ public class CallbackTest extends TestBase {
     private static final String callbackResponse = "{\"Status\":\"OK\"}";
     
     /**
-     * 默认值测试，指定url、body，其它使用默认值
+     * Testing default value settings. Only url and body are specified, others use default values.
      */
     @Test
     public void testPutObjectCallbackDefault() throws Exception {        
@@ -96,7 +96,7 @@ public class CallbackTest extends TestBase {
     }
     
     /**
-     * callback body中有变量，type类型使用url格式
+     * test variable in callback body，type of callback body is url.
      */
     @Test
     public void testPutObjectCallbackBody() throws Exception {        
@@ -130,7 +130,7 @@ public class CallbackTest extends TestBase {
     }
     
     /**
-     * callback body type，type类型使用json格式
+     * callback body type，type of callback body is json
      */
     @Test
     public void testPutObjectCallbackBodyType() throws Exception {        
@@ -163,7 +163,7 @@ public class CallbackTest extends TestBase {
     }
     
     /**
-     * callback body type，type类型使用json格式
+     * callback body type，type of callback body is json
      */
     @Test
     public void testPutObjectCallbackVar() throws Exception {        
@@ -199,7 +199,7 @@ public class CallbackTest extends TestBase {
     
     
     /**
-     * callback body/var有特殊字符，url格式
+     * callback body var has special characters, type is json.
      */
     @Test
     public void testPutObjectCallbacURLChar() throws Exception {        
@@ -234,7 +234,7 @@ public class CallbackTest extends TestBase {
     }
     
     /**
-     * callback body/var有特殊字符，Json格式
+     * callback body var has special characters, type is json.
      */
     @Test
     public void testPutObjectCallbacJsonChar() throws Exception {        
@@ -269,7 +269,7 @@ public class CallbackTest extends TestBase {
     }
     
     /**
-     * PutObject callback negative case， 回调参数无效
+     * PutObject callback negative case，Invalid argument.
      */
     @Test
     public void testPutObjectCallbackParamInvalid() {
@@ -324,7 +324,7 @@ public class CallbackTest extends TestBase {
             Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         }
         
-        // callbackBody为空
+        // callbackBody is empty
         try {
             InputStream instream = genFixedLengthInputStream(instreamLength);
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, instream); 
@@ -341,7 +341,7 @@ public class CallbackTest extends TestBase {
             Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         }
         
-        // callbackBody中变量格式错误
+        // callbackBody var format is invalid.
         try {
             InputStream instream = genFixedLengthInputStream(instreamLength);
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, instream); 
@@ -358,7 +358,7 @@ public class CallbackTest extends TestBase {
             Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         }
         
-        // callback-var参数过长，超过5K
+        // callback-var parameter's length is more than 5K
         try {
             InputStream instream = genFixedLengthInputStream(instreamLength);
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, instream); 
@@ -381,7 +381,7 @@ public class CallbackTest extends TestBase {
             Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         }
         
-        // 回调失败，则返回203，错误码为"CallbackFailed"
+        // Callback failed. Expect return 203 (CallbackFailed).
         try {
             InputStream instream = genFixedLengthInputStream(instreamLength);
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, instream); 
@@ -401,7 +401,7 @@ public class CallbackTest extends TestBase {
     
 
     /**
-     * 默认值测试，指定url、body，其它使用默认值
+     * Tests default values with specified url and body.
      */
     @Test
     public void testMultipartUploadCallbackDefault() {        
@@ -447,7 +447,7 @@ public class CallbackTest extends TestBase {
     }
     
     /**
-     * callback body中有变量，type类型使用url格式
+     * callback body has variables, type is url
      */
     @Test  
     public void testMultipartUploadCallbackBody() {  
@@ -496,7 +496,7 @@ public class CallbackTest extends TestBase {
     }
     
     /**
-     * callback body type，type类型使用json格式
+     * callback body type，type is json
      */
     @Test  
     public void testMultipartUploadCallbackBodyType() {  
@@ -595,7 +595,7 @@ public class CallbackTest extends TestBase {
     }
     
     /**
-     * callback body/var有特殊字符，url格式
+     * callback body/var has special characters, type is url
      */
     @Test  
     public void testMultipartUploadCallbackURLChar() {  
@@ -645,7 +645,7 @@ public class CallbackTest extends TestBase {
     }
     
     /**
-     * callback body/var有特殊字符，Json格式
+     * callback body/var has special characters, type is json.
      */
     @Test  
     public void testMultipartUploadCallbackJsonChar() {  
