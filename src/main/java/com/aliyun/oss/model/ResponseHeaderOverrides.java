@@ -21,6 +21,8 @@ package com.aliyun.oss.model;
 
 /**
  * The class wraps the HTTP Get response headers to override.
+ * For Response headers, please refer to https://help.aliyun.com/document_detail/31980.html?spm=5176.doc31980.6.870.zfxavo
+ * Basically it tells the OSS to return the specified headers in the response.
  */
 public class ResponseHeaderOverrides {
 

@@ -770,7 +770,6 @@ public interface OSS {
     public URL generatePresignedUrl(GeneratePresignedUrlRequest request)
             throws ClientException;
     /**
-     * TODO:
      * Sets image processing attributes on the specific {@link Bucket}
      * @param request
      *        A {@link PutBucketImageRequest} instances which specifies some attributes of image processing.
@@ -1037,7 +1036,6 @@ public interface OSS {
             throws OSSException, ClientException;
 
     /**
-     * TODO
      * Complete a multiple parts upload.
      * <p>
      * After all parts uploads finish, this API needs to be called to finalize the upload.

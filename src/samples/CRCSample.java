@@ -17,7 +17,7 @@ import com.aliyun.oss.model.UploadFileRequest;
 import junit.framework.Assert;
 
 /**
- * 上传/下载数据校验用法示例
+ * Examples about how to enable and check CRC for uploading and downloading data.
  *
  */
 public class CRCSample {
@@ -34,49 +34,49 @@ public class CRCSample {
     	
     	String content = "Hello OSS, Hi OSS, OSS OK.";
 
-    	// 上传/下载默认开启CRC校验，如果不需要，请关闭CRC校验功能
+    	// CRC check is enabled by default for upload or download. To turn it off, use the commented code below.
     	// ClientConfiguration config = new ClientConfiguration();
-    	// config.setCrcCheckEnabled(false);    	
+    	// config.setCrcCheckEnabled(false);
     	// OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
         OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
         
         try {
         	
-        	// 开启CRC校验后，上传(putObject/uploadPart/uploadFile)自动开启CRC校验，使用方法与原来相同。
-        	// appendObject需要出AppendObjectRequest.setInitCRC才会CRC校验
+        	// putObject/uploadPart/uploadFile are automatically enabled with CRC.
+        	// However, appendObject needs to call AppendObjectRequest.setInitCRC to enable CRC.
             ossClient.putObject(bucketName, key, new ByteArrayInputStream(content.getBytes()));
             ossClient.deleteObject(bucketName, key);
             
-            // 追加上传，第一次追加
+            // First data appending
             AppendObjectRequest appendObjectRequest = new AppendObjectRequest(bucketName, key, 
                     new ByteArrayInputStream(content.getBytes())).withPosition(0L);
             
-            appendObjectRequest.setInitCRC(0L);
+            appendObjectRequest.setInitCRC(0L); // because it's first append, the previous data is empty and thus CRC is 0.
             AppendObjectResult appendObjectResult = ossClient.appendObject(appendObjectRequest);
             
-            // 追加上传，第二次追加
+            // Second data appending
             appendObjectRequest = new AppendObjectRequest(bucketName, key, 
             		new ByteArrayInputStream(content.getBytes()));
             appendObjectRequest.setPosition(appendObjectResult.getNextPosition());
-            appendObjectRequest.setInitCRC(appendObjectResult.getClientCRC());
+            appendObjectRequest.setInitCRC(appendObjectResult.getClientCRC());// the initCRC is the first's CRC.
             appendObjectResult = ossClient.appendObject(appendObjectRequest);
             
             ossClient.deleteObject(bucketName, key);
-            
-            // 断点续传上传，支持CRC校验
+
+            // Upload with checkpoint, it supports CRC as well.
             UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
-            // 待上传的本地文件
+            // Sets the upload file with a local file.
             uploadFileRequest.setUploadFile(uploadFile);
-            // 设置并发下载数，默认1
+            // Sets the concurrent task number to 5 (default is 1).
             uploadFileRequest.setTaskNum(5);
-            // 设置分片大小，默认100KB
+            // Sets the part size to 1MB (default is 100K)
             uploadFileRequest.setPartSize(1024 * 1024 * 1);
-            // 开启断点续传，默认关闭
+            // Enable checkpoint (by default is off for checkpoint enabled upload)
             uploadFileRequest.setEnableCheckpoint(true);
             
             ossClient.uploadFile(uploadFileRequest);
             
-            // 下载CRC校验，注意范围下载不支持CRC校验，downloadFile不支持CRC校验
+            // Download with CRC. Note that range download does not support CRC.
             OSSObject ossObject = ossClient.getObject(bucketName, key);
             Assert.assertNull(ossObject.getClientCRC());
             Assert.assertNotNull(ossObject.getServerCRC());
@@ -86,7 +86,7 @@ public class CRCSample {
             }
             stream.close();
             
-            // 校验CRC是否一致
+            // Check if CRC is consistent.
             OSSUtils.checkChecksum(IOUtils.getCRCValue(stream), ossObject.getServerCRC(), ossObject.getRequestId());
             
             ossClient.deleteObject(bucketName, key);

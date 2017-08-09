@@ -8,7 +8,7 @@ import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.ObjectMetadata;
 
 /**
- * 文件元信息使用方法
+ * Examples about metadata information get and set.
  * 
  */
 public class ObjectMetaSample {
@@ -30,18 +30,18 @@ public class ObjectMetaSample {
         try {
             ObjectMetadata meta = new ObjectMetadata();
             
-            // 设置上传内容类型
+            // Sets the content type.
             meta.setContentType("text/plain");
-            // 设置MD5校验，请使用基础出的真实值
+            // Sets the MD5 data---please update it with the actual value.
             meta.setContentMD5("");
-            // 设置自定义元信息name的值为my-data
+            // Sets the custom metadata.
             meta.addUserMetadata("meta", "meta-value");
             
-            // 上传文件
+            // Uploads the file
             ossClient.putObject(bucketName, key, 
                     new ByteArrayInputStream(content.getBytes()), meta);
            
-            // 获取文件的元信息
+            // Gets the object metadata information.
             ObjectMetadata metadata = ossClient.getObjectMetadata(bucketName, key);
             System.out.println(metadata.getContentType());
             System.out.println(metadata.getLastModified());

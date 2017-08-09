@@ -29,7 +29,7 @@ package com.aliyun.oss.model;
 public enum CannedAccessControlList {
     
     /**
-     * The owner has the {@link Permission#Read},which is only applicable to object.
+     * This is only for object, means the permission inherits the bucket's permission.
      */
     Default("default"),
     
