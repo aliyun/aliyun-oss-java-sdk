@@ -240,7 +240,7 @@ public interface OSSErrorCode {
     static final String NO_SUCH_LIVE_CHANNEL = "NoSuchLiveChannel";
     
     /**
-     * Symbolic target file does not exist.
+     * symlink target file does not exist.
      */
     static final String NO_SUCH_SYM_LINK_TARGET = "SymlinkTargetNotExist";
     

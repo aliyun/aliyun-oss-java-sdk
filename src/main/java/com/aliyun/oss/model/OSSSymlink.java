@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 /**
- * The entity class representing a OSS symbolic file.
+ * The entity class representing a OSS symlink file.
  * 
  */
 public class OSSSymlink {
@@ -47,16 +47,16 @@ public class OSSSymlink {
     }
     
     /**
-     * Gets the metadata of the symbolic file
-     * @return The metadata of the symbolic file.
+     * Gets the metadata of the symlink file
+     * @return The metadata of the symlink file.
      */
     public ObjectMetadata getMetadata() {
         return metadata;
     }
 
     /**
-     * Sets the metadata of the symbolic file.
-     * @param metadata The metadata of the symbolic file.
+     * Sets the metadata of the symlink file.
+     * @param metadata The metadata of the symlink file.
      */
     public void setMetadata(ObjectMetadata metadata) {
         this.metadata = metadata;
@@ -68,13 +68,13 @@ public class OSSSymlink {
             + ", target=" + getTarget() + "]";
     }
 
-    // Symbolic file key
+    // symlink file key
     private String symlink;
 
     // The original file's key
     private String target;
     
-    // The symbolic file's metadata.
+    // The symlink file's metadata.
     private ObjectMetadata metadata;
     
 }

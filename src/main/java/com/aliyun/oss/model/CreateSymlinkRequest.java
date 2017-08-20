@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 /**
- * The request class that is used to create symbolic on an object.
+ * The request class that is used to create symlink on an object.
  * 
  */
 public class CreateSymlinkRequest extends GenericRequest {
@@ -40,7 +40,7 @@ public class CreateSymlinkRequest extends GenericRequest {
     }
 
     /**
-     * Sets the target file of the symbolic.
+     * Sets the target file of the symlink.
      * @return Target file.
      */
     public String getTarget() {
@@ -48,7 +48,7 @@ public class CreateSymlinkRequest extends GenericRequest {
     }
 
     /**
-     * Gets the target file of the symbolic.
+     * Gets the target file of the symlink.
      * @param target Target file.
      */
     public void setTarget(String target) {
@@ -56,16 +56,16 @@ public class CreateSymlinkRequest extends GenericRequest {
     }
     
     /**
-     * Gets the symbolic file's metadata.
-     * @return Symbolic file's metadata.
+     * Gets the symlink file's metadata.
+     * @return symlink file's metadata.
      */
     public ObjectMetadata getMetadata() {
         return metadata;
     }
 
     /**
-     * Sets the symbolic file's metadata.
-     * @param metadata Symbolic file's metadata.
+     * Sets the symlink file's metadata.
+     * @param metadata symlink file's metadata.
      */
     public void setMetadata(ObjectMetadata metadata) {
         this.metadata = metadata;
@@ -74,6 +74,6 @@ public class CreateSymlinkRequest extends GenericRequest {
     // Target file.
     private String target;
     
-    // Symbolic file's metadata.
+    // symlink file's metadata.
     private ObjectMetadata metadata;
 }

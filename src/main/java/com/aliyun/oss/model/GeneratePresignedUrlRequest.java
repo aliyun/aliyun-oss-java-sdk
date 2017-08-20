@@ -216,7 +216,6 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * <p>
-     * 获取用户自定义的元数据。
      * Gets user's customized metadata.
      * </p>
      * <p>

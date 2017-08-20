@@ -1761,9 +1761,9 @@ public interface OSS {
             throws OSSException, ClientException;
 
     /**
-	 * Creates a symbolic link to a target file under the bucket---this is not supported for archive class bucket.
+	 * Creates a symlink link to a target file under the bucket---this is not supported for archive class bucket.
      * @param bucketName Bucket name.
-     * @param symlink symbolic name.
+     * @param symlink symlink name.
      * @param target target file key.
      * @throws OSSException OSS Server side exception.
      * @throws ClientException OSS Client side exception.
@@ -1772,7 +1772,7 @@ public interface OSS {
             throws OSSException, ClientException;
     /**
      * Creates a symbol link to a target file under the bucket---this is not supported for archive class bucket.
-     * @param createSymlinkRequest A {@link CreateSymlinkRequest} instance that specifies the bucket name, symbolic name.
+     * @param createSymlinkRequest A {@link CreateSymlinkRequest} instance that specifies the bucket name, symlink name.
      * @throws OSSException OSS Server side exception.
      * @throws ClientException OSS Client side exception.
      */
@@ -1780,10 +1780,10 @@ public interface OSS {
             throws OSSException, ClientException;
     
     /**
-     * Gets the symbolic information for the given symbolic name.
+     * Gets the symlink information for the given symlink name.
      * @param bucketName Bucket name.
-     * @param symlink The symbolic name.
-     * @return The symbolic information, including the target file name and its metadata.
+     * @param symlink The symlink name.
+     * @return The symlink information, including the target file name and its metadata.
      * @throws OSSException OSS Server side exception.
      * @throws ClientException OSS Client side exception.
      */
@@ -1791,9 +1791,9 @@ public interface OSS {
             throws OSSException, ClientException;
     
     /**
-     * Gets the symbolic information for the given symbolic name.
-     * @param genericRequest A {@link GenericRequest} instance which specifies the bucket name and symbolic name.
-     * @return The symbolic information, including the target file name and its metadata.
+     * Gets the symlink information for the given symlink name.
+     * @param genericRequest A {@link GenericRequest} instance which specifies the bucket name and symlink name.
+     * @return The symlink information, including the target file name and its metadata.
      * @throws OSSException OSS Server side exception.
      * @throws ClientException OSS Client side exception.
      */

@@ -36,7 +36,7 @@ import com.aliyun.oss.model.OSSSymlink;
 import com.aliyun.oss.model.ObjectMetadata;
 
 /**
- * Test Symbolic Link 
+ * Test symlink Link
  */
 public class SymlinkTest extends TestBase {
     
