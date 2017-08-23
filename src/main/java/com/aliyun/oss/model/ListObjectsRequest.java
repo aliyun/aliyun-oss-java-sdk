@@ -22,28 +22,28 @@ package com.aliyun.oss.model;
 import com.aliyun.oss.internal.OSSUtils;
 
 /**
- * 包含获取object列表的请求信息。
+ * This is the request class to list objects under a bucket.
  */
 public class ListObjectsRequest extends GenericRequest {
 
     private static final int MAX_RETURNED_KEYS_LIMIT = 1000;
     
-    // prefix限定返回的object key必须以prefix作为前缀。
+    // The prefix filter----objects returned whose key must start with this prefix.
     private String prefix;
     
-    // maker用户设定结果从marker之后按字母排序的第一个开始返回。
+    // The marker filter----objects returned whose key must be greater than the maker in lexicographical order.
     private String marker;
 
-    // 用于限定此次返回object的最大数，如果不设定，默认为100。
+    // The max objects to return---By default it's 100.
     private Integer maxKeys;
     
-    // delimiter是一个用于对Object名字进行分组的字符。
+    // The delimiters of object names returned.
     private String delimiter;
     
     /**
-     * 该可选参数表示请求响应体中Object名称采用的编码方式，目前Object名称允许包含任意Unicode字符，
-     * 然而XML 1.0不能解析某些Unicode字符，例如ASCII字符0~10。对于XML 1.0不支持的字符集，可通过
-     * 添加该参数指示OSS对响应体中的Object名称进行编码。
+     * The encoding type of object name in the response body. Currently object name allow any unicode character. However
+     * the XML 1.0 could not parse some Unicode character such as ASCII character 0 to 10. For these XMl 1.0 non-supported
+     * characters, we can use the encoding type to encode the object name.
      */
     private String encodingType;
     
@@ -54,17 +54,17 @@ public class ListObjectsRequest extends GenericRequest {
     }
     
     /**
-     * 构造函数。
+     * Constructor
      * @param bucketName
-     *          bucket 名称。
+     *          Bucket name.
      * @param prefix
-     *          prefix限定返回的object key必须以prefix作为前缀。
+     *          The prefix filter---Objects to return must start with this prefix in their names.
      * @param marker
-     *          maker用户设定结果从marker之后按字母排序的第一个开始返回。
+     *          The marker filter---Objects to return whose names must be greater than this marker value.
      * @param maxKeys
-     *          用于限定此次返回object的最大数，如果不设定，默认为100。
+     *          The max object counts to return. The default is 100.
      * @param delimiter
-     *          delimiter是一个用于对Object名字进行分组的字符。
+     *          The delimiter for the object names to return.
      */
     public ListObjectsRequest(String bucketName, String prefix, String marker, String delimiter, Integer maxKeys) {
         super(bucketName);
@@ -77,27 +77,27 @@ public class ListObjectsRequest extends GenericRequest {
     }
 
     /**
-     * 返回prefix，限定返回的object key必须以prefix作为前缀。
+     * Gets the prefix filter.
      * @return
-     *      prefix
+     *      The prefix filter.
      */
     public String getPrefix() {
         return prefix;
     }
 
     /**
-     * 设置prefix，限定返回的object key必须以prefix作为前缀。
+     * Sets the prefix filter.
      * @param prefix
-     *          前缀prefix。
+     *          The prefix filter.
      */
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
     
     /**
-     * 设置prefix，限定返回的object key必须以prefix作为前缀。
+     * Sets teh prefix filter and return the current ListObjectsRequest instance (this).
      * @param prefix
-     *          前缀prefix。
+     *          The prefix filter.
      */
     public ListObjectsRequest withPrefix(String prefix) {
         setPrefix(prefix);
@@ -105,25 +105,25 @@ public class ListObjectsRequest extends GenericRequest {
     }
 
     /**
-     * 返回marker，用户设定结果从marker之后按字母排序的第一个开始返回。
+     * Gets the marker filter.
      * @return
-     *          marker
+     *          The marker filter.
      */
     public String getMarker() {
         return marker;
     }
 
     /**
-     * 设置marker, 用户设定结果从marker之后按字母排序的第一个开始返回。
+     * Sets the marker filter.
      * @param marker
-     *          marker
+     *          The marker filter.
      */
     public void setMarker(String marker) {
         this.marker = marker;
     }
     
     /**
-     * 设置marker, 用户设定结果从marker之后按字母排序的第一个开始返回。
+     * Sets the mark filter and returns the current ListObjectsRequest instance (this).
      * @param marker
      *          marker
      */
@@ -133,18 +133,18 @@ public class ListObjectsRequest extends GenericRequest {
     }
 
     /**
-     * 返回用于限定此次返回object的最大数，如果不设定，默认为100。
+     * Gets the max objects to return. By default it's 100.
      * @return
-     *      用于限定此次返回object的最大数。
+     *      The max objects to return.
      */
     public Integer getMaxKeys() {
         return maxKeys;
     }
 
     /**
-     * 设置用于限定此次返回object的最大数，如果不设定，默认为100。最大值为1000。
+     * Sets the max objects to return. By default it's 100, the max is 1000.
      * @param maxKeys
-     *      用于限定此次返回object的最大数。最大值为1000。
+     *      The max objects to return. The max value is 1000.
      */
     public void setMaxKeys(Integer maxKeys) {
         if (maxKeys < 0 || maxKeys > MAX_RETURNED_KEYS_LIMIT) {
@@ -156,9 +156,9 @@ public class ListObjectsRequest extends GenericRequest {
     }
     
     /**
-     * 设置用于限定此次返回object的最大数，如果不设定，默认为100。最大值为1000。
+     * Sets the max objects and returns the current ListObjectsRequest instance (this). By default it's 100, the max is 1000.
      * @param maxKeys
-     *      用于限定此次返回object的最大数。最大值为1000。
+     *      The max objects to return.
      */
     public ListObjectsRequest withMaxKeys(Integer maxKeys) {
         setMaxKeys(maxKeys);
@@ -166,7 +166,7 @@ public class ListObjectsRequest extends GenericRequest {
     }
 
     /**
-     * 获取一个用于对Object名字进行分组的字符。
+     * Gets the delimiter of object names.
      * @return the delimiter
      */
     public String getDelimiter() {
@@ -174,7 +174,7 @@ public class ListObjectsRequest extends GenericRequest {
     }
 
     /**
-     * 设置一个用于对Object名字进行分组的字符。
+     * Sets the delimiter.
      * @param delimiter the delimiter to set
      */
     public void setDelimiter(String delimiter) {
@@ -182,7 +182,7 @@ public class ListObjectsRequest extends GenericRequest {
     }
     
     /**
-     * 设置一个用于对Object名字进行分组的字符。
+     * Sets the delimiter and returns the current ListObjectsRequest instance (this).
      * @param delimiter the delimiter to set
      */
     public ListObjectsRequest withDelimiter(String delimiter) {
@@ -191,31 +191,31 @@ public class ListObjectsRequest extends GenericRequest {
     }
     
     /**
-     * 获取应用于请求响应体中Object名称的编码方式。
+     * Gets the encoding type of object names in response body.
 
-     * @return 请求响应体中Object名称的编码方式。
+     * @return The encoding type of object names in response body.
      */
     public String getEncodingType() {
         return encodingType;
     }
 
     /**
-     * 设置应用于请求响应体中Object名称的编码方式。
+     * Sets the encoding type of object names in response body.
      * 
      * @param encodingType
-     *            请求响应体中Object名称的编码方式。
-     *            有效值: null (不进行编码处理) 或 "url".
+     *            The encoding type of object names in response body.
+     *            Valid values are 'null' or 'url'.
      */
     public void setEncodingType(String encodingType) {
         this.encodingType = encodingType;
     }
     
     /**
-     * 设置应用于请求响应体中Object名称的编码方式。
+     * Sets the encoding type of object names in response body and returns the current ListObjectsRequest instance (this).
      * 
      * @param encodingType
-     *            请求响应体中Object名称的编码方式。
-     *            有效值: null (不进行编码处理) 或 "url".
+     *            The encoding type of object names in response body.
+     *            Valid values are 'null' or 'url'.
      */
     public ListObjectsRequest withEncodingType(String encodingType) {
         setEncodingType(encodingType);

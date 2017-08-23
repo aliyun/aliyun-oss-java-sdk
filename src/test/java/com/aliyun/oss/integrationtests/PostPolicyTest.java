@@ -63,7 +63,7 @@ public class PostPolicyTest extends TestBase {
             Assert.assertEquals(expectedEncodedPolicy, actualEncodedPolicy);
             
             String actualPostSignature = ossClient.calculatePostSignature(actualPostPolicy);
-            // 与本地时间相关
+            // It has something to do with the local time
             Assert.assertTrue((actualPostSignature.equals("88kD3wGu1W5isVAdWSG765DRPKY=") || 
                     actualPostSignature.equals("KbUYorFeyyqxntffsNlrRcV50Ds=")));
         } catch (Exception e) {

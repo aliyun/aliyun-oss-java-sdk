@@ -22,36 +22,37 @@ package com.aliyun.oss.model;
 import java.io.InputStream;
 
 /**
- * 上传object操作的返回结果。
+ * The result class of a Put Object request.
  */
 public class PutObjectResult extends GenericResult implements CallbackResult {
 
-    // Object的ETag值。
+    // Object ETag
     private String eTag;
     
-    // 回调返回的消息体，需要用户close
+    // The callback response body. Caller needs to close it.
     private InputStream callbackResponseBody;
 
     /**
-     * 返回新创建的{@link OSSObject}的ETag值。
-     * @return 新创建的{@link OSSObject}的ETag值。
+     * Gets the target {@link OSSObject}'s ETag.
+     * @return Target OSSObject's ETag.
      */
     public String getETag() {
         return eTag;
     }
 
     /**
-     * 设置新创建的{@link OSSObject}的ETag值。
+     * Sets the target {@link OSSObject}'s ETag.
      * @param eTag
-     *          新创建的{@link OSSObject}的ETag值。
+     *          Target OSSObject's ETag.
      */
     public void setETag(String eTag) {
         this.eTag = eTag;
     }
     
     /**
-     * 获取回调返回的消息体，需要close，使用this.getResponse().getContent()代替。
-     * @return 回调返回的消息体
+     * Gets the callback response body. The caller needs to close it.
+     * Deprecated method. Please use this.getResponse().getContent() instead.
+     * @return The callback response body.
      */
     @Override
     @Deprecated
@@ -60,8 +61,8 @@ public class PutObjectResult extends GenericResult implements CallbackResult {
     }
     
     /**
-     * 设置回调返回的消息体。
-     * @param callbackResponseBody 回调返回的消息体。
+     * Sets the callback response body.
+     * @param callbackResponseBody The callback response body.
      */
     @Override
     public void setCallbackResponseBody(InputStream callbackResponseBody) {

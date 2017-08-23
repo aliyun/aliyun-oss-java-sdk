@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 /**
- * 删除跨区域复制规则请求。
+ * The request that is to delete cross region's bucket replication.
  */
 public class DeleteBucketReplicationRequest extends GenericRequest {
     public DeleteBucketReplicationRequest(String bucketName,

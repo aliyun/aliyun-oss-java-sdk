@@ -1306,7 +1306,7 @@ public final class ResponseParsers {
     }
     
     /**
-     * Unmarshall symbolic link from response headers.
+     * Unmarshall symlink link from response headers.
      */
     public static OSSSymlink parseSymbolicLink(ResponseMessage response) 
             throws ResponseParseException {

@@ -22,12 +22,11 @@ package com.aliyun.oss.model;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 
 /**
- * 定义了可以被授权的一组OSS用户。
+ * The group of grantees that could be granted permission as a whole.
  */
 public enum GroupGrantee implements Grantee {
     /**
-     * 表示为OSS的{@link Bucket}或{@link OSSObject}指定匿名访问的权限。
-     * 任何用户都可以根据被授予的权限进行访问。
+     * This group means all users could get the permission of (Bucket or object).
      */
     AllUsers("http://oss.service.aliyun.com/acl/group/ALL_USERS");
 
@@ -38,14 +37,14 @@ public enum GroupGrantee implements Grantee {
     }
 
     /**
-     * 获取被授权者的ID。
+     * The group's Id.
      */
     public String getIdentifier(){
         return this.groupUri;
     }
 
     /**
-     * 不支持该操作。
+     * Not supported.
      */
     public void setIdentifier(String id){
         throw new UnsupportedOperationException(OSS_RESOURCE_MANAGER.getString("GroupGranteeNotSupportId"));

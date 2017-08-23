@@ -20,7 +20,7 @@
 package com.aliyun.oss;
 
 /**
- * 当访问对象存储服务（Open Storage Service）失败时抛出该异常类实例。
+ * The OSSException is thrown upon error when accessing OSS.
  */
 public class OSSException extends ServiceException {
 

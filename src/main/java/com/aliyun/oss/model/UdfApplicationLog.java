@@ -24,9 +24,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * 表示UDF Application的Log内容。
- * 
- * 日志内容读取完毕后，需要使用UdfApplicationLoclose关闭InputStream，否则会造成泄漏。
+ * The result class represents the UDF Application Log's content.
+ * It must be closed after the usage.
  */
 public class UdfApplicationLog extends GenericResult implements Closeable {
 
@@ -54,16 +53,16 @@ public class UdfApplicationLog extends GenericResult implements Closeable {
     }
 
     /**
-     * 返回日志内容的{@link InputStream}。
-     * @return 日志内容的{@link InputStream}。
+     * Gets the {@link InputStream} instance which has the log content.
+     * @return A {@link InputStream} instance which has the log content.
      */
     public InputStream getLogContent() {
         return logContent;
     }
 
     /**
-     * 设置日志内容的{@link InputStream}。
-     * @param logContent 日志内容的{@link InputStream}。
+     * Sets the {@link InputStream} instance.
+     * @param logContent The {@link InputStream} instance.
      */
     public void setLogContent(InputStream logContent) {
         this.logContent = logContent;
@@ -77,7 +76,7 @@ public class UdfApplicationLog extends GenericResult implements Closeable {
     }
     
     /**
-     * 强制关闭，放弃读取剩余数据。
+     * Forcefully close the object. The remaining data in server side is ignored.
      * @throws IOException
      */
     public void forcedClose() throws IOException {

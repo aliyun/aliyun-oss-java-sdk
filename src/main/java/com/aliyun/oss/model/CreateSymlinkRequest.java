@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 /**
- * 创建符号链接请求
+ * The request class that is used to create symlink on an object.
  * 
  */
 public class CreateSymlinkRequest extends GenericRequest {
@@ -40,40 +40,40 @@ public class CreateSymlinkRequest extends GenericRequest {
     }
 
     /**
-     * 设置链接文件的目标文件
-     * @return 链接文件的目标文件
+     * Sets the target file of the symlink.
+     * @return Target file.
      */
     public String getTarget() {
         return this.target;
     }
 
     /**
-     * 设置链接文件的目标文件
-     * @param target 目标文件
+     * Gets the target file of the symlink.
+     * @param target Target file.
      */
     public void setTarget(String target) {
         this.target = target;
     }
     
     /**
-     * 返回链接文件的元信息
-     * @return 链接文件的元信息
+     * Gets the symlink file's metadata.
+     * @return symlink file's metadata.
      */
     public ObjectMetadata getMetadata() {
         return metadata;
     }
 
     /**
-     * 设置链接文件的元信息
-     * @param metadata 链接文件的元信息
+     * Sets the symlink file's metadata.
+     * @param metadata symlink file's metadata.
      */
     public void setMetadata(ObjectMetadata metadata) {
         this.metadata = metadata;
     }
 
-    // 目标文件
+    // Target file.
     private String target;
     
-    // 链接文件的元信息
+    // symlink file's metadata.
     private ObjectMetadata metadata;
 }

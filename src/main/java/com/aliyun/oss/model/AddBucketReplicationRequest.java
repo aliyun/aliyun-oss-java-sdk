@@ -23,29 +23,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 设置跨区域复制请求。
+ * The request class that is used to add a cross region replication request on a bucket.
  */
 public class AddBucketReplicationRequest extends GenericRequest {
     
     public static enum ReplicationAction {
         /**
-         * ALL表示所有操作（PUT、DELETE、ABORT）都复制到目标Bucket，默认动作。
+         * All PUT, DELETE, ABORT operations would be copied to the target bucket.
          */
         ALL("ALL"),
         
         /**
-         * PUT表示所有写入类操作会被复制到目标Bucket，包括PutObject/PostObject/AppendObject/CopyObject/PutObjectACL/
+         * Includes PutObject/PostObject/AppendObject/CopyObject/PutObjectACL/
          * InitiateMultipartUpload/UploadPart/UploadPartCopy/CompleteMultipartUpload。
          */
         PUT("PUT"),
         
         /**
-         * DELETE表示所有删除类操作会被复制到目标Bucket，包括DeleteObject/DeleteMultipleObjects。
+         * Includes DeleteObject/DeleteMultipleObjects.
          */
         DELETE("DELETE"),
         
         /**
-         * ABORT，表示对于未Complete的Upload，AbortMultipartUpload操作会被复制到目标Bucket中。
+         * Includes CompleteMultipartUpload，AbortMultipartUpload.
          */
         ABORT("ABORT");
         

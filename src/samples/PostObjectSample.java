@@ -22,24 +22,24 @@ import java.util.Map.Entry;
  */
 public class PostObjectSample {
 
-    // 需要上传的本地文件，确保该文件存在
+    // The local file path to upload.
     private String localFilePath = "<localFile>";
-    // OSS域名，如http://oss-cn-hangzhou.aliyuncs.com
+    // OSS domain, such as http://oss-cn-hangzhou.aliyuncs.com
     private String endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
-    // AccessKey请登录https://ak-console.aliyun.com/#/查看
+    // Access key Id. Please get it from https://ak-console.aliyun.com
     private String accessKeyId = "<accessKeyId>";
     private String accessKeySecret = "<accessKeySecret>";
-    // 你之前创建的bucket，确保这个bucket已经创建
+    // The existing bucket name
     private String bucketName = "<bucketName>";
-    // 上传文件后的object名称
+    // The key name for the file to upload.
     private String key = "<key>";
 
     
     private void PostObject() throws Exception {
-        // 提交表单的URL为bucket域名
+        // append the 'bucketname.' prior to the domain, such as http://bucket1.oss-cn-hangzhou.aliyuncs.com.
         String urlStr = endpoint.replace("http://", "http://" + bucketName+ ".");
         
-        // 表单域
+        // form fields
         Map<String, String> formFields = new LinkedHashMap<String, String>();
         
         // key
@@ -160,7 +160,7 @@ public class PostObjectSample {
             out.flush();
             out.close();
 
-            // 读取返回数据
+            // Gets the file data
             strBuf = new StringBuffer();
             BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line = null;

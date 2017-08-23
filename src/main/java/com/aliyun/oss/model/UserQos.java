@@ -29,24 +29,27 @@ public class UserQos {
     }
 
     /**
-     * 返回bucket的容量，单位是GB。
-     * @return bucket容量。
+     * Gets the bucket capacity in GB.
+     * @return Bucket capacity
      */
     public int getStorageCapacity() {
         return storageCapacity;
     }
 
     /**
-     * 设置bucket的容量，只允许是-1和非负整数；设置为-1时，表示不限制容量，单位是GB。
+     * Sets the bucket capacity in GB.
+     * -1 means unlimited capacity.
+     * Other negative number is not allowed.
      * @param storageCapacity
+     *          Storage capacity in GB.
      */
     public void setStorageCapacity(int storageCapacity) {
         this.storageCapacity = storageCapacity;
     }
     
     /**
-     * StorageCapacity是否设置过
-     * @return StorageCapacity是否设置过
+     * Checks if the storage capacity is set.
+     * @return True:the storage capacity is set.
      */
     public boolean hasStorageCapacity() {
         return storageCapacity != null;

@@ -22,19 +22,20 @@ package com.aliyun.oss.model;
 import java.io.InputStream;
 
 /**
- * Callback的返回结果。
+ * The result of the callback.
  */
 public interface CallbackResult {
 
     /**
-     * 获取回调返回的消息体，需要close。
-     * @return 回调返回的消息体
+     * Gets the response body of the callback request.
+     * The caller needs to close it after usage.
+     * @return The {@link InputStream} instance of the response body.
      */
     public InputStream getCallbackResponseBody();
     
     /**
-     * 设置回调返回的消息体。
-     * @param callbackResponseBody 回调返回的消息体。
+     * Sets the callback response body.
+     * @param callbackResponseBody The {@link InputStream} instance of the response body.
      */
     public void setCallbackResponseBody(InputStream callbackResponseBody);
 }

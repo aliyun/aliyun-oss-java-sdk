@@ -20,107 +20,107 @@
 package com.aliyun.oss;
 
 /**
- * OSS定义的错误代码。
+ * OSS Server side error code.
  */
 public interface OSSErrorCode {
 
     /**
-     * 拒绝访问。
+     * Access Denied (401)
      */
     static final String ACCESS_DENIED = "AccessDenied";
     
     /**
-     * 禁止访问。
+     * Access Forbidden (403)
      */
     static final String ACCESS_FORBIDDEN = "AccessForbidden";
     
     /**
-     * Bucket 已存在 。
+     * Bucket pre-exists
      */
     static final String BUCKET_ALREADY_EXISTS = "BucketAlreadyExists";
     
     /**
-     * Bucket 不为空。
+     * Bucket not empty.
      */
     static final String BUCKET_NOT_EMPTY = "BucketNotEmpty";
 
     /**
-     * 文件组过大。
+     * File groups is too large.
      */
     static final String FILE_GROUP_TOO_LARGE = "FileGroupTooLarge";
 
     /**
-     * 文件Part过时。
+     * File part is stale.
      */
     static final String FILE_PART_STALE = "FilePartStale";
 
     /**
-     * 参数格式错误。
+     * Invalid argument.
      */
     static final String INVALID_ARGUMENT = "InvalidArgument";
 
     /**
-     * Access ID不存在。
+     * Non-existing Access ID
      */
     static final String INVALID_ACCESS_KEY_ID = "InvalidAccessKeyId";
 
     /**
-     * 无效的 Bucket 名字。
+     * Invalid bucket name
      */
     static final String INVALID_BUCKET_NAME = "InvalidBucketName";
 
     /**
-     * 无效的 Object 名字 。
+     * Invalid object name
      */
     static final String INVALID_OBJECT_NAME = "InvalidObjectName";
 
     /**
-     * 无效的 Part。
+     * Invalid part
      */
     static final String INVALID_PART = "InvalidPart";
 
     /**
-     * 无效的 Part顺序。
+     * Invalid part order
      */
     static final String INVALID_PART_ORDER = "InvalidPartOrder";
 
     /**
-     * 设置Bucket Logging时目标Bucket不存在。
+     * The target bucket does not exist when setting logging.
      */
     static final String INVALID_TARGET_BUCKET_FOR_LOGGING = "InvalidTargetBucketForLogging";
 
     /**
-     * OSS 内部发生错误。
+     * OSS Internal error.
      */
     static final String INTERNAL_ERROR = "InternalError";
     
     /**
-     * 缺少内容长度。
+     * Missing content length.
      */
     static final String MISSING_CONTENT_LENGTH = "MissingContentLength";
     
     /**
-     * 缺少必须参数。
+     * Missing required argument.
      */
     static final String MISSING_ARGUMENT = "MissingArgument";
 
     /**
-     * Bucket 不存在。
+     * No bucket meets the requirement specified.
      */
     static final String NO_SUCH_BUCKET = "NoSuchBucket";
 
     /**
-     * 文件不存在。
+     * File does not exist.
      */
     static final String NO_SUCH_KEY = "NoSuchKey";
 
     /**
-     * 无法处理的方法。
+     * Not implemented method.
      */
     static final String NOT_IMPLEMENTED = "NotImplemented";
 
     /**
-     * 预处理错误。
+     * Error occurred in precondition.
      */
     static final String PRECONDITION_FAILED = "PreconditionFailed";
 
@@ -130,122 +130,122 @@ public interface OSSErrorCode {
     static final String NOT_MODIFIED = "NotModified";
     
     /**
-     * 指定的数据中心非法。
+     * Invalid location.
      */
     static final String INVALID_LOCATION_CONSTRAINT = "InvalidLocationConstraint";
     
     /**
-     * 指定的数据中心与请求的终端域名不一致。
+     * The specified location does not match with the request.
      */
     static final String ILLEGAL_LOCATION_CONSTRAINT_EXCEPTION = "IllegalLocationConstraintException";
     
     /**
-     * 发起请求的时间和服务器时间超出15分钟。
+     * The time skew between the time in request headers and server is more than 15 min.
      */
     static final String REQUEST_TIME_TOO_SKEWED = "RequestTimeTooSkewed";
 
     /**
-     * 请求超时。
+     * Request times out.
      */
     static final String REQUEST_TIMEOUT = "RequestTimeout";
 
     /**
-     * 签名错误。
+     * Invalid signature.
      */
     static final String SIGNATURE_DOES_NOT_MATCH = "SignatureDoesNotMatch";
 
     /**
-     * 用户的 Bucket 数目超过限制 。
+     * Too many buckets under a user.
      */
     static final String TOO_MANY_BUCKETS = "TooManyBuckets";
     
     /**
-     * 源Bucket未设置CORS
+     * Source buckets is not configured with CORS.
      */
     static final String NO_SUCH_CORS_CONFIGURATION="NoSuchCORSConfiguration";
     
     /**
-     * 源Bucket未设置静态网站托管功能
+     * The source bucket is not configured with static website (the index page is null).
      */
     static final String NO_SUCH_WEBSITE_CONFIGURATION="NoSuchWebsiteConfiguration";
     
     /**
-     * 源Bucket未设置Lifecycle
+     * The source bucket is not configured with lifecycle rule.
      */
     static final String NO_SUCH_LIFECYCLE = "NoSuchLifecycle";
     
     /**
-     * XML格式非法。
+     * Malformed xml.
      */
     static final String MALFORMED_XML = "MalformedXML";
     
     /**
-     * 无效的服务器端加密编码。
+     * Invalid encryption algorithm error.
      */
     static final String INVALID_ENCRYPTION_ALGORITHM_ERROR = "InvalidEncryptionAlgorithmError";
     
     /**
-     * Multipart Upload ID 不存在。
+     * The upload Id does not exist.
      */
     static final String NO_SUCH_UPLOAD = "NoSuchUpload";
     
     /**
-     * 实体过小。
+     * The entity is too small. (Part must be more than 100K)
      */
     static final String ENTITY_TOO_SMALL = "EntityTooSmall";
     
     /**
-     * 实体过大。
+     * The entity is too big.
      */
     static final String ENTITY_TOO_LARGE = "EntityTooLarge";
     
     /**
-     * 无效的MD5值。
+     * Invalid MD5 digest.
      */
     static final String INVALID_DIGEST = "InvalidDigest";
     
     /**
-     * 无效的字节范围。
+     * Invalid range of the character.
      */
     static final String INVALID_RANGE = "InvalidRange";
     
     /**
-     * 不支持安全令牌。
+     * Security token is not supported.
      */
     static final String SECURITY_TOKEN_NOT_SUPPORTED = "SecurityTokenNotSupported";
     
     /**
-     * Object不支持追加。
+     * The specified object does not support append operation.
      */
     static final String OBJECT_NOT_APPENDALBE = "ObjectNotAppendable";
     
     /**
-     * Object追加位置与其当前长度不一致。
+     * The position of append on the object is not same as the current length.
      */
     static final String POSITION_NOT_EQUAL_TO_LENGTH = "PositionNotEqualToLength";
 
     /**
-     * 返回结果无法解析。
+     * Invalid response.
      */
     static final String INVALID_RESPONSE = "InvalidResponse";
     
     /**
-     * 回调失败，表示OSS没有收到预期的回调响应，不代表应用服务器没有收到回调请求，此时文件已经成功上传到了OSS。
+     * Callback failed. The operation (such as download or upload) succeeded though.
      */
     static final String CALLBACK_FAILED = "CallbackFailed";
     
     /**
-     * Live channel不存在。
+     * The Live Channel does not exist.
      */
     static final String NO_SUCH_LIVE_CHANNEL = "NoSuchLiveChannel";
     
     /**
-     * 连接的目标文件不存在
+     * symlink target file does not exist.
      */
     static final String NO_SUCH_SYM_LINK_TARGET = "SymlinkTargetNotExist";
     
     /**
-     * 冷文件没有预热直接使用。
+     * The archive file is not restored before usage.
      */
     static final String INVALID_OBJECT_STATE = "InvalidObjectState"; 
 }

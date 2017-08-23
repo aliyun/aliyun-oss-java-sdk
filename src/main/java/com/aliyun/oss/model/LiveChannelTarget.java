@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 /**
- * 保存Live Channel持久化选项的容器
+ * The persistent storage information for the Live Channel.
  */
 public class LiveChannelTarget {
     public static String LIVE_CHANNEL_DEFAULT_TYPE = "HLS";
@@ -82,12 +82,12 @@ public class LiveChannelTarget {
         this.playlistName = playlistName;
     }
 
-    // 视频数据持久化的格式，目前支持HLS格式
+    // The video data's format, only HLS is supported now.
     private String type;
-    // 用来指定持久化为HLS格式时，多长时间切割一个ts分片，单位秒
+    // The fragment duration in seconds for each ts file, when type is HLS.
     private int fragDuration;
-    // 用来指定持久化为HLS格式时，m3u8文件中最多包含多少个ts分片
+    // The ts file count in the m3u8 file, when type is HLS.
     private int fragCount;
-    // 用来指定持久化为HLS格式时，m3u8文件的basename
+    // The m3u8 file's basename, when the type is HLS.
     private String playlistName;
 }

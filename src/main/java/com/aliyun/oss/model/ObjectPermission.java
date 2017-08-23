@@ -20,35 +20,35 @@
 package com.aliyun.oss.model;
 
 /**
- * 表示{@link OSSObject}访问控制权限。
+ * The enum of {@link OSSObject}'s access control permission.
  */
 public enum ObjectPermission {
     
     /**
-     * 表明某个Object是私有资源，即只有该Object的Owner拥有该Object的读写权限，
-     * 其他的用户没有权限操作该Object。
+     * Private object. Only the owner has the full control of the object.
+     * Other users don't have access permission unless they're explicitly granted with some permission.
      */
     Private("private"),
     
     /**
-     * 表明某个Object是公共读资源，即非Object Owner只有该Object的读权限，
-     * 而Object Owner拥有该Object的读写权限
+     * Owner has the full control of the object.
+     * Other users only have read access.
      */
     PublicRead("public-read"),
     
     /**
-     * 表明某个Object是公共读写资源，即所有用户拥有对该Object的读写权限。
+     * The object is public to everyone and all users have read write permission.
      */
     PublicReadWrite("public-read-write"),
     
     /**
-     * 表明该Object ACL遵循Bucket ACL。即：如果Bucket是private的，则该object也是private的；
-     * 如果该object是public-read-write的，则该object也是public-read-write的。
+     * The object's ACL inherits the bucket's ACL. For example, if the bucket is private, then the object is also private.
      */
     Default("default"),
     
     /**
-     * 表明该Object ACL为未知类型，当出现该类型时，请联系OSS管理员获取更多信息。
+     * The object's ACL is unknown, which indicates something not right about the object. Please contact OSS support for
+     * more information when this happens.
      */
     Unknown("");
     

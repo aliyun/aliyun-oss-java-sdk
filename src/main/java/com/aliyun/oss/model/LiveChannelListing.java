@@ -79,17 +79,18 @@ public class LiveChannelListing {
         this.nextMarker = nextMarker;
     }
 
-    // 本次List返回Live channel信息
+    // The list of LiveChannel instances
     private List<LiveChannel> liveChannels = new ArrayList<LiveChannel>();
-    // 本次查询结果的开始前缀
+    // The prefix filter.
     private String prefix;
-    // 标明这次List Live Channel的起点
+    // The marker filter
     private String marker;
-    // 响应请求内返回结果的最大数目
+    // The max Live Channel count.
     private int maxKeys;
-    // 指明是否所有的结果都已经返回
+    // Flag of if there's remaining Live Channels in OSS server side.
+    // True: more object to come; False: no more live channels to return.
     private boolean isTruncated;
-    // 下次List的marker值
+    // The next marker filter.
     private String nextMarker;
 
 }

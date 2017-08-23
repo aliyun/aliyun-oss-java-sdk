@@ -20,28 +20,29 @@
 package com.aliyun.oss.model;
 
 /**
- * 跨区域复制的状态。
+ * The status of cross region replication.
  * <p>
- * 目前有starting，doing，closing三种状态。PutBucketReplication后，OSS会为Bucket准备复制任务，
- * 这时候复制状态会处于starting。当跨区域复制真正开始时，复制状态会显示doing。如果用户DeleteBucketReplication后，
- * OSS会完成跨区域复制的清理工作，同步状态显示closing。
+ * Currently we have starting，doing，closing three status. After PutBucketReplication is sent, OSS start preparing the
+ * replication and at this point the status is 'starting'. And when the replication actually happens, the status is "doing".
+ * And once DeleteBucketReplication is called, the OSS will do the cleanup work for the replication and the status will be
+ * "closing".
  * </p>
  *
  */
 public enum ReplicationStatus {
 
     /**
-     * 正在准备复制任务
+     * Preparing the replication.
      */
     Starting("starting"),
 
     /**
-     * 跨区域复制进行中
+     * Doing the replication.
      */
     Doing("doing"),
 
     /**
-     * 正在清理跨区域复制
+     * Cleaning up the replication.
      */
     Closing("closing");
 

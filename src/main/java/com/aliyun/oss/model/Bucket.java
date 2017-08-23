@@ -22,60 +22,60 @@ package com.aliyun.oss.model;
 import java.util.Date;
 
 /**
- * Bucket是OSS上的命名空间。
+ * Bucket is the namespace in OSS. You could think it's a folder or container under OSS.
  * <p>
- * Bucket名在整个 OSS 中具有全局唯一性，且不能修改；存储在OSS上的每个Object必须都包含在某个Bucket中。
- * 一个应用，例如图片分享网站，可以对应一个或多个 Bucket。一个用户最多可创建 10 个Bucket，
- * 但每个Bucket 中存放的Object的数量和大小总和没有限制，用户不需要考虑数据的可扩展性。 
+ * Bucket name is globally unique in OSS and is immutable. Every object must belong to a bucket.
+ * An application such as picture sharing website could be mapped to one or multiple buckets. An OSS account could only
+ * create up to 10 bucket. And there's no limit on the files count or size under a bucket.
  * </p>
  * <p>
- * Bucket 命名规范
+ * Bucket naming rules:
  * <ul>
- *  <li>只能包括小写字母，数字和短横线（-）</li>
- *  <li>必须以小写字母或者数字开头</li>
- *  <li>长度必须在 3-63 字节之间</li>
+ *  <li>Can only contain low case letter, number or dash(-).</li>
+ *  <li>Can only start with low case letter or number.</li>
+ *  <li>The length must be between 3 to 63 bytes.</li>
  * </ul>
  * </p>
  */
 public class Bucket {
 
-    // Bucket 名
+    // Bucket name
     private String name;
 
-    // Bucket 所有者
+    // Bucket owner
     private Owner owner;
     
-    // Bucket 所在地
+    // Bucket location
     private String location;
 
-    // 创建时间
+    // Created date.
     private Date creationDate;
     
-    // 存储类型
+    // Storage class (Standard, IA, Archive)
     private StorageClass storageClass = StorageClass.Standard;
 
-    // 内部地址
+    // External endpoint.It could be accessed from anywhere.
     private String extranetEndpoint;
     
-    // 外部地址
+    // Internal endpoint. It could be accessed within AliCloud under the same location.
     private String intranetEndpoint;
 
     /**
-     * 构造函数。
+     * Default constructor.
      */
     public Bucket() { }
     
     /**
-     * 构造函数。
+     * Constructor with the bucket name parameter.
      * @param name
-     *      Bucket 名。
+     *      Bucket name.
      */
     public Bucket(String name) {
         this.name = name;
     }
 
     /**
-     * 返回字符串表示。
+     * The override of toString(). Returns the bucket name, creation date, owner and location, with optional storage class.
      */
     @Override
     public String toString() {
@@ -94,67 +94,67 @@ public class Bucket {
     }
 
     /**
-     * 返回Bucket的拥有者（{@link Owner}）。
+     * Gets the {@link Owner}.
      * @return
-     *      Bucket的拥有者。如果拥有者未知，则返回null。
+     *      The bucket owner or null if the owner is not known.
      */
     public Owner getOwner() {
         return owner;
     }
 
     /**
-     * 设置Bucket的拥有者。（内部使用）
+     * Sets the bucket owner (only used by SDK itself).
      * @param owner
-     *      Bucket的拥有者。
+     *      Bucket owner.
      */
     public void setOwner(Owner owner) {
         this.owner = owner;
     }
 
     /**
-     * 返回Bucket的创建时间。
-     * @return Bucket的创建时间。如果创建时间未知，则返回null。
+     * Gets the bucket's creation time.
+     * @return Bucket's creation time or null if the creation time is unknown.
      */
     public Date getCreationDate() {
         return creationDate;
     }
 
     /**
-     * 设置Bucket的创建时间。（内部使用）
+     * Sets teh bucket's creation time.(it's only used by SDK itself).
      * @param creationDate
-     *          Bucket的创建时间。
+     *          Bucket's creation time.
      */
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
 
     /**
-     * 返回Bucket名称。
-     * @return Bucket名称。
+     * Gets the bucket name
+     * @return Bucket name.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * 设置Bucket名称。（内部使用）
+     * Sets the bucket name (should only be used by the SDK itself).
      * @param name
-     *          Bucket名称。
+     *          Bucket name.
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * 返回Bucket所在地
-     * @return Bucket所在地
+     * Gets the bucket location.
+     * @return Bucket location.
      */
     public String getLocation() {
        return location;
     }
 
     /**
-     * 设置Bucket所在地
+     * Sets the bucket location.
      * @param location
      */
     public void setLocation(String location) {
@@ -162,7 +162,7 @@ public class Bucket {
     }
     
     /**
-     * 返回Bucket存储类型
+     * Gets the storage class
      * @return storage class
      */
     public StorageClass getStorageClass() {
@@ -170,7 +170,7 @@ public class Bucket {
     }
 
     /**
-     * 设置Bucket存储类型
+     * Sets the bucket's storage class
      * @param storageClass
      */
     public void setStorageClass(StorageClass storageClass) {
@@ -178,32 +178,32 @@ public class Bucket {
     }
     
     /**
-     * 返回外部地址
-     * @return extranet endpoint
+     * Gets the external endpoint.
+     * @return external endpoint
      */
     public String getExtranetEndpoint() {
         return extranetEndpoint;
     }
 
     /**
-     * 设置内部地址
-     * @param endpoint extranet endpoint
+     * Sets the external endpoint.
+     * @param endpoint external endpoint
      */
     public void setExtranetEndpoint(String endpoint) {
         this.extranetEndpoint = endpoint;
     }
 
     /**
-     * 返回内部地址
-     * @return intranet endpoint
+     * Gets the internal endpoint.
+     * @return Internal endpoint
      */
     public String getIntranetEndpoint() {
         return intranetEndpoint;
     }
 
     /**
-     * 设置外部地址
-     * @param endpoint intranet endpoint
+     * Sets the internal endpoint.
+     * @param endpoint Internal endpoint
      */
     public void setIntranetEndpoint(String endpoint) {
         this.intranetEndpoint = endpoint;

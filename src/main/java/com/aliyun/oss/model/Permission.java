@@ -20,17 +20,17 @@
 package com.aliyun.oss.model;
 
 /**
- * 表示访问控制权限。
+ * Access Permission enum
  */
 public enum Permission {
     
     /**
-     * 完全控制权限，即可读可写。
+     * Read and write.
      */
     FullControl,
     
     /**
-     * 只读权限。
+     * Read only.
      */
     Read;
     

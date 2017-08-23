@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 /**
- * 包含列出所有执行中Multipart上传事件的请求参数。
+ * This is the request class to list executing multipart uploads under a bucket.
  *
  */
 public class ListMultipartUploadsRequest extends GenericRequest {
@@ -38,61 +38,61 @@ public class ListMultipartUploadsRequest extends GenericRequest {
     private String encodingType;
 
     /**
-     * 构造函数。
+     * Constructor.
      * @param bucketName
-     *          Bucket名称。
+     *          Bucket name.
      */
     public ListMultipartUploadsRequest(String bucketName) {
         super(bucketName);
     }
 
     /**
-     * 返回限制的最大返回记录数。
-     * @return 限制的最大返回记录数。
+     * Gets the max number of uploads to return.
+     * @return The max number of uploads.
      */
     public Integer getMaxUploads() {
         return maxUploads;
     }
 
     /**
-     * 设置限制的最大返回记录数。
-     * 最大值和默认值均为1000。
+     * Sets the max number of uploads to return.
+     * The both max and default value is 1000。
      * @param maxUploads
-     *          限制的最大返回记录数。
+     *          The max number of uploads.
      */
     public void setMaxUploads(Integer maxUploads) {
         this.maxUploads = maxUploads;
     }
 
     /**
-     * 返回一个标识表示从哪里返回列表。
-     * @return 标识表示从哪里返回列表。
+     * Gets the key marker filter---all uploads returned whose target file's key must be greater than the marker filter.
+     * @return The key marker filter.
      */
     public String getKeyMarker() {
         return keyMarker;
     }
 
     /**
-     * 设置一个标识表示从哪里返回列表。（可选）
+     * Sets the key marker filter---all uploads returned whose target file's key must be greater than the marker filter.
      * @param keyMarker
-     *          标识表示从哪里返回列表。
+     *          The key marker.
      */
     public void setKeyMarker(String keyMarker) {
         this.keyMarker = keyMarker;
     }
     
     /**
-     * 返回一个标识表示从哪里返回列表。
-     * @return 标识表示从哪里返回列表。
+     * Gets the upload id marker--all uploads returned whose upload id must be greater than the marker filter.
+     * @return The upload Id marker.
      */
     public String getUploadIdMarker() {
         return uploadIdMarker;
     }
 
     /**
-     * 设置一个标识表示从哪里返回列表。（可选）
+     * Sets the upload id marker--all uploads returned whose upload id must be greater than the marker filter.
      * @param uploadIdMarker
-     *          标识表示从哪里返回列表。
+     *          The upload Id marker.
      */
     public void setUploadIdMarker(String uploadIdMarker) {
         this.uploadIdMarker = uploadIdMarker;
@@ -115,20 +115,20 @@ public class ListMultipartUploadsRequest extends GenericRequest {
     }
     
     /**
-     * 获取应用于请求响应体中Object名称的编码方式。
+     * Gets the encoding type of the object in the response body.
 
-     * @return 请求响应体中Object名称的编码方式。
+     * @return The encoding type of the object in the response body.
      */
     public String getEncodingType() {
         return encodingType;
     }
 
     /**
-     * 设置应用于请求响应体中Object名称的编码方式。
+     * Sets the encoding type of the object in the response body.
      * 
      * @param encodingType
-     *            请求响应体中Object名称的编码方式。
-     *            有效值: null (不进行编码处理) 或 "url".
+     *            The encoding type of the object in the response body.
+     *            Valid value is either 'null' or 'url'.
      */
     public void setEncodingType(String encodingType) {
         this.encodingType = encodingType;

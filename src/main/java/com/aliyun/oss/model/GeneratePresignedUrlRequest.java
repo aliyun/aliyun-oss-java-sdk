@@ -26,7 +26,8 @@ import java.util.Map;
 import com.aliyun.oss.HttpMethod;
 
 /**
- * 生成带有签名信息的URL的请求。
+ * This class wraps all the information needed to generate a presigned URl.
+ * And it's not the real "request" class.
  */
 public class GeneratePresignedUrlRequest {
 
@@ -55,33 +56,33 @@ public class GeneratePresignedUrlRequest {
      */
     private Date expiration;
 
-    // 要重载的返回请求头。
+    // The response headers to override.
     private ResponseHeaderOverrides responseHeaders = new ResponseHeaderOverrides();
 
-    // 用户自定义的元数据，表示以x-oss-meta-为前缀的请求头。
+    // User's customized metadata, which are the http headers start with the x-oos-meta-.
     private Map<String, String> userMetadata = new HashMap<String, String>();
-    
+
     private Map<String, String> queryParam = new HashMap<String, String>(); 
     
     private Map<String, String> headers = new HashMap<String, String>();  
     
     /**
-     * 构造函数。默认的HTTP Method为{@link HttpMethod#GET}。
+     * Constructor with GET as the httpMethod
      * @param bucketName
-     *          Bucket名称。
+     *          Bucket name.
      * @param key
-     *          Object key。
+     *          Object key.
      */
     public GeneratePresignedUrlRequest(String bucketName, String key) {
         this(bucketName, key, HttpMethod.GET);
     }
 
     /**
-     * 构造函数。
+     * Constructor.
      * @param bucketName
-     *          Bucket名称。
+     *          Bucket name.
      * @param key
-     *          Object key。
+     *          Object key.
      * @param method
      *          {@link HttpMethod#GET}。
      */
@@ -92,87 +93,87 @@ public class GeneratePresignedUrlRequest {
     }
 
     /**
-     * 返回HTTP访问方法。
-     * @return HTTP访问方法。
+     * Gets Http method.
+     * @return HTTP method.
      */
     public HttpMethod getMethod() {
         return method;
     }
 
     /**
-     * 设置HTTP访问方法。
+     * Sets Http method.
      * @param method
-     *          HTTP访问方法。
+     *          HTTP method.
      */
     public void setMethod(HttpMethod method) {
         if (method != HttpMethod.GET && method != HttpMethod.PUT)
-            throw new IllegalArgumentException("仅支持GET和PUT方法。");
+            throw new IllegalArgumentException("Only GET or PUT is supported!");
 
         this.method = method;
     }
 
     /**
-     * 返回{@link Bucket}名称。
-     * @return Bucket名称。
+     * Gets {@link Bucket} name
+     * @return Bucket name
      */
     public String getBucketName() {
         return bucketName;
     }
 
     /**
-     * 设置{@link Bucket}名称。
+     * Sets the {@link Bucket} name.
      * @param bucketName
-     *          {@link Bucket}名称。
+     *          {@link Bucket} name.
      */
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
     }
 
     /**
-     * 返回{@link OSSObject} key。
-     * @return  Object key。
+     * Gets the {@link OSSObject} key.
+     * @return  Object key.
      */
     public String getKey() {
         return key;
     }
 
     /**
-     * 设置{@link OSSObject} key。
+     * Sets {@link OSSObject} key.
      * @param key
-     *          {@link OSSObject} key。
+     *          {@link OSSObject} key.
      */
     public void setKey(String key) {
         this.key = key;
     }
 
     /**
-     * 返回生成的URL的超时时间。
-     * @return 生成的URL的超时时间。
+     * Gets the expiration time of the Url
+     * @return The expiration time of the Url.
      */
     public Date getExpiration() {
         return expiration;
     }
 
     /**
-     * 设置生成的URL的超时时间。。
+     * Sets the expiration time of the Url
      * @param expiration
-     *          生成的URL的超时时间。
+     *          The expiration time of the Url.
      */
     public void setExpiration(Date expiration) {
         this.expiration = expiration;
     }
 
     /**
-     * 设置签名URL对应的文件类型ContentType
+     * Sets the content-type header which indicates the file's type.
      * @param contentType
-     *     上传文件对应的Content-Type
+     *     The file's content type.
      */
     public void setContentType(String contentType){
        this.contentType = contentType;
     }
 
     /**
-     * 返回文件类型
+     * Gets the content type header.
      * @return Content-Type Header
      */
     public String getContentType(){
@@ -180,16 +181,16 @@ public class GeneratePresignedUrlRequest {
     }
 
     /**
-     * 设置签名URL对应文件的MD5
+     * Sets the file's MD5 value.
      * @param contentMD5
-     *     文件对应的Content-MD5
+     *     The target file's MD5 value.
      */
     public void setContentMD5(String contentMD5) {
        this.contentMD5 = contentMD5;
     }
 
     /**
-     * 返回文件内容的MD5
+     * Gets the file's MD5 value.
      * @return Content-MD5 
      */
     public String getContentMD5() {
@@ -197,17 +198,17 @@ public class GeneratePresignedUrlRequest {
     }
 
     /**
-     * 设置要重载的返回请求头（可选）。
+     * Sets the response headers to override.
      * @param responseHeaders
-     *          要重载的返回请求头。
+     *          The response headers to override.
      */
     public void setResponseHeaders(ResponseHeaderOverrides responseHeaders) {
         this.responseHeaders = responseHeaders;
     }
 
     /**
-     * 返回要重载的返回请求头。
-     * @return 要重载的返回请求头。
+     * Gets the response headers to override.
+     * @return The response headers to override.
      */
     public ResponseHeaderOverrides getResponseHeaders() {
         return responseHeaders;
@@ -215,67 +216,67 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * <p>
-     * 获取用户自定义的元数据。
+     * Gets user's customized metadata.
      * </p>
      * <p>
-     * OSS内部保存用户自定义的元数据时，会以x-oss-meta-为请求头的前缀。
-     * 但用户通过该接口处理用户自定义元数据里，不需要加上前缀“x-oss-meta-”。
-     * 同时，元数据字典的键名是不区分大小写的，并且在从服务器端返回时会全部以小写形式返回，
-     * 即使在设置时给定了大写字母。比如键名为：MyUserMeta，通过getObjectMetadata接口
-     * 返回时键名会变为：myusermeta。
+     * OSS uses x-oss-meta- as the prefix in the http headers to transfer the user's customized metadata.
+     * However the key value returned by getUserMetadata does not have the prefix---the prefix is added by SDK
+     * automatically.
+     * The key is case insensitive and will always be in low case when it's returned from OSS.
+     * For example, if the key is MyUserMeta，the key returned by this method will be myusermeta.
      * </p>
-     * @return 用户自定义的元数据。
+     * @return A {@link Map} instance that contains the user's customized metadata.
      */
     public Map<String, String> getUserMetadata() {
         return userMetadata;
     }
 
     /**
-     * 设置用户自定义的元数据，表示以x-oss-meta-为前缀的请求头。
+     * Gets user's customized metadata. They will be represented in x-oss-meta* headers.
      * @param userMetadata
-     *          用户自定义的元数据。
+     *          User's metadata
      */
     public void setUserMetadata(Map<String, String> userMetadata) {
         if (userMetadata == null) {
-            throw new NullPointerException("参数'userMeta'为空指针。");
+            throw new NullPointerException("The argument 'userMeta' is null.");
         }
         this.userMetadata = userMetadata;
     }
     
     /**
-     * 添加一个用户自定义的元数据。
+     * Add a user's customized metadata.
      * @param key
-     *          请求头的Key。
-     *          这个Key不需要包含OSS要求的前缀，即不需要加入“x-oss-meta-”。
+     *          The metadata key.
+     *          Note: this key should not have prefix of 'x-oss-meta-'.
      * @param value
-     *          请求头的Value。
+     *          the metadata's value.
      */
     public void addUserMetadata(String key, String value) {
         this.userMetadata.put(key, value);
     }
 
     /**
-     * 返回QueryParameter
-     * @return Query Parameter
+     * Gets the query parameters.
+     * @return Query parameters.
      */
     public Map<String,String> getQueryParameter(){
         return this.queryParam;
     }
     
     /**
-     * 用户请求参数，Query String。
+     * Sets the query parameters.
      * @param queryParam
-     *          QueryString。
+     *          Query parameters.
      */
     public void setQueryParameter(Map<String, String> queryParam) {
         if (queryParam == null){
-            throw new NullPointerException("参数'queryParameter'为空指针。");
+            throw new NullPointerException("The argument 'queryParameter' is null.");
         }
         this.queryParam = queryParam;
     }
     
     /**
-     * @param paramter key
+     * @param key
      * @param value
      */
     public void addQueryParameter(String key, String value) {
@@ -283,23 +284,24 @@ public class GeneratePresignedUrlRequest {
     }
     
     /**
-     * 返回process
-     * @return process
+     * Gets the process header.
+     * @return The process header.
      */
     public String getProcess() {
 		return process;
 	}
 
     /**
-     * 设置process
+     * Sets the process header.
      * @param process
+     *          The process header.
      */
 	public void setProcess(String process) {
 		this.process = process;
 	}
 	
     /**
-     * 返回HTTP Headers
+     * Gets HTTP Headers
      * @return HTTP Headers
      */
     public Map<String,String> getHeaders(){
@@ -307,19 +309,19 @@ public class GeneratePresignedUrlRequest {
     }
     
     /**
-     * HTTP请求头，HTTP Header。
+     * Sets Http headers.
      * @param headers 
      *          HTTP Headers。
      */
     public void setHeaders(Map<String, String> headers) {
         if (headers == null){
-            throw new NullPointerException("参数'queryParameter'为空指针。");
+            throw new NullPointerException("The argument 'queryParameter' is null.");
         }
         this.headers = headers;
     }
     
     /**
-     * @param paramter key
+     * @param key
      * @param value
      */
     public void addHeader(String key, String value) {

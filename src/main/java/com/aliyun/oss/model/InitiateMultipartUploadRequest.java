@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 /**
- * 包含初始化一个Multipart上传事件的请求参数。
+ * This is the request that is used to initiate a multipart upload.
  *
  */
 public class InitiateMultipartUploadRequest extends GenericRequest {
@@ -28,24 +28,24 @@ public class InitiateMultipartUploadRequest extends GenericRequest {
     private ObjectMetadata objectMetadata;
 
     /**
-     * 构造函数。
+     * Constructor
      * @param bucketName
-     *          用来创建Multipart上传的Bucket的名称。
+     *          Bucket name.
      * @param key
-     *          用来创建的Multipart的Object（也就是Multipart上传完成后新生成的Object）的key。
+     *          Target object's key (which is the combined file after all parts are uploaded).
      */
     public InitiateMultipartUploadRequest(String bucketName, String key) {
         this(bucketName, key, null);
     }
 
     /**
-     * 构造函数。
+     * Constructor
      * @param bucketName
-     *          用来创建Multipart上传的Bucket的名称。
+     *          Bucket name.
      * @param key
-     *          用来创建的Multipart的Object（也就是Multipart上传完成后新生成的Object）的key。
+     *          Target object's key (which is the combined file after all parts are uploaded).
      * @param objectMetadata
-     *          将创建的Object的附加信息。
+     *          Object's metadata.
      */
     public InitiateMultipartUploadRequest(String bucketName, String key, ObjectMetadata objectMetadata) {
         super(bucketName, key);
@@ -53,17 +53,17 @@ public class InitiateMultipartUploadRequest extends GenericRequest {
     }
 
     /**
-     * 返回将创建的Object的附加信息。
-     * @return 将创建的Object的附加信息。
+     * Gets the object's metadata.
+     * @return The metadata of the object to create.
      */
     public ObjectMetadata getObjectMetadata() {
         return objectMetadata;
     }
 
     /**
-     * 设置将创建的Object的附加信息。
+     * Sets the object's metadata.
      * @param objectMetadata
-     *          将创建的Object的附加信息。
+     *          The metadata of the object to create.
      */
     public void setObjectMetadata(ObjectMetadata objectMetadata) {
         this.objectMetadata = objectMetadata;

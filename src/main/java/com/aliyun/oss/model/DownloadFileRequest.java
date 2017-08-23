@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 文件分片下载请求
+ * The request class that is to download file with multiple parts download.
  *
  */
 public class DownloadFileRequest extends GenericRequest {
@@ -99,21 +99,21 @@ public class DownloadFileRequest extends GenericRequest {
     }
     
     /**
-     * 返回“If-Match”参数，表示：如果传入期望的 ETag 和 object 的 ETag 匹配，正常的发送文件。
-     * 如果不符合，返回错误。
-     * @return 表示期望object的ETag与之匹配的ETag列表。
+     * Gets the ETag matching constraints.
+     * The download only happens if the specified ETag matches the source file's ETag.
+     * If ETag does not match, returns the precondition failure (412)
+     * @return The expected ETag list.
      */
     public List<String> getMatchingETagConstraints() {
         return matchingETagConstraints;
     }
 
     /**
-     * 返回“If-Match”参数（可选）。
-     * 表示如果传入期望的 ETag 和 Object 的 ETag 匹配，则正常的发送文件。
-     * 如果不符合，则返回错误。
+     * Sets the ETag matching constraints (optional).
+     * The download only happens if the specified ETag matches the source file's ETag.
+     * If ETag does not match, returns the precondition failure (412)
      * @param eTagList
-     *          表示期望object的ETag与之匹配的ETag列表。
-     *          目前OSS支持传入一个ETag，如果传入多于一个ETag，将只有列表中的第一个有效。
+     *          The expected ETag list.
      */
     public void setMatchingETagConstraints(List<String> eTagList) {
         this.matchingETagConstraints.clear();
@@ -127,20 +127,21 @@ public class DownloadFileRequest extends GenericRequest {
     }
 
     /**
-     * 返回“If-None-Match”参数，可以用来检查文件是否有更新。
-     * 如果传入的 ETag值和Object的ETag 相同，返回错误；否则正常传输文件。 
-     * @return 表示期望Object的ETag与之不匹配的ETag列表。
+     * Gets the ETag non-matching constraints.
+     * The download only happens if the specified ETag does not match the source file's ETag.
+     * If ETag matches, returns the precondition failure (412)
+     * @return The expected ETag list.
      */
     public List<String> getNonmatchingETagConstraints() {
         return nonmatchingEtagConstraints;
     }
 
     /**
-     * 返回“If-None-Match”参数，可以用来检查文件是否有更新（可选）。
-     * 如果传入的 ETag值和Object的ETag 相同，返回错误；否则正常传输文件。 
+     * Sets the ETag non-matching constraints.
+     * The download only happens if the specified ETag does not match the source file's ETag.
+     * If ETag matches, returns the precondition failure (412)
      * @param eTagList
-     *          表示期望Object的ETag与之不匹配的ETag列表。
-     *          目前OSS支持传入一个ETag，如果传入多于一个ETag，将只有列表中的第一个有效。
+     *          The expected ETag list. For now only the first ETag is used, though the parameter is the list.
      */
     public void setNonmatchingETagConstraints(List<String> eTagList) {
         this.nonmatchingEtagConstraints.clear();
@@ -154,84 +155,76 @@ public class DownloadFileRequest extends GenericRequest {
     }
 
     /**
-     * 返回“If-Unmodified-Since”参数。
-     * 表示：如果传入参数中的时间等于或者晚于文件实际修改时间，则传送文件；
-     * 如果早于实际修改时间，则返回错误。 
-     * @return “If-Unmodified-Since”参数。
+     * Gets the unmodified since constraint.
+     * @return The time threshold. If it's same or later than the actual modified time, download the file.
      */
     public Date getUnmodifiedSinceConstraint() {
         return unmodifiedSinceConstraint;
     }
 
     /**
-     * 设置“If-Unmodified-Since”参数（可选）。
-     * 表示：如果传入参数中的时间等于或者晚于文件实际修改时间，则传送文件；
-     * 如果早于实际修改时间，则返回错误。 
+     * Sets the unmodified since constraint.
      * @param date
-     *          “If-Unmodified-Since”参数。
+     *          The time threshold. If it's same or later than the actual modified time, download the file.
      */
     public void setUnmodifiedSinceConstraint(Date date) {
         this.unmodifiedSinceConstraint = date;
     }
 
     /**
-     * 返回“If-Modified-Since”参数。
-     * 表示：如果指定的时间早于实际修改时间，则正常传送文件，并返回 200 OK；
-     * 如果参数中的时间和实际修改时间一样或者更晚，会返回错误。
-     * @return “If-Modified-Since”参数。
+     * Gets the modified since constraint.
+     * @return The time threshold. If it's earlier than the actual modified time, download the file.
      */
     public Date getModifiedSinceConstraint() {
         return modifiedSinceConstraint;
     }
 
     /**
-     * 设置“If-Modified-Since”参数（可选）。
-     * 表示：如果指定的时间早于实际修改时间，则正常传送文件，并返回 200 OK；
-     * 如果参数中的时间和实际修改时间一样或者更晚，会返回错误。
+     * Sets the modified since constraint.
      * @param date
-     *          “If-Modified-Since”参数。
+     *          The time threshold. If it's earlier than the actual modified time, download the file.
      */
     public void setModifiedSinceConstraint(Date date) {
         this.modifiedSinceConstraint = date;
     }
 
     /**
-     * 返回要重载的返回请求头。
-     * @return 要重载的返回请求头。
+     * Gets response headers to override.
+     * @return The headers to override with.
      */
     public ResponseHeaderOverrides getResponseHeaders() {
         return responseHeaders;
     }
 
     /**
-     * 设置要重载的返回请求头（可选）。
+     * Sets response headers to override.
      * @param responseHeaders
-     *          要重载的返回请求头。
+     *          The headers to override with.
      */
     public void setResponseHeaders(ResponseHeaderOverrides responseHeaders) {
         this.responseHeaders = responseHeaders;
     }
 
-    // 分片大小，单位字节，默认100KB
+    // Part size in byte, by default it's 100KB.
     private long partSize = 1024 * 100;
-    // 分片上传线程数，默认1
+    // Thread count for downloading parts, by default it's 1.
     private int taskNum = 1;
-    // 本地文件
+    // The local file path for the download.
     private String downloadFile;
-    // 是否开启断点续传
+    // Flag of enabling checkpoint.
     private boolean enableCheckpoint;
-    // 断点续传时保存分片上传的信息的本地文件
+    // The local file path of the checkpoint file
     private String checkpointFile;
     
-    // If-Match参数，如果传入期望的 ETag和 object的 ETag匹配，正常发送文件
+    // The matching ETag constraints
     private List<String> matchingETagConstraints = new ArrayList<String>();
-    // If-None-Match”参数，如果传入的 ETag值和Object的ETag不相同，正常传输文件。 
+    // The non-matching ETag constraints.
     private List<String> nonmatchingEtagConstraints = new ArrayList<String>();
-    // If-Unmodified-Since参数，如果传入参数中的时间等于或者晚于文件实际修改时间，则传送文件
+    // The unmodified since constraint.
     private Date unmodifiedSinceConstraint;
-    // If-Modified-Since参数，如果指定的时间早于实际修改时间，正常传送文件
+    // The modified since constraints.
     private Date modifiedSinceConstraint;
-    // 包含了在发送GET请求时可以重载的返回请求头
+    // The response headers to override.
     private ResponseHeaderOverrides responseHeaders;
 
 }

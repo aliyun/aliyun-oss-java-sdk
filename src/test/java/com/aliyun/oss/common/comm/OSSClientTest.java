@@ -38,7 +38,7 @@ public class OSSClientTest {
     @Test
     @Ignore
     /**
-     * 与本地时间相关，需要fix
+     * TODO: needs the fix about local time.
      */
     public void testGeneratePresignedUrl() throws IOException {
         OSSClient client = new OSSClient("oss.aliyuncs.com", "id", "key");

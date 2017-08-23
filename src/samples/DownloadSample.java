@@ -10,7 +10,7 @@ import com.aliyun.oss.model.DownloadFileResult;
 import com.aliyun.oss.model.ObjectMetadata;
 
 /**
- * 断点续传下载用法示例
+ * The examples about how to enable checkpoint in downloading.
  *
  */
 public class DownloadSample {
@@ -29,13 +29,13 @@ public class DownloadSample {
         
         try {
             DownloadFileRequest downloadFileRequest = new DownloadFileRequest(bucketName, key);
-            // 设置本地文件
+            // Sets the local file to download to
             downloadFileRequest.setDownloadFile(downloadFile);
-            // 设置并发下载数，默认1
+            // Sets the concurrent task thread count 5. By default it's 1.
             downloadFileRequest.setTaskNum(5);
-            // 设置分片大小，默认100KB
+            // Sets the part size, by default it's 100K.
             downloadFileRequest.setPartSize(1024 * 1024 * 1);
-            // 开启断点续传，默认关闭
+            // Enable checkpoint. By default it's false.
             downloadFileRequest.setEnableCheckpoint(true);
             
             DownloadFileResult downloadResult = ossClient.downloadFile(downloadFileRequest);

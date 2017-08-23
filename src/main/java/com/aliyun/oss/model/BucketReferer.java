@@ -23,9 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 表示{@link Bucket}的http referer信息。
+ * The {@link Bucket}'s http referer information.
  * <p>
- * 该配置会指明是否允许空的http referer，以及能够访问{@link Bucket}的白名单，常用于防盗链。
+ * It defines the whitelist of websites that could access a bucket. Empty http referer could also be included.
+ * Http referer is typically used to prevent unauthorized access from other website.
  * </p>
  *
  */

@@ -32,24 +32,24 @@ public class CreateLiveChannelResult {
     }
 
     /**
-     * 获取推流地址
-     * @return 推流地址
+     * Gets the pushing streaming Urls.
+     * @return The list of pushing streaming urls.
      */
     public List<String> getPlayUrls() {
         return playUrls;
     }
 
     /**
-     * 获取播放地址
-     * @return 播放地址
+     * Gets the playback urls.
+     * @return The playback urls.
      */
     public void setPlayUrls(List<String> playUrls) {
         this.playUrls = playUrls;
     }
     
-    // 推流地址
+    // The pushing streaming urls.
     private List<String> publishUrls;
-    // 播放地址
+    // The playback urls.
     private List<String> playUrls;
     
 }

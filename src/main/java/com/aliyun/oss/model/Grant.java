@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 /**
- * 访问控制的授权信息。
+ * ACL's permission grant information.
  */
 public class Grant {
     
@@ -28,12 +28,11 @@ public class Grant {
     private Permission permission;
     
     /**
-     * 构造函数。
+     * Constructor
      * @param grantee
-     *          被授权者。
-     *          目前只支持 {@link GroupGrantee#AllUsers}。
+     *          The grantee. Currently it only supports {@link GroupGrantee#AllUsers}.
      * @param permission
-     *          权限。
+     *          permission to grant.
      */
     public Grant(Grantee grantee, Permission permission) {
         if (grantee == null || permission == null) {
@@ -45,16 +44,16 @@ public class Grant {
     }
 
     /**
-     * 返回被授权者信息{@link Grantee}。
-     * @return 被授权者信息{@link Grantee}。
+     * Gets the grantee.
+     * @return The {@link Grantee} instance.
      */
     public Grantee getGrantee() {
         return grantee;
     }
 
     /**
-     * 返回权限{@link Permission}。
-     * @return 权限{@link Permission}。
+     * Gets the {@link Permission} granted.
+     * @return The granted {@link Permission}.
      */
     public Permission getPermission() {
         return permission;

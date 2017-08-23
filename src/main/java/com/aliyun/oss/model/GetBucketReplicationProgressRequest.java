@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 /**
- * 获取复制进度请求。
+ * This request class is used to get the bucket replication progress information from OSS.
  */
 public class GetBucketReplicationProgressRequest extends GenericRequest {
     public GetBucketReplicationProgressRequest(String bucketName,

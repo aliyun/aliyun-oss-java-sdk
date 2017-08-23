@@ -21,23 +21,20 @@ package com.aliyun.oss;
 
 /**
  * <p>
- * 表示尝试访问阿里云服务时遇到的异常。
+ * This exception is the one thrown by the client side when accessing OSS.
  * </p>
  * 
  * <p>
- * {@link ClientException}表示的则是在向阿里云服务发送请求时出现的错误，以及客户端无法处理返回结果。
- * 例如，在发送请求时网络连接不可用，则会抛出{@link ClientException}的异常。
+ * {@link ClientException} is the class to represent any exception in OSS client side. Generally
+ * ClientException occurs either before sending the request or after receving the response from OSS server side.
+ * For example, if the network is broken when it tries to send a request, then the SDK will throw a {@link ClientException}
+ * instance.
  * </p>
  * 
  * <p>
- * {@link ServiceException}用于处理阿里云服务返回的错误消息。比如，用于身份验证的Access ID不存在，
- * 则会抛出{@link ServiceException}（严格上讲，会是该类的一个继承类。比如，OSSClient会抛出OSSException）。
- * 异常中包含了错误代码，用于让调用者进行特定的处理。
- * </p>
- * 
- * <p>
- * 通常来讲，调用者只需要处理{@link ServiceException}。因为该异常表明请求被服务处理，但处理的结果表明
- * 存在错误。异常中包含了细节的信息，特别是错误代码，可以帮助调用者进行处理。
+ * {@link ServiceException} is converted from error code from OSS response. For example, when OSS tries to authenticate
+ * a request, if Access ID does not exist, the SDK will throw a {@link ServiceException} or its subclass instance
+ * with the specific error code, which the caller could handle that with specific logic.
  * </p>
  * 
  */
@@ -50,32 +47,32 @@ public class ClientException extends RuntimeException {
     private String errorCode;
     
     /**
-     * 构造新实例。
+     * Creates a default instance.
      */
     public ClientException() {
         super();
     }
 
     /**
-     * 用给定的异常信息构造新实例。
-     * @param errorMessage 异常信息。
+     * Creates an instance with error message.
+     * @param errorMessage Error message.
      */
     public ClientException(String errorMessage) {
         this(errorMessage, null);
     }
 
     /**
-     * 用表示异常原因的对象构造新实例。
-     * @param cause 异常原因。
+     * Creates an instance with an exception
+     * @param cause An exception.
      */
     public ClientException(Throwable cause) {
         this(null, cause);
     }
     
     /**
-     * 用异常消息和表示异常原因的对象构造新实例。
-     * @param errorMessage 异常信息。
-     * @param cause 异常原因。
+     * Creates an instance with error message and an exception.
+     * @param errorMessage Error message.
+     * @param cause An exception.
      */
     public ClientException(String errorMessage, Throwable cause) {
         super(null, cause);
@@ -85,21 +82,22 @@ public class ClientException extends RuntimeException {
     }
     
     /**
-     * 用异常消息构造新实例。
-     * @param errorMessage 异常信息。
-     * @param errorCode 错误码。
-     * @param requestId 请求编号。
+     * Creates an instance with error message, error code, request Id
+     * @param errorMessage Error message.
+     * @param errorCode Error code, which typically is from a set of predefined errors. The handler code could do action
+     *                 based on this.
+     * @param requestId Request Id.
      */
     public ClientException(String errorMessage, String errorCode, String requestId) {
         this(errorMessage, errorCode, requestId, null);
     }
 
     /**
-     * 用异常消息和表示异常原因的对象构造新实例。
-     * @param errorMessage 异常信息。
-     * @param errorCode 错误码。
-     * @param requestId 请求编号。
-     * @param cause 异常原因。
+     * Creates an instance with error message, error code, request Id and an exception.
+     * @param errorMessage Error message.
+     * @param errorCode Error code.
+     * @param requestId Request Id.
+     * @param cause An exception.
      */
     public ClientException(String errorMessage, String errorCode, String requestId, Throwable cause) {
         this(errorMessage, cause);
@@ -108,24 +106,24 @@ public class ClientException extends RuntimeException {
     }
 
     /**
-     * 获取异常信息。
-     * @return 异常信息。
+     * Get error message.
+     * @return Error message in string.
      */
     public String getErrorMessage() {
         return errorMessage;
     }
     
     /**
-     * 获取异常的错误码
-     * @return 异常错误码
+     * Get error code.
+     * @return Error code.
      */
     public String getErrorCode() {
         return errorCode;
     }
 
     /**
-     * 获取本次异常的 RequestId
-     * @return 本次异常的 RequestId
+     * Gets request id.
+     * @return The request Id.
      */
     public String getRequestId() {
        return requestId;

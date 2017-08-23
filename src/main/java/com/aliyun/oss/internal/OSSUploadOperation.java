@@ -70,7 +70,7 @@ public class OSSUploadOperation {
         private static final String UPLOAD_MAGIC = "FE8BB4EA-B593-4FAC-AD7A-2459A36E2E62";
         
         /**
-         * 从checkpoint文件中加载checkpoint数据
+         * Gets the checkpoint data from the checkpoint file.
          */
         public synchronized void load(String cpFile) throws IOException, ClassNotFoundException {
             FileInputStream fileIn =new FileInputStream(cpFile);
@@ -82,7 +82,7 @@ public class OSSUploadOperation {
         }
         
         /**
-         * 把checkpoint数据写到checkpoint文件
+         * Writes the checkpoint data to the checkpoint file.
          */
         public synchronized void dump(String cpFile) throws IOException {
             this.md5 = hashCode();
@@ -94,7 +94,7 @@ public class OSSUploadOperation {
         }
         
         /**
-         * 分片上传完成，更新状态
+         * The part upload complete, update the status.
          * @throws IOException 
          */
         public synchronized void update(int partIndex, PartETag partETag, boolean completed) throws IOException {
@@ -103,23 +103,25 @@ public class OSSUploadOperation {
         }
         
         /**
-         * 判读本地文件与checkpoint中记录的信息是否相符，即待上传文件是否修改过
+         * Check if the local file matches the checkpoint.
          */
         public synchronized boolean isValid(String uploadFile) {
             // 比较checkpoint的magic和md5
+            // Compares the magic field in checkpoint and the file's md5.
             if (this.magic == null || 
                     !this.magic.equals(UPLOAD_MAGIC) || 
                     this.md5 != hashCode()) {
                 return false;
             }
             
-            // 确认上传文件存在
+            // Checks if the file exists.
             File upload = new File(uploadFile);
             if (!upload.exists()) {
                 return false;
             }
-            
-            // 上传文件的名称、大小、最后修改时间相同
+
+            // The file name, size and last modified time must be same as the checkpoint.
+            // If any item is changed, return false (re-upload the file).
             if (!this.uploadFile.equals(uploadFile) || 
                     this.uploadFileStat.size != upload.length() ||
                     this.uploadFileStat.lastModified != upload.lastModified()) {
@@ -186,9 +188,9 @@ public class OSSUploadOperation {
             return fileStat;
         }
         
-        public long size; // 文件大小
-        public long lastModified; // 文件最后修改时间
-        public String digest; // 文件内容摘要
+        public long size; // file size
+        public long lastModified; // file last modified time.
+        public String digest; // file content's digest (signature).
     }
     
     static class UploadPart implements Serializable {
@@ -205,10 +207,10 @@ public class OSSUploadOperation {
             return result;
         }
 
-        public int number; // 分片序号
-        public long offset; // 分片在文件中的偏移量
-        public long size; // 分片大小
-        public boolean isCompleted; // 该分片上传是否完成
+        public int number; // part number
+        public long offset; // the offset in the file
+        public long size; // part size
+        public boolean isCompleted; // upload completeness flag.
     }
     
     static class PartResult {
@@ -259,11 +261,11 @@ public class OSSUploadOperation {
             this.exception = exception;
         }
 
-        private int number; // 分片序号
-        private long offset; // 分片在文件中的偏移
-        private long length; // 分片长度
-        private boolean failed; // 分片上传是否失败
-        private Exception exception; // 分片上传异常
+        private int number; // part number
+        private long offset; // offset in the file
+        private long length; // part size
+        private boolean failed; // part upload failure flag
+        private Exception exception; // part upload exception
     }
     
     public OSSUploadOperation(OSSMultipartOperation multipartOperation) {
@@ -282,8 +284,8 @@ public class OSSUploadOperation {
         ensureObjectKeyValid(key);
         
         assertParameterNotNull(uploadFileRequest.getUploadFile(), "uploadFile");
-        
-        // 开启断点续传，没有指定checkpoint文件，使用默认值
+
+        // The checkpoint is enabled without specifying the checkpoint file, using the default one.
         if (uploadFileRequest.isEnableCheckpoint()) {
             if (uploadFileRequest.getCheckpointFile() == null || uploadFileRequest.getCheckpointFile().isEmpty()) {
                 uploadFileRequest.setCheckpointFile(uploadFileRequest.getUploadFile() + ".ucp");
@@ -297,30 +299,30 @@ public class OSSUploadOperation {
         UploadFileResult uploadFileResult = new UploadFileResult();
         UploadCheckPoint uploadCheckPoint = new UploadCheckPoint();
         
-        // 开启断点续传，从checkpoint文件读取上次分片上传结果
+        // The checkpoint is enabled, reading the checkpoint data from the checkpoint file.
         if (uploadFileRequest.isEnableCheckpoint()) {
-            // 从checkpoint文件读取上次上传结果，checkpoint文件不存在/文件被篡改/被破坏时，从新上传
+            // The checkpoint file either does not exist, or is corrupted, the whole file needs the re-upload.
             try {
                 uploadCheckPoint.load(uploadFileRequest.getCheckpointFile());
             } catch (Exception e) {
                 remove(uploadFileRequest.getCheckpointFile());
             }
             
-            // 上传的文件修改了，从新上传
+            // The file uploaded is updated, re-upload.
             if (!uploadCheckPoint.isValid(uploadFileRequest.getUploadFile())) {
                 prepare(uploadCheckPoint, uploadFileRequest);
                 remove(uploadFileRequest.getCheckpointFile());
             }
         } else {
-            // 没有开启断点上传功能，从新上传
+            // The checkpoint is not enabled, re-upload.
             prepare(uploadCheckPoint, uploadFileRequest);
         }
-        
-        // 进度条开始数据上传
+
+        // The progress tracker starts
         ProgressListener listener = uploadFileRequest.getProgressListener();
         ProgressPublisher.publishProgress(listener, ProgressEventType.TRANSFER_STARTED_EVENT);
         
-        // 并发上传分片
+        // Concurrently upload parts.
         List<PartResult> partResults = upload(uploadCheckPoint, uploadFileRequest);
         for (PartResult partResult : partResults) {
             if (partResult.isFailed()) {
@@ -329,14 +331,14 @@ public class OSSUploadOperation {
             }
         }
         
-        // 进度条完成数据上传
+        // The progress tracker publishes the data.
         ProgressPublisher.publishProgress(listener, ProgressEventType.TRANSFER_COMPLETED_EVENT);
         
-        // 提交上传任务
+        // Complete parts.
         CompleteMultipartUploadResult multipartUploadResult = complete(uploadCheckPoint, uploadFileRequest);
         uploadFileResult.setMultipartUploadResult(multipartUploadResult);
         
-        // 开启了断点上传，成功上传后删除checkpoint文件
+        // The checkpoint is enabled and upload the checkpoint file.
         if (uploadFileRequest.isEnableCheckpoint()) {
             remove(uploadFileRequest.getCheckpointFile());
         }
@@ -375,8 +377,8 @@ public class OSSUploadOperation {
         ExecutorService service = Executors.newFixedThreadPool(uploadFileRequest.getTaskNum());
         ArrayList<Future<PartResult>> futures = new ArrayList<Future<PartResult>>();
         ProgressListener listener = uploadFileRequest.getProgressListener();
-        
-        // 计算待上传的数据量
+
+        // Compute the size of the data pending upload.
         long contentLength = 0;
         for (int i = 0; i < uploadCheckPoint.uploadParts.size(); i++) {
             if (!uploadCheckPoint.uploadParts.get(i).isCompleted) {
@@ -386,7 +388,7 @@ public class OSSUploadOperation {
         ProgressPublisher.publishRequestContentLength(listener, contentLength);
         uploadFileRequest.setProgressListener(null);
         
-        // 上传分片
+        // Upload parts.
         for (int i = 0; i < uploadCheckPoint.uploadParts.size(); i++) {
             if (!uploadCheckPoint.uploadParts.get(i).isCompleted) {
                 futures.add(service.submit(new Task(i, "upload-" + i, uploadCheckPoint, i, 
@@ -398,7 +400,7 @@ public class OSSUploadOperation {
         }
         service.shutdown();
         
-        // 等待分片上传完成
+        // Waiting for parts upload complete.
         service.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
         for (Future<PartResult> future : futures) {
             try {
@@ -410,7 +412,7 @@ public class OSSUploadOperation {
             }
         }
         
-        // 对PartResult按照序号排序
+        // Sorts PartResult by the part numnber.
         Collections.sort(taskResults, new Comparator<PartResult>() {
             @Override
             public int compare(PartResult p1, PartResult p2) {

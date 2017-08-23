@@ -78,12 +78,12 @@ public class RoutingRule {
     
     public static enum RedirectType {
         /**
-         * Internal模式尚未支持
+         * Internal mode is not supported yet.
          */
         //Internal("Internal"),
         
         /**
-         * 302跳转
+         * 302 redirect.
          */
         External("External"),
         
@@ -93,7 +93,7 @@ public class RoutingRule {
         AliCDN("AliCDN"),
         
         /**
-         * 镜像回源
+         * Means OSS would read the source data on user's behalf and store it in OSS for later access.
          */
         Mirror("Mirror");
         
@@ -322,23 +322,24 @@ public class RoutingRule {
         private String mirrorURL;
 
         /**
-         * 镜像主备切换的从源站，与MirrorURL的格式要求相同，当主源站访问出错时，OSS会自动切换到此从源站。
+         * The secondary URL for mirror. It should be same as mirrorURL. When the primary mirror url is not available,
+         * OSS would switch to secondary URL automatically.
          */
         private String mirrorSecondaryURL;
         
         /**
-         * 镜像主备切换的探测URL，用于探测主源站的连通情况。OSS会周期性的使用HEAD探测此URL，
-         * 如果返回非200，则切换到从源站，否则切换到主源站。
+         * The probe URL for mirror. This is to detect the availability of the primary mirror URL.
+         * If it does not return 200, then switch to secondary mirror URL. If it returns 200, switch to primary mirror URL.
          */
         private String mirrorProbeURL;
         
         /**
-         * 镜像时是否将请求中的QueryString传递给源站，默认false。
+         * Flag of passing the query string to the source site. By default it's false.
          */
         private Boolean passQueryString;
         
         /**
-         * 镜像时是否要将OSS请求中host与uri之间多余的斜杠传递给源站，默认false。
+         * Flag of passing the redundant backslash between host and uri to source site. By default it's false.
          */
         private Boolean passOriginalSlashes;
     }

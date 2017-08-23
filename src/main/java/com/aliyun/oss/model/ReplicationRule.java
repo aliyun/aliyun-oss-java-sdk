@@ -25,7 +25,7 @@ import java.util.List;
 import com.aliyun.oss.model.AddBucketReplicationRequest.ReplicationAction;
 
 /**
- * Bucket上已设置的跨区域复制规则。
+ * The cross region replication rules on a bucket.
  */
 public class ReplicationRule {
 

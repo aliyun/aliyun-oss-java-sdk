@@ -32,24 +32,24 @@ public class CreateBucketRequest extends GenericRequest {
     }
 
     /**
-     * 获取Bucket所在数据中心
-     * @return Bucket所在的数据中心
+     * Gets the bucket's datacenter
+     * @return Bucket's datacenter.
      */
     public String getLocationConstraint() {
         return locationConstraint;
     }
 
     /**
-     * 设置Bucket所在的数据中心
-     * @param locationConstraint Bucket所在的数据中心名称
+     * Sets the bucket's datacenter.
+     * @param locationConstraint Bucket's datacenter.
      */
     public void setLocationConstraint(String locationConstraint) {
         this.locationConstraint = locationConstraint;
     }
     
     /**
-     * 设置Bucket所在的数据中心
-     * @param locationConstraint Bucket所在的数据中心名称
+     * Creates the instance with datacenter.
+     * @param locationConstraint Bucket datacenter.
      */
     public CreateBucketRequest withLocationConstraint(String locationConstraint) {
         setLocationConstraint(locationConstraint);

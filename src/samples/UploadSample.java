@@ -10,7 +10,7 @@ import com.aliyun.oss.model.UploadFileRequest;
 import com.aliyun.oss.model.UploadFileResult;
 
 /**
- * 断点续传上传用法示例
+ * Examples of uploading with enabling checkpoint file.
  *
  */
 public class UploadSample {
@@ -28,13 +28,13 @@ public class UploadSample {
         
         try {
             UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
-            // 待上传的本地文件
+            // The local file to upload---it must exist.
             uploadFileRequest.setUploadFile(uploadFile);
-            // 设置并发下载数，默认1
+            // Sets the concurrent upload task number to 5.
             uploadFileRequest.setTaskNum(5);
-            // 设置分片大小，默认100KB
+            // Sets the part size to 1MB.
             uploadFileRequest.setPartSize(1024 * 1024 * 1);
-            // 开启断点续传，默认关闭
+            // Enables the checkpoint file. By default it's off.
             uploadFileRequest.setEnableCheckpoint(true);
             
             UploadFileResult uploadResult = ossClient.uploadFile(uploadFileRequest);

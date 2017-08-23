@@ -21,18 +21,17 @@ package com.aliyun.oss;
 
 /**
  * <p>
- * 表示OSS端的数据与SDK端的数据不一致。
+ * This exception indicates the checksum returned from Server side is not same as the one calculated from client side.
  * </p>
  * 
  * 
  * <p>
- * 通常来讲，调用者需要处理{@link InconsistentException}。因为该异常表明请求被服务处理，
- * 上传操作已经成功，但是OSS端的数据与SDK端不一致。调用者需要上传上传的文件然后重新删除。
+ * Generally speaking, the caller needs to handle the {@link InconsistentException}, because it means the data uploaded
+ * or downloaded is not same as its source. Re-upload or re-download is needed to correct the data.
  * </p>
  * 
  * <p>
- * 抛出该异常的操作包括putObject、appendObject、uploadPart、uploadFile等上传操作，
- * getObject下载操作的数据一致性，调用者需要在数据流读取结束后校验，即比较OSS端与SDK端的数据校验和。
+ * Operations that could throw this exception include putObject, appendObject, uploadPart, uploadFile, getObject, etc.
  * </p>
  * 
  */

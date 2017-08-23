@@ -9,7 +9,7 @@ import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.GetObjectRequest;
 
 /**
- * 断点续传下载用法示例
+ * Image process examples.
  *
  */
 public class ImageSample {
@@ -26,49 +26,49 @@ public class ImageSample {
         OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
         
         try {
-            // 缩放
+            // resize
             String style = "image/resize,m_fixed,w_100,h_100";  
             GetObjectRequest request = new GetObjectRequest(bucketName, key);
             request.setProcess(style);
             
             ossClient.getObject(request, new File("example-resize.jpg"));
             
-            // 裁剪
+            // crop
             style = "image/crop,w_100,h_100,x_100,y_100,r_1"; 
             request = new GetObjectRequest(bucketName, key);
             request.setProcess(style);
             
             ossClient.getObject(request, new File("example-crop.jpg"));
             
-            // 旋转
+            // rotate
             style = "image/rotate,90"; 
             request = new GetObjectRequest(bucketName, key);
             request.setProcess(style);
             
             ossClient.getObject(request, new File("example-rotate.jpg"));
             
-            // 锐化
+            // sharpen
             style = "image/sharpen,100"; 
             request = new GetObjectRequest(bucketName, key);
             request.setProcess(style);
             
             ossClient.getObject(request, new File("example-sharpen.jpg"));
             
-            // 水印
+            // add watermark into the image
             style = "image/watermark,text_SGVsbG8g5Zu-54mH5pyN5YqhIQ"; 
             request = new GetObjectRequest(bucketName, key);
             request.setProcess(style);
             
             ossClient.getObject(request, new File("example-watermark.jpg"));
             
-            // 格式转换
+            // convert format
             style = "image/format,png"; 
             request = new GetObjectRequest(bucketName, key);
             request.setProcess(style);
             
             ossClient.getObject(request, new File("example-format.png"));
             
-            // 图片信息
+            // image information
             style = "image/info"; 
             request = new GetObjectRequest(bucketName, key);
             request.setProcess(style);

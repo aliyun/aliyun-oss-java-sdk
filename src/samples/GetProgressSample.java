@@ -13,13 +13,14 @@ import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.PutObjectRequest;
 
 /**
- * 上传下载进度示例
+
+ * Examples about reporting progress on upload/download.
  *
  */
 public class GetProgressSample {
     
     /**
-     * 获取上传进度回调
+     * The uploading progress listener. Its progressChanged API is called by the SDK when there's an update.
      */
     static class PutObjectProgressListener implements ProgressListener {
 
@@ -73,7 +74,7 @@ public class GetProgressSample {
     }
     
     /**
-     * 获取下载进度回调
+     * The downloading progress listener. Its progressChanged API is called by the SDK when there's an update.
      */
     static class GetObjectProgressListener implements ProgressListener {
         
@@ -154,7 +155,7 @@ public class GetProgressSample {
     
     
     /**
-     * 创建一个临时文件
+     * Create a temp file with about 50MB.
      * 
      */
     private static File createSampleFile() throws IOException {

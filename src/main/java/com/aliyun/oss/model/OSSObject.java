@@ -24,18 +24,19 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * 表示OSS中的Object。
+ * The entity class for representing an object in OSS.
  * <p>
- * 在 OSS 中，用户的每个文件都是一个 Object，每个文件需小于 5G。
- * Object包含key、data和user meta。其中，key是Object 的名字；
- * data是Object 的数据；user meta是用户对该object的描述。
+ * In OSS, every file is an OSSObject and every single file should be less than 5G for using Simple upload, Form upload
+ * and Append Upload. Only multipart upload could upload a single file more than 5G.
+ * Any object has key, data and user metadata. The key is the object's name and the data is object's file content.
+ * The user metadata is a dictionary of key-value entries to store some custom data about the object.
  * </p>
  * <p>
- * Object 命名规范
+ * Object naming rules
  * <ul>
- *  <li>使用UTF-8编码</li>
- *  <li>长度必须在 1-1023字节之间</li>
- *  <li>不能以斜线（/）或反斜线（\）开关</li>
+ *  <li>use UTF-8 encoding</li>
+ *  <li>Length is between 1 to 1023</li>
+ *  <li>Could not have slash or backslash</li>
  * </ul>
  * </p>
  *
@@ -45,78 +46,78 @@ public class OSSObject extends GenericResult implements Closeable {
     // Object key (name)
     private String key;
 
-    // Object所在的Bucket的名称。
+    // Object's bucket name
     private String bucketName;
 
-    // Object的元数据。
+    // Object's metadata.
     private ObjectMetadata metadata = new ObjectMetadata();
 
-    // Object所包含的内容。
+    // Object's content
     private InputStream objectContent;
 
     /**
-     * 返回Object的元数据。
-     * @return Object的元数据（{@link ObjectMetadata}）。
+     * Gets the object's metadata
+     * @return Object's metadata in（{@link ObjectMetadata}
      */
     public ObjectMetadata getObjectMetadata() {
         return metadata;
     }
 
     /**
-     * 设置Object的元数据。
+     * Sets the object's metadata.
      * @param metadata
-     *          Object的元数据（{@link ObjectMetadata}）。
+     *          Object's metadata.
      */
     public void setObjectMetadata(ObjectMetadata metadata) {
         this.metadata = metadata;
     }
 
     /**
-     * 返回包含Object内容的{@link InputStream}。
-     * @return 包含Object内容的{@link InputStream}。
+     * Get's the object's content in {@link InputStream}.
+     * @return The object's content in {@link InputStream}.
      */
     public InputStream getObjectContent() {
         return objectContent;
     }
 
     /**
-     * 设置包含Object内容的{@link InputStream}。
+     * Sets the object's content in {@link InputStream}.
      * @param objectContent
-     *          包含Object内容的{@link InputStream}。
+     *          The object's content in {@link InputStream}.
      */
     public void setObjectContent(InputStream objectContent) {
         this.objectContent = objectContent;
     }
 
     /**
-     * 获取Object所在的Bucket的名称。
-     * @return Object所在的Bucket的名称。
+     * Gets the object's bucket name.
+     * @return The object's bucket name.
      */
     public String getBucketName() {
         return bucketName;
     }
 
     /**
-     * 设置Object所在的Bucket的名称。
+     * Sets the object's bucket name.
      * @param bucketName
-     *          Object所在的Bucket的名称。
+     *          The object's bucket name.
      */
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
     }
 
     /**
-     * 获取Object的Key。
-     * @return Object Key。
+     * Gets the object's key.
+     * @return Object Key.
      */
     public String getKey() {
         return key;
     }
 
     /**
-     * 设置Object的Key。
+     * Sets the object's key.
      * @param key
-     *          Object Key。
+     *          Object Key.
      */
     public void setKey(String key) {
         this.key = key;
@@ -130,7 +131,7 @@ public class OSSObject extends GenericResult implements Closeable {
     }
     
     /**
-     * 强制关闭，放弃读取剩余数据。
+     * Forcefully close the response. The remaining data in the server will not be downloaded.
      * @throws IOException
      */
     public void forcedClose() throws IOException {

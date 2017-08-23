@@ -20,35 +20,32 @@
 package com.aliyun.oss.model;
 
 /**
- * 表示一组常用的用户访问权限。
+ * The predefined Access Control List (ACL)
  * <p>
- * 这一组常用权限相当于给所有用户指定权限的快捷方法。
+ * It defines some common permissions.
  * </p>
  *
  */
 public enum CannedAccessControlList {
     
     /**
-     * 指定所有者具有继承控制权限 {@link Permission#Inheritance} ，
-     * 仅供设置Object ACL时使用。
+     * This is only for object, means the permission inherits the bucket's permission.
      */
     Default("default"),
     
     /**
-     * 指定只有所有者具有完全控制权限 {@link Permission#FullControl}，
-     * 其他用户{@link GroupGrantee#AllUsers}无权访问。
+     * The owner has the {@link Permission#FullControl}, other {@link GroupGrantee#AllUsers} does not have access.
      */
     Private("private"),
 
     /**
-     * 指定所有者具有完全控制权限 {@link Permission#FullControl}，
-     * 其他用户{@link GroupGrantee#AllUsers}只有只读权限 {@link Permission#Read}。
+     * The owner has the {@link Permission#FullControl}, other {@link GroupGrantee#AllUsers}  have read-only access.
      */
     PublicRead("public-read"),
 
     /**
-     * 指定所有者和其他用户{@link GroupGrantee#AllUsers}均有完全控制权限{@link Permission#FullControl}。
-     * 不推荐使用。
+     * Both the owner and {@link GroupGrantee#AllUsers} have {@link Permission#FullControl}.
+     * It's not safe and thus not recommended.
      */
     PublicReadWrite("public-read-write");
 

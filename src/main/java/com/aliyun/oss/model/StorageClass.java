@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 /**
- * 存储类型。
+ * The storage class.
  */
 public enum StorageClass {
     

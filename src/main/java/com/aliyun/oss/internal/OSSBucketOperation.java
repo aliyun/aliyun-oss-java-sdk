@@ -489,7 +489,7 @@ public class OSSBucketOperation extends OSSOperation {
     }
     
    /**
-    * Delete bucket image
+    * Delete bucket image attributes.
     */
     public void deleteBucketImage(String bucketName, GenericRequest genericRequest)
    		 throws OSSException, ClientException {

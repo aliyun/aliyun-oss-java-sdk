@@ -22,8 +22,8 @@ package com.aliyun.oss.model;
 import java.util.Date;
 
 /**
- * 表示某一Object的基本元信息，包括该Object的ETag、Size（文件大小）、
- * LastModified（最后修改时间）。
+ * The simplified metadata information of an OSS object.
+ * It includes ETag, size, last modified.
  */
 public class SimplifiedObjectMeta extends GenericResult {
 
