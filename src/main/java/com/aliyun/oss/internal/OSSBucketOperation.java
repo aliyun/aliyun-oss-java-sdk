@@ -34,7 +34,9 @@ import static com.aliyun.oss.common.parser.RequestMarshallers.deleteBucketCnameR
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketQosRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.bucketImageProcessConfMarshaller;
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
+import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
+import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
 import static com.aliyun.oss.internal.RequestParameters.DELIMITER;
 import static com.aliyun.oss.internal.RequestParameters.ENCODING_TYPE;
 import static com.aliyun.oss.internal.RequestParameters.MARKER;
@@ -74,6 +76,7 @@ import static com.aliyun.oss.internal.ResponseParsers.listImageStyleResponsePars
 import static com.aliyun.oss.internal.ResponseParsers.getBucketImageProcessConfResponseParser;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -83,16 +86,21 @@ import com.aliyun.oss.ClientException;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
+import com.aliyun.oss.ServiceException;
 import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.comm.RequestMessage;
+import com.aliyun.oss.common.comm.ResponseHandler;
+import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.comm.ServiceClient;
 import com.aliyun.oss.common.utils.BinaryUtil;
+import com.aliyun.oss.common.utils.ExceptionFactory;
 import com.aliyun.oss.common.utils.HttpHeaders;
 import com.aliyun.oss.model.AccessControlList;
 import com.aliyun.oss.model.Bucket;
 import com.aliyun.oss.model.BucketInfo;
 import com.aliyun.oss.model.BucketList;
 import com.aliyun.oss.model.BucketLoggingResult;
+import com.aliyun.oss.model.BucketMetadata;
 import com.aliyun.oss.model.BucketProcess;
 import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.BucketReplicationProgress;
@@ -128,6 +136,7 @@ import com.aliyun.oss.model.SetBucketWebsiteRequest;
 import com.aliyun.oss.model.TagSet;
 import com.aliyun.oss.model.Style;
 import com.aliyun.oss.model.UserQos;
+import org.apache.http.HttpStatus;
 
 /**
  * Bucket operation.
@@ -287,6 +296,39 @@ public class OSSBucketOperation extends OSSOperation {
                 .build();
         
         return doOperation(request, getBucketAclResponseParser, bucketName, null, true);
+    }
+    
+    public BucketMetadata getBucketMetadata(GenericRequest genericRequest) 
+            throws OSSException, ClientException {
+
+        assertParameterNotNull(genericRequest, "genericRequest");
+        
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.HEAD)
+                .setBucket(bucketName)
+                .setOriginalRequest(genericRequest)
+                .build();
+        
+        List<ResponseHandler> reponseHandlers = new ArrayList<ResponseHandler>();
+        reponseHandlers.add(new ResponseHandler() {
+            @Override
+            public void handle(ResponseMessage response) throws ServiceException, ClientException {
+                if (response.getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+                    safeCloseResponse(response);
+                    throw ExceptionFactory.createOSSException(
+                            response.getHeaders().get(OSSHeaders.OSS_HEADER_REQUEST_ID), OSSErrorCode.NO_SUCH_BUCKET,
+                            OSS_RESOURCE_MANAGER.getString("NoSuchBucket"));
+                }
+            }
+        });
+        
+        return doOperation(request, ResponseParsers.getBucketMetadataResponseParser, 
+                bucketName, null, true, null, reponseHandlers);
     }
     
     /**
