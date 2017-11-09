@@ -42,6 +42,7 @@ public class BucketTaggingTest extends TestBase {
             ossClient.setBucketTagging(request);
             
             TagSet tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
+            Assert.assertEquals(tagSet.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
             Map<String, String> tags = tagSet.getAllTags();
             Assert.assertEquals(2, tags.size());
             Assert.assertTrue(tags.containsKey("tk1"));
@@ -52,6 +53,7 @@ public class BucketTaggingTest extends TestBase {
             waitForCacheExpiration(5);
             
             tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
+            Assert.assertEquals(tagSet.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
             tags = tagSet.getAllTags();
             Assert.assertTrue(tags.isEmpty());
         } catch (Exception e) {

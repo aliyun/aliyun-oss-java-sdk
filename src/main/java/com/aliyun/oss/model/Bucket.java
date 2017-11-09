@@ -37,7 +37,7 @@ import java.util.Date;
  * </ul>
  * </p>
  */
-public class Bucket {
+public class Bucket extends GenericResult {
 
     // Bucket name
     private String name;

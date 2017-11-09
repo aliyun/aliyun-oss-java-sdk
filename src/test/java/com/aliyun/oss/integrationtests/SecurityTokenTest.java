@@ -254,6 +254,7 @@ public class SecurityTokenTest {
             BucketLoggingResult result = sessionClient.getBucketLogging(bucketName);
             Assert.assertEquals(bucketName, result.getTargetBucket());
             Assert.assertEquals(targetPrefix, result.getTargetPrefix());
+            Assert.assertEquals(result.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {

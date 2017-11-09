@@ -22,7 +22,7 @@ package com.aliyun.oss.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BucketList {
+public class BucketList extends GenericResult {
    
     private List<Bucket> buckets = new ArrayList<Bucket>();
 

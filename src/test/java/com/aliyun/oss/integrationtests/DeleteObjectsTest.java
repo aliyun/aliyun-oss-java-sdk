@@ -58,6 +58,7 @@ public class DeleteObjectsTest extends TestBase {
             DeleteObjectsResult result = ossClient.deleteObjects(request);
             List<String> deletedObjects = result.getDeletedObjects();
             Assert.assertEquals(keyCount, deletedObjects.size());
+            Assert.assertEquals(result.getRequestId().length(), "5A002B60E8DFE881FA5E116C".length());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -78,6 +79,7 @@ public class DeleteObjectsTest extends TestBase {
             DeleteObjectsResult result = ossClient.deleteObjects(request);
             List<String> deletedObjects = result.getDeletedObjects();
             Assert.assertEquals(keyCount, deletedObjects.size());
+            Assert.assertEquals(result.getRequestId().length(), "5A002B60E8DFE881FA5E116C".length());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -147,6 +149,7 @@ public class DeleteObjectsTest extends TestBase {
             DeleteObjectsResult result = ossClient.deleteObjects(request);
             List<String> deletedObjects = result.getDeletedObjects();
             Assert.assertEquals(0, deletedObjects.size());
+            Assert.assertEquals(result.getRequestId().length(), "5A002B60E8DFE881FA5E116C".length());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }

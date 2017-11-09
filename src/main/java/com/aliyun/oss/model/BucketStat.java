@@ -23,7 +23,7 @@ package com.aliyun.oss.model;
  * Bucket Stat
  * It contains the current bucket's occupant size and file count.
  */
-public class BucketStat {
+public class BucketStat extends GenericResult {
 
 	public BucketStat(Long storageSize, Long objectCount, Long multipartUploadCount) {
 		this.storageSize = storageSize;

@@ -46,12 +46,14 @@ public class GetSimplifiedObjectMetaTest extends TestBase {
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, 
                     genFixedLengthInputStream(inputStreamLength), null);
             PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
+            Assert.assertEquals(putObjectResult.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
             
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             OSSObject o = ossClient.getObject(getObjectRequest);
             Assert.assertEquals(bucketName, o.getBucketName());
             Assert.assertEquals(key, o.getKey());
             Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+            Assert.assertEquals(o.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
             o.getObjectContent().close();
             
             SimplifiedObjectMeta objectMeta = ossClient.getSimplifiedObjectMeta(bucketName, key);

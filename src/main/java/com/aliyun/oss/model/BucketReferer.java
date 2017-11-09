@@ -30,7 +30,7 @@ import java.util.List;
  * </p>
  *
  */
-public class BucketReferer {
+public class BucketReferer extends GenericResult {
     private boolean allowEmptyReferer = true;
     private List<String> refererList = new ArrayList<String>();
 

@@ -58,14 +58,16 @@ public class CreateBucketTest extends TestBase {
         final String bucketName = "bucket-with-default-location";
         
         try {
-            ossClient.createBucket(bucketName);
+        	Bucket bucket = ossClient.createBucket(bucketName);
             String loc = ossClient.getBucketLocation(bucketName);
             Assert.assertEquals(OSS_TEST_REGION, loc);
+            Assert.assertEquals(bucket.getRequestId().length(),"5A00259B980F8FFC69022D72".length());
             
             // Create bucket with the same name again.
-            ossClient.createBucket(bucketName);
+            bucket = ossClient.createBucket(bucketName);
             loc = ossClient.getBucketLocation(bucketName);
             Assert.assertEquals(OSS_TEST_REGION, loc);
+            Assert.assertEquals(bucket.getRequestId().length(),"5A00259B980F8FFC69022D72".length());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
@@ -295,6 +297,7 @@ public class CreateBucketTest extends TestBase {
             BucketList buckets = ossClient.listBuckets(bucketName, "", 100);
             Assert.assertEquals(1, buckets.getBucketList().size());
             Assert.assertEquals(StorageClass.Standard, buckets.getBucketList().get(0).getStorageClass());            
+            Assert.assertEquals(buckets.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
         } catch (Exception ex) {
             Assert.fail(ex.getMessage());
         } finally {
@@ -362,6 +365,7 @@ public class CreateBucketTest extends TestBase {
             Assert.assertEquals(1, buckets.getBucketList().size());
             Assert.assertEquals(StorageClass.Standard, buckets.getBucketList().get(0).getStorageClass());
             Assert.assertEquals(OSS_TEST_REGION, buckets.getBucketList().get(0).getLocation());
+            Assert.assertEquals(buckets.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
         } catch (Exception ex) {
             Assert.fail(ex.getMessage());
         } finally {
@@ -424,6 +428,7 @@ public class CreateBucketTest extends TestBase {
             BucketList buckets = ossClient.listBuckets(bucketName, "", 100);
             Assert.assertEquals(1, buckets.getBucketList().size());
             Assert.assertEquals(StorageClass.Standard, buckets.getBucketList().get(0).getStorageClass());
+            Assert.assertEquals(buckets.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
         } catch (Exception ex) {
             Assert.fail(ex.getMessage());
         } finally {

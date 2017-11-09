@@ -56,6 +56,7 @@ public class AppendObjectTest extends TestBase {
                 Assert.assertEquals(key, o.getKey());
                 Assert.assertEquals((2 * i + 1) * instreamLength, o.getObjectMetadata().getContentLength());
                 Assert.assertEquals(APPENDABLE_OBJECT_TYPE, o.getObjectMetadata().getObjectType());
+                Assert.assertEquals(o.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
                 if (appendObjectResult.getNextPosition() != null) {
                     Assert.assertEquals((2 * i + 1) * instreamLength, appendObjectResult.getNextPosition().longValue());
                 }
@@ -71,6 +72,8 @@ public class AppendObjectTest extends TestBase {
                 if (appendObjectResult.getNextPosition() != null) {                
                     Assert.assertEquals(instreamLength * 2 * (i + 1), appendObjectResult.getNextPosition().longValue());
                 }
+                Assert.assertEquals(appendObjectResult.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+                Assert.assertEquals(o.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
             } catch (Exception ex) {
                 Assert.fail(ex.getMessage());
             }
@@ -121,6 +124,8 @@ public class AppendObjectTest extends TestBase {
             if (appendObjectResult.getNextPosition() != null) {
                 Assert.assertEquals(instreamLength, appendObjectResult.getNextPosition().longValue());
             }
+            Assert.assertEquals(appendObjectResult.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(o.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
             o.getObjectContent().close();
             
             try {
