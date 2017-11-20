@@ -58,7 +58,7 @@ public class ListObjectsTest extends TestBase {
             Assert.assertNull(objectListing.getMarker());
             Assert.assertNull(objectListing.getNextMarker());
             Assert.assertFalse(objectListing.isTruncated());
-            Assert.assertEquals(objectListing.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(objectListing.getRequestId().length(), REQUEST_ID_LEN.length());
             
             // Add MAX_RETURNED_KEYS_LIMIT + 1 + lv2KeyCount objects to bucket
             List<String> existingKeys = new ArrayList<String>();
@@ -94,7 +94,7 @@ public class ListObjectsTest extends TestBase {
             Assert.assertNull(objectListing.getMarker());
             Assert.assertNotNull(objectListing.getNextMarker());
             Assert.assertTrue(objectListing.isTruncated());
-            Assert.assertEquals(objectListing.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(objectListing.getRequestId().length(), REQUEST_ID_LEN.length());
             
             // List objects with lv1KeyPrefix under nonempty bucket
             objectListing = ossClient.listObjects(bucketName, lv1KeyPrefix);
@@ -107,7 +107,7 @@ public class ListObjectsTest extends TestBase {
             Assert.assertNull(objectListing.getMarker());
             Assert.assertNotNull(objectListing.getNextMarker());
             Assert.assertTrue(objectListing.isTruncated());
-            Assert.assertEquals(objectListing.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(objectListing.getRequestId().length(), REQUEST_ID_LEN.length());
             
             // List objects with lv0KeyPrefix under nonempty bucket
             objectListing = ossClient.listObjects(bucketName, lv0KeyPrefix);
@@ -120,7 +120,7 @@ public class ListObjectsTest extends TestBase {
             Assert.assertNull(objectListing.getMarker());
             Assert.assertNotNull(objectListing.getNextMarker());
             Assert.assertTrue(objectListing.isTruncated());
-            Assert.assertEquals(objectListing.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(objectListing.getRequestId().length(), REQUEST_ID_LEN.length());
             
             // List object with 'prefix' and 'marker' under nonempty bucket
             String marker = objectListing.getNextMarker();
@@ -134,7 +134,7 @@ public class ListObjectsTest extends TestBase {
             Assert.assertEquals(marker, objectListing.getMarker());
             Assert.assertNotNull(objectListing.getNextMarker());
             Assert.assertTrue(objectListing.isTruncated());
-            Assert.assertEquals(objectListing.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(objectListing.getRequestId().length(), REQUEST_ID_LEN.length());
 
             // List object with 'prefix' and 'delimiter' under nonempty bucket
             final String delimiter = "/";
@@ -152,7 +152,7 @@ public class ListObjectsTest extends TestBase {
             Assert.assertNull(objectListing.getMarker());
             Assert.assertNull(objectListing.getNextMarker());
             Assert.assertFalse(objectListing.isTruncated());
-            Assert.assertEquals(objectListing.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(objectListing.getRequestId().length(), REQUEST_ID_LEN.length());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {

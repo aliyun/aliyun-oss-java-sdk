@@ -51,7 +51,7 @@ public class UploadFileTest extends TestBase {
             Assert.assertEquals(objects.getObjectSummaries().size(), 1);
             Assert.assertEquals(objects.getObjectSummaries().get(0).getKey(), key);
             Assert.assertEquals(objects.getObjectSummaries().get(0).getSize(), file.length());
-            Assert.assertEquals(objects.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(objects.getRequestId().length(), REQUEST_ID_LEN.length());
 
             ObjectMetadata meta = ossClient.getObjectMetadata(bucketName, key);
             Assert.assertEquals(meta.getContentLength(), file.length());
@@ -91,7 +91,7 @@ public class UploadFileTest extends TestBase {
             Assert.assertEquals(objects.getObjectSummaries().size(), 1);
             Assert.assertEquals(objects.getObjectSummaries().get(0).getKey(), key);
             Assert.assertEquals(objects.getObjectSummaries().get(0).getSize(), file.length());
-            Assert.assertEquals(objects.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(objects.getRequestId().length(), REQUEST_ID_LEN.length());
 
             ObjectMetadata meta = ossClient.getObjectMetadata(bucketName, key);
             Assert.assertEquals(meta.getContentLength(), file.length());
@@ -132,7 +132,7 @@ public class UploadFileTest extends TestBase {
             Assert.assertEquals(objects.getObjectSummaries().size(), 1);
             Assert.assertEquals(objects.getObjectSummaries().get(0).getKey(), key);
             Assert.assertEquals(objects.getObjectSummaries().get(0).getSize(), file.length());
-            Assert.assertEquals(objects.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(objects.getRequestId().length(), REQUEST_ID_LEN.length());
 
             ObjectMetadata meta = ossClient.getObjectMetadata(bucketName, key);
             Assert.assertEquals(meta.getContentLength(), file.length());

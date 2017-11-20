@@ -68,7 +68,7 @@ public class BucketRefererTest extends TestBase {
             Assert.assertTrue(returedRefererList.contains(referer2));
             Assert.assertTrue(returedRefererList.contains(referer3));
             Assert.assertEquals(4, returedRefererList.size());
-            Assert.assertEquals(r.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(r.getRequestId().length(), REQUEST_ID_LEN.length());
             
             // Set empty referer list
             r.clearRefererList();
@@ -78,7 +78,7 @@ public class BucketRefererTest extends TestBase {
             returedRefererList = r.getRefererList();
             Assert.assertTrue(r.isAllowEmptyReferer());
             Assert.assertEquals(0, returedRefererList.size());
-            Assert.assertEquals(r.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(r.getRequestId().length(), REQUEST_ID_LEN.length());
             
             // Referer list not allowed to be empty
             refererList.clear();
@@ -94,7 +94,7 @@ public class BucketRefererTest extends TestBase {
             Assert.assertTrue(returedRefererList.contains(referer0));
             Assert.assertTrue(returedRefererList.contains(referer3));
             Assert.assertEquals(2, returedRefererList.size());
-            Assert.assertEquals(r.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(r.getRequestId().length(), REQUEST_ID_LEN.length());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {

@@ -54,7 +54,7 @@ public class BucketWebsiteTest extends TestBase {
             BucketWebsiteResult result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
             Assert.assertEquals(errorDocument, result.getErrorDocument());
-            Assert.assertEquals(result.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN.length());
             
             ossClient.deleteBucketWebsite(bucketName);
             
@@ -69,7 +69,7 @@ public class BucketWebsiteTest extends TestBase {
             result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
             Assert.assertTrue(result.getErrorDocument() == null);
-            Assert.assertEquals(result.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN.length());
             
             ossClient.deleteBucketWebsite(bucketName);
         } catch (Exception e) {
@@ -110,7 +110,7 @@ public class BucketWebsiteTest extends TestBase {
             Assert.assertEquals(rr.getCondition().getHttpErrorCodeReturnedEquals().intValue(), 404);
             Assert.assertEquals(rr.getRedirect().getRedirectType(), RoutingRule.RedirectType.Mirror);
             Assert.assertEquals(rr.getRedirect().getMirrorURL(), "http://oss-test.aliyun-inc.com/mirror-test-source/");
-            Assert.assertEquals(result.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN.length());
             
             ossClient.deleteBucketWebsite(bucketName);
             
@@ -139,7 +139,7 @@ public class BucketWebsiteTest extends TestBase {
             Assert.assertEquals(rr.getCondition().getHttpErrorCodeReturnedEquals().intValue(), 404);
             Assert.assertEquals(rr.getRedirect().getRedirectType(), RoutingRule.RedirectType.Mirror);
             Assert.assertEquals(rr.getRedirect().getMirrorURL(), "http://oss-test.aliyun-inc.com/mirror-test/");
-            Assert.assertEquals(result.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN.length());
             
             ossClient.deleteBucketWebsite(bucketName);
             
@@ -176,7 +176,7 @@ public class BucketWebsiteTest extends TestBase {
             Assert.assertNull(rr.getRedirect().getMirrorProbeURL());
             Assert.assertFalse(rr.getRedirect().isPassQueryString());
             Assert.assertFalse(rr.getRedirect().isPassOriginalSlashes());
-            Assert.assertEquals(result.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN.length());
 
             ossClient.deleteBucketWebsite(bucketName);
             
@@ -213,7 +213,7 @@ public class BucketWebsiteTest extends TestBase {
             Assert.assertEquals(rr.getRedirect().getMirrorProbeURL(), "http://oss-test.aliyun-inc.com/mirror-probe/");
             Assert.assertTrue(rr.getRedirect().isPassQueryString());
             Assert.assertTrue(rr.getRedirect().isPassOriginalSlashes());
-            Assert.assertEquals(result.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN.length());
             
             ossClient.deleteBucketWebsite(bucketName);
         } catch (Exception e) {
@@ -264,7 +264,7 @@ public class BucketWebsiteTest extends TestBase {
             Assert.assertEquals(rr.getRedirect().getProtocol(), RoutingRule.Protocol.Https);
             Assert.assertEquals(rr.getRedirect().getReplaceKeyWith(), "${key}.jpg");
             Assert.assertEquals(rr.getRedirect().getHttpRedirectCode().intValue(), 302);
-            Assert.assertEquals(result.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN.length());
             
             ossClient.deleteBucketWebsite(bucketName);
             
@@ -297,7 +297,7 @@ public class BucketWebsiteTest extends TestBase {
             result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
             Assert.assertEquals(result.getRoutingRules().size(), 2);
-            Assert.assertEquals(result.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN.length());
             
             rr = result.getRoutingRules().get(0);
             Assert.assertEquals(rr.getNumber().intValue(), 2);
@@ -399,7 +399,7 @@ public class BucketWebsiteTest extends TestBase {
             result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
             Assert.assertEquals(result.getRoutingRules().size(), 2);
-            Assert.assertEquals(result.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN.length());
             
             rr = result.getRoutingRules().get(0);
             Assert.assertEquals(rr.getNumber().intValue(), 2);

@@ -164,10 +164,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .build();
         
         ResponseMessage result = doOperation(request, emptyResponseParser, bucketName, null);
-        Bucket bucket = new Bucket();
-        bucket.setName(bucketName);
-        bucket.setRequestId(result.getRequestId());
-        return bucket;
+        return new Bucket(bucketName , result.getRequestId());
     }
 
     /**

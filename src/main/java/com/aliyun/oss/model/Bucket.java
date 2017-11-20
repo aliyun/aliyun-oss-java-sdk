@@ -73,6 +73,11 @@ public class Bucket extends GenericResult {
     public Bucket(String name) {
         this.name = name;
     }
+    
+    public Bucket(String name, String requestId){
+    	setName(name);
+    	setRequestId(requestId);
+    }
 
     /**
      * The override of toString(). Returns the bucket name, creation date, owner and location, with optional storage class.

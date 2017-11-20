@@ -480,7 +480,7 @@ public class GetObjectTest extends TestBase {
             Assert.assertEquals(bucketName, o.getBucketName());
             Assert.assertEquals(key, o.getKey());
             Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
-            Assert.assertEquals(o.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN.length());
             
             // Override 3
             final String filePath = genFixedLengthFile(0);
@@ -520,7 +520,7 @@ public class GetObjectTest extends TestBase {
             Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
             Assert.assertEquals(metaValue0, metadata.getUserMetadata().get(metaKey0));
             Assert.assertEquals(inputStreamLength, metadata.getContentLength());
-            Assert.assertEquals(o.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN.length());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }

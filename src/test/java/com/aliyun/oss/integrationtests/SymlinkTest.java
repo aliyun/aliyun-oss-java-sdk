@@ -64,7 +64,7 @@ public class SymlinkTest extends TestBase {
             Assert.assertEquals(symbolicLink.getTarget(), targetObject);
             Assert.assertEquals(symbolicLink.getMetadata().getContentType(), "text/plain");
             Assert.assertEquals(symbolicLink.getMetadata().getUserMetadata().get("property"), "property-value");   
-            Assert.assertEquals(symbolicLink.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(symbolicLink.getRequestId().length(), REQUEST_ID_LEN.length());
                         
             ossClient.deleteObject(bucketName, symLink);
             ossClient.deleteObject(bucketName, targetObject);
@@ -86,7 +86,7 @@ public class SymlinkTest extends TestBase {
             OSSSymlink symbolicLink = ossClient.getSymlink(bucketName, symLink);
             Assert.assertEquals(symbolicLink.getSymlink(), symLink);
             Assert.assertEquals(symbolicLink.getTarget(), targetObject);
-            Assert.assertEquals(symbolicLink.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(symbolicLink.getRequestId().length(), REQUEST_ID_LEN.length());
                         
             ossClient.deleteObject(bucketName, symLink);
             ossClient.deleteObject(bucketName, targetObject);
@@ -152,7 +152,7 @@ public class SymlinkTest extends TestBase {
                     bucketName, symLink);
             Assert.assertEquals(symbolicLink.getSymlink(), symLink);
             Assert.assertEquals(symbolicLink.getTarget(), targetObject);
-            Assert.assertEquals(symbolicLink.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(symbolicLink.getRequestId().length(), REQUEST_ID_LEN.length());
 
             // content
             OSSObject ossObject = ossClient.getObject(bucketName, symLink);

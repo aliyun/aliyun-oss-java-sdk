@@ -53,7 +53,7 @@ public class BucketLoggingTest extends TestBase {
             BucketLoggingResult result = ossClient.getBucketLogging(sourceBucket);
             Assert.assertEquals(targetBucket, result.getTargetBucket());
             Assert.assertEquals(targetPrefix, result.getTargetPrefix());
-            Assert.assertEquals(result.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN.length());
             
             ossClient.deleteBucketLogging(sourceBucket);
             
@@ -67,7 +67,7 @@ public class BucketLoggingTest extends TestBase {
             result = ossClient.getBucketLogging(sourceBucket);
             Assert.assertEquals(sourceBucket, result.getTargetBucket());
             Assert.assertEquals(targetPrefix, result.getTargetPrefix());
-            Assert.assertEquals(result.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN.length());
             
             ossClient.deleteBucketLogging(sourceBucket);
             
@@ -79,7 +79,7 @@ public class BucketLoggingTest extends TestBase {
             result = ossClient.getBucketLogging(sourceBucket);
             Assert.assertEquals(targetBucket, result.getTargetBucket());
             Assert.assertTrue(result.getTargetPrefix().isEmpty());
-            Assert.assertEquals(result.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN.length());
             
             ossClient.deleteBucketLogging(sourceBucket);
             
@@ -91,7 +91,7 @@ public class BucketLoggingTest extends TestBase {
             result = ossClient.getBucketLogging(sourceBucket);
             Assert.assertTrue(result.getTargetBucket() == null);
             Assert.assertTrue(result.getTargetPrefix() == null);
-            Assert.assertEquals(result.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN.length());
             
         } catch (Exception e) {
             Assert.fail(e.getMessage());

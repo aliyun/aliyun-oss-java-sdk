@@ -49,7 +49,7 @@ public class BucketInfoTest extends TestBase {
             Assert.assertEquals(CannedAccessControlList.PublicRead, info.getCannedACL());
             Assert.assertEquals(info.getBucket().getOwner().getDisplayName(), info.getBucket().getOwner().getId());
             Assert.assertEquals(info.getGrants().size(), 1);
-            Assert.assertEquals(info.getRequestId().length(), "5A016E35CB3DB13FD2BAAB3A".length());
+            Assert.assertEquals(info.getRequestId().length(), REQUEST_ID_LEN.length());
             for (Grant grant : info.getGrants()) {
                 Assert.assertEquals(grant.getGrantee(), GroupGrantee.AllUsers);
                 Assert.assertEquals(grant.getPermission(), Permission.Read);
@@ -71,7 +71,7 @@ public class BucketInfoTest extends TestBase {
             Assert.assertEquals(buckets.getBucketList().size(), 1);
             Assert.assertNotNull(buckets.getBucketList().get(0).getExtranetEndpoint());
             Assert.assertNotNull(buckets.getBucketList().get(0).getIntranetEndpoint());
-            Assert.assertEquals(buckets.getRequestId().length(), "5A002B60E8DFE881FA5E116C".length());
+            Assert.assertEquals(buckets.getRequestId().length(), REQUEST_ID_LEN.length());
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());
@@ -89,7 +89,7 @@ public class BucketInfoTest extends TestBase {
             
             BucketList buckets = ossClient.listBuckets(listBucketsRequest);
             Assert.assertEquals(buckets.getBucketList().size(), 1);
-            Assert.assertEquals(buckets.getRequestId().length(), "5A002B60E8DFE881FA5E116C".length());
+            Assert.assertEquals(buckets.getRequestId().length(), REQUEST_ID_LEN.length());
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());
