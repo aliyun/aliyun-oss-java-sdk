@@ -188,9 +188,9 @@ public final class ResponseParsers {
         public BucketList parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	BucketList result =  parseListBucket(response.getContent());
-            	result.setRequestId(response.getRequestId());
-                return result;
+				BucketList result = parseListBucket(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);
             }
@@ -215,9 +215,9 @@ public final class ResponseParsers {
         public BucketReferer parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	BucketReferer result = parseGetBucketReferer(response.getContent());
-            	result.setRequestId(response.getRequestId());
-                return result;
+				BucketReferer result = parseGetBucketReferer(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);
             }
@@ -231,9 +231,9 @@ public final class ResponseParsers {
         public AccessControlList parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	AccessControlList result = parseGetBucketAcl(response.getContent());
-            	result.setRequestId(response.getRequestId());
-                return result;
+				AccessControlList result = parseGetBucketAcl(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);
             }
@@ -261,9 +261,9 @@ public final class ResponseParsers {
         public BucketLoggingResult parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	BucketLoggingResult result = parseBucketLogging(response.getContent());
-            	result.setRequestId(response.getRequestId());
-                return result;
+				BucketLoggingResult result = parseBucketLogging(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);
             }
@@ -301,9 +301,9 @@ public final class ResponseParsers {
         public BucketProcess parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	BucketProcess result = parseGetBucketImageProcessConf(response.getContent());
-            	result.setRequestId(response.getRequestId());
-                return result;
+				BucketProcess result = parseGetBucketImageProcessConf(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);
             }
@@ -317,9 +317,9 @@ public final class ResponseParsers {
         public BucketWebsiteResult parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	BucketWebsiteResult result = parseBucketWebsite(response.getContent());
-            	result.setRequestId(response.getRequestId());
-                return result;
+				BucketWebsiteResult result = parseBucketWebsite(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);
             }
@@ -361,9 +361,9 @@ public final class ResponseParsers {
         public BucketInfo parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	BucketInfo result = parseGetBucketInfo(response.getContent());
-            	result.setRequestId(response.getRequestId());
-                return result;
+				BucketInfo result = parseGetBucketInfo(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);
             }
@@ -377,9 +377,9 @@ public final class ResponseParsers {
         public BucketStat parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	BucketStat result = parseGetBucketStat(response.getContent());
-            	result.setRequestId(response.getRequestId());
-                return result;
+				BucketStat result = parseGetBucketStat(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);
             }
@@ -393,9 +393,9 @@ public final class ResponseParsers {
         public UserQos parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	UserQos result = parseGetUserQos(response.getContent());
-            	result.setRequestId(response.getRequestId());
-                return result;
+				UserQos result = parseGetUserQos(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);
             }
@@ -409,9 +409,9 @@ public final class ResponseParsers {
         public CreateLiveChannelResult parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	CreateLiveChannelResult result = parseCreateLiveChannel(response.getContent());
-            	result.setRequestId(response.getRequestId());
-                return result;
+				CreateLiveChannelResult result = parseCreateLiveChannel(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);
             }
@@ -425,9 +425,9 @@ public final class ResponseParsers {
         public LiveChannelInfo parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	LiveChannelInfo result = parseGetLiveChannelInfo(response.getContent());
-            	result.setRequestId(response.getRequestId());
-                return result;
+				LiveChannelInfo result = parseGetLiveChannelInfo(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);
             }
@@ -441,9 +441,9 @@ public final class ResponseParsers {
         public LiveChannelStat parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	LiveChannelStat result = parseGetLiveChannelStat(response.getContent());
-            	result.setRequestId(response.getRequestId());
-                return result;
+				LiveChannelStat result = parseGetLiveChannelStat(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);
             }
@@ -499,9 +499,9 @@ public final class ResponseParsers {
         public TagSet parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	TagSet result =  parseGetBucketTagging(response.getContent());
-            	result.setRequestId(response.getRequestId());
-                return result;
+				TagSet result = parseGetBucketTagging(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);
             }
@@ -529,9 +529,9 @@ public final class ResponseParsers {
         public BucketReplicationProgress parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	BucketReplicationProgress result = parseGetBucketReplicationProgress(response.getContent());
-            	result.setRequestId(response.getRequestId());
-                return result;
+				BucketReplicationProgress result = parseGetBucketReplicationProgress(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);
             }
@@ -559,9 +559,9 @@ public final class ResponseParsers {
         public ObjectListing parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	ObjectListing result = parseListObjects(response.getContent());
-            	result.setRequestId(response.getRequestId());
-                return result;
+				ObjectListing result = parseListObjects(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);
             }
@@ -686,9 +686,9 @@ public final class ResponseParsers {
         public ObjectAcl parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	ObjectAcl result = parseGetObjectAcl(response.getContent());
-            	result.setRequestId(response.getRequestId());
-                return result;
+				ObjectAcl result = parseGetObjectAcl(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);
             }
@@ -716,9 +716,9 @@ public final class ResponseParsers {
         public RestoreObjectResult parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-                RestoreObjectResult result = new RestoreObjectResult(response.getStatusCode());
-                result.setRequestId(response.getRequestId());
-                return result;
+				RestoreObjectResult result = new RestoreObjectResult(response.getStatusCode());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);
             }
@@ -759,9 +759,9 @@ public final class ResponseParsers {
         public CopyObjectResult parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-                CopyObjectResult result = parseCopyObjectResult(response.getContent());
-                result.setRequestId(response.getRequestId());
-                return result;
+				CopyObjectResult result = parseCopyObjectResult(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);
             }
@@ -830,9 +830,9 @@ public final class ResponseParsers {
         public InitiateMultipartUploadResult parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-                InitiateMultipartUploadResult result = parseInitiateMultipartUpload(response.getContent());
-                result.setRequestId(response.getRequestId());
-                return result;
+				InitiateMultipartUploadResult result = parseInitiateMultipartUpload(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);                
             }
@@ -846,9 +846,9 @@ public final class ResponseParsers {
         public MultipartUploadListing parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	MultipartUploadListing result = parseListMultipartUploads(response.getContent());
-            	result.setRequestId(response.getRequestId());
-            	return result;
+				MultipartUploadListing result = parseListMultipartUploads(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);                
             }
@@ -862,9 +862,9 @@ public final class ResponseParsers {
         public PartListing parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	PartListing result = parseListParts(response.getContent());
-            	result.setRequestId(response.getRequestId());
-                return result;
+				PartListing result = parseListParts(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);                
             }
@@ -902,9 +902,9 @@ public final class ResponseParsers {
         public OSSSymlink parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	OSSSymlink result = parseSymbolicLink(response);
-            	result.setRequestId(response.getRequestId());
-                return result;
+				OSSSymlink result = parseSymbolicLink(response);
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 OSSUtils.mandatoryCloseResponse(response);  
             }
@@ -918,9 +918,9 @@ public final class ResponseParsers {
         public UdfInfo parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	UdfInfo result = parseGetUdfInfo(response.getContent());
-            	result.setRequestId(response.getRequestId());
-            	return result;
+				UdfInfo result = parseGetUdfInfo(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 OSSUtils.mandatoryCloseResponse(response);  
             }
@@ -962,9 +962,9 @@ public final class ResponseParsers {
         public UdfApplicationInfo parse(ResponseMessage response)
                 throws ResponseParseException {
             try {
-            	UdfApplicationInfo result = parseGetUdfApplicationInfo(response.getContent());
-            	result.setRequestId(response.getRequestId());
-                return result;
+				UdfApplicationInfo result = parseGetUdfApplicationInfo(response.getContent());
+				result.setRequestId(response.getRequestId());
+				return result;
             } finally {
                 safeCloseResponse(response);
             }
