@@ -24,7 +24,7 @@ import java.util.Date;
 /**
  * Udf info
  */
-public class UdfInfo {
+public class UdfInfo extends GenericResult {
 	
 	public UdfInfo(String name, String owner, String id, String desc, CannedUdfAcl acl, Date creationDate) {
 		this.name = name;

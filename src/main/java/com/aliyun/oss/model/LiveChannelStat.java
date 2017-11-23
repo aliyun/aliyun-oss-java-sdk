@@ -21,7 +21,7 @@ package com.aliyun.oss.model;
 
 import java.util.Date;
 
-public class LiveChannelStat {
+public class LiveChannelStat extends GenericResult {
     
     /**
      * The Live Channel's video and audio information

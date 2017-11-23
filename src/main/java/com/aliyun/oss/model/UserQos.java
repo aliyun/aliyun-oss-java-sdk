@@ -19,7 +19,7 @@
 
 package com.aliyun.oss.model;
 
-public class UserQos {
+public class UserQos extends GenericResult {
     
     public UserQos() {
     }

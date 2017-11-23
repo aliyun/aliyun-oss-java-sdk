@@ -59,6 +59,7 @@ public class BucketStatTest extends TestBase {
                     new InitiateMultipartUploadRequest(bucketName, key);
             InitiateMultipartUploadResult initiateMultipartUploadResult = 
                     ossClient.initiateMultipartUpload(initiateMultipartUploadRequest);
+            Assert.assertEquals(initiateMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN.length());
             uploadId = initiateMultipartUploadResult.getUploadId();
             
             BucketStat stat = ossClient.getBucketStat(bucketName);
@@ -66,6 +67,7 @@ public class BucketStatTest extends TestBase {
             Assert.assertTrue(stat.getStorageSize() >= 1024 * 300);
             Assert.assertTrue(stat.getObjectCount() >= 1);
             Assert.assertTrue(stat.getMultipartUploadCount() >= 1);
+            Assert.assertEquals(stat.getRequestId().length(), REQUEST_ID_LEN.length());
         } catch (Exception e) {
         	e.printStackTrace();
             Assert.fail(e.getMessage());

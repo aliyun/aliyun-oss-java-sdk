@@ -43,6 +43,7 @@ public class BucketProcesTest extends TestBase {
             Assert.assertEquals(bucketProcess.getImageProcess().getStyleDelimiters(), "");
             Assert.assertEquals(bucketProcess.getImageProcess().getVersion().intValue(), 2);
             Assert.assertEquals(bucketProcess.getImageProcess().isSupportAtStyle(), null);
+            Assert.assertEquals(bucketProcess.getRequestId().length(), REQUEST_ID_LEN.length());
             
             // put 1
             ImageProcess imageProcess = new ImageProcess("Img", true, "jpg,png", "/,-");
@@ -57,6 +58,7 @@ public class BucketProcesTest extends TestBase {
             Assert.assertEquals(bucketProcess.getImageProcess().getStyleDelimiters(), "-,/");
             Assert.assertEquals(bucketProcess.getImageProcess().getVersion().intValue(), 2);
             Assert.assertEquals(bucketProcess.getImageProcess().isSupportAtStyle(), null);
+            Assert.assertEquals(bucketProcess.getRequestId().length(), REQUEST_ID_LEN.length());
             
             // put 2
             imageProcess = new ImageProcess("Both", false, "gif", "-");
@@ -71,6 +73,7 @@ public class BucketProcesTest extends TestBase {
             Assert.assertEquals(bucketProcess.getImageProcess().getStyleDelimiters(), "-");
             Assert.assertEquals(bucketProcess.getImageProcess().getVersion().intValue(), 2);
             Assert.assertEquals(bucketProcess.getImageProcess().isSupportAtStyle(), null);
+            Assert.assertEquals(bucketProcess.getRequestId().length(), REQUEST_ID_LEN.length());
             
             // put 3
             imageProcess = new ImageProcess("Img", true, "*", "/", true);
@@ -85,6 +88,7 @@ public class BucketProcesTest extends TestBase {
             Assert.assertEquals(bucketProcess.getImageProcess().getStyleDelimiters(), "/");
             Assert.assertEquals(bucketProcess.getImageProcess().getVersion().intValue(), 2);
             Assert.assertEquals(bucketProcess.getImageProcess().isSupportAtStyle(), null);
+            Assert.assertEquals(bucketProcess.getRequestId().length(), REQUEST_ID_LEN.length());
             
         } catch (Exception e) {
             Assert.fail(e.getMessage());

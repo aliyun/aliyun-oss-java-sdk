@@ -72,6 +72,7 @@ public class TestBase {
     protected static final String USER_DIR = System.getProperty("user.dir");
     protected static final String UPLOAD_DIR = USER_DIR + File.separator + "upload" + File.separator;
     protected static final String DOWNLOAD_DIR = USER_DIR + File.separator + "download" + File.separator;
+    protected static final String REQUEST_ID_LEN = "5A016E35CB3DB13FD2BAAB3A";
    
     @BeforeClass
     public static void oneTimeSetUp() {

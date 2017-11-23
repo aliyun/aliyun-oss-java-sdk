@@ -225,6 +225,7 @@ public class PutObjectTest extends TestBase {
             ossClient.putObject(bucketName, keyWithCLRF, new File(filePath));
             OSSObject o = ossClient.getObject(bucketName, keyWithCLRF);
             Assert.assertEquals(keyWithCLRF, o.getKey());
+            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN.length());
         } catch (OSSException ex) {
             Assert.assertEquals(OSSErrorCode.INVALID_OBJECT_NAME, ex.getErrorCode());
             Assert.assertTrue(ex.getMessage().startsWith(INVALID_OBJECT_NAME_ERR));
@@ -305,6 +306,7 @@ public class PutObjectTest extends TestBase {
             OSSObject o = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, o.getKey());
             Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
+            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN.length());
         } catch (Exception ex) {
             Assert.fail(ex.getMessage());
         }
@@ -323,6 +325,7 @@ public class PutObjectTest extends TestBase {
             OSSObject o = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, o.getKey());
             Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
+            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN.length());
             
             // Override 2
             final String filePath = genFixedLengthFile(instreamLength);
@@ -334,6 +337,7 @@ public class PutObjectTest extends TestBase {
             o = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, o.getKey());
             Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
+            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN.length());
         } catch (Exception ex) {
             Assert.fail(ex.getMessage());
         }
@@ -367,6 +371,7 @@ public class PutObjectTest extends TestBase {
             OSSObject o = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, o.getKey());
             Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN.length());
             
             ObjectMetadata metadata = o.getObjectMetadata();
             Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
@@ -383,6 +388,7 @@ public class PutObjectTest extends TestBase {
             OSSObject o = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, o.getKey());
             Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN.length());
             
             ObjectMetadata metadata = o.getObjectMetadata();
             Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
@@ -399,6 +405,7 @@ public class PutObjectTest extends TestBase {
             OSSObject o = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, o.getKey());
             Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN.length());
             
             ObjectMetadata metadata = o.getObjectMetadata();
             Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
@@ -417,6 +424,7 @@ public class PutObjectTest extends TestBase {
             OSSObject o = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, o.getKey());
             Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN.length());
             
             ObjectMetadata metadata = o.getObjectMetadata();
             Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
@@ -442,10 +450,12 @@ public class PutObjectTest extends TestBase {
             Assert.assertEquals(keyWithSuffix, o.getKey());
             Assert.assertEquals(Mimetypes.getInstance().getMimetype(keyWithSuffix), 
                     o.getObjectMetadata().getContentType());
+            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN.length());
             
             instream = genFixedLengthInputStream(instreamLength);
             ossClient.putObject(bucketName, keyWithoutSuffix, instream);
             o = ossClient.getObject(bucketName, keyWithoutSuffix);
+            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN.length());
             Assert.assertEquals(keyWithoutSuffix, o.getKey());
             Assert.assertEquals(Mimetypes.getInstance().getMimetype(keyWithoutSuffix), 
                     o.getObjectMetadata().getContentType());
@@ -475,6 +485,7 @@ public class PutObjectTest extends TestBase {
             ossClient.putObject(bucketName, key, instream, metadata);
             OSSObject o = ossClient.getObject(bucketName, key);
             Assert.assertEquals(contentTypeWithBlank.trim(), o.getObjectMetadata().getContentType());
+            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN.length());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
             

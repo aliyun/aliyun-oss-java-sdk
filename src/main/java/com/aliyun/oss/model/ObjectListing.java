@@ -22,7 +22,7 @@ package com.aliyun.oss.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObjectListing {
+public class ObjectListing extends GenericResult {
     
     /** A list of summary information describing the objects stored in the bucket */
     private List<OSSObjectSummary> objectSummaries = new ArrayList<OSSObjectSummary>();
