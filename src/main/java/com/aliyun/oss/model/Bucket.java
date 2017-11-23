@@ -75,8 +75,8 @@ public class Bucket extends GenericResult {
     }
     
     public Bucket(String name, String requestId){
-    	setName(name);
-    	setRequestId(requestId);
+        setName(name);
+        setRequestId(requestId);
     }
 
     /**
