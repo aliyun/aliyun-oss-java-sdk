@@ -72,6 +72,7 @@ public class ImageProcessTest extends TestBase {
             request.setProcess(style);
             
             OSSObject ossObject = ossClient.getObject(request);
+            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
             
             ImageInfo imageInfo = getImageInfo(bucketName, newImage);
@@ -94,6 +95,7 @@ public class ImageProcessTest extends TestBase {
             request.setProcess(style);
             
             OSSObject ossObject = ossClient.getObject(request);
+            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
             
             ImageInfo imageInfo = getImageInfo(bucketName, newImage);
@@ -117,6 +119,7 @@ public class ImageProcessTest extends TestBase {
             request.setProcess(style);
 
             OSSObject ossObject = ossClient.getObject(request);
+            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
 
             ImageInfo imageInfo = getImageInfo(bucketName, originalImage);
@@ -145,6 +148,7 @@ public class ImageProcessTest extends TestBase {
             request.setProcess(style);
 
             OSSObject ossObject = ossClient.getObject(request);
+            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
 
             ImageInfo imageInfo = getImageInfo(bucketName, newImage);
@@ -167,6 +171,7 @@ public class ImageProcessTest extends TestBase {
             request.setProcess(style);
 
             OSSObject ossObject = ossClient.getObject(request);
+            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
 
             ImageInfo imageInfo = getImageInfo(bucketName, newImage);
@@ -189,6 +194,7 @@ public class ImageProcessTest extends TestBase {
             request.setProcess(style);
 
             OSSObject ossObject = ossClient.getObject(request);
+            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
 
             ImageInfo imageInfo = getImageInfo(bucketName, newImage);
@@ -216,6 +222,7 @@ public class ImageProcessTest extends TestBase {
             
             ProcessObjectRequest request = new ProcessObjectRequest(bucketName, originalImage, styleBuilder.toString());
             GenericResult processResult = ossClient.processObject(request);
+            Assert.assertEquals(processResult.getRequestId().length(), REQUEST_ID_LEN);
             String json = IOUtils.readStreamAsString(processResult.getResponse().getContent(), "UTF-8");
             processResult.getResponse().getContent().close();
             System.out.println(json);

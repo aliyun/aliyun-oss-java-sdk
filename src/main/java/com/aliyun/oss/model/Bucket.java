@@ -37,7 +37,7 @@ import java.util.Date;
  * </ul>
  * </p>
  */
-public class Bucket {
+public class Bucket extends GenericResult {
 
     // Bucket name
     private String name;
@@ -72,6 +72,11 @@ public class Bucket {
      */
     public Bucket(String name) {
         this.name = name;
+    }
+    
+    public Bucket(String name, String requestId){
+        setName(name);
+        setRequestId(requestId);
     }
 
     /**

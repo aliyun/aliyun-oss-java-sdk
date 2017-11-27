@@ -85,6 +85,7 @@ import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.comm.RequestMessage;
+import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.comm.ServiceClient;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.HttpHeaders;
@@ -161,9 +162,9 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputStreamWithLength(createBucketRequestMarshaller.marshall(createBucketRequest))
                 .setOriginalRequest(createBucketRequest)
                 .build();
-
-        doOperation(request, emptyResponseParser, bucketName, null);
-        return new Bucket(bucketName);
+        
+        ResponseMessage result = doOperation(request, emptyResponseParser, bucketName, null);
+        return new Bucket(bucketName , result.getRequestId());
     }
 
     /**

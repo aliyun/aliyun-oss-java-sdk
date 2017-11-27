@@ -24,7 +24,7 @@ The recommended way to use the Aliyun OSS SDK for Java in your project is to con
 <dependency>
     <groupId>com.aliyun.oss</groupId>
     <artifactId>aliyun-sdk-oss</artifactId>
-    <version>2.8.1</version>
+    <version>2.8.2</version>
 </dependency>
 ```
 
