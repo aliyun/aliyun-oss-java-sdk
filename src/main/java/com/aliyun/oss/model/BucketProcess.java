@@ -19,7 +19,7 @@
 
 package com.aliyun.oss.model;
 
-public class BucketProcess {
+public class BucketProcess extends GenericResult {
     
     public BucketProcess(ImageProcess imageProcess) {
         this.imageProcess = imageProcess;

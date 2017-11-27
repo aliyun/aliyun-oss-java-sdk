@@ -19,7 +19,7 @@
 
 package com.aliyun.oss.model;
 
-public class BucketLoggingResult {
+public class BucketLoggingResult extends GenericResult {
     private String targetBucket;
     private String targetPrefix;
     

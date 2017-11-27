@@ -24,7 +24,7 @@ import java.io.Serializable;
 /**
  * OSS Object ACL。
  */
-public class ObjectAcl implements Serializable {
+public class ObjectAcl extends GenericResult implements Serializable {
     
     private static final long serialVersionUID = 211267925081748283L;
 

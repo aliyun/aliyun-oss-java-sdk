@@ -25,7 +25,7 @@ import java.util.Set;
 /**
  * Bucket info
  */
-public class BucketInfo {
+public class BucketInfo extends GenericResult {
     public Bucket getBucket() {
         return this.bucket;
     }

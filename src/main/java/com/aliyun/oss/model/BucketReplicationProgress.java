@@ -30,7 +30,7 @@ import java.util.Date;
  * before that timestamp have been replicated to the target bucket.
  * </p>
  */
-public class BucketReplicationProgress {
+public class BucketReplicationProgress extends GenericResult {
     public String getReplicationRuleID() {
         return replicationRuleID;
     }

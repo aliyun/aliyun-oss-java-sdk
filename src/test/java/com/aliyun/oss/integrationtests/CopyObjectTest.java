@@ -77,11 +77,13 @@ public class CopyObjectTest extends TestBase {
             String sourceETag = putObjectResult.getETag();
             String targetETag = copyObjectResult.getETag();
             Assert.assertEquals(sourceETag, targetETag);
+            Assert.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
             
             OSSObject ossObject = ossClient.getObject(targetBucket, targetKey);
             ObjectMetadata newObjectMetadata = ossObject.getObjectMetadata();
             Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, newObjectMetadata.getContentType());
             Assert.assertEquals(userMetaValue0, newObjectMetadata.getUserMetadata().get(userMetaKey0));
+            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
             
             // Set source object same as target object and replace source bucket orignal metadata.
             final String sourceBucketAsTarget = sourceBucket;
@@ -100,6 +102,9 @@ public class CopyObjectTest extends TestBase {
             newObjectMetadata = ossObject.getObjectMetadata();
             Assert.assertEquals(contentType, newObjectMetadata.getContentType());
             Assert.assertEquals(userMetaValue1, newObjectMetadata.getUserMetadata().get(userMetaKey1));
+            Assert.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assert.assertEquals(copyObjectResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {

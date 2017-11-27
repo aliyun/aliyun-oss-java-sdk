@@ -19,7 +19,7 @@
 
 package com.aliyun.oss.model;
 
-public class LiveChannelInfo {
+public class LiveChannelInfo extends GenericResult {
 
     public String getDescription() {
         return description;
