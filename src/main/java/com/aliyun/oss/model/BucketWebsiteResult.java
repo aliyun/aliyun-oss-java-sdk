@@ -22,7 +22,7 @@ package com.aliyun.oss.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BucketWebsiteResult {
+public class BucketWebsiteResult extends GenericResult {
     private String indexDocument;
     private String errorDocument;
     private List<RoutingRule> routingRules;

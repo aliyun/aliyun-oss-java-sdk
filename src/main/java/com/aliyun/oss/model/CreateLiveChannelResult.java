@@ -21,7 +21,7 @@ package com.aliyun.oss.model;
 
 import java.util.List;
 
-public class CreateLiveChannelResult {
+public class CreateLiveChannelResult extends GenericResult {
 
     public List<String> getPublishUrls() {
         return publishUrls;

@@ -26,7 +26,7 @@ import java.util.List;
  * The entity class wraps the result of the list parts request.
  *
  */
-public class PartListing {
+public class PartListing extends GenericResult {
 
     private String bucketName;
 

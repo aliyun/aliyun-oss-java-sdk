@@ -23,7 +23,7 @@ package com.aliyun.oss.model;
  * The entity class representing a OSS symlink file.
  * 
  */
-public class OSSSymlink {
+public class OSSSymlink extends GenericResult {
     
     public OSSSymlink(String symlink, String target) {
         this.symlink = symlink;

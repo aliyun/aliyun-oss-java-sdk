@@ -37,7 +37,7 @@ public class BucketUserQosTest extends TestBase {
             
             userQos = ossClient.getBucketStorageCapacity(bucketName);
             Assert.assertEquals(userQos.getStorageCapacity(), -1);
-            
+            Assert.assertEquals(userQos.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());
@@ -52,12 +52,14 @@ public class BucketUserQosTest extends TestBase {
             
             userQos = ossClient.getBucketStorageCapacity(bucketName);
             Assert.assertEquals(userQos.getStorageCapacity(), -1);
+            Assert.assertEquals(userQos.getRequestId().length(), REQUEST_ID_LEN);
             
             userQos.setStorageCapacity(10000);
             ossClient.setBucketStorageCapacity(new SetBucketStorageCapacityRequest(bucketName).withUserQos(userQos));
             
             userQos = ossClient.getBucketStorageCapacity(bucketName);
             Assert.assertEquals(userQos.getStorageCapacity(), 10000);
+            Assert.assertEquals(userQos.getRequestId().length(), REQUEST_ID_LEN);
 
         } catch (Exception e) {
             Assert.fail(e.getMessage());

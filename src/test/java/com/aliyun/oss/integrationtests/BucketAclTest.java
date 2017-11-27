@@ -74,6 +74,7 @@ public class BucketAclTest extends TestBase {
                     }
                 }
                 
+                Assert.assertEquals(returnedAcl.getRequestId().length(), REQUEST_ID_LEN);
                 if (acl != null ) {
                     Assert.assertEquals(returnedAcl.getCannedACL(), acl);
                 }

@@ -25,7 +25,7 @@ import java.util.Date;
  * Udf Image Info
  * 
  */
-public class UdfApplicationInfo {
+public class UdfApplicationInfo extends GenericResult {
 
     public UdfApplicationInfo(String name, String id, String region, String status, Integer imageVersion,
             Integer instanceNum, Date creationDate, InstanceFlavor flavor) {

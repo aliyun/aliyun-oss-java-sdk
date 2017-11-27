@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * The entity class that wraps all information about multipart upload.
  */
-public class MultipartUploadListing {
+public class MultipartUploadListing extends GenericResult {
 
     private String bucketName;
 

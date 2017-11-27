@@ -3,7 +3,7 @@ package com.aliyun.oss.model;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TagSet {
+public class TagSet extends GenericResult {
     private Map<String, String> tags;
     
     public TagSet() {
