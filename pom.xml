@@ -34,6 +34,12 @@
             <artifactId>jersey-json</artifactId>
             <version>1.9</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>stax</groupId>
+                    <artifactId>stax-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
