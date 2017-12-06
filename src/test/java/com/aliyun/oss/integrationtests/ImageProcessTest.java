@@ -26,9 +26,9 @@ import java.net.URL;
 import java.util.Date;
 
 import junit.framework.Assert;
-import net.sf.json.JSONObject;
 
-import org.apache.commons.beanutils.PropertyUtils;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
 
 import com.aliyun.oss.HttpMethod;
@@ -264,7 +264,7 @@ public class ImageProcessTest extends TestBase {
 		}
 	}
     
-    private static ImageInfo getImageInfo(final String bucket, final String image) throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    private static ImageInfo getImageInfo(final String bucket, final String image) throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, JSONException {
         GetObjectRequest request = new GetObjectRequest(bucketName, image);
         request.setProcess("image/info");
         OSSObject ossObject = ossClient.getObject(request);
@@ -272,14 +272,12 @@ public class ImageProcessTest extends TestBase {
         String jsonStr = IOUtils.readStreamAsString(ossObject.getObjectContent(), "UTF-8");
         ossObject.getObjectContent().close();
         
-        JSONObject jsonObject = JSONObject.fromObject(jsonStr);
-        Object bean = JSONObject.toBean(jsonObject); 
-        
-        long height = Long.parseLong((String) PropertyUtils.getProperty(PropertyUtils.getProperty(bean, "ImageHeight"), "value"));
-        long width = Long.parseLong((String) PropertyUtils.getProperty(PropertyUtils.getProperty(bean, "ImageWidth"), "value"));
-        long size = Long.parseLong((String) PropertyUtils.getProperty(PropertyUtils.getProperty(bean, "FileSize"), "value"));
-        String format = (String) PropertyUtils.getProperty(PropertyUtils.getProperty(bean, "Format"), "value");
-        
+        JSONObject jsonObject = new JSONObject(jsonStr);
+
+        long height = jsonObject.getJSONObject("ImageHeight").getLong("value");
+        long width = jsonObject.getJSONObject("ImageWidth").getLong("value");
+        long size = jsonObject.getJSONObject("FileSize").getLong("value");
+        String format = jsonObject.getJSONObject("Format").getString("value");
         return new ImageInfo(height, width, size, format);
     }
     
