@@ -43,8 +43,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import junit.framework.Assert;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -65,6 +63,9 @@ import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.model.InitiateMultipartUploadRequest;
 import com.aliyun.oss.model.InitiateMultipartUploadResult;
 import com.aliyun.oss.model.PartETag;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 @SuppressWarnings("deprecation")
 public class TestUtils {
@@ -342,21 +343,21 @@ public class TestUtils {
         }
     }
     
-    public static OSSClient createSessionClient(List<String> actions, List<String> resources) {
+    public static OSSClient createSessionClient(List<String> actions, List<String> resources) throws JSONException {
         String tokenPolicy = jsonizeTokenPolicy(actions, resources, true);
         StsToken token = getStsToken("", "", 3600, tokenPolicy);
         return new OSSClient(OSS_TEST_ENDPOINT, token.accessKeyId, token.secretAccessKey, token.securityToken,
                 new ClientConfiguration().setSupportCname(false));
     }
     
-    public static String jsonizeTokenPolicy(List<String> actions, List<String> resources, boolean allow) {
+    public static String jsonizeTokenPolicy(List<String> actions, List<String> resources, boolean allow) throws JSONException {
         JSONObject stmtJsonObject = new JSONObject();
         stmtJsonObject.put("Action", actions);
         stmtJsonObject.put("Resource", resources);
         stmtJsonObject.put("Effect", allow ? "Allow" : "Deny");
 
         JSONArray stmtJsonArray = new JSONArray();
-        stmtJsonArray.add(0, stmtJsonObject);
+        stmtJsonArray.put(0, stmtJsonObject);
 
         JSONObject policyJsonObject = new JSONObject();
         policyJsonObject.put("Version", "1");
@@ -401,7 +402,7 @@ public class TestUtils {
                 System.out.println(line);
             }
             
-            JSONObject tokenJsonObject = JSONObject.fromObject(tokenString.toString());
+            JSONObject tokenJsonObject = new JSONObject(tokenString.toString());
             JSONObject credsJsonObjson = tokenJsonObject.getJSONObject("Credentials");
             String accessKeyId = credsJsonObjson.getString("AccessKeyId");
             String secretAccessKey = credsJsonObjson.getString("AccessKeySecret");
