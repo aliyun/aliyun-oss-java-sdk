@@ -32,6 +32,7 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
+import org.codehaus.jettison.json.JSONException;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -72,7 +73,7 @@ public class SecurityTokenTest {
 
     @SuppressWarnings("deprecation")
 	@Test
-    public void testBucketOperationsWithToken() {
+    public void testBucketOperationsWithToken() throws JSONException {
         List<String> actions = new ArrayList<String>();
         actions.add("oss:ListBuckets");
         List<String> resources = new ArrayList<String>();
@@ -417,7 +418,7 @@ public class SecurityTokenTest {
     }
     
     @Test
-    public void testObjectOperationsWithToken() {
+    public void testObjectOperationsWithToken() throws JSONException {
         List<String> actions = new ArrayList<String>();
         List<String> resources = new ArrayList<String>();
         
