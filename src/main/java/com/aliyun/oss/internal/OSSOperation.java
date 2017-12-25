@@ -52,42 +52,42 @@ import com.aliyun.oss.internal.ResponseParsers.EmptyResponseParser;
 import com.aliyun.oss.model.WebServiceRequest;
 
 /**
- * Abstract base class that provides some common functionalities for OSS operations
- * (such as bucket/object/multipart/cors operations).
+ * Abstract base class that provides some common functionalities for OSS
+ * operations (such as bucket/object/multipart/cors operations).
  */
 public abstract class OSSOperation {
-    
+
     protected volatile URI endpoint;
     protected CredentialsProvider credsProvider;
     protected ServiceClient client;
-    
+
     protected static OSSErrorResponseHandler errorResponseHandler = new OSSErrorResponseHandler();
     protected static EmptyResponseParser emptyResponseParser = new EmptyResponseParser();
     protected static RetryStrategy noRetryStrategy = new NoRetryStrategy();
-    
+
     protected OSSOperation(ServiceClient client, CredentialsProvider credsProvider) {
         this.client = client;
         this.credsProvider = credsProvider;
     }
-    
+
     public URI getEndpoint() {
         return endpoint;
     }
-    
+
     public void setEndpoint(URI endpoint) {
         this.endpoint = URI.create(endpoint.toString());
     }
-    
+
     protected ServiceClient getInnerClient() {
         return this.client;
     }
 
-    protected ResponseMessage send(RequestMessage request, ExecutionContext context) 
+    protected ResponseMessage send(RequestMessage request, ExecutionContext context)
             throws OSSException, ClientException {
         return send(request, context, false);
     }
-    
-    protected ResponseMessage send(RequestMessage request, ExecutionContext context, boolean keepResponseOpen) 
+
+    protected ResponseMessage send(RequestMessage request, ExecutionContext context, boolean keepResponseOpen)
             throws OSSException, ClientException {
         ResponseMessage response = null;
         try {
@@ -95,39 +95,39 @@ public abstract class OSSOperation {
             return response;
         } catch (ServiceException e) {
             assert (e instanceof OSSException);
-            throw (OSSException)e;
+            throw (OSSException) e;
         } finally {
             if (response != null && !keepResponseOpen) {
                 safeCloseResponse(response);
             }
         }
     }
-    
-    protected <T> T doOperation(RequestMessage request, ResponseParser<T> parser, String bucketName, 
-            String key) throws OSSException, ClientException {
+
+    protected <T> T doOperation(RequestMessage request, ResponseParser<T> parser, String bucketName, String key)
+            throws OSSException, ClientException {
         return doOperation(request, parser, bucketName, key, false);
     }
-    
-    protected <T> T doOperation(RequestMessage request, ResponseParser<T> parser, String bucketName, 
-            String key, boolean keepResponseOpen) throws OSSException, ClientException {
+
+    protected <T> T doOperation(RequestMessage request, ResponseParser<T> parser, String bucketName, String key,
+            boolean keepResponseOpen) throws OSSException, ClientException {
         return doOperation(request, parser, bucketName, key, keepResponseOpen, null, null);
     }
-    
-    protected <T> T doOperation(RequestMessage request, ResponseParser<T> parser, String bucketName, 
-            String key, boolean keepResponseOpen, List<RequestHandler> requestHandlers, List<ResponseHandler> reponseHandlers) 
-                    throws OSSException, ClientException {
-        
+
+    protected <T> T doOperation(RequestMessage request, ResponseParser<T> parser, String bucketName, String key,
+            boolean keepResponseOpen, List<RequestHandler> requestHandlers, List<ResponseHandler> reponseHandlers)
+            throws OSSException, ClientException {
+
         final WebServiceRequest originalRequest = request.getOriginalRequest();
         request.getHeaders().putAll(client.getClientConfiguration().getDefaultHeaders());
         request.getHeaders().putAll(originalRequest.getHeaders());
         request.getParameters().putAll(originalRequest.getParameters());
-        
+
         ExecutionContext context = createDefaultContext(request.getMethod(), bucketName, key);
-        
+
         if (context.getCredentials().useSecurityToken() && !request.isUseUrlSignature()) {
             request.addHeader(OSSHeaders.OSS_SECURITY_TOKEN, context.getCredentials().getSecurityToken());
         }
-        
+
         context.addRequestHandler(new RequestProgressHanlder());
         if (requestHandlers != null) {
             for (RequestHandler handler : requestHandlers)
@@ -136,7 +136,7 @@ public abstract class OSSOperation {
         if (client.getClientConfiguration().isCrcCheckEnabled()) {
             context.addRequestHandler(new RequestChecksumHanlder());
         }
-        
+
         context.addResponseHandler(new ResponseProgressHandler(originalRequest));
         if (reponseHandlers != null) {
             for (ResponseHandler handler : reponseHandlers)
@@ -145,28 +145,25 @@ public abstract class OSSOperation {
         if (client.getClientConfiguration().isCrcCheckEnabled()) {
             context.addResponseHandler(new ResponseChecksumHandler());
         }
-        
+
         ResponseMessage response = send(request, context, keepResponseOpen);
-        
+
         try {
             return parser.parse(response);
         } catch (ResponseParseException rpe) {
-            OSSException oe = ExceptionFactory.createInvalidResponseException(
-                    response.getRequestId(), rpe.getMessage(), rpe);
+            OSSException oe = ExceptionFactory.createInvalidResponseException(response.getRequestId(), rpe.getMessage(),
+                    rpe);
             logException("Unable to parse response error: ", rpe);
             throw oe;
         }
     }
-    
-    private static RequestSigner createSigner(HttpMethod method, String bucketName,
-            String key, Credentials creds) {
-        String resourcePath = "/" 
-                + ((bucketName != null) ? bucketName + "/" : "") 
-                + ((key != null ? key : ""));
-        
+
+    private static RequestSigner createSigner(HttpMethod method, String bucketName, String key, Credentials creds) {
+        String resourcePath = "/" + ((bucketName != null) ? bucketName + "/" : "") + ((key != null ? key : ""));
+
         return new OSSRequestSigner(method.toString(), resourcePath, creds);
     }
-    
+
     protected ExecutionContext createDefaultContext(HttpMethod method, String bucketName, String key) {
         ExecutionContext context = new ExecutionContext();
         context.setCharset(DEFAULT_CHARSET_NAME);
@@ -178,13 +175,13 @@ public abstract class OSSOperation {
         context.setCredentials(credsProvider.getCredentials());
         return context;
     }
-    
+
     protected ExecutionContext createDefaultContext(HttpMethod method, String bucketName) {
         return this.createDefaultContext(method, bucketName, null);
     }
-    
+
     protected ExecutionContext createDefaultContext(HttpMethod method) {
-        return this.createDefaultContext(method, null, null);        
+        return this.createDefaultContext(method, null, null);
     }
 
 }

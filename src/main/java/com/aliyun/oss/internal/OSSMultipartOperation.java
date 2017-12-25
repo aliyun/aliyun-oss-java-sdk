@@ -89,7 +89,7 @@ import com.aliyun.oss.model.UploadPartResult;
  * Multipart operation.
  */
 public class OSSMultipartOperation extends OSSOperation {
-    
+
     private static final int LIST_PART_MAX_RETURNS = 1000;
     private static final int LIST_UPLOAD_MAX_RETURNS = 1000;
     private static final int MAX_PART_NUMBER = 10000;
@@ -105,7 +105,7 @@ public class OSSMultipartOperation extends OSSOperation {
             throws OSSException, ClientException {
 
         assertParameterNotNull(abortMultipartUploadRequest, "abortMultipartUploadRequest");
-        
+
         String key = abortMultipartUploadRequest.getKey();
         String bucketName = abortMultipartUploadRequest.getBucketName();
         String uploadId = abortMultipartUploadRequest.getUploadId();
@@ -118,26 +118,20 @@ public class OSSMultipartOperation extends OSSOperation {
 
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(UPLOAD_ID, uploadId);
-        
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-                .setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.DELETE)
-                .setBucket(bucketName)
-                .setKey(key)
-                .setParameters(parameters)
-                .setOriginalRequest(abortMultipartUploadRequest)
-                .build();
-        
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(key).setParameters(parameters)
+                .setOriginalRequest(abortMultipartUploadRequest).build();
+
         doOperation(request, emptyResponseParser, bucketName, key);
     }
 
     /**
-     * Complete multipart upload. 
+     * Complete multipart upload.
      */
     public CompleteMultipartUploadResult completeMultipartUpload(
-            CompleteMultipartUploadRequest completeMultipartUploadRequest)
-                    throws OSSException, ClientException {
-        
+            CompleteMultipartUploadRequest completeMultipartUploadRequest) throws OSSException, ClientException {
+
         assertParameterNotNull(completeMultipartUploadRequest, "completeMultipartUploadRequest");
 
         String key = completeMultipartUploadRequest.getKey();
@@ -154,10 +148,10 @@ public class OSSMultipartOperation extends OSSOperation {
         Map<String, String> headers = new HashMap<String, String>();
         populateCompleteMultipartUploadOptionalHeaders(completeMultipartUploadRequest, headers);
         populateRequestCallback(headers, completeMultipartUploadRequest.getCallback());
-        
+
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(UPLOAD_ID, uploadId);
-        
+
         List<PartETag> partETags = completeMultipartUploadRequest.getPartETags();
         Collections.sort(partETags, new Comparator<PartETag>() {
             @Override
@@ -165,45 +159,39 @@ public class OSSMultipartOperation extends OSSOperation {
                 return p1.getPartNumber() - p2.getPartNumber();
             }
         });
-        
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-                .setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.POST)
-                .setBucket(bucketName)
-                .setKey(key)
-                .setHeaders(headers)
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.POST).setBucket(bucketName).setKey(key).setHeaders(headers)
                 .setParameters(parameters)
-                .setInputStreamWithLength(completeMultipartUploadRequestMarshaller.marshall(completeMultipartUploadRequest))
-                .setOriginalRequest(completeMultipartUploadRequest)
-                .build();
-        
+                .setInputStreamWithLength(
+                        completeMultipartUploadRequestMarshaller.marshall(completeMultipartUploadRequest))
+                .setOriginalRequest(completeMultipartUploadRequest).build();
+
         List<ResponseHandler> reponseHandlers = new ArrayList<ResponseHandler>();
         reponseHandlers.add(new OSSCallbackErrorResponseHandler());
-        
+
         CompleteMultipartUploadResult result = null;
         if (!isNeedReturnResponse(completeMultipartUploadRequest)) {
             result = doOperation(request, completeMultipartUploadResponseParser, bucketName, key, true);
         } else {
-            result =  doOperation(request, completeMultipartUploadProcessResponseParser, bucketName, key, true, null, reponseHandlers);
+            result = doOperation(request, completeMultipartUploadProcessResponseParser, bucketName, key, true, null,
+                    reponseHandlers);
         }
-        
+
         result.setClientCRC(calcObjectCRCFromParts(completeMultipartUploadRequest.getPartETags()));
         if (getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
-        	OSSUtils.checkChecksum(result.getClientCRC(), result.getServerCRC(), result.getRequestId());
+            OSSUtils.checkChecksum(result.getClientCRC(), result.getServerCRC(), result.getRequestId());
         }
-        
+
         return result;
     }
-    
-    
 
     /**
      * Initiate multipart upload.
      */
     public InitiateMultipartUploadResult initiateMultipartUpload(
-            InitiateMultipartUploadRequest initiateMultipartUploadRequest)
-                    throws OSSException, ClientException {
-        
+            InitiateMultipartUploadRequest initiateMultipartUploadRequest) throws OSSException, ClientException {
+
         assertParameterNotNull(initiateMultipartUploadRequest, "initiateMultipartUploadRequest");
 
         String key = initiateMultipartUploadRequest.getKey();
@@ -225,31 +213,25 @@ public class OSSMultipartOperation extends OSSOperation {
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_UPLOADS, null);
-        
-        // Set the request content to be empty (but not null) to avoid putting parameters 
-        // to request body. Set HttpRequestFactory#createHttpRequest for details.
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-                .setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.POST)
-                .setBucket(bucketName)
-                .setKey(key)
-                .setHeaders(headers)
-                .setParameters(params)
-                .setInputStream(new ByteArrayInputStream(new byte[0]))
-                .setInputSize(0)
-                .setOriginalRequest(initiateMultipartUploadRequest)
-                .build();
-        
+
+        // Set the request content to be empty (but not null) to avoid putting
+        // parameters
+        // to request body. Set HttpRequestFactory#createHttpRequest for
+        // details.
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.POST).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(params)
+                .setInputStream(new ByteArrayInputStream(new byte[0])).setInputSize(0)
+                .setOriginalRequest(initiateMultipartUploadRequest).build();
+
         return doOperation(request, initiateMultipartUploadResponseParser, bucketName, key, true);
     }
 
     /**
      * List multipart uploads.
      */
-    public MultipartUploadListing listMultipartUploads(
-            ListMultipartUploadsRequest listMultipartUploadsRequest)
-                    throws OSSException, ClientException {
-        
+    public MultipartUploadListing listMultipartUploads(ListMultipartUploadsRequest listMultipartUploadsRequest)
+            throws OSSException, ClientException {
+
         assertParameterNotNull(listMultipartUploadsRequest, "listMultipartUploadsRequest");
 
         String bucketName = listMultipartUploadsRequest.getBucketName();
@@ -259,24 +241,19 @@ public class OSSMultipartOperation extends OSSOperation {
         // Use a LinkedHashMap to preserve the insertion order.
         Map<String, String> params = new LinkedHashMap<String, String>();
         populateListMultipartUploadsRequestParameters(listMultipartUploadsRequest, params);
-        
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-                .setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.GET)
-                .setBucket(bucketName)
-                .setParameters(params)
-                .setOriginalRequest(listMultipartUploadsRequest)
-                .build();
-        
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(listMultipartUploadsRequest).build();
+
         return doOperation(request, listMultipartUploadsResponseParser, bucketName, null, true);
     }
 
     /**
      * List parts.
      */
-    public PartListing listParts(ListPartsRequest listPartsRequest)
-            throws OSSException, ClientException {
-        
+    public PartListing listParts(ListPartsRequest listPartsRequest) throws OSSException, ClientException {
+
         assertParameterNotNull(listPartsRequest, "listPartsRequest");
 
         String key = listPartsRequest.getKey();
@@ -288,29 +265,23 @@ public class OSSMultipartOperation extends OSSOperation {
         assertParameterNotNull(key, "key");
         ensureObjectKeyValid(key);
         assertStringNotNullOrEmpty(uploadId, "uploadId");
-        
+
         // Use a LinkedHashMap to preserve the insertion order.
         Map<String, String> params = new LinkedHashMap<String, String>();
         populateListPartsRequestParameters(listPartsRequest, params);
-        
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-                .setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.GET)
-                .setBucket(bucketName)
-                .setKey(key)
-                .setParameters(params)
-                .setOriginalRequest(listPartsRequest)
-                .build();
-        
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(key).setParameters(params)
+                .setOriginalRequest(listPartsRequest).build();
+
         return doOperation(request, listPartsResponseParser, bucketName, key, true);
     }
 
     /**
      * Upload part.
      */
-    public UploadPartResult uploadPart(UploadPartRequest uploadPartRequest)
-            throws OSSException, ClientException {
-        
+    public UploadPartResult uploadPart(UploadPartRequest uploadPartRequest) throws OSSException, ClientException {
+
         assertParameterNotNull(uploadPartRequest, "uploadPartRequest");
 
         String key = uploadPartRequest.getKey();
@@ -326,7 +297,7 @@ public class OSSMultipartOperation extends OSSOperation {
         if (uploadPartRequest.getInputStream() == null) {
             throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getString("MustSetContentStream"));
         }
-        
+
         InputStream repeatableInputStream = null;
         try {
             repeatableInputStream = newRepeatableInputStream(uploadPartRequest.buildPartialStream());
@@ -334,7 +305,7 @@ public class OSSMultipartOperation extends OSSOperation {
             logException("Cannot wrap to repeatable input stream: ", ex);
             throw new ClientException("Cannot wrap to repeatable input stream: ", ex);
         }
-        
+
         int partNumber = uploadPartRequest.getPartNumber();
         if (!checkParamRange(partNumber, 0, false, MAX_PART_NUMBER, true)) {
             throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getString("PartNumberOutOfRange"));
@@ -347,20 +318,13 @@ public class OSSMultipartOperation extends OSSOperation {
         Map<String, String> params = new LinkedHashMap<String, String>();
         params.put(PART_NUMBER, Integer.toString(partNumber));
         params.put(UPLOAD_ID, uploadId);
-        
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-                .setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.PUT)
-                .setBucket(bucketName)
-                .setKey(key)
-                .setParameters(params)
-                .setHeaders(headers)
-                .setInputStream(repeatableInputStream)
-                .setInputSize(uploadPartRequest.getPartSize())
-                .setUseChunkEncoding(uploadPartRequest.isUseChunkEncoding())
-                .setOriginalRequest(uploadPartRequest)
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setKey(key).setParameters(params).setHeaders(headers)
+                .setInputStream(repeatableInputStream).setInputSize(uploadPartRequest.getPartSize())
+                .setUseChunkEncoding(uploadPartRequest.isUseChunkEncoding()).setOriginalRequest(uploadPartRequest)
                 .build();
-        
+
         final ProgressListener listener = uploadPartRequest.getProgressListener();
         ResponseMessage response = null;
         try {
@@ -371,27 +335,27 @@ public class OSSMultipartOperation extends OSSOperation {
             publishProgress(listener, ProgressEventType.TRANSFER_PART_FAILED_EVENT);
             throw e;
         }
-        
+
         UploadPartResult result = new UploadPartResult();
         result.setPartNumber(partNumber);
         result.setETag(trimQuotes(response.getHeaders().get(OSSHeaders.ETAG)));
         result.setRequestId(response.getRequestId());
         result.setPartSize(uploadPartRequest.getPartSize());
         ResponseParsers.setCRC(result, response);
-        
+
         if (getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
-        	OSSUtils.checkChecksum(result.getClientCRC(), result.getServerCRC(), result.getRequestId());
+            OSSUtils.checkChecksum(result.getClientCRC(), result.getServerCRC(), result.getRequestId());
         }
-        
+
         return result;
     }
-    
+
     /**
      * Upload part copy.
      */
     public UploadPartCopyResult uploadPartCopy(UploadPartCopyRequest uploadPartCopyRequest)
             throws OSSException, ClientException {
-        
+
         assertParameterNotNull(uploadPartCopyRequest, "uploadPartCopyRequest");
 
         String key = uploadPartCopyRequest.getKey();
@@ -410,7 +374,7 @@ public class OSSMultipartOperation extends OSSOperation {
                 throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getString("FileSizeOutOfRange"));
             }
         }
-        
+
         int partNumber = uploadPartCopyRequest.getPartNumber();
         if (!checkParamRange(partNumber, 0, false, MAX_PART_NUMBER, true)) {
             throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getString("PartNumberOutOfRange"));
@@ -424,101 +388,93 @@ public class OSSMultipartOperation extends OSSOperation {
         params.put(PART_NUMBER, Integer.toString(partNumber));
         params.put(UPLOAD_ID, uploadId);
 
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-                .setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.PUT)
-                .setBucket(bucketName)
-                .setKey(key)
-                .setParameters(params)
-                .setHeaders(headers)
-                .setOriginalRequest(uploadPartCopyRequest)
-                .build();
-        
-        return doOperation(request, new UploadPartCopyResponseParser(partNumber), 
-                bucketName, key, true);
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setKey(key).setParameters(params).setHeaders(headers)
+                .setOriginalRequest(uploadPartCopyRequest).build();
+
+        return doOperation(request, new UploadPartCopyResponseParser(partNumber), bucketName, key, true);
     }
-    
+
     private static void populateListMultipartUploadsRequestParameters(
             ListMultipartUploadsRequest listMultipartUploadsRequest, Map<String, String> params) {
-        
+
         // Make sure 'uploads' be the first parameter.
         params.put(SUBRESOURCE_UPLOADS, null);
-        
+
         if (listMultipartUploadsRequest.getDelimiter() != null) {
             params.put(DELIMITER, listMultipartUploadsRequest.getDelimiter());
         }
-        
+
         if (listMultipartUploadsRequest.getKeyMarker() != null) {
             params.put(KEY_MARKER, listMultipartUploadsRequest.getKeyMarker());
         }
-        
+
         Integer maxUploads = listMultipartUploadsRequest.getMaxUploads();
         if (maxUploads != null) {
             if (!checkParamRange(maxUploads, 0, true, LIST_UPLOAD_MAX_RETURNS, true)) {
-                throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getFormattedString(
-                        "MaxUploadsOutOfRange", LIST_UPLOAD_MAX_RETURNS));
+                throw new IllegalArgumentException(
+                        OSS_RESOURCE_MANAGER.getFormattedString("MaxUploadsOutOfRange", LIST_UPLOAD_MAX_RETURNS));
             }
-            params.put(MAX_UPLOADS, listMultipartUploadsRequest.getMaxUploads().toString());            
+            params.put(MAX_UPLOADS, listMultipartUploadsRequest.getMaxUploads().toString());
         }
 
         if (listMultipartUploadsRequest.getPrefix() != null) {
             params.put(PREFIX, listMultipartUploadsRequest.getPrefix());
         }
-        
+
         if (listMultipartUploadsRequest.getUploadIdMarker() != null) {
             params.put(UPLOAD_ID_MARKER, listMultipartUploadsRequest.getUploadIdMarker());
         }
-        
+
         if (listMultipartUploadsRequest.getEncodingType() != null) {
             params.put(ENCODING_TYPE, listMultipartUploadsRequest.getEncodingType());
         }
     }
-    
+
     private static void populateListPartsRequestParameters(ListPartsRequest listPartsRequest,
             Map<String, String> params) {
-        
+
         params.put(UPLOAD_ID, listPartsRequest.getUploadId());
-        
+
         Integer maxParts = listPartsRequest.getMaxParts();
         if (maxParts != null) {
             if (!checkParamRange(maxParts, 0, true, LIST_PART_MAX_RETURNS, true)) {
-                throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getFormattedString(
-                        "MaxPartsOutOfRange", LIST_PART_MAX_RETURNS));
+                throw new IllegalArgumentException(
+                        OSS_RESOURCE_MANAGER.getFormattedString("MaxPartsOutOfRange", LIST_PART_MAX_RETURNS));
             }
             params.put(MAX_PARTS, maxParts.toString());
         }
-        
+
         Integer partNumberMarker = listPartsRequest.getPartNumberMarker();
         if (partNumberMarker != null) {
             if (!checkParamRange(partNumberMarker, 0, false, MAX_PART_NUMBER, true)) {
-                throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getString(
-                        "PartNumberMarkerOutOfRange"));
+                throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getString("PartNumberMarkerOutOfRange"));
             }
             params.put(PART_NUMBER_MARKER, partNumberMarker.toString());
         }
-        
+
         if (listPartsRequest.getEncodingType() != null) {
             params.put(ENCODING_TYPE, listPartsRequest.getEncodingType());
         }
     }
-    
-    private static void populateCopyPartRequestHeaders(UploadPartCopyRequest uploadPartCopyRequest, 
+
+    private static void populateCopyPartRequestHeaders(UploadPartCopyRequest uploadPartCopyRequest,
             Map<String, String> headers) {
-        
+
         if (uploadPartCopyRequest.getPartSize() != null) {
-            headers.put(OSSHeaders.CONTENT_LENGTH, Long.toString(uploadPartCopyRequest.getPartSize()));            
+            headers.put(OSSHeaders.CONTENT_LENGTH, Long.toString(uploadPartCopyRequest.getPartSize()));
         }
-        
+
         if (uploadPartCopyRequest.getMd5Digest() != null) {
             headers.put(OSSHeaders.CONTENT_MD5, uploadPartCopyRequest.getMd5Digest());
         }
-        
-        String copySource = "/" + uploadPartCopyRequest.getSourceBucketName() + 
-                "/" + HttpUtil.urlEncode(uploadPartCopyRequest.getSourceKey(), DEFAULT_CHARSET_NAME);
+
+        String copySource = "/" + uploadPartCopyRequest.getSourceBucketName() + "/"
+                + HttpUtil.urlEncode(uploadPartCopyRequest.getSourceKey(), DEFAULT_CHARSET_NAME);
         headers.put(OSSHeaders.COPY_OBJECT_SOURCE, copySource);
-        
+
         if (uploadPartCopyRequest.getBeginIndex() != null && uploadPartCopyRequest.getPartSize() != null) {
-            String range = "bytes=" + uploadPartCopyRequest.getBeginIndex()  + "-" 
+            String range = "bytes=" + uploadPartCopyRequest.getBeginIndex() + "-"
                     + Long.toString(uploadPartCopyRequest.getBeginIndex() + uploadPartCopyRequest.getPartSize() - 1);
             headers.put(OSSHeaders.COPY_SOURCE_RANGE, range);
         }
@@ -527,25 +483,25 @@ public class OSSMultipartOperation extends OSSOperation {
                 uploadPartCopyRequest.getModifiedSinceConstraint());
         addDateHeader(headers, OSSHeaders.COPY_OBJECT_SOURCE_IF_UNMODIFIED_SINCE,
                 uploadPartCopyRequest.getUnmodifiedSinceConstraint());
-        
+
         addStringListHeader(headers, OSSHeaders.COPY_OBJECT_SOURCE_IF_MATCH,
                 uploadPartCopyRequest.getMatchingETagConstraints());
         addStringListHeader(headers, OSSHeaders.COPY_OBJECT_SOURCE_IF_NONE_MATCH,
                 uploadPartCopyRequest.getNonmatchingEtagConstraints());
     }
-    
-    private static void populateUploadPartOptionalHeaders(UploadPartRequest uploadPartRequest, 
+
+    private static void populateUploadPartOptionalHeaders(UploadPartRequest uploadPartRequest,
             Map<String, String> headers) {
-        
+
         if (!uploadPartRequest.isUseChunkEncoding()) {
             long partSize = uploadPartRequest.getPartSize();
             if (!checkParamRange(partSize, 0, true, DEFAULT_FILE_SIZE_LIMIT, true)) {
                 throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getString("FileSizeOutOfRange"));
             }
-            
-            headers.put(OSSHeaders.CONTENT_LENGTH, Long.toString(partSize));            
+
+            headers.put(OSSHeaders.CONTENT_LENGTH, Long.toString(partSize));
         }
-        
+
         if (uploadPartRequest.getMd5Digest() != null) {
             headers.put(OSSHeaders.CONTENT_MD5, uploadPartRequest.getMd5Digest());
         }
@@ -553,13 +509,13 @@ public class OSSMultipartOperation extends OSSOperation {
 
     private static void populateCompleteMultipartUploadOptionalHeaders(
             CompleteMultipartUploadRequest completeMultipartUploadRequest, Map<String, String> headers) {
-        
+
         CannedAccessControlList cannedACL = completeMultipartUploadRequest.getObjectACL();
         if (cannedACL != null) {
-            headers.put(OSSHeaders.OSS_OBJECT_ACL, cannedACL.toString());      
+            headers.put(OSSHeaders.OSS_OBJECT_ACL, cannedACL.toString());
         }
     }
-    
+
     private static Long calcObjectCRCFromParts(List<PartETag> partETags) {
         long crc = 0;
         for (PartETag partETag : partETags) {
@@ -570,12 +526,12 @@ public class OSSMultipartOperation extends OSSOperation {
         }
         return new Long(crc);
     }
-    
+
     private static boolean isNeedReturnResponse(CompleteMultipartUploadRequest completeMultipartUploadRequest) {
-    	if (completeMultipartUploadRequest.getCallback() != null || 
-    			completeMultipartUploadRequest.getProcess() != null) {
-    		return true;
-    	}
-    	return false;
+        if (completeMultipartUploadRequest.getCallback() != null
+                || completeMultipartUploadRequest.getProcess() != null) {
+            return true;
+        }
+        return false;
     }
 }

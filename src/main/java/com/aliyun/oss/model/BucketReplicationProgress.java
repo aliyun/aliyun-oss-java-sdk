@@ -24,10 +24,11 @@ import java.util.Date;
 /**
  * The progress of cross region bucket replication.
  * <p>
- * For historical data, it uses the percentage (e.g. 0.85 means 85%) of copied file count as the progress indicator.
- * It's only applicable for buckets enabled with historical data replication.
- * For new coming data, it uses the replicated timestamp as the progress indicator. It means all files which are uploaded
- * before that timestamp have been replicated to the target bucket.
+ * For historical data, it uses the percentage (e.g. 0.85 means 85%) of copied
+ * file count as the progress indicator. It's only applicable for buckets
+ * enabled with historical data replication. For new coming data, it uses the
+ * replicated timestamp as the progress indicator. It means all files which are
+ * uploaded before that timestamp have been replicated to the target bucket.
  * </p>
  */
 public class BucketReplicationProgress extends GenericResult {
@@ -62,13 +63,12 @@ public class BucketReplicationProgress extends GenericResult {
     public void setTargetBucketLocation(String targetBucketLocation) {
         this.targetBucketLocation = targetBucketLocation;
     }
-    
+
     public boolean isEnableHistoricalObjectReplication() {
         return enableHistoricalObjectReplication;
     }
 
-    public void setEnableHistoricalObjectReplication(
-            boolean enableHistoricalObjectReplication) {
+    public void setEnableHistoricalObjectReplication(boolean enableHistoricalObjectReplication) {
         this.enableHistoricalObjectReplication = enableHistoricalObjectReplication;
     }
 

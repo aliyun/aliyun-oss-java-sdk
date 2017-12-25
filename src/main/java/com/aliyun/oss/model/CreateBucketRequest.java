@@ -20,11 +20,11 @@
 package com.aliyun.oss.model;
 
 public class CreateBucketRequest extends GenericRequest {
-    
+
     private String locationConstraint;
     private CannedAccessControlList cannedACL;
     private StorageClass storageClass;
-    
+
     public CreateBucketRequest(String bucketName) {
         super(bucketName);
         setLocationConstraint(null);
@@ -33,6 +33,7 @@ public class CreateBucketRequest extends GenericRequest {
 
     /**
      * Gets the bucket's datacenter
+     * 
      * @return Bucket's datacenter.
      */
     public String getLocationConstraint() {
@@ -41,15 +42,19 @@ public class CreateBucketRequest extends GenericRequest {
 
     /**
      * Sets the bucket's datacenter.
-     * @param locationConstraint Bucket's datacenter.
+     * 
+     * @param locationConstraint
+     *            Bucket's datacenter.
      */
     public void setLocationConstraint(String locationConstraint) {
         this.locationConstraint = locationConstraint;
     }
-    
+
     /**
      * Creates the instance with datacenter.
-     * @param locationConstraint Bucket datacenter.
+     * 
+     * @param locationConstraint
+     *            Bucket datacenter.
      */
     public CreateBucketRequest withLocationConstraint(String locationConstraint) {
         setLocationConstraint(locationConstraint);
@@ -63,20 +68,20 @@ public class CreateBucketRequest extends GenericRequest {
     public void setCannedACL(CannedAccessControlList cannedACL) {
         this.cannedACL = cannedACL;
     }
-    
+
     public StorageClass getStorageClass() {
         return storageClass;
     }
-    
+
     public void setStorageClass(StorageClass storageClass) {
         this.storageClass = storageClass;
     }
-    
+
     public CreateBucketRequest withCannedACL(CannedAccessControlList cannedACL) {
         setCannedACL(cannedACL);
         return this;
     }
-    
+
     public CreateBucketRequest withStorageType(StorageClass storageClass) {
         setStorageClass(storageClass);
         return this;

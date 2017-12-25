@@ -24,20 +24,20 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * The result class represents the UDF Application Log's content.
- * It must be closed after the usage.
+ * The result class represents the UDF Application Log's content. It must be
+ * closed after the usage.
  */
 public class UdfApplicationLog extends GenericResult implements Closeable {
 
     public UdfApplicationLog() {
         super();
     }
-    
+
     public UdfApplicationLog(String udfName) {
         super();
         this.udfName = udfName;
     }
-    
+
     public UdfApplicationLog(String udfName, InputStream logContent) {
         super();
         this.udfName = udfName;
@@ -54,6 +54,7 @@ public class UdfApplicationLog extends GenericResult implements Closeable {
 
     /**
      * Gets the {@link InputStream} instance which has the log content.
+     * 
      * @return A {@link InputStream} instance which has the log content.
      */
     public InputStream getLogContent() {
@@ -62,28 +63,32 @@ public class UdfApplicationLog extends GenericResult implements Closeable {
 
     /**
      * Sets the {@link InputStream} instance.
-     * @param logContent The {@link InputStream} instance.
+     * 
+     * @param logContent
+     *            The {@link InputStream} instance.
      */
     public void setLogContent(InputStream logContent) {
         this.logContent = logContent;
     }
-    
+
     @Override
     public void close() throws IOException {
         if (logContent != null) {
             logContent.close();
         }
     }
-    
+
     /**
-     * Forcefully close the object. The remaining data in server side is ignored.
+     * Forcefully close the object. The remaining data in server side is
+     * ignored.
+     * 
      * @throws IOException
      */
     public void forcedClose() throws IOException {
-    	this.response.abort();
+        this.response.abort();
     }
-    
+
     private String udfName;
     private InputStream logContent;
-    
+
 }

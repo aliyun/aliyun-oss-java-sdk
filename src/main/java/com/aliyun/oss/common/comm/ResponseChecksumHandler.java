@@ -34,7 +34,7 @@ public class ResponseChecksumHandler implements ResponseHandler {
         if (originalInputStream == null) {
             return;
         }
-        
+
         CRC64 crc = new CRC64();
         CheckedInputStream checkedInputstream = new CheckedInputStream(originalInputStream, crc);
         response.setContent(checkedInputstream);

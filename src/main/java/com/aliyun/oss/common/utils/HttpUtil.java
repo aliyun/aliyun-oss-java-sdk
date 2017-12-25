@@ -37,21 +37,20 @@ public class HttpUtil {
         if (value == null) {
             return "";
         }
-        
+
         try {
             String encoded = URLEncoder.encode(value, encoding);
-            return encoded.replace("+", "%20").replace("*", "%2A")
-                    .replace("~", "%7E").replace("/", "%2F");
+            return encoded.replace("+", "%20").replace("*", "%2A").replace("~", "%7E").replace("/", "%2F");
         } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getString("FailedToEncodeUri"), e);
         }
     }
-    
+
     public static String urlDecode(String value, String encoding) {
         if (isNullOrEmpty(value)) {
             return value;
         }
-        
+
         try {
             return URLDecoder.decode(value, encoding);
         } catch (UnsupportedEncodingException e) {
@@ -63,14 +62,14 @@ public class HttpUtil {
      * Encode request parameters to URL segment.
      */
     public static String paramToQueryString(Map<String, String> params, String charset) {
-        
+
         if (params == null || params.isEmpty()) {
             return null;
         }
 
         StringBuilder paramString = new StringBuilder();
         boolean first = true;
-        for(Entry<String, String> p : params.entrySet()) {
+        for (Entry<String, String> p : params.entrySet()) {
             String key = p.getKey();
             String value = p.getValue();
 
@@ -105,16 +104,15 @@ public class HttpUtil {
         convertHeaderCharset(headers, UTF8_CHARSET, ISO_8859_1_CHARSET);
     }
 
-    private static void convertHeaderCharset(Map<String, String> headers, 
-            String fromCharset, String toCharset) {
+    private static void convertHeaderCharset(Map<String, String> headers, String fromCharset, String toCharset) {
 
-        for(Map.Entry<String, String> header : headers.entrySet()) {
+        for (Map.Entry<String, String> header : headers.entrySet()) {
             if (header.getValue() == null) {
                 continue;
             }
 
             try {
-                header.setValue(new String(header.getValue().getBytes(fromCharset) , toCharset));
+                header.setValue(new String(header.getValue().getBytes(fromCharset), toCharset));
             } catch (UnsupportedEncodingException e) {
                 throw new IllegalArgumentException("Invalid charset name: " + e.getMessage(), e);
             }

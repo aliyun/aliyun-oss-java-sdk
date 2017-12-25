@@ -25,5 +25,5 @@ import com.aliyun.oss.OSSException;
 public interface ResponseHandler {
 
     public void handle(ResponseMessage response) throws OSSException, ClientException;
-    
+
 }

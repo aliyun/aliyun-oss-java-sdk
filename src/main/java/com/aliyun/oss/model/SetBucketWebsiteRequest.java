@@ -26,29 +26,29 @@ public class SetBucketWebsiteRequest extends GenericRequest {
 
     private String indexDocument;
     private String errorDocument;
-    
+
     private List<RoutingRule> routingRules = new ArrayList<RoutingRule>();
 
     public SetBucketWebsiteRequest(String bucketName) {
         super(bucketName);
     }
-    
+
     public String getIndexDocument() {
         return indexDocument;
     }
-    
+
     public void setIndexDocument(String indexDocument) {
         this.indexDocument = indexDocument;
     }
-    
+
     public String getErrorDocument() {
         return errorDocument;
     }
-    
+
     public void setErrorDocument(String errorDocument) {
         this.errorDocument = errorDocument;
     }
-   
+
     public List<RoutingRule> getRoutingRules() {
         return routingRules;
     }
@@ -57,18 +57,18 @@ public class SetBucketWebsiteRequest extends GenericRequest {
         if (routingRules == null || routingRules.isEmpty()) {
             throw new IllegalArgumentException("routingRules should not be null or empty.");
         }
-        
+
         for (RoutingRule rule : routingRules) {
             rule.ensureRoutingRuleValid();
         }
-        
+
         this.routingRules.clear();
         this.routingRules.addAll(routingRules);
     }
-    
+
     public void AddRoutingRule(RoutingRule routingRule) {
         routingRule.ensureRoutingRuleValid();
         this.routingRules.add(routingRule);
     }
-    
+
 }

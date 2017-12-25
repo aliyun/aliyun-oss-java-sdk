@@ -22,19 +22,19 @@ package com.aliyun.oss.model;
 public class BucketLoggingResult extends GenericResult {
     private String targetBucket;
     private String targetPrefix;
-    
+
     public String getTargetBucket() {
         return targetBucket;
     }
-    
+
     public void setTargetBucket(String targetBucket) {
         this.targetBucket = targetBucket;
     }
-    
+
     public String getTargetPrefix() {
         return targetPrefix;
     }
-    
+
     public void setTargetPrefix(String targetPrefix) {
         this.targetPrefix = targetPrefix;
     }

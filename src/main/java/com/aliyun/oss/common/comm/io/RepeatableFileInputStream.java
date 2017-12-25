@@ -30,20 +30,20 @@ import java.nio.channels.FileChannel;
 import com.aliyun.oss.ClientException;
 
 public class RepeatableFileInputStream extends InputStream {
-    
+
     private File file = null;
     private FileInputStream fis = null;
     private FileChannel fileChannel = null;
     private long markPos = 0;
-    
+
     public RepeatableFileInputStream(File file) throws IOException {
         this(new FileInputStream(file), file);
     }
-    
+
     public RepeatableFileInputStream(FileInputStream fis) throws IOException {
         this(fis, null);
     }
-    
+
     public RepeatableFileInputStream(FileInputStream fis, File file) throws IOException {
         this.file = file;
         this.fis = fis;
@@ -98,4 +98,3 @@ public class RepeatableFileInputStream extends InputStream {
         return this.file;
     }
 }
-

@@ -22,16 +22,16 @@ package com.aliyun.oss.model;
 import java.util.Date;
 
 public class GetUdfApplicationLogRequest extends UdfGenericRequest {
-    
+
     public GetUdfApplicationLogRequest(String udfName) {
         super(udfName);
     }
-    
+
     public GetUdfApplicationLogRequest(String udfName, Date startTime) {
         super(udfName);
         this.startTime = startTime;
     }
-    
+
     public GetUdfApplicationLogRequest(String udfName, Long endLines) {
         super(udfName);
         this.endLines = endLines;
@@ -42,7 +42,7 @@ public class GetUdfApplicationLogRequest extends UdfGenericRequest {
         this.startTime = startTime;
         this.endLines = endLines;
     }
-    
+
     public Date getStartTime() {
         return startTime;
     }

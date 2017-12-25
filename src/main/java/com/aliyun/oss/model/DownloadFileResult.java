@@ -24,7 +24,7 @@ package com.aliyun.oss.model;
  * 
  */
 public class DownloadFileResult {
-   
+
     public ObjectMetadata getObjectMetadata() {
         return objectMetadata;
     }
@@ -32,7 +32,7 @@ public class DownloadFileResult {
     public void setObjectMetadata(ObjectMetadata objectMetadata) {
         this.objectMetadata = objectMetadata;
     }
-    
+
     private ObjectMetadata objectMetadata;
-    
+
 }

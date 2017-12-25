@@ -70,163 +70,135 @@ import com.aliyun.oss.model.SetLiveChannelRequest;
  * Live channel operation.
  */
 public class LiveChannelOperation extends OSSOperation {
-    
+
     public LiveChannelOperation(ServiceClient client, CredentialsProvider credsProvider) {
         super(client, credsProvider);
     }
-    
-    public CreateLiveChannelResult createLiveChannel(CreateLiveChannelRequest createLiveChannelRequest) 
+
+    public CreateLiveChannelResult createLiveChannel(CreateLiveChannelRequest createLiveChannelRequest)
             throws OSSException, ClientException {
         assertParameterNotNull(createLiveChannelRequest, "createLiveChannelRequest");
 
         String bucketName = createLiveChannelRequest.getBucketName();
         String liveChannelName = createLiveChannelRequest.getLiveChannelName();
-        
+
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         assertParameterNotNull(liveChannelName, "liveChannelName");
         ensureLiveChannelNameValid(liveChannelName);
-        
+
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(RequestParameters.SUBRESOURCE_LIVE, null);
-        
+
         byte[] rawContent = createLiveChannelRequestMarshaller.marshall(createLiveChannelRequest);
         Map<String, String> headers = new HashMap<String, String>();
         addRequestRequiredHeaders(headers, rawContent);
-        
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-                .setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.PUT)
-                .setBucket(bucketName)
-                .setKey(liveChannelName)
-                .setParameters(parameters)
-                .setHeaders(headers)
-                .setInputSize(rawContent.length)
-                .setInputStream(new ByteArrayInputStream(rawContent))                
-                .setOriginalRequest(createLiveChannelRequest)
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setKey(liveChannelName).setParameters(parameters)
+                .setHeaders(headers).setInputSize(rawContent.length)
+                .setInputStream(new ByteArrayInputStream(rawContent)).setOriginalRequest(createLiveChannelRequest)
                 .build();
-        
+
         List<ResponseHandler> reponseHandlers = new ArrayList<ResponseHandler>();
         reponseHandlers.add(new OSSCallbackErrorResponseHandler());
-        
+
         return doOperation(request, createLiveChannelResponseParser, bucketName, liveChannelName, true);
     }
-    
-    public void setLiveChannelStatus(SetLiveChannelRequest setLiveChannelRequest) 
-            throws OSSException, ClientException {
-        
+
+    public void setLiveChannelStatus(SetLiveChannelRequest setLiveChannelRequest) throws OSSException, ClientException {
+
         assertParameterNotNull(setLiveChannelRequest, "setLiveChannelRequest");
 
         String bucketName = setLiveChannelRequest.getBucketName();
         String liveChannelName = setLiveChannelRequest.getLiveChannelName();
-        
+
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         assertParameterNotNull(liveChannelName, "liveChannelName");
         ensureLiveChannelNameValid(liveChannelName);
-        
+
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(RequestParameters.SUBRESOURCE_LIVE, null);
-        parameters.put(RequestParameters.SUBRESOURCE_STATUS, 
-                setLiveChannelRequest.getLiveChannelStatus().toString());
-        
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-                .setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.PUT)
-                .setBucket(bucketName)
-                .setKey(liveChannelName)
-                .setParameters(parameters)
-                .setOriginalRequest(setLiveChannelRequest)
-                .build();
-        
+        parameters.put(RequestParameters.SUBRESOURCE_STATUS, setLiveChannelRequest.getLiveChannelStatus().toString());
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setKey(liveChannelName).setParameters(parameters)
+                .setOriginalRequest(setLiveChannelRequest).build();
+
         doOperation(request, emptyResponseParser, bucketName, liveChannelName);
     }
 
-    public LiveChannelInfo getLiveChannelInfo(LiveChannelGenericRequest liveChannelGenericRequest) 
+    public LiveChannelInfo getLiveChannelInfo(LiveChannelGenericRequest liveChannelGenericRequest)
             throws OSSException, ClientException {
 
         assertParameterNotNull(liveChannelGenericRequest, "liveChannelGenericRequest");
-        
+
         String bucketName = liveChannelGenericRequest.getBucketName();
         String liveChannelName = liveChannelGenericRequest.getLiveChannelName();
-        
+
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         assertParameterNotNull(liveChannelName, "liveChannelName");
         ensureLiveChannelNameValid(liveChannelName);
-        
+
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(RequestParameters.SUBRESOURCE_LIVE, null);
-        
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-                .setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.GET)
-                .setBucket(bucketName)
-                .setKey(liveChannelName)
-                .setParameters(parameters)
-                .setOriginalRequest(liveChannelGenericRequest)
-                .build();
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(liveChannelName).setParameters(parameters)
+                .setOriginalRequest(liveChannelGenericRequest).build();
 
         return doOperation(request, getLiveChannelInfoResponseParser, bucketName, liveChannelName, true);
     }
-    
-    public LiveChannelStat getLiveChannelStat(LiveChannelGenericRequest liveChannelGenericRequest) 
+
+    public LiveChannelStat getLiveChannelStat(LiveChannelGenericRequest liveChannelGenericRequest)
             throws OSSException, ClientException {
 
         assertParameterNotNull(liveChannelGenericRequest, "liveChannelGenericRequest");
-        
+
         String bucketName = liveChannelGenericRequest.getBucketName();
         String liveChannelName = liveChannelGenericRequest.getLiveChannelName();
-        
+
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         assertParameterNotNull(liveChannelName, "liveChannelName");
         ensureLiveChannelNameValid(liveChannelName);
-        
+
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(RequestParameters.SUBRESOURCE_LIVE, null);
         parameters.put(RequestParameters.SUBRESOURCE_COMP, RequestParameters.STAT);
-        
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-                .setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.GET)
-                .setBucket(bucketName)
-                .setKey(liveChannelName)
-                .setParameters(parameters)
-                .setOriginalRequest(liveChannelGenericRequest)
-                .build();
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(liveChannelName).setParameters(parameters)
+                .setOriginalRequest(liveChannelGenericRequest).build();
 
         return doOperation(request, getLiveChannelStatResponseParser, bucketName, liveChannelName, true);
     }
-    
-    public void deleteLiveChannel(LiveChannelGenericRequest liveChannelGenericRequest) 
+
+    public void deleteLiveChannel(LiveChannelGenericRequest liveChannelGenericRequest)
             throws OSSException, ClientException {
 
         assertParameterNotNull(liveChannelGenericRequest, "liveChannelGenericRequest");
-        
+
         String bucketName = liveChannelGenericRequest.getBucketName();
         String liveChannelName = liveChannelGenericRequest.getLiveChannelName();
-        
+
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         assertParameterNotNull(liveChannelName, "liveChannelName");
         ensureLiveChannelNameValid(liveChannelName);
-        
+
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(RequestParameters.SUBRESOURCE_LIVE, null);
-        
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-                .setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.DELETE)
-                .setBucket(bucketName)
-                .setKey(liveChannelName)
-                .setParameters(parameters)
-                .setOriginalRequest(liveChannelGenericRequest)
-                .build();
-        
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(liveChannelName).setParameters(parameters)
+                .setOriginalRequest(liveChannelGenericRequest).build();
+
         doOperation(request, emptyResponseParser, bucketName, liveChannelName);
     }
-    
+
     /**
      * List all live channels.
      */
@@ -234,21 +206,21 @@ public class LiveChannelOperation extends OSSOperation {
         LiveChannelListing liveChannelListing = listLiveChannels(new ListLiveChannelsRequest(bucketName));
         List<LiveChannel> liveChannels = liveChannelListing.getLiveChannels();
         while (liveChannelListing.isTruncated()) {
-            liveChannelListing = listLiveChannels(new ListLiveChannelsRequest(
-                    bucketName, liveChannelListing.getNextMarker(), null));
+            liveChannelListing = listLiveChannels(
+                    new ListLiveChannelsRequest(bucketName, liveChannelListing.getNextMarker(), null));
             liveChannels.addAll(liveChannelListing.getLiveChannels());
         }
         return liveChannels;
     }
-    
+
     /**
      * List live channels.
      */
-    public LiveChannelListing listLiveChannels(ListLiveChannelsRequest listLiveChannelRequest) 
+    public LiveChannelListing listLiveChannels(ListLiveChannelsRequest listLiveChannelRequest)
             throws OSSException, ClientException {
 
         assertParameterNotNull(listLiveChannelRequest, "listObjectsRequest");
-        
+
         String bucketName = listLiveChannelRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
@@ -257,57 +229,48 @@ public class LiveChannelOperation extends OSSOperation {
         parameters.put(RequestParameters.SUBRESOURCE_LIVE, null);
         populateListLiveChannelsRequestParameters(listLiveChannelRequest, parameters);
 
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-                .setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.GET)
-                .setBucket(bucketName)
-                .setParameters(parameters)
-                .setOriginalRequest(listLiveChannelRequest)
-                .build();
-        
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(parameters)
+                .setOriginalRequest(listLiveChannelRequest).build();
+
         return doOperation(request, listLiveChannelsReponseParser, bucketName, null, true);
     }
-    
-    public List<LiveRecord> getLiveChannelHistory(LiveChannelGenericRequest liveChannelGenericRequest) 
+
+    public List<LiveRecord> getLiveChannelHistory(LiveChannelGenericRequest liveChannelGenericRequest)
             throws OSSException, ClientException {
 
         assertParameterNotNull(liveChannelGenericRequest, "liveChannelGenericRequest");
-        
+
         String bucketName = liveChannelGenericRequest.getBucketName();
         String liveChannelName = liveChannelGenericRequest.getLiveChannelName();
-        
+
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         assertParameterNotNull(liveChannelName, "liveChannelName");
         ensureLiveChannelNameValid(liveChannelName);
-        
+
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(RequestParameters.SUBRESOURCE_LIVE, null);
         parameters.put(RequestParameters.SUBRESOURCE_COMP, RequestParameters.HISTORY);
-        
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-                .setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.GET)
-                .setBucket(bucketName)
-                .setKey(liveChannelName)
-                .setParameters(parameters)
-                .setOriginalRequest(liveChannelGenericRequest)
-                .build();
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(liveChannelName).setParameters(parameters)
+                .setOriginalRequest(liveChannelGenericRequest).build();
 
         return doOperation(request, getLiveChannelHistoryResponseParser, bucketName, liveChannelName, true);
     }
-    
-    public void generateVodPlaylist(GenerateVodPlaylistRequest generateVodPlaylistRequest) 
+
+    public void generateVodPlaylist(GenerateVodPlaylistRequest generateVodPlaylistRequest)
             throws OSSException, ClientException {
-        
+
         assertParameterNotNull(generateVodPlaylistRequest, "generateVodPlaylistRequest");
-        
+
         String bucketName = generateVodPlaylistRequest.getBucketName();
         String liveChannelName = generateVodPlaylistRequest.getLiveChannelName();
         String playlistName = generateVodPlaylistRequest.getPlaylistName();
         Long startTime = generateVodPlaylistRequest.getStratTime();
         Long endTime = generateVodPlaylistRequest.getEndTime();
-        
+
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         assertParameterNotNull(liveChannelName, "liveChannelName");
@@ -322,37 +285,30 @@ public class LiveChannelOperation extends OSSOperation {
         parameters.put(RequestParameters.SUBRESOURCE_END_TIME, endTime.toString());
 
         String key = liveChannelName + "/" + playlistName;
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-                .setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.POST)
-                .setBucket(bucketName)
-                .setKey(key)
-                .setParameters(parameters)
-                .setInputStream(new ByteArrayInputStream(new byte[0]))
-                .setInputSize(0)
-                .setOriginalRequest(generateVodPlaylistRequest)
-                .build();
-        
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.POST).setBucket(bucketName).setKey(key).setParameters(parameters)
+                .setInputStream(new ByteArrayInputStream(new byte[0])).setInputSize(0)
+                .setOriginalRequest(generateVodPlaylistRequest).build();
+
         doOperation(request, emptyResponseParser, bucketName, key);
     }
-    
-    public String generateRtmpUri(GenerateRtmpUriRequest request) 
-            throws OSSException, ClientException {
-        
+
+    public String generateRtmpUri(GenerateRtmpUriRequest request) throws OSSException, ClientException {
+
         assertParameterNotNull(request, "request");
-        
+
         String bucketName = request.getBucketName();
         String liveChannelName = request.getLiveChannelName();
         String playlistName = request.getPlaylistName();
         Long expires = request.getExpires();
-        
+
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         assertParameterNotNull(liveChannelName, "liveChannelName");
         ensureLiveChannelNameValid(liveChannelName);
         assertParameterNotNull(playlistName, "playlistName");
         assertParameterNotNull(expires, "expires");
-        
+
         Credentials currentCreds = this.credsProvider.getCredentials();
         String accessId = currentCreds.getAccessKeyId();
         String accessKey = currentCreds.getSecretAccessKey();
@@ -362,23 +318,23 @@ public class LiveChannelOperation extends OSSOperation {
         RequestMessage requestMessage = new RequestMessage();
         ClientConfiguration config = this.client.getClientConfiguration();
         requestMessage.setEndpoint(OSSUtils.determineFinalEndpoint(this.endpoint, bucketName, config));
-        
+
         // Headers
         requestMessage.addHeader(HttpHeaders.DATE, expires.toString());
-        
+
         // Parameters
         requestMessage.addParameter(RequestParameters.PLAYLIST_NAME, playlistName);
-        
+
         if (useSecurityToken) {
             requestMessage.addParameter(SECURITY_TOKEN, currentCreds.getSecurityToken());
         }
 
         // Signature
         String canonicalResource = "/" + bucketName + "/" + liveChannelName;
-        String canonicalString = SignUtils.buildRtmpCanonicalString(canonicalResource, 
-                requestMessage, expires.toString());
+        String canonicalString = SignUtils.buildRtmpCanonicalString(canonicalResource, requestMessage,
+                expires.toString());
         String signature = ServiceSignature.create().computeSignature(accessKey, canonicalString);
-        
+
         // Build query string
         Map<String, String> params = new LinkedHashMap<String, String>();
         params.put(HttpHeaders.EXPIRES, expires.toString());
@@ -391,45 +347,45 @@ public class LiveChannelOperation extends OSSOperation {
         // Compose rtmp request uri
         String uri = requestMessage.getEndpoint().toString();
         String livChan = RequestParameters.SUBRESOURCE_LIVE + "/" + liveChannelName;
-        
+
         if (uri.startsWith(OSSConstants.PROTOCOL_HTTP)) {
             uri = uri.replaceFirst(OSSConstants.PROTOCOL_HTTP, OSSConstants.PROTOCOL_RTMP);
-        } else if (uri.startsWith(OSSConstants.PROTOCOL_HTTPS)){
+        } else if (uri.startsWith(OSSConstants.PROTOCOL_HTTPS)) {
             uri = uri.replaceFirst(OSSConstants.PROTOCOL_HTTPS, OSSConstants.PROTOCOL_RTMP);
         } else if (!uri.startsWith(OSSConstants.PROTOCOL_RTMP)) {
             uri = OSSConstants.PROTOCOL_RTMP + uri;
         }
-        
+
         if (!uri.endsWith("/")) {
             uri += "/";
         }
         uri += livChan + "?" + queryString;
-        
+
         return uri;
     }
-    
-    private static void populateListLiveChannelsRequestParameters(
-            ListLiveChannelsRequest listLiveChannelRequest, Map<String, String> params) {
-        
+
+    private static void populateListLiveChannelsRequestParameters(ListLiveChannelsRequest listLiveChannelRequest,
+            Map<String, String> params) {
+
         if (listLiveChannelRequest.getPrefix() != null) {
             params.put(RequestParameters.PREFIX, listLiveChannelRequest.getPrefix());
         }
-        
+
         if (listLiveChannelRequest.getMarker() != null) {
             params.put(RequestParameters.MARKER, listLiveChannelRequest.getMarker());
         }
-        
+
         if (listLiveChannelRequest.getMaxKeys() != null) {
             params.put(RequestParameters.MAX_KEYS, Integer.toString(listLiveChannelRequest.getMaxKeys()));
         }
     }
-    
+
     private static void addRequestRequiredHeaders(Map<String, String> headers, byte[] rawContent) {
         headers.put(HttpHeaders.CONTENT_LENGTH, String.valueOf(rawContent.length));
-        
+
         byte[] md5 = BinaryUtil.calculateMd5(rawContent);
         String md5Base64 = BinaryUtil.toBase64String(md5);
         headers.put(HttpHeaders.CONTENT_MD5, md5Base64);
     }
-    
+
 }

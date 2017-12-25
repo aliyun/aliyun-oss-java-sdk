@@ -20,37 +20,39 @@
 package com.aliyun.oss.model;
 
 public class SetBucketLoggingRequest extends GenericRequest {
-    
-    /* Value can be null when user want to close bucket logging functionality. */
+
+    /*
+     * Value can be null when user want to close bucket logging functionality.
+     */
     private String targetBucket;
-    
+
     private String targetPrefix;
-    
+
     public SetBucketLoggingRequest(String bucketName) {
         super(bucketName);
     }
-    
+
     public String getTargetBucket() {
         return targetBucket;
     }
-    
+
     public void setTargetBucket(String targetBucket) {
         this.targetBucket = targetBucket;
     }
-    
+
     public SetBucketLoggingRequest withTargetBucket(String targetBucket) {
         setTargetBucket(targetBucket);
         return this;
     }
-    
+
     public String getTargetPrefix() {
         return targetPrefix;
     }
-    
+
     public void setTargetPrefix(String targetPrefix) {
         this.targetPrefix = targetPrefix;
     }
-    
+
     public SetBucketLoggingRequest withTargetPrefix(String targetPrefix) {
         setTargetPrefix(targetPrefix);
         return this;

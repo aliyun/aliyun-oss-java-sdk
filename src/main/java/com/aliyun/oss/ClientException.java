@@ -25,27 +25,30 @@ package com.aliyun.oss;
  * </p>
  * 
  * <p>
- * {@link ClientException} is the class to represent any exception in OSS client side. Generally
- * ClientException occurs either before sending the request or after receving the response from OSS server side.
- * For example, if the network is broken when it tries to send a request, then the SDK will throw a {@link ClientException}
- * instance.
+ * {@link ClientException} is the class to represent any exception in OSS client
+ * side. Generally ClientException occurs either before sending the request or
+ * after receving the response from OSS server side. For example, if the network
+ * is broken when it tries to send a request, then the SDK will throw a
+ * {@link ClientException} instance.
  * </p>
  * 
  * <p>
- * {@link ServiceException} is converted from error code from OSS response. For example, when OSS tries to authenticate
- * a request, if Access ID does not exist, the SDK will throw a {@link ServiceException} or its subclass instance
- * with the specific error code, which the caller could handle that with specific logic.
+ * {@link ServiceException} is converted from error code from OSS response. For
+ * example, when OSS tries to authenticate a request, if Access ID does not
+ * exist, the SDK will throw a {@link ServiceException} or its subclass instance
+ * with the specific error code, which the caller could handle that with
+ * specific logic.
  * </p>
  * 
  */
 public class ClientException extends RuntimeException {
-    
+
     private static final long serialVersionUID = 1870835486798448798L;
-    
+
     private String errorMessage;
     private String requestId;
     private String errorCode;
-    
+
     /**
      * Creates a default instance.
      */
@@ -55,7 +58,9 @@ public class ClientException extends RuntimeException {
 
     /**
      * Creates an instance with error message.
-     * @param errorMessage Error message.
+     * 
+     * @param errorMessage
+     *            Error message.
      */
     public ClientException(String errorMessage) {
         this(errorMessage, null);
@@ -63,16 +68,21 @@ public class ClientException extends RuntimeException {
 
     /**
      * Creates an instance with an exception
-     * @param cause An exception.
+     * 
+     * @param cause
+     *            An exception.
      */
     public ClientException(Throwable cause) {
         this(null, cause);
     }
-    
+
     /**
      * Creates an instance with error message and an exception.
-     * @param errorMessage Error message.
-     * @param cause An exception.
+     * 
+     * @param errorMessage
+     *            Error message.
+     * @param cause
+     *            An exception.
      */
     public ClientException(String errorMessage, Throwable cause) {
         super(null, cause);
@@ -80,24 +90,34 @@ public class ClientException extends RuntimeException {
         this.errorCode = ClientErrorCode.UNKNOWN;
         this.requestId = "Unknown";
     }
-    
+
     /**
      * Creates an instance with error message, error code, request Id
-     * @param errorMessage Error message.
-     * @param errorCode Error code, which typically is from a set of predefined errors. The handler code could do action
-     *                 based on this.
-     * @param requestId Request Id.
+     * 
+     * @param errorMessage
+     *            Error message.
+     * @param errorCode
+     *            Error code, which typically is from a set of predefined
+     *            errors. The handler code could do action based on this.
+     * @param requestId
+     *            Request Id.
      */
     public ClientException(String errorMessage, String errorCode, String requestId) {
         this(errorMessage, errorCode, requestId, null);
     }
 
     /**
-     * Creates an instance with error message, error code, request Id and an exception.
-     * @param errorMessage Error message.
-     * @param errorCode Error code.
-     * @param requestId Request Id.
-     * @param cause An exception.
+     * Creates an instance with error message, error code, request Id and an
+     * exception.
+     * 
+     * @param errorMessage
+     *            Error message.
+     * @param errorCode
+     *            Error code.
+     * @param requestId
+     *            Request Id.
+     * @param cause
+     *            An exception.
      */
     public ClientException(String errorMessage, String errorCode, String requestId, Throwable cause) {
         this(errorMessage, cause);
@@ -107,14 +127,16 @@ public class ClientException extends RuntimeException {
 
     /**
      * Get error message.
+     * 
      * @return Error message in string.
      */
     public String getErrorMessage() {
         return errorMessage;
     }
-    
+
     /**
      * Get error code.
+     * 
      * @return Error code.
      */
     public String getErrorCode() {
@@ -123,16 +145,16 @@ public class ClientException extends RuntimeException {
 
     /**
      * Gets request id.
+     * 
      * @return The request Id.
      */
     public String getRequestId() {
-       return requestId;
+        return requestId;
     }
 
     @Override
     public String getMessage() {
-        return getErrorMessage() 
-                + "\n[ErrorCode]: " + errorCode != null ? errorCode : ""
-                + "\n[RequestId]: " + requestId != null ? requestId : "";
+        return getErrorMessage() + "\n[ErrorCode]: " + errorCode != null ? errorCode
+                : "" + "\n[RequestId]: " + requestId != null ? requestId : "";
     }
 }

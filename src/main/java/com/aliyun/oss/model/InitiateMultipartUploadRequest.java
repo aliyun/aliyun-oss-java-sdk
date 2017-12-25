@@ -29,10 +29,12 @@ public class InitiateMultipartUploadRequest extends GenericRequest {
 
     /**
      * Constructor
+     * 
      * @param bucketName
-     *          Bucket name.
+     *            Bucket name.
      * @param key
-     *          Target object's key (which is the combined file after all parts are uploaded).
+     *            Target object's key (which is the combined file after all
+     *            parts are uploaded).
      */
     public InitiateMultipartUploadRequest(String bucketName, String key) {
         this(bucketName, key, null);
@@ -40,12 +42,14 @@ public class InitiateMultipartUploadRequest extends GenericRequest {
 
     /**
      * Constructor
+     * 
      * @param bucketName
-     *          Bucket name.
+     *            Bucket name.
      * @param key
-     *          Target object's key (which is the combined file after all parts are uploaded).
+     *            Target object's key (which is the combined file after all
+     *            parts are uploaded).
      * @param objectMetadata
-     *          Object's metadata.
+     *            Object's metadata.
      */
     public InitiateMultipartUploadRequest(String bucketName, String key, ObjectMetadata objectMetadata) {
         super(bucketName, key);
@@ -54,6 +58,7 @@ public class InitiateMultipartUploadRequest extends GenericRequest {
 
     /**
      * Gets the object's metadata.
+     * 
      * @return The metadata of the object to create.
      */
     public ObjectMetadata getObjectMetadata() {
@@ -62,8 +67,9 @@ public class InitiateMultipartUploadRequest extends GenericRequest {
 
     /**
      * Sets the object's metadata.
+     * 
      * @param objectMetadata
-     *          The metadata of the object to create.
+     *            The metadata of the object to create.
      */
     public void setObjectMetadata(ObjectMetadata objectMetadata) {
         this.objectMetadata = objectMetadata;

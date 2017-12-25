@@ -38,22 +38,22 @@ public class BucketInfo extends GenericResult {
     public Set<Grant> getGrants() {
         return this.grants;
     }
-    
+
     public void grantPermission(Grantee grantee, Permission permission) {
         if (grantee == null || permission == null) {
             throw new NullPointerException();
         }
-        
+
         grants.add(new Grant(grantee, permission));
     }
-    
-	public CannedAccessControlList getCannedACL() {
-		return cannedACL;
-	}
 
-	public void setCannedACL(CannedAccessControlList cannedACL) {
-		this.cannedACL = cannedACL;
-	}
+    public CannedAccessControlList getCannedACL() {
+        return cannedACL;
+    }
+
+    public void setCannedACL(CannedAccessControlList cannedACL) {
+        this.cannedACL = cannedACL;
+    }
 
     private Bucket bucket;
     private Set<Grant> grants = new HashSet<Grant>();

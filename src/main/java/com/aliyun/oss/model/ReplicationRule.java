@@ -65,26 +65,25 @@ public class ReplicationRule {
         return enableHistoricalObjectReplication;
     }
 
-    public void setEnableHistoricalObjectReplication(
-            boolean enableHistoricalObjectReplication) {
+    public void setEnableHistoricalObjectReplication(boolean enableHistoricalObjectReplication) {
         this.enableHistoricalObjectReplication = enableHistoricalObjectReplication;
     }
-    
+
     public List<String> getObjectPrefixList() {
         return objectPrefixList;
     }
-    
+
     public void setObjectPrefixList(List<String> objectPrefixList) {
         this.objectPrefixList = new ArrayList<String>();
         if (objectPrefixList != null && !objectPrefixList.isEmpty()) {
             this.objectPrefixList.addAll(objectPrefixList);
         }
     }
-    
+
     public List<ReplicationAction> getReplicationActionList() {
         return replicationActionList;
     }
-    
+
     public void setReplicationActionList(List<ReplicationAction> replicationActionList) {
         this.replicationActionList = new ArrayList<ReplicationAction>();
         if (replicationActionList != null && !replicationActionList.isEmpty()) {

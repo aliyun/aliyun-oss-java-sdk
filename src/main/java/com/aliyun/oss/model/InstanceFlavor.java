@@ -26,22 +26,22 @@ package com.aliyun.oss.model;
  * 
  */
 public class InstanceFlavor {
-    
+
     public static final String DEFAULT_INSTANCE_TYPE = "ecs.n1.small";
-    
+
     public InstanceFlavor(String instanceType) {
         this.instanceType = instanceType;
     }
-    
+
     public String getInstanceType() {
         return instanceType;
     }
-    
+
     @Override
     public String toString() {
         return "InstanceFlavor [instanceType=" + instanceType + "]";
     }
 
     private String instanceType;
-    
+
 }

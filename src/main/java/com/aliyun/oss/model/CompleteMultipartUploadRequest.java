@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The request class that is used to complete a multipart upload.
- * It wraps all parameters needed to complete a multipart upload.
+ * The request class that is used to complete a multipart upload. It wraps all
+ * parameters needed to complete a multipart upload.
  *
  */
 public class CompleteMultipartUploadRequest extends GenericRequest {
@@ -32,31 +32,34 @@ public class CompleteMultipartUploadRequest extends GenericRequest {
     /** The ID of the multipart upload to complete */
     private String uploadId;
 
-    /** The list of part numbers and ETags to use when completing the multipart upload */
+    /**
+     * The list of part numbers and ETags to use when completing the multipart
+     * upload
+     */
     private List<PartETag> partETags = new ArrayList<PartETag>();
-    
+
     /** The access control list for multipart uploaded object */
     private CannedAccessControlList cannedACL;
-    
+
     /** callback */
     private Callback callback;
-    
+
     /** process **/
     private String process;
 
     /**
      * Constructor
+     * 
      * @param bucketName
-     *          Bucket name.
+     *            Bucket name.
      * @param key
-     *          Object key.
+     *            Object key.
      * @param uploadId
-     *          Mutlipart upload Id.
+     *            Mutlipart upload Id.
      * @param partETags
-     *          The Etags for the parts.
+     *            The Etags for the parts.
      */
-    public CompleteMultipartUploadRequest(String bucketName, String key, String uploadId, 
-            List<PartETag> partETags) {
+    public CompleteMultipartUploadRequest(String bucketName, String key, String uploadId, List<PartETag> partETags) {
         super(bucketName, key);
         this.uploadId = uploadId;
         this.partETags = partETags;
@@ -65,6 +68,7 @@ public class CompleteMultipartUploadRequest extends GenericRequest {
 
     /**
      * Gets the multipart upload Id.
+     * 
      * @return The multipart upload Id.
      */
     public String getUploadId() {
@@ -73,8 +77,9 @@ public class CompleteMultipartUploadRequest extends GenericRequest {
 
     /**
      * Sets the multipart upload Id.
+     * 
      * @param uploadId
-     *          The multipart upload Id.
+     *            The multipart upload Id.
      */
     public void setUploadId(String uploadId) {
         this.uploadId = uploadId;
@@ -82,6 +87,7 @@ public class CompleteMultipartUploadRequest extends GenericRequest {
 
     /**
      * Gets the Etags of the parts.
+     * 
      * @return A List of {@link PartETag}
      */
     public List<PartETag> getPartETags() {
@@ -90,15 +96,17 @@ public class CompleteMultipartUploadRequest extends GenericRequest {
 
     /**
      * Sets the ETags of the parts.
+     * 
      * @param partETags
-     *          A list of {@link PartETag}
+     *            A list of {@link PartETag}
      */
     public void setPartETags(List<PartETag> partETags) {
         this.partETags = partETags;
     }
-    
+
     /**
      * Gets Object ACL。
+     * 
      * @return Object ACL。
      */
     public CannedAccessControlList getObjectACL() {
@@ -107,12 +115,14 @@ public class CompleteMultipartUploadRequest extends GenericRequest {
 
     /**
      * Sets Object ACL。
-     * @param Object ACL。
+     * 
+     * @param Object
+     *            ACL。
      */
     public void setObjectACL(CannedAccessControlList cannedACL) {
         this.cannedACL = cannedACL;
     }
-    
+
     public Callback getCallback() {
         return callback;
     }
@@ -120,12 +130,12 @@ public class CompleteMultipartUploadRequest extends GenericRequest {
     public void setCallback(Callback callback) {
         this.callback = callback;
     }
-    
-    public String getProcess() {
-		return process;
-	}
 
-	public void setProcess(String process) {
-		this.process = process;
-	}
+    public String getProcess() {
+        return process;
+    }
+
+    public void setProcess(String process) {
+        this.process = process;
+    }
 }

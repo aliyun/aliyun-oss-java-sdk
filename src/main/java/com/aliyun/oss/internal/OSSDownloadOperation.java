@@ -64,24 +64,24 @@ import com.aliyun.oss.model.SimplifiedObjectMeta;
  *
  */
 public class OSSDownloadOperation {
-    
+
     static class DownloadCheckPoint implements Serializable {
 
         private static final long serialVersionUID = 4682293344365787077L;
         private static final String DOWNLOAD_MAGIC = "92611BED-89E2-46B6-89E5-72F273D4B0A3";
-        
+
         /**
          * Loads the checkpoint data from the checkpoint file.
          */
         public synchronized void load(String cpFile) throws IOException, ClassNotFoundException {
-            FileInputStream fileIn =new FileInputStream(cpFile);
+            FileInputStream fileIn = new FileInputStream(cpFile);
             ObjectInputStream in = new ObjectInputStream(fileIn);
             DownloadCheckPoint dcp = (DownloadCheckPoint) in.readObject();
             assign(dcp);
             in.close();
             fileIn.close();
         }
-        
+
         /**
          * Writes the checkpoint data to the checkpoint file.
          */
@@ -93,39 +93,38 @@ public class OSSDownloadOperation {
             outStream.close();
             fileOut.close();
         }
-        
+
         /**
          * Updates the part's download status.
-         * @throws IOException 
+         * 
+         * @throws IOException
          */
         public synchronized void update(int index, boolean completed) throws IOException {
             downloadParts.get(index).isCompleted = completed;
         }
-        
+
         /**
          * Check if the object matches the checkpoint information.
          */
         public synchronized boolean isValid(OSSObjectOperation objectOperation) {
             // 比较checkpoint的magic和md5
-            if (this.magic == null || 
-                    !this.magic.equals(DOWNLOAD_MAGIC) || 
-                    this.md5 != hashCode()) {
+            if (this.magic == null || !this.magic.equals(DOWNLOAD_MAGIC) || this.md5 != hashCode()) {
                 return false;
             }
-            
+
             GenericRequest genericRequest = new GenericRequest(bucketName, objectKey);
             SimplifiedObjectMeta meta = objectOperation.getSimplifiedObjectMeta(genericRequest);
-            
-            // Object's size, last modified time or ETAG are not same as the one in the checkpoint.
-            if (this.objectStat.size != meta.getSize() || 
-                    !this.objectStat.lastModified.equals(meta.getLastModified()) ||
-                    !this.objectStat.digest.equals(meta.getETag())) {
+
+            // Object's size, last modified time or ETAG are not same as the one
+            // in the checkpoint.
+            if (this.objectStat.size != meta.getSize() || !this.objectStat.lastModified.equals(meta.getLastModified())
+                    || !this.objectStat.digest.equals(meta.getETag())) {
                 return false;
             }
-            
+
             return true;
         }
-        
+
         @Override
         public int hashCode() {
             final int prime = 31;
@@ -138,7 +137,7 @@ public class OSSDownloadOperation {
             result = prime * result + ((downloadParts == null) ? 0 : downloadParts.hashCode());
             return result;
         }
-        
+
         private void assign(DownloadCheckPoint dcp) {
             this.magic = dcp.magic;
             this.md5 = dcp.md5;
@@ -148,21 +147,21 @@ public class OSSDownloadOperation {
             this.objectStat = dcp.objectStat;
             this.downloadParts = dcp.downloadParts;
         }
-        
-        public String magic;  // magic
-        public int md5;  // the md5 of checkpoint data.
-        public String downloadFile;  // local path for the download.
+
+        public String magic; // magic
+        public int md5; // the md5 of checkpoint data.
+        public String downloadFile; // local path for the download.
         public String bucketName; // bucket name
-        public String objectKey;  // object key
-        public ObjectStat objectStat;  // object state
-        public ArrayList<DownloadPart> downloadParts;  // download parts list.
+        public String objectKey; // object key
+        public ObjectStat objectStat; // object state
+        public ArrayList<DownloadPart> downloadParts; // download parts list.
 
     }
-    
+
     static class ObjectStat implements Serializable {
 
         private static final long serialVersionUID = -2883494783412999919L;
-        
+
         @Override
         public int hashCode() {
             final int prime = 31;
@@ -173,28 +172,27 @@ public class OSSDownloadOperation {
             return result;
         }
 
-        public static ObjectStat getFileStat(OSSObjectOperation objectOperation, 
-                String bucketName, String key) {
+        public static ObjectStat getFileStat(OSSObjectOperation objectOperation, String bucketName, String key) {
             GenericRequest genericRequest = new GenericRequest(bucketName, key);
             SimplifiedObjectMeta meta = objectOperation.getSimplifiedObjectMeta(genericRequest);
-            
+
             ObjectStat objStat = new ObjectStat();
             objStat.size = meta.getSize();
             objStat.lastModified = meta.getLastModified();
             objStat.digest = meta.getETag();
-            
+
             return objStat;
         }
-        
+
         public long size; // file size
         public Date lastModified; // file's last modified time.
         public String digest; // The file's ETag.
     }
-    
+
     static class DownloadPart implements Serializable {
 
         private static final long serialVersionUID = -3655925846487976207L;
-        
+
         @Override
         public int hashCode() {
             final int prime = 31;
@@ -211,7 +209,7 @@ public class OSSDownloadOperation {
         public long end; // end index;
         public boolean isCompleted; // flag of part download finished or not.
     }
-    
+
     static class PartResult {
 
         public PartResult(int number, long start, long end) {
@@ -219,7 +217,7 @@ public class OSSDownloadOperation {
             this.start = start;
             this.end = end;
         }
-        
+
         public long getStart() {
             return start;
         }
@@ -258,11 +256,11 @@ public class OSSDownloadOperation {
 
         private int number; // part number, starting from 1.
         private long start; // start index in the part.
-        private long end;  // end index in the part.
+        private long end; // end index in the part.
         private boolean failed; // flag of part upload failure.
         private Exception exception; // Exception during part upload.
     }
-    
+
     static class DownloadResult {
 
         public List<PartResult> getPartResults() {
@@ -284,51 +282,55 @@ public class OSSDownloadOperation {
         private List<PartResult> partResults;
         private ObjectMetadata objectMetadata;
     }
-    
+
     public OSSDownloadOperation(OSSObjectOperation objectOperation) {
         this.objectOperation = objectOperation;
     }
-    
+
     public DownloadFileResult downloadFile(DownloadFileRequest downloadFileRequest) throws Throwable {
         assertParameterNotNull(downloadFileRequest, "downloadFileRequest");
-        
+
         String bucketName = downloadFileRequest.getBucketName();
         String key = downloadFileRequest.getKey();
-        
+
         assertParameterNotNull(bucketName, "bucketName");
         assertParameterNotNull(key, "key");
         ensureBucketNameValid(bucketName);
         ensureObjectKeyValid(key);
 
-        // the download file name is not specified, using the key as the local file name.
+        // the download file name is not specified, using the key as the local
+        // file name.
         if (downloadFileRequest.getDownloadFile() == null) {
             downloadFileRequest.setDownloadFile(downloadFileRequest.getKey());
         }
-        
-        // the checkpoint is enabled, but no checkpoint file, using the default checkpoint file name.
+
+        // the checkpoint is enabled, but no checkpoint file, using the default
+        // checkpoint file name.
         if (downloadFileRequest.isEnableCheckpoint()) {
             if (downloadFileRequest.getCheckpointFile() == null || downloadFileRequest.getCheckpointFile().isEmpty()) {
                 downloadFileRequest.setCheckpointFile(downloadFileRequest.getDownloadFile() + ".dcp");
             }
         }
-        
+
         return downloadFileWithCheckpoint(downloadFileRequest);
     }
-    
+
     private DownloadFileResult downloadFileWithCheckpoint(DownloadFileRequest downloadFileRequest) throws Throwable {
         DownloadFileResult downloadFileResult = new DownloadFileResult();
         DownloadCheckPoint downloadCheckPoint = new DownloadCheckPoint();
-        
-        // The checkpoint is enabled, downloads the parts download results from checkpoint file.
+
+        // The checkpoint is enabled, downloads the parts download results from
+        // checkpoint file.
         if (downloadFileRequest.isEnableCheckpoint()) {
-            // read the last download result. If checkpoint file dosx not exist, or the file is updated/corrupted,
+            // read the last download result. If checkpoint file dosx not exist,
+            // or the file is updated/corrupted,
             // re-download again.
             try {
                 downloadCheckPoint.load(downloadFileRequest.getCheckpointFile());
             } catch (Exception e) {
                 remove(downloadFileRequest.getCheckpointFile());
             }
-            
+
             // The download checkpoint is corrupted, download again.
             if (!downloadCheckPoint.isValid(objectOperation)) {
                 prepare(downloadCheckPoint, downloadFileRequest);
@@ -342,7 +344,7 @@ public class OSSDownloadOperation {
         // Progress listen starts tracking the progress.
         ProgressListener listener = downloadFileRequest.getProgressListener();
         ProgressPublisher.publishProgress(listener, ProgressEventType.TRANSFER_STARTED_EVENT);
-        
+
         // Concurrently download parts.
         DownloadResult downloadResult = download(downloadCheckPoint, downloadFileRequest);
         for (PartResult partResult : downloadResult.getPartResults()) {
@@ -354,36 +356,38 @@ public class OSSDownloadOperation {
 
         // Publish the complete status.
         ProgressPublisher.publishProgress(listener, ProgressEventType.TRANSFER_COMPLETED_EVENT);
-        
+
         // rename the temp file.
         renameTo(downloadFileRequest.getTempDownloadFile(), downloadFileRequest.getDownloadFile());
 
-        // The checkpoint is enabled, delete the checkpoint file after a successful download.
+        // The checkpoint is enabled, delete the checkpoint file after a
+        // successful download.
         if (downloadFileRequest.isEnableCheckpoint()) {
             remove(downloadFileRequest.getCheckpointFile());
         }
-        
+
         downloadFileResult.setObjectMetadata(downloadResult.getObjectMetadata());
         return downloadFileResult;
     }
-    
-    private void prepare(DownloadCheckPoint downloadCheckPoint, DownloadFileRequest downloadFileRequest) throws IOException {
+
+    private void prepare(DownloadCheckPoint downloadCheckPoint, DownloadFileRequest downloadFileRequest)
+            throws IOException {
         downloadCheckPoint.magic = DownloadCheckPoint.DOWNLOAD_MAGIC;
         downloadCheckPoint.downloadFile = downloadFileRequest.getDownloadFile();
         downloadCheckPoint.bucketName = downloadFileRequest.getBucketName();
         downloadCheckPoint.objectKey = downloadFileRequest.getKey();
-        downloadCheckPoint.objectStat = ObjectStat.getFileStat(objectOperation, 
-                downloadCheckPoint.bucketName, downloadCheckPoint.objectKey);
-        downloadCheckPoint.downloadParts = splitFile(downloadCheckPoint.objectStat.size, 
+        downloadCheckPoint.objectStat = ObjectStat.getFileStat(objectOperation, downloadCheckPoint.bucketName,
+                downloadCheckPoint.objectKey);
+        downloadCheckPoint.downloadParts = splitFile(downloadCheckPoint.objectStat.size,
                 downloadFileRequest.getPartSize());
-        
+
         createFixedFile(downloadFileRequest.getTempDownloadFile(), downloadCheckPoint.objectStat.size);
     }
-    
+
     public static void createFixedFile(String filePath, long length) throws IOException {
         File file = new File(filePath);
         RandomAccessFile rf = null;
-        
+
         try {
             rf = new RandomAccessFile(file, "rw");
             rf.setLength(length);
@@ -392,9 +396,9 @@ public class OSSDownloadOperation {
                 rf.close();
             }
         }
-    } 
-    
-    private DownloadResult download(DownloadCheckPoint downloadCheckPoint, DownloadFileRequest downloadFileRequest) 
+    }
+
+    private DownloadResult download(DownloadCheckPoint downloadCheckPoint, DownloadFileRequest downloadFileRequest)
             throws Throwable {
         DownloadResult downloadResult = new DownloadResult();
         ArrayList<PartResult> taskResults = new ArrayList<PartResult>();
@@ -407,17 +411,19 @@ public class OSSDownloadOperation {
         long contentLength = 0;
         for (int i = 0; i < downloadCheckPoint.downloadParts.size(); i++) {
             if (!downloadCheckPoint.downloadParts.get(i).isCompleted) {
-                long partSize = downloadCheckPoint.downloadParts.get(i).end - downloadCheckPoint.downloadParts.get(i).start + 1;
+                long partSize = downloadCheckPoint.downloadParts.get(i).end
+                        - downloadCheckPoint.downloadParts.get(i).start + 1;
                 contentLength += partSize;
             }
         }
         ProgressPublisher.publishResponseContentLength(listener, contentLength);
         downloadFileRequest.setProgressListener(null);
-        
+
         // Concurrently download parts.
         for (int i = 0; i < downloadCheckPoint.downloadParts.size(); i++) {
             if (!downloadCheckPoint.downloadParts.get(i).isCompleted) {
-                Task task = new Task(i, "download-" + i, downloadCheckPoint, i, downloadFileRequest, objectOperation, listener);
+                Task task = new Task(i, "download-" + i, downloadCheckPoint, i, downloadFileRequest, objectOperation,
+                        listener);
                 futures.add(service.submit(task));
                 tasks.add(task);
             } else {
@@ -426,7 +432,7 @@ public class OSSDownloadOperation {
             }
         }
         service.shutdown();
-        
+
         // Waiting for all parts download,
         service.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
         for (Future<PartResult> future : futures) {
@@ -438,7 +444,7 @@ public class OSSDownloadOperation {
                 throw e.getCause();
             }
         }
-        
+
         // Sorts the download result by the part number.
         Collections.sort(taskResults, new Comparator<PartResult>() {
             @Override
@@ -446,7 +452,7 @@ public class OSSDownloadOperation {
                 return p1.getNumber() - p2.getNumber();
             }
         });
-        
+
         // sets the return value.
         downloadResult.setPartResults(taskResults);
         if (tasks.size() > 0) {
@@ -456,9 +462,9 @@ public class OSSDownloadOperation {
 
         return downloadResult;
     }
-    
+
     static class Task implements Callable<PartResult> {
-        
+
         public Task(int id, String name, DownloadCheckPoint downloadCheckPoint, int partIndex,
                 DownloadFileRequest downloadFileRequest, OSSObjectOperation objectOperation,
                 ProgressListener progressListener) {
@@ -470,18 +476,18 @@ public class OSSDownloadOperation {
             this.objectOperation = objectOperation;
             this.progressListener = progressListener;
         }
-        
+
         @Override
         public PartResult call() throws Exception {
             PartResult tr = null;
             RandomAccessFile output = null;
             InputStream content = null;
-            
+
             try {
                 DownloadPart downloadPart = downloadCheckPoint.downloadParts.get(partIndex);
                 tr = new PartResult(partIndex + 1, downloadPart.start, downloadPart.end);
-                
-                output = new RandomAccessFile(downloadFileRequest.getTempDownloadFile(), "rw");  
+
+                output = new RandomAccessFile(downloadFileRequest.getTempDownloadFile(), "rw");
                 output.seek(downloadPart.start);
 
                 GetObjectRequest getObjectRequest = new GetObjectRequest(downloadFileRequest.getBucketName(),
@@ -492,22 +498,22 @@ public class OSSDownloadOperation {
                 getObjectRequest.setUnmodifiedSinceConstraint(downloadFileRequest.getUnmodifiedSinceConstraint());
                 getObjectRequest.setResponseHeaders(downloadFileRequest.getResponseHeaders());
                 getObjectRequest.setRange(downloadPart.start, downloadPart.end);
-                
+
                 OSSObject ossObj = objectOperation.getObject(getObjectRequest);
                 objectMetadata = ossObj.getObjectMetadata();
                 content = ossObj.getObjectContent();
-                
+
                 byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
                 int bytesRead = 0;
                 while ((bytesRead = content.read(buffer)) != -1) {
                     output.write(buffer, 0, bytesRead);
                 }
-                
+
                 downloadCheckPoint.update(partIndex, true);
                 if (downloadFileRequest.isEnableCheckpoint()) {
-                   downloadCheckPoint.dump(downloadFileRequest.getCheckpointFile()); 
+                    downloadCheckPoint.dump(downloadFileRequest.getCheckpointFile());
                 }
-                ProgressPublisher.publishResponseBytesTransferred(progressListener, 
+                ProgressPublisher.publishResponseBytesTransferred(progressListener,
                         (downloadPart.end - downloadPart.start + 1));
             } catch (Exception e) {
                 tr.setFailed(true);
@@ -517,16 +523,16 @@ public class OSSDownloadOperation {
                 if (output != null) {
                     output.close();
                 }
-                
+
                 if (content != null) {
                     content.close();
                 }
             }
-                                    
+
             return tr;
         }
-        
-        public ObjectMetadata GetobjectMetadata () {
+
+        public ObjectMetadata GetobjectMetadata() {
             return objectMetadata;
         }
 
@@ -539,10 +545,10 @@ public class OSSDownloadOperation {
         private ObjectMetadata objectMetadata;
         private ProgressListener progressListener;
     }
-    
+
     private ArrayList<DownloadPart> splitFile(long objectSize, long partSize) {
         ArrayList<DownloadPart> parts = new ArrayList<DownloadPart>();
-        
+
         long partNum = objectSize / partSize;
         if (partNum >= 10000) {
             partSize = objectSize / (10000 - 1);
@@ -559,78 +565,79 @@ public class OSSDownloadOperation {
 
         return parts;
     }
-    
+
     private long getPartEnd(long begin, long total, long per) {
         if (begin + per > total) {
             return total - 1;
         }
         return begin + per - 1;
     }
-    
-    private boolean remove(String filePath) {
-        boolean flag = false;  
-        File file = new File(filePath);  
 
-        if (file.isFile() && file.exists()) {  
-            flag = file.delete();  
-        }  
-        
-        return flag;  
+    private boolean remove(String filePath) {
+        boolean flag = false;
+        File file = new File(filePath);
+
+        if (file.isFile() && file.exists()) {
+            flag = file.delete();
+        }
+
+        return flag;
     }
-    
+
     private static void renameTo(String srcFilePath, String destFilePath) throws IOException {
-        File srcfile =new File(srcFilePath);
-        File destfile =new File(destFilePath);
+        File srcfile = new File(srcFilePath);
+        File destfile = new File(destFilePath);
         moveFile(srcfile, destfile);
     }
-    
-	private static void moveFile(final File srcFile, final File destFile) throws IOException {
-		if (srcFile == null) {
-			throw new NullPointerException("Source must not be null");
-		}
-		if (destFile == null) {
-			throw new NullPointerException("Destination must not be null");
-		}
-		if (!srcFile.exists()) {
-			throw new FileNotFoundException("Source '" + srcFile + "' does not exist");
-		}
-		if (srcFile.isDirectory()) {
-			throw new IOException("Source '" + srcFile + "' is a directory");
-		}
-		if (destFile.isDirectory()) {
-			throw new IOException("Destination '" + destFile + "' is a directory");
-		}
-		if (destFile.exists()) {
-			if (!destFile.delete()) {
-				throw new IOException("Failed to delete original file '" + srcFile + "'");
-			}
-		}
 
-		final boolean rename = srcFile.renameTo(destFile);
-		if (!rename) {
-			copyFile(srcFile, destFile);
-			if (!srcFile.delete()) {
-				throw new IOException("Failed to delete original file '" + srcFile + "' after copy to '" + destFile + "'");
-			}
-		}
-	}
-        
-	private static void copyFile(File source, File dest) throws IOException {
-		InputStream is = null;
-		OutputStream os = null;
-		try {
-			is = new FileInputStream(source);
-			os = new FileOutputStream(dest);
-			byte[] buffer = new byte[4096];
-			int length;
-			while ((length = is.read(buffer)) > 0) {
-				os.write(buffer, 0, length);
-			}
-		} finally {
-			is.close();
-			os.close();
-		}
-	}
-        
+    private static void moveFile(final File srcFile, final File destFile) throws IOException {
+        if (srcFile == null) {
+            throw new NullPointerException("Source must not be null");
+        }
+        if (destFile == null) {
+            throw new NullPointerException("Destination must not be null");
+        }
+        if (!srcFile.exists()) {
+            throw new FileNotFoundException("Source '" + srcFile + "' does not exist");
+        }
+        if (srcFile.isDirectory()) {
+            throw new IOException("Source '" + srcFile + "' is a directory");
+        }
+        if (destFile.isDirectory()) {
+            throw new IOException("Destination '" + destFile + "' is a directory");
+        }
+        if (destFile.exists()) {
+            if (!destFile.delete()) {
+                throw new IOException("Failed to delete original file '" + srcFile + "'");
+            }
+        }
+
+        final boolean rename = srcFile.renameTo(destFile);
+        if (!rename) {
+            copyFile(srcFile, destFile);
+            if (!srcFile.delete()) {
+                throw new IOException(
+                        "Failed to delete original file '" + srcFile + "' after copy to '" + destFile + "'");
+            }
+        }
+    }
+
+    private static void copyFile(File source, File dest) throws IOException {
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            is = new FileInputStream(source);
+            os = new FileOutputStream(dest);
+            byte[] buffer = new byte[4096];
+            int length;
+            while ((length = is.read(buffer)) > 0) {
+                os.write(buffer, 0, length);
+            }
+        } finally {
+            is.close();
+            os.close();
+        }
+    }
+
     private OSSObjectOperation objectOperation;
 }

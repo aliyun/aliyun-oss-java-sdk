@@ -26,64 +26,64 @@ import java.util.Date;
  * 
  */
 public class UdfImageInfo {
-	
-	public UdfImageInfo(Integer version, String status, String desc, String canonicalRegion, Date creationDate) {
-		this.version = version;
-		this.status = status;
-		this.desc = desc;
-		this.canonicalRegion = canonicalRegion;
-		this.creationDate = creationDate;
-	}
-	
-	public Integer getVersion() {
-		return version;
-	}
 
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
+    public UdfImageInfo(Integer version, String status, String desc, String canonicalRegion, Date creationDate) {
+        this.version = version;
+        this.status = status;
+        this.desc = desc;
+        this.canonicalRegion = canonicalRegion;
+        this.creationDate = creationDate;
+    }
 
-	public String getStatus() {
-		return status;
-	}
+    public Integer getVersion() {
+        return version;
+    }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
 
-	public String getDesc() {
-		return desc;
-	}
+    public String getStatus() {
+        return status;
+    }
 
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	public String getCanonicalRegion() {
-		return canonicalRegion;
-	}
+    public String getDesc() {
+        return desc;
+    }
 
-	public void setCanonicalRegion(String canonicalRegion) {
-		this.canonicalRegion = canonicalRegion;
-	}
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
 
-	public Date getCreationDate() {
-		return creationDate;
-	}
+    public String getCanonicalRegion() {
+        return canonicalRegion;
+    }
 
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
-	}
-	
-	@Override
+    public void setCanonicalRegion(String canonicalRegion) {
+        this.canonicalRegion = canonicalRegion;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    @Override
     public String toString() {
         return "UdfImageInfo [version=" + version + ", status=" + status + ", desc=" + desc + ", canonicalRegion="
                 + canonicalRegion + ", creationDate=" + creationDate + "]";
     }
 
     private Integer version;
-	private String status;
-	private String desc;
-	private String canonicalRegion;
-	private Date creationDate;
+    private String status;
+    private String desc;
+    private String canonicalRegion;
+    private Date creationDate;
 }

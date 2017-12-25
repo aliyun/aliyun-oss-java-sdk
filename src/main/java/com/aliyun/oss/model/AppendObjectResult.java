@@ -19,15 +19,14 @@
 
 package com.aliyun.oss.model;
 
-
 /**
  * Successful response of append object operation.
  */
 public class AppendObjectResult extends GenericResult {
-    
+
     /* Indicates that which position to append at next time. */
     private Long nextPosition;
-    
+
     /* Returned value of the appended object crc64 */
     private String objectCRC;
 

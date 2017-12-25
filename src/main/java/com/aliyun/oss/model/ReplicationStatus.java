@@ -22,9 +22,11 @@ package com.aliyun.oss.model;
 /**
  * The status of cross region replication.
  * <p>
- * Currently we have starting，doing，closing three status. After PutBucketReplication is sent, OSS start preparing the
- * replication and at this point the status is 'starting'. And when the replication actually happens, the status is "doing".
- * And once DeleteBucketReplication is called, the OSS will do the cleanup work for the replication and the status will be
+ * Currently we have starting，doing，closing three status. After
+ * PutBucketReplication is sent, OSS start preparing the replication and at this
+ * point the status is 'starting'. And when the replication actually happens,
+ * the status is "doing". And once DeleteBucketReplication is called, the OSS
+ * will do the cleanup work for the replication and the status will be
  * "closing".
  * </p>
  *
@@ -64,8 +66,6 @@ public enum ReplicationStatus {
             }
         }
 
-        throw new IllegalArgumentException(
-                "Unable to parse the provided replication status "
-                        + replicationStatus);
+        throw new IllegalArgumentException("Unable to parse the provided replication status " + replicationStatus);
     }
 }

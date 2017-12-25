@@ -22,8 +22,8 @@ package com.aliyun.oss.model;
 import java.util.Date;
 
 /**
- * The simplified metadata information of an OSS object.
- * It includes ETag, size, last modified.
+ * The simplified metadata information of an OSS object. It includes ETag, size,
+ * last modified.
  */
 public class SimplifiedObjectMeta extends GenericResult {
 
@@ -57,8 +57,6 @@ public class SimplifiedObjectMeta extends GenericResult {
 
     @Override
     public String toString() {
-        return "ObjectMeta [ETag=" + this.eTag 
-                + ", Size=" + this.size
-                + ", LastModified=" + getLastModified() + "]";
+        return "ObjectMeta [ETag=" + this.eTag + ", Size=" + this.size + ", LastModified=" + getLastModified() + "]";
     }
 }

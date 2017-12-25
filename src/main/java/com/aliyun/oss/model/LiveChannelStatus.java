@@ -41,8 +41,6 @@ public enum LiveChannelStatus {
             }
         }
 
-        throw new IllegalArgumentException(
-                "Unable to parse the provided live channel status "
-                        + liveChannelStatus);
+        throw new IllegalArgumentException("Unable to parse the provided live channel status " + liveChannelStatus);
     }
 }

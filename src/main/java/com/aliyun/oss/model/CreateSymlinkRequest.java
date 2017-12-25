@@ -24,13 +24,12 @@ package com.aliyun.oss.model;
  * 
  */
 public class CreateSymlinkRequest extends GenericRequest {
-    
-    public CreateSymlinkRequest(String bucketName, String symlink, 
-            String target) {
+
+    public CreateSymlinkRequest(String bucketName, String symlink, String target) {
         super(bucketName, symlink);
         this.target = target;
     }
-    
+
     public String getSymlink() {
         return this.getKey();
     }
@@ -41,6 +40,7 @@ public class CreateSymlinkRequest extends GenericRequest {
 
     /**
      * Sets the target file of the symlink.
+     * 
      * @return Target file.
      */
     public String getTarget() {
@@ -49,14 +49,17 @@ public class CreateSymlinkRequest extends GenericRequest {
 
     /**
      * Gets the target file of the symlink.
-     * @param target Target file.
+     * 
+     * @param target
+     *            Target file.
      */
     public void setTarget(String target) {
         this.target = target;
     }
-    
+
     /**
      * Gets the symlink file's metadata.
+     * 
      * @return symlink file's metadata.
      */
     public ObjectMetadata getMetadata() {
@@ -65,7 +68,9 @@ public class CreateSymlinkRequest extends GenericRequest {
 
     /**
      * Sets the symlink file's metadata.
-     * @param metadata symlink file's metadata.
+     * 
+     * @param metadata
+     *            symlink file's metadata.
      */
     public void setMetadata(ObjectMetadata metadata) {
         this.metadata = metadata;
@@ -73,7 +78,7 @@ public class CreateSymlinkRequest extends GenericRequest {
 
     // Target file.
     private String target;
-    
+
     // symlink file's metadata.
     private ObjectMetadata metadata;
 }

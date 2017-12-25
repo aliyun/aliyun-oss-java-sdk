@@ -25,15 +25,22 @@ import com.aliyun.oss.internal.OSSUtils;
  * This is the request class is used to list Live Channels under a bucket.
  */
 public class ListLiveChannelsRequest extends LiveChannelGenericRequest {
-    
+
     private static final int MAX_RETURNED_KEYS_LIMIT = 100;
 
     /**
      * Constructor.
-     * @param bucketName Bucket name.
-     * @param prefix Prefix filter---returned Live Channels must start with this prefix.
-     * @param marker Marker filter----returned Live Channels must be greater than this marker in lexicographical order.
-     * @param maxKeys Max Live Channels to return, By default it's 100.
+     * 
+     * @param bucketName
+     *            Bucket name.
+     * @param prefix
+     *            Prefix filter---returned Live Channels must start with this
+     *            prefix.
+     * @param marker
+     *            Marker filter----returned Live Channels must be greater than
+     *            this marker in lexicographical order.
+     * @param maxKeys
+     *            Max Live Channels to return, By default it's 100.
      */
     public ListLiveChannelsRequest(String bucketName, String prefix, String marker, int maxKeys) {
         super(bucketName, null);
@@ -41,11 +48,11 @@ public class ListLiveChannelsRequest extends LiveChannelGenericRequest {
         setMarker(marker);
         setMaxKeys(maxKeys);
     }
-    
+
     public ListLiveChannelsRequest(String bucketName) {
         super(bucketName, null);
     }
-    
+
     public ListLiveChannelsRequest(String bucketName, String prefix, String marker) {
         super(bucketName, null);
         setPrefix(prefix);
@@ -53,7 +60,9 @@ public class ListLiveChannelsRequest extends LiveChannelGenericRequest {
     }
 
     /**
-     * Gets the prefix filter---the returned Live Channels must start with this prefix.
+     * Gets the prefix filter---the returned Live Channels must start with this
+     * prefix.
+     * 
      * @return The prefix filter.
      */
     public String getPrefix() {
@@ -61,16 +70,20 @@ public class ListLiveChannelsRequest extends LiveChannelGenericRequest {
     }
 
     /**
-     * Sets the prefix filter---the returned Live Channels must start with this prefix.
+     * Sets the prefix filter---the returned Live Channels must start with this
+     * prefix.
+     * 
      * @param prefix
-     *          The prefix filter.
+     *            The prefix filter.
      */
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
 
     /**
-     * Gets the marker filter---returned Live Channels must be greater than this marker in lexicographical order.
+     * Gets the marker filter---returned Live Channels must be greater than this
+     * marker in lexicographical order.
+     * 
      * @return The marker filter.
      */
     public String getMarker() {
@@ -78,8 +91,11 @@ public class ListLiveChannelsRequest extends LiveChannelGenericRequest {
     }
 
     /**
-     * Sets the marker filter---returned Live Channels must be greater than this marker in lexicographical order.
-     * @param marker The marker filter.
+     * Sets the marker filter---returned Live Channels must be greater than this
+     * marker in lexicographical order.
+     * 
+     * @param marker
+     *            The marker filter.
      */
     public void setMarker(String marker) {
         this.marker = marker;
@@ -87,6 +103,7 @@ public class ListLiveChannelsRequest extends LiveChannelGenericRequest {
 
     /**
      * Gets max number of live channel. By default it's 100.
+     * 
      * @return The max number of live channel.
      */
     public Integer getMaxKeys() {
@@ -95,52 +112,61 @@ public class ListLiveChannelsRequest extends LiveChannelGenericRequest {
 
     /**
      * Sets max number of live channel. By default it's 100.
-     * @param maxKeys The max number of live channel.
+     * 
+     * @param maxKeys
+     *            The max number of live channel.
      */
     public void setMaxKeys(int maxKeys) {
         if (maxKeys < 0 || maxKeys > MAX_RETURNED_KEYS_LIMIT) {
-            throw new IllegalArgumentException(
-                    OSSUtils.OSS_RESOURCE_MANAGER.getString("MaxKeysOutOfRange"));
+            throw new IllegalArgumentException(OSSUtils.OSS_RESOURCE_MANAGER.getString("MaxKeysOutOfRange"));
         }
 
         this.maxKeys = maxKeys;
     }
-    
+
     /**
-     * Sets the prefix and returns the current ListLiveChannelsRequest instance (this).
+     * Sets the prefix and returns the current ListLiveChannelsRequest instance
+     * (this).
+     * 
      * @param prefix
-     *          The prefix filter.
+     *            The prefix filter.
      */
     public ListLiveChannelsRequest withPrefix(String prefix) {
         setPrefix(prefix);
         return this;
     }
-    
+
     /**
-     * Sets the max number of Live Channels and returns the current ListLiveChannelsRequest instance(this).
-     * @param maxKeys The max number of Live Channels, by default is 100 and max value is also 100.
+     * Sets the max number of Live Channels and returns the current
+     * ListLiveChannelsRequest instance(this).
+     * 
+     * @param maxKeys
+     *            The max number of Live Channels, by default is 100 and max
+     *            value is also 100.
      */
     public ListLiveChannelsRequest withMaxKeys(Integer maxKeys) {
         setMaxKeys(maxKeys);
         return this;
     }
-    
+
     /**
      * Sets the marker filter.
-     * @param marker The marker filter.
+     * 
+     * @param marker
+     *            The marker filter.
      */
     public ListLiveChannelsRequest withMarker(String marker) {
         setMarker(marker);
         return this;
     }
-    
+
     // The prefix filter.
     private String prefix;
-    
+
     // The marker filter.
     private String marker;
 
     // The max number of Live Channels to return.
     private Integer maxKeys;
-    
+
 }

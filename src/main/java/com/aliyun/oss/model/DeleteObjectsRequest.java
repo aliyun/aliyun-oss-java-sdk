@@ -28,59 +28,62 @@ import java.util.List;
  * Options for deleting multiple objects in a specified bucket.
  */
 public class DeleteObjectsRequest extends GenericRequest {
-    
+
     public static final int DELETE_OBJECTS_ONETIME_LIMIT = 1000;
-    
+
     /* List of keys to delete */
-    private final List<String> keys = new ArrayList<String>(); 
-    
+    private final List<String> keys = new ArrayList<String>();
+
     /* Whether to enable quiet mode for response, default is false */
     private boolean quiet;
-    
-    /* Optional parameter indicating the encoding method to be applied on the response. */
+
+    /*
+     * Optional parameter indicating the encoding method to be applied on the
+     * response.
+     */
     private String encodingType;
-    
+
     public DeleteObjectsRequest(String bucketName) {
         super(bucketName);
     }
-    
+
     public boolean isQuiet() {
         return quiet;
     }
-    
+
     public DeleteObjectsRequest withQuiet(boolean quiet) {
         setQuiet(quiet);
         return this;
     }
-    
+
     public void setQuiet(boolean quiet) {
         this.quiet = quiet;
     }
-    
+
     public List<String> getKeys() {
         return keys;
     }
-    
+
     public void setKeys(List<String> keys) {
         if (keys == null || keys.size() == 0) {
             throw new IllegalArgumentException("Keys to delete must be specified");
         }
-        
+
         if (keys.size() > DELETE_OBJECTS_ONETIME_LIMIT) {
-            throw new IllegalArgumentException("The count of keys to delete exceed max limit " 
-                    + DELETE_OBJECTS_ONETIME_LIMIT);
+            throw new IllegalArgumentException(
+                    "The count of keys to delete exceed max limit " + DELETE_OBJECTS_ONETIME_LIMIT);
         }
-        
+
         for (String key : keys) {
             if (key == null || key.equals("") || !validateObjectKey(key)) {
                 throw new IllegalArgumentException("Illegal object key " + key);
             }
         }
-        
+
         this.keys.clear();
         this.keys.addAll(keys);
     }
-    
+
     public DeleteObjectsRequest withKeys(List<String> keys) {
         setKeys(keys);
         return this;
@@ -93,7 +96,7 @@ public class DeleteObjectsRequest extends GenericRequest {
     public void setEncodingType(String encodingType) {
         this.encodingType = encodingType;
     }
-    
+
     public DeleteObjectsRequest withEncodingType(String encodingType) {
         setEncodingType(encodingType);
         return this;

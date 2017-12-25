@@ -20,26 +20,25 @@
 package com.aliyun.oss.model;
 
 public class CreateLiveChannelRequest extends LiveChannelGenericRequest {
-    
+
     public CreateLiveChannelRequest(String bucketName, String liveChannelName) {
         this(bucketName, liveChannelName, "", LiveChannelStatus.Enabled, new LiveChannelTarget());
     }
 
     public CreateLiveChannelRequest(String bucketName, String liveChannelName, String liveChannelDescription) {
-        this(bucketName, liveChannelName, liveChannelDescription, LiveChannelStatus.Enabled, 
-                new LiveChannelTarget());
+        this(bucketName, liveChannelName, liveChannelDescription, LiveChannelStatus.Enabled, new LiveChannelTarget());
     }
-    
+
     public CreateLiveChannelRequest(String bucketName, String liveChannelName, String liveChannelDescription,
             LiveChannelTarget target) {
         this(bucketName, liveChannelName, liveChannelDescription, LiveChannelStatus.Enabled, target);
     }
-    
+
     public CreateLiveChannelRequest(String bucketName, String liveChannelName, String liveChannelDescription,
             LiveChannelStatus status) {
         this(bucketName, liveChannelName, liveChannelDescription, status, new LiveChannelTarget());
     }
-    
+
     public CreateLiveChannelRequest(String bucketName, String liveChannelName, String liveChannelDescription,
             LiveChannelStatus status, LiveChannelTarget target) {
         super(bucketName, liveChannelName);

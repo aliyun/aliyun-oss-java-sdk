@@ -21,14 +21,13 @@ package com.aliyun.oss.model;
 
 public class GenerateVodPlaylistRequest extends LiveChannelGenericRequest {
 
-    public GenerateVodPlaylistRequest(String bucketName, String liveChannelName, 
-            String playlistName) {
+    public GenerateVodPlaylistRequest(String bucketName, String liveChannelName, String playlistName) {
         super(bucketName, liveChannelName);
         this.playlistName = playlistName;
     }
 
-    public GenerateVodPlaylistRequest(String bucketName, String liveChannelName, 
-            String playlistName, long stratTime, long endTime) {
+    public GenerateVodPlaylistRequest(String bucketName, String liveChannelName, String playlistName, long stratTime,
+            long endTime) {
         super(bucketName, liveChannelName);
         this.playlistName = playlistName;
         this.stratTime = stratTime;

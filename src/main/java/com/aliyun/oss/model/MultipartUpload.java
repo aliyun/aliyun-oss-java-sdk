@@ -31,7 +31,6 @@ public class MultipartUpload {
 
     private Date initiated;
 
-
     public String getKey() {
         return key;
     }

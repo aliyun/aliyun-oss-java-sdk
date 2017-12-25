@@ -26,27 +26,27 @@ public class BucketWebsiteResult extends GenericResult {
     private String indexDocument;
     private String errorDocument;
     private List<RoutingRule> routingRules;
-    
+
     public String getIndexDocument() {
         return indexDocument;
     }
-    
+
     public void setIndexDocument(String indexDocument) {
         this.indexDocument = indexDocument;
     }
-    
+
     public String getErrorDocument() {
         return errorDocument;
     }
-    
+
     public void setErrorDocument(String errorDocument) {
         this.errorDocument = errorDocument;
     }
-    
+
     public List<RoutingRule> getRoutingRules() {
         return routingRules;
     }
-    
+
     public void AddRoutingRule(RoutingRule routingRule) {
         routingRule.ensureRoutingRuleValid();
         if (routingRules == null) {

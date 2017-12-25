@@ -21,16 +21,15 @@ package com.aliyun.oss.model;
 
 import java.util.Map;
 
-
 public class SetBucketTaggingRequest extends GenericRequest {
-    
+
     private TagSet tagSet = null;
 
     public SetBucketTaggingRequest(String bucketName) {
         super(bucketName);
         this.tagSet = new TagSet();
     }
-    
+
     public SetBucketTaggingRequest(String bucketName, Map<String, String> tags) {
         super(bucketName);
         this.tagSet = new TagSet(tags);
@@ -44,11 +43,11 @@ public class SetBucketTaggingRequest extends GenericRequest {
     public void setTag(String key, String value) {
         this.tagSet.setTag(key, value);
     }
-    
+
     public String getTag(String key) {
-        return this.tagSet.getTag( key );
+        return this.tagSet.getTag(key);
     }
-    
+
     public TagSet getTagSet() {
         return tagSet;
     }
@@ -56,7 +55,7 @@ public class SetBucketTaggingRequest extends GenericRequest {
     public void setTagSet(TagSet tagSet) {
         this.tagSet = tagSet;
     }
-    
+
     public SetBucketTaggingRequest withTagSet(TagSet tagSet) {
         setTagSet(tagSet);
         return this;

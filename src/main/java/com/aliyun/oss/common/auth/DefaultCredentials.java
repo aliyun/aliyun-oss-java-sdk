@@ -31,7 +31,7 @@ public class DefaultCredentials implements Credentials {
     public DefaultCredentials(String accessKeyId, String secretAccessKey) {
         this(accessKeyId, secretAccessKey, null);
     }
-    
+
     public DefaultCredentials(String accessKeyId, String secretAccessKey, String securityToken) {
         if (accessKeyId == null || accessKeyId.equals("")) {
             throw new InvalidCredentialsException("Access key id should not be null or empty.");

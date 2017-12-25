@@ -25,19 +25,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * The class encapsulates the access control list (ACL) information of OSS.
- * It includes an owner and a group of <{@link Grantee},{@link Permission}> pair.
- * */
+ * The class encapsulates the access control list (ACL) information of OSS. It
+ * includes an owner and a group of <{@link Grantee},{@link Permission}> pair.
+ */
 public class AccessControlList extends GenericResult implements Serializable {
-    
+
     private static final long serialVersionUID = 211267925081748283L;
 
     private HashSet<Grant> grants = new HashSet<Grant>();
     private CannedAccessControlList cannedACL;
-	private Owner owner;
+    private Owner owner;
 
     /**
      * Gets {@link Owner}.
+     * 
      * @return The {@link Owner} instance.
      */
     public Owner getOwner() {
@@ -46,77 +47,84 @@ public class AccessControlList extends GenericResult implements Serializable {
 
     /**
      * Sets the {@link Owner}.
+     * 
      * @param owner
-     *          {@link Owner} instance,
+     *            {@link Owner} instance,
      */
     public void setOwner(Owner owner) {
         this.owner = owner;
     }
 
     /**
-     * Grants the {@link Grantee} with the {@link Permission}.
-     * For now the Grantee must be {@link GroupGrantee#AllUsers}.
+     * Grants the {@link Grantee} with the {@link Permission}. For now the
+     * Grantee must be {@link GroupGrantee#AllUsers}.
+     * 
      * @param grantee
-     *          The grantee, it must be {@link GroupGrantee#AllUsers} for now.
+     *            The grantee, it must be {@link GroupGrantee#AllUsers} for now.
      * @param permission
-     *          The permission defined in {@link Permission}.
+     *            The permission defined in {@link Permission}.
      */
     public void grantPermission(Grantee grantee, Permission permission) {
         if (grantee == null || permission == null) {
             throw new NullPointerException();
         }
-        
+
         grants.add(new Grant(grantee, permission));
     }
-    
+
     /**
-     * Revokes the {@link Grantee} all its permissions.
-     * For now the Grantee must be {@link GroupGrantee#AllUsers}.
+     * Revokes the {@link Grantee} all its permissions. For now the Grantee must
+     * be {@link GroupGrantee#AllUsers}.
+     * 
      * @param grantee
-     *          The grantee, it must be {@link GroupGrantee#AllUsers} for now.
+     *            The grantee, it must be {@link GroupGrantee#AllUsers} for now.
      */
     public void revokeAllPermissions(Grantee grantee) {
         if (grantee == null) {
             throw new NullPointerException();
         }
-        
+
         ArrayList<Grant> grantsToRemove = new ArrayList<Grant>();
-        for(Grant g : grants) {
+        for (Grant g : grants) {
             if (g.getGrantee().equals(g)) {
                 grantsToRemove.add(g);
             }
         }
         grants.removeAll(grantsToRemove);
     }
-    
+
     /**
-     * Gets all {@link Grant} instances, each {@link Grant} instance specifies a {@link Grantee} and its
-     * {@link Permission}.
+     * Gets all {@link Grant} instances, each {@link Grant} instance specifies a
+     * {@link Grantee} and its {@link Permission}.
+     * 
      * @return The set of {@link Grant}.
      */
     @Deprecated
     public Set<Grant> getGrants() {
         return this.grants;
     }
-    
+
     /**
      * Gets the canned ACL.
+     * 
      * @return the canned ACL.
      */
     public CannedAccessControlList getCannedACL() {
-		return cannedACL;
-	}
+        return cannedACL;
+    }
 
     /**
      * Sets the ACL.
+     * 
      * @param cannedACL
      */
-	public void setCannedACL(CannedAccessControlList cannedACL) {
-		this.cannedACL = cannedACL;
-	}
+    public void setCannedACL(CannedAccessControlList cannedACL) {
+        this.cannedACL = cannedACL;
+    }
 
     /**
-     * Serializes the ACL and the owner information to string()). It does not include the {@link Grant} information for now.
+     * Serializes the ACL and the owner information to string()). It does not
+     * include the {@link Grant} information for now.
      */
     public String toString() {
         return "AccessControlList [owner=" + owner + ", ACL=" + getCannedACL() + "]";

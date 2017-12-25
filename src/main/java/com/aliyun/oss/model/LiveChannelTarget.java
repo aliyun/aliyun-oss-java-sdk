@@ -42,8 +42,7 @@ public class LiveChannelTarget {
         this.playlistName = playlistName;
     }
 
-    public LiveChannelTarget(String type, int fragDuration, int fragCount,
-            String playlistName) {
+    public LiveChannelTarget(String type, int fragDuration, int fragCount, String playlistName) {
         this.type = type;
         this.fragDuration = fragDuration;
         this.fragCount = fragCount;

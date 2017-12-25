@@ -35,10 +35,12 @@ public class CopyObjectResult extends GenericResult {
     /**
      * Constructor
      */
-    public CopyObjectResult() {}
+    public CopyObjectResult() {
+    }
 
     /**
      * Gets the target object's ETag.
+     * 
      * @return Target object's ETag.
      */
     public String getETag() {
@@ -47,8 +49,9 @@ public class CopyObjectResult extends GenericResult {
 
     /**
      * Sets the target object's ETag (used by SDK only)
+     * 
      * @param etag
-     *          Target object's ETag.
+     *            Target object's ETag.
      */
     public void setEtag(String etag) {
         this.etag = etag;
@@ -56,6 +59,7 @@ public class CopyObjectResult extends GenericResult {
 
     /**
      * Gets the last modified of target object.
+     * 
      * @return Target object's last modified.
      */
     public Date getLastModified() {
@@ -64,8 +68,9 @@ public class CopyObjectResult extends GenericResult {
 
     /**
      * Sets the last modified time on the target object.
+     * 
      * @param lastModified
-     *          Target object's last modified time.
+     *            Target object's last modified time.
      */
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;

@@ -20,8 +20,8 @@
 package com.aliyun.oss.common.comm;
 
 /**
- * Represents the communication protocol to use when sending requests to OSS, 
- * we use HTTPS by default.
+ * Represents the communication protocol to use when sending requests to OSS, we
+ * use HTTPS by default.
  */
 public enum Protocol {
 
@@ -34,7 +34,7 @@ public enum Protocol {
     private Protocol(String protocol) {
         this.protocol = protocol;
     }
-    
+
     @Override
     public String toString() {
         return protocol;

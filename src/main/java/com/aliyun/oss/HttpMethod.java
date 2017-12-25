@@ -47,7 +47,7 @@ public enum HttpMethod {
      * HTTP PUT
      */
     PUT,
-    
+
     /**
      * HTTP OPTION
      */

@@ -20,16 +20,17 @@
 package com.aliyun.oss.model;
 
 public class UserQos extends GenericResult {
-    
+
     public UserQos() {
     }
-    
+
     public UserQos(int storageCapacity) {
         this.storageCapacity = storageCapacity;
     }
 
     /**
      * Gets the bucket capacity in GB.
+     * 
      * @return Bucket capacity
      */
     public int getStorageCapacity() {
@@ -37,18 +38,19 @@ public class UserQos extends GenericResult {
     }
 
     /**
-     * Sets the bucket capacity in GB.
-     * -1 means unlimited capacity.
-     * Other negative number is not allowed.
+     * Sets the bucket capacity in GB. -1 means unlimited capacity. Other
+     * negative number is not allowed.
+     * 
      * @param storageCapacity
-     *          Storage capacity in GB.
+     *            Storage capacity in GB.
      */
     public void setStorageCapacity(int storageCapacity) {
         this.storageCapacity = storageCapacity;
     }
-    
+
     /**
      * Checks if the storage capacity is set.
+     * 
      * @return True:the storage capacity is set.
      */
     public boolean hasStorageCapacity() {
@@ -56,5 +58,5 @@ public class UserQos extends GenericResult {
     }
 
     private Integer storageCapacity;
-    
+
 }

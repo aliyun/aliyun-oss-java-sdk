@@ -25,11 +25,11 @@ package com.aliyun.oss;
 public class OSSException extends ServiceException {
 
     private static final long serialVersionUID = -1979779664334663173L;
-    
+
     private String resourceType;
     private String header;
     private String method;
-    
+
     public OSSException() {
         super();
     }
@@ -42,23 +42,23 @@ public class OSSException extends ServiceException {
         super(errorMessage, cause);
     }
 
-    public OSSException(String errorMessage, String errorCode, String requestId,
-            String hostId, String header, String resourceType, String method) {
+    public OSSException(String errorMessage, String errorCode, String requestId, String hostId, String header,
+            String resourceType, String method) {
         this(errorMessage, errorCode, requestId, hostId, header, resourceType, method, null, null);
     }
-    
-    public OSSException(String errorMessage, String errorCode, String requestId,
-            String hostId, String header, String resourceType, String method, Throwable cause) {
+
+    public OSSException(String errorMessage, String errorCode, String requestId, String hostId, String header,
+            String resourceType, String method, Throwable cause) {
         this(errorMessage, errorCode, requestId, hostId, header, resourceType, method, null, cause);
     }
-    
-    public OSSException(String errorMessage, String errorCode, String requestId,
-            String hostId, String header, String resourceType, String method, String rawResponseError) {
+
+    public OSSException(String errorMessage, String errorCode, String requestId, String hostId, String header,
+            String resourceType, String method, String rawResponseError) {
         this(errorMessage, errorCode, requestId, hostId, header, resourceType, method, rawResponseError, null);
     }
-    
-    public OSSException(String errorMessage, String errorCode, String requestId,
-            String hostId, String header, String resourceType, String method, String rawResponseError, Throwable cause) {
+
+    public OSSException(String errorMessage, String errorCode, String requestId, String hostId, String header,
+            String resourceType, String method, String rawResponseError, Throwable cause) {
         super(errorMessage, errorCode, requestId, hostId, rawResponseError, cause);
         this.resourceType = resourceType;
         this.header = header;
@@ -76,12 +76,10 @@ public class OSSException extends ServiceException {
     public String getMethod() {
         return method;
     }
-    
+
     @Override
     public String getMessage() {
-        return super.getMessage() 
-                + (resourceType == null ? "" : "\n[ResourceType]: " + resourceType)
-                + (header == null ? "" : "\n[Header]: " + header)
-                + (method == null ? "" : "\n[Method]: " + method);
+        return super.getMessage() + (resourceType == null ? "" : "\n[ResourceType]: " + resourceType)
+                + (header == null ? "" : "\n[Header]: " + header) + (method == null ? "" : "\n[Method]: " + method);
     }
 }

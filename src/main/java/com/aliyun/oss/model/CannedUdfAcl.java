@@ -24,10 +24,9 @@ package com.aliyun.oss.model;
  *
  */
 public enum CannedUdfAcl {
-    
+
     /**
-     * Only the owner has the access.
-     * It's the default Acl.
+     * Only the owner has the access. It's the default Acl.
      */
     Private("private"),
 
@@ -36,10 +35,9 @@ public enum CannedUdfAcl {
      */
     Public("public");
 
-
     private String cannedAclString;
-    
-    private CannedUdfAcl(String cannedAclString){
+
+    private CannedUdfAcl(String cannedAclString) {
         this.cannedAclString = cannedAclString;
     }
 
@@ -47,14 +45,14 @@ public enum CannedUdfAcl {
     public String toString() {
         return this.cannedAclString;
     }
-    
+
     public static CannedUdfAcl parse(String acl) {
-        for(CannedUdfAcl cacl : CannedUdfAcl.values()) {
+        for (CannedUdfAcl cacl : CannedUdfAcl.values()) {
             if (cacl.toString().equals(acl)) {
                 return cacl;
             }
         }
-        
+
         throw new IllegalArgumentException("Unable to parse the provided acl " + acl);
     }
 }

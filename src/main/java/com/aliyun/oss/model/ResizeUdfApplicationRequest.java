@@ -33,7 +33,7 @@ public class ResizeUdfApplicationRequest extends UdfGenericRequest {
     public void setInstanceNum(Integer instanceNum) {
         this.instanceNum = instanceNum;
     }
-    
+
     private Integer instanceNum;
-    
+
 }

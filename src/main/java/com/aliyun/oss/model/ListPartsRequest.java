@@ -30,17 +30,18 @@ public class ListPartsRequest extends GenericRequest {
     private Integer maxParts;
 
     private Integer partNumberMarker;
-    
+
     private String encodingType;
 
     /**
      * Constructor
+     * 
      * @param bucketName
-     *          Bucket name.
+     *            Bucket name.
      * @param key
-     *          Object key.
+     *            Object key.
      * @param uploadId
-     *          Mutlipart upload Id.
+     *            Mutlipart upload Id.
      */
     public ListPartsRequest(String bucketName, String key, String uploadId) {
         super(bucketName, key);
@@ -49,6 +50,7 @@ public class ListPartsRequest extends GenericRequest {
 
     /**
      * Gets the upload Id.
+     * 
      * @return The upload Id.
      */
     public String getUploadId() {
@@ -57,8 +59,9 @@ public class ListPartsRequest extends GenericRequest {
 
     /**
      * Sets the upload Id for the multipart upload.
+     * 
      * @param uploadId
-     *          The upload Id.
+     *            The upload Id.
      */
     public void setUploadId(String uploadId) {
         this.uploadId = uploadId;
@@ -66,6 +69,7 @@ public class ListPartsRequest extends GenericRequest {
 
     /**
      * The max parts count to return. By default it's 1000.
+     * 
      * @return The max parts count.
      */
     public Integer getMaxParts() {
@@ -73,17 +77,19 @@ public class ListPartsRequest extends GenericRequest {
     }
 
     /**
-     * Sets the max parts count (optional).
-     * The default and max value is 1000.
+     * Sets the max parts count (optional). The default and max value is 1000.
+     * 
      * @param maxParts
-     *          The max parts count.
+     *            The max parts count.
      */
     public void setMaxParts(int maxParts) {
         this.maxParts = maxParts;
     }
 
     /**
-     * Gets the part number marker---the parts to return whose part number must be greater than this marker.
+     * Gets the part number marker---the parts to return whose part number must
+     * be greater than this marker.
+     * 
      * @return The part number marker.
      */
     public Integer getPartNumberMarker() {
@@ -91,17 +97,19 @@ public class ListPartsRequest extends GenericRequest {
     }
 
     /**
-     * Sets the part number marker---the parts to return whose part number must be greater than this marker.
+     * Sets the part number marker---the parts to return whose part number must
+     * be greater than this marker.
+     * 
      * @param partNumberMarker
-     *          The part number marker.
+     *            The part number marker.
      */
     public void setPartNumberMarker(Integer partNumberMarker) {
         this.partNumberMarker = partNumberMarker;
     }
-    
+
     /**
      * Gets the encoding type of object names in response.
-
+     * 
      * @return The encoding type of object names.
      */
     public String getEncodingType() {
@@ -112,11 +120,11 @@ public class ListPartsRequest extends GenericRequest {
      * Sets the encoding type of object names in response.
      * 
      * @param encodingType
-     *            The encoding type of object names.
-     *            The valid values are 'null' or 'url'.
+     *            The encoding type of object names. The valid values are 'null'
+     *            or 'url'.
      */
     public void setEncodingType(String encodingType) {
         this.encodingType = encodingType;
     }
-    
+
 }

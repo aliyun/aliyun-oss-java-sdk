@@ -41,7 +41,7 @@ import com.aliyun.oss.common.comm.ResponseMessage;
  * Implementation of <code>ResponseParser<code> with JAXB.
  */
 public class JAXBResponseParser implements ResponseParser<Object> {
-    
+
     private static final SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
 
     // It allows to specify the class type, if the class type is specified,
@@ -51,8 +51,7 @@ public class JAXBResponseParser implements ResponseParser<Object> {
     // Because JAXBContext.newInstance() is a very slow method,
     // it can improve performance a lot to cache the instances of JAXBContext
     // for used context paths or class types.
-    private static HashMap<Object, JAXBContext> cachedContexts =
-            new HashMap<Object, JAXBContext>();
+    private static HashMap<Object, JAXBContext> cachedContexts = new HashMap<Object, JAXBContext>();
 
     static {
         saxParserFactory.setNamespaceAware(true);
@@ -65,13 +64,13 @@ public class JAXBResponseParser implements ResponseParser<Object> {
     }
 
     public Object parse(ResponseMessage response) throws ResponseParseException {
-        assert (response!= null && response.getContent() != null);
+        assert (response != null && response.getContent() != null);
         return getObject(response.getContent());
-     }
+    }
 
     private Object getObject(InputStream responseContent) throws ResponseParseException {
         try {
-            if (!cachedContexts.containsKey(modelClass)){
+            if (!cachedContexts.containsKey(modelClass)) {
                 initJAXBContext(modelClass);
             }
 
@@ -83,27 +82,25 @@ public class JAXBResponseParser implements ResponseParser<Object> {
             // if XMLReader is specified in the SAXSource instance.
             return um.unmarshal(getSAXSource(responseContent));
         } catch (JAXBException e) {
-            throw new ResponseParseException(COMMON_RESOURCE_MANAGER.getFormattedString(
-                    "FailedToParseResponse", e.getMessage()), e);
+            throw new ResponseParseException(
+                    COMMON_RESOURCE_MANAGER.getFormattedString("FailedToParseResponse", e.getMessage()), e);
         } catch (SAXException e) {
-            throw new ResponseParseException(COMMON_RESOURCE_MANAGER.getFormattedString(
-                    "FailedToParseResponse", e.getMessage()), e);
+            throw new ResponseParseException(
+                    COMMON_RESOURCE_MANAGER.getFormattedString("FailedToParseResponse", e.getMessage()), e);
         } catch (ParserConfigurationException e) {
-            throw new ResponseParseException(COMMON_RESOURCE_MANAGER.getFormattedString(
-                    "FailedToParseResponse", e.getMessage()), e);
+            throw new ResponseParseException(
+                    COMMON_RESOURCE_MANAGER.getFormattedString("FailedToParseResponse", e.getMessage()), e);
         }
     }
 
-    private static synchronized void initJAXBContext(Class<?> c)
-            throws JAXBException {
-        if (!cachedContexts.containsKey(c)){
+    private static synchronized void initJAXBContext(Class<?> c) throws JAXBException {
+        if (!cachedContexts.containsKey(c)) {
             JAXBContext jc = JAXBContext.newInstance(c);
             cachedContexts.put(c, jc);
         }
     }
 
-    private static SAXSource getSAXSource(InputStream content)
-            throws SAXException, ParserConfigurationException {
+    private static SAXSource getSAXSource(InputStream content) throws SAXException, ParserConfigurationException {
         SAXParser saxParser = saxParserFactory.newSAXParser();
         return new SAXSource(saxParser.getXMLReader(), new InputSource(content));
     }

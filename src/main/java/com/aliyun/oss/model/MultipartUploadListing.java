@@ -49,7 +49,8 @@ public class MultipartUploadListing extends GenericResult {
 
     private List<String> commonPrefixes = new ArrayList<String>();
 
-    public MultipartUploadListing() {}
+    public MultipartUploadListing() {
+    }
 
     public MultipartUploadListing(String bucketName) {
         this.bucketName = bucketName;
@@ -121,7 +122,7 @@ public class MultipartUploadListing extends GenericResult {
             this.multipartUploads.addAll(multipartUploads);
         }
     }
-    
+
     public void addMultipartUpload(MultipartUpload multipartUpload) {
         this.multipartUploads.add(multipartUpload);
     }
@@ -136,7 +137,7 @@ public class MultipartUploadListing extends GenericResult {
             this.commonPrefixes.addAll(commonPrefixes);
         }
     }
-    
+
     public void addCommonPrefix(String commonPrefix) {
         this.commonPrefixes.add(commonPrefix);
     }

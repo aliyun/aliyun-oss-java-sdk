@@ -39,7 +39,7 @@ public class OSSObjectSummary {
     private Date lastModified;
 
     private String storageClass;
-    
+
     private Owner owner;
 
     /**
@@ -50,8 +50,8 @@ public class OSSObjectSummary {
 
     /**
      * Gets the {@link Bucket} name.
-     * @return
-     *      The bucket name.
+     * 
+     * @return The bucket name.
      */
     public String getBucketName() {
         return bucketName;
@@ -59,8 +59,9 @@ public class OSSObjectSummary {
 
     /**
      * Sets the {@link Bucket} name.
+     * 
      * @param bucketName
-     *          The {@link Bucket} name.
+     *            The {@link Bucket} name.
      */
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
@@ -68,8 +69,8 @@ public class OSSObjectSummary {
 
     /**
      * Gets the object key.
-     * @return
-     *      Object key.
+     * 
+     * @return Object key.
      */
     public String getKey() {
         return key;
@@ -77,18 +78,19 @@ public class OSSObjectSummary {
 
     /**
      * Sets the object key.
+     * 
      * @param key
-     *          Object key.
+     *            Object key.
      */
     public void setKey(String key) {
         this.key = key;
     }
 
     /**
-     * Gets the object ETag.
-     * ETag is a 128bit MD5 signature about the object in hex.
-     * @return
-     *      ETag value.
+     * Gets the object ETag. ETag is a 128bit MD5 signature about the object in
+     * hex.
+     * 
+     * @return ETag value.
      */
     public String getETag() {
         return eTag;
@@ -96,8 +98,9 @@ public class OSSObjectSummary {
 
     /**
      * Sets the object ETag.
+     * 
      * @param eTag
-     *          ETag value.
+     *            ETag value.
      */
     public void setETag(String eTag) {
         this.eTag = eTag;
@@ -105,8 +108,8 @@ public class OSSObjectSummary {
 
     /**
      * Gets the object Size
-     * @return
-     *      Object size.
+     * 
+     * @return Object size.
      */
     public long getSize() {
         return size;
@@ -114,8 +117,9 @@ public class OSSObjectSummary {
 
     /**
      * Sets the object size.
+     * 
      * @param size
-     *          Object size.
+     *            Object size.
      */
     public void setSize(long size) {
         this.size = size;
@@ -123,6 +127,7 @@ public class OSSObjectSummary {
 
     /**
      * Gets the last modified time of the object.
+     * 
      * @return The last modified time.
      */
     public Date getLastModified() {
@@ -131,8 +136,9 @@ public class OSSObjectSummary {
 
     /**
      * Sets the last modified time.
+     * 
      * @param lastModified
-     *          Last modified time.
+     *            Last modified time.
      */
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
@@ -140,6 +146,7 @@ public class OSSObjectSummary {
 
     /**
      * Gets the owner of the object.
+     * 
      * @return Object owner.
      */
     public Owner getOwner() {
@@ -148,8 +155,9 @@ public class OSSObjectSummary {
 
     /**
      * Sets the owner of the object.
+     * 
      * @param owner
-     *          Object owner.
+     *            Object owner.
      */
     public void setOwner(Owner owner) {
         this.owner = owner;
@@ -157,6 +165,7 @@ public class OSSObjectSummary {
 
     /**
      * Gets the storage class of the object.
+     * 
      * @return Object storage class.
      */
     public String getStorageClass() {
@@ -165,8 +174,9 @@ public class OSSObjectSummary {
 
     /**
      * Sets the storage class of the object.
+     * 
      * @param storageClass
-     *          Object storage class.
+     *            Object storage class.
      */
     public void setStorageClass(String storageClass) {
         this.storageClass = storageClass;

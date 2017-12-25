@@ -23,13 +23,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BucketList extends GenericResult {
-   
+
     private List<Bucket> buckets = new ArrayList<Bucket>();
 
     private String prefix;
-    
+
     private String marker;
-    
+
     private Integer maxKeys;
 
     private boolean isTruncated;
@@ -39,14 +39,14 @@ public class BucketList extends GenericResult {
     public List<Bucket> getBucketList() {
         return buckets;
     }
-    
+
     public void setBucketList(List<Bucket> buckets) {
-       this.buckets.clear();
-       if (buckets != null && !buckets.isEmpty()) {
-           this.buckets.addAll(buckets);
-       }
+        this.buckets.clear();
+        if (buckets != null && !buckets.isEmpty()) {
+            this.buckets.addAll(buckets);
+        }
     }
-    
+
     public void clearBucketList() {
         this.buckets.clear();
     }

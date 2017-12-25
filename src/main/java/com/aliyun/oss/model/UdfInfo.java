@@ -25,74 +25,74 @@ import java.util.Date;
  * Udf info
  */
 public class UdfInfo extends GenericResult {
-	
-	public UdfInfo(String name, String owner, String id, String desc, CannedUdfAcl acl, Date creationDate) {
-		this.name = name;
-		this.owner = owner;
-		this.id = id;
-		this.desc = desc;
-		this.acl = acl;
-		this.creationDate = creationDate;
-	}
 
-	public String getName() {
-		return name;
-	}
+    public UdfInfo(String name, String owner, String id, String desc, CannedUdfAcl acl, Date creationDate) {
+        this.name = name;
+        this.owner = owner;
+        this.id = id;
+        this.desc = desc;
+        this.acl = acl;
+        this.creationDate = creationDate;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getOwner() {
-		return owner;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setOwner(String owner) {
-		this.owner = owner;
-	}
+    public String getOwner() {
+        return owner;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public String getDesc() {
-		return desc;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
+    public String getDesc() {
+        return desc;
+    }
 
-	public CannedUdfAcl getAcl() {
-		return acl;
-	}
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
 
-	public void setAcl(CannedUdfAcl acl) {
-		this.acl = acl;
-	}
+    public CannedUdfAcl getAcl() {
+        return acl;
+    }
 
-	public Date getCreationDate() {
-		return creationDate;
-	}
+    public void setAcl(CannedUdfAcl acl) {
+        this.acl = acl;
+    }
 
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
-	}
-	
-	@Override
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    @Override
     public String toString() {
         return "UdfInfo [name=" + name + ", owner=" + owner + ", id=" + id + ", desc=" + desc + ", acl=" + acl
                 + ", creationDate=" + creationDate + "]";
     }
 
     private String name;
-	private String owner;
-	private String id;
-	private String desc;
-	private CannedUdfAcl acl;
-	private Date creationDate;
+    private String owner;
+    private String id;
+    private String desc;
+    private CannedUdfAcl acl;
+    private Date creationDate;
 }

@@ -20,12 +20,12 @@
 package com.aliyun.oss.model;
 
 /**
- * This class wraps all the information needed to generate the signed pushing streaming url.
+ * This class wraps all the information needed to generate the signed pushing
+ * streaming url.
  */
 public class GenerateRtmpUriRequest {
-    
-    public GenerateRtmpUriRequest(String bucketName, String liveChannelName, 
-            String playlistName, long expires) {
+
+    public GenerateRtmpUriRequest(String bucketName, String liveChannelName, String playlistName, long expires) {
         this.bucketName = bucketName;
         this.liveChannelName = liveChannelName;
         this.playlistName = playlistName;
@@ -68,5 +68,5 @@ public class GenerateRtmpUriRequest {
     private String liveChannelName;
     private String playlistName;
     private Long expires;
-    
+
 }

@@ -31,12 +31,12 @@ public class SetBucketStorageCapacityRequest extends GenericRequest {
     public void setUserQos(UserQos userQos) {
         this.userQos = userQos;
     }
-    
+
     public SetBucketStorageCapacityRequest withUserQos(UserQos userQos) {
         setUserQos(userQos);
         return this;
     }
 
     private UserQos userQos;
-    
+
 }

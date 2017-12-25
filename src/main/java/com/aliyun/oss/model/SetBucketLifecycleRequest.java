@@ -25,10 +25,10 @@ import java.util.List;
 import com.aliyun.oss.model.LifecycleRule.StorageTransition;
 
 public class SetBucketLifecycleRequest extends GenericRequest {
-    
+
     public static final int MAX_LIFECYCLE_RULE_LIMIT = 1000;
     public static final int MAX_RULE_ID_LENGTH = 255;
-    
+
     private List<LifecycleRule> lifecycleRules = new ArrayList<LifecycleRule>();
 
     public SetBucketLifecycleRequest(String bucketName) {
@@ -43,72 +43,68 @@ public class SetBucketLifecycleRequest extends GenericRequest {
         if (lifecycleRules == null || lifecycleRules.isEmpty()) {
             throw new IllegalArgumentException("lifecycleRules should not be null or empty.");
         }
-        
+
         if (lifecycleRules.size() > MAX_LIFECYCLE_RULE_LIMIT) {
             throw new IllegalArgumentException("One bucket not allow exceed one thousand items of LifecycleRules.");
         }
-        
+
         this.lifecycleRules.clear();
         this.lifecycleRules.addAll(lifecycleRules);
     }
-    
+
     public void clearLifecycles() {
         this.lifecycleRules.clear();
     }
-    
+
     public void AddLifecycleRule(LifecycleRule lifecycleRule) {
         if (lifecycleRule == null) {
             throw new IllegalArgumentException("lifecycleRule should not be null or empty.");
         }
-        
+
         if (this.lifecycleRules.size() >= MAX_LIFECYCLE_RULE_LIMIT) {
             throw new IllegalArgumentException("One bucket not allow exceed one thousand items of LifecycleRules.");
         }
-        
+
         if (lifecycleRule.getId() != null && lifecycleRule.getId().length() > MAX_RULE_ID_LENGTH) {
-            throw new IllegalArgumentException("Length of lifecycle rule id exceeds max limit " 
-                    + MAX_RULE_ID_LENGTH);
+            throw new IllegalArgumentException("Length of lifecycle rule id exceeds max limit " + MAX_RULE_ID_LENGTH);
         }
-        
+
         int expirationTimeFlag = lifecycleRule.hasExpirationTime() ? 1 : 0;
         int expirationDaysFlag = lifecycleRule.hasExpirationDays() ? 1 : 0;
         int createdBeforeDateFlag = lifecycleRule.hasCreatedBeforeDate() ? 1 : 0;
         int flagSum = expirationTimeFlag + expirationDaysFlag + createdBeforeDateFlag;
-        if (flagSum > 1 || 
-                (flagSum == 0 && !lifecycleRule.hasAbortMultipartUpload() && !lifecycleRule.hasStorageTransition())) {
+        if (flagSum > 1 || (flagSum == 0 && !lifecycleRule.hasAbortMultipartUpload()
+                && !lifecycleRule.hasStorageTransition())) {
             throw new IllegalArgumentException("Only one expiration property should be specified.");
         }
-        
+
         if (lifecycleRule.getStatus() == LifecycleRule.RuleStatus.Unknown) {
             throw new IllegalArgumentException("RuleStatus property should be specified with 'Enabled' or 'Disabled'.");
         }
-        
+
         if (lifecycleRule.hasAbortMultipartUpload()) {
             LifecycleRule.AbortMultipartUpload abortMultipartUpload = lifecycleRule.getAbortMultipartUpload();
             expirationDaysFlag = abortMultipartUpload.hasExpirationDays() ? 1 : 0;
             createdBeforeDateFlag = abortMultipartUpload.hasCreatedBeforeDate() ? 1 : 0;
             flagSum = expirationDaysFlag + createdBeforeDateFlag;
             if (flagSum != 1) {
-                throw new IllegalArgumentException("Only one expiration property for AbortMultipartUpload should be specified.");
+                throw new IllegalArgumentException(
+                        "Only one expiration property for AbortMultipartUpload should be specified.");
             }
         }
-        
+
         if (lifecycleRule.hasStorageTransition()) {
             for (StorageTransition storageTransition : lifecycleRule.getStorageTransition()) {
                 expirationDaysFlag = storageTransition.hasExpirationDays() ? 1 : 0;
                 createdBeforeDateFlag = storageTransition.hasCreatedBeforeDate() ? 1 : 0;
                 flagSum = expirationDaysFlag + createdBeforeDateFlag;
                 if (flagSum != 1) {
-                    throw new IllegalArgumentException("Only one expiration property for StorageTransition should be specified.");
+                    throw new IllegalArgumentException(
+                            "Only one expiration property for StorageTransition should be specified.");
                 }
             }
         }
-        
+
         this.lifecycleRules.add(lifecycleRule);
     }
 }
-
-
-
-
-

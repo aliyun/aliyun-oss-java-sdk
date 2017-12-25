@@ -23,15 +23,15 @@ package com.aliyun.oss.model;
  * Access Permission enum
  */
 public enum Permission {
-    
+
     /**
      * Read and write.
      */
     FullControl,
-    
+
     /**
      * Read only.
      */
     Read;
-    
+
 }

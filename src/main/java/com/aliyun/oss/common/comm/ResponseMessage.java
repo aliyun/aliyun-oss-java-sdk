@@ -26,9 +26,9 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import com.aliyun.oss.internal.OSSHeaders;
 
 public class ResponseMessage extends HttpMesssage {
-    
+
     private static final int HTTP_SUCCESS_STATUS_CODE = 200;
-    
+
     private String uri;
     private int statusCode;
 
@@ -37,7 +37,7 @@ public class ResponseMessage extends HttpMesssage {
 
     // For convenience of logging invalid response
     private String errorResponseAsString;
-    
+
     public ResponseMessage(ServiceClient.Request request) {
         this.request = request;
     }
@@ -57,16 +57,16 @@ public class ResponseMessage extends HttpMesssage {
     public void setStatusCode(int statusCode) {
         this.statusCode = statusCode;
     }
- 
+
     public String getRequestId() {
-       return getHeaders().get(OSSHeaders.OSS_HEADER_REQUEST_ID);
+        return getHeaders().get(OSSHeaders.OSS_HEADER_REQUEST_ID);
     }
 
     public ServiceClient.Request getRequest() {
         return request;
     }
-    
-    public boolean isSuccessful(){
+
+    public boolean isSuccessful() {
         return statusCode / 100 == HTTP_SUCCESS_STATUS_CODE / 100;
     }
 
@@ -77,13 +77,13 @@ public class ResponseMessage extends HttpMesssage {
     public void setErrorResponseAsString(String errorResponseAsString) {
         this.errorResponseAsString = errorResponseAsString;
     }
-    
+
     public void abort() throws IOException {
         if (httpResponse != null) {
             httpResponse.close();
         }
     }
-    
+
     public CloseableHttpResponse getHttpResponse() {
         return httpResponse;
     }

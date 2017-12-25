@@ -30,7 +30,7 @@ import java.util.SimpleTimeZone;
  * A simple utility class for date formating.
  */
 public class DateUtil {
-    
+
     // RFC 822 Date Format
     private static final String RFC822_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss z";
 
@@ -55,8 +55,7 @@ public class DateUtil {
     }
 
     private static DateFormat getRfc822DateFormat() {
-        SimpleDateFormat rfc822DateFormat =
-                new SimpleDateFormat(RFC822_DATE_FORMAT, Locale.US);
+        SimpleDateFormat rfc822DateFormat = new SimpleDateFormat(RFC822_DATE_FORMAT, Locale.US);
         rfc822DateFormat.setTimeZone(new SimpleTimeZone(0, "GMT"));
 
         return rfc822DateFormat;
@@ -69,8 +68,10 @@ public class DateUtil {
     public static String formatAlternativeIso8601Date(Date date) {
         return getAlternativeIso8601DateFormat().format(date);
     }
+
     /**
      * Parse a date string in the format of ISO 8601.
+     * 
      * @param dateString
      * @return
      * @throws ParseException

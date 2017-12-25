@@ -23,18 +23,18 @@ import java.io.File;
 import java.io.InputStream;
 
 public class AppendObjectRequest extends PutObjectRequest {
-    
+
     private Long position;
     private Long initCRC;
 
     public AppendObjectRequest(String bucketName, String key, File file) {
         this(bucketName, key, file, null);
     }
-    
+
     public AppendObjectRequest(String bucketName, String key, File file, ObjectMetadata metadata) {
         super(bucketName, key, file, metadata);
     }
-    
+
     public AppendObjectRequest(String bucketName, String key, InputStream input) {
         this(bucketName, key, input, null);
     }
@@ -50,7 +50,7 @@ public class AppendObjectRequest extends PutObjectRequest {
     public void setPosition(Long position) {
         this.position = position;
     }
-    
+
     public Long getInitCRC() {
         return initCRC;
     }
@@ -58,15 +58,15 @@ public class AppendObjectRequest extends PutObjectRequest {
     public void setInitCRC(Long iniCRC) {
         this.initCRC = iniCRC;
     }
-    
+
     public AppendObjectRequest withPosition(Long position) {
         setPosition(position);
         return this;
     }
-    
+
     public AppendObjectRequest withInitCRC(Long iniCRC) {
         setInitCRC(iniCRC);
         return this;
     }
-    
+
 }

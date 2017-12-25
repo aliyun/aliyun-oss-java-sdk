@@ -23,25 +23,25 @@ import java.io.File;
 import java.io.InputStream;
 
 public class PutObjectRequest extends GenericRequest {
-    
+
     private File file;
     private InputStream inputStream;
-    
+
     private ObjectMetadata metadata;
-    
+
     private Callback callback;
     private String process;
 
     public PutObjectRequest(String bucketName, String key, File file) {
         this(bucketName, key, file, null);
     }
-    
+
     public PutObjectRequest(String bucketName, String key, File file, ObjectMetadata metadata) {
         super(bucketName, key);
         this.file = file;
         this.metadata = metadata;
     }
-    
+
     public PutObjectRequest(String bucketName, String key, InputStream input) {
         this(bucketName, key, input, null);
     }
@@ -75,7 +75,7 @@ public class PutObjectRequest extends GenericRequest {
     public void setMetadata(ObjectMetadata metadata) {
         this.metadata = metadata;
     }
-    
+
     public Callback getCallback() {
         return callback;
     }
@@ -83,12 +83,12 @@ public class PutObjectRequest extends GenericRequest {
     public void setCallback(Callback callback) {
         this.callback = callback;
     }
-    
-    public String getProcess() {
-		return process;
-	}
 
-	public void setProcess(String process) {
-		this.process = process;
-	}
+    public String getProcess() {
+        return process;
+    }
+
+    public void setProcess(String process) {
+        this.process = process;
+    }
 }

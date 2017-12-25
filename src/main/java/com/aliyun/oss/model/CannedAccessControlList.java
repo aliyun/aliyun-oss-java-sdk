@@ -27,31 +27,34 @@ package com.aliyun.oss.model;
  *
  */
 public enum CannedAccessControlList {
-    
+
     /**
-     * This is only for object, means the permission inherits the bucket's permission.
+     * This is only for object, means the permission inherits the bucket's
+     * permission.
      */
     Default("default"),
-    
+
     /**
-     * The owner has the {@link Permission#FullControl}, other {@link GroupGrantee#AllUsers} does not have access.
+     * The owner has the {@link Permission#FullControl}, other
+     * {@link GroupGrantee#AllUsers} does not have access.
      */
     Private("private"),
 
     /**
-     * The owner has the {@link Permission#FullControl}, other {@link GroupGrantee#AllUsers}  have read-only access.
+     * The owner has the {@link Permission#FullControl}, other
+     * {@link GroupGrantee#AllUsers} have read-only access.
      */
     PublicRead("public-read"),
 
     /**
-     * Both the owner and {@link GroupGrantee#AllUsers} have {@link Permission#FullControl}.
-     * It's not safe and thus not recommended.
+     * Both the owner and {@link GroupGrantee#AllUsers} have
+     * {@link Permission#FullControl}. It's not safe and thus not recommended.
      */
     PublicReadWrite("public-read-write");
 
     private String cannedAclString;
-    
-    private CannedAccessControlList(String cannedAclString){
+
+    private CannedAccessControlList(String cannedAclString) {
         this.cannedAclString = cannedAclString;
     }
 
@@ -59,14 +62,14 @@ public enum CannedAccessControlList {
     public String toString() {
         return this.cannedAclString;
     }
-    
+
     public static CannedAccessControlList parse(String acl) {
-        for(CannedAccessControlList cacl : CannedAccessControlList.values()) {
+        for (CannedAccessControlList cacl : CannedAccessControlList.values()) {
             if (cacl.toString().equals(acl)) {
                 return cacl;
             }
         }
-        
+
         throw new IllegalArgumentException("Unable to parse the provided acl " + acl);
     }
 }

@@ -28,12 +28,13 @@ public class PutObjectResult extends GenericResult implements CallbackResult {
 
     // Object ETag
     private String eTag;
-    
+
     // The callback response body. Caller needs to close it.
     private InputStream callbackResponseBody;
 
     /**
      * Gets the target {@link OSSObject}'s ETag.
+     * 
      * @return Target OSSObject's ETag.
      */
     public String getETag() {
@@ -42,16 +43,18 @@ public class PutObjectResult extends GenericResult implements CallbackResult {
 
     /**
      * Sets the target {@link OSSObject}'s ETag.
+     * 
      * @param eTag
-     *          Target OSSObject's ETag.
+     *            Target OSSObject's ETag.
      */
     public void setETag(String eTag) {
         this.eTag = eTag;
     }
-    
+
     /**
-     * Gets the callback response body. The caller needs to close it.
-     * Deprecated method. Please use this.getResponse().getContent() instead.
+     * Gets the callback response body. The caller needs to close it. Deprecated
+     * method. Please use this.getResponse().getContent() instead.
+     * 
      * @return The callback response body.
      */
     @Override
@@ -59,14 +62,16 @@ public class PutObjectResult extends GenericResult implements CallbackResult {
     public InputStream getCallbackResponseBody() {
         return callbackResponseBody;
     }
-    
+
     /**
      * Sets the callback response body.
-     * @param callbackResponseBody The callback response body.
+     * 
+     * @param callbackResponseBody
+     *            The callback response body.
      */
     @Override
     public void setCallbackResponseBody(InputStream callbackResponseBody) {
         this.callbackResponseBody = callbackResponseBody;
     }
-    
+
 }

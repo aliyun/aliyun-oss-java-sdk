@@ -22,13 +22,13 @@ package com.aliyun.oss.model;
 import java.util.Date;
 import java.util.List;
 
-
 public class LiveChannel {
-    
-    public LiveChannel() {}
-    
-    public LiveChannel(String name, String description, LiveChannelStatus status, 
-            Date lastModified, List<String> publishUrls, List<String> playUrls) {
+
+    public LiveChannel() {
+    }
+
+    public LiveChannel(String name, String description, LiveChannelStatus status, Date lastModified,
+            List<String> publishUrls, List<String> playUrls) {
         this.name = name;
         this.description = description;
         this.status = status;
@@ -84,12 +84,12 @@ public class LiveChannel {
     public void setPlayUrls(List<String> playUrls) {
         this.playUrls = playUrls;
     }
-    
+
     @Override
     public String toString() {
-        return "LiveChannel [name=" + getName() + ",description=" + getDescription()
-            + ",status=" + getStatus() + ",lastModified=" + getLastModified()
-            + ",publishUrls=" + publishUrls.get(0) + ",playUrls=" + playUrls.get(0) + "]";
+        return "LiveChannel [name=" + getName() + ",description=" + getDescription() + ",status=" + getStatus()
+                + ",lastModified=" + getLastModified() + ",publishUrls=" + publishUrls.get(0) + ",playUrls="
+                + playUrls.get(0) + "]";
     }
 
     private String name;
@@ -98,5 +98,5 @@ public class LiveChannel {
     private Date lastModified;
     private List<String> publishUrls;
     private List<String> playUrls;
-    
+
 }

@@ -41,7 +41,6 @@ public enum PushflowStatus {
             }
         }
 
-        throw new IllegalArgumentException(
-                "Unable to parse the provided push flow status " + statusString);
+        throw new IllegalArgumentException("Unable to parse the provided push flow status " + statusString);
     }
 }

@@ -19,13 +19,12 @@
 
 package com.aliyun.oss.model;
 
-
 /**
  * The result of a file upload.
  * 
  */
 public class UploadFileResult {
-    
+
     public CompleteMultipartUploadResult getMultipartUploadResult() {
         return multipartUploadResult;
     }
@@ -33,7 +32,7 @@ public class UploadFileResult {
     public void setMultipartUploadResult(CompleteMultipartUploadResult multipartUploadResult) {
         this.multipartUploadResult = multipartUploadResult;
     }
-    
+
     private CompleteMultipartUploadResult multipartUploadResult;
-    
+
 }

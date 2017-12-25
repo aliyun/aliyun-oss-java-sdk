@@ -36,7 +36,7 @@ public class RepeatableInputStreamEntity extends BasicHttpEntity {
 
     private InputStream content;
 
-    public RepeatableInputStreamEntity(ServiceClient.Request request){
+    public RepeatableInputStreamEntity(ServiceClient.Request request) {
         setChunked(false);
 
         String contentType = request.getHeaders().get(HttpHeaders.CONTENT_TYPE);
@@ -52,28 +52,30 @@ public class RepeatableInputStreamEntity extends BasicHttpEntity {
     }
 
     @Override
-    public boolean isChunked(){
+    public boolean isChunked() {
         return false;
     }
 
     @Override
-    public boolean isRepeatable(){
+    public boolean isRepeatable() {
         return content.markSupported() || innerEntity.isRepeatable();
     }
 
     @Override
-    public void writeTo(OutputStream output) throws IOException{
-        if (!firstAttempt && isRepeatable()){
+    public void writeTo(OutputStream output) throws IOException {
+        if (!firstAttempt && isRepeatable()) {
             content.reset();
         }
 
         firstAttempt = false;
         innerEntity.writeTo(output);
     }
-    
+
     /**
-     * The default entity org.apache.http.entity.InputStreamEntity will close input stream after wirteTo was called.
-     * To avoid this, we custom a entity that will not close stream automatically.
+     * The default entity org.apache.http.entity.InputStreamEntity will close
+     * input stream after wirteTo was called. To avoid this, we custom a entity
+     * that will not close stream automatically.
+     * 
      * @author chao.wangchaowc
      */
     public static class NoAutoClosedInputStreamEntity extends AbstractHttpEntity {
@@ -81,7 +83,7 @@ public class RepeatableInputStreamEntity extends BasicHttpEntity {
 
         private final InputStream content;
         private final long length;
-        
+
         public NoAutoClosedInputStreamEntity(final InputStream instream, long length) {
             super();
             if (instream == null) {
@@ -120,7 +122,7 @@ public class RepeatableInputStreamEntity extends BasicHttpEntity {
                 // consume no more than length
                 long remaining = this.length;
                 while (remaining > 0) {
-                    l = instream.read(buffer, 0, (int)Math.min(BUFFER_SIZE, remaining));
+                    l = instream.read(buffer, 0, (int) Math.min(BUFFER_SIZE, remaining));
                     if (l == -1) {
                         break;
                     }

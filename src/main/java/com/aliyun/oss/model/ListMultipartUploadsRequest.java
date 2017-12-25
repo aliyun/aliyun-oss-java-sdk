@@ -34,13 +34,14 @@ public class ListMultipartUploadsRequest extends GenericRequest {
     private String keyMarker;
 
     private String uploadIdMarker;
-    
+
     private String encodingType;
 
     /**
      * Constructor.
+     * 
      * @param bucketName
-     *          Bucket name.
+     *            Bucket name.
      */
     public ListMultipartUploadsRequest(String bucketName) {
         super(bucketName);
@@ -48,6 +49,7 @@ public class ListMultipartUploadsRequest extends GenericRequest {
 
     /**
      * Gets the max number of uploads to return.
+     * 
      * @return The max number of uploads.
      */
     public Integer getMaxUploads() {
@@ -55,17 +57,20 @@ public class ListMultipartUploadsRequest extends GenericRequest {
     }
 
     /**
-     * Sets the max number of uploads to return.
-     * The both max and default value is 1000。
+     * Sets the max number of uploads to return. The both max and default value
+     * is 1000。
+     * 
      * @param maxUploads
-     *          The max number of uploads.
+     *            The max number of uploads.
      */
     public void setMaxUploads(Integer maxUploads) {
         this.maxUploads = maxUploads;
     }
 
     /**
-     * Gets the key marker filter---all uploads returned whose target file's key must be greater than the marker filter.
+     * Gets the key marker filter---all uploads returned whose target file's key
+     * must be greater than the marker filter.
+     * 
      * @return The key marker filter.
      */
     public String getKeyMarker() {
@@ -73,16 +78,20 @@ public class ListMultipartUploadsRequest extends GenericRequest {
     }
 
     /**
-     * Sets the key marker filter---all uploads returned whose target file's key must be greater than the marker filter.
+     * Sets the key marker filter---all uploads returned whose target file's key
+     * must be greater than the marker filter.
+     * 
      * @param keyMarker
-     *          The key marker.
+     *            The key marker.
      */
     public void setKeyMarker(String keyMarker) {
         this.keyMarker = keyMarker;
     }
-    
+
     /**
-     * Gets the upload id marker--all uploads returned whose upload id must be greater than the marker filter.
+     * Gets the upload id marker--all uploads returned whose upload id must be
+     * greater than the marker filter.
+     * 
      * @return The upload Id marker.
      */
     public String getUploadIdMarker() {
@@ -90,9 +99,11 @@ public class ListMultipartUploadsRequest extends GenericRequest {
     }
 
     /**
-     * Sets the upload id marker--all uploads returned whose upload id must be greater than the marker filter.
+     * Sets the upload id marker--all uploads returned whose upload id must be
+     * greater than the marker filter.
+     * 
      * @param uploadIdMarker
-     *          The upload Id marker.
+     *            The upload Id marker.
      */
     public void setUploadIdMarker(String uploadIdMarker) {
         this.uploadIdMarker = uploadIdMarker;
@@ -113,10 +124,10 @@ public class ListMultipartUploadsRequest extends GenericRequest {
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
-    
+
     /**
      * Gets the encoding type of the object in the response body.
-
+     * 
      * @return The encoding type of the object in the response body.
      */
     public String getEncodingType() {
@@ -127,8 +138,8 @@ public class ListMultipartUploadsRequest extends GenericRequest {
      * Sets the encoding type of the object in the response body.
      * 
      * @param encodingType
-     *            The encoding type of the object in the response body.
-     *            Valid value is either 'null' or 'url'.
+     *            The encoding type of the object in the response body. Valid
+     *            value is either 'null' or 'url'.
      */
     public void setEncodingType(String encodingType) {
         this.encodingType = encodingType;

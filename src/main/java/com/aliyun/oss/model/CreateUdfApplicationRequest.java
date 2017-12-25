@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 public class CreateUdfApplicationRequest extends UdfGenericRequest {
-    
+
     public CreateUdfApplicationRequest(String udfName, UdfApplicationConfiguration udfApplicationConfiguration) {
         super(udfName);
         this.udfApplicationConfiguration = udfApplicationConfiguration;
@@ -33,7 +33,7 @@ public class CreateUdfApplicationRequest extends UdfGenericRequest {
     public void setUdfApplicationConfiguration(UdfApplicationConfiguration udfApplicationConfiguration) {
         this.udfApplicationConfiguration = udfApplicationConfiguration;
     }
-    
+
     private UdfApplicationConfiguration udfApplicationConfiguration;
-    
+
 }

@@ -32,10 +32,9 @@ class ConditionItem {
      * The condition tuple type: currently only supports Two and Three.
      */
     enum TupleType {
-        Two,
-        Three
+        Two, Three
     };
-    
+
     private String name;
     private MatchMode matchMode;
     private String value;
@@ -68,24 +67,24 @@ class ConditionItem {
     public String jsonize() {
         String jsonizedCond = null;
         switch (tupleType) {
-            case Two:
-                jsonizedCond = String.format("{\"%s\":\"%s\"},", name, value);
+        case Two:
+            jsonizedCond = String.format("{\"%s\":\"%s\"},", name, value);
+            break;
+        case Three:
+            switch (matchMode) {
+            case Exact:
+                jsonizedCond = String.format("[\"eq\",\"$%s\",\"%s\"],", name, value);
                 break;
-            case Three:
-                switch (matchMode) {
-                    case Exact:
-                        jsonizedCond = String.format("[\"eq\",\"$%s\",\"%s\"],", name, value);
-                        break;
-                    case StartWith:
-                        jsonizedCond = String.format("[\"starts-with\",\"$%s\",\"%s\"],", name, value);
-                        break;
-                    case Range:
-                        jsonizedCond = String.format("[\"content-length-range\",%d,%d],", minimum, maximum);
-                        break;
-                    default:
-                        throw new IllegalArgumentException(String.format("Unsupported match mode %s", matchMode.toString()));
-                }
+            case StartWith:
+                jsonizedCond = String.format("[\"starts-with\",\"$%s\",\"%s\"],", name, value);
                 break;
+            case Range:
+                jsonizedCond = String.format("[\"content-length-range\",%d,%d],", minimum, maximum);
+                break;
+            default:
+                throw new IllegalArgumentException(String.format("Unsupported match mode %s", matchMode.toString()));
+            }
+            break;
         }
 
         return jsonizedCond;
@@ -155,8 +154,8 @@ public class PolicyConditions {
     public final static String COND_SUCCESS_ACTION_STATUS = "success_action_status";
     public final static String COND_X_OSS_META_PREFIX = "x-oss-meta-";
 
-    private static Map<String, List<MatchMode>> _supportedMatchRules = new HashMap<String, List<MatchMode>>(); 
-    private List<ConditionItem> _conds = new ArrayList<ConditionItem>(); 
+    private static Map<String, List<MatchMode>> _supportedMatchRules = new HashMap<String, List<MatchMode>>();
+    private List<ConditionItem> _conds = new ArrayList<ConditionItem>();
 
     static {
         List<MatchMode> ordinaryMatchModes = new ArrayList<MatchMode>();
@@ -181,8 +180,11 @@ public class PolicyConditions {
 
     /**
      * Adds a condition item with the exact match mode.
-     * @param name Condition name.
-     * @param value Condition value.
+     * 
+     * @param name
+     *            Condition name.
+     * @param value
+     *            Condition value.
      */
     public void addConditionItem(String name, String value) {
         checkMatchModes(MatchMode.Exact, name);
@@ -191,9 +193,13 @@ public class PolicyConditions {
 
     /**
      * Adds a condition item with specified {@link MatchMode} value.
-     * @param matchMode Conditions match mode.
-     * @param name Condition name.
-     * @param value Condition value.
+     * 
+     * @param matchMode
+     *            Conditions match mode.
+     * @param name
+     *            Condition name.
+     * @param value
+     *            Condition value.
      */
     public void addConditionItem(MatchMode matchMode, String name, String value) {
         checkMatchModes(matchMode, name);
@@ -202,9 +208,13 @@ public class PolicyConditions {
 
     /**
      * Adds a range match condition.
-     * @param name Condition name
-     * @param min Min value.
-     * @param max Max value.
+     * 
+     * @param name
+     *            Condition name
+     * @param min
+     *            Min value.
+     * @param max
+     *            Max value.
      */
     public void addConditionItem(String name, long min, long max) {
         if (min > max)
@@ -216,7 +226,8 @@ public class PolicyConditions {
         if (_supportedMatchRules.containsKey(condName)) {
             List<MatchMode> mms = _supportedMatchRules.get(condName);
             if (!mms.contains(matchMode))
-                throw new IllegalArgumentException(String.format("Unsupported match mode for condition item %s", condName));
+                throw new IllegalArgumentException(
+                        String.format("Unsupported match mode for condition item %s", condName));
         }
     }
 

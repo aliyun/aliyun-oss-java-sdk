@@ -35,26 +35,28 @@ public class PartETag implements Serializable {
 
     /**
      * Constructor
+     * 
      * @param partNumber
-     *          Part number.
+     *            Part number.
      * @param eTag
-     *          Part ETag.
+     *            Part ETag.
      */
     public PartETag(int partNumber, String eTag) {
         this.partNumber = partNumber;
         this.eTag = eTag;
     }
-    
+
     /**
      * Constructor
+     * 
      * @param partNumber
-     *          Part number.
+     *            Part number.
      * @param eTag
-     *          Part ETag.
+     *            Part ETag.
      * @param partSize
-     *          Part Size.
+     *            Part Size.
      * @param partCRC
-     *          Part's CRC value.
+     *            Part's CRC value.
      */
     public PartETag(int partNumber, String eTag, long partSize, Long partCRC) {
         this.partNumber = partNumber;
@@ -65,6 +67,7 @@ public class PartETag implements Serializable {
 
     /**
      * Gets part number.
+     * 
      * @return Part number.
      */
     public int getPartNumber() {
@@ -73,8 +76,9 @@ public class PartETag implements Serializable {
 
     /**
      * Sets part number.
+     * 
      * @param partNumber
-     *          Part number.
+     *            Part number.
      */
     public void setPartNumber(int partNumber) {
         this.partNumber = partNumber;
@@ -82,6 +86,7 @@ public class PartETag implements Serializable {
 
     /**
      * Gets the part's ETag
+     * 
      * @return Part ETag.
      */
     public String getETag() {
@@ -90,13 +95,14 @@ public class PartETag implements Serializable {
 
     /**
      * Sets the part's ETag.
+     * 
      * @param eTag
-     *          Part ETag.
+     *            Part ETag.
      */
     public void setETag(String eTag) {
         this.eTag = eTag;
     }
-    
+
     public long getPartSize() {
         return partSize;
     }
@@ -112,7 +118,7 @@ public class PartETag implements Serializable {
     public void setPartCRC(Long partCRC) {
         this.partCRC = partCRC;
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;

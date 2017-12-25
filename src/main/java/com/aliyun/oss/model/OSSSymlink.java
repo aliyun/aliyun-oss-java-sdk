@@ -24,7 +24,7 @@ package com.aliyun.oss.model;
  * 
  */
 public class OSSSymlink extends GenericResult {
-    
+
     public OSSSymlink(String symlink, String target) {
         this.symlink = symlink;
         this.target = target;
@@ -45,9 +45,10 @@ public class OSSSymlink extends GenericResult {
     public void setTarget(String target) {
         this.target = target;
     }
-    
+
     /**
      * Gets the metadata of the symlink file
+     * 
      * @return The metadata of the symlink file.
      */
     public ObjectMetadata getMetadata() {
@@ -56,7 +57,9 @@ public class OSSSymlink extends GenericResult {
 
     /**
      * Sets the metadata of the symlink file.
-     * @param metadata The metadata of the symlink file.
+     * 
+     * @param metadata
+     *            The metadata of the symlink file.
      */
     public void setMetadata(ObjectMetadata metadata) {
         this.metadata = metadata;
@@ -64,8 +67,7 @@ public class OSSSymlink extends GenericResult {
 
     @Override
     public String toString() {
-        return "OSSSymlink [symlink=" + getSymlink()
-            + ", target=" + getTarget() + "]";
+        return "OSSSymlink [symlink=" + getSymlink() + ", target=" + getTarget() + "]";
     }
 
     // symlink file key
@@ -73,8 +75,8 @@ public class OSSSymlink extends GenericResult {
 
     // The original file's key
     private String target;
-    
+
     // The symlink file's metadata.
     private ObjectMetadata metadata;
-    
+
 }

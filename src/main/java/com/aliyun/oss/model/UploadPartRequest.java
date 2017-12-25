@@ -37,28 +37,30 @@ public class UploadPartRequest extends GenericRequest {
     private String md5Digest;
 
     private InputStream inputStream;
-    
+
     private boolean useChunkEncoding = false;
-    
-    public UploadPartRequest() { }
-    
+
+    public UploadPartRequest() {
+    }
+
     public UploadPartRequest(String bucketName, String key) {
         super(bucketName, key);
     }
-    
-    public UploadPartRequest(String bucketName, String key, String uploadId, int partNumber,
-            InputStream inputStream, long partSize) {
+
+    public UploadPartRequest(String bucketName, String key, String uploadId, int partNumber, InputStream inputStream,
+            long partSize) {
         super(bucketName, key);
         this.uploadId = uploadId;
         this.partNumber = partNumber;
         this.inputStream = inputStream;
         this.partSize = partSize;
     }
-    
+
     /**
      * Sets the data stream for the part.
+     * 
      * @param inputStream
-     *          The part's data stream.
+     *            The part's data stream.
      */
     public void setInputStream(InputStream inputStream) {
         this.inputStream = inputStream;
@@ -66,7 +68,8 @@ public class UploadPartRequest extends GenericRequest {
 
     /**
      * Gets the data stream for the part.
-     * @return  The part's data stream.
+     * 
+     * @return The part's data stream.
      */
     public InputStream getInputStream() {
         return inputStream;
@@ -74,6 +77,7 @@ public class UploadPartRequest extends GenericRequest {
 
     /**
      * Gets the multipart upload Id.
+     * 
      * @return The multipart upload Id.
      */
     public String getUploadId() {
@@ -82,18 +86,20 @@ public class UploadPartRequest extends GenericRequest {
 
     /**
      * Sets the multipart upload Id.
+     * 
      * @param uploadId
-     *          The multipart upload Id.
+     *            The multipart upload Id.
      */
     public void setUploadId(String uploadId) {
         this.uploadId = uploadId;
     }
 
     /**
-     * Gets the part number.
-     * For every part to upload, it has a number whose range comes from 1 to 10000.
-     * For the given upload Id, the part number is unique and uploading the data with an existing part number would
-     * lead to the old data being overwritten.
+     * Gets the part number. For every part to upload, it has a number whose
+     * range comes from 1 to 10000. For the given upload Id, the part number is
+     * unique and uploading the data with an existing part number would lead to
+     * the old data being overwritten.
+     * 
      * @return Part number.
      */
     public int getPartNumber() {
@@ -101,12 +107,13 @@ public class UploadPartRequest extends GenericRequest {
     }
 
     /**
-     * Sets the part number.
-     * For every part to upload, it has a number whose range comes from 1 to 10000.
-     * For the given upload Id, the part number is unique and uploading the data with an existing part number would
-     * lead to the old data being overwritten.
+     * Sets the part number. For every part to upload, it has a number whose
+     * range comes from 1 to 10000. For the given upload Id, the part number is
+     * unique and uploading the data with an existing part number would lead to
+     * the old data being overwritten.
+     * 
      * @param partNumber
-     *          Part number.
+     *            Part number.
      */
     public void setPartNumber(int partNumber) {
         this.partNumber = partNumber;
@@ -115,8 +122,10 @@ public class UploadPartRequest extends GenericRequest {
     /**
      * Gets the part size. The minimal part size is 100KB except the last part.
      * Note: the UploadPartCopyRequest's minimal part size is 5MB.
-     * <p>If the part size is -1, then it means the size is unknown. And it will use chunked transfer encoding to upload
-     * the part's data.</p>
+     * <p>
+     * If the part size is -1, then it means the size is unknown. And it will
+     * use chunked transfer encoding to upload the part's data.
+     * </p>
      * 
      * @return Part size.
      *
@@ -128,11 +137,13 @@ public class UploadPartRequest extends GenericRequest {
     /**
      * Sets the part size. The minimal part size is 100KB except the last part.
      * Note: the UploadPartCopyRequest's minimal part size is 5MB.
-     * <p>If the part size is -1, then it means the size is unknown. And it will use chunked transfer encoding to upload
-     * the part's data.</p>
+     * <p>
+     * If the part size is -1, then it means the size is unknown. And it will
+     * use chunked transfer encoding to upload the part's data.
+     * </p>
      * 
      * @param partSize
-     *          Part size.
+     *            Part size.
      */
     public void setPartSize(long partSize) {
         this.partSize = partSize;
@@ -140,6 +151,7 @@ public class UploadPartRequest extends GenericRequest {
 
     /**
      * Gets the part's MD5 value.
+     * 
      * @return Part's MD5 value.
      */
     public String getMd5Digest() {
@@ -148,8 +160,9 @@ public class UploadPartRequest extends GenericRequest {
 
     /**
      * Sets the part's MD5 value.
+     * 
      * @param md5Digest
-     *          Part's MD5 value.
+     *            Part's MD5 value.
      */
     public void setMd5Digest(String md5Digest) {
         this.md5Digest = md5Digest;
@@ -157,21 +170,24 @@ public class UploadPartRequest extends GenericRequest {
 
     /**
      * Gets the flag of using chunked transfer encoding.
+     * 
      * @return true:using chunked transfer encoding
      */
     public boolean isUseChunkEncoding() {
         return useChunkEncoding || (this.partSize == -1);
     }
-    
+
     /**
      * Sets the flag of using chunked transfer encoding.
-     * @param useChunkEncoding true:using chunked transfer encoding
+     * 
+     * @param useChunkEncoding
+     *            true:using chunked transfer encoding
      */
     public void setUseChunkEncoding(boolean useChunkEncoding) {
         this.useChunkEncoding = useChunkEncoding;
     }
-    
+
     public BoundedInputStream buildPartialStream() {
-        return new BoundedInputStream(inputStream, (int)partSize);
+        return new BoundedInputStream(inputStream, (int) partSize);
     }
 }

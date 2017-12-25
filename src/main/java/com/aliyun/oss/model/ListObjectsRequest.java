@@ -27,44 +27,52 @@ import com.aliyun.oss.internal.OSSUtils;
 public class ListObjectsRequest extends GenericRequest {
 
     private static final int MAX_RETURNED_KEYS_LIMIT = 1000;
-    
-    // The prefix filter----objects returned whose key must start with this prefix.
+
+    // The prefix filter----objects returned whose key must start with this
+    // prefix.
     private String prefix;
-    
-    // The marker filter----objects returned whose key must be greater than the maker in lexicographical order.
+
+    // The marker filter----objects returned whose key must be greater than the
+    // maker in lexicographical order.
     private String marker;
 
     // The max objects to return---By default it's 100.
     private Integer maxKeys;
-    
+
     // The delimiters of object names returned.
     private String delimiter;
-    
+
     /**
-     * The encoding type of object name in the response body. Currently object name allow any unicode character. However
-     * the XML 1.0 could not parse some Unicode character such as ASCII character 0 to 10. For these XMl 1.0 non-supported
-     * characters, we can use the encoding type to encode the object name.
+     * The encoding type of object name in the response body. Currently object
+     * name allow any unicode character. However the XML 1.0 could not parse
+     * some Unicode character such as ASCII character 0 to 10. For these XMl 1.0
+     * non-supported characters, we can use the encoding type to encode the
+     * object name.
      */
     private String encodingType;
-    
-    public ListObjectsRequest() { }
-    
+
+    public ListObjectsRequest() {
+    }
+
     public ListObjectsRequest(String bucketName) {
         this(bucketName, null, null, null, null);
     }
-    
+
     /**
      * Constructor
+     * 
      * @param bucketName
-     *          Bucket name.
+     *            Bucket name.
      * @param prefix
-     *          The prefix filter---Objects to return must start with this prefix in their names.
+     *            The prefix filter---Objects to return must start with this
+     *            prefix in their names.
      * @param marker
-     *          The marker filter---Objects to return whose names must be greater than this marker value.
+     *            The marker filter---Objects to return whose names must be
+     *            greater than this marker value.
      * @param maxKeys
-     *          The max object counts to return. The default is 100.
+     *            The max object counts to return. The default is 100.
      * @param delimiter
-     *          The delimiter for the object names to return.
+     *            The delimiter for the object names to return.
      */
     public ListObjectsRequest(String bucketName, String prefix, String marker, String delimiter, Integer maxKeys) {
         super(bucketName);
@@ -78,8 +86,8 @@ public class ListObjectsRequest extends GenericRequest {
 
     /**
      * Gets the prefix filter.
-     * @return
-     *      The prefix filter.
+     * 
+     * @return The prefix filter.
      */
     public String getPrefix() {
         return prefix;
@@ -87,17 +95,20 @@ public class ListObjectsRequest extends GenericRequest {
 
     /**
      * Sets the prefix filter.
+     * 
      * @param prefix
-     *          The prefix filter.
+     *            The prefix filter.
      */
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
-    
+
     /**
-     * Sets teh prefix filter and return the current ListObjectsRequest instance (this).
+     * Sets teh prefix filter and return the current ListObjectsRequest instance
+     * (this).
+     * 
      * @param prefix
-     *          The prefix filter.
+     *            The prefix filter.
      */
     public ListObjectsRequest withPrefix(String prefix) {
         setPrefix(prefix);
@@ -106,8 +117,8 @@ public class ListObjectsRequest extends GenericRequest {
 
     /**
      * Gets the marker filter.
-     * @return
-     *          The marker filter.
+     * 
+     * @return The marker filter.
      */
     public String getMarker() {
         return marker;
@@ -115,17 +126,20 @@ public class ListObjectsRequest extends GenericRequest {
 
     /**
      * Sets the marker filter.
+     * 
      * @param marker
-     *          The marker filter.
+     *            The marker filter.
      */
     public void setMarker(String marker) {
         this.marker = marker;
     }
-    
+
     /**
-     * Sets the mark filter and returns the current ListObjectsRequest instance (this).
+     * Sets the mark filter and returns the current ListObjectsRequest instance
+     * (this).
+     * 
      * @param marker
-     *          marker
+     *            marker
      */
     public ListObjectsRequest withMarker(String marker) {
         setMarker(marker);
@@ -134,8 +148,8 @@ public class ListObjectsRequest extends GenericRequest {
 
     /**
      * Gets the max objects to return. By default it's 100.
-     * @return
-     *      The max objects to return.
+     * 
+     * @return The max objects to return.
      */
     public Integer getMaxKeys() {
         return maxKeys;
@@ -143,22 +157,24 @@ public class ListObjectsRequest extends GenericRequest {
 
     /**
      * Sets the max objects to return. By default it's 100, the max is 1000.
+     * 
      * @param maxKeys
-     *      The max objects to return. The max value is 1000.
+     *            The max objects to return. The max value is 1000.
      */
     public void setMaxKeys(Integer maxKeys) {
         if (maxKeys < 0 || maxKeys > MAX_RETURNED_KEYS_LIMIT) {
-            throw new IllegalArgumentException(
-                    OSSUtils.OSS_RESOURCE_MANAGER.getString("MaxKeysOutOfRange"));
+            throw new IllegalArgumentException(OSSUtils.OSS_RESOURCE_MANAGER.getString("MaxKeysOutOfRange"));
         }
 
         this.maxKeys = maxKeys;
     }
-    
+
     /**
-     * Sets the max objects and returns the current ListObjectsRequest instance (this). By default it's 100, the max is 1000.
+     * Sets the max objects and returns the current ListObjectsRequest instance
+     * (this). By default it's 100, the max is 1000.
+     * 
      * @param maxKeys
-     *      The max objects to return.
+     *            The max objects to return.
      */
     public ListObjectsRequest withMaxKeys(Integer maxKeys) {
         setMaxKeys(maxKeys);
@@ -167,6 +183,7 @@ public class ListObjectsRequest extends GenericRequest {
 
     /**
      * Gets the delimiter of object names.
+     * 
      * @return the delimiter
      */
     public String getDelimiter() {
@@ -175,24 +192,29 @@ public class ListObjectsRequest extends GenericRequest {
 
     /**
      * Sets the delimiter.
-     * @param delimiter the delimiter to set
+     * 
+     * @param delimiter
+     *            the delimiter to set
      */
     public void setDelimiter(String delimiter) {
         this.delimiter = delimiter;
     }
-    
+
     /**
-     * Sets the delimiter and returns the current ListObjectsRequest instance (this).
-     * @param delimiter the delimiter to set
+     * Sets the delimiter and returns the current ListObjectsRequest instance
+     * (this).
+     * 
+     * @param delimiter
+     *            the delimiter to set
      */
     public ListObjectsRequest withDelimiter(String delimiter) {
         setDelimiter(delimiter);
         return this;
     }
-    
+
     /**
      * Gets the encoding type of object names in response body.
-
+     * 
      * @return The encoding type of object names in response body.
      */
     public String getEncodingType() {
@@ -203,19 +225,20 @@ public class ListObjectsRequest extends GenericRequest {
      * Sets the encoding type of object names in response body.
      * 
      * @param encodingType
-     *            The encoding type of object names in response body.
-     *            Valid values are 'null' or 'url'.
+     *            The encoding type of object names in response body. Valid
+     *            values are 'null' or 'url'.
      */
     public void setEncodingType(String encodingType) {
         this.encodingType = encodingType;
     }
-    
+
     /**
-     * Sets the encoding type of object names in response body and returns the current ListObjectsRequest instance (this).
+     * Sets the encoding type of object names in response body and returns the
+     * current ListObjectsRequest instance (this).
      * 
      * @param encodingType
-     *            The encoding type of object names in response body.
-     *            Valid values are 'null' or 'url'.
+     *            The encoding type of object names in response body. Valid
+     *            values are 'null' or 'url'.
      */
     public ListObjectsRequest withEncodingType(String encodingType) {
         setEncodingType(encodingType);

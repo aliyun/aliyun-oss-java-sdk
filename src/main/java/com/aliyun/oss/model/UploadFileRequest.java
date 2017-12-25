@@ -29,16 +29,15 @@ public class UploadFileRequest extends GenericRequest {
         super(bucketName, key);
     }
 
-    public UploadFileRequest(String bucketName, String key, String uploadFile,
-            long partSize, int taskNum) {
+    public UploadFileRequest(String bucketName, String key, String uploadFile, long partSize, int taskNum) {
         super(bucketName, key);
         this.partSize = partSize;
         this.taskNum = taskNum;
         this.uploadFile = uploadFile;
     }
-    
-    public UploadFileRequest(String bucketName, String key, String uploadFile,
-            long partSize, int taskNum, boolean enableCheckpoint) {
+
+    public UploadFileRequest(String bucketName, String key, String uploadFile, long partSize, int taskNum,
+            boolean enableCheckpoint) {
         super(bucketName, key);
         this.partSize = partSize;
         this.taskNum = taskNum;
@@ -46,9 +45,8 @@ public class UploadFileRequest extends GenericRequest {
         this.enableCheckpoint = enableCheckpoint;
     }
 
-    public UploadFileRequest(String bucketName, String key, String uploadFile,
-            long partSize, int taskNum, boolean enableCheckpoint,
-            String checkpointFile) {
+    public UploadFileRequest(String bucketName, String key, String uploadFile, long partSize, int taskNum,
+            boolean enableCheckpoint, String checkpointFile) {
         super(bucketName, key);
         this.partSize = partSize;
         this.taskNum = taskNum;
@@ -106,7 +104,7 @@ public class UploadFileRequest extends GenericRequest {
     public void setCheckpointFile(String checkpointFile) {
         this.checkpointFile = checkpointFile;
     }
-    
+
     public ObjectMetadata getObjectMetadata() {
         return objectMetadata;
     }
@@ -114,7 +112,7 @@ public class UploadFileRequest extends GenericRequest {
     public void setObjectMetadata(ObjectMetadata objectMetadata) {
         this.objectMetadata = objectMetadata;
     }
-    
+
     public Callback getCallback() {
         return callback;
     }
