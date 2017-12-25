@@ -171,8 +171,10 @@ public class OSSRequestMessageBuilder {
         sentHeaders.put(OSSHeaders.DATE, DateUtil.formatRfc822Date(new Date()));
         Map<String, String> sentParameters = new LinkedHashMap<String, String>(this.parameters);
 
-        RequestMessage request = new RequestMessage(this.originalRequest);
+        RequestMessage request = new RequestMessage(this.originalRequest, this.bucket, this.key);
         ClientConfiguration clientCofig = this.innerClient.getClientConfiguration();
+        request.setBucket(bucket);
+        request.setKey(key);
         request.setEndpoint(determineFinalEndpoint(this.endpoint, this.bucket, clientCofig));
         request.setResourcePath(determineResourcePath(this.bucket, this.key, clientCofig.isSLDEnabled()));
         request.setHeaders(sentHeaders);

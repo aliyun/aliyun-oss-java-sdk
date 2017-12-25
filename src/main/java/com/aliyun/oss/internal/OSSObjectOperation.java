@@ -169,7 +169,7 @@ public class OSSObjectOperation extends OSSOperation {
             requestHeaders = new HashMap<String, String>();
         }
 
-        RequestMessage request = new RequestMessage();
+        RequestMessage request = new RequestMessage(null, null);
         request.setMethod(HttpMethod.PUT);
         request.setAbsoluteUrl(signedUrl);
         request.setUseUrlSignature(true);
@@ -252,7 +252,7 @@ public class OSSObjectOperation extends OSSOperation {
                     .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(key).setHeaders(headers)
                     .setParameters(params).setOriginalRequest(getObjectRequest).build();
         } else {
-            request = new RequestMessage(getObjectRequest);
+            request = new RequestMessage(getObjectRequest, bucketName, key);
             request.setMethod(HttpMethod.GET);
             request.setAbsoluteUrl(getObjectRequest.getAbsoluteUri());
             request.setUseUrlSignature(true);

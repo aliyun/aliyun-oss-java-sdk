@@ -22,11 +22,13 @@ package com.aliyun.oss;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.aliyun.oss.common.auth.RequestSigner;
 import com.aliyun.oss.common.comm.IdleConnectionReaper;
 import com.aliyun.oss.common.comm.Protocol;
 import com.aliyun.oss.common.utils.ResourceManager;
@@ -89,6 +91,8 @@ public class ClientConfiguration {
     private Map<String, String> defaultHeaders = new LinkedHashMap<String, String>();
 
     private boolean crcCheckEnabled = true;
+
+    private List<RequestSigner> signerHandlers = new LinkedList<RequestSigner>();
 
     /**
      * Gets the user agent string.
@@ -620,6 +624,32 @@ public class ClientConfiguration {
      */
     public void setCrcCheckEnabled(boolean crcCheckEnabled) {
         this.crcCheckEnabled = crcCheckEnabled;
+    }
+
+    /**
+     * Gets signer handlers
+     * 
+     * @return signer handlers
+     */
+    public List<RequestSigner> getSignerHandlers() {
+        return signerHandlers;
+    }
+
+    /**
+     * Sets signer handlers using for authentication of the proxy server.
+     * 
+     * @param signerHandlers
+     */
+    public void setSignerHandlers(List<RequestSigner> signerHandlers) {
+        if (signerHandlers == null) {
+            return;
+        }
+        this.signerHandlers.clear();
+        for (RequestSigner signer : signerHandlers) {
+            if (signer != null) {
+                this.signerHandlers.add(signer);
+            }
+        }
     }
 
 }

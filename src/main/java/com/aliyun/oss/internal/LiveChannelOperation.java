@@ -315,7 +315,7 @@ public class LiveChannelOperation extends OSSOperation {
         boolean useSecurityToken = currentCreds.useSecurityToken();
 
         // Endpoint
-        RequestMessage requestMessage = new RequestMessage();
+        RequestMessage requestMessage = new RequestMessage(bucketName, liveChannelName);
         ClientConfiguration config = this.client.getClientConfiguration();
         requestMessage.setEndpoint(OSSUtils.determineFinalEndpoint(this.endpoint, bucketName, config));
 

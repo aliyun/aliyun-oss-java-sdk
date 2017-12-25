@@ -32,6 +32,12 @@ import com.aliyun.oss.model.WebServiceRequest;
  */
 public class RequestMessage extends HttpMesssage {
 
+    /* bucket name */
+    private String bucket;
+
+    /* object name */
+    private String key;
+
     /* The resource path being requested */
     private String resourcePath;
 
@@ -56,11 +62,11 @@ public class RequestMessage extends HttpMesssage {
     /* The original request provided by user */
     private final WebServiceRequest originalRequest;
 
-    public RequestMessage() {
-        this(null);
+    public RequestMessage(String bucketName, String key) {
+        this(null, bucketName, key);
     }
 
-    public RequestMessage(WebServiceRequest originalRequest) {
+    public RequestMessage(WebServiceRequest originalRequest, String bucketName, String key) {
         this.originalRequest = (originalRequest == null) ? WebServiceRequest.NOOP : originalRequest;
     }
 
@@ -145,6 +151,22 @@ public class RequestMessage extends HttpMesssage {
 
     public WebServiceRequest getOriginalRequest() {
         return originalRequest;
+    }
+
+    public String getBucket() {
+        return bucket;
+    }
+
+    public void setBucket(String bucket) {
+        this.bucket = bucket;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
 }

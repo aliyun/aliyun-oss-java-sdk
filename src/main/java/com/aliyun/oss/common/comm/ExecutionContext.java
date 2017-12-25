@@ -40,6 +40,9 @@ public class ExecutionContext {
     /* The response handlers that handle response message in as a pipeline. */
     private List<ResponseHandler> responseHandlers = new LinkedList<ResponseHandler>();
 
+    /* The signer handlers that handle sign request in as a pipeline. */
+    private List<RequestSigner> signerHandlers = new LinkedList<RequestSigner>();
+
     private String charset = OSSConstants.DEFAULT_CHARSET_NAME;
 
     /* Retry strategy when HTTP request fails. */
@@ -101,6 +104,22 @@ public class ExecutionContext {
 
     public void removeRequestHandler(RequestHandler handler) {
         requestHandlers.remove(handler);
+    }
+
+    public List<RequestSigner> getSignerHandlers() {
+        return signerHandlers;
+    }
+
+    public void addSignerHandler(RequestSigner handler) {
+        signerHandlers.add(handler);
+    }
+
+    public void insertSignerHandler(int position, RequestSigner handler) {
+        signerHandlers.add(position, handler);
+    }
+
+    public void removeSignerHandler(RequestSigner handler) {
+        signerHandlers.remove(handler);
     }
 
     public Credentials getCredentials() {

@@ -687,7 +687,7 @@ public class OSSClient implements OSS {
         ClientConfiguration config = serviceClient.getClientConfiguration();
         String resourcePath = OSSUtils.determineResourcePath(bucketName, key, config.isSLDEnabled());
 
-        RequestMessage requestMessage = new RequestMessage();
+        RequestMessage requestMessage = new RequestMessage(bucketName, key);
         requestMessage.setEndpoint(OSSUtils.determineFinalEndpoint(endpoint, bucketName, config));
         requestMessage.setMethod(method);
         requestMessage.setResourcePath(resourcePath);
