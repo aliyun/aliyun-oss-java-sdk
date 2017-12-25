@@ -36,6 +36,7 @@ import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.ServiceException;
+import com.aliyun.oss.common.auth.RequestSigner;
 import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.common.utils.LogUtils;
 import com.aliyun.oss.internal.OSSConstants;
@@ -87,6 +88,10 @@ public abstract class ServiceClient {
         // Sign the request if a signer provided.
         if (context.getSigner() != null && !request.isUseUrlSignature()) {
             context.getSigner().sign(request);
+        }
+
+        for (RequestSigner signer : context.getSignerHandlers()) {
+            signer.sign(request);
         }
 
         InputStream requestContent = request.getContent();

@@ -146,6 +146,13 @@ public abstract class OSSOperation {
             context.addResponseHandler(new ResponseChecksumHandler());
         }
 
+        List<RequestSigner> signerHandlers = this.client.getClientConfiguration().getSignerHandlers();
+        if (signerHandlers != null) {
+            for (RequestSigner signer : signerHandlers) {
+                context.addSignerHandler(signer);
+            }
+        }
+
         ResponseMessage response = send(request, context, keepResponseOpen);
 
         try {
