@@ -53,8 +53,10 @@ public class BoundedInputStream extends InputStream {
      * Creates a new <code>BoundedInputStream</code> that wraps the given input
      * stream and limits it to a certain size.
      *
-     * @param in The wrapped input stream
-     * @param size The maximum number of bytes to return
+     * @param in
+     *            The wrapped input stream
+     * @param size
+     *            The maximum number of bytes to return
      */
     public BoundedInputStream(InputStream in, long size) {
         // Some badly designed methods - eg the servlet API - overload length
@@ -67,18 +69,21 @@ public class BoundedInputStream extends InputStream {
      * Creates a new <code>BoundedInputStream</code> that wraps the given input
      * stream and is unlimited.
      *
-     * @param in The wrapped input stream
+     * @param in
+     *            The wrapped input stream
      */
     public BoundedInputStream(InputStream in) {
         this(in, -1);
     }
 
     /**
-     * Invokes the delegate's <code>read()</code> method if
-     * the current position is less than the limit.
-     * @return the byte read or -1 if the end of stream or
-     * the limit has been reached.
-     * @throws IOException if an I/O error occurs
+     * Invokes the delegate's <code>read()</code> method if the current position
+     * is less than the limit.
+     * 
+     * @return the byte read or -1 if the end of stream or the limit has been
+     *         reached.
+     * @throws IOException
+     *             if an I/O error occurs
      */
     @Override
     public int read() throws IOException {
@@ -92,10 +97,13 @@ public class BoundedInputStream extends InputStream {
 
     /**
      * Invokes the delegate's <code>read(byte[])</code> method.
-     * @param b the buffer to read the bytes into
-     * @return the number of bytes read or -1 if the end of stream or
-     * the limit has been reached.
-     * @throws IOException if an I/O error occurs
+     * 
+     * @param b
+     *            the buffer to read the bytes into
+     * @return the number of bytes read or -1 if the end of stream or the limit
+     *         has been reached.
+     * @throws IOException
+     *             if an I/O error occurs
      */
     @Override
     public int read(byte[] b) throws IOException {
@@ -104,40 +112,48 @@ public class BoundedInputStream extends InputStream {
 
     /**
      * Invokes the delegate's <code>read(byte[], int, int)</code> method.
-     * @param b the buffer to read the bytes into
-     * @param off The start offset
-     * @param len The number of bytes to read
-     * @return the number of bytes read or -1 if the end of stream or
-     * the limit has been reached.
-     * @throws IOException if an I/O error occurs
+     * 
+     * @param b
+     *            the buffer to read the bytes into
+     * @param off
+     *            The start offset
+     * @param len
+     *            The number of bytes to read
+     * @return the number of bytes read or -1 if the end of stream or the limit
+     *         has been reached.
+     * @throws IOException
+     *             if an I/O error occurs
      */
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
-        if (max>=0 && pos>=max) {
+        if (max >= 0 && pos >= max) {
             return -1;
         }
-        long maxRead = max>=0 ? Math.min(len, max-pos) : len;
-        int bytesRead = in.read(b, off, (int)maxRead);
+        long maxRead = max >= 0 ? Math.min(len, max - pos) : len;
+        int bytesRead = in.read(b, off, (int) maxRead);
 
-        if (bytesRead==-1) {
+        if (bytesRead == -1) {
             return -1;
         }
 
-        pos+=bytesRead;
+        pos += bytesRead;
         return bytesRead;
     }
 
     /**
      * Invokes the delegate's <code>skip(long)</code> method.
-     * @param n the number of bytes to skip
+     * 
+     * @param n
+     *            the number of bytes to skip
      * @return the actual number of bytes skipped
-     * @throws IOException if an I/O error occurs
+     * @throws IOException
+     *             if an I/O error occurs
      */
     @Override
     public long skip(long n) throws IOException {
-        long toSkip = max>=0 ? Math.min(n, max-pos) : n;
+        long toSkip = max >= 0 ? Math.min(n, max - pos) : n;
         long skippedBytes = in.skip(toSkip);
-        pos+=skippedBytes;
+        pos += skippedBytes;
         return skippedBytes;
     }
 
@@ -146,7 +162,7 @@ public class BoundedInputStream extends InputStream {
      */
     @Override
     public int available() throws IOException {
-        if (max>=0 && pos>=max) {
+        if (max >= 0 && pos >= max) {
             return 0;
         }
         return in.available();
@@ -154,6 +170,7 @@ public class BoundedInputStream extends InputStream {
 
     /**
      * Invokes the delegate's <code>toString()</code> method.
+     * 
      * @return the delegate's <code>toString()</code>
      */
     @Override
@@ -162,9 +179,11 @@ public class BoundedInputStream extends InputStream {
     }
 
     /**
-     * Invokes the delegate's <code>close()</code> method
-     * if {@link #isPropagateClose()} is {@code true}.
-     * @throws IOException if an I/O error occurs
+     * Invokes the delegate's <code>close()</code> method if
+     * {@link #isPropagateClose()} is {@code true}.
+     * 
+     * @throws IOException
+     *             if an I/O error occurs
      */
     @Override
     public void close() throws IOException {
@@ -175,7 +194,9 @@ public class BoundedInputStream extends InputStream {
 
     /**
      * Invokes the delegate's <code>reset()</code> method.
-     * @throws IOException if an I/O error occurs
+     * 
+     * @throws IOException
+     *             if an I/O error occurs
      */
     @Override
     public synchronized void reset() throws IOException {
@@ -185,7 +206,9 @@ public class BoundedInputStream extends InputStream {
 
     /**
      * Invokes the delegate's <code>mark(int)</code> method.
-     * @param readlimit read ahead limit
+     * 
+     * @param readlimit
+     *            read ahead limit
      */
     @Override
     public synchronized void mark(int readlimit) {
@@ -195,6 +218,7 @@ public class BoundedInputStream extends InputStream {
 
     /**
      * Invokes the delegate's <code>markSupported()</code> method.
+     * 
      * @return true if mark is supported, otherwise false
      */
     @Override
@@ -203,25 +227,25 @@ public class BoundedInputStream extends InputStream {
     }
 
     /**
-     * Indicates whether the {@link #close()} method
-     * should propagate to the underling {@link InputStream}.
+     * Indicates whether the {@link #close()} method should propagate to the
+     * underling {@link InputStream}.
      *
-     * @return {@code true} if calling {@link #close()}
-     * propagates to the <code>close()</code> method of the
-     * underlying stream or {@code false} if it does not.
+     * @return {@code true} if calling {@link #close()} propagates to the
+     *         <code>close()</code> method of the underlying stream or
+     *         {@code false} if it does not.
      */
     public boolean isPropagateClose() {
         return propagateClose;
     }
 
     /**
-     * Set whether the {@link #close()} method
-     * should propagate to the underling {@link InputStream}.
+     * Set whether the {@link #close()} method should propagate to the underling
+     * {@link InputStream}.
      *
-     * @param propagateClose {@code true} if calling
-     * {@link #close()} propagates to the <code>close()</code>
-     * method of the underlying stream or
-     * {@code false} if it does not.
+     * @param propagateClose
+     *            {@code true} if calling {@link #close()} propagates to the
+     *            <code>close()</code> method of the underlying stream or
+     *            {@code false} if it does not.
      */
     public void setPropagateClose(boolean propagateClose) {
         this.propagateClose = propagateClose;
@@ -235,14 +259,14 @@ public class BoundedInputStream extends InputStream {
     public InputStream getWrappedInputStream() {
         return this.in;
     }
-    
+
     /**
-     * Go back current position 
+     * Go back current position
      * 
      * @param backoff
      */
     protected void backoff(long backoff) {
         this.pos -= backoff;
     }
-    
+
 }

@@ -20,18 +20,18 @@
 package com.aliyun.oss.model;
 
 public class DeleteBucketCnameRequest extends GenericRequest {
-    
+
     private String domain;
-    
+
     public DeleteBucketCnameRequest(String bucketName) {
         super(bucketName);
     }
-    
+
     public DeleteBucketCnameRequest(String bucketName, String domain) {
         super(bucketName);
         this.domain = domain;
     }
-    
+
     public String getDomain() {
         return domain;
     }
@@ -39,7 +39,7 @@ public class DeleteBucketCnameRequest extends GenericRequest {
     public void setDomain(String domain) {
         this.domain = domain;
     }
-    
+
     public DeleteBucketCnameRequest withDomain(String domain) {
         setDomain(domain);
         return this;

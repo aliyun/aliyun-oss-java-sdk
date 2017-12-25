@@ -25,7 +25,7 @@ public class LiveChannelGenericRequest extends GenericRequest {
         super(bucketName);
         this.liveChannelName = liveChannelName;
     }
-    
+
     public void setLiveChannelName(String liveChannelName) {
         this.liveChannelName = liveChannelName;
     }

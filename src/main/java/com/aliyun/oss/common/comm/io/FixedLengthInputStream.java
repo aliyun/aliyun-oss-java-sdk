@@ -26,16 +26,16 @@ public class FixedLengthInputStream extends InputStream {
 
     private InputStream wrappedInputStream = null;
     private long length = 0;
-    
+
     public FixedLengthInputStream(InputStream instream, long length) {
         if (instream == null || length < 0) {
             throw new IllegalArgumentException("Illegal input stream or length");
         }
-        
+
         this.wrappedInputStream = instream;
         this.length = length;
     }
-    
+
     public void reset() throws IOException {
         wrappedInputStream.reset();
     }
@@ -51,12 +51,12 @@ public class FixedLengthInputStream extends InputStream {
     public int available() throws IOException {
         return wrappedInputStream.available();
     }
-    
+
     @Override
     public long skip(long n) throws IOException {
         return wrappedInputStream.skip(n);
     }
-    
+
     public InputStream getWrappedInputStream() {
         return wrappedInputStream;
     }

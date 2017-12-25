@@ -39,10 +39,11 @@ public class Owner implements Serializable {
 
     /**
      * Constructor.
+     * 
      * @param id
-     *          Owner Id.
+     *            Owner Id.
      * @param displayName
-     *          Owner display name.
+     *            Owner display name.
      */
     public Owner(String id, String displayName) {
         this.id = id;
@@ -59,6 +60,7 @@ public class Owner implements Serializable {
 
     /**
      * Gets the owner Id.
+     * 
      * @return Owner Id.
      */
     public String getId() {
@@ -67,8 +69,9 @@ public class Owner implements Serializable {
 
     /**
      * Sets the owner Id.
+     * 
      * @param id
-     *          Owner Id.
+     *            Owner Id.
      */
     public void setId(String id) {
         this.id = id;
@@ -76,6 +79,7 @@ public class Owner implements Serializable {
 
     /**
      * Gets the owner's display name
+     * 
      * @return Owner's display name.
      */
     public String getDisplayName() {
@@ -84,17 +88,18 @@ public class Owner implements Serializable {
 
     /**
      * Sets the owner's display name.
+     * 
      * @param name
-     *          Owner's display name.
+     *            Owner's display name.
      */
     public void setDisplayName(String name) {
         this.displayName = name;
     }
 
     /**
-     * Checks if the current object equals the specified one.
-     * Override the object.Equals() method.
-     * Both Id and name must be same to return true for this method.
+     * Checks if the current object equals the specified one. Override the
+     * object.Equals() method. Both Id and name must be same to return true for
+     * this method.
      */
     @Override
     public boolean equals(Object obj) {
@@ -102,20 +107,23 @@ public class Owner implements Serializable {
             return false;
         }
 
-        Owner otherOwner = (Owner)obj;
+        Owner otherOwner = (Owner) obj;
 
         String otherOwnerId = otherOwner.getId();
         String otherOwnerName = otherOwner.getDisplayName();
         String thisOwnerId = this.getId();
         String thisOwnerName = this.getDisplayName();
 
-        if (otherOwnerId == null) otherOwnerId = "";
-        if (otherOwnerName == null) otherOwnerName = "";
-        if (thisOwnerId == null) thisOwnerId = "";
-        if (thisOwnerName == null) thisOwnerName = "";
+        if (otherOwnerId == null)
+            otherOwnerId = "";
+        if (otherOwnerName == null)
+            otherOwnerName = "";
+        if (thisOwnerId == null)
+            thisOwnerId = "";
+        if (thisOwnerName == null)
+            thisOwnerName = "";
 
-        return (otherOwnerId.equals(thisOwnerId) &&
-                otherOwnerName.equals(thisOwnerName));
+        return (otherOwnerId.equals(thisOwnerId) && otherOwnerName.equals(thisOwnerName));
     }
 
     /**

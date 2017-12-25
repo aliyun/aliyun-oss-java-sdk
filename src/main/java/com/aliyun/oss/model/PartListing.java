@@ -48,6 +48,7 @@ public class PartListing extends GenericResult {
 
     /**
      * Gets the {@link Bucket} name.
+     * 
      * @return Bucket name.
      */
     public String getBucketName() {
@@ -56,8 +57,9 @@ public class PartListing extends GenericResult {
 
     /**
      * Sets the {@link Bucket} name.
+     * 
      * @param bucketName
-     *          Bucket name.
+     *            Bucket name.
      */
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
@@ -65,6 +67,7 @@ public class PartListing extends GenericResult {
 
     /**
      * Gets the {@link OSSObject} key.
+     * 
      * @return Object key。
      */
     public String getKey() {
@@ -73,8 +76,9 @@ public class PartListing extends GenericResult {
 
     /**
      * Sets the {@link OSSObject} key.
+     * 
      * @param key
-     *          Object key.
+     *            Object key.
      */
     public void setKey(String key) {
         this.key = key;
@@ -82,6 +86,7 @@ public class PartListing extends GenericResult {
 
     /**
      * Gets the multipart Upload ID.
+     * 
      * @return The multipart upload Id.
      */
     public String getUploadId() {
@@ -90,8 +95,9 @@ public class PartListing extends GenericResult {
 
     /**
      * Sets the multipart upload Id.
+     * 
      * @param uploadId
-     *          The multipart upload Id.
+     *            The multipart upload Id.
      */
     public void setUploadId(String uploadId) {
         this.uploadId = uploadId;
@@ -107,6 +113,7 @@ public class PartListing extends GenericResult {
 
     /**
      * Gets the {@link ListPartsRequest#getPartNumberMarker()}.
+     * 
      * @return Part number marker.
      */
     public Integer getPartNumberMarker() {
@@ -114,16 +121,20 @@ public class PartListing extends GenericResult {
     }
 
     /**
-     * Sets the part number marker with {@link ListPartsRequest#getPartNumberMarker()}.
+     * Sets the part number marker with
+     * {@link ListPartsRequest#getPartNumberMarker()}.
+     * 
      * @param partNumberMarker
-     *          Part number marker.
+     *            Part number marker.
      */
     public void setPartNumberMarker(int partNumberMarker) {
         this.partNumberMarker = partNumberMarker;
     }
 
     /**
-     * Gets the next part number maker if there's remaining data left in the server.
+     * Gets the next part number maker if there's remaining data left in the
+     * server.
+     * 
      * @return The next part number.
      */
     public Integer getNextPartNumberMarker() {
@@ -131,16 +142,20 @@ public class PartListing extends GenericResult {
     }
 
     /**
-     * Sets the next part number maker if there's remaining data left in the server.
+     * Sets the next part number maker if there's remaining data left in the
+     * server.
+     * 
      * @param nextPartNumberMarker
-     *          The next part number marker.
+     *            The next part number marker.
      */
     public void setNextPartNumberMarker(int nextPartNumberMarker) {
         this.nextPartNumberMarker = nextPartNumberMarker;
     }
 
     /**
-     * Gets the max parts count to return, the value comes from {@link ListPartsRequest#getMaxParts()}.
+     * Gets the max parts count to return, the value comes from
+     * {@link ListPartsRequest#getMaxParts()}.
+     * 
      * @return The max parts count.
      */
     public Integer getMaxParts() {
@@ -148,16 +163,20 @@ public class PartListing extends GenericResult {
     }
 
     /**
-     * Sets the max parts count. The value comes from （{@link ListPartsRequest#getMaxParts()}).
+     * Sets the max parts count. The value comes from （
+     * {@link ListPartsRequest#getMaxParts()}).
+     * 
      * @param maxParts
-     *          The max parts count.
+     *            The max parts count.
      */
     public void setMaxParts(int maxParts) {
         this.maxParts = maxParts;
     }
 
     /**
-     * Gets the flag of if the result is truncated. If there's data remaining in the server side, the flag is true.
+     * Gets the flag of if the result is truncated. If there's data remaining in
+     * the server side, the flag is true.
+     * 
      * @return true: the result is truncated; false the result is not truncated.
      */
     public boolean isTruncated() {
@@ -165,9 +184,12 @@ public class PartListing extends GenericResult {
     }
 
     /**
-     * Sets the flag of if the result is truncated. If there's data remaining in the server side, the flag is true.
+     * Sets the flag of if the result is truncated. If there's data remaining in
+     * the server side, the flag is true.
+     * 
      * @param isTruncated
-     *          true: the result is truncated; false the result is not truncated.
+     *            true: the result is truncated; false the result is not
+     *            truncated.
      */
     public void setTruncated(boolean isTruncated) {
         this.isTruncated = isTruncated;
@@ -175,6 +197,7 @@ public class PartListing extends GenericResult {
 
     /**
      * Gets the list of {@link PartSummary}.
+     * 
      * @return The list of {@link PartSummary}.
      */
     public List<PartSummary> getParts() {
@@ -183,8 +206,9 @@ public class PartListing extends GenericResult {
 
     /**
      * Sets the list of {@link PartSummary}.
+     * 
      * @param parts
-     *      The list of {@link PartSummary}.
+     *            The list of {@link PartSummary}.
      */
     public void setParts(List<PartSummary> parts) {
         this.parts.clear();
@@ -192,11 +216,12 @@ public class PartListing extends GenericResult {
             this.parts.addAll(parts);
         }
     }
-    
+
     /**
      * Adds a {@link PartSummary} instance.
+     * 
      * @param partSummary
-     *      A {@link PartSummary} instance.
+     *            A {@link PartSummary} instance.
      */
     public void addPart(PartSummary partSummary) {
         this.parts.add(partSummary);

@@ -31,7 +31,7 @@ public class LiveChannelListing {
     public void addLiveChannel(LiveChannel liveChannel) {
         this.liveChannels.add(liveChannel);
     }
-    
+
     public void setObjectSummaries(List<LiveChannel> liveChannels) {
         this.liveChannels.clear();
         if (liveChannels != null && !liveChannels.isEmpty()) {

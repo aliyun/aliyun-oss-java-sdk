@@ -30,23 +30,23 @@ import com.aliyun.oss.internal.OSSConstants;
  * HTTP request context.
  */
 public class ExecutionContext {
-    
+
     /* Request signer */
     private RequestSigner signer;
-    
+
     /* The request handlers that handle request content in as a pipeline. */
     private List<RequestHandler> requestHandlers = new LinkedList<RequestHandler>();
-    
+
     /* The response handlers that handle response message in as a pipeline. */
     private List<ResponseHandler> responseHandlers = new LinkedList<ResponseHandler>();
 
     private String charset = OSSConstants.DEFAULT_CHARSET_NAME;
-    
+
     /* Retry strategy when HTTP request fails. */
     private RetryStrategy retryStrategy;
-    
+
     private Credentials credentials;
-    
+
     public RetryStrategy getRetryStrategy() {
         return retryStrategy;
     }
@@ -78,7 +78,7 @@ public class ExecutionContext {
     public void addResponseHandler(ResponseHandler handler) {
         responseHandlers.add(handler);
     }
-    
+
     public void insertResponseHandler(int position, ResponseHandler handler) {
         responseHandlers.add(position, handler);
     }
@@ -86,7 +86,7 @@ public class ExecutionContext {
     public void removeResponseHandler(ResponseHandler handler) {
         responseHandlers.remove(handler);
     }
-    
+
     public List<RequestHandler> getResquestHandlers() {
         return requestHandlers;
     }
@@ -94,7 +94,7 @@ public class ExecutionContext {
     public void addRequestHandler(RequestHandler handler) {
         requestHandlers.add(handler);
     }
-    
+
     public void insertRequestHandler(int position, RequestHandler handler) {
         requestHandlers.add(position, handler);
     }

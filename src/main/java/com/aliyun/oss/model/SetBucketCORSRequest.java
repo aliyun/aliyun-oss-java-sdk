@@ -23,63 +23,62 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SetBucketCORSRequest extends GenericRequest {
-    
+
     private static int MAX_CORS_RULE_LIMIT = 10;
     private static char ASTERISK = '*';
     private static String[] ALL_ALLOWED_METHODS = { "GET", "PUT", "DELETE", "POST", "HEAD" };
 
-    private List<CORSRule> corsRules=new ArrayList<CORSRule>();
-    
+    private List<CORSRule> corsRules = new ArrayList<CORSRule>();
+
     public SetBucketCORSRequest(String bucketName) {
         super(bucketName);
     }
-    
+
     public void addCorsRule(CORSRule corsRule) {
         checkCorsValidity(corsRule);
         this.corsRules.add(corsRule);
     }
-    
+
     private void checkCorsValidity(CORSRule corsRule) {
         if (corsRule == null) {
             throw new IllegalArgumentException("corsRule should not be null or empty.");
         }
-        
+
         if (this.corsRules.size() >= MAX_CORS_RULE_LIMIT) {
             throw new IllegalArgumentException("One bucket not allowed exceed ten items of CORS Rules.");
         }
-        
+
         // At least one item of allowed origins
         if (corsRule.getAllowedOrigins().isEmpty()) {
             throw new IllegalArgumentException("Required field 'AllowedOrigins' should not be empty.");
         }
-        
+
         // At least one item of allowed methods
-        if (corsRule.getAllowedMethods().isEmpty()) {            
+        if (corsRule.getAllowedMethods().isEmpty()) {
             throw new IllegalArgumentException("Required field 'AllowedMethod' should not be empty.");
         }
-        
+
         // At most one asterisk wildcard in allowed origins
         for (String origin : corsRule.getAllowedOrigins()) {
             if (countOfAsterisk(origin) > 1) {
                 throw new IllegalArgumentException("At most one '*' wildcard in allowd origin.");
             }
         }
-        
+
         // Unsupported method
         for (String method : corsRule.getAllowedMethods()) {
             if (!isAllowedMethod(method)) {
-                throw new IllegalArgumentException("Unsupported method " + method +
-                        ", (GET,PUT,DELETE,POST,HEAD)");
+                throw new IllegalArgumentException("Unsupported method " + method + ", (GET,PUT,DELETE,POST,HEAD)");
             }
         }
-        
+
         // At most one asterisk wildcard in allowed headers
         for (String header : corsRule.getAllowedHeaders()) {
             if (countOfAsterisk(header) > 1) {
                 throw new IllegalArgumentException("At most one '*' wildcard in allowd header.");
             }
         }
-        
+
         // Not allow to use any asterisk wildcard in allowed origins
         for (String header : corsRule.getExposeHeaders()) {
             if (countOfAsterisk(header) > 0) {
@@ -87,12 +86,12 @@ public class SetBucketCORSRequest extends GenericRequest {
             }
         }
     }
-    
+
     private static int countOfAsterisk(String str) {
         if (str == null || str.equals("")) {
             return 0;
         }
-        
+
         int from = 0;
         int pos = -1;
         int count = 0;
@@ -102,17 +101,17 @@ public class SetBucketCORSRequest extends GenericRequest {
             if (pos != -1) {
                 count++;
                 from = pos + 1;
-            } 
+            }
         } while (pos != -1 && from < len);
-        
+
         return count;
     }
-    
+
     private static boolean isAllowedMethod(String method) {
         if (method == null || method.equals("")) {
             return false;
         }
-        
+
         for (String m : ALL_ALLOWED_METHODS) {
             if (m.equals(method)) {
                 return true;
@@ -120,7 +119,7 @@ public class SetBucketCORSRequest extends GenericRequest {
         }
         return false;
     }
-    
+
     public List<CORSRule> getCorsRules() {
         return corsRules;
     }
@@ -129,27 +128,27 @@ public class SetBucketCORSRequest extends GenericRequest {
         if (corsRules == null || corsRules.isEmpty()) {
             throw new IllegalArgumentException("corsRules should not be null or empty.");
         }
-        
+
         if (corsRules.size() > MAX_CORS_RULE_LIMIT) {
             throw new IllegalArgumentException("One bucket not allowed exceed ten items of CORS Rules.");
         }
-        
+
         this.corsRules.clear();
         this.corsRules.addAll(corsRules);
     }
-    
+
     public void clearCorsRules() {
         this.corsRules.clear();
     }
-    
+
     public static class CORSRule {
         private List<String> allowedOrigins = new ArrayList<String>();
         private List<String> allowedMethods = new ArrayList<String>();
         private List<String> allowedHeaders = new ArrayList<String>();
         private List<String> exposeHeaders = new ArrayList<String>();
-        
+
         private Integer maxAgeSeconds;
-        
+
         public void addAllowdOrigin(String allowedOrigin) {
             if (allowedOrigin != null && !allowedOrigin.trim().isEmpty()) {
                 this.allowedOrigins.add(allowedOrigin);
@@ -166,7 +165,7 @@ public class SetBucketCORSRequest extends GenericRequest {
                 this.allowedOrigins.addAll(allowedOrigins);
             }
         }
-        
+
         public void clearAllowedOrigins() {
             this.allowedOrigins.clear();
         }
@@ -176,7 +175,7 @@ public class SetBucketCORSRequest extends GenericRequest {
                 this.allowedMethods.add(allowedMethod);
             }
         }
-        
+
         public List<String> getAllowedMethods() {
             return allowedMethods;
         }
@@ -187,11 +186,11 @@ public class SetBucketCORSRequest extends GenericRequest {
                 this.allowedMethods.addAll(allowedMethods);
             }
         }
-        
+
         public void clearAllowedMethods() {
             this.allowedMethods.clear();
         }
-        
+
         public void addAllowedHeader(String allowedHeader) {
             if (allowedHeader != null && !allowedHeader.trim().isEmpty()) {
                 this.allowedHeaders.add(allowedHeader);
@@ -208,7 +207,7 @@ public class SetBucketCORSRequest extends GenericRequest {
                 this.allowedHeaders.addAll(allowedHeaders);
             }
         }
-        
+
         public void clearAllowedHeaders() {
             this.allowedHeaders.clear();
         }
@@ -218,7 +217,7 @@ public class SetBucketCORSRequest extends GenericRequest {
                 this.exposeHeaders.add(exposeHeader);
             }
         }
-        
+
         public List<String> getExposeHeaders() {
             return exposeHeaders;
         }
@@ -229,7 +228,7 @@ public class SetBucketCORSRequest extends GenericRequest {
                 this.exposeHeaders.addAll(exposeHeaders);
             }
         }
-        
+
         public void clearExposeHeaders() {
             this.exposeHeaders.clear();
         }

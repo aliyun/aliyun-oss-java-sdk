@@ -25,7 +25,7 @@ import java.io.Serializable;
  * OSS Object ACL。
  */
 public class ObjectAcl extends GenericResult implements Serializable {
-    
+
     private static final long serialVersionUID = 211267925081748283L;
 
     private Owner owner;
@@ -33,8 +33,8 @@ public class ObjectAcl extends GenericResult implements Serializable {
 
     /**
      * Gets the {@link Owner}.
-     * @return 
-     *           The {@link Owner}。
+     * 
+     * @return The {@link Owner}。
      */
     public Owner getOwner() {
         return owner;
@@ -42,8 +42,9 @@ public class ObjectAcl extends GenericResult implements Serializable {
 
     /**
      * Sets the {@link Owner}.
-     * @param owner    
-     *             The {@link Owner}.
+     * 
+     * @param owner
+     *            The {@link Owner}.
      */
     public void setOwner(Owner owner) {
         this.owner = owner;
@@ -51,8 +52,8 @@ public class ObjectAcl extends GenericResult implements Serializable {
 
     /**
      * Gets the object's {@link ObjectPermission}。
-     * @return 
-     *            Object's {@link ObjectPermission}。
+     * 
+     * @return Object's {@link ObjectPermission}。
      */
     public ObjectPermission getPermission() {
         return permission;
@@ -60,8 +61,9 @@ public class ObjectAcl extends GenericResult implements Serializable {
 
     /**
      * Sets the object's {@link ObjectPermission}.
-     * @param permission 
-     *             Object's {@link ObjectPermission}.
+     * 
+     * @param permission
+     *            Object's {@link ObjectPermission}.
      */
     public void setPermission(ObjectPermission permission) {
         this.permission = permission;

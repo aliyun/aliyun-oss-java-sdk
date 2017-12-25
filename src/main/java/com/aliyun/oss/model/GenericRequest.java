@@ -20,21 +20,21 @@ package com.aliyun.oss.model;
  */
 
 /**
- * A generic request that contains some basic request options, such as
- * bucket name, object key, costom headers, progress listener and so on.
+ * A generic request that contains some basic request options, such as bucket
+ * name, object key, costom headers, progress listener and so on.
  */
 public class GenericRequest extends WebServiceRequest {
-    
+
     private String bucketName;
     private String key;
 
-    
-    public GenericRequest() { }
-    
+    public GenericRequest() {
+    }
+
     public GenericRequest(String bucketName) {
         this(bucketName, null);
     }
-    
+
     public GenericRequest(String bucketName, String key) {
         this.bucketName = bucketName;
         this.key = key;
@@ -47,7 +47,7 @@ public class GenericRequest extends WebServiceRequest {
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
     }
-    
+
     public GenericRequest withBucketName(String bucketName) {
         setBucketName(bucketName);
         return this;
@@ -60,7 +60,7 @@ public class GenericRequest extends WebServiceRequest {
     public void setKey(String key) {
         this.key = key;
     }
-    
+
     public GenericRequest withKey(String key) {
         setKey(key);
         return this;

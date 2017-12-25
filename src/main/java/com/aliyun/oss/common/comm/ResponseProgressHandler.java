@@ -33,17 +33,16 @@ import com.aliyun.oss.event.ProgressListener;
 import com.aliyun.oss.model.WebServiceRequest;
 
 public class ResponseProgressHandler implements ResponseHandler {
-    
+
     private final WebServiceRequest originalRequest;
-    
+
     public ResponseProgressHandler(WebServiceRequest originalRequest) {
         this.originalRequest = originalRequest;
     }
-    
+
     @Override
-    public void handle(ResponseMessage response) throws OSSException,
-            ClientException {
-        
+    public void handle(ResponseMessage response) throws OSSException, ClientException {
+
         final ProgressListener listener = this.originalRequest.getProgressListener();
         Map<String, String> headers = response.getHeaders();
         String s = headers.get(HttpHeaders.CONTENT_LENGTH);
@@ -55,11 +54,10 @@ public class ResponseProgressHandler implements ResponseHandler {
                 logException("Cannot parse the Content-Length header of the response: ", e);
             }
         }
-        
+
         InputStream content = response.getContent();
         if (content != null && listener != ProgressListener.NOOP) {
-            InputStream progressInputStream = 
-                    ProgressInputStream.inputStreamForResponse(content, originalRequest);
+            InputStream progressInputStream = ProgressInputStream.inputStreamForResponse(content, originalRequest);
             response.setContent(progressInputStream);
         }
     }

@@ -23,8 +23,7 @@ package com.aliyun.oss.model;
  * The match mode for post policy conditions
  */
 public enum MatchMode {
-    Unknown,
-    Exact,  // Exact match
-    StartWith,  // Starts With
-    Range   // The range of file size
+    Unknown, Exact, // Exact match
+    StartWith, // Starts With
+    Range // The range of file size
 }

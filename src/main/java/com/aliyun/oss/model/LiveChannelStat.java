@@ -22,15 +22,16 @@ package com.aliyun.oss.model;
 import java.util.Date;
 
 public class LiveChannelStat extends GenericResult {
-    
+
     /**
      * The Live Channel's video and audio information
      * 
      */
     public static class VideoStat {
-        
-        public VideoStat() {}
-        
+
+        public VideoStat() {
+        }
+
         public VideoStat(int width, int height, int frameRate, int bandWidth, String codec) {
             this.width = width;
             this.height = height;
@@ -90,7 +91,7 @@ public class LiveChannelStat extends GenericResult {
         // The codec of the video.
         private String codec;
     }
-    
+
     /**
      * The Live Channel's Audio information
      * 
@@ -137,7 +138,7 @@ public class LiveChannelStat extends GenericResult {
         // The codec of the audio.
         private String codec;
     }
-    
+
     public PushflowStatus getPushflowStatus() {
         return status;
     }
@@ -182,11 +183,12 @@ public class LiveChannelStat extends GenericResult {
     private PushflowStatus status;
     // The current pushing streaming's start time of client's connection.
     private Date connectedDate;
-    // The current pushing streaming's endpoint (including port), when the status is Live.
+    // The current pushing streaming's endpoint (including port), when the
+    // status is Live.
     private String remoteAddress;
     // The video information.
     private VideoStat videoStat;
     // The audio information.
     private AudioStat audioStat;
-    
+
 }

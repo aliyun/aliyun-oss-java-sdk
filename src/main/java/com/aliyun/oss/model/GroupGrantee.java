@@ -26,27 +26,28 @@ import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
  */
 public enum GroupGrantee implements Grantee {
     /**
-     * This group means all users could get the permission of (Bucket or object).
+     * This group means all users could get the permission of (Bucket or
+     * object).
      */
     AllUsers("http://oss.service.aliyun.com/acl/group/ALL_USERS");
 
     private String groupUri;
 
-    private GroupGrantee(String groupUri){
+    private GroupGrantee(String groupUri) {
         this.groupUri = groupUri;
     }
 
     /**
      * The group's Id.
      */
-    public String getIdentifier(){
+    public String getIdentifier() {
         return this.groupUri;
     }
 
     /**
      * Not supported.
      */
-    public void setIdentifier(String id){
+    public void setIdentifier(String id) {
         throw new UnsupportedOperationException(OSS_RESOURCE_MANAGER.getString("GroupGranteeNotSupportId"));
     }
 }

@@ -20,11 +20,11 @@
 package com.aliyun.oss.model;
 
 /**
- * This request class is used to get the bucket replication progress information from OSS.
+ * This request class is used to get the bucket replication progress information
+ * from OSS.
  */
 public class GetBucketReplicationProgressRequest extends GenericRequest {
-    public GetBucketReplicationProgressRequest(String bucketName,
-            String replicationRuleID) {
+    public GetBucketReplicationProgressRequest(String bucketName, String replicationRuleID) {
         super(bucketName);
         this.replicationRuleID = replicationRuleID;
     }
@@ -40,7 +40,7 @@ public class GetBucketReplicationProgressRequest extends GenericRequest {
     public void setReplicationRuleID(String replicationRuleID) {
         this.replicationRuleID = replicationRuleID;
     }
-    
+
     public GetBucketReplicationProgressRequest withReplicationRuleID(String replicationRuleID) {
         setReplicationRuleID(replicationRuleID);
         return this;

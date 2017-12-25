@@ -34,8 +34,9 @@ import com.aliyun.oss.common.comm.ServiceClient;
 import com.aliyun.oss.common.utils.HttpHeaders;
 
 /**
- * A repeatable HTTP entity that obtains its content from an non-auto-close 
- * {@link ReleasableInputStreamEntity} and sends its content using chunked encoding.
+ * A repeatable HTTP entity that obtains its content from an non-auto-close
+ * {@link ReleasableInputStreamEntity} and sends its content using chunked
+ * encoding.
  */
 public class ChunkedInputStreamEntity extends BasicHttpEntity {
 
@@ -45,7 +46,7 @@ public class ChunkedInputStreamEntity extends BasicHttpEntity {
 
     public ChunkedInputStreamEntity(ServiceClient.Request request) {
         setChunked(true);
-        
+
         long contentLength = -1;
         try {
             String contentLengthString = request.getHeaders().get(HttpHeaders.CONTENT_LENGTH);
@@ -80,22 +81,23 @@ public class ChunkedInputStreamEntity extends BasicHttpEntity {
 
     @Override
     public void writeTo(OutputStream output) throws IOException {
-        if (!firstAttempt && isRepeatable()) 
+        if (!firstAttempt && isRepeatable())
             content.reset();
 
         firstAttempt = false;
         notClosableRequestEntity.writeTo(output);
     }
-    
+
     /**
-     * A releaseable HTTP entity that can control its inner inputstream's auto-close functionality on/off,
-     * and it will try to close its inner inputstream by default when the inputstream reaches EOF.
+     * A releaseable HTTP entity that can control its inner inputstream's
+     * auto-close functionality on/off, and it will try to close its inner
+     * inputstream by default when the inputstream reaches EOF.
      */
     public static class ReleasableInputStreamEntity extends AbstractHttpEntity implements Releasable {
-        
+
         private final InputStream content;
         private final long length;
-        
+
         private boolean closeDisabled;
 
         public ReleasableInputStreamEntity(final InputStream instream) {
@@ -110,7 +112,8 @@ public class ChunkedInputStreamEntity extends BasicHttpEntity {
             this(instream, -1, contentType);
         }
 
-        public ReleasableInputStreamEntity(final InputStream instream, final long length, final ContentType contentType) {
+        public ReleasableInputStreamEntity(final InputStream instream, final long length,
+                final ContentType contentType) {
             super();
             this.content = Args.notNull(instream, "Source input stream");
             this.length = length;
@@ -151,7 +154,7 @@ public class ChunkedInputStreamEntity extends BasicHttpEntity {
                     // consume no more than length
                     long remaining = this.length;
                     while (remaining > 0) {
-                        l = instream.read(buffer, 0, (int)Math.min(OUTPUT_BUFFER_SIZE, remaining));
+                        l = instream.read(buffer, 0, (int) Math.min(OUTPUT_BUFFER_SIZE, remaining));
                         if (l == -1) {
                             break;
                         }
@@ -168,7 +171,7 @@ public class ChunkedInputStreamEntity extends BasicHttpEntity {
         public boolean isStreaming() {
             return true;
         }
-        
+
         public void close() {
             if (!closeDisabled)
                 doRelease();
@@ -178,7 +181,7 @@ public class ChunkedInputStreamEntity extends BasicHttpEntity {
         public void release() {
             doRelease();
         }
-        
+
         private void doRelease() {
             try {
                 this.content.close();

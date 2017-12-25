@@ -55,21 +55,20 @@ public class CnameConfiguration {
     public void setLastMofiedTime(Date lastMofiedTime) {
         this.lastMofiedTime = lastMofiedTime;
     }
-    
-	public Boolean getPurgeCdnCache() {
-		return purgeCdnCache;
-	}
 
-	public void setPurgeCdnCache(Boolean purgeCdnCache) {
-		this.purgeCdnCache = purgeCdnCache;
-	}
-    
+    public Boolean getPurgeCdnCache() {
+        return purgeCdnCache;
+    }
+
+    public void setPurgeCdnCache(Boolean purgeCdnCache) {
+        this.purgeCdnCache = purgeCdnCache;
+    }
+
     @Override
     public String toString() {
-        return "CnameConfiguration [domain=" + domain + 
-                ", status=" + status + 
-                ", lastMofiedTime=" + lastMofiedTime + "]";
-    } 
+        return "CnameConfiguration [domain=" + domain + ", status=" + status + ", lastMofiedTime=" + lastMofiedTime
+                + "]";
+    }
 
     private String domain;
     private CnameStatus status;

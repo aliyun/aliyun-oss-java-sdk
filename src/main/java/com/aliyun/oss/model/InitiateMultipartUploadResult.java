@@ -19,7 +19,6 @@
 
 package com.aliyun.oss.model;
 
-
 public class InitiateMultipartUploadResult extends GenericResult {
 
     private String bucketName;
@@ -27,7 +26,7 @@ public class InitiateMultipartUploadResult extends GenericResult {
     private String key;
 
     private String uploadId;
-    
+
     public String getBucketName() {
         return bucketName;
     }
@@ -51,5 +50,5 @@ public class InitiateMultipartUploadResult extends GenericResult {
     public void setUploadId(String uploadId) {
         this.uploadId = uploadId;
     }
-    
+
 }

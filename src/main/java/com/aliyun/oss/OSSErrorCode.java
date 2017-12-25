@@ -28,17 +28,17 @@ public interface OSSErrorCode {
      * Access Denied (401)
      */
     static final String ACCESS_DENIED = "AccessDenied";
-    
+
     /**
      * Access Forbidden (403)
      */
     static final String ACCESS_FORBIDDEN = "AccessForbidden";
-    
+
     /**
      * Bucket pre-exists
      */
     static final String BUCKET_ALREADY_EXISTS = "BucketAlreadyExists";
-    
+
     /**
      * Bucket not empty.
      */
@@ -93,12 +93,12 @@ public interface OSSErrorCode {
      * OSS Internal error.
      */
     static final String INTERNAL_ERROR = "InternalError";
-    
+
     /**
      * Missing content length.
      */
     static final String MISSING_CONTENT_LENGTH = "MissingContentLength";
-    
+
     /**
      * Missing required argument.
      */
@@ -128,19 +128,20 @@ public interface OSSErrorCode {
      * 304 Not Modified。
      */
     static final String NOT_MODIFIED = "NotModified";
-    
+
     /**
      * Invalid location.
      */
     static final String INVALID_LOCATION_CONSTRAINT = "InvalidLocationConstraint";
-    
+
     /**
      * The specified location does not match with the request.
      */
     static final String ILLEGAL_LOCATION_CONSTRAINT_EXCEPTION = "IllegalLocationConstraintException";
-    
+
     /**
-     * The time skew between the time in request headers and server is more than 15 min.
+     * The time skew between the time in request headers and server is more than
+     * 15 min.
      */
     static final String REQUEST_TIME_TOO_SKEWED = "RequestTimeTooSkewed";
 
@@ -158,67 +159,68 @@ public interface OSSErrorCode {
      * Too many buckets under a user.
      */
     static final String TOO_MANY_BUCKETS = "TooManyBuckets";
-    
+
     /**
      * Source buckets is not configured with CORS.
      */
-    static final String NO_SUCH_CORS_CONFIGURATION="NoSuchCORSConfiguration";
-    
+    static final String NO_SUCH_CORS_CONFIGURATION = "NoSuchCORSConfiguration";
+
     /**
-     * The source bucket is not configured with static website (the index page is null).
+     * The source bucket is not configured with static website (the index page
+     * is null).
      */
-    static final String NO_SUCH_WEBSITE_CONFIGURATION="NoSuchWebsiteConfiguration";
-    
+    static final String NO_SUCH_WEBSITE_CONFIGURATION = "NoSuchWebsiteConfiguration";
+
     /**
      * The source bucket is not configured with lifecycle rule.
      */
     static final String NO_SUCH_LIFECYCLE = "NoSuchLifecycle";
-    
+
     /**
      * Malformed xml.
      */
     static final String MALFORMED_XML = "MalformedXML";
-    
+
     /**
      * Invalid encryption algorithm error.
      */
     static final String INVALID_ENCRYPTION_ALGORITHM_ERROR = "InvalidEncryptionAlgorithmError";
-    
+
     /**
      * The upload Id does not exist.
      */
     static final String NO_SUCH_UPLOAD = "NoSuchUpload";
-    
+
     /**
      * The entity is too small. (Part must be more than 100K)
      */
     static final String ENTITY_TOO_SMALL = "EntityTooSmall";
-    
+
     /**
      * The entity is too big.
      */
     static final String ENTITY_TOO_LARGE = "EntityTooLarge";
-    
+
     /**
      * Invalid MD5 digest.
      */
     static final String INVALID_DIGEST = "InvalidDigest";
-    
+
     /**
      * Invalid range of the character.
      */
     static final String INVALID_RANGE = "InvalidRange";
-    
+
     /**
      * Security token is not supported.
      */
     static final String SECURITY_TOKEN_NOT_SUPPORTED = "SecurityTokenNotSupported";
-    
+
     /**
      * The specified object does not support append operation.
      */
     static final String OBJECT_NOT_APPENDALBE = "ObjectNotAppendable";
-    
+
     /**
      * The position of append on the object is not same as the current length.
      */
@@ -228,24 +230,25 @@ public interface OSSErrorCode {
      * Invalid response.
      */
     static final String INVALID_RESPONSE = "InvalidResponse";
-    
+
     /**
-     * Callback failed. The operation (such as download or upload) succeeded though.
+     * Callback failed. The operation (such as download or upload) succeeded
+     * though.
      */
     static final String CALLBACK_FAILED = "CallbackFailed";
-    
+
     /**
      * The Live Channel does not exist.
      */
     static final String NO_SUCH_LIVE_CHANNEL = "NoSuchLiveChannel";
-    
+
     /**
      * symlink target file does not exist.
      */
     static final String NO_SUCH_SYM_LINK_TARGET = "SymlinkTargetNotExist";
-    
+
     /**
      * The archive file is not restored before usage.
      */
-    static final String INVALID_OBJECT_STATE = "InvalidObjectState"; 
+    static final String INVALID_OBJECT_STATE = "InvalidObjectState";
 }

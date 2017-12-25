@@ -23,37 +23,37 @@ package com.aliyun.oss.model;
  * The request that is used to create UDF.
  */
 public class CreateUdfRequest extends UdfGenericRequest {
-	
-	public CreateUdfRequest(String name) {
-		super(name);
-	}
-	
-	public CreateUdfRequest(String name, String desc) {
-		super(name);
-		this.desc = desc;
-	}
-	
-	public CreateUdfRequest(String name, String id, String desc) {
-		super(name);
-		this.id = id;
-		this.desc = desc;
-	}
 
-	public String getId() {
-		return id;
-	}
+    public CreateUdfRequest(String name) {
+        super(name);
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public CreateUdfRequest(String name, String desc) {
+        super(name);
+        this.desc = desc;
+    }
 
-	public String getDesc() {
-		return desc;
-	}
+    public CreateUdfRequest(String name, String id, String desc) {
+        super(name);
+        this.id = id;
+        this.desc = desc;
+    }
 
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
 
     private String id;
     private String desc;

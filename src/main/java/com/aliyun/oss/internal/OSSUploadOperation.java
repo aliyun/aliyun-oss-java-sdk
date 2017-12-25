@@ -62,25 +62,25 @@ import com.aliyun.oss.model.UploadPartResult;
  *
  */
 public class OSSUploadOperation {
-    
+
     static class UploadCheckPoint implements Serializable {
 
         private static final long serialVersionUID = 5424904565837227164L;
-        
+
         private static final String UPLOAD_MAGIC = "FE8BB4EA-B593-4FAC-AD7A-2459A36E2E62";
-        
+
         /**
          * Gets the checkpoint data from the checkpoint file.
          */
         public synchronized void load(String cpFile) throws IOException, ClassNotFoundException {
-            FileInputStream fileIn =new FileInputStream(cpFile);
+            FileInputStream fileIn = new FileInputStream(cpFile);
             ObjectInputStream in = new ObjectInputStream(fileIn);
             UploadCheckPoint ucp = (UploadCheckPoint) in.readObject();
             assign(ucp);
             in.close();
             fileIn.close();
         }
-        
+
         /**
          * Writes the checkpoint data to the checkpoint file.
          */
@@ -92,45 +92,44 @@ public class OSSUploadOperation {
             outStream.close();
             fileOut.close();
         }
-        
+
         /**
          * The part upload complete, update the status.
-         * @throws IOException 
+         * 
+         * @throws IOException
          */
         public synchronized void update(int partIndex, PartETag partETag, boolean completed) throws IOException {
             partETags.add(partETag);
             uploadParts.get(partIndex).isCompleted = completed;
         }
-        
+
         /**
          * Check if the local file matches the checkpoint.
          */
         public synchronized boolean isValid(String uploadFile) {
             // 比较checkpoint的magic和md5
             // Compares the magic field in checkpoint and the file's md5.
-            if (this.magic == null || 
-                    !this.magic.equals(UPLOAD_MAGIC) || 
-                    this.md5 != hashCode()) {
+            if (this.magic == null || !this.magic.equals(UPLOAD_MAGIC) || this.md5 != hashCode()) {
                 return false;
             }
-            
+
             // Checks if the file exists.
             File upload = new File(uploadFile);
             if (!upload.exists()) {
                 return false;
             }
 
-            // The file name, size and last modified time must be same as the checkpoint.
+            // The file name, size and last modified time must be same as the
+            // checkpoint.
             // If any item is changed, return false (re-upload the file).
-            if (!this.uploadFile.equals(uploadFile) || 
-                    this.uploadFileStat.size != upload.length() ||
-                    this.uploadFileStat.lastModified != upload.lastModified()) {
+            if (!this.uploadFile.equals(uploadFile) || this.uploadFileStat.size != upload.length()
+                    || this.uploadFileStat.lastModified != upload.lastModified()) {
                 return false;
             }
-            
+
             return true;
         }
-        
+
         @Override
         public int hashCode() {
             final int prime = 31;
@@ -144,7 +143,7 @@ public class OSSUploadOperation {
             result = prime * result + ((uploadParts == null) ? 0 : uploadParts.hashCode());
             return result;
         }
-        
+
         private void assign(UploadCheckPoint ucp) {
             this.magic = ucp.magic;
             this.md5 = ucp.md5;
@@ -155,7 +154,7 @@ public class OSSUploadOperation {
             this.uploadParts = ucp.uploadParts;
             this.partETags = ucp.partETags;
         }
-        
+
         public String magic;
         public int md5;
         public String uploadFile;
@@ -166,10 +165,10 @@ public class OSSUploadOperation {
         public ArrayList<PartETag> partETags;
 
     }
-    
+
     static class FileStat implements Serializable {
         private static final long serialVersionUID = -1223810339796425415L;
-        
+
         @Override
         public int hashCode() {
             final int prime = 31;
@@ -179,7 +178,7 @@ public class OSSUploadOperation {
             result = prime * result + (int) (size ^ (size >>> 32));
             return result;
         }
-        
+
         public static FileStat getFileStat(String uploadFile) {
             FileStat fileStat = new FileStat();
             File file = new File(uploadFile);
@@ -187,12 +186,12 @@ public class OSSUploadOperation {
             fileStat.lastModified = file.lastModified();
             return fileStat;
         }
-        
+
         public long size; // file size
         public long lastModified; // file last modified time.
         public String digest; // file content's digest (signature).
     }
-    
+
     static class UploadPart implements Serializable {
         private static final long serialVersionUID = 6692863980224332199L;
 
@@ -212,10 +211,10 @@ public class OSSUploadOperation {
         public long size; // part size
         public boolean isCompleted; // upload completeness flag.
     }
-    
+
     static class PartResult {
-        
-        public PartResult (int number, long offset, long length) {
+
+        public PartResult(int number, long offset, long length) {
             this.number = number;
             this.offset = offset;
             this.length = length;
@@ -267,47 +266,50 @@ public class OSSUploadOperation {
         private boolean failed; // part upload failure flag
         private Exception exception; // part upload exception
     }
-    
+
     public OSSUploadOperation(OSSMultipartOperation multipartOperation) {
         this.multipartOperation = multipartOperation;
     }
-    
+
     public UploadFileResult uploadFile(UploadFileRequest uploadFileRequest) throws Throwable {
         assertParameterNotNull(uploadFileRequest, "uploadFileRequest");
-        
+
         String bucketName = uploadFileRequest.getBucketName();
         String key = uploadFileRequest.getKey();
-        
+
         assertParameterNotNull(bucketName, "bucketName");
         assertParameterNotNull(key, "key");
         ensureBucketNameValid(bucketName);
         ensureObjectKeyValid(key);
-        
+
         assertParameterNotNull(uploadFileRequest.getUploadFile(), "uploadFile");
 
-        // The checkpoint is enabled without specifying the checkpoint file, using the default one.
+        // The checkpoint is enabled without specifying the checkpoint file,
+        // using the default one.
         if (uploadFileRequest.isEnableCheckpoint()) {
             if (uploadFileRequest.getCheckpointFile() == null || uploadFileRequest.getCheckpointFile().isEmpty()) {
                 uploadFileRequest.setCheckpointFile(uploadFileRequest.getUploadFile() + ".ucp");
             }
         }
-        
+
         return uploadFileWithCheckpoint(uploadFileRequest);
     }
-    
+
     private UploadFileResult uploadFileWithCheckpoint(UploadFileRequest uploadFileRequest) throws Throwable {
         UploadFileResult uploadFileResult = new UploadFileResult();
         UploadCheckPoint uploadCheckPoint = new UploadCheckPoint();
-        
-        // The checkpoint is enabled, reading the checkpoint data from the checkpoint file.
+
+        // The checkpoint is enabled, reading the checkpoint data from the
+        // checkpoint file.
         if (uploadFileRequest.isEnableCheckpoint()) {
-            // The checkpoint file either does not exist, or is corrupted, the whole file needs the re-upload.
+            // The checkpoint file either does not exist, or is corrupted, the
+            // whole file needs the re-upload.
             try {
                 uploadCheckPoint.load(uploadFileRequest.getCheckpointFile());
             } catch (Exception e) {
                 remove(uploadFileRequest.getCheckpointFile());
             }
-            
+
             // The file uploaded is updated, re-upload.
             if (!uploadCheckPoint.isValid(uploadFileRequest.getUploadFile())) {
                 prepare(uploadCheckPoint, uploadFileRequest);
@@ -321,7 +323,7 @@ public class OSSUploadOperation {
         // The progress tracker starts
         ProgressListener listener = uploadFileRequest.getProgressListener();
         ProgressPublisher.publishProgress(listener, ProgressEventType.TRANSFER_STARTED_EVENT);
-        
+
         // Concurrently upload parts.
         List<PartResult> partResults = upload(uploadCheckPoint, uploadFileRequest);
         for (PartResult partResult : partResults) {
@@ -330,48 +332,48 @@ public class OSSUploadOperation {
                 throw partResult.getException();
             }
         }
-        
+
         // The progress tracker publishes the data.
         ProgressPublisher.publishProgress(listener, ProgressEventType.TRANSFER_COMPLETED_EVENT);
-        
+
         // Complete parts.
         CompleteMultipartUploadResult multipartUploadResult = complete(uploadCheckPoint, uploadFileRequest);
         uploadFileResult.setMultipartUploadResult(multipartUploadResult);
-        
+
         // The checkpoint is enabled and upload the checkpoint file.
         if (uploadFileRequest.isEnableCheckpoint()) {
             remove(uploadFileRequest.getCheckpointFile());
         }
-        
+
         return uploadFileResult;
     }
-    
+
     private void prepare(UploadCheckPoint uploadCheckPoint, UploadFileRequest uploadFileRequest) {
         uploadCheckPoint.magic = UploadCheckPoint.UPLOAD_MAGIC;
         uploadCheckPoint.uploadFile = uploadFileRequest.getUploadFile();
         uploadCheckPoint.key = uploadFileRequest.getKey();
         uploadCheckPoint.uploadFileStat = FileStat.getFileStat(uploadCheckPoint.uploadFile);
-        uploadCheckPoint.uploadParts = splitFile(uploadCheckPoint.uploadFileStat.size, 
-                uploadFileRequest.getPartSize());
+        uploadCheckPoint.uploadParts = splitFile(uploadCheckPoint.uploadFileStat.size, uploadFileRequest.getPartSize());
         uploadCheckPoint.partETags = new ArrayList<PartETag>();
-        
+
         ObjectMetadata metadata = uploadFileRequest.getObjectMetadata();
         if (metadata == null) {
             metadata = new ObjectMetadata();
         }
-        
+
         if (metadata.getContentType() == null) {
-            metadata.setContentType(Mimetypes.getInstance().getMimetype(uploadCheckPoint.uploadFile, uploadCheckPoint.key));
+            metadata.setContentType(
+                    Mimetypes.getInstance().getMimetype(uploadCheckPoint.uploadFile, uploadCheckPoint.key));
         }
 
         InitiateMultipartUploadRequest initiateUploadRequest = new InitiateMultipartUploadRequest(
                 uploadFileRequest.getBucketName(), uploadFileRequest.getKey(), metadata);
-        InitiateMultipartUploadResult initiateUploadResult = 
-                multipartOperation.initiateMultipartUpload(initiateUploadRequest);
+        InitiateMultipartUploadResult initiateUploadResult = multipartOperation
+                .initiateMultipartUpload(initiateUploadRequest);
         uploadCheckPoint.uploadID = initiateUploadResult.getUploadId();
     }
-    
-    private ArrayList<PartResult> upload(UploadCheckPoint uploadCheckPoint, UploadFileRequest uploadFileRequest) 
+
+    private ArrayList<PartResult> upload(UploadCheckPoint uploadCheckPoint, UploadFileRequest uploadFileRequest)
             throws Throwable {
         ArrayList<PartResult> taskResults = new ArrayList<PartResult>();
         ExecutorService service = Executors.newFixedThreadPool(uploadFileRequest.getTaskNum());
@@ -387,19 +389,19 @@ public class OSSUploadOperation {
         }
         ProgressPublisher.publishRequestContentLength(listener, contentLength);
         uploadFileRequest.setProgressListener(null);
-        
+
         // Upload parts.
         for (int i = 0; i < uploadCheckPoint.uploadParts.size(); i++) {
             if (!uploadCheckPoint.uploadParts.get(i).isCompleted) {
-                futures.add(service.submit(new Task(i, "upload-" + i, uploadCheckPoint, i, 
-                        uploadFileRequest, multipartOperation, listener)));
+                futures.add(service.submit(new Task(i, "upload-" + i, uploadCheckPoint, i, uploadFileRequest,
+                        multipartOperation, listener)));
             } else {
                 taskResults.add(new PartResult(i + 1, uploadCheckPoint.uploadParts.get(i).offset,
                         uploadCheckPoint.uploadParts.get(i).size));
             }
         }
         service.shutdown();
-        
+
         // Waiting for parts upload complete.
         service.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
         for (Future<PartResult> future : futures) {
@@ -411,7 +413,7 @@ public class OSSUploadOperation {
                 throw e.getCause();
             }
         }
-        
+
         // Sorts PartResult by the part numnber.
         Collections.sort(taskResults, new Comparator<PartResult>() {
             @Override
@@ -420,12 +422,12 @@ public class OSSUploadOperation {
             }
         });
         uploadFileRequest.setProgressListener(listener);
-        
+
         return taskResults;
     }
-    
+
     static class Task implements Callable<PartResult> {
-        
+
         public Task(int id, String name, UploadCheckPoint uploadCheckPoint, int partIndex,
                 UploadFileRequest uploadFileRequest, OSSMultipartOperation multipartOperation,
                 ProgressListener progressListener) {
@@ -437,7 +439,7 @@ public class OSSUploadOperation {
             this.multipartOperation = multipartOperation;
             this.progressListener = progressListener;
         }
-        
+
         @Override
         public PartResult call() throws Exception {
             PartResult tr = null;
@@ -446,7 +448,7 @@ public class OSSUploadOperation {
             try {
                 UploadPart uploadPart = uploadCheckPoint.uploadParts.get(partIndex);
                 tr = new PartResult(partIndex + 1, uploadPart.offset, uploadPart.size);
-                
+
                 instream = new FileInputStream(uploadCheckPoint.uploadFile);
                 instream.skip(uploadPart.offset);
 
@@ -457,13 +459,13 @@ public class OSSUploadOperation {
                 uploadPartRequest.setPartNumber(uploadPart.number);
                 uploadPartRequest.setInputStream(instream);
                 uploadPartRequest.setPartSize(uploadPart.size);
-                
+
                 UploadPartResult uploadPartResult = multipartOperation.uploadPart(uploadPartRequest);
-                
+
                 PartETag partETag = new PartETag(uploadPartResult.getPartNumber(), uploadPartResult.getETag());
                 uploadCheckPoint.update(partIndex, partETag, true);
                 if (uploadFileRequest.isEnableCheckpoint()) {
-                   uploadCheckPoint.dump(uploadFileRequest.getCheckpointFile()); 
+                    uploadCheckPoint.dump(uploadFileRequest.getCheckpointFile());
                 }
                 ProgressPublisher.publishRequestBytesTransferred(progressListener, uploadPart.size);
             } catch (Exception e) {
@@ -475,7 +477,7 @@ public class OSSUploadOperation {
                     instream.close();
                 }
             }
-                                    
+
             return tr;
         }
 
@@ -487,8 +489,9 @@ public class OSSUploadOperation {
         private OSSMultipartOperation multipartOperation;
         private ProgressListener progressListener;
     }
-    
-    private CompleteMultipartUploadResult complete(UploadCheckPoint uploadCheckPoint, UploadFileRequest uploadFileRequest) {
+
+    private CompleteMultipartUploadResult complete(UploadCheckPoint uploadCheckPoint,
+            UploadFileRequest uploadFileRequest) {
         Collections.sort(uploadCheckPoint.partETags, new Comparator<PartETag>() {
             @Override
             public int compare(PartETag p1, PartETag p2) {
@@ -496,15 +499,15 @@ public class OSSUploadOperation {
             }
         });
         CompleteMultipartUploadRequest completeUploadRequest = new CompleteMultipartUploadRequest(
-                uploadFileRequest.getBucketName(), uploadFileRequest.getKey(), 
-                uploadCheckPoint.uploadID, uploadCheckPoint.partETags);
+                uploadFileRequest.getBucketName(), uploadFileRequest.getKey(), uploadCheckPoint.uploadID,
+                uploadCheckPoint.partETags);
         completeUploadRequest.setCallback(uploadFileRequest.getCallback());
         return multipartOperation.completeMultipartUpload(completeUploadRequest);
     }
-    
+
     private ArrayList<UploadPart> splitFile(long fileSize, long partSize) {
         ArrayList<UploadPart> parts = new ArrayList<UploadPart>();
-        
+
         long partNum = fileSize / partSize;
         if (partNum >= 10000) {
             partSize = fileSize / (10000 - 1);
@@ -531,17 +534,17 @@ public class OSSUploadOperation {
 
         return parts;
     }
-    
-    private boolean remove(String filePath) {
-        boolean flag = false;  
-        File file = new File(filePath);  
 
-        if (file.isFile() && file.exists()) {  
-            flag = file.delete();  
-        }  
-        
-        return flag;  
+    private boolean remove(String filePath) {
+        boolean flag = false;
+        File file = new File(filePath);
+
+        if (file.isFile() && file.exists()) {
+            flag = file.delete();
+        }
+
+        return flag;
     }
-    
+
     private OSSMultipartOperation multipartOperation;
 }

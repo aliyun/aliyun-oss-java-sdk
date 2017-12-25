@@ -23,43 +23,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ObjectListing extends GenericResult {
-    
-    /** A list of summary information describing the objects stored in the bucket */
+
+    /**
+     * A list of summary information describing the objects stored in the bucket
+     */
     private List<OSSObjectSummary> objectSummaries = new ArrayList<OSSObjectSummary>();
 
     private List<String> commonPrefixes = new ArrayList<String>();
-    
+
     private String bucketName;
 
     private String nextMarker;
-    
+
     private boolean isTruncated;
-    
+
     private String prefix;
-    
+
     private String marker;
-    
+
     private int maxKeys;
-    
+
     private String delimiter;
-    
+
     private String encodingType;
 
     public List<OSSObjectSummary> getObjectSummaries() {
         return objectSummaries;
     }
-    
+
     public void addObjectSummary(OSSObjectSummary objectSummary) {
         this.objectSummaries.add(objectSummary);
     }
-    
+
     public void setObjectSummaries(List<OSSObjectSummary> objectSummaries) {
         this.objectSummaries.clear();
         if (objectSummaries != null && !objectSummaries.isEmpty()) {
             this.objectSummaries.addAll(objectSummaries);
         }
     }
-    
+
     public void clearObjectSummaries() {
         this.objectSummaries.clear();
     }
@@ -67,7 +69,7 @@ public class ObjectListing extends GenericResult {
     public List<String> getCommonPrefixes() {
         return commonPrefixes;
     }
-    
+
     public void addCommonPrefix(String commonPrefix) {
         this.commonPrefixes.add(commonPrefix);
     }
@@ -78,7 +80,7 @@ public class ObjectListing extends GenericResult {
             this.commonPrefixes.addAll(commonPrefixes);
         }
     }
-    
+
     public void clearCommonPrefixes() {
         this.commonPrefixes.clear();
     }

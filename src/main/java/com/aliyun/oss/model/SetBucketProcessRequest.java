@@ -20,12 +20,12 @@
 package com.aliyun.oss.model;
 
 public class SetBucketProcessRequest extends GenericRequest {
-    
+
     public SetBucketProcessRequest(String bucketName, ImageProcess imageProcess) {
         super(bucketName);
         this.imageProcess = imageProcess;
     }
-    
+
     public ImageProcess getImageProcess() {
         return imageProcess;
     }

@@ -27,45 +27,54 @@ import java.io.InputStream;
  * UDF Image有格式要求，详见API说明。
  */
 public class UploadUdfImageRequest extends UdfGenericRequest {
-	
-	/**
-	 * Constructor
-	 * @param udfName UDF name
-	 * @param udfImage UDF image stream. It has the specific format requirement and please check out API references.
-	 */
-	public UploadUdfImageRequest(String udfName, InputStream udfImage) {
-		super(udfName);
-		this.udfImage = udfImage;
-	}
-	
-	/**
-	 * Constructor.
-	 * @param udfName UDF name
-	 * @param udfImageDesc Image description.
-	 * @param udfImage UDF Image stream. It has the specific format requirement and please check out the API references.
-	 */
-	public UploadUdfImageRequest(String udfName, String udfImageDesc, InputStream udfImage) {
-		super(udfName);
-		this.udfImageDesc = udfImageDesc;
-		this.udfImage = udfImage;
-	}
 
-	public String getUdfImageDesc() {
-		return udfImageDesc;
-	}
+    /**
+     * Constructor
+     * 
+     * @param udfName
+     *            UDF name
+     * @param udfImage
+     *            UDF image stream. It has the specific format requirement and
+     *            please check out API references.
+     */
+    public UploadUdfImageRequest(String udfName, InputStream udfImage) {
+        super(udfName);
+        this.udfImage = udfImage;
+    }
 
-	public void setUdfImageDesc(String udfImageDesc) {
-		this.udfImageDesc = udfImageDesc;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param udfName
+     *            UDF name
+     * @param udfImageDesc
+     *            Image description.
+     * @param udfImage
+     *            UDF Image stream. It has the specific format requirement and
+     *            please check out the API references.
+     */
+    public UploadUdfImageRequest(String udfName, String udfImageDesc, InputStream udfImage) {
+        super(udfName);
+        this.udfImageDesc = udfImageDesc;
+        this.udfImage = udfImage;
+    }
 
-	public InputStream getUdfImage() {
-		return udfImage;
-	}
+    public String getUdfImageDesc() {
+        return udfImageDesc;
+    }
 
-	public void setUdfImage(InputStream udfImage) {
-		this.udfImage = udfImage;
-	}
+    public void setUdfImageDesc(String udfImageDesc) {
+        this.udfImageDesc = udfImageDesc;
+    }
 
-	private String udfImageDesc;
+    public InputStream getUdfImage() {
+        return udfImage;
+    }
+
+    public void setUdfImage(InputStream udfImage) {
+        this.udfImage = udfImage;
+    }
+
+    private String udfImageDesc;
     private InputStream udfImage;
 }

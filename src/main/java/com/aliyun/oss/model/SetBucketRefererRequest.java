@@ -20,9 +20,9 @@
 package com.aliyun.oss.model;
 
 public class SetBucketRefererRequest extends GenericRequest {
-    
+
     private BucketReferer referer;
-    
+
     public SetBucketRefererRequest(String bucketName) {
         this(bucketName, null);
     }
@@ -39,7 +39,7 @@ public class SetBucketRefererRequest extends GenericRequest {
     public void setReferer(BucketReferer referer) {
         this.referer = referer;
     }
-    
+
     public SetBucketRefererRequest withReferer(BucketReferer referer) {
         setReferer(referer);
         return this;

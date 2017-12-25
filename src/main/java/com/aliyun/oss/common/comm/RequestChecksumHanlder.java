@@ -27,14 +27,14 @@ import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.utils.CRC64;
 
 public class RequestChecksumHanlder implements RequestHandler {
-    
+
     @Override
     public void handle(RequestMessage request) throws OSSException, ClientException {
         InputStream originalInputStream = request.getContent();
         if (originalInputStream == null) {
             return;
         }
-        
+
         CRC64 crc = new CRC64();
         CheckedInputStream checkedInputstream = new CheckedInputStream(originalInputStream, crc);
         request.setContent(checkedInputstream);

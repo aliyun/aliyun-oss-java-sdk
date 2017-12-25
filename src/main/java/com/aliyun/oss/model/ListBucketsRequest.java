@@ -22,13 +22,15 @@ package com.aliyun.oss.model;
 import com.aliyun.oss.internal.OSSUtils;
 
 public class ListBucketsRequest extends WebServiceRequest {
-    
+
     public static final int MAX_RETURNED_KEYS = 1000;
-    
-    // The prefix filter for the buckets to return. In the other words, all buckets returned must start with this prefix.
+
+    // The prefix filter for the buckets to return. In the other words, all
+    // buckets returned must start with this prefix.
     private String prefix;
-    
-    // The maker filter for the buckets to return. In the other words, all buckets returned must be greater than the marker
+
+    // The maker filter for the buckets to return. In the other words, all
+    // buckets returned must be greater than the marker
     // in the lexicographical order.
     private String marker;
 
@@ -37,20 +39,24 @@ public class ListBucketsRequest extends WebServiceRequest {
 
     // The OSS's Bid is 26842.
     private String bid;
-    
-    /**
-     * Constructor.
-     */
-    public ListBucketsRequest() { }
 
     /**
      * Constructor.
+     */
+    public ListBucketsRequest() {
+    }
+
+    /**
+     * Constructor.
+     * 
      * @param prefix
-     *          Prefix filter, all buckets returned must start with this prefix.
+     *            Prefix filter, all buckets returned must start with this
+     *            prefix.
      * @param marker
-     *          Maker filter, all buckets returned must be greater than the marker.
+     *            Maker filter, all buckets returned must be greater than the
+     *            marker.
      * @param maxKeys
-     *          Max number of buckets to return, by default is 100,
+     *            Max number of buckets to return, by default is 100,
      */
     public ListBucketsRequest(String prefix, String marker, Integer maxKeys) {
         setPrefix(prefix);
@@ -62,8 +68,8 @@ public class ListBucketsRequest extends WebServiceRequest {
 
     /**
      * Gets the prefix filter.
-     * @return
-     *      The prefix filter.
+     * 
+     * @return The prefix filter.
      */
     public String getPrefix() {
         return prefix;
@@ -71,17 +77,20 @@ public class ListBucketsRequest extends WebServiceRequest {
 
     /**
      * Sets the prefix filter.
+     * 
      * @param prefix
-     *          The prefix filter.
+     *            The prefix filter.
      */
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
-    
+
     /**
-     * Sets the prefix filter and return the current ListBucketsRequest instance (this).
+     * Sets the prefix filter and return the current ListBucketsRequest instance
+     * (this).
+     * 
      * @param prefix
-     *          The prefix filter.
+     *            The prefix filter.
      */
     public ListBucketsRequest withPrefix(String prefix) {
         setPrefix(prefix);
@@ -90,8 +99,8 @@ public class ListBucketsRequest extends WebServiceRequest {
 
     /**
      * Gets the marker filter.
-     * @return
-     *         The marker filter.
+     * 
+     * @return The marker filter.
      */
     public String getMarker() {
         return marker;
@@ -99,17 +108,20 @@ public class ListBucketsRequest extends WebServiceRequest {
 
     /**
      * Sets the marker filter.
+     * 
      * @param marker
-     *          The marker filter.
+     *            The marker filter.
      */
     public void setMarker(String marker) {
         this.marker = marker;
     }
-    
+
     /**
-     * Sets the marker filter and return the current ListBucketRequest instance (this).
+     * Sets the marker filter and return the current ListBucketRequest instance
+     * (this).
+     * 
      * @param marker
-     *          The marker filter.
+     *            The marker filter.
      */
     public ListBucketsRequest withMarker(String marker) {
         setMarker(marker);
@@ -118,47 +130,53 @@ public class ListBucketsRequest extends WebServiceRequest {
 
     /**
      * Gets the max number of buckets to return. By default it's 100.
-     * @return
-     *      The max number of buckets.
+     * 
+     * @return The max number of buckets.
      */
     public Integer getMaxKeys() {
         return maxKeys;
     }
 
     /**
-     * Sets the max number of buckets to return. By default it's 100, the max is 1000.
+     * Sets the max number of buckets to return. By default it's 100, the max is
+     * 1000.
+     * 
      * @param maxKeys
-     *      The max number of buckets.
+     *            The max number of buckets.
      */
     public void setMaxKeys(Integer maxKeys) {
         int tmp = maxKeys.intValue();
         if (tmp < 0 || tmp > MAX_RETURNED_KEYS) {
-            throw new IllegalArgumentException(
-                OSSUtils.OSS_RESOURCE_MANAGER.getString("MaxKeysOutOfRange"));
+            throw new IllegalArgumentException(OSSUtils.OSS_RESOURCE_MANAGER.getString("MaxKeysOutOfRange"));
         }
         this.maxKeys = maxKeys;
     }
-    
+
     /**
-     * Sets the max number of buckets to return the current ListBucketsRequest instance (this).
+     * Sets the max number of buckets to return the current ListBucketsRequest
+     * instance (this).
+     * 
      * @param maxKeys
-     *      The max number of buckets.
+     *            The max number of buckets.
      */
     public ListBucketsRequest withMaxKeys(Integer maxKeys) {
         setMaxKeys(maxKeys);
         return this;
     }
-    
+
     /**
      * Sets the bid。
-     * @param bid bid。
+     * 
+     * @param bid
+     *            bid。
      */
     public void setBid(String bid) {
         this.bid = bid;
     }
-    
+
     /**
      * Gets the bid.
+     * 
      * @return bid。
      * 
      */

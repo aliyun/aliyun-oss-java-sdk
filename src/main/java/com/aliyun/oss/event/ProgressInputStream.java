@@ -26,19 +26,17 @@ import java.io.InputStream;
 import com.aliyun.oss.model.WebServiceRequest;
 
 public abstract class ProgressInputStream extends FilterInputStream {
-    
-    public static InputStream inputStreamForRequest(InputStream is,
-            WebServiceRequest req) {
+
+    public static InputStream inputStreamForRequest(InputStream is, WebServiceRequest req) {
         return req == null ? is : new RequestProgressInputStream(is, req.getProgressListener());
     }
 
-    public static InputStream inputStreamForResponse(InputStream is,
-            WebServiceRequest req) {
+    public static InputStream inputStreamForResponse(InputStream is, WebServiceRequest req) {
         return req == null ? is : new ResponseProgressInputStream(is, req.getProgressListener());
     }
-    
+
     private static final int DEFAULT_NOTIFICATION_THRESHOLD = 8 * 1024;
-    
+
     private final ProgressListener listener;
     private final int notifyThresHold;
     private int unnotifiedByteCount;
@@ -59,17 +57,21 @@ public abstract class ProgressInputStream extends FilterInputStream {
         this.notifyThresHold = notifyThresHold;
     }
 
-    protected void onFirstRead() {}
+    protected void onFirstRead() {
+    }
 
-    protected void onEOF() {}
+    protected void onEOF() {
+    }
 
     protected void onClose() {
         eof();
     }
 
-    protected void onReset() {}
+    protected void onReset() {
+    }
 
-    protected void onNotifyBytesRead() {}
+    protected void onNotifyBytesRead() {
+    }
 
     private void onBytesRead(int bytesRead) {
         unnotifiedByteCount += bytesRead;
@@ -101,7 +103,7 @@ public abstract class ProgressInputStream extends FilterInputStream {
         unnotifiedByteCount = 0;
         notifiedByteCount = 0;
     }
-    
+
     @Override
     public int read(byte b[]) throws IOException {
         return read(b, 0, b.length);

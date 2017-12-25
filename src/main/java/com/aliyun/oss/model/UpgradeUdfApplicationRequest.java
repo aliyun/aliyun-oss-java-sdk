@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 public class UpgradeUdfApplicationRequest extends UdfGenericRequest {
-    
+
     public UpgradeUdfApplicationRequest(String udfName, Integer imageVersion) {
         super(udfName);
         this.imageVersion = imageVersion;
@@ -35,5 +35,5 @@ public class UpgradeUdfApplicationRequest extends UdfGenericRequest {
     }
 
     private Integer imageVersion;
-    
+
 }

@@ -20,9 +20,9 @@
 package com.aliyun.oss.model;
 
 public class SetBucketAclRequest extends GenericRequest {
-    
+
     private CannedAccessControlList cannedACL;
-    
+
     public SetBucketAclRequest(String bucketName) {
         this(bucketName, null);
     }
@@ -39,7 +39,7 @@ public class SetBucketAclRequest extends GenericRequest {
     public void setCannedACL(CannedAccessControlList cannedACL) {
         this.cannedACL = cannedACL;
     }
-    
+
     public SetBucketAclRequest withCannedACL(CannedAccessControlList cannedACL) {
         setCannedACL(cannedACL);
         return this;

@@ -23,35 +23,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The request class that is used to add a cross region replication request on a bucket.
+ * The request class that is used to add a cross region replication request on a
+ * bucket.
  */
 public class AddBucketReplicationRequest extends GenericRequest {
-    
+
     public static enum ReplicationAction {
         /**
-         * All PUT, DELETE, ABORT operations would be copied to the target bucket.
+         * All PUT, DELETE, ABORT operations would be copied to the target
+         * bucket.
          */
         ALL("ALL"),
-        
+
         /**
          * Includes PutObject/PostObject/AppendObject/CopyObject/PutObjectACL/
-         * InitiateMultipartUpload/UploadPart/UploadPartCopy/CompleteMultipartUpload。
+         * InitiateMultipartUpload/UploadPart/UploadPartCopy/
+         * CompleteMultipartUpload。
          */
         PUT("PUT"),
-        
+
         /**
          * Includes DeleteObject/DeleteMultipleObjects.
          */
         DELETE("DELETE"),
-        
+
         /**
          * Includes CompleteMultipartUpload，AbortMultipartUpload.
          */
         ABORT("ABORT");
-        
+
         private String replicationAction;
-        
-        private ReplicationAction(String replicationAction){
+
+        private ReplicationAction(String replicationAction) {
             this.replicationAction = replicationAction;
         }
 
@@ -59,19 +62,18 @@ public class AddBucketReplicationRequest extends GenericRequest {
         public String toString() {
             return this.replicationAction;
         }
-        
+
         public static ReplicationAction parse(String replicationAction) {
-            for(ReplicationAction rt : ReplicationAction.values()) {
+            for (ReplicationAction rt : ReplicationAction.values()) {
                 if (rt.toString().equals(replicationAction)) {
                     return rt;
                 }
             }
-            
+
             throw new IllegalArgumentException("Unable to parse " + replicationAction);
         }
     }
-    
-    
+
     public AddBucketReplicationRequest(String bucketName) {
         super(bucketName);
     }
@@ -104,26 +106,25 @@ public class AddBucketReplicationRequest extends GenericRequest {
         return enableHistoricalObjectReplication;
     }
 
-    public void setEnableHistoricalObjectReplication(
-            boolean enableHistoricalObjectReplication) {
+    public void setEnableHistoricalObjectReplication(boolean enableHistoricalObjectReplication) {
         this.enableHistoricalObjectReplication = enableHistoricalObjectReplication;
     }
-    
+
     public List<String> getObjectPrefixList() {
         return objectPrefixList;
     }
-    
+
     public void setObjectPrefixList(List<String> objectPrefixList) {
         this.objectPrefixList.clear();
         if (objectPrefixList != null && !objectPrefixList.isEmpty()) {
             this.objectPrefixList.addAll(objectPrefixList);
         }
     }
-    
+
     public List<ReplicationAction> getReplicationActionList() {
         return replicationActionList;
     }
-    
+
     public void setReplicationActionList(List<ReplicationAction> replicationActionList) {
         this.replicationActionList.clear();
         if (replicationActionList != null && !replicationActionList.isEmpty()) {

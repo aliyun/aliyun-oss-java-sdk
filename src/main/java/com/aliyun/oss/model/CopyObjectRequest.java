@@ -24,8 +24,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * The request class that is used to copy an object.
- * It wraps all parameters needed to copy an object.
+ * The request class that is used to copy an object. It wraps all parameters
+ * needed to copy an object.
  */
 public class CopyObjectRequest extends WebServiceRequest {
 
@@ -37,7 +37,7 @@ public class CopyObjectRequest extends WebServiceRequest {
 
     // Target bucket name.
     private String destinationBucketName;
-    
+
     // Target object key.
     private String destinationKey;
 
@@ -47,38 +47,43 @@ public class CopyObjectRequest extends WebServiceRequest {
     // Target object's metadata information.
     private ObjectMetadata newObjectMetadata;
 
-    // ETag matching Constraints. The copy only happens when source object's ETag matches the specified one.
+    // ETag matching Constraints. The copy only happens when source object's
+    // ETag matches the specified one.
     // If not matches, return 412.
     // It's optional.
     private List<String> matchingETagConstraints = new ArrayList<String>();
 
-    // ETag non-matching Constraints. The copy only happens when source object's ETag does not match the specified one.
+    // ETag non-matching Constraints. The copy only happens when source object's
+    // ETag does not match the specified one.
     // If matches, return 412.
     // It's optional.
     private List<String> nonmatchingEtagConstraints = new ArrayList<String>();
 
-    // If the specified time is same or later than the actual last modified time, copy the file.
+    // If the specified time is same or later than the actual last modified
+    // time, copy the file.
     // Otherwise return 412.
     // It's optional.
     private Date unmodifiedSinceConstraint;
 
-    // If the specified time is earlier than the actual last modified time, copy the file.
+    // If the specified time is earlier than the actual last modified time, copy
+    // the file.
     // Otherwise return 412. It's optional.
     private Date modifiedSinceConstraint;
 
     /**
      * Constructor
+     * 
      * @param sourceBucketName
-     *          Source bucket name.
+     *            Source bucket name.
      * @param sourceKey
-     *          Source key.
+     *            Source key.
      * @param destinationBucketName
-     *          Target bucket name.
+     *            Target bucket name.
      * @param destinationKey
-     *          Target key.
+     *            Target key.
      */
-    public CopyObjectRequest(String sourceBucketName, String sourceKey,
-            String destinationBucketName, String destinationKey) {
+    public CopyObjectRequest(String sourceBucketName, String sourceKey, String destinationBucketName,
+            String destinationKey) {
         setSourceBucketName(sourceBucketName);
         setSourceKey(sourceKey);
         setDestinationBucketName(destinationBucketName);
@@ -87,6 +92,7 @@ public class CopyObjectRequest extends WebServiceRequest {
 
     /**
      * Gets the source bucket name.
+     * 
      * @return Source bucket name
      */
     public String getSourceBucketName() {
@@ -95,8 +101,9 @@ public class CopyObjectRequest extends WebServiceRequest {
 
     /**
      * Sets the source bucket name.
+     * 
      * @param sourceBucketName
-     *          Source bucket name.
+     *            Source bucket name.
      */
     public void setSourceBucketName(String sourceBucketName) {
         this.sourceBucketName = sourceBucketName;
@@ -104,6 +111,7 @@ public class CopyObjectRequest extends WebServiceRequest {
 
     /**
      * Gets the source object key.
+     * 
      * @return Source object key.
      */
     public String getSourceKey() {
@@ -112,8 +120,9 @@ public class CopyObjectRequest extends WebServiceRequest {
 
     /**
      * Sets the source object key.
+     * 
      * @param sourceKey
-     *          Source object key.
+     *            Source object key.
      */
     public void setSourceKey(String sourceKey) {
         this.sourceKey = sourceKey;
@@ -121,6 +130,7 @@ public class CopyObjectRequest extends WebServiceRequest {
 
     /**
      * Gets the target bucket name.
+     * 
      * @return Target bucket name.
      */
     public String getDestinationBucketName() {
@@ -129,8 +139,9 @@ public class CopyObjectRequest extends WebServiceRequest {
 
     /**
      * Sets the target bucket name.
+     * 
      * @param destinationBucketName
-     *          Target bucket name.
+     *            Target bucket name.
      */
     public void setDestinationBucketName(String destinationBucketName) {
         this.destinationBucketName = destinationBucketName;
@@ -138,6 +149,7 @@ public class CopyObjectRequest extends WebServiceRequest {
 
     /**
      * Gets the target object key.
+     * 
      * @return Target object key.
      */
     public String getDestinationKey() {
@@ -146,8 +158,9 @@ public class CopyObjectRequest extends WebServiceRequest {
 
     /**
      * Gets the target object key.
+     * 
      * @param destinationKey
-     *          Target object key.
+     *            Target object key.
      */
     public void setDestinationKey(String destinationKey) {
         this.destinationKey = destinationKey;
@@ -155,6 +168,7 @@ public class CopyObjectRequest extends WebServiceRequest {
 
     /**
      * Gets target object's {@link ObjectMetadata}.
+     * 
      * @return Target Object {@link ObjectMetadata}.
      */
     public ObjectMetadata getNewObjectMetadata() {
@@ -163,8 +177,9 @@ public class CopyObjectRequest extends WebServiceRequest {
 
     /**
      * Sets target object's {@link ObjectMetadata}. Optional.
+     * 
      * @param newObjectMetadata
-     *          Target Object {@link ObjectMetadata}.
+     *            Target Object {@link ObjectMetadata}.
      */
     public void setNewObjectMetadata(ObjectMetadata newObjectMetadata) {
         this.newObjectMetadata = newObjectMetadata;
@@ -172,6 +187,7 @@ public class CopyObjectRequest extends WebServiceRequest {
 
     /**
      * Gets the ETag matching constraints.
+     * 
      * @return ETag matching constraints
      */
     public List<String> getMatchingETagConstraints() {
@@ -180,8 +196,9 @@ public class CopyObjectRequest extends WebServiceRequest {
 
     /**
      * Sets the ETag matching constraints.
+     * 
      * @param matchingETagConstraints
-     *          ETag matching constraints.
+     *            ETag matching constraints.
      */
     public void setMatchingETagConstraints(List<String> matchingETagConstraints) {
         this.matchingETagConstraints.clear();
@@ -189,13 +206,14 @@ public class CopyObjectRequest extends WebServiceRequest {
             this.matchingETagConstraints.addAll(matchingETagConstraints);
         }
     }
-    
+
     public void clearMatchingETagConstraints() {
         this.matchingETagConstraints.clear();
     }
 
     /**
      * Gets the ETag non-matching constraints.
+     * 
      * @return ETag non-matching constraints。
      */
     public List<String> getNonmatchingEtagConstraints() {
@@ -204,8 +222,9 @@ public class CopyObjectRequest extends WebServiceRequest {
 
     /**
      * Sets the ETag non-matching constraints.
+     * 
      * @param nonmatchingEtagConstraints
-     *          ETag non-matching sontraints.
+     *            ETag non-matching sontraints.
      */
     public void setNonmatchingETagConstraints(List<String> nonmatchingEtagConstraints) {
         this.nonmatchingEtagConstraints.clear();
@@ -213,14 +232,16 @@ public class CopyObjectRequest extends WebServiceRequest {
             this.nonmatchingEtagConstraints.addAll(nonmatchingEtagConstraints);
         }
     }
-    
+
     public void clearNonmatchingETagConstraints() {
         this.nonmatchingEtagConstraints.clear();
     }
 
     /**
      * Gets the unmodified since constraint.
-     * @return The time threshold. If it's same or later than the actual modified time, copy the file.
+     * 
+     * @return The time threshold. If it's same or later than the actual
+     *         modified time, copy the file.
      */
     public Date getUnmodifiedSinceConstraint() {
         return unmodifiedSinceConstraint;
@@ -228,8 +249,10 @@ public class CopyObjectRequest extends WebServiceRequest {
 
     /**
      * Sets the unmodified since constraint (optional).
+     * 
      * @param unmodifiedSinceConstraint
-     *          The time threshold. If it's same or later than the actual modified time, copy the file.
+     *            The time threshold. If it's same or later than the actual
+     *            modified time, copy the file.
      */
     public void setUnmodifiedSinceConstraint(Date unmodifiedSinceConstraint) {
         this.unmodifiedSinceConstraint = unmodifiedSinceConstraint;
@@ -237,7 +260,9 @@ public class CopyObjectRequest extends WebServiceRequest {
 
     /**
      * Gets the modified since constraint.
-     * @return The time threshold. If it's earlier than the actual modified time, copy the file.
+     * 
+     * @return The time threshold. If it's earlier than the actual modified
+     *         time, copy the file.
      */
     public Date getModifiedSinceConstraint() {
         return modifiedSinceConstraint;
@@ -245,8 +270,10 @@ public class CopyObjectRequest extends WebServiceRequest {
 
     /**
      * Sets the modified since constraint.
+     * 
      * @param modifiedSinceConstraint
-     *          The time threshold. If it's earlier than the actual modified time, copy the file.
+     *            The time threshold. If it's earlier than the actual modified
+     *            time, copy the file.
      */
     public void setModifiedSinceConstraint(Date modifiedSinceConstraint) {
         this.modifiedSinceConstraint = modifiedSinceConstraint;
@@ -254,6 +281,7 @@ public class CopyObjectRequest extends WebServiceRequest {
 
     /**
      * Gets the target object's server side encryption algorithm.
+     * 
      * @return Server side encryption algorithm，null if no encryption.
      */
     public String getServerSideEncryption() {
@@ -262,9 +290,11 @@ public class CopyObjectRequest extends WebServiceRequest {
 
     /**
      * Sets the target object's server side encryption algorithm.
-     * @param serverSideEncryption Server side encryption algorithm，null if no encryption.
+     * 
+     * @param serverSideEncryption
+     *            Server side encryption algorithm，null if no encryption.
      */
     public void setServerSideEncryption(String serverSideEncryption) {
-       this.serverSideEncryption = serverSideEncryption;
+        this.serverSideEncryption = serverSideEncryption;
     }
 }

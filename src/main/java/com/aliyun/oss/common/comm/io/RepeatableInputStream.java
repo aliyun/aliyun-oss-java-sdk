@@ -59,7 +59,7 @@ public class RepeatableInputStream extends InputStream {
     public synchronized void mark(int readlimit) {
         if (bytesReadFromMark <= bufferSize && buffer != null) {
             byte[] newBuffer = new byte[this.bufferSize];
-            System.arraycopy(buffer, bufferOffset, newBuffer, 0, (int)(bytesReadFromMark - bufferOffset));
+            System.arraycopy(buffer, bufferOffset, newBuffer, 0, (int) (bytesReadFromMark - bufferOffset));
             this.buffer = newBuffer;
             this.bytesReadFromMark -= bufferOffset;
             this.bufferOffset = 0;
@@ -112,7 +112,7 @@ public class RepeatableInputStream extends InputStream {
 
         return count;
     }
-    
+
     public int read() throws IOException {
         byte[] tmp = new byte[1];
         int count = read(tmp);

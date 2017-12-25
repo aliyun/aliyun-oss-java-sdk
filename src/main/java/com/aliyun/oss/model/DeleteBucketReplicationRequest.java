@@ -23,8 +23,7 @@ package com.aliyun.oss.model;
  * The request that is to delete cross region's bucket replication.
  */
 public class DeleteBucketReplicationRequest extends GenericRequest {
-    public DeleteBucketReplicationRequest(String bucketName,
-            String replicationRuleID) {
+    public DeleteBucketReplicationRequest(String bucketName, String replicationRuleID) {
         super(bucketName);
         this.replicationRuleID = replicationRuleID;
     }
@@ -40,7 +39,7 @@ public class DeleteBucketReplicationRequest extends GenericRequest {
     public void setReplicationRuleID(String replicationRuleID) {
         this.replicationRuleID = replicationRuleID;
     }
-    
+
     public DeleteBucketReplicationRequest withReplicationRuleID(String replicationRuleID) {
         setReplicationRuleID(replicationRuleID);
         return this;

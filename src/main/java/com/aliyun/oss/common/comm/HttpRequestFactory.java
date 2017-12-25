@@ -37,11 +37,10 @@ import com.aliyun.oss.common.utils.HttpHeaders;
 
 class HttpRequestFactory {
 
-    public HttpRequestBase createHttpRequest(ServiceClient.Request request, 
-            ExecutionContext context) {
-        
-        String uri = request.getUri();        
-        
+    public HttpRequestBase createHttpRequest(ServiceClient.Request request, ExecutionContext context) {
+
+        String uri = request.getUri();
+
         HttpRequestBase httpRequest;
         HttpMethod method = request.getMethod();
         if (method == HttpMethod.POST) {
@@ -80,16 +79,16 @@ class HttpRequestFactory {
 
         return httpRequest;
     }
-    
+
     private HttpEntity buildChunkedInputStreamEntity(ServiceClient.Request request) {
         return new ChunkedInputStreamEntity(request);
     }
 
-    private void configureRequestHeaders(ServiceClient.Request request, ExecutionContext context, 
+    private void configureRequestHeaders(ServiceClient.Request request, ExecutionContext context,
             HttpRequestBase httpRequest) {
 
-        for(Entry<String, String> entry : request.getHeaders().entrySet()){
-            if (entry.getKey().equalsIgnoreCase(HttpHeaders.CONTENT_LENGTH) 
+        for (Entry<String, String> entry : request.getHeaders().entrySet()) {
+            if (entry.getKey().equalsIgnoreCase(HttpHeaders.CONTENT_LENGTH)
                     || entry.getKey().equalsIgnoreCase(HttpHeaders.HOST)) {
                 continue;
             }

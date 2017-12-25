@@ -20,7 +20,7 @@
 package com.aliyun.oss.common.comm.io;
 
 public interface Releasable {
-    
+
     public void release();
-    
+
 }

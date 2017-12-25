@@ -20,12 +20,12 @@
 package com.aliyun.oss.common.auth;
 
 /**
- * Provides access to credentials used for accessing OSS, these credentials are used to 
- * securely sign requests to OSS.
+ * Provides access to credentials used for accessing OSS, these credentials are
+ * used to securely sign requests to OSS.
  */
 public interface Credentials {
     /**
-     * Returns the access key ID for this credentials. 
+     * Returns the access key ID for this credentials.
      */
     public String getAccessKeyId();
 
@@ -33,12 +33,12 @@ public interface Credentials {
      * Returns the secret access key for this credentials.
      */
     public String getSecretAccessKey();
-    
+
     /**
      * Returns the security token for this credentials.
      */
     public String getSecurityToken();
-    
+
     /**
      * Determines whether to use security token for http requests.
      */

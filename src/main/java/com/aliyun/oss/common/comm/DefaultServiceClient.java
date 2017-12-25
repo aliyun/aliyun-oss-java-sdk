@@ -88,7 +88,7 @@ public class DefaultServiceClient extends ServiceClient {
         requestConfigBuilder.setConnectTimeout(config.getConnectionTimeout());
         requestConfigBuilder.setSocketTimeout(config.getSocketTimeout());
         requestConfigBuilder.setConnectionRequestTimeout(config.getConnectionRequestTimeout());
-        
+
         String proxyHost = config.getProxyHost();
         int proxyPort = config.getProxyPort();
         if (proxyHost != null && proxyPort > 0) {
@@ -99,22 +99,21 @@ public class DefaultServiceClient extends ServiceClient {
             String proxyPassword = config.getProxyPassword();
             String proxyDomain = config.getProxyDomain();
             String proxyWorkstation = config.getProxyWorkstation();
-            if (proxyUsername != null && proxyPassword != null){
+            if (proxyUsername != null && proxyPassword != null) {
                 this.credentialsProvider = new BasicCredentialsProvider();
                 this.credentialsProvider.setCredentials(new AuthScope(proxyHost, proxyPort),
                         new NTCredentials(proxyUsername, proxyPassword, proxyWorkstation, proxyDomain));
-                
+
                 this.authCache = new BasicAuthCache();
                 authCache.put(this.proxyHttpHost, new BasicScheme());
             }
         }
-        
+
         this.requestConfig = requestConfigBuilder.build();
     }
 
     @Override
-    public ResponseMessage sendRequestCore(ServiceClient.Request request, ExecutionContext context)
-            throws IOException {        
+    public ResponseMessage sendRequestCore(ServiceClient.Request request, ExecutionContext context) throws IOException {
         HttpRequestBase httpRequest = httpRequestFactory.createHttpRequest(request, context);
         setProxyAuthorizationIfNeed(httpRequest);
         HttpClientContext httpContext = createHttpContext();
@@ -126,24 +125,24 @@ public class DefaultServiceClient extends ServiceClient {
         } catch (IOException ex) {
             httpRequest.abort();
             throw ExceptionFactory.createNetworkException(ex);
-        } 
+        }
 
         return buildResponse(request, httpResponse);
     }
-    
-    protected static ResponseMessage buildResponse(ServiceClient.Request request, 
-            CloseableHttpResponse httpResponse) throws IOException {
-        
-        assert(httpResponse != null);
-        
+
+    protected static ResponseMessage buildResponse(ServiceClient.Request request, CloseableHttpResponse httpResponse)
+            throws IOException {
+
+        assert (httpResponse != null);
+
         ResponseMessage response = new ResponseMessage(request);
         response.setUrl(request.getUri());
         response.setHttpResponse(httpResponse);
-        
+
         if (httpResponse.getStatusLine() != null) {
             response.setStatusCode(httpResponse.getStatusLine().getStatusCode());
         }
-        
+
         if (httpResponse.getEntity() != null) {
             if (response.isSuccessful()) {
                 response.setContent(httpResponse.getEntity().getContent());
@@ -158,108 +157,105 @@ public class DefaultServiceClient extends ServiceClient {
             }
             response.addHeader(header.getName(), header.getValue());
         }
-        
+
         HttpUtil.convertHeaderCharsetFromIso88591(response.getHeaders());
 
         return response;
     }
-    
-    private static void readAndSetErrorResponse(InputStream originalContent, ResponseMessage response) 
+
+    private static void readAndSetErrorResponse(InputStream originalContent, ResponseMessage response)
             throws IOException {
         byte[] contentBytes = IOUtils.readStreamAsByteArray(originalContent);
         response.setErrorResponseAsString(new String(contentBytes));
         response.setContent(new ByteArrayInputStream(contentBytes));
     }
-    
+
     private static class DefaultRetryStrategy extends RetryStrategy {
-        
+
         @Override
         public boolean shouldRetry(Exception ex, RequestMessage request, ResponseMessage response, int retries) {
             if (ex instanceof ClientException) {
-                String errorCode = ((ClientException)ex).getErrorCode();
-                if (errorCode.equals(ClientErrorCode.CONNECTION_TIMEOUT) || 
-                        errorCode.equals(ClientErrorCode.SOCKET_TIMEOUT) || 
-                        errorCode.equals(ClientErrorCode.CONNECTION_REFUSED) || 
-                        errorCode.equals(ClientErrorCode.UNKNOWN_HOST) || 
-                        errorCode.equals(ClientErrorCode.SOCKET_EXCEPTION)) {
+                String errorCode = ((ClientException) ex).getErrorCode();
+                if (errorCode.equals(ClientErrorCode.CONNECTION_TIMEOUT)
+                        || errorCode.equals(ClientErrorCode.SOCKET_TIMEOUT)
+                        || errorCode.equals(ClientErrorCode.CONNECTION_REFUSED)
+                        || errorCode.equals(ClientErrorCode.UNKNOWN_HOST)
+                        || errorCode.equals(ClientErrorCode.SOCKET_EXCEPTION)) {
                     return true;
                 }
-                
+
                 // Don't retry when request input stream is non-repeatable
                 if (errorCode.equals(ClientErrorCode.NONREPEATABLE_REQUEST)) {
                     return false;
                 }
             }
-            
+
             if (ex instanceof OSSException) {
-                String errorCode = ((OSSException)ex).getErrorCode();
+                String errorCode = ((OSSException) ex).getErrorCode();
                 // No need retry for invalid responses
                 if (errorCode.equals(OSSErrorCode.INVALID_RESPONSE)) {
                     return false;
                 }
             }
-            
+
             if (response != null) {
                 int statusCode = response.getStatusCode();
-                if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR ||
-                        statusCode == HttpStatus.SC_SERVICE_UNAVAILABLE) {
+                if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR
+                        || statusCode == HttpStatus.SC_SERVICE_UNAVAILABLE) {
                     return true;
                 }
             }
-            
+
             return false;
         }
     }
-    
+
     @Override
     protected RetryStrategy getDefaultRetryStrategy() {
         return new DefaultRetryStrategy();
     }
-    
+
     protected CloseableHttpClient createHttpClient(HttpClientConnectionManager connectionManager) {
-        return HttpClients.custom().setConnectionManager(connectionManager)
-                .setUserAgent(this.config.getUserAgent())
-                .disableContentCompression()
-                .disableAutomaticRetries()
-                .build();
+        return HttpClients.custom().setConnectionManager(connectionManager).setUserAgent(this.config.getUserAgent())
+                .disableContentCompression().disableAutomaticRetries().build();
     }
-    
+
     protected HttpClientConnectionManager createHttpClientConnectionManager() {
         SSLContext sslContext = null;
         try {
-            sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() { 
-                
+            sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+
                 @Override
-                public boolean isTrusted(X509Certificate[] chain, String authType)
-                        throws CertificateException {
+                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
                     return true;
                 }
-                
+
             }).build();
-            
+
         } catch (Exception e) {
             throw new ClientException(e.getMessage());
         }
-        
-        SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
-        Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+
+        SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext,
+                NoopHostnameVerifier.INSTANCE);
+        Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory> create()
                 .register(Protocol.HTTP.toString(), PlainConnectionSocketFactory.getSocketFactory())
-                .register(Protocol.HTTPS.toString(), sslSocketFactory)
-                .build();
-        
-        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+                .register(Protocol.HTTPS.toString(), sslSocketFactory).build();
+
+        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(
+                socketFactoryRegistry);
         connectionManager.setDefaultMaxPerRoute(config.getMaxConnections());
         connectionManager.setMaxTotal(config.getMaxConnections());
         connectionManager.setValidateAfterInactivity(config.getValidateAfterInactivity());
-        connectionManager.setDefaultSocketConfig(SocketConfig.custom().
-                setSoTimeout(config.getSocketTimeout()).setTcpNoDelay(true).build());
+        connectionManager.setDefaultSocketConfig(
+                SocketConfig.custom().setSoTimeout(config.getSocketTimeout()).setTcpNoDelay(true).build());
         if (config.isUseReaper()) {
             IdleConnectionReaper.setIdleConnectionTime(config.getIdleConnectionTime());
             IdleConnectionReaper.registerConnectionManager(connectionManager);
         }
         return connectionManager;
     }
-    
+
     protected HttpClientContext createHttpContext() {
         HttpClientContext httpContext = HttpClientContext.create();
         httpContext.setRequestConfig(this.requestConfig);
@@ -269,12 +265,12 @@ public class DefaultServiceClient extends ServiceClient {
         }
         return httpContext;
     }
-    
-    private void setProxyAuthorizationIfNeed(HttpRequestBase httpRequest) { 
+
+    private void setProxyAuthorizationIfNeed(HttpRequestBase httpRequest) {
         if (this.credentialsProvider != null) {
             String auth = this.config.getProxyUsername() + ":" + this.config.getProxyPassword();
             byte[] encodedAuth = Base64.encodeBase64(auth.getBytes());
-            String authHeader = "Basic " + new String(encodedAuth);            
+            String authHeader = "Basic " + new String(encodedAuth);
             httpRequest.addHeader(AUTH.PROXY_AUTH_RESP, authHeader);
         }
     }

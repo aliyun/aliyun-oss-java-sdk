@@ -34,10 +34,9 @@ import static com.aliyun.oss.event.ProgressPublisher.publishRequestContentLength
 import static com.aliyun.oss.common.utils.LogUtils.logException;
 
 public class RequestProgressHanlder implements RequestHandler {
-    
+
     @Override
-    public void handle(RequestMessage request) throws OSSException,
-            ClientException {
+    public void handle(RequestMessage request) throws OSSException, ClientException {
 
         final WebServiceRequest originalRequest = request.getOriginalRequest();
         final ProgressListener listener = originalRequest.getProgressListener();
@@ -51,7 +50,7 @@ public class RequestProgressHanlder implements RequestHandler {
                 logException("Cannot parse the Content-Length header of the request: ", e);
             }
         }
-        
+
         InputStream content = request.getContent();
         if (content == null) {
             return;
@@ -59,8 +58,8 @@ public class RequestProgressHanlder implements RequestHandler {
         if (!content.markSupported()) {
             content = new BufferedInputStream(content);
         }
-        request.setContent(listener == ProgressListener.NOOP ? 
-                content : ProgressInputStream.inputStreamForRequest(content, originalRequest));
+        request.setContent(listener == ProgressListener.NOOP ? content
+                : ProgressInputStream.inputStreamForRequest(content, originalRequest));
     }
 
 }

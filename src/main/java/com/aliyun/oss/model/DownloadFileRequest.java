@@ -32,20 +32,20 @@ public class DownloadFileRequest extends GenericRequest {
     public DownloadFileRequest(String bucketName, String key) {
         super(bucketName, key);
     }
-    
+
     public DownloadFileRequest(String bucketName, String key, String downloadFile, long partSize) {
         super(bucketName, key);
         this.partSize = partSize;
         this.downloadFile = downloadFile;
     }
-    
-    public DownloadFileRequest(String bucketName, String key, String downloadFile, long partSize, 
-            int taskNum, boolean enableCheckpoint) {
+
+    public DownloadFileRequest(String bucketName, String key, String downloadFile, long partSize, int taskNum,
+            boolean enableCheckpoint) {
         this(bucketName, key, downloadFile, partSize, taskNum, enableCheckpoint, null);
     }
-    
-    public DownloadFileRequest(String bucketName, String key, String downloadFile, long partSize, 
-            int taskNum, boolean enableCheckpoint, String checkpointFile) {
+
+    public DownloadFileRequest(String bucketName, String key, String downloadFile, long partSize, int taskNum,
+            boolean enableCheckpoint, String checkpointFile) {
         super(bucketName, key);
         this.partSize = partSize;
         this.taskNum = taskNum;
@@ -69,11 +69,11 @@ public class DownloadFileRequest extends GenericRequest {
     public void setTaskNum(int taskNum) {
         this.taskNum = taskNum;
     }
-    
+
     public String getDownloadFile() {
         return downloadFile;
     }
-    
+
     public String getTempDownloadFile() {
         return downloadFile + ".tmp";
     }
@@ -97,11 +97,12 @@ public class DownloadFileRequest extends GenericRequest {
     public void setCheckpointFile(String checkpointFile) {
         this.checkpointFile = checkpointFile;
     }
-    
+
     /**
-     * Gets the ETag matching constraints.
-     * The download only happens if the specified ETag matches the source file's ETag.
-     * If ETag does not match, returns the precondition failure (412)
+     * Gets the ETag matching constraints. The download only happens if the
+     * specified ETag matches the source file's ETag. If ETag does not match,
+     * returns the precondition failure (412)
+     * 
      * @return The expected ETag list.
      */
     public List<String> getMatchingETagConstraints() {
@@ -109,11 +110,12 @@ public class DownloadFileRequest extends GenericRequest {
     }
 
     /**
-     * Sets the ETag matching constraints (optional).
-     * The download only happens if the specified ETag matches the source file's ETag.
-     * If ETag does not match, returns the precondition failure (412)
+     * Sets the ETag matching constraints (optional). The download only happens
+     * if the specified ETag matches the source file's ETag. If ETag does not
+     * match, returns the precondition failure (412)
+     * 
      * @param eTagList
-     *          The expected ETag list.
+     *            The expected ETag list.
      */
     public void setMatchingETagConstraints(List<String> eTagList) {
         this.matchingETagConstraints.clear();
@@ -121,15 +123,16 @@ public class DownloadFileRequest extends GenericRequest {
             this.matchingETagConstraints.addAll(eTagList);
         }
     }
-    
+
     public void clearMatchingETagConstraints() {
         this.matchingETagConstraints.clear();
     }
 
     /**
-     * Gets the ETag non-matching constraints.
-     * The download only happens if the specified ETag does not match the source file's ETag.
-     * If ETag matches, returns the precondition failure (412)
+     * Gets the ETag non-matching constraints. The download only happens if the
+     * specified ETag does not match the source file's ETag. If ETag matches,
+     * returns the precondition failure (412)
+     * 
      * @return The expected ETag list.
      */
     public List<String> getNonmatchingETagConstraints() {
@@ -137,11 +140,13 @@ public class DownloadFileRequest extends GenericRequest {
     }
 
     /**
-     * Sets the ETag non-matching constraints.
-     * The download only happens if the specified ETag does not match the source file's ETag.
-     * If ETag matches, returns the precondition failure (412)
+     * Sets the ETag non-matching constraints. The download only happens if the
+     * specified ETag does not match the source file's ETag. If ETag matches,
+     * returns the precondition failure (412)
+     * 
      * @param eTagList
-     *          The expected ETag list. For now only the first ETag is used, though the parameter is the list.
+     *            The expected ETag list. For now only the first ETag is used,
+     *            though the parameter is the list.
      */
     public void setNonmatchingETagConstraints(List<String> eTagList) {
         this.nonmatchingEtagConstraints.clear();
@@ -149,14 +154,16 @@ public class DownloadFileRequest extends GenericRequest {
             this.nonmatchingEtagConstraints.addAll(eTagList);
         }
     }
-    
+
     public void clearNonmatchingETagConstraints() {
         this.nonmatchingEtagConstraints.clear();
     }
 
     /**
      * Gets the unmodified since constraint.
-     * @return The time threshold. If it's same or later than the actual modified time, download the file.
+     * 
+     * @return The time threshold. If it's same or later than the actual
+     *         modified time, download the file.
      */
     public Date getUnmodifiedSinceConstraint() {
         return unmodifiedSinceConstraint;
@@ -164,8 +171,10 @@ public class DownloadFileRequest extends GenericRequest {
 
     /**
      * Sets the unmodified since constraint.
+     * 
      * @param date
-     *          The time threshold. If it's same or later than the actual modified time, download the file.
+     *            The time threshold. If it's same or later than the actual
+     *            modified time, download the file.
      */
     public void setUnmodifiedSinceConstraint(Date date) {
         this.unmodifiedSinceConstraint = date;
@@ -173,7 +182,9 @@ public class DownloadFileRequest extends GenericRequest {
 
     /**
      * Gets the modified since constraint.
-     * @return The time threshold. If it's earlier than the actual modified time, download the file.
+     * 
+     * @return The time threshold. If it's earlier than the actual modified
+     *         time, download the file.
      */
     public Date getModifiedSinceConstraint() {
         return modifiedSinceConstraint;
@@ -181,8 +192,10 @@ public class DownloadFileRequest extends GenericRequest {
 
     /**
      * Sets the modified since constraint.
+     * 
      * @param date
-     *          The time threshold. If it's earlier than the actual modified time, download the file.
+     *            The time threshold. If it's earlier than the actual modified
+     *            time, download the file.
      */
     public void setModifiedSinceConstraint(Date date) {
         this.modifiedSinceConstraint = date;
@@ -190,6 +203,7 @@ public class DownloadFileRequest extends GenericRequest {
 
     /**
      * Gets response headers to override.
+     * 
      * @return The headers to override with.
      */
     public ResponseHeaderOverrides getResponseHeaders() {
@@ -198,8 +212,9 @@ public class DownloadFileRequest extends GenericRequest {
 
     /**
      * Sets response headers to override.
+     * 
      * @param responseHeaders
-     *          The headers to override with.
+     *            The headers to override with.
      */
     public void setResponseHeaders(ResponseHeaderOverrides responseHeaders) {
         this.responseHeaders = responseHeaders;
@@ -215,7 +230,7 @@ public class DownloadFileRequest extends GenericRequest {
     private boolean enableCheckpoint;
     // The local file path of the checkpoint file
     private String checkpointFile;
-    
+
     // The matching ETag constraints
     private List<String> matchingETagConstraints = new ArrayList<String>();
     // The non-matching ETag constraints.

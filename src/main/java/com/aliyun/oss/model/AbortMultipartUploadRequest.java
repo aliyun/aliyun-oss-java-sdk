@@ -30,12 +30,13 @@ public class AbortMultipartUploadRequest extends GenericRequest {
 
     /**
      * Constructor.
+     * 
      * @param bucketName
-     *          Bucket name.
+     *            Bucket name.
      * @param key
-     *          Object key。
+     *            Object key。
      * @param uploadId
-     *          The multipart upload Id.
+     *            The multipart upload Id.
      */
     public AbortMultipartUploadRequest(String bucketName, String key, String uploadId) {
         super(bucketName, key);
@@ -44,6 +45,7 @@ public class AbortMultipartUploadRequest extends GenericRequest {
 
     /**
      * Gets the upload Id.
+     * 
      * @return The upload Id
      */
     public String getUploadId() {
@@ -52,8 +54,9 @@ public class AbortMultipartUploadRequest extends GenericRequest {
 
     /**
      * Sets the upload Id.
+     * 
      * @param uploadId
-     *          The upload Id.
+     *            The upload Id.
      */
     public void setUploadId(String uploadId) {
         this.uploadId = uploadId;

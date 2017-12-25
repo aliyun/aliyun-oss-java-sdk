@@ -23,28 +23,31 @@ package com.aliyun.oss.model;
  * ACL's permission grant information.
  */
 public class Grant {
-    
+
     private Grantee grantee;
     private Permission permission;
-    
+
     /**
      * Constructor
+     * 
      * @param grantee
-     *          The grantee. Currently it only supports {@link GroupGrantee#AllUsers}.
+     *            The grantee. Currently it only supports
+     *            {@link GroupGrantee#AllUsers}.
      * @param permission
-     *          permission to grant.
+     *            permission to grant.
      */
     public Grant(Grantee grantee, Permission permission) {
         if (grantee == null || permission == null) {
             throw new NullPointerException();
         }
-        
+
         this.grantee = grantee;
         this.permission = permission;
     }
 
     /**
      * Gets the grantee.
+     * 
      * @return The {@link Grantee} instance.
      */
     public Grantee getGrantee() {
@@ -53,22 +56,23 @@ public class Grant {
 
     /**
      * Gets the {@link Permission} granted.
+     * 
      * @return The granted {@link Permission}.
      */
     public Permission getPermission() {
         return permission;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Grant)) {
             return false;
         }
-        Grant g = (Grant)o;
+        Grant g = (Grant) o;
         return this.getGrantee().getIdentifier().equals(g.getGrantee().getIdentifier())
                 && this.getPermission().equals(g.getPermission());
     }
-    
+
     @Override
     public int hashCode() {
         return (grantee.getIdentifier() + ":" + this.getPermission().toString()).hashCode();

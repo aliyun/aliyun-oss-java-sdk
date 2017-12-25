@@ -26,25 +26,26 @@ import java.util.List;
  * Successful response for deleting multiple objects.
  */
 public class DeleteObjectsResult extends GenericResult {
-    
+
     /* Successfully deleted objects */
     private final List<String> deletedObjects = new ArrayList<String>();
-    
+
     /* User specified encoding method to be applied on the response. */
     private String encodingType;
-    
-    public DeleteObjectsResult() { }
-    
+
+    public DeleteObjectsResult() {
+    }
+
     public DeleteObjectsResult(List<String> deletedObjects) {
         if (deletedObjects != null && deletedObjects.size() > 0) {
             this.deletedObjects.addAll(deletedObjects);
         }
     }
-    
+
     public List<String> getDeletedObjects() {
         return deletedObjects;
     }
-    
+
     public void setDeletedObjects(List<String> deletedObjects) {
         this.deletedObjects.clear();
         this.deletedObjects.addAll(deletedObjects);

@@ -22,8 +22,8 @@ package com.aliyun.oss.model;
 import java.util.Date;
 
 /**
- * 包含通过Multipart上传模式上传的Part的摘要信息。
- * The summary information of the part in a multipart upload.
+ * 包含通过Multipart上传模式上传的Part的摘要信息。 The summary information of the part in a
+ * multipart upload.
  *
  */
 public class PartSummary {
@@ -35,15 +35,16 @@ public class PartSummary {
     private String eTag;
 
     private long size;
-    
+
     /**
      * Constructor
      */
-    public PartSummary(){
+    public PartSummary() {
     }
 
     /**
      * Gets part number.
+     * 
      * @return The Part number.
      */
     public int getPartNumber() {
@@ -52,8 +53,9 @@ public class PartSummary {
 
     /**
      * Sets the part number.
+     * 
      * @param partNumber
-     *          The part number.
+     *            The part number.
      */
     public void setPartNumber(int partNumber) {
         this.partNumber = partNumber;
@@ -61,6 +63,7 @@ public class PartSummary {
 
     /**
      * Gets the last modified time of the part.
+     * 
      * @return Part's last modified time.
      */
     public Date getLastModified() {
@@ -69,8 +72,9 @@ public class PartSummary {
 
     /**
      * Sets the last modified time of the part.
+     * 
      * @param lastModified
-     *          Part's last modified time.
+     *            Part's last modified time.
      */
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
@@ -78,6 +82,7 @@ public class PartSummary {
 
     /**
      * Gets the Part's ETag.
+     * 
      * @return Part ETag value.
      */
     public String getETag() {
@@ -86,8 +91,9 @@ public class PartSummary {
 
     /**
      * Sets the Part ETag value.
+     * 
      * @param eTag
-     *          Part ETag value.
+     *            Part ETag value.
      */
     public void setETag(String eTag) {
         this.eTag = eTag;
@@ -95,6 +101,7 @@ public class PartSummary {
 
     /**
      * Gets the size of the part.
+     * 
      * @return Part size.
      */
     public long getSize() {
@@ -103,8 +110,9 @@ public class PartSummary {
 
     /**
      * Sets the part data size.
+     * 
      * @param size
-     *          Part data size.
+     *            Part data size.
      */
     public void setSize(long size) {
         this.size = size;

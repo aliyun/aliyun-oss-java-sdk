@@ -33,13 +33,13 @@ import com.aliyun.oss.common.utils.ExceptionFactory;
 import com.aliyun.oss.internal.model.OSSErrorResult;
 
 /**
- * Used to handle error response from oss, when HTTP status code is not 2xx, then throws
- * <code>OSSException</code> with detailed error information(such as request id, error code).  
+ * Used to handle error response from oss, when HTTP status code is not 2xx,
+ * then throws <code>OSSException</code> with detailed error information(such as
+ * request id, error code).
  */
 public class OSSErrorResponseHandler implements ResponseHandler {
-    
-    public void handle(ResponseMessage response)
-            throws OSSException, ClientException {
+
+    public void handle(ResponseMessage response) throws OSSException, ClientException {
 
         if (response.isSuccessful()) {
             return;
@@ -49,29 +49,30 @@ public class OSSErrorResponseHandler implements ResponseHandler {
         int statusCode = response.getStatusCode();
         if (response.getContent() == null) {
             /**
-             * When HTTP response body is null, handle status code 404 Not Found, 304 Not Modified, 
-             * 412 Precondition Failed especially.
+             * When HTTP response body is null, handle status code 404 Not
+             * Found, 304 Not Modified, 412 Precondition Failed especially.
              */
             if (statusCode == HttpStatus.SC_NOT_FOUND) {
                 throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.NO_SUCH_KEY, "Not Found");
             } else if (statusCode == HttpStatus.SC_NOT_MODIFIED) {
                 throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.NOT_MODIFIED, "Not Modified");
             } else if (statusCode == HttpStatus.SC_PRECONDITION_FAILED) {
-                throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.PRECONDITION_FAILED, "Precondition Failed");
+                throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.PRECONDITION_FAILED,
+                        "Precondition Failed");
             } else {
-                throw ExceptionFactory.createUnknownOSSException(requestId, statusCode);                
+                throw ExceptionFactory.createUnknownOSSException(requestId, statusCode);
             }
         }
 
         JAXBResponseParser parser = new JAXBResponseParser(OSSErrorResult.class);
         try {
-            OSSErrorResult errorResult = (OSSErrorResult)parser.parse(response);
+            OSSErrorResult errorResult = (OSSErrorResult) parser.parse(response);
             throw ExceptionFactory.createOSSException(errorResult, response.getErrorResponseAsString());
         } catch (ResponseParseException e) {
             throw ExceptionFactory.createInvalidResponseException(requestId, response.getErrorResponseAsString(), e);
-        } finally {            
+        } finally {
             safeCloseResponse(response);
         }
     }
-    
+
 }

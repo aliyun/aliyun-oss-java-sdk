@@ -25,8 +25,9 @@ import java.util.List;
 /**
  * The {@link Bucket}'s http referer information.
  * <p>
- * It defines the whitelist of websites that could access a bucket. Empty http referer could also be included.
- * Http referer is typically used to prevent unauthorized access from other website.
+ * It defines the whitelist of websites that could access a bucket. Empty http
+ * referer could also be included. Http referer is typically used to prevent
+ * unauthorized access from other website.
  * </p>
  *
  */
@@ -35,19 +36,19 @@ public class BucketReferer extends GenericResult {
     private List<String> refererList = new ArrayList<String>();
 
     public BucketReferer() {
-        
+
     }
-    
+
     public BucketReferer(boolean allowEmptyReferer, List<String> refererList) {
         setAllowEmptyReferer(allowEmptyReferer);
         setRefererList(refererList);
     }
-    
+
     @Deprecated
     public boolean allowEmpty() {
         return this.allowEmptyReferer;
     }
-    
+
     public boolean isAllowEmptyReferer() {
         return allowEmptyReferer;
     }
@@ -59,14 +60,14 @@ public class BucketReferer extends GenericResult {
     public List<String> getRefererList() {
         return refererList;
     }
-    
+
     public void setRefererList(List<String> refererList) {
         this.refererList.clear();
         if (refererList != null && !refererList.isEmpty()) {
             this.refererList.addAll(refererList);
         }
     }
-    
+
     public void clearRefererList() {
         this.refererList.clear();
     }

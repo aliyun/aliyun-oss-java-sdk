@@ -18,6 +18,7 @@
  */
 
 package com.aliyun.oss.model;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,21 +26,21 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This is the request class that is used to download an object from OSS.
- * It wraps all the information needed to download an object.
+ * This is the request class that is used to download an object from OSS. It
+ * wraps all the information needed to download an object.
  */
 public class GetObjectRequest extends GenericRequest {
-   
+
     private List<String> matchingETagConstraints = new ArrayList<String>();
     private List<String> nonmatchingEtagConstraints = new ArrayList<String>();
     private Date unmodifiedSinceConstraint;
     private Date modifiedSinceConstraint;
     private String process;
 
-	private long[] range;
+    private long[] range;
 
     private ResponseHeaderOverrides responseHeaders;
-    
+
     /**
      * Fields releated with getobject operation by using url signature.
      */
@@ -48,19 +49,23 @@ public class GetObjectRequest extends GenericRequest {
 
     /**
      * Constructor
+     * 
      * @param bucketName
-     *          Bucket name.
+     *            Bucket name.
      * @param key
-     *          Object Key.
+     *            Object Key.
      */
     public GetObjectRequest(String bucketName, String key) {
         super(bucketName, key);
     }
-    
+
     /**
      * Constructor with presigned Url and user's custom headers.
-     * @param absoluteUrl Signed url.
-     * @param requestHeaders Request headers.
+     * 
+     * @param absoluteUrl
+     *            Signed url.
+     * @param requestHeaders
+     *            Request headers.
      */
     public GetObjectRequest(URL absoluteUrl, Map<String, String> requestHeaders) {
         this.absoluteUrl = absoluteUrl;
@@ -70,10 +75,11 @@ public class GetObjectRequest extends GenericRequest {
             this.getHeaders().putAll(requestHeaders);
         }
     }
-    
+
     /**
-     * Gets the range of the object to download. The range is in the form of {start, end}---start and end is position of the
-     * object's content.
+     * Gets the range of the object to download. The range is in the form of
+     * {start, end}---start and end is position of the object's content.
+     * 
      * @return The range of the object to download.
      */
     public long[] getRange() {
@@ -82,40 +88,60 @@ public class GetObjectRequest extends GenericRequest {
 
     /**
      * Sets the range of the object to download (optional).
+     * 
      * @param start
-     *          <p>Start position</p>
-     *          <p>When the start is non-negative, it means the starting position to download.
-     *          When the start is -1, it means the range is determined by the end only and the end could not be -1.
-     *          For example, when start is -1 and end is 100. It means the download range will be the last 100 bytes.
-     *          </p>
+     *            <p>
+     *            Start position
+     *            </p>
+     *            <p>
+     *            When the start is non-negative, it means the starting position
+     *            to download. When the start is -1, it means the range is
+     *            determined by the end only and the end could not be -1. For
+     *            example, when start is -1 and end is 100. It means the
+     *            download range will be the last 100 bytes.
+     *            </p>
      * @param end
-     *          <p>End position</p>
-     *          <p>When the end is non-negative, it means the ending position to download.
-     *          When the end is -1, it means the range is determined by the start only and the start could not be -1.
-     *          For example, when end is -1 and start is 100. It means the download range will be all exception first
-     *          100 bytes.
-     *          </p>
+     *            <p>
+     *            End position
+     *            </p>
+     *            <p>
+     *            When the end is non-negative, it means the ending position to
+     *            download. When the end is -1, it means the range is determined
+     *            by the start only and the start could not be -1. For example,
+     *            when end is -1 and start is 100. It means the download range
+     *            will be all exception first 100 bytes.
+     *            </p>
      */
     public void setRange(long start, long end) {
-        range = new long[] {start, end};
+        range = new long[] { start, end };
     }
-    
+
     /**
-     * Sets the range of the object to download and return current GetObjectRequest instance (this).
+     * Sets the range of the object to download and return current
+     * GetObjectRequest instance (this).
      *
      * @param start
-     *          <p>Start position</p>
-     *          <p>When the start is non-negative, it means the starting position to download.
-     *          When the start is -1, it means the range is determined by the end only and the end could not be -1.
-     *          For example, when start is -1 and end is 100. It means the download range will be the last 100 bytes.
-     *          </p>
+     *            <p>
+     *            Start position
+     *            </p>
+     *            <p>
+     *            When the start is non-negative, it means the starting position
+     *            to download. When the start is -1, it means the range is
+     *            determined by the end only and the end could not be -1. For
+     *            example, when start is -1 and end is 100. It means the
+     *            download range will be the last 100 bytes.
+     *            </p>
      * @param end
-     *          <p>End position</p>
-     *          <p>When the end is non-negative, it means the ending position to download.
-     *          When the end is -1, it means the range is determined by the start only and the start could not be -1.
-     *          For example, when end is -1 and start is 100. It means the download range will be all exception first
-     *          100 bytes.
-     *          </p>
+     *            <p>
+     *            End position
+     *            </p>
+     *            <p>
+     *            When the end is non-negative, it means the ending position to
+     *            download. When the end is -1, it means the range is determined
+     *            by the start only and the start could not be -1. For example,
+     *            when end is -1 and start is 100. It means the download range
+     *            will be all exception first 100 bytes.
+     *            </p>
      */
     public GetObjectRequest withRange(long start, long end) {
         setRange(start, end);
@@ -123,10 +149,10 @@ public class GetObjectRequest extends GenericRequest {
     }
 
     /**
-     * Gets the matching Etag constraints.
-     * If the first ETag returned matches the object's ETag, the file would be downloaded. Currently OSS only supports
-     * one ETag.
-     * Otherwise, return precondition failure (412).
+     * Gets the matching Etag constraints. If the first ETag returned matches
+     * the object's ETag, the file would be downloaded. Currently OSS only
+     * supports one ETag. Otherwise, return precondition failure (412).
+     * 
      * @return The list of expected ETags.
      */
     public List<String> getMatchingETagConstraints() {
@@ -134,11 +160,12 @@ public class GetObjectRequest extends GenericRequest {
     }
 
     /**
-     * Sets the matching Etag constraints.
-     * If the first ETag returned matches the object's ETag, the file would be downloaded.
-     * Otherwise, return precondition failure (412).
+     * Sets the matching Etag constraints. If the first ETag returned matches
+     * the object's ETag, the file would be downloaded. Otherwise, return
+     * precondition failure (412).
+     * 
      * @param eTagList
-     *          The expected ETag list. OSS only supports one ETag.
+     *            The expected ETag list. OSS only supports one ETag.
      */
     public void setMatchingETagConstraints(List<String> eTagList) {
         this.matchingETagConstraints.clear();
@@ -146,16 +173,16 @@ public class GetObjectRequest extends GenericRequest {
             this.matchingETagConstraints.addAll(eTagList);
         }
     }
-    
+
     public void clearMatchingETagConstraints() {
         this.matchingETagConstraints.clear();
     }
 
     /**
-     * Gets the non-matching Etag constraints.
-     * If the first ETag returned does not match the object's ETag, the file would be downloaded.
-     * Currently OSS only supports one ETag.
-     * Otherwise, return precondition failure (412).
+     * Gets the non-matching Etag constraints. If the first ETag returned does
+     * not match the object's ETag, the file would be downloaded. Currently OSS
+     * only supports one ETag. Otherwise, return precondition failure (412).
+     * 
      * @return The list of expected ETags (only the first one matters though).
      */
     public List<String> getNonmatchingETagConstraints() {
@@ -163,12 +190,13 @@ public class GetObjectRequest extends GenericRequest {
     }
 
     /**
-     * Sets the non-matching Etag constraints.
-     * If the first ETag returned does not match the object's ETag, the file would be downloaded.
-     * Currently OSS only supports one ETag.
-     * Otherwise, returns precondition failure (412).
+     * Sets the non-matching Etag constraints. If the first ETag returned does
+     * not match the object's ETag, the file would be downloaded. Currently OSS
+     * only supports one ETag. Otherwise, returns precondition failure (412).
+     * 
      * @param eTagList
-     *          The list of expected ETags (only the first one matters though).
+     *            The list of expected ETags (only the first one matters
+     *            though).
      */
     public void setNonmatchingETagConstraints(List<String> eTagList) {
         this.nonmatchingEtagConstraints.clear();
@@ -176,15 +204,17 @@ public class GetObjectRequest extends GenericRequest {
             this.nonmatchingEtagConstraints.addAll(eTagList);
         }
     }
-    
+
     public void clearNonmatchingETagConstraints() {
         this.nonmatchingEtagConstraints.clear();
     }
 
     /**
-     * Gets the unmodified since constraints.
-     * If the timestamp returned is equal or later than the actual file's modified time, the file would be downloaded.
-     * Otherwise, the download API returns precondition failure (412).
+     * Gets the unmodified since constraints. If the timestamp returned is equal
+     * or later than the actual file's modified time, the file would be
+     * downloaded. Otherwise, the download API returns precondition failure
+     * (412).
+     * 
      * @return The timestamp.
      */
     public Date getUnmodifiedSinceConstraint() {
@@ -192,21 +222,23 @@ public class GetObjectRequest extends GenericRequest {
     }
 
     /**
-     * Sets the unmodified since constraints.
-     * If the timestamp specified in date parameter is equal or later than the actual file's modified time, the file
-     * would be downloaded.
-     * Otherwise, the download API returns precondition failure (412).
+     * Sets the unmodified since constraints. If the timestamp specified in date
+     * parameter is equal or later than the actual file's modified time, the
+     * file would be downloaded. Otherwise, the download API returns
+     * precondition failure (412).
+     * 
      * @param date
-     *          The timestamp.
+     *            The timestamp.
      */
     public void setUnmodifiedSinceConstraint(Date date) {
         this.unmodifiedSinceConstraint = date;
     }
 
     /**
-     * Gets the modified since constraints.
-     * If the timestamp returned is earlier than the actual file's modified time, the file would be downloaded.
+     * Gets the modified since constraints. If the timestamp returned is earlier
+     * than the actual file's modified time, the file would be downloaded.
      * Otherwise, the download API returns precondition failure (412).
+     * 
      * @return “If-Modified-Since” timestamp.
      */
     public Date getModifiedSinceConstraint() {
@@ -214,11 +246,12 @@ public class GetObjectRequest extends GenericRequest {
     }
 
     /**
-     * Sets the modified since constraints.
-     * If the timestamp returned is earlier than the actual file's modified time, the file would be downloaded.
+     * Sets the modified since constraints. If the timestamp returned is earlier
+     * than the actual file's modified time, the file would be downloaded.
      * Otherwise, the download API returns precondition failure (412).
+     * 
      * @param date
-     *          “If-Modified-Since” parameter.
+     *            “If-Modified-Since” parameter.
      */
     public void setModifiedSinceConstraint(Date date) {
         this.modifiedSinceConstraint = date;
@@ -226,6 +259,7 @@ public class GetObjectRequest extends GenericRequest {
 
     /**
      * Gets the response headers to override.
+     * 
      * @return The response headers to override.
      */
     public ResponseHeaderOverrides getResponseHeaders() {
@@ -234,8 +268,9 @@ public class GetObjectRequest extends GenericRequest {
 
     /**
      * Sets the response headers to override (optional).
+     * 
      * @param responseHeaders
-     *          The response headers to override.
+     *            The response headers to override.
      */
     public void setResponseHeaders(ResponseHeaderOverrides responseHeaders) {
         this.responseHeaders = responseHeaders;
@@ -256,13 +291,13 @@ public class GetObjectRequest extends GenericRequest {
     public void setUseUrlSignature(boolean useUrlSignature) {
         this.useUrlSignature = useUrlSignature;
     }
-    
-    public String getProcess() {
-		return process;
-	}
 
-	public void setProcess(String process) {
-		this.process = process;
-	}
-	
+    public String getProcess() {
+        return process;
+    }
+
+    public void setProcess(String process) {
+        this.process = process;
+    }
+
 }

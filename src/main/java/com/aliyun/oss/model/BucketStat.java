@@ -20,42 +20,44 @@
 package com.aliyun.oss.model;
 
 /**
- * Bucket Stat
- * It contains the current bucket's occupant size and file count.
+ * Bucket Stat It contains the current bucket's occupant size and file count.
  */
 public class BucketStat extends GenericResult {
 
-	public BucketStat(Long storageSize, Long objectCount, Long multipartUploadCount) {
-		this.storageSize = storageSize;
-		this.objectCount = objectCount;
-		this.multipartUploadCount = multipartUploadCount;
-	}
+    public BucketStat(Long storageSize, Long objectCount, Long multipartUploadCount) {
+        this.storageSize = storageSize;
+        this.objectCount = objectCount;
+        this.multipartUploadCount = multipartUploadCount;
+    }
 
-	/**
-	 * Gets the used storage size in bytes.
-	 * @return Bucket used storage size.
-	 */
-	public Long getStorageSize() {
-		return storageSize;
-	}
+    /**
+     * Gets the used storage size in bytes.
+     * 
+     * @return Bucket used storage size.
+     */
+    public Long getStorageSize() {
+        return storageSize;
+    }
 
-	/**
-	 * Gets the object count under the bucket.
-	 * @return Object count
-	 */
-	public Long getObjectCount() {
-		return objectCount;
-	}
+    /**
+     * Gets the object count under the bucket.
+     * 
+     * @return Object count
+     */
+    public Long getObjectCount() {
+        return objectCount;
+    }
 
-	/**
-	 * Gets the unfinished parts uploading count.
-	 * @return The unfinished parts uploading count.
-	 */
-	public Long getMultipartUploadCount() {
-		return multipartUploadCount;
-	}
+    /**
+     * Gets the unfinished parts uploading count.
+     * 
+     * @return The unfinished parts uploading count.
+     */
+    public Long getMultipartUploadCount() {
+        return multipartUploadCount;
+    }
 
-	private Long storageSize; // bytes
-	private Long objectCount;
-	private Long multipartUploadCount;
+    private Long storageSize; // bytes
+    private Long objectCount;
+    private Long multipartUploadCount;
 }

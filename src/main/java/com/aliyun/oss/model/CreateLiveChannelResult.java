@@ -33,6 +33,7 @@ public class CreateLiveChannelResult extends GenericResult {
 
     /**
      * Gets the pushing streaming Urls.
+     * 
      * @return The list of pushing streaming urls.
      */
     public List<String> getPlayUrls() {
@@ -41,15 +42,16 @@ public class CreateLiveChannelResult extends GenericResult {
 
     /**
      * Gets the playback urls.
+     * 
      * @return The playback urls.
      */
     public void setPlayUrls(List<String> playUrls) {
         this.playUrls = playUrls;
     }
-    
+
     // The pushing streaming urls.
     private List<String> publishUrls;
     // The playback urls.
     private List<String> playUrls;
-    
+
 }

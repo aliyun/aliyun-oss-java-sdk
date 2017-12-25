@@ -50,17 +50,18 @@ public abstract class ServiceClient {
     protected ServiceClient(ClientConfiguration config) {
         this.config = config;
     }
-    
+
     public ClientConfiguration getClientConfiguration() {
         return this.config;
     }
 
     /**
-     * Send HTTP request with specified context to OSS and wait for HTTP response.
+     * Send HTTP request with specified context to OSS and wait for HTTP
+     * response.
      */
     public ResponseMessage sendRequest(RequestMessage request, ExecutionContext context)
             throws ServiceException, ClientException {
-        
+
         assertParameterNotNull(request, "request");
         assertParameterNotNull(context, "context");
 
@@ -77,11 +78,11 @@ public abstract class ServiceClient {
         }
     }
 
-    private ResponseMessage sendRequestImpl(RequestMessage request, ExecutionContext context) 
+    private ResponseMessage sendRequestImpl(RequestMessage request, ExecutionContext context)
             throws ClientException, ServiceException {
 
-        RetryStrategy retryStrategy = context.getRetryStrategy() != null ? 
-                context.getRetryStrategy() : this.getDefaultRetryStrategy();
+        RetryStrategy retryStrategy = context.getRetryStrategy() != null ? context.getRetryStrategy()
+                : this.getDefaultRetryStrategy();
 
         // Sign the request if a signer provided.
         if (context.getSigner() != null && !request.isUseUrlSignature()) {
@@ -109,15 +110,19 @@ public abstract class ServiceClient {
                         }
                     }
                 }
-                
-                /* The key four steps to send HTTP requests and receive HTTP responses. */
-                
+
+                /*
+                 * The key four steps to send HTTP requests and receive HTTP
+                 * responses.
+                 */
+
                 // Step 1. Preprocess HTTP request.
                 handleRequest(request, context.getResquestHandlers());
 
-                // Step 2. Build HTTP request with specified request parameters and context.
+                // Step 2. Build HTTP request with specified request parameters
+                // and context.
                 Request httpRequest = buildRequest(request, context);
-                
+
                 // Step 3. Send HTTP request to OSS.
                 long startTime = System.currentTimeMillis();
                 response = sendRequestCore(httpRequest, context);
@@ -125,39 +130,39 @@ public abstract class ServiceClient {
                 if (duration > config.getSlowRequestsThreshold()) {
                     LogUtils.getLog().warn(formatSlowRequestLog(request, response, duration));
                 }
-                
+
                 // Step 4. Preprocess HTTP response.
                 handleResponse(response, context.getResponseHandlers());
-                
+
                 return response;
-            } catch (ServiceException sex) {        
+            } catch (ServiceException sex) {
                 logException("[Server]Unable to execute HTTP request: ", sex);
-                
+
                 // Notice that the response should not be closed in the
                 // finally block because if the request is successful,
                 // the response should be returned to the callers.
                 closeResponseSilently(response);
-                
+
                 if (!shouldRetry(sex, request, response, retries, retryStrategy)) {
                     throw sex;
                 }
             } catch (ClientException cex) {
                 logException("[Client]Unable to execute HTTP request: ", cex);
-                
+
                 closeResponseSilently(response);
-                
+
                 if (!shouldRetry(cex, request, response, retries, retryStrategy)) {
                     throw cex;
-                }                
-            } catch (Exception ex) { 
+                }
+            } catch (Exception ex) {
                 logException("[Unknown]Unable to execute HTTP request: ", ex);
-                
+
                 closeResponseSilently(response);
-                
-                throw new ClientException(COMMON_RESOURCE_MANAGER.getFormattedString(
-                        "ConnectionError", ex.getMessage()), ex);   
+
+                throw new ClientException(
+                        COMMON_RESOURCE_MANAGER.getFormattedString("ConnectionError", ex.getMessage()), ex);
             } finally {
-                retries ++;
+                retries++;
             }
         }
     }
@@ -165,27 +170,25 @@ public abstract class ServiceClient {
     /**
      * Implements the core logic to send requests to Aliyun OSS services.
      */
-    protected abstract ResponseMessage sendRequestCore(Request request, ExecutionContext context)
-            throws IOException;
+    protected abstract ResponseMessage sendRequestCore(Request request, ExecutionContext context) throws IOException;
 
-    private Request buildRequest(RequestMessage requestMessage, ExecutionContext context)
-            throws ClientException {
-        
+    private Request buildRequest(RequestMessage requestMessage, ExecutionContext context) throws ClientException {
+
         Request request = new Request();
         request.setMethod(requestMessage.getMethod());
         request.setUseChunkEncoding(requestMessage.isUseChunkEncoding());
-        
+
         if (requestMessage.isUseUrlSignature()) {
             request.setUrl(requestMessage.getAbsoluteUrl().toString());
             request.setUseUrlSignature(true);
-            
+
             request.setContent(requestMessage.getContent());
             request.setContentLength(requestMessage.getContentLength());
             request.setHeaders(requestMessage.getHeaders());
-            
+
             return request;
         }
-        
+
         request.setHeaders(requestMessage.getHeaders());
         // The header must be converted after the request is signed,
         // otherwise the signature will be incorrect.
@@ -195,9 +198,8 @@ public abstract class ServiceClient {
 
         final String delimiter = "/";
         String uri = requestMessage.getEndpoint().toString();
-        if (!uri.endsWith(delimiter) && 
-                (requestMessage.getResourcePath() == null ||
-                !requestMessage.getResourcePath().startsWith(delimiter))) {
+        if (!uri.endsWith(delimiter) && (requestMessage.getResourcePath() == null
+                || !requestMessage.getResourcePath().startsWith(delimiter))) {
             uri += delimiter;
         }
 
@@ -205,9 +207,8 @@ public abstract class ServiceClient {
             uri += requestMessage.getResourcePath();
         }
 
-        String paramString = HttpUtil.paramToQueryString(requestMessage.getParameters(), 
-                context.getCharset());
-        
+        String paramString = HttpUtil.paramToQueryString(requestMessage.getParameters(), context.getCharset());
+
         /*
          * For all non-POST requests, and any POST requests that already have a
          * payload, we put the encoded params directly in the URI, otherwise,
@@ -231,8 +232,8 @@ public abstract class ServiceClient {
                 request.setContent(content);
                 request.setContentLength(buf.length);
             } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(COMMON_RESOURCE_MANAGER.getFormattedString(
-                        "EncodingFailed", e.getMessage()));
+                throw new RuntimeException(
+                        COMMON_RESOURCE_MANAGER.getFormattedString("EncodingFailed", e.getMessage()));
             }
         } else {
             request.setContent(requestMessage.getContent());
@@ -244,26 +245,25 @@ public abstract class ServiceClient {
 
     private void handleResponse(ResponseMessage response, List<ResponseHandler> responseHandlers)
             throws ServiceException, ClientException {
-        for(ResponseHandler h : responseHandlers) {
+        for (ResponseHandler h : responseHandlers) {
             h.handle(response);
         }
     }
 
-    private void handleRequest(RequestMessage message, List<RequestHandler> resquestHandlers) 
+    private void handleRequest(RequestMessage message, List<RequestHandler> resquestHandlers)
             throws ServiceException, ClientException {
-        for(RequestHandler h : resquestHandlers) {
+        for (RequestHandler h : resquestHandlers) {
             h.handle(message);
         }
     }
 
-    private void pause(int retries, RetryStrategy retryStrategy) 
-            throws ClientException {
-        
-        long delay = retryStrategy.getPauseDelay(retries);        
-        
-        getLog().debug("An retriable error request will be retried after " + delay
-                + "(ms) with attempt times: " + retries);
-        
+    private void pause(int retries, RetryStrategy retryStrategy) throws ClientException {
+
+        long delay = retryStrategy.getPauseDelay(retries);
+
+        getLog().debug(
+                "An retriable error request will be retried after " + delay + "(ms) with attempt times: " + retries);
+
         try {
             Thread.sleep(delay);
         } catch (InterruptedException e) {
@@ -271,8 +271,8 @@ public abstract class ServiceClient {
         }
     }
 
-    private boolean shouldRetry(Exception exception, RequestMessage request, 
-            ResponseMessage response, int retries, RetryStrategy retryStrategy) {
+    private boolean shouldRetry(Exception exception, RequestMessage request, ResponseMessage response, int retries,
+            RetryStrategy retryStrategy) {
 
         if (retries >= config.getMaxErrorRetry()) {
             return false;
@@ -281,12 +281,11 @@ public abstract class ServiceClient {
         if (!request.isRepeatable()) {
             return false;
         }
-        
+
         if (retryStrategy.shouldRetry(exception, request, response, retries)) {
-            getLog().debug("Retrying on " + exception.getClass().getName() + ": "
-                    + exception.getMessage());
+            getLog().debug("Retrying on " + exception.getClass().getName() + ": " + exception.getMessage());
             return true;
-        }       
+        }
         return false;
     }
 
@@ -294,27 +293,26 @@ public abstract class ServiceClient {
         if (response != null) {
             try {
                 response.close();
-            } catch (IOException ioe) { 
-                /* silently close the response. */ 
+            } catch (IOException ioe) {
+                /* silently close the response. */
             }
         }
     }
-    
-    private String formatSlowRequestLog(RequestMessage request, ResponseMessage response, 
-            long useTimesMs) {
-        return String.format("Request cost %d seconds, endpoint %s, resourcePath %s, "
-                + "method %s, statusCode %d, requestId %s.", 
-                useTimesMs / 1000, request.getEndpoint(), request.getResourcePath(), 
-                request.getMethod(), response.getStatusCode(), response.getRequestId());
+
+    private String formatSlowRequestLog(RequestMessage request, ResponseMessage response, long useTimesMs) {
+        return String.format(
+                "Request cost %d seconds, endpoint %s, resourcePath %s, " + "method %s, statusCode %d, requestId %s.",
+                useTimesMs / 1000, request.getEndpoint(), request.getResourcePath(), request.getMethod(),
+                response.getStatusCode(), response.getRequestId());
     }
-    
+
     protected abstract RetryStrategy getDefaultRetryStrategy();
-    
+
     public abstract void shutdown();
-    
+
     /**
-     * Wrapper class based on {@link HttpMessage} that represents HTTP
-     * request message to OSS.
+     * Wrapper class based on {@link HttpMessage} that represents HTTP request
+     * message to OSS.
      */
     public static class Request extends HttpMesssage {
         private String uri;

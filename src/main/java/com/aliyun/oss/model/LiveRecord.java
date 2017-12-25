@@ -22,9 +22,10 @@ package com.aliyun.oss.model;
 import java.util.Date;
 
 public class LiveRecord {
-    
-    public LiveRecord() { }
-    
+
+    public LiveRecord() {
+    }
+
     public LiveRecord(Date startDate, Date endDate, String remoteAddress) {
         super();
         this.startDate = startDate;
@@ -60,6 +61,7 @@ public class LiveRecord {
     private Date startDate;
     // The end time of the pushing streaming.
     private Date endDate;
-    // The pushing streaming's client address---from where the streaming is pushed.
+    // The pushing streaming's client address---from where the streaming is
+    // pushed.
     private String remoteAddress;
 }

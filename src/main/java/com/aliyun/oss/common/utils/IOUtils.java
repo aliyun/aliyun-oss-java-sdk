@@ -40,9 +40,8 @@ import com.aliyun.oss.internal.OSSConstants;
 
 public class IOUtils {
 
-    public static String readStreamAsString(InputStream in, String charset)
-            throws IOException {
-        
+    public static String readStreamAsString(InputStream in, String charset) throws IOException {
+
         if (in == null) {
             return "";
         }
@@ -55,7 +54,7 @@ public class IOUtils {
         try {
             int n = -1;
             reader = new BufferedReader(new InputStreamReader(in, charset));
-            while((n = reader.read(buffer)) != -1) {
+            while ((n = reader.read(buffer)) != -1) {
                 writer.write(buffer, 0, n);
             }
 
@@ -72,14 +71,13 @@ public class IOUtils {
 
         return result;
     }
-    
-    public static byte[] readStreamAsByteArray(InputStream in)
-            throws IOException {
-        
+
+    public static byte[] readStreamAsByteArray(InputStream in) throws IOException {
+
         if (in == null) {
             return new byte[0];
         }
-        
+
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int len = -1;
@@ -94,7 +92,8 @@ public class IOUtils {
         if (inputStream != null) {
             try {
                 inputStream.close();
-            } catch (IOException e) {}
+            } catch (IOException e) {
+            }
         }
     }
 
@@ -102,15 +101,16 @@ public class IOUtils {
         if (outputStream != null) {
             try {
                 outputStream.close();
-            } catch (IOException e) {}
+            } catch (IOException e) {
+            }
         }
     }
-    
+
     public static boolean checkFile(File file) {
         if (file == null) {
             return false;
         }
-        
+
         boolean exists = false;
         boolean isFile = false;
         boolean canRead = false;
@@ -122,24 +122,24 @@ public class IOUtils {
             // Swallow the exception and return false directly.
             return false;
         }
-        
+
         return (exists && isFile && canRead);
     }
-    
+
     public static InputStream newRepeatableInputStream(final InputStream original) throws IOException {
         InputStream repeatable = null;
         if (!original.markSupported()) {
             if (original instanceof FileInputStream) {
-                repeatable = new RepeatableFileInputStream((FileInputStream)original);
+                repeatable = new RepeatableFileInputStream((FileInputStream) original);
             } else {
-                repeatable = new BufferedInputStream(original, OSSConstants.DEFAULT_STREAM_BUFFER_SIZE);                
+                repeatable = new BufferedInputStream(original, OSSConstants.DEFAULT_STREAM_BUFFER_SIZE);
             }
         } else {
             repeatable = original;
         }
         return repeatable;
     }
-    
+
     public static InputStream newRepeatableInputStream(final BoundedInputStream original) throws IOException {
         InputStream repeatable = null;
         if (!original.markSupported()) {
@@ -153,12 +153,12 @@ public class IOUtils {
         }
         return repeatable;
     }
-    
+
     public static Long getCRCValue(InputStream inputStream) {
         if (inputStream instanceof CheckedInputStream) {
             return ((CheckedInputStream) inputStream).getChecksum().getValue();
         }
         return null;
     }
-    
+
 }

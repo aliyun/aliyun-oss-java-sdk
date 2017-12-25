@@ -37,12 +37,13 @@ public class CompleteMultipartUploadResult extends GenericResult implements Call
     private String location;
 
     private String eTag;
-    
+
     /** The callback request's response body */
     private InputStream callbackResponseBody;
 
     /**
      * Gets the url of the target file of this multipart upload.
+     * 
      * @return The url of the target file of this multipart upload.
      */
     public String getLocation() {
@@ -51,8 +52,9 @@ public class CompleteMultipartUploadResult extends GenericResult implements Call
 
     /**
      * Sets the url of the target file of this multipart upload.
+     * 
      * @param location
-     *          The url of the target file of this multipart upload.
+     *            The url of the target file of this multipart upload.
      */
     public void setLocation(String location) {
         this.location = location;
@@ -60,6 +62,7 @@ public class CompleteMultipartUploadResult extends GenericResult implements Call
 
     /**
      * Gets the bucket name of the target file of this multipart upload.
+     * 
      * @return Bucket name.
      */
     public String getBucketName() {
@@ -68,8 +71,9 @@ public class CompleteMultipartUploadResult extends GenericResult implements Call
 
     /**
      * Sets the bucket name of the target file of this multipart upload.
+     * 
      * @param bucketName
-     *          Bucket name.
+     *            Bucket name.
      */
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
@@ -77,6 +81,7 @@ public class CompleteMultipartUploadResult extends GenericResult implements Call
 
     /**
      * Gets the target file's key.
+     * 
      * @return The target file's key.
      */
     public String getKey() {
@@ -85,8 +90,9 @@ public class CompleteMultipartUploadResult extends GenericResult implements Call
 
     /**
      * Sets the target file's key.
+     * 
      * @param key
-     *          The target file's key.
+     *            The target file's key.
      */
     public void setKey(String key) {
         this.key = key;
@@ -94,6 +100,7 @@ public class CompleteMultipartUploadResult extends GenericResult implements Call
 
     /**
      * Gets the ETag of the target file.
+     * 
      * @return ETag of the target file.
      */
     public String getETag() {
@@ -102,16 +109,18 @@ public class CompleteMultipartUploadResult extends GenericResult implements Call
 
     /**
      * Sets the ETag of the target file.
-     * @param etag ETag of the target file.
+     * 
+     * @param etag
+     *            ETag of the target file.
      */
     public void setETag(String etag) {
         this.eTag = etag;
     }
-    
+
     /**
-     * Deprecated.
-     * Gets the callback response body.
-     * The caller needs to close it after usage.
+     * Deprecated. Gets the callback response body. The caller needs to close it
+     * after usage.
+     * 
      * @return The response body.
      */
     @Override
@@ -119,10 +128,12 @@ public class CompleteMultipartUploadResult extends GenericResult implements Call
     public InputStream getCallbackResponseBody() {
         return callbackResponseBody;
     }
-    
+
     /**
      * Sets the callback response body.
-     * @param callbackResponseBody The callback response body.
+     * 
+     * @param callbackResponseBody
+     *            The callback response body.
      */
     @Override
     public void setCallbackResponseBody(InputStream callbackResponseBody) {

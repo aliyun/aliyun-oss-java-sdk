@@ -22,29 +22,29 @@ package com.aliyun.oss.common.utils;
 import static com.aliyun.oss.common.utils.LogUtils.getLog;
 
 public class RangeSpec {
-    
+
     private static final String RANGE_PREFIX = "bytes=";
-    
-    public enum Type { 
-        NORMAL_RANGE, //a-b
-        START_TO, //a-
+
+    public enum Type {
+        NORMAL_RANGE, // a-b
+        START_TO, // a-
         TO_END // -b
     }
 
     private long start;
     private long end;
     private Type type;
-    
+
     public RangeSpec() {
         this(0, 0, Type.NORMAL_RANGE);
     }
-    
+
     public RangeSpec(long start, long end, Type type) {
         this.start = start;
         this.end = end;
         this.type = type;
     }
-    
+
     public long getStart() {
         return start;
     }
@@ -61,15 +61,14 @@ public class RangeSpec {
         if (range == null || range.length != 2) {
             getLog().warn("Invalid range value " + range + ", ignore it and just get entire object");
         }
-        
+
         long start = range[0];
         long end = range[1];
-        
-        if (start < 0 && end < 0 ||
-                (start > 0 && end > 0 && start > end)) {
+
+        if (start < 0 && end < 0 || (start > 0 && end > 0 && start > end)) {
             getLog().warn("Invalid range value [" + start + ", " + end + "], ignore it and just get entire object");
         }
-        
+
         RangeSpec rs;
         if (start < 0) {
             rs = new RangeSpec(-1, end, Type.TO_END);
@@ -78,28 +77,28 @@ public class RangeSpec {
         } else {
             rs = new RangeSpec(start, end, Type.NORMAL_RANGE);
         }
-        
+
         return rs;
     }
-    
+
     @Override
     public String toString() {
         String formatted = null;
-        
+
         switch (type) {
         case NORMAL_RANGE:
             formatted = String.format("%s%d-%d", RANGE_PREFIX, start, end);
             break;
-            
+
         case START_TO:
             formatted = String.format("%s%d-", RANGE_PREFIX, start);
             break;
-        
+
         case TO_END:
             formatted = String.format("%s-%d", RANGE_PREFIX, end);
             break;
         }
-        
+
         return formatted;
     }
 }

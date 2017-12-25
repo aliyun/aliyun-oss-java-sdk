@@ -20,12 +20,12 @@
 package com.aliyun.oss.model;
 
 public class ProcessObjectRequest extends GenericRequest {
-    
+
     public ProcessObjectRequest(String bucketName, String key, String process) {
         super(bucketName, key);
         this.process = process;
     }
-    
+
     public String getProcess() {
         return process;
     }

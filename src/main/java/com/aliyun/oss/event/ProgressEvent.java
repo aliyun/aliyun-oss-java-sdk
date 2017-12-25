@@ -29,10 +29,10 @@ public class ProgressEvent {
 
     public ProgressEvent(ProgressEventType eventType, long bytes) {
         if (eventType == null) {
-            throw new IllegalArgumentException("eventType must not be null.");            
+            throw new IllegalArgumentException("eventType must not be null.");
         }
         if (bytes < 0) {
-            throw new IllegalArgumentException("bytes transferred must be non-negative");            
+            throw new IllegalArgumentException("bytes transferred must be non-negative");
         }
         this.eventType = eventType;
         this.bytes = bytes;
@@ -45,7 +45,7 @@ public class ProgressEvent {
     public ProgressEventType getEventType() {
         return eventType;
     }
-    
+
     @Override
     public String toString() {
         return eventType + ", bytes: " + bytes;

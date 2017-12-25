@@ -22,13 +22,14 @@ package com.aliyun.oss.model;
 import com.aliyun.oss.HttpMethod;
 
 public class OptionsRequest extends GenericRequest {
-    
+
     private String origin;
     private HttpMethod requestMethod;
     private String requestHeaders;
 
-    public OptionsRequest() {}
-    
+    public OptionsRequest() {
+    }
+
     public OptionsRequest(String bucketName, String key) {
         super(bucketName, key);
     }
@@ -40,7 +41,7 @@ public class OptionsRequest extends GenericRequest {
     public void setOrigin(String origin) {
         this.origin = origin;
     }
-    
+
     public OptionsRequest withOrigin(String origin) {
         setOrigin(origin);
         return this;
@@ -53,7 +54,7 @@ public class OptionsRequest extends GenericRequest {
     public void setRequestMethod(HttpMethod requestMethod) {
         this.requestMethod = requestMethod;
     }
-    
+
     public OptionsRequest withRequestMethod(HttpMethod requestMethod) {
         setRequestMethod(requestMethod);
         return this;
@@ -66,12 +67,12 @@ public class OptionsRequest extends GenericRequest {
     public void setRequestHeaders(String requestHeaders) {
         this.requestHeaders = requestHeaders;
     }
-    
+
     public OptionsRequest withRequestHeaders(String requestHeaders) {
         setRequestHeaders(requestHeaders);
         return this;
     }
-    
+
     @Deprecated
     public String getObjectName() {
         return this.getKey();

@@ -21,18 +21,17 @@ package com.aliyun.oss.model;
 
 public class ImageProcess {
 
-    public ImageProcess(String compliedHost, Boolean sourceFileProtect,
-            String sourceFileProtectSuffix, String styleDelimiters) {
+    public ImageProcess(String compliedHost, Boolean sourceFileProtect, String sourceFileProtectSuffix,
+            String styleDelimiters) {
         this.compliedHost = compliedHost;
         this.sourceFileProtect = sourceFileProtect;
         this.sourceFileProtectSuffix = sourceFileProtectSuffix;
         this.styleDelimiters = styleDelimiters;
         this.supportAtStyle = null;
     }
-    
-    public ImageProcess(String compliedHost, Boolean sourceFileProtect,
-            String sourceFileProtectSuffix, String styleDelimiters, 
-            Boolean supportAtStyle) {
+
+    public ImageProcess(String compliedHost, Boolean sourceFileProtect, String sourceFileProtectSuffix,
+            String styleDelimiters, Boolean supportAtStyle) {
         this.compliedHost = compliedHost;
         this.sourceFileProtect = sourceFileProtect;
         this.sourceFileProtectSuffix = sourceFileProtectSuffix;
@@ -79,16 +78,16 @@ public class ImageProcess {
     public void setVersion(Integer version) {
         this.version = version;
     }
-    
-	public Boolean isSupportAtStyle() {
-		return supportAtStyle;
-	}
 
-	public void setSupportAtStyle(Boolean supportAtStyle) {
-		this.supportAtStyle = supportAtStyle;
-	}
+    public Boolean isSupportAtStyle() {
+        return supportAtStyle;
+    }
 
-	// Img表示设置的样式分隔符，只有Img能用；Both表示oss也能用Img的样式分隔符
+    public void setSupportAtStyle(Boolean supportAtStyle) {
+        this.supportAtStyle = supportAtStyle;
+    }
+
+    // Img表示设置的样式分隔符，只有Img能用；Both表示oss也能用Img的样式分隔符
     private String compliedHost;
     // 是否开启原图保护
     private Boolean sourceFileProtect;
@@ -100,5 +99,5 @@ public class ImageProcess {
     private Integer version;
     // 用户是否能够通过OSS域名使用老版图片处理接口，@格式。默认Disabled
     private Boolean supportAtStyle;
-    
+
 }

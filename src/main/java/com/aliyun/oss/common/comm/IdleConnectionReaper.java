@@ -28,16 +28,17 @@ import java.util.concurrent.TimeUnit;
 import org.apache.http.conn.HttpClientConnectionManager;
 
 /**
- * A daemon thread used to periodically check connection pools for idle connections.
+ * A daemon thread used to periodically check connection pools for idle
+ * connections.
  */
 public final class IdleConnectionReaper extends Thread {
     private static final int REAP_INTERVAL_MILLISECONDS = 5 * 1000;
     private static final ArrayList<HttpClientConnectionManager> connectionManagers = new ArrayList<HttpClientConnectionManager>();
 
     private static IdleConnectionReaper instance;
-    
+
     private static long idleConnectionTime = 60 * 1000;
-    
+
     private volatile boolean shuttingDown;
 
     private IdleConnectionReaper() {
@@ -59,7 +60,7 @@ public final class IdleConnectionReaper extends Thread {
             shutdown();
         return b;
     }
-    
+
     private void markShuttingDown() {
         shuttingDown = true;
     }
@@ -72,16 +73,17 @@ public final class IdleConnectionReaper extends Thread {
                 getLog().debug("Shutting down reaper thread.");
                 return;
             }
-            
+
             try {
                 Thread.sleep(REAP_INTERVAL_MILLISECONDS);
             } catch (InterruptedException e) {
             }
-            
+
             try {
                 List<HttpClientConnectionManager> connectionManagers = null;
                 synchronized (IdleConnectionReaper.class) {
-                    connectionManagers = (List<HttpClientConnectionManager>)IdleConnectionReaper.connectionManagers.clone();
+                    connectionManagers = (List<HttpClientConnectionManager>) IdleConnectionReaper.connectionManagers
+                            .clone();
                 }
                 for (HttpClientConnectionManager connectionManager : connectionManagers) {
                     try {
@@ -92,7 +94,7 @@ public final class IdleConnectionReaper extends Thread {
                     }
                 }
             } catch (Throwable t) {
-                getLog().debug("Reaper thread: ",  t);
+                getLog().debug("Reaper thread: ", t);
             }
         }
     }
@@ -108,12 +110,12 @@ public final class IdleConnectionReaper extends Thread {
         return false;
     }
 
-    public static synchronized int size() { 
-        return connectionManagers.size(); 
+    public static synchronized int size() {
+        return connectionManagers.size();
     }
-    
+
     public static synchronized void setIdleConnectionTime(long idletime) {
         idleConnectionTime = idletime;
     }
-    
+
 }

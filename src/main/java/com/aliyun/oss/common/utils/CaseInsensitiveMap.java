@@ -29,7 +29,7 @@ import java.util.Set;
 public class CaseInsensitiveMap<V> implements Map<String, V> {
 
     private Map<String, V> wrappedMap;
-    
+
     public CaseInsensitiveMap() {
         this(new HashMap<String, V>());
     }
@@ -69,7 +69,7 @@ public class CaseInsensitiveMap<V> implements Map<String, V> {
     }
 
     public void putAll(Map<? extends String, ? extends V> m) {
-        for(java.util.Map.Entry<? extends String, ? extends V> entry : m.entrySet()) {
+        for (java.util.Map.Entry<? extends String, ? extends V> entry : m.entrySet()) {
             this.put(entry.getKey(), entry.getValue());
         }
     }

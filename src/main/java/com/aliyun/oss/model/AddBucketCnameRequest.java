@@ -20,13 +20,13 @@
 package com.aliyun.oss.model;
 
 public class AddBucketCnameRequest extends GenericRequest {
-    
+
     private String domain;
-    
+
     public AddBucketCnameRequest(String bucketName) {
         super(bucketName);
     }
-    
+
     public String getDomain() {
         return domain;
     }
@@ -34,7 +34,7 @@ public class AddBucketCnameRequest extends GenericRequest {
     public void setDomain(String domain) {
         this.domain = domain;
     }
-    
+
     public AddBucketCnameRequest withDomain(String domain) {
         setDomain(domain);
         return this;

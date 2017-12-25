@@ -26,17 +26,19 @@ import java.io.InputStream;
 /**
  * The entity class for representing an object in OSS.
  * <p>
- * In OSS, every file is an OSSObject and every single file should be less than 5G for using Simple upload, Form upload
- * and Append Upload. Only multipart upload could upload a single file more than 5G.
- * Any object has key, data and user metadata. The key is the object's name and the data is object's file content.
- * The user metadata is a dictionary of key-value entries to store some custom data about the object.
+ * In OSS, every file is an OSSObject and every single file should be less than
+ * 5G for using Simple upload, Form upload and Append Upload. Only multipart
+ * upload could upload a single file more than 5G. Any object has key, data and
+ * user metadata. The key is the object's name and the data is object's file
+ * content. The user metadata is a dictionary of key-value entries to store some
+ * custom data about the object.
  * </p>
  * <p>
  * Object naming rules
  * <ul>
- *  <li>use UTF-8 encoding</li>
- *  <li>Length is between 1 to 1023</li>
- *  <li>Could not have slash or backslash</li>
+ * <li>use UTF-8 encoding</li>
+ * <li>Length is between 1 to 1023</li>
+ * <li>Could not have slash or backslash</li>
  * </ul>
  * </p>
  *
@@ -57,6 +59,7 @@ public class OSSObject extends GenericResult implements Closeable {
 
     /**
      * Gets the object's metadata
+     * 
      * @return Object's metadata in（{@link ObjectMetadata}
      */
     public ObjectMetadata getObjectMetadata() {
@@ -65,8 +68,9 @@ public class OSSObject extends GenericResult implements Closeable {
 
     /**
      * Sets the object's metadata.
+     * 
      * @param metadata
-     *          Object's metadata.
+     *            Object's metadata.
      */
     public void setObjectMetadata(ObjectMetadata metadata) {
         this.metadata = metadata;
@@ -74,6 +78,7 @@ public class OSSObject extends GenericResult implements Closeable {
 
     /**
      * Get's the object's content in {@link InputStream}.
+     * 
      * @return The object's content in {@link InputStream}.
      */
     public InputStream getObjectContent() {
@@ -82,8 +87,9 @@ public class OSSObject extends GenericResult implements Closeable {
 
     /**
      * Sets the object's content in {@link InputStream}.
+     * 
      * @param objectContent
-     *          The object's content in {@link InputStream}.
+     *            The object's content in {@link InputStream}.
      */
     public void setObjectContent(InputStream objectContent) {
         this.objectContent = objectContent;
@@ -91,6 +97,7 @@ public class OSSObject extends GenericResult implements Closeable {
 
     /**
      * Gets the object's bucket name.
+     * 
      * @return The object's bucket name.
      */
     public String getBucketName() {
@@ -99,8 +106,9 @@ public class OSSObject extends GenericResult implements Closeable {
 
     /**
      * Sets the object's bucket name.
+     * 
      * @param bucketName
-     *          The object's bucket name.
+     *            The object's bucket name.
      */
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
@@ -108,6 +116,7 @@ public class OSSObject extends GenericResult implements Closeable {
 
     /**
      * Gets the object's key.
+     * 
      * @return Object Key.
      */
     public String getKey() {
@@ -116,32 +125,33 @@ public class OSSObject extends GenericResult implements Closeable {
 
     /**
      * Sets the object's key.
+     * 
      * @param key
-     *          Object Key.
+     *            Object Key.
      */
     public void setKey(String key) {
         this.key = key;
     }
-    
+
     @Override
     public void close() throws IOException {
         if (objectContent != null) {
             objectContent.close();
         }
     }
-    
+
     /**
-     * Forcefully close the response. The remaining data in the server will not be downloaded.
+     * Forcefully close the response. The remaining data in the server will not
+     * be downloaded.
+     * 
      * @throws IOException
      */
     public void forcedClose() throws IOException {
-    	this.response.abort();
+        this.response.abort();
     }
-    
+
     @Override
     public String toString() {
-        return "OSSObject [key=" + getKey()
-            + ",bucket=" + (bucketName == null ? "<Unknown>" : bucketName)
-            + "]";
+        return "OSSObject [key=" + getKey() + ",bucket=" + (bucketName == null ? "<Unknown>" : bucketName) + "]";
     }
 }

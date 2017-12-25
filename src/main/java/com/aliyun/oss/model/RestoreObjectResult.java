@@ -23,7 +23,7 @@ package com.aliyun.oss.model;
  * Successful response of restore object operation.
  */
 public class RestoreObjectResult extends GenericResult {
- 
+
     public RestoreObjectResult(int statusCode) {
         super();
         this.statusCode = statusCode;
@@ -36,6 +36,6 @@ public class RestoreObjectResult extends GenericResult {
     public void setStatusCode(int statusCode) {
         this.statusCode = statusCode;
     }
-    
+
     private int statusCode;
 }

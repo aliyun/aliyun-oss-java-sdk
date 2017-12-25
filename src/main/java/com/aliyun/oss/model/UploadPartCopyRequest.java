@@ -24,13 +24,13 @@ import java.util.Date;
 import java.util.List;
 
 public class UploadPartCopyRequest extends WebServiceRequest {
-    
+
     private String bucketName;
-    
+
     private String key;
-    
+
     private String sourceBucketName;
-    
+
     private String sourceKey;
 
     private String uploadId;
@@ -40,9 +40,9 @@ public class UploadPartCopyRequest extends WebServiceRequest {
     private Long partSize;
 
     private String md5Digest;
-    
-    private Long beginIndex; 
-    
+
+    private Long beginIndex;
+
     private List<String> matchingETagConstraints = new ArrayList<String>();
 
     private List<String> nonmatchingEtagConstraints = new ArrayList<String>();
@@ -50,29 +50,28 @@ public class UploadPartCopyRequest extends WebServiceRequest {
     private Date unmodifiedSinceConstraint;
 
     private Date modifiedSinceConstraint;
-    
-    public UploadPartCopyRequest() {}
-    
-    public UploadPartCopyRequest(String sourceBucketName, String sourceKey, 
-            String targetBucketName, String targetKey) {
+
+    public UploadPartCopyRequest() {
+    }
+
+    public UploadPartCopyRequest(String sourceBucketName, String sourceKey, String targetBucketName, String targetKey) {
         setBucketName(targetBucketName);
         setKey(targetKey);
         setSourceBucketName(sourceBucketName);
         setSourceKey(sourceKey);
     }
-    
-    public UploadPartCopyRequest(String sourceBucketName, String sourceKey, 
-            String targetBucketName, String targetKey, String uploadId) {
+
+    public UploadPartCopyRequest(String sourceBucketName, String sourceKey, String targetBucketName, String targetKey,
+            String uploadId) {
         this.bucketName = targetBucketName;
         this.key = targetKey;
         this.sourceBucketName = sourceBucketName;
         this.sourceKey = sourceKey;
         this.uploadId = uploadId;
     }
-    
-    public UploadPartCopyRequest(String sourceBucketName, String sourceKey, 
-            String targetBucketName, String targetKey, String uploadId,
-             int partNumber, Long beginIndex, Long partSize) {
+
+    public UploadPartCopyRequest(String sourceBucketName, String sourceKey, String targetBucketName, String targetKey,
+            String uploadId, int partNumber, Long beginIndex, Long partSize) {
         this.bucketName = targetBucketName;
         this.key = targetKey;
         this.sourceBucketName = sourceBucketName;
@@ -82,9 +81,10 @@ public class UploadPartCopyRequest extends WebServiceRequest {
         this.beginIndex = beginIndex;
         this.partSize = partSize;
     }
-    
+
     /**
      * Gets the {@link Bucket} name.
+     * 
      * @return Bucket name.
      */
     public String getBucketName() {
@@ -93,8 +93,9 @@ public class UploadPartCopyRequest extends WebServiceRequest {
 
     /**
      * Sets the {@link Bucket} name.
+     * 
      * @param bucketName
-     *          Bucket name.
+     *            Bucket name.
      */
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
@@ -102,6 +103,7 @@ public class UploadPartCopyRequest extends WebServiceRequest {
 
     /**
      * Gets the {@link OSSObject} key.
+     * 
      * @return Object key.
      */
     public String getKey() {
@@ -110,8 +112,9 @@ public class UploadPartCopyRequest extends WebServiceRequest {
 
     /**
      * Sets the {@link OSSObject} key.
+     * 
      * @param key
-     *          Object key。
+     *            Object key。
      */
     public void setKey(String key) {
         this.key = key;
@@ -119,6 +122,7 @@ public class UploadPartCopyRequest extends WebServiceRequest {
 
     /**
      * Gets the multipart upload Id.
+     * 
      * @return The multipart upload Id.
      */
     public String getUploadId() {
@@ -127,18 +131,21 @@ public class UploadPartCopyRequest extends WebServiceRequest {
 
     /**
      * Sets the multipart upload Id.
+     * 
      * @param uploadId
-     *          The multipart upload Id.
+     *            The multipart upload Id.
      */
     public void setUploadId(String uploadId) {
         this.uploadId = uploadId;
     }
 
     /**
-     * Gets the part number.
-     * For every part uploading, it has a part number which is in 1 to 10000 range.
-     * Given the upload Id, the part number identified the part and its position in the target file.
-     * If uploading the part with an existing part number, the existing part with the part number would be overwritten.
+     * Gets the part number. For every part uploading, it has a part number
+     * which is in 1 to 10000 range. Given the upload Id, the part number
+     * identified the part and its position in the target file. If uploading the
+     * part with an existing part number, the existing part with the part number
+     * would be overwritten.
+     * 
      * @return The part number.
      */
     public int getPartNumber() {
@@ -146,20 +153,23 @@ public class UploadPartCopyRequest extends WebServiceRequest {
     }
 
     /**
-     * Sets the part number.
-     * For every part uploading, it has a part number which is in 1 to 10000 range.
-     * Given the upload Id, the part number identified the part and its position in the target file.
-     * If uploading the part with an existing part number, the existing part with the part number would be overwritten.
+     * Sets the part number. For every part uploading, it has a part number
+     * which is in 1 to 10000 range. Given the upload Id, the part number
+     * identified the part and its position in the target file. If uploading the
+     * part with an existing part number, the existing part with the part number
+     * would be overwritten.
+     * 
      * @param partNumber
-     *          The part number.
+     *            The part number.
      */
     public void setPartNumber(int partNumber) {
         this.partNumber = partNumber;
     }
 
     /**
-     * Gets the part's data size in bytes.
-     * The minimal size for a part is 5MB except the last part.
+     * Gets the part's data size in bytes. The minimal size for a part is 5MB
+     * except the last part.
+     * 
      * @return Part's data size in bytes.
      */
     public Long getPartSize() {
@@ -167,10 +177,11 @@ public class UploadPartCopyRequest extends WebServiceRequest {
     }
 
     /**
-     * Sets the part's data size in bytes.
-     * The minimal size for a part is 5MB except the last part.
+     * Sets the part's data size in bytes. The minimal size for a part is 5MB
+     * except the last part.
+     * 
      * @param partSize
-     *          Part's data size in bytes.
+     *            Part's data size in bytes.
      */
     public void setPartSize(Long partSize) {
         this.partSize = partSize;
@@ -178,6 +189,7 @@ public class UploadPartCopyRequest extends WebServiceRequest {
 
     /**
      * Gets the part data's MD5 value.
+     * 
      * @return The part data's MD5 value.
      */
     public String getMd5Digest() {
@@ -186,8 +198,9 @@ public class UploadPartCopyRequest extends WebServiceRequest {
 
     /**
      * Sets the part data's MD5 value.
+     * 
      * @param md5Digest
-     *          The part data's MD5 value.
+     *            The part data's MD5 value.
      */
     public void setMd5Digest(String md5Digest) {
         this.md5Digest = md5Digest;
@@ -216,7 +229,7 @@ public class UploadPartCopyRequest extends WebServiceRequest {
     public void setBeginIndex(Long beginIndex) {
         this.beginIndex = beginIndex;
     }
-    
+
     public List<String> getMatchingETagConstraints() {
         return matchingETagConstraints;
     }
@@ -227,7 +240,7 @@ public class UploadPartCopyRequest extends WebServiceRequest {
             this.matchingETagConstraints.addAll(matchingETagConstraints);
         }
     }
-    
+
     public void clearMatchingETagConstraints() {
         this.matchingETagConstraints.clear();
     }
@@ -242,7 +255,7 @@ public class UploadPartCopyRequest extends WebServiceRequest {
             this.nonmatchingEtagConstraints.addAll(nonmatchingEtagConstraints);
         }
     }
-    
+
     public void clearNonmatchingETagConstraints() {
         this.nonmatchingEtagConstraints.clear();
     }

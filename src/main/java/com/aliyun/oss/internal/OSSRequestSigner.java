@@ -28,7 +28,7 @@ import com.aliyun.oss.common.comm.RequestMessage;
 public class OSSRequestSigner implements RequestSigner {
 
     private String httpMethod;
-    
+
     /* Note that resource path should not have been url-encoded. */
     private String resourcePath;
     private Credentials creds;
@@ -48,6 +48,6 @@ public class OSSRequestSigner implements RequestSigner {
             String canonicalString = SignUtils.buildCanonicalString(httpMethod, resourcePath, request, null);
             String signature = ServiceSignature.create().computeSignature(secretAccessKey, canonicalString);
             request.addHeader(OSSHeaders.AUTHORIZATION, OSSUtils.composeRequestAuthorization(accessKeyId, signature));
-        } 
+        }
     }
 }

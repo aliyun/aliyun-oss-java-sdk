@@ -28,41 +28,40 @@ import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.model.WebServiceRequest;
 
 /**
- * Represent HTTP requests sent to OSS. 
+ * Represent HTTP requests sent to OSS.
  */
 public class RequestMessage extends HttpMesssage {
 
     /* The resource path being requested */
     private String resourcePath;
-    
+
     /* The service endpoint to which this request should be sent */
     private URI endpoint;
-    
+
     /* The HTTP method to use when sending this request */
     private HttpMethod method = HttpMethod.GET;
-    
+
     /* Use a LinkedHashMap to preserve the insertion order. */
     private Map<String, String> parameters = new LinkedHashMap<String, String>();
-    
+
     /* The absolute url to which the request should be sent */
     private URL absoluteUrl;
-    
+
     /* Indicate whether using url signature */
     private boolean useUrlSignature = false;
-    
+
     /* Indicate whether using chunked encoding */
     private boolean useChunkEncoding = false;
-    
+
     /* The original request provided by user */
     private final WebServiceRequest originalRequest;
 
     public RequestMessage() {
         this(null);
     }
-    
+
     public RequestMessage(WebServiceRequest originalRequest) {
-        this.originalRequest = (originalRequest == null) ?
-                WebServiceRequest.NOOP : originalRequest;
+        this.originalRequest = (originalRequest == null) ? WebServiceRequest.NOOP : originalRequest;
     }
 
     public HttpMethod getMethod() {
@@ -107,18 +106,17 @@ public class RequestMessage extends HttpMesssage {
     public void removeParameter(String key) {
         this.parameters.remove(key);
     }
-    
+
     /**
-     * Indicate whether the request should be repeatedly sent. 
+     * Indicate whether the request should be repeatedly sent.
      */
     public boolean isRepeatable() {
         return this.getContent() == null || this.getContent().markSupported();
     }
- 
+
     public String toString() {
-       return "Endpoint: " + this.getEndpoint().getHost() 
-               + ", ResourcePath: " + this.getResourcePath() 
-               + ", Headers:" + this.getHeaders();
+        return "Endpoint: " + this.getEndpoint().getHost() + ", ResourcePath: " + this.getResourcePath() + ", Headers:"
+                + this.getHeaders();
     }
 
     public URL getAbsoluteUrl() {

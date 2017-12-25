@@ -27,14 +27,16 @@ public interface Grantee {
 
     /**
      * Gets the grantee's ID.
+     * 
      * @return The grantee's ID.
      */
     public String getIdentifier();
 
     /**
      * Sets the grantee's ID.
+     * 
      * @param id
-     *          The grantee's ID.
+     *            The grantee's ID.
      */
     public void setIdentifier(String id);
 }

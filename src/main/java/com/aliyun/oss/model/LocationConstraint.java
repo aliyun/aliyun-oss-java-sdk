@@ -29,17 +29,17 @@ public class LocationConstraint {
      * Qingdao datacenter.
      */
     public static final String OSS_CN_QINGDAO = "oss-cn-qingdao";
- 
+
     /**
      * Beijing Datacenter.
      */
     public static final String OSS_CN_BEIJING = "oss-cn-beijing";
- 
+
     /**
      * Hongkong Datacenter.
      */
     public static final String OSS_CN_HONGKONG = "oss-cn-hongkong";
- 
+
     /**
      * Shenzhen Datacenter.
      */

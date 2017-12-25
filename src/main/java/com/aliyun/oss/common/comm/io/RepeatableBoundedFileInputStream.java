@@ -29,13 +29,13 @@ import java.nio.channels.FileChannel;
 import com.aliyun.oss.ClientException;
 
 public class RepeatableBoundedFileInputStream extends InputStream {
-    
+
     private BoundedInputStream bis = null;
     private FileChannel fileChannel = null;
     private long markPos = 0;
-    
+
     public RepeatableBoundedFileInputStream(BoundedInputStream bis) throws IOException {
-        FileInputStream fin = (FileInputStream)bis.getWrappedInputStream();
+        FileInputStream fin = (FileInputStream) bis.getWrappedInputStream();
         this.bis = bis;
         this.fileChannel = fin.getChannel();
         this.markPos = fileChannel.position();
@@ -84,6 +84,5 @@ public class RepeatableBoundedFileInputStream extends InputStream {
     public InputStream getWrappedInputStream() {
         return this.bis;
     }
- 
-}
 
+}

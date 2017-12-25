@@ -23,46 +23,50 @@ package com.aliyun.oss.model;
  * The enum of {@link OSSObject}'s access control permission.
  */
 public enum ObjectPermission {
-    
+
     /**
-     * Private object. Only the owner has the full control of the object.
-     * Other users don't have access permission unless they're explicitly granted with some permission.
+     * Private object. Only the owner has the full control of the object. Other
+     * users don't have access permission unless they're explicitly granted with
+     * some permission.
      */
     Private("private"),
-    
+
     /**
-     * Owner has the full control of the object.
-     * Other users only have read access.
+     * Owner has the full control of the object. Other users only have read
+     * access.
      */
     PublicRead("public-read"),
-    
+
     /**
-     * The object is public to everyone and all users have read write permission.
+     * The object is public to everyone and all users have read write
+     * permission.
      */
     PublicReadWrite("public-read-write"),
-    
+
     /**
-     * The object's ACL inherits the bucket's ACL. For example, if the bucket is private, then the object is also private.
+     * The object's ACL inherits the bucket's ACL. For example, if the bucket is
+     * private, then the object is also private.
      */
     Default("default"),
-    
+
     /**
-     * The object's ACL is unknown, which indicates something not right about the object. Please contact OSS support for
-     * more information when this happens.
+     * The object's ACL is unknown, which indicates something not right about
+     * the object. Please contact OSS support for more information when this
+     * happens.
      */
     Unknown("");
-    
+
     private String permissionString;
-    
+
     private ObjectPermission(String permissionString) {
         this.permissionString = permissionString;
     }
-    
+
     @Override
     public String toString() {
         return permissionString;
     }
-    
+
     public static ObjectPermission parsePermission(String str) {
         final ObjectPermission[] knownPermissions = { Private, PublicRead, PublicReadWrite, Default };
         for (ObjectPermission permission : knownPermissions) {
@@ -70,7 +74,7 @@ public enum ObjectPermission {
                 return permission;
             }
         }
-        
+
         return Unknown;
     }
 }

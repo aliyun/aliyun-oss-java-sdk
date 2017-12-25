@@ -20,28 +20,28 @@ package com.aliyun.oss.model;
  */
 
 /**
- * A generic request that contains some basic request options, such as
- * udf name and so on.
+ * A generic request that contains some basic request options, such as udf name
+ * and so on.
  */
 public class UdfGenericRequest extends WebServiceRequest {
-        
+
     public UdfGenericRequest() {
-		super();
-	}
-    
-	public UdfGenericRequest(String name) {
-		super();
-		this.name = name;
-	}
+        super();
+    }
 
-	public String getName() {
-		return name;
-	}
+    public UdfGenericRequest(String name) {
+        super();
+        this.name = name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	private String name;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    private String name;
 
 }
