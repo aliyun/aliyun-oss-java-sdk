@@ -385,6 +385,16 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public BucketMetadata getBucketMetadata(String bucketName) throws OSSException, ClientException {
+        return this.getBucketMetadata(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public BucketMetadata getBucketMetadata(GenericRequest genericRequest) throws OSSException, ClientException {
+        return bucketOperation.getBucketMetadata(genericRequest);
+    }
+
+    @Override
     public void setBucketReferer(String bucketName, BucketReferer referer) throws OSSException, ClientException {
         this.setBucketReferer(new SetBucketRefererRequest(bucketName, referer));
     }

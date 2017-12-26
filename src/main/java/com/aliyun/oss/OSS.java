@@ -178,6 +178,27 @@ public interface OSS {
     public AccessControlList getBucketAcl(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
+     * Gets the metadata of {@link Bucket}.
+     * 
+     * @param bucketName
+     *            Bucket name.
+     *
+     * @return The {@link BucketMetadata} instance.
+     */
+    public BucketMetadata getBucketMetadata(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Gets all the metadata of {@link Bucket}.
+     * 
+     * @param genericRequest
+     *            Generic request which specifies the bucket name.
+     *
+     * @return The {@link BucketMetadata} instance.
+     *
+     */
+    public BucketMetadata getBucketMetadata(GenericRequest genericRequest) throws OSSException, ClientException;
+
+    /**
      * Sets the http referer on the {@link Bucket} instance specified by the
      * bucket name.
      * 
