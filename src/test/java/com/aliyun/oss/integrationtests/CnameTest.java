@@ -30,7 +30,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.aliyun.oss.ClientConfiguration;
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 
 @Ignore
 public class CnameTest {
@@ -58,7 +59,7 @@ public class CnameTest {
         Assert.assertTrue(currentExcludeList.contains("aliyun-inc.com"));
         Assert.assertTrue(currentExcludeList.contains("aliyun.com"));
         
-        OSSClient client = new OSSClient(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET, cc);
+        OSS client = new OSSClientBuilder().build(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET, cc);
         // Do some operations with client here...
     }
 

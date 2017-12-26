@@ -152,6 +152,6 @@ public class OSSClientArgCheckTest {
     }
 
     private static OSS getOSSClient(){
-        return new OSSClient("http://localhost", "id", "key");
+        return new OSSClientBuilder().build("http://localhost", "id", "key");
     }
 }
