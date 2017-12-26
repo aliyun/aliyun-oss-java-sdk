@@ -126,6 +126,7 @@ public class OSSClient implements OSS {
      * @param secretAccessKey
      *            Secret Access Key.
      */
+    @Deprecated
     public OSSClient(String endpoint, String accessKeyId, String secretAccessKey) {
         this(endpoint, new DefaultCredentialProvider(accessKeyId, secretAccessKey), null);
     }
@@ -143,6 +144,7 @@ public class OSSClient implements OSS {
      * @param securityToken
      *            Security Token from STS.
      */
+    @Deprecated
     public OSSClient(String endpoint, String accessKeyId, String secretAccessKey, String securityToken) {
         this(endpoint, new DefaultCredentialProvider(accessKeyId, secretAccessKey, securityToken), null);
     }
@@ -161,6 +163,7 @@ public class OSSClient implements OSS {
      *            A {@link ClientConfiguration} instance. The method would use
      *            default configuration if it's null.
      */
+    @Deprecated
     public OSSClient(String endpoint, String accessKeyId, String secretAccessKey, ClientConfiguration config) {
         this(endpoint, new DefaultCredentialProvider(accessKeyId, secretAccessKey), config);
     }
@@ -182,6 +185,7 @@ public class OSSClient implements OSS {
      *            A {@link ClientConfiguration} instance. The method would use
      *            default configuration if it's null.
      */
+    @Deprecated
     public OSSClient(String endpoint, String accessKeyId, String secretAccessKey, String securityToken,
             ClientConfiguration config) {
         this(endpoint, new DefaultCredentialProvider(accessKeyId, secretAccessKey, securityToken), config);
@@ -197,6 +201,7 @@ public class OSSClient implements OSS {
      *            Credentials provider which has access key Id and access Key
      *            secret.
      */
+    @Deprecated
     public OSSClient(String endpoint, CredentialsProvider credsProvider) {
         this(endpoint, credsProvider, null);
     }

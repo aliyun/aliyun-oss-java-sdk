@@ -25,8 +25,8 @@ import static com.aliyun.oss.integrationtests.TestUtils.genFixedLengthInputStrea
 import junit.framework.Assert;
 
 import org.junit.Test;
-
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.GetObjectRequest;
@@ -89,7 +89,7 @@ public class GetSimplifiedObjectMetaTest extends TestBase {
         }
         
         // SignatureDoesNotMatch 
-        OSSClient client = new OSSClient(TestConfig.OSS_TEST_ENDPOINT, TestConfig.OSS_TEST_ACCESS_KEY_ID, 
+        OSS client = new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT, TestConfig.OSS_TEST_ACCESS_KEY_ID, 
                 TestConfig.OSS_TEST_ACCESS_KEY_SECRET + " ");
         try {
             client.getSimplifiedObjectMeta(bucketName, nonexistentKey);

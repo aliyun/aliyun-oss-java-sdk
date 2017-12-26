@@ -34,7 +34,9 @@ import org.junit.Test;
 import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.ClientErrorCode;
 import com.aliyun.oss.ClientException;
+import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.DownloadFileRequest;
@@ -56,6 +58,7 @@ public class RequestTimeoutTest extends TestBase {
     private final static int requestTimeout = 10 * 1000;
     private static OSSClient ossClient;
     
+    @SuppressWarnings("deprecation")
     @Before
     public void setUp() throws Exception {
         long ticks = new Date().getTime() / 1000 + new Random().nextInt(5000);
@@ -330,7 +333,7 @@ public class RequestTimeoutTest extends TestBase {
             config.setRequestTimeoutEnabled(true);
             config.setMaxConnections(1);
 
-            OSSClient client = new OSSClient(endpoint, accessId, accessKey, config);
+            OSS client = new OSSClientBuilder().build(endpoint, accessId, accessKey, config);
                         
             Thread threads[] = new Thread[10];
             for (int i = 0; i < 10; i++) {
@@ -358,9 +361,9 @@ public class RequestTimeoutTest extends TestBase {
     
     class TimeoutOperationThread extends Thread {
         private String key;
-        private OSSClient client;
+        private OSS client;
         
-        public TimeoutOperationThread(OSSClient client, String key) {
+        public TimeoutOperationThread(OSS client, String key) {
             this.client = client;
             this.key = key;
         }
@@ -403,7 +406,7 @@ public class RequestTimeoutTest extends TestBase {
         config.setRequestTimeoutEnabled(true);
         config.setConnectionTimeout(1);
 
-        OSSClient client = new OSSClient(endpoint, accessId, accessKey, config);
+        OSS client = new OSSClientBuilder().build(endpoint, accessId, accessKey, config);
 
         try {
             client.putObject(bucketName, key, TestUtils.genFixedLengthInputStream(1024));
@@ -428,7 +431,7 @@ public class RequestTimeoutTest extends TestBase {
         config.setRequestTimeoutEnabled(true);
         config.setMaxConnections(1);
 
-        OSSClient client = new OSSClient(endpoint, accessId, accessKey, config);
+        OSS client = new OSSClientBuilder().build(endpoint, accessId, accessKey, config);
 
         try {
             client.putObject(bucketName, key, TestUtils.genFixedLengthInputStream(1024 * 10));

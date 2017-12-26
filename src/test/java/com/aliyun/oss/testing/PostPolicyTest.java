@@ -24,8 +24,8 @@ import java.util.Date;
 import junit.framework.Assert;
 
 import org.junit.Ignore;
-
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.model.MatchMode;
@@ -41,7 +41,7 @@ public class PostPolicyTest {
     
     @Ignore
     public void testGenPostPolicy() {    
-        OSSClient client = new OSSClient(endpoint, accessId, accessKey);
+        OSS client = new OSSClientBuilder().build(endpoint, accessId, accessKey);
         try {
             Date expiration = DateUtil.parseIso8601Date("2015-03-19T03:44:06.476Z");
             PolicyConditions policyConds = new PolicyConditions();

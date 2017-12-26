@@ -45,7 +45,8 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
 import com.aliyun.oss.ClientException;
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.OSSObject;
@@ -58,7 +59,7 @@ public class PerftestRunner {
     private static final Log log = LogFactory.getLog(PerftestRunner.class);
 
     private TestScenario scenario;
-    private OSSClient ossClient;
+    private OSS ossClient;
     private Date startTime;
     private Date endTime;
     private int putErrNum = 0;
@@ -152,7 +153,7 @@ public class PerftestRunner {
         String endpoint = scenario.getHost();
         String accessId = scenario.getAccessId();
         String accessKey = scenario.getAccessKey();
-        ossClient = new OSSClient(endpoint, accessId, accessKey);
+        ossClient = new OSSClientBuilder().build(endpoint, accessId, accessKey);
 
         try {
             byteArray1KB = createFixedLengthBytes(1024);

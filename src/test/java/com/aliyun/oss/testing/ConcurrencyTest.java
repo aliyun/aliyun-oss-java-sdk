@@ -29,8 +29,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import junit.framework.Assert;
 
 import org.junit.Ignore;
-
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.PutObjectResult;
 
@@ -40,7 +40,7 @@ public class ConcurrencyTest {
     private static final String accessId = "<your access id>";
     private static final String accessKey = "<your access key>";
     
-    private OSSClient client = new OSSClient(endpoint, accessId, accessKey);
+    private OSS client = new OSSClientBuilder().build(endpoint, accessId, accessKey);
     
     private static final String bucketName = "<your bucket name>";
     private static final String key = "<object name>";

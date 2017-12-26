@@ -29,7 +29,8 @@ import junit.framework.Assert;
 import org.junit.Ignore;
 import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.ClientException;
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.RequestSigner;
 import com.aliyun.oss.common.auth.ServiceSignature;
@@ -133,7 +134,7 @@ public class ProxySignTest {
             proxyHeaders.put(HEADER_PROXY_REAL_HOST, endpoint);
             conf.setDefaultHeaders(proxyHeaders);
 
-            OSSClient ossClient = new OSSClient(endpoint, accessKeyId, secretAccessKey, conf);
+            OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, secretAccessKey, conf);
 
             ossClient.putObject(bucketName, key, new ByteArrayInputStream(content.getBytes()));
             ossClient.getObject(bucketName, key);
