@@ -50,6 +50,7 @@ import com.aliyun.oss.model.Bucket;
 import com.aliyun.oss.model.BucketInfo;
 import com.aliyun.oss.model.BucketList;
 import com.aliyun.oss.model.BucketLoggingResult;
+import com.aliyun.oss.model.BucketMetadata;
 import com.aliyun.oss.model.BucketProcess;
 import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.BucketReplicationProgress;
@@ -121,6 +122,7 @@ public final class ResponseParsers {
     public static final ListImageStyleResponseParser listImageStyleResponseParser = new ListImageStyleResponseParser();
     public static final GetBucketRefererResponseParser getBucketRefererResponseParser = new GetBucketRefererResponseParser();
     public static final GetBucketAclResponseParser getBucketAclResponseParser = new GetBucketAclResponseParser();
+    public static final GetBucketMetadataResponseParser getBucketMetadataResponseParser = new GetBucketMetadataResponseParser();
     public static final GetBucketLocationResponseParser getBucketLocationResponseParser = new GetBucketLocationResponseParser();
     public static final GetBucketLoggingResponseParser getBucketLoggingResponseParser = new GetBucketLoggingResponseParser();
     public static final GetBucketWebsiteResponseParser getBucketWebsiteResponseParser = new GetBucketWebsiteResponseParser();
@@ -230,6 +232,19 @@ public final class ResponseParsers {
                 AccessControlList result = parseGetBucketAcl(response.getContent());
                 result.setRequestId(response.getRequestId());
                 return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
+	
+    public static final class GetBucketMetadataResponseParser implements ResponseParser<BucketMetadata> {
+
+        @Override
+        public BucketMetadata parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                return parseBucketMetadata(response.getHeaders());
             } finally {
                 safeCloseResponse(response);
             }
@@ -1254,6 +1269,30 @@ public final class ResponseParsers {
             throw new ResponseParseException(e.getMessage(), e);
         }
 
+    }
+
+    /**
+     * Unmarshall bucket metadata from response headers.
+     */
+    public static BucketMetadata parseBucketMetadata(Map<String, String> headers) throws ResponseParseException {
+
+        try {
+            BucketMetadata bucketMetadata = new BucketMetadata();
+
+            for (Iterator<String> it = headers.keySet().iterator(); it.hasNext();) {
+                String key = it.next();
+
+                if (key.equals(OSSHeaders.OSS_BUCKET_REGION)) {
+                    bucketMetadata.setBucketRegion(headers.get(key));
+                } else {
+                    bucketMetadata.addHttpMetadata(key, headers.get(key));
+                }
+            }
+
+            return bucketMetadata;
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
     }
 
     /**
