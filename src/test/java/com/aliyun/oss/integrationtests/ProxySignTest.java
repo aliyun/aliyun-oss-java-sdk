@@ -27,7 +27,7 @@ import java.util.Map;
 
 import junit.framework.Assert;
 import org.junit.Ignore;
-import com.aliyun.oss.ClientConfiguration;
+import com.aliyun.oss.ClientBuilderConfiguration;
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
@@ -116,7 +116,7 @@ public class ProxySignTest {
         String secretAccessKey = "";
         
         try {
-            ClientConfiguration conf = new ClientConfiguration();
+            ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
             conf.setProxyHost(proxyHost);
             conf.setProxyPort(8080);
             

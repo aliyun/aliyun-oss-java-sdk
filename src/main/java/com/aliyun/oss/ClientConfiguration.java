@@ -40,9 +40,9 @@ import com.aliyun.oss.internal.OSSConstants;
  */
 public class ClientConfiguration {
 
-    private static final String DEFAULT_USER_AGENT = VersionInfoUtils.getDefaultUserAgent();
+    public static final String DEFAULT_USER_AGENT = VersionInfoUtils.getDefaultUserAgent();
 
-    private static final int DEFAULT_MAX_RETRIES = 3;
+    public static final int DEFAULT_MAX_RETRIES = 3;
 
     public static final int DEFAULT_CONNECTION_REQUEST_TIMEOUT = -1;
     public static final int DEFAULT_CONNECTION_TIMEOUT = 50 * 1000;
@@ -59,40 +59,40 @@ public class ClientConfiguration {
 
     public static final String DEFAULT_CNAME_EXCLUDE_LIST = "aliyuncs.com,aliyun-inc.com,aliyun.com";
 
-    private String userAgent = DEFAULT_USER_AGENT;
-    private int maxErrorRetry = DEFAULT_MAX_RETRIES;
-    private int connectionRequestTimeout = DEFAULT_CONNECTION_REQUEST_TIMEOUT;
-    private int connectionTimeout = DEFAULT_CONNECTION_TIMEOUT;
-    private int socketTimeout = DEFAULT_SOCKET_TIMEOUT;
-    private int maxConnections = DEFAULT_MAX_CONNECTIONS;
-    private long connectionTTL = DEFAULT_CONNECTION_TTL;
-    private boolean useReaper = DEFAULT_USE_REAPER;
-    private long idleConnectionTime = DEFAULT_IDLE_CONNECTION_TIME;
+    protected String userAgent = DEFAULT_USER_AGENT;
+    protected int maxErrorRetry = DEFAULT_MAX_RETRIES;
+    protected int connectionRequestTimeout = DEFAULT_CONNECTION_REQUEST_TIMEOUT;
+    protected int connectionTimeout = DEFAULT_CONNECTION_TIMEOUT;
+    protected int socketTimeout = DEFAULT_SOCKET_TIMEOUT;
+    protected int maxConnections = DEFAULT_MAX_CONNECTIONS;
+    protected long connectionTTL = DEFAULT_CONNECTION_TTL;
+    protected boolean useReaper = DEFAULT_USE_REAPER;
+    protected long idleConnectionTime = DEFAULT_IDLE_CONNECTION_TIME;
 
-    private Protocol protocol = Protocol.HTTP;
+    protected Protocol protocol = Protocol.HTTP;
 
-    private String proxyHost = null;
-    private int proxyPort = -1;
-    private String proxyUsername = null;
-    private String proxyPassword = null;
-    private String proxyDomain = null;
-    private String proxyWorkstation = null;
+    protected String proxyHost = null;
+    protected int proxyPort = -1;
+    protected String proxyUsername = null;
+    protected String proxyPassword = null;
+    protected String proxyDomain = null;
+    protected String proxyWorkstation = null;
 
-    private boolean supportCname = true;
-    private List<String> cnameExcludeList = new ArrayList<String>();
-    private Lock rlock = new ReentrantLock();
+    protected boolean supportCname = true;
+    protected List<String> cnameExcludeList = new ArrayList<String>();
+    protected Lock rlock = new ReentrantLock();
 
-    private boolean sldEnabled = false;
+    protected boolean sldEnabled = false;
 
-    private int requestTimeout = DEFAULT_REQUEST_TIMEOUT;
-    private boolean requestTimeoutEnabled = false;
-    private long slowRequestsThreshold = DEFAULT_SLOW_REQUESTS_THRESHOLD;
+    protected int requestTimeout = DEFAULT_REQUEST_TIMEOUT;
+    protected boolean requestTimeoutEnabled = false;
+    protected long slowRequestsThreshold = DEFAULT_SLOW_REQUESTS_THRESHOLD;
 
-    private Map<String, String> defaultHeaders = new LinkedHashMap<String, String>();
+    protected Map<String, String> defaultHeaders = new LinkedHashMap<String, String>();
 
-    private boolean crcCheckEnabled = true;
+    protected boolean crcCheckEnabled = true;
 
-    private List<RequestSigner> signerHandlers = new LinkedList<RequestSigner>();
+    protected List<RequestSigner> signerHandlers = new LinkedList<RequestSigner>();
 
     /**
      * Gets the user agent string.

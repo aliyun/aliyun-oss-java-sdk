@@ -31,49 +31,46 @@ public class OSSClientBuilder implements OSSBuilder {
     @Override
     public OSS build(String endpoint, String accessKeyId, String secretAccessKey) {
         return new OSSClient(endpoint, getDefaultCredentialProvider(accessKeyId, secretAccessKey),
-                getDefaultClientConfiguration());
+                getClientConfiguration());
     }
 
     @Override
     public OSS build(String endpoint, String accessKeyId, String secretAccessKey, String securityToken) {
         return new OSSClient(endpoint, getDefaultCredentialProvider(accessKeyId, secretAccessKey, securityToken),
-                getDefaultClientConfiguration());
+                getClientConfiguration());
     }
 
     @Override
-    public OSS build(String endpoint, String accessKeyId, String secretAccessKey, ClientConfiguration config) {
-        if (config == null) {
-            config = getDefaultClientConfiguration();
-        }
-        return new OSSClient(endpoint, getDefaultCredentialProvider(accessKeyId, secretAccessKey), config);
+    public OSS build(String endpoint, String accessKeyId, String secretAccessKey, ClientBuilderConfiguration config) {
+        return new OSSClient(endpoint, getDefaultCredentialProvider(accessKeyId, secretAccessKey),
+                getClientConfiguration(config));
     }
 
     @Override
     public OSS build(String endpoint, String accessKeyId, String secretAccessKey, String securityToken,
-            ClientConfiguration config) {
-        if (config == null) {
-            config = getDefaultClientConfiguration();
-        }
+            ClientBuilderConfiguration config) {
         return new OSSClient(endpoint, getDefaultCredentialProvider(accessKeyId, secretAccessKey, securityToken),
-                config);
+                getClientConfiguration(config));
     }
 
     @Override
     public OSS build(String endpoint, CredentialsProvider credsProvider) {
-        return new OSSClient(endpoint, credsProvider, getDefaultClientConfiguration());
+        return new OSSClient(endpoint, credsProvider, getClientConfiguration());
     }
 
     @Override
-    public OSS build(String endpoint, CredentialsProvider credsProvider, ClientConfiguration config) {
-        if (config == null) {
-            config = getDefaultClientConfiguration();
-        }
-        return new OSSClient(endpoint, credsProvider, config);
+    public OSS build(String endpoint, CredentialsProvider credsProvider, ClientBuilderConfiguration config) {
+        return new OSSClient(endpoint, credsProvider, getClientConfiguration(config));
     }
 
-    private static ClientConfiguration getDefaultClientConfiguration() {
-        ClientConfiguration config = new ClientConfiguration();
-        config.setSupportCname(false);
+    private static ClientBuilderConfiguration getClientConfiguration() {
+        return new ClientBuilderConfiguration();
+    }
+
+    private static ClientBuilderConfiguration getClientConfiguration(ClientBuilderConfiguration config) {
+        if (config == null) {
+            config = new ClientBuilderConfiguration();
+        }
         return config;
     }
 

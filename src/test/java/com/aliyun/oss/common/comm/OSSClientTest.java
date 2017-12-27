@@ -29,8 +29,7 @@ import java.util.Date;
 
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.aliyun.oss.ClientConfiguration;
+import com.aliyun.oss.ClientBuilderConfiguration;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
@@ -78,7 +77,7 @@ public class OSSClientTest {
         String accessKeyId = "accessKeyId";
         String accessKeySecret = "accessKeySecret";
 
-        ClientConfiguration conf = new ClientConfiguration();
+        ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
         conf.setProxyHost(endpoint);
         conf.setProxyPort(80);
         conf.setProxyUsername("user");
