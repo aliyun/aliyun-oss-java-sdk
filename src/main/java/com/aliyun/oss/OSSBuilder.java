@@ -66,10 +66,10 @@ public interface OSSBuilder {
      * @param secretAccessKey
      *            Secret Access Key.
      * @param config
-     *            A {@link ClientConfiguration} instance. The method would use
+     *            A {@link ClientBuilderConfiguration} instance. The method would use
      *            default configuration if it's null.
      */
-    public OSS build(String endpoint, String accessKeyId, String secretAccessKey, ClientConfiguration config);
+    public OSS build(String endpoint, String accessKeyId, String secretAccessKey, ClientBuilderConfiguration config);
 
     /**
      * Uses specified OSS Endpoint, the temporary (Access Id/Access Key/Security
@@ -85,11 +85,11 @@ public interface OSSBuilder {
      * @param securityToken
      *            Security token provided by STS.
      * @param config
-     *            A {@link ClientConfiguration} instance. The method would use
+     *            A {@link ClientBuilderConfiguration} instance. The method would use
      *            default configuration if it's null.
      */
     public OSS build(String endpoint, String accessKeyId, String secretAccessKey, String securityToken,
-            ClientConfiguration config);
+            ClientBuilderConfiguration config);
 
     /**
      * Uses the specified {@link CredentialsProvider} and OSS Endpoint to create
@@ -114,6 +114,6 @@ public interface OSSBuilder {
      * @param config
      *            client configuration.
      */
-    public OSS build(String endpoint, CredentialsProvider credsProvider, ClientConfiguration config);
+    public OSS build(String endpoint, CredentialsProvider credsProvider, ClientBuilderConfiguration config);
 
 }

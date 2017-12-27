@@ -5,8 +5,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
-
-import com.aliyun.oss.ClientConfiguration;
+import com.aliyun.oss.ClientBuilderConfiguration;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.GenericRequest;
@@ -28,11 +27,9 @@ public class TestForImg extends TestCase {
     private static String endpointOss = "http://oss-test.aliyun-inc.com";
 
     private static OSS clientImg = new OSSClientBuilder().build(endpointImg,
-            accessKeyId, accessKeySecret,
-            new ClientConfiguration().setSupportCname(false));
+            accessKeyId, accessKeySecret, new ClientBuilderConfiguration());
     private static OSS clientOss = new OSSClientBuilder().build(endpointOss,
-            accessKeyId, accessKeySecret,
-            new ClientConfiguration().setSupportCname(false));
+            accessKeyId, accessKeySecret, new ClientBuilderConfiguration());
 
     public void sleepSecond(int time) {
         try {

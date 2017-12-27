@@ -34,7 +34,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import com.aliyun.oss.ClientConfiguration;
+import com.aliyun.oss.ClientBuilderConfiguration;
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
@@ -73,7 +73,7 @@ public class MultipartUploadSample {
         /*
          * Constructs a client instance with your account for accessing OSS
          */
-        ClientConfiguration conf = new ClientConfiguration();
+        ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
         conf.setIdleConnectionTime(1000);
         client = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret, conf);
         

@@ -30,7 +30,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
+import com.aliyun.oss.ClientBuilderConfiguration;
 import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.ClientErrorCode;
 import com.aliyun.oss.ClientException;
@@ -328,7 +328,7 @@ public class RequestTimeoutTest extends TestBase {
         String key = "test-multi-client-independent";
 
         try {
-            ClientConfiguration config = new ClientConfiguration();
+            ClientBuilderConfiguration config = new ClientBuilderConfiguration();
             config.setRequestTimeout(1);
             config.setRequestTimeoutEnabled(true);
             config.setMaxConnections(1);
@@ -401,7 +401,7 @@ public class RequestTimeoutTest extends TestBase {
     public void testClientConfigIndependent() throws Exception {
         String key = "test-client-config-independent";
         
-        ClientConfiguration config = new ClientConfiguration();
+        ClientBuilderConfiguration config = new ClientBuilderConfiguration();
         config.setRequestTimeout(requestTimeout);
         config.setRequestTimeoutEnabled(true);
         config.setConnectionTimeout(1);
@@ -426,7 +426,7 @@ public class RequestTimeoutTest extends TestBase {
     public void testExitNormalAfterTimeout() throws Exception {
         String key = "test-exit-after-timeout";
         
-        ClientConfiguration config = new ClientConfiguration();
+        ClientBuilderConfiguration config = new ClientBuilderConfiguration();
         config.setRequestTimeout(requestTimeout);
         config.setRequestTimeoutEnabled(true);
         config.setMaxConnections(1);
