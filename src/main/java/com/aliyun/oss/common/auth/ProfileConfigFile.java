@@ -122,10 +122,10 @@ public class ProfileConfigFile {
             String secretAccessKey = StringUtils.trim(profileProperties.get(AuthUtils.OSS_SECRET_ACCESS_KEY));
             String sessionToken = StringUtils.trim(profileProperties.get(AuthUtils.OSS_SESSION_TOKEN));
 
-            if (accessKeyId == null || accessKeyId.equals("")) {
+            if (StringUtils.isNullOrEmpty(accessKeyId)) {
                 throw new InvalidCredentialsException("Access key id should not be null or empty.");
             }
-            if (secretAccessKey == null || secretAccessKey.equals("")) {
+            if (StringUtils.isNullOrEmpty(secretAccessKey)) {
                 throw new InvalidCredentialsException("Secret access key should not be null or empty.");
             }
 
