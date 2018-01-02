@@ -64,7 +64,7 @@ public class InstanceProfileCredentialsTest extends TestBase {
     public void testExpiredFactor() {
         try {
             InstanceProfileCredentials credentials = new InstanceProfileCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, null,
-                    "2020-11-11T11:11:11Z").withExpiredFactor(10000000.0);
+                    "2010-11-11T11:11:11Z").withExpiredFactor(10.0);
             Thread.sleep(1000);
             Assert.assertTrue(credentials.willSoonExpire());
 

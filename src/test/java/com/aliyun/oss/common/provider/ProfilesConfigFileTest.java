@@ -124,6 +124,9 @@ public class ProfilesConfigFileTest extends TestBase {
     @Test
     public void testGetFreshCredentials() {
         try {
+        	new File(AuthUtils.DEFAULT_PROFILE_PATH).delete();
+        	Thread.sleep(1000);
+        	
             Map<String, String> options = new HashMap<String, String>();
             options.put(AuthUtils.OSS_ACCESS_KEY_ID, TEST_ACCESS_KEY_ID);
             options.put(AuthUtils.OSS_SECRET_ACCESS_KEY, TEST_ACCESS_KEY_SECRET);
@@ -137,6 +140,9 @@ public class ProfilesConfigFileTest extends TestBase {
             Assert.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
             Assert.assertNull(credentials.getSecurityToken());
             Assert.assertFalse(credentials.useSecurityToken());
+            
+            new File(AuthUtils.DEFAULT_PROFILE_PATH).delete();
+            Thread.sleep(1000);
 
             // Fresh
             options = new HashMap<String, String>();
@@ -152,8 +158,6 @@ public class ProfilesConfigFileTest extends TestBase {
             Assert.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
             Assert.assertEquals(TEST_SECURITY_TOKEN, credentials.getSecurityToken());
             Assert.assertTrue(credentials.useSecurityToken());
-
-            new File(AuthUtils.DEFAULT_PROFILE_PATH).delete();
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());

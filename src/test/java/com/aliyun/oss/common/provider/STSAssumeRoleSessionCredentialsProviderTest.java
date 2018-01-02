@@ -44,8 +44,8 @@ public class STSAssumeRoleSessionCredentialsProviderTest extends TestBase {
             Assert.assertFalse(credentials.willSoonExpire());
             Assert.assertTrue(credentials.getAccessKeyId().startsWith("STS."));
             Assert.assertEquals(credentials.getAccessKeyId().length(), 29);
-            Assert.assertEquals(credentials.getSecretAccessKey().length(), 44);
-            Assert.assertEquals(credentials.getSecurityToken().length(), 544);
+            Assert.assertTrue(credentials.getSecretAccessKey().length() > 0);
+            Assert.assertTrue(credentials.getSecurityToken().length() > 0);
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());

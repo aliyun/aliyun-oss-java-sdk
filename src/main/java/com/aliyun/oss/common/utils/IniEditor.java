@@ -577,9 +577,15 @@ public class IniEditor {
      *             at an I/O problem
      */
     public void load(File file) throws IOException {
-        InputStream in = new FileInputStream(file);
-        load(in);
-        in.close();
+        InputStream in = null;
+        try {
+        	in = new FileInputStream(file);
+        	load(in);
+        } finally {
+        	if (in != null) {
+        		in.close();
+        	}
+        }
     }
 
     /**

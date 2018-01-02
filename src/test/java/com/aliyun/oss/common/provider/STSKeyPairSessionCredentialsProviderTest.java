@@ -98,7 +98,7 @@ public class STSKeyPairSessionCredentialsProviderTest extends TestBase {
 
             credentialsProvider = CredentialsProviderFactory.newSTSKeyPairSessionCredentialsProvider(TestConfig.RAM_REGION_ID,
                     publicKey.getPublicKeyId(), AuthUtils.loadPrivateKeyFromFile(TestConfig.PRIVATE_KEY_PATH))
-                    .withExpiredDuration(3601);
+                    .withExpiredDuration(100);
 
             Assert.assertNull(credentialsProvider.getCredentials());
 

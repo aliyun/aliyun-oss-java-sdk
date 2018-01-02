@@ -55,7 +55,7 @@ public class CredentialsProviderFactory {
      */
     public DefaultCredentialProvider newDefaultCredentialProvider(String accessKeyId, String secretAccessKey,
             String securityToken) {
-        return new DefaultCredentialProvider(accessKeyId, secretAccessKey, null);
+        return new DefaultCredentialProvider(accessKeyId, secretAccessKey, securityToken);
     }
 
     /**
