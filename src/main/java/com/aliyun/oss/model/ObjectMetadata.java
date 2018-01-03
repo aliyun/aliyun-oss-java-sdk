@@ -262,6 +262,14 @@ public class ObjectMetadata {
     public String getETag() {
         return (String) metadata.get(OSSHeaders.ETAG);
     }
+    
+    /**
+     * Gets the object's server side crc64 ecma.
+     */
+    public Long getServerCRC() {
+        String crcString=(String) metadata.get(OSSHeaders.OSS_HASH_CRC64_ECMA);
+        return crcString==null?null:Long.parseLong(crcString);
+    }
 
     /**
      * Gets the object's server side encryption.
