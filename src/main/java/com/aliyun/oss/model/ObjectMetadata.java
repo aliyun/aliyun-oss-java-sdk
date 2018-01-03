@@ -194,6 +194,13 @@ public class ObjectMetadata {
     public String getContentMD5() {
         return (String) metadata.get(OSSHeaders.CONTENT_MD5);
     }
+    
+    /**
+     * Gets the object's server side crc64 ecma.
+     */
+    public Long getServerCRC() {
+        return Long.parseUnsignedLong((String)metadata.get(OSSHeaders.OSS_HASH_CRC64_ECMA));
+    }
 
     public void setContentMD5(String contentMD5) {
         metadata.put(OSSHeaders.CONTENT_MD5, contentMD5);
