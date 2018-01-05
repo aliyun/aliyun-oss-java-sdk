@@ -25,8 +25,9 @@ import java.io.InputStream;
 import junit.framework.Assert;
 
 import org.junit.Ignore;
-import com.aliyun.oss.ClientConfiguration;
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.ClientBuilderConfiguration;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.BucketInfo;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.ObjectMetadata;
@@ -42,13 +43,13 @@ public class ProxyTest extends TestBase {
         String content = "Hello OSS.";
         
         try {          
-            ClientConfiguration conf = new ClientConfiguration();
+            ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
             conf.setProxyHost(TestConfig.PROXY_HOST);
             conf.setProxyPort(TestConfig.PROXY_PORT);
             conf.setProxyUsername(TestConfig.PROXY_USER);
             conf.setProxyPassword(TestConfig.PROXY_PASSWORD);
             
-            OSSClient ossClient = new OSSClient(
+            OSS ossClient = new OSSClientBuilder().build(
                     TestConfig.OSS_TEST_ENDPOINT, 
                     TestConfig.OSS_TEST_ACCESS_KEY_ID, 
                     TestConfig.OSS_TEST_ACCESS_KEY_SECRET, 

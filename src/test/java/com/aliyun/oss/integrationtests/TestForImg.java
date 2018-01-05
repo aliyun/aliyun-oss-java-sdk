@@ -5,9 +5,9 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
-
-import com.aliyun.oss.ClientConfiguration;
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.ClientBuilderConfiguration;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.GetBucketImageResult;
 import com.aliyun.oss.model.GetImageStyleResult;
@@ -26,12 +26,10 @@ public class TestForImg extends TestCase {
     private static String endpointImg = "http://img-test.aliyun-inc.com";
     private static String endpointOss = "http://oss-test.aliyun-inc.com";
 
-    private static OSSClient clientImg = new OSSClient(endpointImg,
-            accessKeyId, accessKeySecret,
-            new ClientConfiguration().setSupportCname(false));
-    private static OSSClient clientOss = new OSSClient(endpointOss,
-            accessKeyId, accessKeySecret,
-            new ClientConfiguration().setSupportCname(false));
+    private static OSS clientImg = new OSSClientBuilder().build(endpointImg,
+            accessKeyId, accessKeySecret, new ClientBuilderConfiguration());
+    private static OSS clientOss = new OSSClientBuilder().build(endpointOss,
+            accessKeyId, accessKeySecret, new ClientBuilderConfiguration());
 
     public void sleepSecond(int time) {
         try {

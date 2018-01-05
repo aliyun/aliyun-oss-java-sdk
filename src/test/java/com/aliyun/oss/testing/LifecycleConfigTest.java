@@ -23,8 +23,8 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Ignore;
-
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.utils.DateUtil;
@@ -42,7 +42,7 @@ public class LifecycleConfigTest {
     
     @Ignore
     public void testLifecycleConfig() {
-        OSSClient client = new OSSClient(endpoint, accessId, accessKey);
+        OSS client = new OSSClientBuilder().build(endpoint, accessId, accessKey);
         try {
             SetBucketLifecycleRequest req = new SetBucketLifecycleRequest(bucketName);
             req.AddLifecycleRule(new LifecycleRule("delete obsoleted files", "obsoleted/", RuleStatus.Enabled, 3));

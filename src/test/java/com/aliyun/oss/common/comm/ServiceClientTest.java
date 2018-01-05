@@ -111,7 +111,7 @@ public class ServiceClientTest {
         ByteArrayInputStream contentStream = new ByteArrayInputStream(contentBytes);
         contentStream.skip(skipBeforeSend);
         
-        RequestMessage request = new RequestMessage();
+        RequestMessage request = new RequestMessage(null, null);
         request.setEndpoint(new URI("http://localhost"));
         request.setMethod(HttpMethod.GET);
         request.setContent(contentStream);
@@ -151,7 +151,7 @@ public class ServiceClientTest {
         byte[] contentBytes = content.getBytes(OSSConstants.DEFAULT_CHARSET_NAME);
         ByteArrayInputStream contentStream = new ByteArrayInputStream(contentBytes);
 
-        RequestMessage request = new RequestMessage();
+        RequestMessage request = new RequestMessage(null ,null);
         request.setEndpoint(new URI("http://localhost"));
         request.setMethod(HttpMethod.GET);
         request.setContent(contentStream);
@@ -183,7 +183,7 @@ public class ServiceClientTest {
         byte[] contentBytes = content.getBytes(OSSConstants.DEFAULT_CHARSET_NAME);
         ByteArrayInputStream contentStream = new ByteArrayInputStream(contentBytes);
 
-        RequestMessage request = new RequestMessage();
+        RequestMessage request = new RequestMessage(null, null);
         request.setEndpoint(new URI("http://localhost"));
         request.setMethod(HttpMethod.GET);
         request.setContent(contentStream);
@@ -215,7 +215,7 @@ public class ServiceClientTest {
         String filename = ResourceUtils.getTestFilename("oss/listBucket.xml");
         File file = new File(filename);
         InputStream contentStream = new FileInputStream(file);
-        RequestMessage request = new RequestMessage();
+        RequestMessage request = new RequestMessage(null, null);
         request.setEndpoint(new URI("http://localhost"));
         request.setMethod(HttpMethod.GET);
         request.setContent(contentStream);

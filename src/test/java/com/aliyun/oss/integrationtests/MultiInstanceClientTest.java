@@ -28,7 +28,8 @@ import java.io.InputStream;
 import org.junit.Test;
 
 import com.aliyun.oss.ClientException;
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.PutObjectResult;
 
 public class MultiInstanceClientTest extends TestBase {
@@ -42,7 +43,7 @@ public class MultiInstanceClientTest extends TestBase {
             @Override
             public void run() {
                 for (int i = 0; i < 100; i++) {
-                    OSSClient client0 = new OSSClient(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET);
+                    OSS client0 = new OSSClientBuilder().build(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET);
                     InputStream content = TestUtils.genFixedLengthInputStream(128 * 1024);
                     String key = TestUtils.buildObjectKey(keyPrefix, i);
                     
@@ -68,7 +69,7 @@ public class MultiInstanceClientTest extends TestBase {
             @Override
             public void run() {
                 for (int i = 0; i < 100; i++) {
-                    OSSClient client1 = new OSSClient(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET);
+                    OSS client1 = new OSSClientBuilder().build(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET);
                     InputStream content = TestUtils.genFixedLengthInputStream(1 * 1024 * 1024);
                     String key = TestUtils.buildObjectKey(keyPrefix, i);
                     
@@ -99,7 +100,7 @@ public class MultiInstanceClientTest extends TestBase {
     @Test
     public void keepUsingAfterClose() {
         final String key = "key0";
-        OSSClient client = new OSSClient(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET);
+        OSS client = new OSSClientBuilder().build(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET);
         InputStream content = TestUtils.genFixedLengthInputStream(128 * 1024);
         client.putObject(bucketName, key, content, null);
         

@@ -33,7 +33,8 @@ import junit.framework.Assert;
 import org.junit.Ignore;
 
 import com.aliyun.oss.HttpMethod;
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.IOUtils;
@@ -48,7 +49,7 @@ public class UrlSignatureTest {
     static final String accessId = "<your access id>";
     static final String accessKey = "<your access key>";
         
-    static OSSClient client = new OSSClient(endpoint, accessId, accessKey);
+    static OSS client = new OSSClientBuilder().build(endpoint, accessId, accessKey);
     
     static final String bucketName = "<your bucket name>";
     static final String key = "<object key>";
@@ -99,7 +100,7 @@ public class UrlSignatureTest {
     
     @Ignore
     public void testPutObject() {    
-        OSSClient client = new OSSClient(endpoint, accessId, accessKey);
+        OSS client = new OSSClientBuilder().build(endpoint, accessId, accessKey);
         try {
             Date expiration = DateUtil.parseRfc822Date("Thu, 19 Mar 2015 18:00:00 GMT");
             GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.PUT);

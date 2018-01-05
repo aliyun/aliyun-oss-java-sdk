@@ -25,16 +25,16 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.junit.Ignore;
-
-import com.aliyun.oss.ClientConfiguration;
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.ClientBuilderConfiguration;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 
 public class CnameTest {
 
     @Ignore
     @SuppressWarnings("unused")
     public void testCnameExcludeList() {
-        ClientConfiguration cc = new ClientConfiguration();
+        ClientBuilderConfiguration cc = new ClientBuilderConfiguration();
         // Defalut CNAME Exclude List: [.aliyuncs.com, .aliyun-inc.com, localhost]
         List<String> currentExcludeList = cc.getCnameExcludeList();
         Assert.assertEquals(currentExcludeList.size(), 3);
@@ -54,7 +54,7 @@ public class CnameTest {
         Assert.assertTrue(currentExcludeList.contains(".aliyun-inc.com"));
         Assert.assertTrue(currentExcludeList.contains("localhost"));
         
-        OSSClient client = new OSSClient("<input your customized host name>", 
+        OSS client = new OSSClientBuilder().build("<input your customized host name>", 
                 "<input your access id>", "<input your access key>", cc);
         // Do some operations with client here...
     }

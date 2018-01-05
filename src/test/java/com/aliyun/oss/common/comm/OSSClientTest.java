@@ -29,9 +29,9 @@ import java.util.Date;
 
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.aliyun.oss.ClientConfiguration;
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.ClientBuilderConfiguration;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 
 public class OSSClientTest {
@@ -41,7 +41,7 @@ public class OSSClientTest {
      * TODO: needs the fix about local time.
      */
     public void testGeneratePresignedUrl() throws IOException {
-        OSSClient client = new OSSClient("oss.aliyuncs.com", "id", "key");
+        OSS client = new OSSClientBuilder().build("oss.aliyuncs.com", "id", "key");
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest("bucket", "key");
         Calendar ex = Calendar.getInstance();
         ex.set(2015, 1, 1, 0, 0, 0);
@@ -77,13 +77,13 @@ public class OSSClientTest {
         String accessKeyId = "accessKeyId";
         String accessKeySecret = "accessKeySecret";
 
-        ClientConfiguration conf = new ClientConfiguration();
+        ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
         conf.setProxyHost(endpoint);
         conf.setProxyPort(80);
         conf.setProxyUsername("user");
         conf.setProxyPassword("passwd");
 
-        OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret, conf);
+        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret, conf);
         ossClient.shutdown();
     }
 }

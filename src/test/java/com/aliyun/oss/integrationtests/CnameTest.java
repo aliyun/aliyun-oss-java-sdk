@@ -28,9 +28,9 @@ import junit.framework.Assert;
 
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.aliyun.oss.ClientConfiguration;
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.ClientBuilderConfiguration;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 
 @Ignore
 public class CnameTest {
@@ -38,7 +38,7 @@ public class CnameTest {
     @Test
     @SuppressWarnings("unused")
     public void testCnameExcludeList() {
-        ClientConfiguration cc = new ClientConfiguration();
+        ClientBuilderConfiguration cc = new ClientBuilderConfiguration();
         // Defalut CNAME Exclude List: [aliyuncs.com, aliyun-inc.com, aliyun.com]
         List<String> currentExcludeList = cc.getCnameExcludeList();
         Assert.assertEquals(currentExcludeList.size(), 3);
@@ -58,7 +58,7 @@ public class CnameTest {
         Assert.assertTrue(currentExcludeList.contains("aliyun-inc.com"));
         Assert.assertTrue(currentExcludeList.contains("aliyun.com"));
         
-        OSSClient client = new OSSClient(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET, cc);
+        OSS client = new OSSClientBuilder().build(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET, cc);
         // Do some operations with client here...
     }
 
