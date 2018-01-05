@@ -34,8 +34,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.AddBucketReplicationRequest.ReplicationAction;
@@ -49,14 +49,14 @@ import com.aliyun.oss.model.AddBucketReplicationRequest;
 
 @Ignore
 public class BucketReplicationTest extends TestBase {
-    protected static OSSClient replicationClient;
+    protected static OSS replicationClient;
     final static String targetBucketName = "java-sdk-test-qd-15";
     final String targetBucketLoc = "oss-cn-qingdao";
     
     @BeforeClass
     public static void beforeClass() {
         if (replicationClient == null) {
-            replicationClient = new OSSClient(OSS_TEST_REPLICATION_ENDPOINT,
+            replicationClient = new OSSClientBuilder().build(OSS_TEST_REPLICATION_ENDPOINT,
                     OSS_TEST_REPLICATION_ACCESS_KEY_ID, 
                     OSS_TEST_REPLICATION_ACCESS_KEY_SECRET);
             

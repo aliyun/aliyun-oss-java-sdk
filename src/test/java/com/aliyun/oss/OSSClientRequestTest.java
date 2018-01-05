@@ -636,7 +636,7 @@ public class OSSClientRequestTest {
         String objectKey = "object";
 
         String server = endpoint.toString();
-        OSS ossClient = new OSSClient(server, accessId, accessKey);
+        OSS ossClient = new OSSClientBuilder().build(server, accessId, accessKey);
         URL url = null;
         // Simple case
         //10 分钟过期

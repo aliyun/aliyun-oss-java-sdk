@@ -1,10 +1,30 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package samples;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import com.aliyun.oss.ClientException;
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.Callback;
 import com.aliyun.oss.model.Callback.CalbackBodyType;
@@ -29,7 +49,7 @@ public class CallbackSample {
 
     public static void main(String[] args) throws IOException {        
 
-        OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
+        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
         
         try {
             String content = "Hello OSS";
@@ -49,8 +69,8 @@ public class CallbackSample {
             
             PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
             byte[] buffer = new byte[1024];
-            putObjectResult.getCallbackResponseBody().read(buffer);
-            putObjectResult.getCallbackResponseBody().close();
+            putObjectResult.getResponse().getContent().read(buffer);
+            putObjectResult.getResponse().getContent().close();
 
         } catch (OSSException oe) {
             System.out.println("Caught an OSSException, which means your request made it to OSS, "

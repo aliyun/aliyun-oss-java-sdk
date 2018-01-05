@@ -78,4 +78,6 @@ public interface OSSHeaders extends HttpHeaders {
     static final String OSS_STORAGE_CLASS = "x-oss-storage-class";
     static final String OSS_RESTORE = "x-oss-restore";
     static final String OSS_ONGOING_RESTORE = "ongoing-request=\"true\"";
+
+    static final String OSS_BUCKET_REGION = "x-oss-bucket-region";
 }

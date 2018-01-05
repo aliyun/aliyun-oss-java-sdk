@@ -21,8 +21,8 @@ package com.aliyun.oss.testing;
 
 import org.junit.Assert;
 import org.junit.Ignore;
-
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 
 public class NamingConventionsTest {
     
@@ -30,7 +30,7 @@ public class NamingConventionsTest {
     static final String accessId = "<your access id>";
     static final String accessKey = "<your access key>";
     
-    static OSSClient client = new OSSClient(endpoint, accessId, accessKey);
+    static OSS client = new OSSClientBuilder().build(endpoint, accessId, accessKey);
     
     @Ignore
     public void testInvalidBucketNames() {
