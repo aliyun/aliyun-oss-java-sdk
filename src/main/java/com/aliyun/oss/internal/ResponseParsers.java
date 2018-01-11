@@ -2059,6 +2059,9 @@ public final class ResponseParsers {
                 repRule.setTargetBucketName(destination.getChildText("Bucket"));
                 repRule.setTargetBucketLocation(destination.getChildText("Location"));
 
+                repRule.setTargetCloud(destination.getChildText("Cloud"));
+                repRule.setTargetCloudLocation(destination.getChildText("CloudLocation"));
+
                 repRule.setReplicationStatus(ReplicationStatus.parse(ruleElem.getChildText("Status")));
 
                 if (ruleElem.getChildText("HistoricalObjectReplication").equals("enabled")) {
@@ -2112,6 +2115,8 @@ public final class ResponseParsers {
             Element destination = ruleElem.getChild("Destination");
             progress.setTargetBucketName(destination.getChildText("Bucket"));
             progress.setTargetBucketLocation(destination.getChildText("Location"));
+            progress.setTargetCloud(destination.getChildText("Cloud"));
+            progress.setTargetCloudLocation(destination.getChildText("CloudLocation"));
 
             progress.setReplicationStatus(ReplicationStatus.parse(ruleElem.getChildText("Status")));
 
