@@ -141,7 +141,8 @@ public abstract class ServiceClient {
 
                 return response;
             } catch (ServiceException sex) {
-                logException("[Server]Unable to execute HTTP request: ", sex);
+                logException("[Server]Unable to execute HTTP request: ", sex,
+                        request.getOriginalRequest().isLogEnabled());
 
                 // Notice that the response should not be closed in the
                 // finally block because if the request is successful,
@@ -152,7 +153,8 @@ public abstract class ServiceClient {
                     throw sex;
                 }
             } catch (ClientException cex) {
-                logException("[Client]Unable to execute HTTP request: ", cex);
+                logException("[Client]Unable to execute HTTP request: ", cex,
+                        request.getOriginalRequest().isLogEnabled());
 
                 closeResponseSilently(response);
 
@@ -160,7 +162,8 @@ public abstract class ServiceClient {
                     throw cex;
                 }
             } catch (Exception ex) {
-                logException("[Unknown]Unable to execute HTTP request: ", ex);
+                logException("[Unknown]Unable to execute HTTP request: ", ex,
+                        request.getOriginalRequest().isLogEnabled());
 
                 closeResponseSilently(response);
 
