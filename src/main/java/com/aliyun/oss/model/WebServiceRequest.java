@@ -31,6 +31,10 @@ public abstract class WebServiceRequest {
 
     private ProgressListener progressListener = ProgressListener.NOOP;
 
+    //This flag is used to enable/disable INFO and WARNING logs for requests
+    //We enable INFO and WARNING logs by default.
+    private boolean logEnabled = true;
+
     private Map<String, String> parameters = new LinkedHashMap<String, String>();
     private Map<String, String> headers = new LinkedHashMap<String, String>();
 
@@ -71,5 +75,13 @@ public abstract class WebServiceRequest {
 
     public void addHeader(String key, String value) {
         this.headers.put(key, value);
+    }
+
+    public boolean isLogEnabled() {
+        return logEnabled;
+    }
+
+    public void setLogEnabled(boolean logEnabled) {
+        this.logEnabled = logEnabled;
     }
 }
