@@ -53,14 +53,22 @@ public class LogUtils {
     }
 
     public static <ExType> void logException(String messagePrefix, ExType ex) {
+        logException(messagePrefix, ex, true);
+    }
+
+    public static <ExType> void logException(String messagePrefix, ExType ex, boolean logEnabled) {
 
         assert (ex instanceof Exception);
 
         String detailMessage = messagePrefix + ((Exception) ex).getMessage();
         if (ex instanceof ServiceException && errorCodeFilterList.contains(((ServiceException) ex).getErrorCode())) {
-            log.info(detailMessage);
+            if (logEnabled) {
+                log.info(detailMessage);
+            }
         } else {
-            log.warn(detailMessage);
+            if (logEnabled) {
+                log.warn(detailMessage);
+            }
         }
     }
 }
