@@ -48,7 +48,7 @@ public interface OSS {
      * Switches to another users with specified credentials
      * 
      * @param creds
-     *            the credential to switch to。
+     *            the credential to switch to銆�
      */
     public void switchCredentials(Credentials creds);
 
@@ -238,7 +238,7 @@ public interface OSS {
      * 
      * @param genericRequest
      *            {@link GenericRequest} instance that has the bucket name.
-     * @return bucket http referer {@link BucketReferer}。
+     * @return bucket http referer {@link BucketReferer}銆�
      */
     public BucketReferer getBucketReferer(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -316,7 +316,7 @@ public interface OSS {
     public TagSet getBucketTagging(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
-     * Clears all the tags of the {@link Bucket} instance。
+     * Clears all the tags of the {@link Bucket} instance銆�
      * 
      * @param bucketName
      *            Bucket name
@@ -341,7 +341,7 @@ public interface OSS {
     public boolean doesBucketExist(String bucketName) throws OSSException, ClientException;
 
     /**
-     * Checks if the {@link Bucket} exists。
+     * Checks if the {@link Bucket} exists銆�
      * 
      * @param genericRequest
      *            {@link GenericRequest} instance that has the bucket name.
@@ -404,7 +404,7 @@ public interface OSS {
 
     /**
      * Uploads the file to the {@link Bucket} from the @{link InputStream} with
-     * the {@link ObjectMetadata} information。
+     * the {@link ObjectMetadata} information銆�
      * 
      * @param bucketName
      *            Bucket name.
@@ -569,7 +569,7 @@ public interface OSS {
      * 
      * @param copyObjectRequest
      *            A {@link CopyObjectRequest} instance that specifies source
-     *            file, source bucket and target file, target bucket。
+     *            file, source bucket and target file, target bucket銆�
      * @return A {@link CopyObjectResult} instance.
      * @throws OSSException
      * @throws ClientException
@@ -761,7 +761,7 @@ public interface OSS {
      * @param key
      *            Object Key.
      * @param isOnlyInOSS
-     *            true if ignore 302 redirect or mirroring； false if considering
+     *            true if ignore 302 redirect or mirroring锛� false if considering
      *            302 redirect or mirroring, which could download the object
      *            from source to OSS when the file exists in source but is not
      *            in OSS yet.
@@ -875,7 +875,7 @@ public interface OSS {
      * @param expiration
      *            URL's expiration time.
      * @param method
-     *            HTTP method，Only {@link HttpMethod#GET} and
+     *            HTTP method锛孫nly {@link HttpMethod#GET} and
      *            {@link HttpMethod#PUT} are supported.
      * @return A signed URL that could be used for accessing the
      *         {@link OSSObject} object.
@@ -1676,9 +1676,9 @@ public interface OSS {
      * Deletes one {@link Bucket}'s Cname specified by the parameter domain.
      * 
      * @param bucketName
-     *            The bucket name。
+     *            The bucket name銆�
      * @param domain
-     *            cname。
+     *            cname銆�
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
@@ -1705,7 +1705,7 @@ public interface OSS {
      * Gets the {@link Bucket}'s basic information as well as its ACL.
      * 
      * @param bucketName
-     *            The bucket name。
+     *            The bucket name銆�
      * @return A {@link BucketInfo} instance.
      * @throws OSSException
      *             OSS Server side exception.
@@ -1733,7 +1733,7 @@ public interface OSS {
      * storage size and executing multipart uploads.
      * 
      * @param bucketName
-     *            The bucket name。
+     *            The bucket name銆�
      * @return A {@link BucketStat} instance.
      * @throws OSSException
      *             OSS Server side exception.
@@ -1761,7 +1761,7 @@ public interface OSS {
      * Sets the capacity of the {@link Bucket}.
      * 
      * @param bucketName
-     *            The bucket name。
+     *            The bucket name銆�
      * @param userQos
      *            A {@link UserQos} instance which specifies the capacity in GB
      * @throws OSSException
@@ -1789,7 +1789,7 @@ public interface OSS {
      * Gets the {@link Bucket}'s capacity
      * 
      * @param bucketName
-     *            The bucket name。
+     *            The bucket name銆�
      * @return A {@link UserQos} instance which has the capacity information.
      * @throws OSSException
      *             OSS Server side exception.
@@ -1994,7 +1994,7 @@ public interface OSS {
     public void deleteLiveChannel(String bucketName, String liveChannel) throws OSSException, ClientException;
 
     /**
-     * Deletes the Live Channel。
+     * Deletes the Live Channel銆�
      * 
      * After the deletion, the media files are still kept. But the streaming
      * will not work on these files.
@@ -2276,5 +2276,7 @@ public interface OSS {
 
     public UdfApplicationLog getUdfApplicationLog(GetUdfApplicationLogRequest getUdfApplicationLogRequest)
             throws OSSException, ClientException;
+    
+    
 
 }
