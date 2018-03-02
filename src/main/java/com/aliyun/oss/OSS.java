@@ -2276,5 +2276,7 @@ public interface OSS {
 
     public UdfApplicationLog getUdfApplicationLog(GetUdfApplicationLogRequest getUdfApplicationLogRequest)
             throws OSSException, ClientException;
+    
+    
 
 }
