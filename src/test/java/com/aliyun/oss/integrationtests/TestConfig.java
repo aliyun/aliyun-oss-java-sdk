@@ -22,10 +22,10 @@ package com.aliyun.oss.integrationtests;
 public final class TestConfig {
 
     // OSS test configuration
-    public static String OSS_TEST_ENDPOINT = "http://oss-cn-hangzhou.aliyuncs.com";
-    public static String OSS_TEST_REGION = "oss-cn-hangzhou";
-    public static String OSS_TEST_ACCESS_KEY_ID = "LTAIPZ03tJTd6PoX";
-    public static String OSS_TEST_ACCESS_KEY_SECRET = "iGfX18L5YF5zrPQmcj8F7p2XS0KhJ5";
+    public static String OSS_TEST_ENDPOINT = null;
+    public static String OSS_TEST_REGION = null;
+    public static String OSS_TEST_ACCESS_KEY_ID = null;
+    public static String OSS_TEST_ACCESS_KEY_SECRET = null;
     public static String OSS_TEST_ACCESS_KEY_ID_1 = null;
     public static String OSS_TEST_ACCESS_KEY_SECRET_1 = null;
 
@@ -46,7 +46,7 @@ public final class TestConfig {
     public static String PROXY_PASSWORD = null;
     
     //OSS test bucketName
-    public static String BUCKET_NAME_PREFIX = "oss-java-sdk-";
+    public static String BUCKET_NAME_PREFIX = null;
     
 
 }
