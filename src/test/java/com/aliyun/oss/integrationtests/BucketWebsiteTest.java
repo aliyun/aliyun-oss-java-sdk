@@ -36,7 +36,7 @@ public class BucketWebsiteTest extends TestBase {
 
     @Test
     public void testNormalSetBucketWebsite() {
-        final String bucketName = "normal-set-bucket-website";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX+"normal-set-bucket-website";
         final String indexDocument = "index.html";
         final String errorDocument = "error.html";
         
@@ -81,7 +81,7 @@ public class BucketWebsiteTest extends TestBase {
     
     @Test
     public void testNormalSetBucketWebsiteWithMirror() {
-        final String bucketName = "normal-set-bucket-website-mirror";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX+"normal-set-bucket-website-mirror";
         final String indexDocument = "index.html";
         
         try {
@@ -226,7 +226,7 @@ public class BucketWebsiteTest extends TestBase {
     
     @Test
     public void testNormalSetBucketWebsiteWithRedirect() {
-        final String bucketName = "normal-set-bucket-website-redirect";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX+"normal-set-bucket-website-redirect";
         final String indexDocument = "index.html";
         
         try {
@@ -329,7 +329,7 @@ public class BucketWebsiteTest extends TestBase {
     
     @Test
     public void testNormalSetBucketWebsiteWithCDNRedirect() {
-        final String bucketName = "normal-set-bucket-website-redirect-cdn";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX+"normal-set-bucket-website-redirect-cdn";
         final String indexDocument = "index.html";
         
         try {
@@ -431,7 +431,7 @@ public class BucketWebsiteTest extends TestBase {
     
     @Test
     public void testUnormalSetBucketWebsiteWithMirror() {
-        final String bucketName = "unormal-set-bucket-website-mirror";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX+"unormal-set-bucket-website-mirror";
         final String indexDocument = "index.html";
         
         try {
@@ -511,7 +511,7 @@ public class BucketWebsiteTest extends TestBase {
     
     @Test
     public void testUnormalSetBucketWebsiteWithRedirect() {
-        final String bucketName = "unormal-set-bucket-website-redirect";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX+"unormal-set-bucket-website-redirect";
         final String indexDocument = "index.html";
         
         try {
@@ -575,7 +575,7 @@ public class BucketWebsiteTest extends TestBase {
     
     @Test
     public void testUnormalSetBucketWebsite() {
-        final String bucketName = "unormal-set-bucket-website";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX+"unormal-set-bucket-website";
         final String indexDocument = "index.html";
         final String errorDocument = "error.html";
         
