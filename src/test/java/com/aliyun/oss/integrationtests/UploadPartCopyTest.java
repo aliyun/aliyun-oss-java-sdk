@@ -56,8 +56,8 @@ public class UploadPartCopyTest extends TestBase {
     
     @Test
     public void testNormalUploadPartCopy() {
-        final String sourceBucket = TestConfig.BUCKET_NAME_PREFIX+"normal-upload-part-copy-bucket-source";
-        final String targetBucket = TestConfig.BUCKET_NAME_PREFIX+"normal-upload-part-copy-bucket-target";
+        final String sourceBucket = TestConfig.BUCKET_NAME_PREFIX+"normal-upload-bucket-source";
+        final String targetBucket = TestConfig.BUCKET_NAME_PREFIX+"normal-upload-bucket-target";
         final String sourceKey = "normal-upload-part-copy-object-source";
         final String targetKey = "normal-upload-part-copy-object-target";
         final long partSize = 128 * 1024;     //128KB
@@ -133,8 +133,8 @@ public class UploadPartCopyTest extends TestBase {
     
     @Test
     public void testUnormalUploadPartCopy() {
-        final String sourceBucket = TestConfig.BUCKET_NAME_PREFIX+"unormal-upload-part-copy-bucket-source";
-        final String targetBucket = TestConfig.BUCKET_NAME_PREFIX+"unormal-upload-part-copy-bucket-target";
+        final String sourceBucket = TestConfig.BUCKET_NAME_PREFIX+"unormal-upload-bucket-source";
+        final String targetBucket = TestConfig.BUCKET_NAME_PREFIX+"unormal-upload-bucket-target";
         final String sourceKey = "unormal-upload-part-copy-object-source";
         final String targetKey = "unormal-upload-part-copy-object-target";
         
@@ -266,8 +266,8 @@ public class UploadPartCopyTest extends TestBase {
     
     @Test
     public void testNormalUploadPartCopyByRange() {
-        final String sourceBucket = TestConfig.BUCKET_NAME_PREFIX+"normal-upload-part-copy-by-range-bucket-source";
-        final String targetBucket = TestConfig.BUCKET_NAME_PREFIX+"normal-upload-part-copy-by-range-bucket-target";
+        final String sourceBucket = TestConfig.BUCKET_NAME_PREFIX+"normal-upload-by-range-bucket-source";
+        final String targetBucket = TestConfig.BUCKET_NAME_PREFIX+"normal-upload-by-range-bucket-target";
         final String sourceKey = "normal-upload-part-copy-by-range-object-source";
         final String targetKey = "normal-upload-part-copy-by-range-object-target";
         final long partSize = 128 * 1024;     //128KB
@@ -420,8 +420,8 @@ public class UploadPartCopyTest extends TestBase {
     
     @Test
     public void testUnormalUploadPartCopyByRange() {
-        final String sourceBucket = TestConfig.BUCKET_NAME_PREFIX+"unormal-upload-part-copy-by-range-bucket-source";
-        final String targetBucket = TestConfig.BUCKET_NAME_PREFIX+"unormal-upload-part-copy-by-range-bucket-target";
+        final String sourceBucket = TestConfig.BUCKET_NAME_PREFIX+"unormal-upload-by-range-bucket-source";
+        final String targetBucket = TestConfig.BUCKET_NAME_PREFIX+"unormal-upload-by-range-bucket-target";
         final String sourceKey = "unormal-upload-part-copy-by-range-object-source";
         final String targetKey = "unormal-upload-part-copy-by-range-object-target";
         final long partSize = 128 * 1024;     //128KB
