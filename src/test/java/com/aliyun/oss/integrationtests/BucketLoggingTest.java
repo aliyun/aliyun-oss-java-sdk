@@ -36,8 +36,8 @@ public class BucketLoggingTest extends TestBase {
 
     @Test
     public void testNormalSetBucketLogging() {
-        final String sourceBucket = "normal-set-bucket-logging-source-1";
-        final String targetBucket = "normal-set-bucket-logging-target-1";
+        final String sourceBucket = TestConfig.BUCKET_NAME_PREFIX+"normal-logging-source-1";
+        final String targetBucket = TestConfig.BUCKET_NAME_PREFIX+"normal-logging-target-1";
         final String targetPrefix = "normal-set-bucket-logging-prefix";
         
         try {
