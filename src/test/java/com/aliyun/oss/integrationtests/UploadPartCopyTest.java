@@ -105,12 +105,12 @@ public class UploadPartCopyTest extends TestBase {
             Assert.assertFalse(partListing.isTruncated());
             Assert.assertEquals(partListing.getRequestId().length(), REQUEST_ID_LEN);
             
+            waitForCacheExpiration(5);
             // Complete multipart upload
             CompleteMultipartUploadRequest completeMultipartUploadRequest = 
                     new CompleteMultipartUploadRequest(targetBucket, targetKey, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-            waitForCacheExpiration(5);
             Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, targetBucket, targetKey), 
                     completeMultipartUploadResult.getLocation());
             Assert.assertEquals(targetBucket, completeMultipartUploadResult.getBucketName());
@@ -237,7 +237,7 @@ public class UploadPartCopyTest extends TestBase {
             } catch (Exception e) {
                 Assert.fail(e.getMessage());
             }
-            
+            waitForCacheExpiration(5);
             // Try to complete multipart upload with all uploaded parts
             try {
                 CompleteMultipartUploadRequest completeMultipartUploadRequest = 
@@ -317,12 +317,12 @@ public class UploadPartCopyTest extends TestBase {
             Assert.assertFalse(partListing.isTruncated());
             Assert.assertEquals(partListing.getRequestId().length(), REQUEST_ID_LEN);
             
+            waitForCacheExpiration(5);
             // Complete multipart upload
             CompleteMultipartUploadRequest completeMultipartUploadRequest = 
                     new CompleteMultipartUploadRequest(targetBucket, targetKey, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-            waitForCacheExpiration(5);
             Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, targetBucket, targetKey), 
                     completeMultipartUploadResult.getLocation());
             Assert.assertEquals(targetBucket, completeMultipartUploadResult.getBucketName());
@@ -394,12 +394,12 @@ public class UploadPartCopyTest extends TestBase {
             Assert.assertFalse(partListing.isTruncated());
             Assert.assertEquals(partListing.getRequestId().length(), REQUEST_ID_LEN);
             
+            waitForCacheExpiration(5);
             // Complete multipart upload
             CompleteMultipartUploadRequest completeMultipartUploadRequest = 
                     new CompleteMultipartUploadRequest(targetBucket, targetKey, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-            waitForCacheExpiration(5);
             Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, targetBucket, targetKey), 
                     completeMultipartUploadResult.getLocation());
             Assert.assertEquals(targetBucket, completeMultipartUploadResult.getBucketName());
@@ -475,12 +475,12 @@ public class UploadPartCopyTest extends TestBase {
             Assert.assertFalse(partListing.isTruncated());
             Assert.assertEquals(partListing.getRequestId().length(), REQUEST_ID_LEN);
             
+            waitForCacheExpiration(5);
             // Complete multipart upload
             CompleteMultipartUploadRequest completeMultipartUploadRequest = 
                     new CompleteMultipartUploadRequest(targetBucket, targetKey, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-            waitForCacheExpiration(5);
             Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, targetBucket, targetKey), 
                     completeMultipartUploadResult.getLocation());
             Assert.assertEquals(targetBucket, completeMultipartUploadResult.getBucketName());

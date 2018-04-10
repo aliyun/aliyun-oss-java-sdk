@@ -309,7 +309,6 @@ public class ObjectAclTest extends TestBase {
             completeMultipartUploadRequest.setObjectACL(CannedAccessControlList.PublicRead);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-            waitForCacheExpiration(5);
             Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key), 
                     completeMultipartUploadResult.getLocation());
             Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
