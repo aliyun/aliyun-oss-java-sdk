@@ -31,6 +31,7 @@ import static com.aliyun.oss.integrationtests.TestUtils.composeLocation;
 import static com.aliyun.oss.integrationtests.TestUtils.genFixedLengthFile;
 import static com.aliyun.oss.integrationtests.TestUtils.genFixedLengthInputStream;
 import static com.aliyun.oss.integrationtests.TestUtils.removeFile;
+import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -190,6 +191,7 @@ public class UploadPartTest extends TestBase {
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
+            waitForCacheExpiration(5);
             Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key), 
                     completeMultipartUploadResult.getLocation());
             Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
@@ -324,6 +326,7 @@ public class UploadPartTest extends TestBase {
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
+            waitForCacheExpiration(5);
             Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key), 
                     completeMultipartUploadResult.getLocation());
             Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
@@ -403,6 +406,7 @@ public class UploadPartTest extends TestBase {
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
+            waitForCacheExpiration(5);
             Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key), 
                     completeMultipartUploadResult.getLocation());
             Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
@@ -464,8 +468,8 @@ public class UploadPartTest extends TestBase {
             Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_UPLOAD_ERR));
         } 
         
-        // Try to delete bucket with incompleted multipart uploads
-        final String existingBucket = "unormal-abort-multipart-upload-existing-bucket";
+        // Try to delete bucket with incompleted multipart uploads unormal-abort-multipart-upload-existing-bucket
+        final String existingBucket = TestConfig.BUCKET_NAME_PREFIX+"unormal-abort-multipart-bucket";
         try {
             ossClient.createBucket(existingBucket);
             
@@ -810,6 +814,7 @@ public class UploadPartTest extends TestBase {
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
+            waitForCacheExpiration(5);
             Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key), 
                     completeMultipartUploadResult.getLocation());
             Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
@@ -850,6 +855,7 @@ public class UploadPartTest extends TestBase {
             discontinuousPartETags.add(partETags.get(7));
             completeMultipartUploadRequest = new CompleteMultipartUploadRequest(bucketName, key, uploadId, discontinuousPartETags);
             completeMultipartUploadResult = ossClient.completeMultipartUpload(completeMultipartUploadRequest);
+            waitForCacheExpiration(5);
             Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key), 
                     completeMultipartUploadResult.getLocation());
             Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
@@ -898,6 +904,7 @@ public class UploadPartTest extends TestBase {
                 CompleteMultipartUploadRequest completeMultipartUploadRequest = 
                         new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
                 ossClient.completeMultipartUpload(completeMultipartUploadRequest);
+                waitForCacheExpiration(5);
             } catch (OSSException e) {
                 Assert.assertEquals(OSSErrorCode.ENTITY_TOO_SMALL, e.getErrorCode());
                 Assert.assertTrue(e.getMessage().startsWith(ENTITY_TOO_SMALL_ERR));
@@ -936,6 +943,7 @@ public class UploadPartTest extends TestBase {
                 CompleteMultipartUploadRequest completeMultipartUploadRequest = 
                         new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
                 ossClient.completeMultipartUpload(completeMultipartUploadRequest);
+                waitForCacheExpiration(5);
                 Assert.fail("Complete multipart upload should not be successful");
             } catch (OSSException e) {
                 Assert.assertEquals(OSSErrorCode.INVALID_PART, e.getErrorCode());
@@ -951,6 +959,7 @@ public class UploadPartTest extends TestBase {
                 CompleteMultipartUploadRequest completeMultipartUploadRequest = 
                         new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
                 ossClient.completeMultipartUpload(completeMultipartUploadRequest);
+                waitForCacheExpiration(5);
                 Assert.fail("Complete multipart upload should not be successful");
             } catch (OSSException e) {
                 Assert.assertEquals(OSSErrorCode.INVALID_PART, e.getErrorCode());
@@ -964,6 +973,7 @@ public class UploadPartTest extends TestBase {
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
+            waitForCacheExpiration(5);
             Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key), 
                     completeMultipartUploadResult.getLocation());
             Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
@@ -1016,6 +1026,7 @@ public class UploadPartTest extends TestBase {
                         new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
                 CompleteMultipartUploadResult completeMultipartUploadResult =
                         ossClient.completeMultipartUpload(completeMultipartUploadRequest);
+                waitForCacheExpiration(5);
                 Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key), 
                         completeMultipartUploadResult.getLocation());
                 Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
@@ -1062,6 +1073,7 @@ public class UploadPartTest extends TestBase {
                         new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
                 CompleteMultipartUploadResult completeMultipartUploadResult =
                         ossClient.completeMultipartUpload(completeMultipartUploadRequest);
+                waitForCacheExpiration(5);
                 Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key), 
                         completeMultipartUploadResult.getLocation());
                 Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
