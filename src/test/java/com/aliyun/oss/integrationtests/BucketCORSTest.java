@@ -60,6 +60,7 @@ public class BucketCORSTest extends TestBase {
             request.addCorsRule(r0);
             
             ossClient.setBucketCORS(request);
+            waitForCacheExpiration(5);
             
             // Get bucket cors
             List<CORSRule> rules = ossClient.getBucketCORSRules(bucketName);
