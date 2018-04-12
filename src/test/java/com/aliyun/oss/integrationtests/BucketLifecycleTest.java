@@ -106,6 +106,7 @@ public class BucketLifecycleTest extends TestBase {
             request.AddLifecycleRule(rule);
             
             ossClient.setBucketLifecycle(request);
+            waitForCacheExpiration(5);
             
             List<LifecycleRule> rules = ossClient.getBucketLifecycle(bucketName);
             Assert.assertEquals(rules.size(), 6);
