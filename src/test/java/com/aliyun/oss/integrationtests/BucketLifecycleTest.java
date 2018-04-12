@@ -365,7 +365,7 @@ public class BucketLifecycleTest extends TestBase {
         }
         
         // Get bucket without setting lifecycle configuration
-        final String bucketWithoutLifecycleConfiguration = "bucket-without-lifecycle-configuration";
+        final String bucketWithoutLifecycleConfiguration = TestConfig.BUCKET_NAME_PREFIX+"bucket-without-lifecycle-configuration";
         try {
             ossClient.createBucket(bucketWithoutLifecycleConfiguration);
             
@@ -402,7 +402,7 @@ public class BucketLifecycleTest extends TestBase {
         }
         
         // Delete bucket without setting lifecycle configuration
-        final String bucketWithoutLifecycleConfiguration = "bucket-without-lifecycle-configuration";
+        final String bucketWithoutLifecycleConfiguration = TestConfig.BUCKET_NAME_PREFIX+"bucket-without-lifecycle-configuration";
         try {
             ossClient.createBucket(bucketWithoutLifecycleConfiguration);
             ossClient.deleteBucketLifecycle(bucketWithoutLifecycleConfiguration);
