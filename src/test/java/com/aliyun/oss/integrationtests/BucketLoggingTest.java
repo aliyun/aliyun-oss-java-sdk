@@ -75,6 +75,7 @@ public class BucketLoggingTest extends TestBase {
             request.setTargetBucket(targetBucket);
             request.setTargetPrefix(null);
             ossClient.setBucketLogging(request);
+            waitForCacheExpiration(5);
             
             result = ossClient.getBucketLogging(sourceBucket);
             Assert.assertEquals(targetBucket, result.getTargetBucket());
