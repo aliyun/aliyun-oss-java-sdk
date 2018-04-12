@@ -98,7 +98,6 @@ public class BucketWebsiteTest extends TestBase {
             request.setIndexDocument(indexDocument);
             request.AddRoutingRule(rule);
             ossClient.setBucketWebsite(request);
-            
             waitForCacheExpiration(5);
             
             // check
@@ -113,6 +112,7 @@ public class BucketWebsiteTest extends TestBase {
             Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
             
             ossClient.deleteBucketWebsite(bucketName);
+            waitForCacheExpiration(5);
             
             // set mirror with key prefix
             request = new SetBucketWebsiteRequest(bucketName);
@@ -126,7 +126,6 @@ public class BucketWebsiteTest extends TestBase {
             request.setIndexDocument(indexDocument);
             request.AddRoutingRule(rule);
             ossClient.setBucketWebsite(request);
-            
             waitForCacheExpiration(5);
             
             // check
@@ -142,6 +141,7 @@ public class BucketWebsiteTest extends TestBase {
             Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
             
             ossClient.deleteBucketWebsite(bucketName);
+            waitForCacheExpiration(5);
             
             // set mirror with secondary default mirror
             request = new SetBucketWebsiteRequest(bucketName);
