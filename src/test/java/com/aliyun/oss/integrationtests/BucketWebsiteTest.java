@@ -634,7 +634,7 @@ public class BucketWebsiteTest extends TestBase {
         }
         
         // Get bucket without setting website configuration
-        final String bucketWithoutWebsiteConfiguration = "bucket-without-website-configuration";
+        final String bucketWithoutWebsiteConfiguration = TestConfig.BUCKET_NAME_PREFIX+"bucket-without-website-configuration";
         try {
             ossClient.createBucket(bucketWithoutWebsiteConfiguration);
             
@@ -670,7 +670,7 @@ public class BucketWebsiteTest extends TestBase {
         }
         
         // Delete bucket without setting website configuration
-        final String bucketWithoutWebsiteConfiguration = "bucket-without-website-configuration";
+        final String bucketWithoutWebsiteConfiguration = TestConfig.BUCKET_NAME_PREFIX+"bucket-without-website-configuration";
         try {
             ossClient.createBucket(bucketWithoutWebsiteConfiguration);
             ossClient.deleteBucketWebsite(bucketWithoutWebsiteConfiguration);

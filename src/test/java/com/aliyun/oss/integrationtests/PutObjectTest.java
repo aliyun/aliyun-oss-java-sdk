@@ -30,6 +30,7 @@ import static com.aliyun.oss.integrationtests.TestUtils.genRandomLengthFile;
 import static com.aliyun.oss.integrationtests.TestUtils.removeFile;
 import static com.aliyun.oss.integrationtests.TestUtils.removeFiles;
 import static com.aliyun.oss.integrationtests.TestUtils.waitAll;
+import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_FILE_SIZE_LIMIT;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_OBJECT_CONTENT_TYPE;
 import static com.aliyun.oss.internal.OSSHeaders.OSS_USER_METADATA_PREFIX;
@@ -368,6 +369,8 @@ public class PutObjectTest extends TestBase {
             instream = genFixedLengthInputStream(inputStreamLength);
             // Using url signature & chunked encoding to upload specified inputstream.
             ossClient.putObject(signedUrl, instream, -1, requestHeaders, true);
+            waitForCacheExpiration(5);
+            
             OSSObject o = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, o.getKey());
             Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
@@ -385,6 +388,8 @@ public class PutObjectTest extends TestBase {
             instream = genFixedLengthInputStream(inputStreamLength);
             // Using url signature encoding to upload specified inputstream.
             ossClient.putObject(signedUrl, instream, -1, requestHeaders);
+            waitForCacheExpiration(5);
+            
             OSSObject o = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, o.getKey());
             Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());

@@ -537,6 +537,7 @@ public class GetObjectTest extends TestBase {
         
         try {
             ossClient.putObject(bucketName, key, genFixedLengthInputStream(inputStreamLength), null);
+            waitForCacheExpiration(5);
             
             GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key);
             Date expiration = DateUtil.parseRfc822Date(expirationString);

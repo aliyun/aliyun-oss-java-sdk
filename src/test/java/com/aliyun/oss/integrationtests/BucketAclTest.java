@@ -151,7 +151,7 @@ public class BucketAclTest extends TestBase {
         }
         
         // Get bucket using default acl
-        final String bucketUsingDefaultAcl = "bucket-using-default-acl";
+        final String bucketUsingDefaultAcl = TestConfig.BUCKET_NAME_PREFIX+"bucket-using-default-acl";
         try {
             ossClient.createBucket(bucketUsingDefaultAcl);
             

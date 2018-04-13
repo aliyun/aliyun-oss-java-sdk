@@ -228,7 +228,7 @@ public class BucketCORSTest extends TestBase {
         }
         
         // Get bucket without setting cors rules
-        final String bucketWithoutCORSRules = "bucket-without-cors-rules";
+        final String bucketWithoutCORSRules = TestConfig.BUCKET_NAME_PREFIX+"bucket-without-cors-rules";
         try {
             ossClient.createBucket(bucketWithoutCORSRules);
             

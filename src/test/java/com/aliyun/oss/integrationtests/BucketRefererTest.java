@@ -175,7 +175,7 @@ public class BucketRefererTest extends TestBase {
         }
         
         // Get bucket without setting referer list
-        final String bucketWithoutRefererRule = "bucket-without-referer";
+        final String bucketWithoutRefererRule = TestConfig.BUCKET_NAME_PREFIX+"bucket-without-referer";
         try {
             ossClient.createBucket(bucketWithoutRefererRule);
             
