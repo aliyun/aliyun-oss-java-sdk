@@ -349,7 +349,7 @@ public class PutObjectTest extends TestBase {
         final String key = "put-object-by-urlsignature";
         final String metaKey0 = "author";
         final String metaValue0 = "aliy";
-        final String expirationString = "Sun, 12 Apr 2018 12:00:00 GMT";
+        final String expirationString = "Sun, 12 Apr 2022 12:00:00 GMT";
         final long inputStreamLength = 128 * 1024; //128KB
         
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.PUT);
@@ -369,8 +369,6 @@ public class PutObjectTest extends TestBase {
             instream = genFixedLengthInputStream(inputStreamLength);
             // Using url signature & chunked encoding to upload specified inputstream.
             ossClient.putObject(signedUrl, instream, -1, requestHeaders, true);
-            waitForCacheExpiration(5);
-            
             OSSObject o = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, o.getKey());
             Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
@@ -388,8 +386,6 @@ public class PutObjectTest extends TestBase {
             instream = genFixedLengthInputStream(inputStreamLength);
             // Using url signature encoding to upload specified inputstream.
             ossClient.putObject(signedUrl, instream, -1, requestHeaders);
-            waitForCacheExpiration(5);
-            
             OSSObject o = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, o.getKey());
             Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());

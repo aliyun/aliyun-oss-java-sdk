@@ -530,15 +530,13 @@ public class GetObjectTest extends TestBase {
     @Test
     public void testGetObjectByUrlsignature() {    
         final String key = "put-object-by-urlsignature";
-        final String expirationString = "Sun, 12 Apr 2018 12:00:00 GMT";
+        final String expirationString = "Sun, 12 Apr 2022 12:00:00 GMT";
         final long inputStreamLength = 128 * 1024; //128KB
         final long firstByte= inputStreamLength / 2;
         final long lastByte = inputStreamLength - 1;
         
         try {
             ossClient.putObject(bucketName, key, genFixedLengthInputStream(inputStreamLength), null);
-            waitForCacheExpiration(5);
-            
             GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key);
             Date expiration = DateUtil.parseRfc822Date(expirationString);
             request.setExpiration(expiration);
