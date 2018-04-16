@@ -35,14 +35,11 @@ import com.aliyun.oss.model.AddBucketReplicationRequest.ReplicationAction;
 import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.CompleteMultipartUploadRequest;
 import com.aliyun.oss.model.CreateBucketRequest;
-import com.aliyun.oss.model.CreateBucketVpcipRequest;
 import com.aliyun.oss.model.CreateLiveChannelRequest;
 import com.aliyun.oss.model.CreateUdfApplicationRequest;
 import com.aliyun.oss.model.CreateUdfRequest;
-import com.aliyun.oss.model.CreateVpcipRequest;
 import com.aliyun.oss.model.DeleteBucketCnameRequest;
 import com.aliyun.oss.model.DeleteObjectsRequest;
-import com.aliyun.oss.model.DeleteVpcipRequest;
 import com.aliyun.oss.model.ImageProcess;
 import com.aliyun.oss.model.LifecycleRule;
 import com.aliyun.oss.model.LifecycleRule.AbortMultipartUpload;
@@ -68,7 +65,6 @@ import com.aliyun.oss.model.TagSet;
 import com.aliyun.oss.model.UdfApplicationConfiguration;
 import com.aliyun.oss.model.UpgradeUdfApplicationRequest;
 import com.aliyun.oss.model.UserQos;
-import com.aliyun.oss.model.VpcPolicy;
 
 /**
  * A collection of marshallers that marshall HTTP request into crossponding
@@ -102,10 +98,6 @@ public final class RequestMarshallers {
     public static final UpgradeUdfApplicationRequestMarshaller upgradeUdfApplicationRequestMarshaller = new UpgradeUdfApplicationRequestMarshaller();
     public static final ResizeUdfApplicationRequestMarshaller resizeUdfApplicationRequestMarshaller = new ResizeUdfApplicationRequestMarshaller();
     public static final ProcessObjectRequestMarshaller processObjectRequestMarshaller = new ProcessObjectRequestMarshaller();
-    public static final CreateVpcipRequestMarshaller createVpcipRequestMarshaller = new CreateVpcipRequestMarshaller();
-    public static final CreateBucketVpcipRequestMarshaller createBucketVpcipRequestMarshaller = new CreateBucketVpcipRequestMarshaller();
-    public static final DeleteVpcipRequestMarshaller deleteVpcipRequestMarshaller = new DeleteVpcipRequestMarshaller();
-    public static final DeleteBucketVpcipRequestMarshaller deleteBucketVpcipRequestMarshaller = new DeleteBucketVpcipRequestMarshaller();
 
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
 
@@ -931,100 +923,6 @@ public final class RequestMarshallers {
         }
 
         return sb.toString();
-    }
-    
-    public static final class CreateVpcipRequestMarshaller implements RequestMarshaller<CreateVpcipRequest> {
-    	
-    	@Override
-    	public FixedLengthInputStream marshall(CreateVpcipRequest request) {
-    		StringBuffer xmlBody = new StringBuffer();
-    		if (request.getRegion() != null || request.getVSwitchId() != null) {
-    			xmlBody.append("<CreateVpcip>");
-    			if (request.getRegion() != null) {
-    				xmlBody.append("<Region>" + request.getRegion() + "</Region>");
-    			}
-    			if (request.getVSwitchId() != null) {
-    				xmlBody.append("<VSwitchId>" + request.getVSwitchId() + "</VSwitchId>");
-    			}
-    			if(request.getLabal() != null){
-    				xmlBody.append("<Label>" + request.getLabal() + "</Label>");
-    			}
-    			xmlBody.append("</CreateVpcip>");
-    		}
-    		return stringMarshaller.marshall(xmlBody.toString());
-    	}
-    	
-    }
-    
-    public static final class DeleteVpcipRequestMarshaller implements RequestMarshaller<DeleteVpcipRequest> {
-    	
-    	@Override
-    	public FixedLengthInputStream marshall(DeleteVpcipRequest deleteVpcipRequest) {
-    		StringBuffer xmlBody = new StringBuffer();
-    		VpcPolicy request = deleteVpcipRequest.getVpcPolicy();
-    		if (request.getRegion() != null || request.getVpcId() != null || request.getVip() != null) {
-    			xmlBody.append("<DeleteVpcip>");
-    			if (request.getRegion() != null) {
-    				xmlBody.append("<Region>" + request.getRegion() + "</Region>");
-    			}
-    			if (request.getVpcId() != null) {
-    				xmlBody.append("<VpcId>" + request.getVpcId() + "</VpcId>");
-    			}
-    			if (request.getVip() != null) {
-    				xmlBody.append("<Vip>" + request.getVip() + "</Vip>");
-    			}
-    			xmlBody.append("</DeleteVpcip>");
-    		}
-    		return stringMarshaller.marshall(xmlBody.toString());
-    	}
-    	
-    }
-    
-    public static final class DeleteBucketVpcipRequestMarshaller implements RequestMarshaller<VpcPolicy> {
-    	
-    	@Override
-    	public FixedLengthInputStream marshall(VpcPolicy request) {
-    		StringBuffer xmlBody = new StringBuffer();
-    		if (request.getRegion() != null || request.getVpcId() != null || request.getVip() != null) {
-    			xmlBody.append("<DeleteBucketVpcPolicy>");
-    			if (request.getRegion() != null) {
-    				xmlBody.append("<Region>" + request.getRegion() + "</Region>");
-    			}
-    			if (request.getVpcId() != null) {
-    				xmlBody.append("<VpcId>" + request.getVpcId() + "</VpcId>");
-    			}
-    			if (request.getVip() != null) {
-    				xmlBody.append("<Vip>" + request.getVip() + "</Vip>");
-    			}
-    			xmlBody.append("</DeleteBucketVpcPolicy>");
-    		}
-    		return stringMarshaller.marshall(xmlBody.toString());
-    	}
-    	
-    }
-    
-    public static final class CreateBucketVpcipRequestMarshaller implements RequestMarshaller<CreateBucketVpcipRequest> {
-    	
-    	@Override
-    	public FixedLengthInputStream marshall(CreateBucketVpcipRequest bucketVpcPolicyRequest) {
-    		StringBuffer xmlBody = new StringBuffer();
-    		VpcPolicy request = bucketVpcPolicyRequest.getVpcPolicy();
-    		if (request.getRegion() != null || request.getVpcId() != null || request.getVip() != null) {
-    			xmlBody.append("<CreateBucketVpcPolicy>");
-    			if (request.getRegion() != null) {
-    				xmlBody.append("<Region>" + request.getRegion() + "</Region>");
-    			}
-    			if (request.getVpcId() != null) {
-    				xmlBody.append("<VpcId>" + request.getVpcId() + "</VpcId>");
-    			}
-    			if (request.getVip() != null) {
-    				xmlBody.append("<Vip>" + request.getVip() + "</Vip>");
-    			}
-    			xmlBody.append("</CreateBucketVpcPolicy>");
-    		}
-    		return stringMarshaller.marshall(xmlBody.toString());
-    	}
-    	
     }
 
 }

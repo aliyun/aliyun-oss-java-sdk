@@ -2276,49 +2276,5 @@ public interface OSS {
 
     public UdfApplicationLog getUdfApplicationLog(GetUdfApplicationLogRequest getUdfApplicationLogRequest)
             throws OSSException, ClientException;
-    
-    /**
-     * Creates a {@link VpcVip} instance with specified CreateVpcipRequest
-     * @param createVpcipRequest
-     * @return CreateVpcipResult
-     * @throws OSSException
-     * @throws ClientException
-     */
-    public CreateVpcipResult createVpcip(CreateVpcipRequest createVpcipRequest) throws OSSException, ClientException;
-    
-    /**
-     * Returns all {@link Vpcip} instances of the current account.
-     * 
-     * @return A list of {@link Vpcip} instances. If there's no Vpcips, the
-     *         list will be empty (instead of null).
-     */
-    public List<Vpcip> listVpcip() throws OSSException, ClientException;
-    
-    /**
-     * Deletes the {@link VpcVip} instance.
-     */
-    public void deleteVpcip(DeleteVpcipRequest deleteVpcipRequest) throws OSSException, ClientException;
-    
-    /**
-     * Bind a bucket to a Vpcip message
-     * Create Bind a {@link Vpcip} to a {@link bucket} instance with specified createBucketVpcipRequest
-     * @param createVpcipRequest
-     * @throws OSSException
-     * @throws ClientException
-     */
-    public void createBucketVpcip(CreateBucketVpcipRequest createBucketVpcipRequest) throws OSSException, ClientException;
-    
-    /**
-     * Returns all {@link VpcPolicy} instances of the Bucket.
-     * 
-     * @return A list of {@link VpcPolicy} instances. If there's no list, the
-     *         list will be empty (instead of null).
-     */
-    public List<VpcPolicy> getBucketVpcip(GenericRequest genericRequest) throws OSSException, ClientException;
-    
-    /**
-     * Deletes the {@link BucketVpcip} instance.
-     */
-    public void deleteBucketVpcip(DeleteBucketVpcipRequest deleteBucketVpcipRequest) throws OSSException, ClientException;
 
 }
