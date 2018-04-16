@@ -2278,8 +2278,8 @@ public interface OSS {
             throws OSSException, ClientException;
     
     /**
-     * Creates a {@link VpcVip} instance with specified CreateVpcipRequest
-     * @param createVpcipRequest
+     * Creates a {@link VpcVip} instance with specified CreateVpcipRequest.
+     * @param CreateVpcipRequest
      * @return CreateVpcipResult
      * @throws OSSException
      * @throws ClientException
@@ -2291,6 +2291,8 @@ public interface OSS {
      * 
      * @return A list of {@link Vpcip} instances. If there's no Vpcips, the
      *         list will be empty (instead of null).
+     * @throws OSSException
+     * @throws ClientException
      */
     public List<Vpcip> listVpcip() throws OSSException, ClientException;
     
@@ -2300,8 +2302,8 @@ public interface OSS {
     public void deleteVpcip(DeleteVpcipRequest deleteVpcipRequest) throws OSSException, ClientException;
     
     /**
-     * Bind a bucket to a Vpcip message
-     * Create Bind a {@link Vpcip} to a {@link bucket} instance with specified createBucketVpcipRequest
+     * Bind a bucket to a Vpcip message.
+     * Create Bind a {@link Vpcip} to a {@link bucket} instance with specified createBucketVpcipRequest.
      * @param createVpcipRequest
      * @throws OSSException
      * @throws ClientException
@@ -2313,11 +2315,15 @@ public interface OSS {
      * 
      * @return A list of {@link VpcPolicy} instances. If there's no list, the
      *         list will be empty (instead of null).
+     * @throws OSSException
+     * @throws ClientException
      */
     public List<VpcPolicy> getBucketVpcip(GenericRequest genericRequest) throws OSSException, ClientException;
     
     /**
-     * Deletes the {@link BucketVpcip} instance.
+     * Deletes the {@link BucketVpcip} instance.     
+     * @throws OSSException
+     * @throws ClientException
      */
     public void deleteBucketVpcip(DeleteBucketVpcipRequest deleteBucketVpcipRequest) throws OSSException, ClientException;
 

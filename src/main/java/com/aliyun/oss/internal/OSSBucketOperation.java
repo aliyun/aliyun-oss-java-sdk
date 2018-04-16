@@ -1170,8 +1170,8 @@ public class OSSBucketOperation extends OSSOperation {
     }
     
     /**
-     * Create vpcip replication.
-     * @param createVpcipRequest
+     * Create Vpcip replication.
+     * @param CreateVpcipRequest
      * @return CreateVpcipResult
      * @throws OSSException
      * @throws ClientException

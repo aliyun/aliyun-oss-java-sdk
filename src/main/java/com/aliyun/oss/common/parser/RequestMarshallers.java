@@ -938,6 +938,7 @@ public final class RequestMarshallers {
     	@Override
     	public FixedLengthInputStream marshall(CreateVpcipRequest request) {
     		StringBuffer xmlBody = new StringBuffer();
+    		
     		if (request.getRegion() != null || request.getVSwitchId() != null) {
     			xmlBody.append("<CreateVpcip>");
     			if (request.getRegion() != null) {
@@ -951,6 +952,7 @@ public final class RequestMarshallers {
     			}
     			xmlBody.append("</CreateVpcip>");
     		}
+    		
     		return stringMarshaller.marshall(xmlBody.toString());
     	}
     	
@@ -962,6 +964,7 @@ public final class RequestMarshallers {
     	public FixedLengthInputStream marshall(DeleteVpcipRequest deleteVpcipRequest) {
     		StringBuffer xmlBody = new StringBuffer();
     		VpcPolicy request = deleteVpcipRequest.getVpcPolicy();
+    		
     		if (request.getRegion() != null || request.getVpcId() != null || request.getVip() != null) {
     			xmlBody.append("<DeleteVpcip>");
     			if (request.getRegion() != null) {
@@ -975,6 +978,7 @@ public final class RequestMarshallers {
     			}
     			xmlBody.append("</DeleteVpcip>");
     		}
+    		
     		return stringMarshaller.marshall(xmlBody.toString());
     	}
     	
@@ -985,6 +989,7 @@ public final class RequestMarshallers {
     	@Override
     	public FixedLengthInputStream marshall(VpcPolicy request) {
     		StringBuffer xmlBody = new StringBuffer();
+    		
     		if (request.getRegion() != null || request.getVpcId() != null || request.getVip() != null) {
     			xmlBody.append("<DeleteBucketVpcPolicy>");
     			if (request.getRegion() != null) {
@@ -998,6 +1003,7 @@ public final class RequestMarshallers {
     			}
     			xmlBody.append("</DeleteBucketVpcPolicy>");
     		}
+    		
     		return stringMarshaller.marshall(xmlBody.toString());
     	}
     	
@@ -1009,6 +1015,7 @@ public final class RequestMarshallers {
     	public FixedLengthInputStream marshall(CreateBucketVpcipRequest bucketVpcPolicyRequest) {
     		StringBuffer xmlBody = new StringBuffer();
     		VpcPolicy request = bucketVpcPolicyRequest.getVpcPolicy();
+    		
     		if (request.getRegion() != null || request.getVpcId() != null || request.getVip() != null) {
     			xmlBody.append("<CreateBucketVpcPolicy>");
     			if (request.getRegion() != null) {
@@ -1022,6 +1029,7 @@ public final class RequestMarshallers {
     			}
     			xmlBody.append("</CreateBucketVpcPolicy>");
     		}
+    		
     		return stringMarshaller.marshall(xmlBody.toString());
     	}
     	

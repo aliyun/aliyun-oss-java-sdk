@@ -2622,7 +2622,7 @@ public final class ResponseParsers {
     }
     
     /**
-     * Unmarshall create live channel response body to corresponding result.
+     * Unmarshall image Vpcip response body to style list.
      */
     public static Vpcip parseGetCreateVpcipResult(InputStream responseBody) throws ResponseParseException {
     	
@@ -2653,7 +2653,7 @@ public final class ResponseParsers {
     }
 	
     /**
-     * Unmarshall list image VpcipInfoResult response body to style list.
+     * Unmarshall list image Vpcip response body to style list.
      */
     @SuppressWarnings("unchecked")
     public static List<Vpcip> parseListVpcipResult(InputStream responseBody) throws ResponseParseException {
@@ -2663,6 +2663,7 @@ public final class ResponseParsers {
     		
     		List<Vpcip> vpcipList = new ArrayList<Vpcip>();
     		List<Element> vpcips = root.getChildren("Vpcip");
+    		
     		for (Element e : vpcips) {
     			Vpcip vpcipInfo = new Vpcip();
     			vpcipInfo.setRegion(e.getChildText("Region"));
@@ -2671,6 +2672,7 @@ public final class ResponseParsers {
     			vpcipInfo.setLabel(e.getChildText("Label"));
     			vpcipList.add(vpcipInfo);
     		}
+    		
     		return vpcipList;
     	} catch (JDOMParseException e) {
     		throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
@@ -2681,7 +2683,7 @@ public final class ResponseParsers {
     }
 	
     /**
-     * Unmarshall list image VpcipInfoResult response body to style list.
+     * Unmarshall list image VpcPolicy response body to style list.
      */
     @SuppressWarnings("unchecked")
     public static List<VpcPolicy> parseListVpcPolicyResult(InputStream responseBody) throws ResponseParseException {
