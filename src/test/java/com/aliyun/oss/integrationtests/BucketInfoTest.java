@@ -21,6 +21,8 @@ package com.aliyun.oss.integrationtests;
 
 import junit.framework.Assert;
 
+import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
+
 import org.junit.Test;
 
 import com.aliyun.oss.model.BucketInfo;
@@ -38,6 +40,7 @@ public class BucketInfoTest extends TestBase {
     public void testGetBucketInfo() {
         try {
             ossClient.setBucketAcl(bucketName, CannedAccessControlList.PublicRead);
+            waitForCacheExpiration(5);
             
             BucketInfo info = ossClient.getBucketInfo(bucketName);
             Assert.assertEquals(info.getBucket().getName(), bucketName);

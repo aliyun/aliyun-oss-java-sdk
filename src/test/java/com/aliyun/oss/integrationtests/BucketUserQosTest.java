@@ -21,6 +21,8 @@ package com.aliyun.oss.integrationtests;
 
 import junit.framework.Assert;
 
+import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
+
 import org.junit.Test;
 
 import com.aliyun.oss.OSSErrorCode;
@@ -49,6 +51,7 @@ public class BucketUserQosTest extends TestBase {
         try {
             UserQos userQos = new UserQos(-1);
             ossClient.setBucketStorageCapacity(bucketName, userQos);
+            waitForCacheExpiration(5);
             
             userQos = ossClient.getBucketStorageCapacity(bucketName);
             Assert.assertEquals(userQos.getStorageCapacity(), -1);
@@ -56,6 +59,7 @@ public class BucketUserQosTest extends TestBase {
             
             userQos.setStorageCapacity(10000);
             ossClient.setBucketStorageCapacity(new SetBucketStorageCapacityRequest(bucketName).withUserQos(userQos));
+            waitForCacheExpiration(5);
             
             userQos = ossClient.getBucketStorageCapacity(bucketName);
             Assert.assertEquals(userQos.getStorageCapacity(), 10000);

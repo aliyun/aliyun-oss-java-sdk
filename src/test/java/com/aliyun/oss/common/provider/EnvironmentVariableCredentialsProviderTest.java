@@ -33,6 +33,8 @@ import com.aliyun.oss.common.auth.CredentialsProviderFactory;
 import com.aliyun.oss.common.auth.EnvironmentVariableCredentialsProvider;
 import com.aliyun.oss.common.utils.AuthUtils;
 import junit.framework.Assert;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class EnvironmentVariableCredentialsProviderTest extends TestBase {
@@ -99,7 +101,7 @@ public class EnvironmentVariableCredentialsProviderTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-
+    @Ignore
     @Test
     public void testGetEnvironmentVariableCredentialsInOss() {
         try {
@@ -131,7 +133,7 @@ public class EnvironmentVariableCredentialsProviderTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-
+    @Ignore
     @Test
     public void testGetEnvironmentVariableStsCredentialsInOss() {
         try {

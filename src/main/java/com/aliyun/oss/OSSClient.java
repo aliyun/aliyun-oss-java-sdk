@@ -1388,5 +1388,5 @@ public class OSSClient implements OSS {
             logException("shutdown throw exception: ", e);
         }
     }
-
+	
 }

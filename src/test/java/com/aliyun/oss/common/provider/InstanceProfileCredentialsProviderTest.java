@@ -33,7 +33,7 @@ import com.aliyun.oss.common.provider.mock.InstanceProfileCredentialsFetcherMock
 import junit.framework.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-
+@Ignore
 public class InstanceProfileCredentialsProviderTest extends TestBase {
 
     @Test
