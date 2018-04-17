@@ -102,7 +102,7 @@ public class TestBase {
     }
     
     public static String createBucket() {
-        String ticks = new Date().getTime() / 1000+"-"+System.getProperty("java.version").substring(0, 3).replace(".", "-")+"-"+System.getProperty("sun.arch.data.model");
+        String ticks = System.currentTimeMillis() / 1000+"case-";
         String bucketName = TestConfig.BUCKET_NAME_PREFIX + ticks;
         getOSSClient().createBucket(bucketName);
         waitForCacheExpiration(2);
