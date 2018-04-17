@@ -33,32 +33,32 @@ import com.aliyun.oss.model.TagSet;
 
 public class BucketTaggingTest extends TestBase {
 
-    @Test
-    public void testSetBucketTagging() {
-        try {
-            SetBucketTaggingRequest request = new SetBucketTaggingRequest(bucketName);
-            request.setTag("tk1", "tv1");
-            request.setTag("tk2", "tv2");
-            ossClient.setBucketTagging(request);
-            waitForCacheExpiration(5);
-            
-            TagSet tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
-            Assert.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
-            Map<String, String> tags = tagSet.getAllTags();
-            Assert.assertEquals(2, tags.size());
-            Assert.assertTrue(tags.containsKey("tk1"));
-            Assert.assertTrue(tags.containsKey("tk2"));
-            
-            ossClient.deleteBucketTagging(new GenericRequest(bucketName));
-          
-            waitForCacheExpiration(5);
-            
-            tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
-            Assert.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
-            tags = tagSet.getAllTags();
-            Assert.assertTrue(tags.isEmpty());
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        }
-    }
+	@Test
+	public void testSetBucketTagging() {
+		try {
+			SetBucketTaggingRequest request = new SetBucketTaggingRequest(bucketName);
+			request.setTag("tk1", "tv1");
+			request.setTag("tk2", "tv2");
+			ossClient.setBucketTagging(request);
+			waitForCacheExpiration(5);
+
+			TagSet tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
+			Assert.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
+			Map<String, String> tags = tagSet.getAllTags();
+			Assert.assertEquals(2, tags.size());
+			Assert.assertTrue(tags.containsKey("tk1"));
+			Assert.assertTrue(tags.containsKey("tk2"));
+
+			ossClient.deleteBucketTagging(new GenericRequest(bucketName));
+
+			waitForCacheExpiration(5);
+
+			tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
+			Assert.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
+			tags = tagSet.getAllTags();
+			Assert.assertTrue(tags.isEmpty());
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+	}
 }

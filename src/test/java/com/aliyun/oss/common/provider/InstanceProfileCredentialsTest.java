@@ -25,60 +25,61 @@ import org.junit.Test;
 
 public class InstanceProfileCredentialsTest extends TestBase {
 
-    @Test
-    public void testBasicTest() {
-        try {
-            InstanceProfileCredentials credentials = new InstanceProfileCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, null,
-                    "2017-11-03T05:10:02Z");
-            Assert.assertEquals(credentials.getAccessKeyId(), ACCESS_KEY_ID);
-            Assert.assertEquals(credentials.getSecretAccessKey(), ACCESS_KEY_SECRET);
-            Assert.assertEquals(credentials.getSecurityToken(), null);
-            Assert.assertFalse(credentials.useSecurityToken());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
+	@Test
+	public void testBasicTest() {
+		try {
+			InstanceProfileCredentials credentials = new InstanceProfileCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET,
+					null, "2017-11-03T05:10:02Z");
+			Assert.assertEquals(credentials.getAccessKeyId(), ACCESS_KEY_ID);
+			Assert.assertEquals(credentials.getSecretAccessKey(), ACCESS_KEY_SECRET);
+			Assert.assertEquals(credentials.getSecurityToken(), null);
+			Assert.assertFalse(credentials.useSecurityToken());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
 
-    @Test
-    public void testWillSoonExpire() {
-        try {
-            InstanceProfileCredentials credentials = new InstanceProfileCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, null,
-                    "2016-11-11T11:11:11Z");
-            Assert.assertTrue(credentials.willSoonExpire());
-            Assert.assertTrue(credentials.isExpired());
-            Assert.assertTrue(credentials.shouldRefresh());
+	@Test
+	public void testWillSoonExpire() {
+		try {
+			InstanceProfileCredentials credentials = new InstanceProfileCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET,
+					null, "2016-11-11T11:11:11Z");
+			Assert.assertTrue(credentials.willSoonExpire());
+			Assert.assertTrue(credentials.isExpired());
+			Assert.assertTrue(credentials.shouldRefresh());
 
-            credentials = new InstanceProfileCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, null, "2020-11-11T11:11:11Z");
-            Assert.assertFalse(credentials.willSoonExpire());
-            Assert.assertFalse(credentials.isExpired());
-            Assert.assertTrue(credentials.shouldRefresh());
+			credentials = new InstanceProfileCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, null,
+					"2020-11-11T11:11:11Z");
+			Assert.assertFalse(credentials.willSoonExpire());
+			Assert.assertFalse(credentials.isExpired());
+			Assert.assertTrue(credentials.shouldRefresh());
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
 
-    @Test
-    public void testExpiredFactor() {
-        try {
-            InstanceProfileCredentials credentials = new InstanceProfileCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, null,
-                    "2010-11-11T11:11:11Z").withExpiredFactor(10.0);
-            Thread.sleep(1000);
-            Assert.assertTrue(credentials.willSoonExpire());
+	@Test
+	public void testExpiredFactor() {
+		try {
+			InstanceProfileCredentials credentials = new InstanceProfileCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET,
+					null, "2010-11-11T11:11:11Z").withExpiredFactor(10.0);
+			Thread.sleep(1000);
+			Assert.assertTrue(credentials.willSoonExpire());
 
-             credentials = new InstanceProfileCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, null, "2020-11-11T11:11:11Z")
-                    .withExpiredFactor(0.8);
-            Thread.sleep(1000);
-            Assert.assertFalse(credentials.willSoonExpire());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
+			credentials = new InstanceProfileCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, null, "2020-11-11T11:11:11Z")
+					.withExpiredFactor(0.8);
+			Thread.sleep(1000);
+			Assert.assertFalse(credentials.willSoonExpire());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
 
-    private static final String ACCESS_KEY_ID = "AccessKeyId";
-    private static final String ACCESS_KEY_SECRET = "AccessKeySecret";
+	private static final String ACCESS_KEY_ID = "AccessKeyId";
+	private static final String ACCESS_KEY_SECRET = "AccessKeySecret";
 
 }

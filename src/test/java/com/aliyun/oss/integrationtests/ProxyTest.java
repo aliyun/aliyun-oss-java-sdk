@@ -37,40 +37,37 @@ import com.aliyun.oss.model.ObjectMetadata;
  */
 public class ProxyTest extends TestBase {
 
-    @Ignore
-    public void testProxy() {
-        String key = "test/test.txt";
-        String content = "Hello OSS.";
-        
-        try {          
-            ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
-            conf.setProxyHost(TestConfig.PROXY_HOST);
-            conf.setProxyPort(TestConfig.PROXY_PORT);
-            conf.setProxyUsername(TestConfig.PROXY_USER);
-            conf.setProxyPassword(TestConfig.PROXY_PASSWORD);
-            
-            OSS ossClient = new OSSClientBuilder().build(
-                    TestConfig.OSS_TEST_ENDPOINT, 
-                    TestConfig.OSS_TEST_ACCESS_KEY_ID, 
-                    TestConfig.OSS_TEST_ACCESS_KEY_SECRET, 
-                    conf);
+	@Ignore
+	public void testProxy() {
+		String key = "test/test.txt";
+		String content = "Hello OSS.";
 
-            BucketInfo info = ossClient.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
-            
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentLength(content.getBytes().length);
-            ossClient.putObject(bucketName, key, new ByteArrayInputStream(content.getBytes()), metadata);
-            
-            OSSObject ossObject = ossClient.getObject(bucketName, key);
-            InputStream inputStream = ossObject.getObjectContent(); 
-            inputStream.close();
-            
-            ossClient.deleteObject(bucketName, key);
-            
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        }
-    }
-    
+		try {
+			ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
+			conf.setProxyHost(TestConfig.PROXY_HOST);
+			conf.setProxyPort(TestConfig.PROXY_PORT);
+			conf.setProxyUsername(TestConfig.PROXY_USER);
+			conf.setProxyPassword(TestConfig.PROXY_PASSWORD);
+
+			OSS ossClient = new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT,
+					TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET, conf);
+
+			BucketInfo info = ossClient.getBucketInfo(bucketName);
+			Assert.assertEquals(info.getBucket().getName(), bucketName);
+
+			ObjectMetadata metadata = new ObjectMetadata();
+			metadata.setContentLength(content.getBytes().length);
+			ossClient.putObject(bucketName, key, new ByteArrayInputStream(content.getBytes()), metadata);
+
+			OSSObject ossObject = ossClient.getObject(bucketName, key);
+			InputStream inputStream = ossObject.getObjectContent();
+			inputStream.close();
+
+			ossClient.deleteObject(bucketName, key);
+
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+	}
+
 }

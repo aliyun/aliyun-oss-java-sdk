@@ -35,139 +35,140 @@ import org.junit.Test;
 
 public class ClientBuilderTest extends TestBase {
 
-    private final static String TEST_KEY = "test/test.txt";
-    private final static String TEST_CONTENT = "Hello OSS.";
+	private final static String TEST_KEY = "test/test.txt";
+	private final static String TEST_CONTENT = "Hello OSS.";
 
-    @Test
-    public void testClientBuilderDefault() {
-        try {
-            OSSClient ossClient = (OSSClient) new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT,
-                    TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
-            Assert.assertFalse(ossClient.getClientConfiguration().isSupportCname());
+	@Test
+	public void testClientBuilderDefault() {
+		try {
+			OSSClient ossClient = (OSSClient) new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT,
+					TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
+			Assert.assertFalse(ossClient.getClientConfiguration().isSupportCname());
 
-            BucketInfo info = ossClient.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
+			BucketInfo info = ossClient.getBucketInfo(bucketName);
+			Assert.assertEquals(info.getBucket().getName(), bucketName);
 
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentLength(TEST_CONTENT.getBytes().length);
-            ossClient.putObject(bucketName, TEST_KEY, new ByteArrayInputStream(TEST_CONTENT.getBytes()), metadata);
+			ObjectMetadata metadata = new ObjectMetadata();
+			metadata.setContentLength(TEST_CONTENT.getBytes().length);
+			ossClient.putObject(bucketName, TEST_KEY, new ByteArrayInputStream(TEST_CONTENT.getBytes()), metadata);
 
-            OSSObject ossObject = ossClient.getObject(bucketName, TEST_KEY);
-            InputStream inputStream = ossObject.getObjectContent();
-            inputStream.close();
+			OSSObject ossObject = ossClient.getObject(bucketName, TEST_KEY);
+			InputStream inputStream = ossObject.getObjectContent();
+			inputStream.close();
 
-            ossClient.deleteObject(bucketName, TEST_KEY);
+			ossClient.deleteObject(bucketName, TEST_KEY);
 
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        }
-    }
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+	}
 
-    @Test
-    public void testClientBuilderWithCredentialProvider() {
-        try {
-            OSSClient ossClient = (OSSClient) new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT,
-                    new DefaultCredentialProvider(TestConfig.OSS_TEST_ACCESS_KEY_ID,
-                            TestConfig.OSS_TEST_ACCESS_KEY_SECRET),
-                    null);
-            Assert.assertFalse(ossClient.getClientConfiguration().isSupportCname());
+	@Test
+	public void testClientBuilderWithCredentialProvider() {
+		try {
+			OSSClient ossClient = (OSSClient) new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT,
+					new DefaultCredentialProvider(TestConfig.OSS_TEST_ACCESS_KEY_ID,
+							TestConfig.OSS_TEST_ACCESS_KEY_SECRET),
+					null);
+			Assert.assertFalse(ossClient.getClientConfiguration().isSupportCname());
 
-            BucketInfo info = ossClient.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
+			BucketInfo info = ossClient.getBucketInfo(bucketName);
+			Assert.assertEquals(info.getBucket().getName(), bucketName);
 
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentLength(TEST_CONTENT.getBytes().length);
-            ossClient.putObject(bucketName, TEST_KEY, new ByteArrayInputStream(TEST_CONTENT.getBytes()), metadata);
+			ObjectMetadata metadata = new ObjectMetadata();
+			metadata.setContentLength(TEST_CONTENT.getBytes().length);
+			ossClient.putObject(bucketName, TEST_KEY, new ByteArrayInputStream(TEST_CONTENT.getBytes()), metadata);
 
-            OSSObject ossObject = ossClient.getObject(bucketName, TEST_KEY);
-            InputStream inputStream = ossObject.getObjectContent();
-            inputStream.close();
+			OSSObject ossObject = ossClient.getObject(bucketName, TEST_KEY);
+			InputStream inputStream = ossObject.getObjectContent();
+			inputStream.close();
 
-            ossClient.deleteObject(bucketName, TEST_KEY);
+			ossClient.deleteObject(bucketName, TEST_KEY);
 
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        }
-    }
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+	}
 
-    @Test
-    public void testClientBuilderWithBuilderConfiguration() {
-        try {
-            OSSClient ossClient = (OSSClient) new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT,
-                    new DefaultCredentialProvider(TestConfig.OSS_TEST_ACCESS_KEY_ID,
-                            TestConfig.OSS_TEST_ACCESS_KEY_SECRET),
-                    new ClientBuilderConfiguration());
-            Assert.assertFalse(ossClient.getClientConfiguration().isSupportCname());
+	@Test
+	public void testClientBuilderWithBuilderConfiguration() {
+		try {
+			OSSClient ossClient = (OSSClient) new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT,
+					new DefaultCredentialProvider(TestConfig.OSS_TEST_ACCESS_KEY_ID,
+							TestConfig.OSS_TEST_ACCESS_KEY_SECRET),
+					new ClientBuilderConfiguration());
+			Assert.assertFalse(ossClient.getClientConfiguration().isSupportCname());
 
-            BucketInfo info = ossClient.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
+			BucketInfo info = ossClient.getBucketInfo(bucketName);
+			Assert.assertEquals(info.getBucket().getName(), bucketName);
 
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentLength(TEST_CONTENT.getBytes().length);
-            ossClient.putObject(bucketName, TEST_KEY, new ByteArrayInputStream(TEST_CONTENT.getBytes()), metadata);
+			ObjectMetadata metadata = new ObjectMetadata();
+			metadata.setContentLength(TEST_CONTENT.getBytes().length);
+			ossClient.putObject(bucketName, TEST_KEY, new ByteArrayInputStream(TEST_CONTENT.getBytes()), metadata);
 
-            OSSObject ossObject = ossClient.getObject(bucketName, TEST_KEY);
-            InputStream inputStream = ossObject.getObjectContent();
-            inputStream.close();
+			OSSObject ossObject = ossClient.getObject(bucketName, TEST_KEY);
+			InputStream inputStream = ossObject.getObjectContent();
+			inputStream.close();
 
-            ossClient.deleteObject(bucketName, TEST_KEY);
+			ossClient.deleteObject(bucketName, TEST_KEY);
 
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        }
-    }
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+	}
 
-    @Test
-    public void testClientBuilderWithSTS() {
-        try {
-            ClientBuilderConfiguration config = new ClientBuilderConfiguration();
-            config.setSupportCname(true);
-            config.setConnectionTimeout(10000);
-            OSSClient ossClient = (OSSClient) new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT,
-                    new DefaultCredentialProvider(TestConfig.OSS_TEST_ACCESS_KEY_ID,
-                            TestConfig.OSS_TEST_ACCESS_KEY_SECRET, "TOKEN"), config);
-            Assert.assertTrue(ossClient.getClientConfiguration().isSupportCname());
-            Assert.assertEquals(ossClient.getClientConfiguration().getConnectionTimeout(), 10000);
+	@Test
+	public void testClientBuilderWithSTS() {
+		try {
+			ClientBuilderConfiguration config = new ClientBuilderConfiguration();
+			config.setSupportCname(true);
+			config.setConnectionTimeout(10000);
+			OSSClient ossClient = (OSSClient) new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT,
+					new DefaultCredentialProvider(TestConfig.OSS_TEST_ACCESS_KEY_ID,
+							TestConfig.OSS_TEST_ACCESS_KEY_SECRET, "TOKEN"),
+					config);
+			Assert.assertTrue(ossClient.getClientConfiguration().isSupportCname());
+			Assert.assertEquals(ossClient.getClientConfiguration().getConnectionTimeout(), 10000);
 
-            Credentials cred = ossClient.getCredentialsProvider().getCredentials();
-            Assert.assertEquals(cred.getAccessKeyId(), TestConfig.OSS_TEST_ACCESS_KEY_ID);
-            Assert.assertEquals(cred.getSecretAccessKey(), TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
-            Assert.assertEquals(cred.getSecurityToken(), "TOKEN");
-            Assert.assertTrue(cred.useSecurityToken());
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        }
-    }
+			Credentials cred = ossClient.getCredentialsProvider().getCredentials();
+			Assert.assertEquals(cred.getAccessKeyId(), TestConfig.OSS_TEST_ACCESS_KEY_ID);
+			Assert.assertEquals(cred.getSecretAccessKey(), TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
+			Assert.assertEquals(cred.getSecurityToken(), "TOKEN");
+			Assert.assertTrue(cred.useSecurityToken());
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+	}
 
-    @Test
-    public void testClientBuilderWithAll() {
-        try {
-            ClientBuilderConfiguration config = new ClientBuilderConfiguration();
-            config.setSupportCname(true);
-            config.setConnectionTimeout(10000);
-            OSSClient ossClient = (OSSClient) new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT,
-                    new DefaultCredentialProvider(TestConfig.OSS_TEST_ACCESS_KEY_ID,
-                            TestConfig.OSS_TEST_ACCESS_KEY_SECRET),
-                    config);
-            Assert.assertTrue(ossClient.getClientConfiguration().isSupportCname());
-            Assert.assertEquals(ossClient.getClientConfiguration().getConnectionTimeout(), 10000);
+	@Test
+	public void testClientBuilderWithAll() {
+		try {
+			ClientBuilderConfiguration config = new ClientBuilderConfiguration();
+			config.setSupportCname(true);
+			config.setConnectionTimeout(10000);
+			OSSClient ossClient = (OSSClient) new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT,
+					new DefaultCredentialProvider(TestConfig.OSS_TEST_ACCESS_KEY_ID,
+							TestConfig.OSS_TEST_ACCESS_KEY_SECRET),
+					config);
+			Assert.assertTrue(ossClient.getClientConfiguration().isSupportCname());
+			Assert.assertEquals(ossClient.getClientConfiguration().getConnectionTimeout(), 10000);
 
-            BucketInfo info = ossClient.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
+			BucketInfo info = ossClient.getBucketInfo(bucketName);
+			Assert.assertEquals(info.getBucket().getName(), bucketName);
 
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentLength(TEST_CONTENT.getBytes().length);
-            ossClient.putObject(bucketName, TEST_KEY, new ByteArrayInputStream(TEST_CONTENT.getBytes()), metadata);
+			ObjectMetadata metadata = new ObjectMetadata();
+			metadata.setContentLength(TEST_CONTENT.getBytes().length);
+			ossClient.putObject(bucketName, TEST_KEY, new ByteArrayInputStream(TEST_CONTENT.getBytes()), metadata);
 
-            OSSObject ossObject = ossClient.getObject(bucketName, TEST_KEY);
-            InputStream inputStream = ossObject.getObjectContent();
-            inputStream.close();
+			OSSObject ossObject = ossClient.getObject(bucketName, TEST_KEY);
+			InputStream inputStream = ossObject.getObjectContent();
+			inputStream.close();
 
-            ossClient.deleteObject(bucketName, TEST_KEY);
+			ossClient.deleteObject(bucketName, TEST_KEY);
 
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        }
-    }
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+	}
 
 }

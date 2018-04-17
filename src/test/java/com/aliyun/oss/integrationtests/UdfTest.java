@@ -47,258 +47,260 @@ import com.aliyun.oss.model.UploadUdfImageRequest;
 
 @Ignore
 public class UdfTest extends TestBase {
-    
-    private static final String UDF_IMG_V1 = "D:\\work\\oss\\udf\\udf-go-pingpong.tar.gz";
-    private static final String UDF_IMG_V2 = "D:\\work\\oss\\udf\\udf-go-pingpong-upgrade.tar.gz";
-    
-    @Test
-    public void testUdf() {
-        String udf = "udf-go-pingpong-1";
-        String desc = "udf-go-pingpong-1";
 
-        try {
-            // create udf
-            CreateUdfRequest createUdfRequest = new CreateUdfRequest(udf, desc);
-            ossClient.createUdf(createUdfRequest);
+	private static final String UDF_IMG_V1 = "D:\\work\\oss\\udf\\udf-go-pingpong.tar.gz";
+	private static final String UDF_IMG_V2 = "D:\\work\\oss\\udf\\udf-go-pingpong-upgrade.tar.gz";
 
-            UdfGenericRequest genericRequest = new UdfGenericRequest(udf);
-            UdfInfo ui = ossClient.getUdfInfo(genericRequest);
-            System.out.println(ui);
+	@Test
+	public void testUdf() {
+		String udf = "udf-go-pingpong-1";
+		String desc = "udf-go-pingpong-1";
 
-            // list image info
-            List<UdfImageInfo> udfImages = ossClient.getUdfImageInfo(genericRequest);
-            for (UdfImageInfo image : udfImages) {
-                System.out.println(image);
-            }
+		try {
+			// create udf
+			CreateUdfRequest createUdfRequest = new CreateUdfRequest(udf, desc);
+			ossClient.createUdf(createUdfRequest);
 
-            List<UdfInfo> udfs = ossClient.listUdfs();
-            for (UdfInfo u : udfs) {
-                System.out.println(u);
-            }
-            
-            // delete udf
-            ossClient.deleteUdf(genericRequest);
+			UdfGenericRequest genericRequest = new UdfGenericRequest(udf);
+			UdfInfo ui = ossClient.getUdfInfo(genericRequest);
+			System.out.println(ui);
 
-            udfs = ossClient.listUdfs();
-            System.out.println("After delete:");
-            for (UdfInfo u : udfs) {
-                System.out.println(u);
-            }
+			// list image info
+			List<UdfImageInfo> udfImages = ossClient.getUdfImageInfo(genericRequest);
+			for (UdfImageInfo image : udfImages) {
+				System.out.println(image);
+			}
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Assert.fail(ex.getMessage());
-        }
-    }
+			List<UdfInfo> udfs = ossClient.listUdfs();
+			for (UdfInfo u : udfs) {
+				System.out.println(u);
+			}
 
-    @Test
-    public void testUdfImage() {
-        String udf = "udf-go-pingpong-1";
-        String desc = "udf-go-pingpong-1";
+			// delete udf
+			ossClient.deleteUdf(genericRequest);
 
-        try {
-            // create udf
-            CreateUdfRequest createUdfRequest = new CreateUdfRequest(udf, desc);
-            ossClient.createUdf(createUdfRequest);
+			udfs = ossClient.listUdfs();
+			System.out.println("After delete:");
+			for (UdfInfo u : udfs) {
+				System.out.println(u);
+			}
 
-            UdfGenericRequest genericRequest = new UdfGenericRequest(udf);
-            UdfInfo ui = ossClient.getUdfInfo(genericRequest);
-            System.out.println(ui);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			Assert.fail(ex.getMessage());
+		}
+	}
 
-            // upload image
-            InputStream in = new FileInputStream(UDF_IMG_V1);
-            UploadUdfImageRequest uploadUdfImageRequest = new UploadUdfImageRequest(udf, desc, in);
-            ossClient.uploadUdfImage(uploadUdfImageRequest);
+	@Test
+	public void testUdfImage() {
+		String udf = "udf-go-pingpong-1";
+		String desc = "udf-go-pingpong-1";
 
-            in = new FileInputStream(UDF_IMG_V2);
-            uploadUdfImageRequest = new UploadUdfImageRequest(udf, desc, in);
-            ossClient.uploadUdfImage(uploadUdfImageRequest);
+		try {
+			// create udf
+			CreateUdfRequest createUdfRequest = new CreateUdfRequest(udf, desc);
+			ossClient.createUdf(createUdfRequest);
 
-            List<UdfImageInfo> udfImages = ossClient.getUdfImageInfo(genericRequest);
-            for (UdfImageInfo image : udfImages) {
-                System.out.println(image);
-            }
+			UdfGenericRequest genericRequest = new UdfGenericRequest(udf);
+			UdfInfo ui = ossClient.getUdfInfo(genericRequest);
+			System.out.println(ui);
 
-            // wait build completed
-            for (UdfImageInfo image : udfImages) {
-                if (image.getStatus().equals("building")) {
-                    TestUtils.waitForCacheExpiration(60);
-                    udfImages = ossClient.getUdfImageInfo(genericRequest);
-                    continue;
-                }
-            }
-            
-            // delete udf image
-            ossClient.deleteUdfImage(genericRequest);
+			// upload image
+			InputStream in = new FileInputStream(UDF_IMG_V1);
+			UploadUdfImageRequest uploadUdfImageRequest = new UploadUdfImageRequest(udf, desc, in);
+			ossClient.uploadUdfImage(uploadUdfImageRequest);
 
-            // wait images deleted
-            udfImages = ossClient.getUdfImageInfo(genericRequest);
-            for (; udfImages.size() > 0;) {
-                TestUtils.waitForCacheExpiration(60);
-                udfImages = ossClient.getUdfImageInfo(genericRequest);
-            }
+			in = new FileInputStream(UDF_IMG_V2);
+			uploadUdfImageRequest = new UploadUdfImageRequest(udf, desc, in);
+			ossClient.uploadUdfImage(uploadUdfImageRequest);
 
-            // delete image
-            ossClient.deleteUdf(genericRequest);
+			List<UdfImageInfo> udfImages = ossClient.getUdfImageInfo(genericRequest);
+			for (UdfImageInfo image : udfImages) {
+				System.out.println(image);
+			}
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Assert.fail(ex.getMessage());
-        }
-    }
-    
-    @Test
-    public void testUdfApplication() {
-        String udf = "udf-go-pingpong-1";
-        String desc = "udf-go-pingpong-1";
+			// wait build completed
+			for (UdfImageInfo image : udfImages) {
+				if (image.getStatus().equals("building")) {
+					TestUtils.waitForCacheExpiration(60);
+					udfImages = ossClient.getUdfImageInfo(genericRequest);
+					continue;
+				}
+			}
 
-        try {
-            // create udf
-            CreateUdfRequest createUdfRequest = new CreateUdfRequest(udf, desc);
-            ossClient.createUdf(createUdfRequest);
+			// delete udf image
+			ossClient.deleteUdfImage(genericRequest);
 
-            UdfGenericRequest genericRequest = new UdfGenericRequest(udf);
-            UdfInfo ui = ossClient.getUdfInfo(genericRequest);
-            System.out.println(ui);
+			// wait images deleted
+			udfImages = ossClient.getUdfImageInfo(genericRequest);
+			for (; udfImages.size() > 0;) {
+				TestUtils.waitForCacheExpiration(60);
+				udfImages = ossClient.getUdfImageInfo(genericRequest);
+			}
 
-            // upload image
-            InputStream in = new FileInputStream(UDF_IMG_V1);
-            UploadUdfImageRequest uploadUdfImageRequest = new UploadUdfImageRequest(udf, desc, in);
-            ossClient.uploadUdfImage(uploadUdfImageRequest);
+			// delete image
+			ossClient.deleteUdf(genericRequest);
 
-            in = new FileInputStream(UDF_IMG_V2);
-            uploadUdfImageRequest = new UploadUdfImageRequest(udf, desc, in);
-            ossClient.uploadUdfImage(uploadUdfImageRequest);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			Assert.fail(ex.getMessage());
+		}
+	}
 
-            List<UdfImageInfo> udfImages = ossClient.getUdfImageInfo(genericRequest);
-            for (UdfImageInfo image : udfImages) {
-                System.out.println(image);
-            }
+	@Test
+	public void testUdfApplication() {
+		String udf = "udf-go-pingpong-1";
+		String desc = "udf-go-pingpong-1";
 
-            // wait build completed
-            for (UdfImageInfo image : udfImages) {
-                if (image.getStatus().equals("building")) {
-                    TestUtils.waitForCacheExpiration(60);
-                    udfImages = ossClient.getUdfImageInfo(genericRequest);
-                    continue;
-                }
-            }
-            
-            // list images
-            udfImages = ossClient.getUdfImageInfo(genericRequest);
-            for (UdfImageInfo image : udfImages) {
-                System.out.println(image);
-            }
+		try {
+			// create udf
+			CreateUdfRequest createUdfRequest = new CreateUdfRequest(udf, desc);
+			ossClient.createUdf(createUdfRequest);
 
-            // list applications
-            List<UdfApplicationInfo> appInfos = ossClient.listUdfApplications();
-            for (UdfApplicationInfo app : appInfos) {
-                System.out.println(app);
-            }
+			UdfGenericRequest genericRequest = new UdfGenericRequest(udf);
+			UdfInfo ui = ossClient.getUdfInfo(genericRequest);
+			System.out.println(ui);
 
-            // create application
-            UdfApplicationConfiguration configuration = new UdfApplicationConfiguration(1, 1);
-            CreateUdfApplicationRequest createUdfApplicationRequest = new CreateUdfApplicationRequest(udf, configuration);
-            ossClient.createUdfApplication(createUdfApplicationRequest);
-            
-            // wait application running
-            UdfApplicationInfo appInfo = ossClient.getUdfApplicationInfo(genericRequest);
-            System.out.println(appInfo);
-            for (; appInfo.getStatus().equals("creating"); ) {
-                TestUtils.waitForCacheExpiration(60);
-                appInfo = ossClient.getUdfApplicationInfo(genericRequest);
-            }
-            System.out.println(appInfo);
-            
-            // upgrade application
-            UpgradeUdfApplicationRequest UpgradeUdfApplicationRequest = new UpgradeUdfApplicationRequest(udf, 2);
-            ossClient.upgradeUdfApplication(UpgradeUdfApplicationRequest);
-           
-            appInfo = ossClient.getUdfApplicationInfo(genericRequest);
-            System.out.println(appInfo);
-            for (; appInfo.getStatus().equals("upgrading"); ) {
-                TestUtils.waitForCacheExpiration(60);
-                appInfo = ossClient.getUdfApplicationInfo(genericRequest);
-            }
-            System.out.println(appInfo);
-            
-            // resize application
-            ResizeUdfApplicationRequest resizeUdfApplicationRequest = new ResizeUdfApplicationRequest(udf, 2);
-            ossClient.resizeUdfApplication(resizeUdfApplicationRequest);
-            
-            appInfo = ossClient.getUdfApplicationInfo(genericRequest);
-            System.out.println(appInfo);
-            for (; appInfo.getStatus().equals("resizing"); ) {
-                TestUtils.waitForCacheExpiration(60);
-                appInfo = ossClient.getUdfApplicationInfo(genericRequest);
-            }
-            System.out.println(appInfo);
-            
-            // get application log
-            GetUdfApplicationLogRequest getUdfApplicationLogRequest = new GetUdfApplicationLogRequest(udf);
-            getUdfApplicationLogRequest.setStartTime(DateUtil.parseRfc822Date("Wed, 15 Mar 2017 03:23:45 GMT"));
-            getUdfApplicationLogRequest.setEndLines(100L);
-            UdfApplicationLog udfApplicationLog = ossClient.getUdfApplicationLog(getUdfApplicationLogRequest);
-            displayTextInputStream(udfApplicationLog.getLogContent());
-            
-//            // delete application
-//            ossClient.deleteUdfApplication(genericRequest);
-//            
-//            // wait application deleted
-//            appInfos = ossClient.listUdfApplications();
-//            for (; appInfos.size() > 0 ; ) {
-//                TestUtils.waitForCacheExpiration(60);
-//                appInfos = ossClient.listUdfApplications();
-//            }
-//            
-//            // delete udf image
-//            ossClient.deleteUdfImage(genericRequest);
-//
-//            // wait images deleted
-//            udfImages = ossClient.getUdfImageInfo(genericRequest);
-//            for (; udfImages.size() > 0;) {
-//                TestUtils.waitForCacheExpiration(60);
-//                udfImages = ossClient.getUdfImageInfo(genericRequest);
-//            }
-//
-//            // delete image
-//            ossClient.deleteUdf(genericRequest);
+			// upload image
+			InputStream in = new FileInputStream(UDF_IMG_V1);
+			UploadUdfImageRequest uploadUdfImageRequest = new UploadUdfImageRequest(udf, desc, in);
+			ossClient.uploadUdfImage(uploadUdfImageRequest);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Assert.fail(ex.getMessage());
-        }
-    }
-    
-    @Test
-    public void testUdfApplicationLog() {
-        String udf = "udf-go-pingpong-1";
+			in = new FileInputStream(UDF_IMG_V2);
+			uploadUdfImageRequest = new UploadUdfImageRequest(udf, desc, in);
+			ossClient.uploadUdfImage(uploadUdfImageRequest);
 
-        try {
-            GetUdfApplicationLogRequest getUdfApplicationLogRequest = new GetUdfApplicationLogRequest(udf);
-            getUdfApplicationLogRequest.setStartTime(DateUtil.parseRfc822Date("Wed, 15 Mar 2017 03:23:45 GMT"));
-            getUdfApplicationLogRequest.setEndLines(10L);
-            UdfApplicationLog udfApplicationLog = ossClient.getUdfApplicationLog(getUdfApplicationLogRequest);
-            displayTextInputStream(udfApplicationLog.getLogContent());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Assert.fail(ex.getMessage());
-        }
-    }
-    
-    private static void displayTextInputStream(InputStream input) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-        int lines = 0;
-        while (true) {
-            String line = reader.readLine();
-            if (line == null) break;
-            
-            lines++;
-            System.out.println("    " + line);
-        }
-        System.out.println("Lines:" + lines);
-        
-        reader.close();
-    }
+			List<UdfImageInfo> udfImages = ossClient.getUdfImageInfo(genericRequest);
+			for (UdfImageInfo image : udfImages) {
+				System.out.println(image);
+			}
+
+			// wait build completed
+			for (UdfImageInfo image : udfImages) {
+				if (image.getStatus().equals("building")) {
+					TestUtils.waitForCacheExpiration(60);
+					udfImages = ossClient.getUdfImageInfo(genericRequest);
+					continue;
+				}
+			}
+
+			// list images
+			udfImages = ossClient.getUdfImageInfo(genericRequest);
+			for (UdfImageInfo image : udfImages) {
+				System.out.println(image);
+			}
+
+			// list applications
+			List<UdfApplicationInfo> appInfos = ossClient.listUdfApplications();
+			for (UdfApplicationInfo app : appInfos) {
+				System.out.println(app);
+			}
+
+			// create application
+			UdfApplicationConfiguration configuration = new UdfApplicationConfiguration(1, 1);
+			CreateUdfApplicationRequest createUdfApplicationRequest = new CreateUdfApplicationRequest(udf,
+					configuration);
+			ossClient.createUdfApplication(createUdfApplicationRequest);
+
+			// wait application running
+			UdfApplicationInfo appInfo = ossClient.getUdfApplicationInfo(genericRequest);
+			System.out.println(appInfo);
+			for (; appInfo.getStatus().equals("creating");) {
+				TestUtils.waitForCacheExpiration(60);
+				appInfo = ossClient.getUdfApplicationInfo(genericRequest);
+			}
+			System.out.println(appInfo);
+
+			// upgrade application
+			UpgradeUdfApplicationRequest UpgradeUdfApplicationRequest = new UpgradeUdfApplicationRequest(udf, 2);
+			ossClient.upgradeUdfApplication(UpgradeUdfApplicationRequest);
+
+			appInfo = ossClient.getUdfApplicationInfo(genericRequest);
+			System.out.println(appInfo);
+			for (; appInfo.getStatus().equals("upgrading");) {
+				TestUtils.waitForCacheExpiration(60);
+				appInfo = ossClient.getUdfApplicationInfo(genericRequest);
+			}
+			System.out.println(appInfo);
+
+			// resize application
+			ResizeUdfApplicationRequest resizeUdfApplicationRequest = new ResizeUdfApplicationRequest(udf, 2);
+			ossClient.resizeUdfApplication(resizeUdfApplicationRequest);
+
+			appInfo = ossClient.getUdfApplicationInfo(genericRequest);
+			System.out.println(appInfo);
+			for (; appInfo.getStatus().equals("resizing");) {
+				TestUtils.waitForCacheExpiration(60);
+				appInfo = ossClient.getUdfApplicationInfo(genericRequest);
+			}
+			System.out.println(appInfo);
+
+			// get application log
+			GetUdfApplicationLogRequest getUdfApplicationLogRequest = new GetUdfApplicationLogRequest(udf);
+			getUdfApplicationLogRequest.setStartTime(DateUtil.parseRfc822Date("Wed, 15 Mar 2017 03:23:45 GMT"));
+			getUdfApplicationLogRequest.setEndLines(100L);
+			UdfApplicationLog udfApplicationLog = ossClient.getUdfApplicationLog(getUdfApplicationLogRequest);
+			displayTextInputStream(udfApplicationLog.getLogContent());
+
+			// // delete application
+			// ossClient.deleteUdfApplication(genericRequest);
+			//
+			// // wait application deleted
+			// appInfos = ossClient.listUdfApplications();
+			// for (; appInfos.size() > 0 ; ) {
+			// TestUtils.waitForCacheExpiration(60);
+			// appInfos = ossClient.listUdfApplications();
+			// }
+			//
+			// // delete udf image
+			// ossClient.deleteUdfImage(genericRequest);
+			//
+			// // wait images deleted
+			// udfImages = ossClient.getUdfImageInfo(genericRequest);
+			// for (; udfImages.size() > 0;) {
+			// TestUtils.waitForCacheExpiration(60);
+			// udfImages = ossClient.getUdfImageInfo(genericRequest);
+			// }
+			//
+			// // delete image
+			// ossClient.deleteUdf(genericRequest);
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			Assert.fail(ex.getMessage());
+		}
+	}
+
+	@Test
+	public void testUdfApplicationLog() {
+		String udf = "udf-go-pingpong-1";
+
+		try {
+			GetUdfApplicationLogRequest getUdfApplicationLogRequest = new GetUdfApplicationLogRequest(udf);
+			getUdfApplicationLogRequest.setStartTime(DateUtil.parseRfc822Date("Wed, 15 Mar 2017 03:23:45 GMT"));
+			getUdfApplicationLogRequest.setEndLines(10L);
+			UdfApplicationLog udfApplicationLog = ossClient.getUdfApplicationLog(getUdfApplicationLogRequest);
+			displayTextInputStream(udfApplicationLog.getLogContent());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			Assert.fail(ex.getMessage());
+		}
+	}
+
+	private static void displayTextInputStream(InputStream input) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+		int lines = 0;
+		while (true) {
+			String line = reader.readLine();
+			if (line == null)
+				break;
+
+			lines++;
+			System.out.println("    " + line);
+		}
+		System.out.println("Lines:" + lines);
+
+		reader.close();
+	}
 
 }

@@ -35,68 +35,68 @@ import com.aliyun.oss.model.Permission;
 
 public class BucketInfoTest extends TestBase {
 
-    @SuppressWarnings("deprecation")
+	@SuppressWarnings("deprecation")
 	@Test
-    public void testGetBucketInfo() {
-        try {
-            ossClient.setBucketAcl(bucketName, CannedAccessControlList.PublicRead);
-            waitForCacheExpiration(5);
-            
-            BucketInfo info = ossClient.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
-            Assert.assertEquals(info.getBucket().getLocation(), TestConfig.OSS_TEST_REGION);
-            Assert.assertNotNull(info.getBucket().getCreationDate());
-            Assert.assertTrue(info.getBucket().getExtranetEndpoint().length() > 0);
-            Assert.assertTrue(info.getBucket().getIntranetEndpoint().length() > 0);
-            Assert.assertTrue(info.getBucket().getOwner().getId().length() > 0);
-            Assert.assertEquals(CannedAccessControlList.PublicRead, info.getCannedACL());
-            Assert.assertEquals(info.getBucket().getOwner().getDisplayName(), info.getBucket().getOwner().getId());
-            Assert.assertEquals(info.getGrants().size(), 1);
-            Assert.assertEquals(info.getRequestId().length(), REQUEST_ID_LEN);
-            for (Grant grant : info.getGrants()) {
-                Assert.assertEquals(grant.getGrantee(), GroupGrantee.AllUsers);
-                Assert.assertEquals(grant.getPermission(), Permission.Read);
-            }
-            
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        }
-    }
-    
-    @Test
-    public void testListBucketWithEndpoint() {
-        try {            
-            ListBucketsRequest listBucketsRequest = new ListBucketsRequest();
-            listBucketsRequest.setPrefix(bucketName);
-            listBucketsRequest.setMaxKeys(1);
-            
-            BucketList buckets = ossClient.listBuckets(listBucketsRequest);
-            Assert.assertEquals(buckets.getBucketList().size(), 1);
-            Assert.assertNotNull(buckets.getBucketList().get(0).getExtranetEndpoint());
-            Assert.assertNotNull(buckets.getBucketList().get(0).getIntranetEndpoint());
-            Assert.assertEquals(buckets.getRequestId().length(), REQUEST_ID_LEN);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
-    
-    @Test
-    public void testListBucketWithBid() {
-        try {
-            
-            ListBucketsRequest listBucketsRequest = new ListBucketsRequest();
-            listBucketsRequest.setPrefix(bucketName);
-            listBucketsRequest.setMaxKeys(1);
-            listBucketsRequest.setBid("26842");
-            
-            BucketList buckets = ossClient.listBuckets(listBucketsRequest);
-            Assert.assertEquals(buckets.getBucketList().size(), 1);
-            Assert.assertEquals(buckets.getRequestId().length(), REQUEST_ID_LEN);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
-    
+	public void testGetBucketInfo() {
+		try {
+			ossClient.setBucketAcl(bucketName, CannedAccessControlList.PublicRead);
+			waitForCacheExpiration(5);
+
+			BucketInfo info = ossClient.getBucketInfo(bucketName);
+			Assert.assertEquals(info.getBucket().getName(), bucketName);
+			Assert.assertEquals(info.getBucket().getLocation(), TestConfig.OSS_TEST_REGION);
+			Assert.assertNotNull(info.getBucket().getCreationDate());
+			Assert.assertTrue(info.getBucket().getExtranetEndpoint().length() > 0);
+			Assert.assertTrue(info.getBucket().getIntranetEndpoint().length() > 0);
+			Assert.assertTrue(info.getBucket().getOwner().getId().length() > 0);
+			Assert.assertEquals(CannedAccessControlList.PublicRead, info.getCannedACL());
+			Assert.assertEquals(info.getBucket().getOwner().getDisplayName(), info.getBucket().getOwner().getId());
+			Assert.assertEquals(info.getGrants().size(), 1);
+			Assert.assertEquals(info.getRequestId().length(), REQUEST_ID_LEN);
+			for (Grant grant : info.getGrants()) {
+				Assert.assertEquals(grant.getGrantee(), GroupGrantee.AllUsers);
+				Assert.assertEquals(grant.getPermission(), Permission.Read);
+			}
+
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void testListBucketWithEndpoint() {
+		try {
+			ListBucketsRequest listBucketsRequest = new ListBucketsRequest();
+			listBucketsRequest.setPrefix(bucketName);
+			listBucketsRequest.setMaxKeys(1);
+
+			BucketList buckets = ossClient.listBuckets(listBucketsRequest);
+			Assert.assertEquals(buckets.getBucketList().size(), 1);
+			Assert.assertNotNull(buckets.getBucketList().get(0).getExtranetEndpoint());
+			Assert.assertNotNull(buckets.getBucketList().get(0).getIntranetEndpoint());
+			Assert.assertEquals(buckets.getRequestId().length(), REQUEST_ID_LEN);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void testListBucketWithBid() {
+		try {
+
+			ListBucketsRequest listBucketsRequest = new ListBucketsRequest();
+			listBucketsRequest.setPrefix(bucketName);
+			listBucketsRequest.setMaxKeys(1);
+			listBucketsRequest.setBid("26842");
+
+			BucketList buckets = ossClient.listBuckets(listBucketsRequest);
+			Assert.assertEquals(buckets.getBucketList().size(), 1);
+			Assert.assertEquals(buckets.getRequestId().length(), REQUEST_ID_LEN);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+
 }

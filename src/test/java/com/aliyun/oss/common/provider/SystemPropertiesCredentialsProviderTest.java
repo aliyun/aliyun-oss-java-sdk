@@ -35,94 +35,94 @@ import org.junit.Test;
 
 public class SystemPropertiesCredentialsProviderTest extends TestBase {
 
-    @Test
-    public void testSystemPropertiesCredentialsProvider() {
-        try {
-            System.setProperty(AuthUtils.ACCESS_KEY_SYSTEM_PROPERTY, TestConfig.ROOT_ACCESS_KEY_ID);
-            System.setProperty(AuthUtils.SECRET_KEY_SYSTEM_PROPERTY, TestConfig.ROOT_ACCESS_KEY_SECRET);
+	@Test
+	public void testSystemPropertiesCredentialsProvider() {
+		try {
+			System.setProperty(AuthUtils.ACCESS_KEY_SYSTEM_PROPERTY, TestConfig.ROOT_ACCESS_KEY_ID);
+			System.setProperty(AuthUtils.SECRET_KEY_SYSTEM_PROPERTY, TestConfig.ROOT_ACCESS_KEY_SECRET);
 
-            SystemPropertiesCredentialsProvider credentialsProvider = new SystemPropertiesCredentialsProvider();
-            Credentials credentials = credentialsProvider.getCredentials();
-            Assert.assertEquals(credentials.getAccessKeyId(), TestConfig.ROOT_ACCESS_KEY_ID);
-            Assert.assertEquals(credentials.getSecretAccessKey(), TestConfig.ROOT_ACCESS_KEY_SECRET);
-            Assert.assertFalse(credentials.useSecurityToken());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
+			SystemPropertiesCredentialsProvider credentialsProvider = new SystemPropertiesCredentialsProvider();
+			Credentials credentials = credentialsProvider.getCredentials();
+			Assert.assertEquals(credentials.getAccessKeyId(), TestConfig.ROOT_ACCESS_KEY_ID);
+			Assert.assertEquals(credentials.getSecretAccessKey(), TestConfig.ROOT_ACCESS_KEY_SECRET);
+			Assert.assertFalse(credentials.useSecurityToken());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
 
-    @Test
-    public void testSystemPropertiesStsCredentialsProvider() {
-        try {
-            CredentialsProvider assumeRoleCredProvider = CredentialsProviderFactory.newSTSAssumeRoleSessionCredentialsProvider(
-                    TestConfig.RAM_REGION_ID, TestConfig.USER_ACCESS_KEY_ID, TestConfig.USER_ACCESS_KEY_SECRET,
-                    TestConfig.RAM_ROLE_ARN);
+	@Test
+	public void testSystemPropertiesStsCredentialsProvider() {
+		try {
+			CredentialsProvider assumeRoleCredProvider = CredentialsProviderFactory
+					.newSTSAssumeRoleSessionCredentialsProvider(TestConfig.RAM_REGION_ID, TestConfig.USER_ACCESS_KEY_ID,
+							TestConfig.USER_ACCESS_KEY_SECRET, TestConfig.RAM_ROLE_ARN);
 
-            Credentials assumeRoleCred = assumeRoleCredProvider.getCredentials();
-            System.setProperty(AuthUtils.ACCESS_KEY_SYSTEM_PROPERTY, assumeRoleCred.getAccessKeyId());
-            System.setProperty(AuthUtils.SECRET_KEY_SYSTEM_PROPERTY, assumeRoleCred.getSecretAccessKey());
-            System.setProperty(AuthUtils.SESSION_TOKEN_SYSTEM_PROPERTY, assumeRoleCred.getSecurityToken());
+			Credentials assumeRoleCred = assumeRoleCredProvider.getCredentials();
+			System.setProperty(AuthUtils.ACCESS_KEY_SYSTEM_PROPERTY, assumeRoleCred.getAccessKeyId());
+			System.setProperty(AuthUtils.SECRET_KEY_SYSTEM_PROPERTY, assumeRoleCred.getSecretAccessKey());
+			System.setProperty(AuthUtils.SESSION_TOKEN_SYSTEM_PROPERTY, assumeRoleCred.getSecurityToken());
 
-            SystemPropertiesCredentialsProvider credentialsProvider = new SystemPropertiesCredentialsProvider();
-            Credentials credentials = credentialsProvider.getCredentials();
-            Assert.assertEquals(credentials.getAccessKeyId(), assumeRoleCred.getAccessKeyId());
-            Assert.assertEquals(credentials.getSecretAccessKey(), assumeRoleCred.getSecretAccessKey());
-            Assert.assertEquals(credentials.getSecurityToken(), assumeRoleCred.getSecurityToken());
-            Assert.assertTrue(credentials.useSecurityToken());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
-    
-    @Ignore
-    @Test
-    public void testSystemPropertiesCredentialsProviderInOss() {
-        try {
-            System.setProperty(AuthUtils.ACCESS_KEY_SYSTEM_PROPERTY, TestConfig.ROOT_ACCESS_KEY_ID);
-            System.setProperty(AuthUtils.SECRET_KEY_SYSTEM_PROPERTY, TestConfig.ROOT_ACCESS_KEY_SECRET);
-            System.setProperty(AuthUtils.SESSION_TOKEN_SYSTEM_PROPERTY, "");
+			SystemPropertiesCredentialsProvider credentialsProvider = new SystemPropertiesCredentialsProvider();
+			Credentials credentials = credentialsProvider.getCredentials();
+			Assert.assertEquals(credentials.getAccessKeyId(), assumeRoleCred.getAccessKeyId());
+			Assert.assertEquals(credentials.getSecretAccessKey(), assumeRoleCred.getSecretAccessKey());
+			Assert.assertEquals(credentials.getSecurityToken(), assumeRoleCred.getSecurityToken());
+			Assert.assertTrue(credentials.useSecurityToken());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
 
-            SystemPropertiesCredentialsProvider credentialsProvider = CredentialsProviderFactory
-                    .newSystemPropertiesCredentialsProvider();
+	@Ignore
+	@Test
+	public void testSystemPropertiesCredentialsProviderInOss() {
+		try {
+			System.setProperty(AuthUtils.ACCESS_KEY_SYSTEM_PROPERTY, TestConfig.ROOT_ACCESS_KEY_ID);
+			System.setProperty(AuthUtils.SECRET_KEY_SYSTEM_PROPERTY, TestConfig.ROOT_ACCESS_KEY_SECRET);
+			System.setProperty(AuthUtils.SESSION_TOKEN_SYSTEM_PROPERTY, "");
 
-            String key = "test.txt";
-            String content = "HelloOSS";
-            OSS ossClient = new OSSClientBuilder().build(TestConfig.OSS_ENDPOINT, credentialsProvider);
-            ossClient.putObject(TestConfig.OSS_BUCKET, key, new ByteArrayInputStream(content.getBytes()));
-            ossClient.shutdown();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
-    
-    @Ignore
-    @Test
-    public void testSystemPropertiesStsCredentialsProviderInOss() {
-        try {
-            CredentialsProvider assumeRoleCredProvider = CredentialsProviderFactory.newSTSAssumeRoleSessionCredentialsProvider(
-                    TestConfig.RAM_REGION_ID, TestConfig.USER_ACCESS_KEY_ID, TestConfig.USER_ACCESS_KEY_SECRET,
-                    TestConfig.RAM_ROLE_ARN);
+			SystemPropertiesCredentialsProvider credentialsProvider = CredentialsProviderFactory
+					.newSystemPropertiesCredentialsProvider();
 
-            Credentials assumeRoleCred = assumeRoleCredProvider.getCredentials();
-            System.setProperty(AuthUtils.ACCESS_KEY_SYSTEM_PROPERTY, assumeRoleCred.getAccessKeyId());
-            System.setProperty(AuthUtils.SECRET_KEY_SYSTEM_PROPERTY, assumeRoleCred.getSecretAccessKey());
-            System.setProperty(AuthUtils.SESSION_TOKEN_SYSTEM_PROPERTY, assumeRoleCred.getSecurityToken());
+			String key = "test.txt";
+			String content = "HelloOSS";
+			OSS ossClient = new OSSClientBuilder().build(TestConfig.OSS_ENDPOINT, credentialsProvider);
+			ossClient.putObject(TestConfig.OSS_BUCKET, key, new ByteArrayInputStream(content.getBytes()));
+			ossClient.shutdown();
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
 
-            SystemPropertiesCredentialsProvider credentialsProvider = CredentialsProviderFactory
-                    .newSystemPropertiesCredentialsProvider();
+	@Ignore
+	@Test
+	public void testSystemPropertiesStsCredentialsProviderInOss() {
+		try {
+			CredentialsProvider assumeRoleCredProvider = CredentialsProviderFactory
+					.newSTSAssumeRoleSessionCredentialsProvider(TestConfig.RAM_REGION_ID, TestConfig.USER_ACCESS_KEY_ID,
+							TestConfig.USER_ACCESS_KEY_SECRET, TestConfig.RAM_ROLE_ARN);
 
-            String key = "test.txt";
-            String content = "HelloOSS";
-            OSS ossClient = new OSSClientBuilder().build(TestConfig.OSS_ENDPOINT, credentialsProvider);
-            ossClient.putObject(TestConfig.OSS_BUCKET, key, new ByteArrayInputStream(content.getBytes()));
-            ossClient.shutdown();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
+			Credentials assumeRoleCred = assumeRoleCredProvider.getCredentials();
+			System.setProperty(AuthUtils.ACCESS_KEY_SYSTEM_PROPERTY, assumeRoleCred.getAccessKeyId());
+			System.setProperty(AuthUtils.SECRET_KEY_SYSTEM_PROPERTY, assumeRoleCred.getSecretAccessKey());
+			System.setProperty(AuthUtils.SESSION_TOKEN_SYSTEM_PROPERTY, assumeRoleCred.getSecurityToken());
+
+			SystemPropertiesCredentialsProvider credentialsProvider = CredentialsProviderFactory
+					.newSystemPropertiesCredentialsProvider();
+
+			String key = "test.txt";
+			String content = "HelloOSS";
+			OSS ossClient = new OSSClientBuilder().build(TestConfig.OSS_ENDPOINT, credentialsProvider);
+			ossClient.putObject(TestConfig.OSS_BUCKET, key, new ByteArrayInputStream(content.getBytes()));
+			ossClient.shutdown();
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
 
 }

@@ -30,161 +30,162 @@ import junit.framework.Assert;
 
 import org.junit.Ignore;
 import org.junit.Test;
+
 @Ignore
 public class RamUtilsTest extends TestBase {
 
-    @Test
-    public void testLoadPrivateKeyFromFile() {
-        try {
-            String privateKey = AuthUtils.loadPrivateKeyFromFile(TestConfig.PRIVATE_KEY_PATH);
-            Assert.assertNotNull(privateKey);
-            Assert.assertFalse(privateKey.isEmpty());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
+	@Test
+	public void testLoadPrivateKeyFromFile() {
+		try {
+			String privateKey = AuthUtils.loadPrivateKeyFromFile(TestConfig.PRIVATE_KEY_PATH);
+			Assert.assertNotNull(privateKey);
+			Assert.assertFalse(privateKey.isEmpty());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
 
-    @Test
-    public void testLoadPrivateKeyFromFileNegative() {
-        try {
-            AuthUtils.loadPrivateKeyFromFile("/not/exist/path");
-            Assert.fail("RamUtils.loadPrivateKeyFromFile should not be successful.");
-        } catch (IOException e) {
-            Assert.assertTrue(e instanceof FileNotFoundException);
-        }
-    }
+	@Test
+	public void testLoadPrivateKeyFromFileNegative() {
+		try {
+			AuthUtils.loadPrivateKeyFromFile("/not/exist/path");
+			Assert.fail("RamUtils.loadPrivateKeyFromFile should not be successful.");
+		} catch (IOException e) {
+			Assert.assertTrue(e instanceof FileNotFoundException);
+		}
+	}
 
-    @Test
-    public void testLoadPublicKeyFromFile() {
-        try {
-            String publicKey = AuthUtils.loadPublicKeyFromFile(TestConfig.PUBLIC_KEY_PATH);
-            Assert.assertNotNull(publicKey);
-            Assert.assertFalse(publicKey.isEmpty());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
+	@Test
+	public void testLoadPublicKeyFromFile() {
+		try {
+			String publicKey = AuthUtils.loadPublicKeyFromFile(TestConfig.PUBLIC_KEY_PATH);
+			Assert.assertNotNull(publicKey);
+			Assert.assertFalse(publicKey.isEmpty());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
 
-    @Test
-    public void testLoadPublicKeyFromFileNegative() {
-        try {
-            AuthUtils.loadPublicKeyFromFile("/not/exist/path");
-            Assert.fail("RamUtils.loadPublicKeyFromFile should not be successful.");
-        } catch (IOException e) {
-            Assert.assertTrue(e instanceof FileNotFoundException);
-        }
-    }
+	@Test
+	public void testLoadPublicKeyFromFileNegative() {
+		try {
+			AuthUtils.loadPublicKeyFromFile("/not/exist/path");
+			Assert.fail("RamUtils.loadPublicKeyFromFile should not be successful.");
+		} catch (IOException e) {
+			Assert.assertTrue(e instanceof FileNotFoundException);
+		}
+	}
 
-    @Test
-    public void testUploadPublicKey() {
-        try {
-            // upload
-            String pubKey = AuthUtils.loadPublicKeyFromFile(TestConfig.PUBLIC_KEY_PATH);
-            PublicKey publicKey = AuthUtils.uploadPublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
-                    TestConfig.ROOT_ACCESS_KEY_SECRET, pubKey);
-            Assert.assertNotNull(publicKey);
-            Assert.assertEquals(publicKey.getPublicKeyId().length(), "LTRSA.2Qcjm****XW7M0NO".length());
+	@Test
+	public void testUploadPublicKey() {
+		try {
+			// upload
+			String pubKey = AuthUtils.loadPublicKeyFromFile(TestConfig.PUBLIC_KEY_PATH);
+			PublicKey publicKey = AuthUtils.uploadPublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
+					TestConfig.ROOT_ACCESS_KEY_SECRET, pubKey);
+			Assert.assertNotNull(publicKey);
+			Assert.assertEquals(publicKey.getPublicKeyId().length(), "LTRSA.2Qcjm****XW7M0NO".length());
 
-            // check
-            List<PublicKey> publicKeys = AuthUtils.listPublicKeys(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
-                    TestConfig.ROOT_ACCESS_KEY_SECRET);
-            Assert.assertEquals(1, publicKeys.size());
+			// check
+			List<PublicKey> publicKeys = AuthUtils.listPublicKeys(TestConfig.RAM_REGION_ID,
+					TestConfig.ROOT_ACCESS_KEY_ID, TestConfig.ROOT_ACCESS_KEY_SECRET);
+			Assert.assertEquals(1, publicKeys.size());
 
-            // delete
-            AuthUtils.deletePublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
-                    TestConfig.ROOT_ACCESS_KEY_SECRET, publicKey.getPublicKeyId());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
+			// delete
+			AuthUtils.deletePublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
+					TestConfig.ROOT_ACCESS_KEY_SECRET, publicKey.getPublicKeyId());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
 
-    @Test
-    public void testUploadPublicKeyNegative() {
-        try {
-            String pubKey = "invalid public key.";
-            AuthUtils.uploadPublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
-                    TestConfig.ROOT_ACCESS_KEY_SECRET, pubKey);
-            Assert.fail("RamUtils.uploadPublicKey should not be successful.");
-        } catch (ClientException e) {
-            Assert.assertEquals(e.getErrCode(), "InvalidParameter.PublicKey.Format");
-        }
-    }
+	@Test
+	public void testUploadPublicKeyNegative() {
+		try {
+			String pubKey = "invalid public key.";
+			AuthUtils.uploadPublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
+					TestConfig.ROOT_ACCESS_KEY_SECRET, pubKey);
+			Assert.fail("RamUtils.uploadPublicKey should not be successful.");
+		} catch (ClientException e) {
+			Assert.assertEquals(e.getErrCode(), "InvalidParameter.PublicKey.Format");
+		}
+	}
 
-    @Test
-    public void testListPublicKey() {
-        try {
-            // upload
-            String pubKey = AuthUtils.loadPublicKeyFromFile(TestConfig.PUBLIC_KEY_PATH);
-            PublicKey publicKey = AuthUtils.uploadPublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
-                    TestConfig.ROOT_ACCESS_KEY_SECRET, pubKey);
+	@Test
+	public void testListPublicKey() {
+		try {
+			// upload
+			String pubKey = AuthUtils.loadPublicKeyFromFile(TestConfig.PUBLIC_KEY_PATH);
+			PublicKey publicKey = AuthUtils.uploadPublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
+					TestConfig.ROOT_ACCESS_KEY_SECRET, pubKey);
 
-            // check
-            List<PublicKey> publicKeys = AuthUtils.listPublicKeys(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
-                    TestConfig.ROOT_ACCESS_KEY_SECRET);
-            Assert.assertEquals(1, publicKeys.size());
-            Assert.assertEquals(publicKeys.get(0).getPublicKeyId().length(), "LTRSA.2Qcjm****XW7M0NO".length());
-            Assert.assertEquals(publicKeys.get(0).getCreateDate().length(), "2017-11-01T08:00:00Z".length());
-            Assert.assertEquals(publicKeys.get(0).getStatus(), "Active");
-            Assert.assertEquals(publicKeys.get(0).getPublicKeySpec(), null);
+			// check
+			List<PublicKey> publicKeys = AuthUtils.listPublicKeys(TestConfig.RAM_REGION_ID,
+					TestConfig.ROOT_ACCESS_KEY_ID, TestConfig.ROOT_ACCESS_KEY_SECRET);
+			Assert.assertEquals(1, publicKeys.size());
+			Assert.assertEquals(publicKeys.get(0).getPublicKeyId().length(), "LTRSA.2Qcjm****XW7M0NO".length());
+			Assert.assertEquals(publicKeys.get(0).getCreateDate().length(), "2017-11-01T08:00:00Z".length());
+			Assert.assertEquals(publicKeys.get(0).getStatus(), "Active");
+			Assert.assertEquals(publicKeys.get(0).getPublicKeySpec(), null);
 
-            // delete
-            AuthUtils.deletePublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
-                    TestConfig.ROOT_ACCESS_KEY_SECRET, publicKey.getPublicKeyId());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
+			// delete
+			AuthUtils.deletePublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
+					TestConfig.ROOT_ACCESS_KEY_SECRET, publicKey.getPublicKeyId());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
 
-    @Test
-    public void testDeletePublicKey() {
-        try {
-            // upload
-            String pubKey = AuthUtils.loadPublicKeyFromFile(TestConfig.PUBLIC_KEY_PATH);
-            PublicKey publicKey = AuthUtils.uploadPublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
-                    TestConfig.ROOT_ACCESS_KEY_SECRET, pubKey);
-            Assert.assertNotNull(publicKey);
-            Assert.assertEquals(publicKey.getPublicKeyId().length(), "LTRSA.2Qcjm****XW7M0NO".length());
+	@Test
+	public void testDeletePublicKey() {
+		try {
+			// upload
+			String pubKey = AuthUtils.loadPublicKeyFromFile(TestConfig.PUBLIC_KEY_PATH);
+			PublicKey publicKey = AuthUtils.uploadPublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
+					TestConfig.ROOT_ACCESS_KEY_SECRET, pubKey);
+			Assert.assertNotNull(publicKey);
+			Assert.assertEquals(publicKey.getPublicKeyId().length(), "LTRSA.2Qcjm****XW7M0NO".length());
 
-            publicKey = AuthUtils.uploadPublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
-                    TestConfig.ROOT_ACCESS_KEY_SECRET, pubKey);
-            Assert.assertNotNull(publicKey);
-            Assert.assertEquals(publicKey.getPublicKeyId().length(), "LTRSA.2Qcjm****XW7M0NO".length());
+			publicKey = AuthUtils.uploadPublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
+					TestConfig.ROOT_ACCESS_KEY_SECRET, pubKey);
+			Assert.assertNotNull(publicKey);
+			Assert.assertEquals(publicKey.getPublicKeyId().length(), "LTRSA.2Qcjm****XW7M0NO".length());
 
-            // check
-            List<PublicKey> publicKeys = AuthUtils.listPublicKeys(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
-                    TestConfig.ROOT_ACCESS_KEY_SECRET);
-            Assert.assertEquals(2, publicKeys.size());
+			// check
+			List<PublicKey> publicKeys = AuthUtils.listPublicKeys(TestConfig.RAM_REGION_ID,
+					TestConfig.ROOT_ACCESS_KEY_ID, TestConfig.ROOT_ACCESS_KEY_SECRET);
+			Assert.assertEquals(2, publicKeys.size());
 
-            // delete
-            for (PublicKey pk : publicKeys) {
-                AuthUtils.deletePublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
-                        TestConfig.ROOT_ACCESS_KEY_SECRET, pk.getPublicKeyId());
-            }
+			// delete
+			for (PublicKey pk : publicKeys) {
+				AuthUtils.deletePublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
+						TestConfig.ROOT_ACCESS_KEY_SECRET, pk.getPublicKeyId());
+			}
 
-            // check
-            publicKeys = AuthUtils.listPublicKeys(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
-                    TestConfig.ROOT_ACCESS_KEY_SECRET);
-            Assert.assertEquals(0, publicKeys.size());
+			// check
+			publicKeys = AuthUtils.listPublicKeys(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
+					TestConfig.ROOT_ACCESS_KEY_SECRET);
+			Assert.assertEquals(0, publicKeys.size());
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
 
-    @Test
-    public void testKeletePublicKeyNegative() {
-        try {
-            AuthUtils.deletePublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
-                    TestConfig.ROOT_ACCESS_KEY_SECRET, "LTRSA.2Qcjm****XW7M0NO");
-            Assert.fail("RamUtils.deletePublicKey should not be successful.");
-        } catch (ClientException e) {
-            Assert.assertEquals(e.getErrCode(), "EntityNotExist.User.PublicKey");
-        }
-    }
+	@Test
+	public void testKeletePublicKeyNegative() {
+		try {
+			AuthUtils.deletePublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
+					TestConfig.ROOT_ACCESS_KEY_SECRET, "LTRSA.2Qcjm****XW7M0NO");
+			Assert.fail("RamUtils.deletePublicKey should not be successful.");
+		} catch (ClientException e) {
+			Assert.assertEquals(e.getErrCode(), "EntityNotExist.User.PublicKey");
+		}
+	}
 
 }

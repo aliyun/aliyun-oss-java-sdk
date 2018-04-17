@@ -33,142 +33,142 @@ import com.aliyun.oss.model.UploadFileResult;
 
 public class DownloadFileTest extends TestBase {
 
-    @Test
-    public void testUploadFileWithoutCheckpoint() {
-        final String key = "obj-download-file-wcp";
-        
-        try {            
-            File file = createSampleFile(key, 1024 * 500);
-                        
-            // upload file
-            UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
-            uploadFileRequest.setUploadFile(file.getAbsolutePath());
-            uploadFileRequest.setTaskNum(10);
-            ObjectMetadata objMetadata = new ObjectMetadata();
-            objMetadata.addUserMetadata("prop", "propval");
-            uploadFileRequest.setObjectMetadata(objMetadata);
-            
-            UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
-            Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
-            Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
-            
-            // download file
-            String filePathNew = key + "-new.txt";
-            DownloadFileRequest downloadFileRequest = new DownloadFileRequest(bucketName, key);
-            downloadFileRequest.setDownloadFile(filePathNew);
-            downloadFileRequest.setTaskNum(10);
-            
-            DownloadFileResult downloadRes = ossClient.downloadFile(downloadFileRequest);
-            
-            ObjectMetadata objMeta = downloadRes.getObjectMetadata();
-            Assert.assertEquals(objMeta.getContentLength(), 102400);
-            Assert.assertEquals(objMeta.getObjectType(), "Multipart");
-            Assert.assertEquals(objMeta.getUserMetadata().get("prop"), "propval");
+	@Test
+	public void testUploadFileWithoutCheckpoint() {
+		final String key = "obj-download-file-wcp";
 
-            File fileNew = new File(filePathNew);
-            Assert.assertTrue("comparte file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
-            
-            ossClient.deleteObject(bucketName, key);
-            fileNew.delete();
-        } catch (Throwable e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-            ossClient.deleteBucket(bucketName);
-        }
-    }
-    
-    @Test
-    public void testUploadFileWithCheckpoint() {
-        final String key = "obj-download-file-cp";
-        
-        try {            
-            File file = createSampleFile(key, 1024 * 500);
-                        
-            // upload file
-            UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
-            uploadFileRequest.setUploadFile(file.getAbsolutePath());
-            uploadFileRequest.setTaskNum(10);
-            uploadFileRequest.setEnableCheckpoint(true);
-            ObjectMetadata objMetadata = new ObjectMetadata();
-            objMetadata.addUserMetadata("prop", "propval");
-            uploadFileRequest.setObjectMetadata(objMetadata);
-            
-            UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
-            Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
-            Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);            
-            
-            // download file
-            String filePathNew = key + "-new.txt";
-            DownloadFileRequest downloadFileRequest = new DownloadFileRequest(bucketName, key);
-            downloadFileRequest.setDownloadFile(filePathNew);
-            downloadFileRequest.setTaskNum(10);
-            downloadFileRequest.setEnableCheckpoint(true);
-            
-            DownloadFileResult downloadRes = ossClient.downloadFile(downloadFileRequest);
-            
-            ObjectMetadata objMeta = downloadRes.getObjectMetadata();
-            Assert.assertEquals(objMeta.getContentLength(), 102400);
-            Assert.assertEquals(objMeta.getObjectType(), "Multipart");
-            Assert.assertEquals(objMeta.getUserMetadata().get("prop"), "propval");
+		try {
+			File file = createSampleFile(key, 1024 * 500);
 
-            File fileNew = new File(filePathNew);
-            Assert.assertTrue("comparte file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
-            
-            ossClient.deleteObject(bucketName, key);
-            fileNew.delete();
-        } catch (Throwable e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-            ossClient.deleteBucket(bucketName);
-        }
-    }
-  
-    @Test
-    public void testUploadFileWithCheckpointFile() {
-        final String key = "obj-download-file-cpf";
-        
-        try {            
-            File file = createSampleFile(key, 1024 * 500);
-                        
-            // upload file
-            UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
-            uploadFileRequest.setUploadFile(file.getAbsolutePath());
-            uploadFileRequest.setTaskNum(10);
-            uploadFileRequest.setEnableCheckpoint(true);
-            uploadFileRequest.setCheckpointFile("BingWallpaper.ucp");
-            ObjectMetadata objMetadata = new ObjectMetadata();
-            objMetadata.addUserMetadata("prop", "propval");
-            uploadFileRequest.setObjectMetadata(objMetadata);
-            
-            UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
-            Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
-            Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
-            
-            // download file
-            String filePathNew = key + "-new.txt";
-            DownloadFileRequest downloadFileRequest = new DownloadFileRequest(bucketName, key);
-            downloadFileRequest.setDownloadFile(filePathNew);
-            downloadFileRequest.setTaskNum(10);
-            downloadFileRequest.setEnableCheckpoint(true);
-            downloadFileRequest.setCheckpointFile("BingWallpaper.dcp");
-            
-            DownloadFileResult downloadRes = ossClient.downloadFile(downloadFileRequest);
-            
-            ObjectMetadata objMeta = downloadRes.getObjectMetadata();
-            Assert.assertEquals(objMeta.getContentLength(), 102400);
-            Assert.assertEquals(objMeta.getObjectType(), "Multipart");
-            Assert.assertEquals(objMeta.getUserMetadata().get("prop"), "propval");
+			// upload file
+			UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
+			uploadFileRequest.setUploadFile(file.getAbsolutePath());
+			uploadFileRequest.setTaskNum(10);
+			ObjectMetadata objMetadata = new ObjectMetadata();
+			objMetadata.addUserMetadata("prop", "propval");
+			uploadFileRequest.setObjectMetadata(objMetadata);
 
-            File fileNew = new File(filePathNew);
-            Assert.assertTrue("comparte file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
-            
-            ossClient.deleteObject(bucketName, key);
-            fileNew.delete();
-        } catch (Throwable e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-            ossClient.deleteBucket(bucketName);
-        }
-    }
+			UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
+			Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
+			Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
+
+			// download file
+			String filePathNew = key + "-new.txt";
+			DownloadFileRequest downloadFileRequest = new DownloadFileRequest(bucketName, key);
+			downloadFileRequest.setDownloadFile(filePathNew);
+			downloadFileRequest.setTaskNum(10);
+
+			DownloadFileResult downloadRes = ossClient.downloadFile(downloadFileRequest);
+
+			ObjectMetadata objMeta = downloadRes.getObjectMetadata();
+			Assert.assertEquals(objMeta.getContentLength(), 102400);
+			Assert.assertEquals(objMeta.getObjectType(), "Multipart");
+			Assert.assertEquals(objMeta.getUserMetadata().get("prop"), "propval");
+
+			File fileNew = new File(filePathNew);
+			Assert.assertTrue("comparte file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
+
+			ossClient.deleteObject(bucketName, key);
+			fileNew.delete();
+		} catch (Throwable e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+			ossClient.deleteBucket(bucketName);
+		}
+	}
+
+	@Test
+	public void testUploadFileWithCheckpoint() {
+		final String key = "obj-download-file-cp";
+
+		try {
+			File file = createSampleFile(key, 1024 * 500);
+
+			// upload file
+			UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
+			uploadFileRequest.setUploadFile(file.getAbsolutePath());
+			uploadFileRequest.setTaskNum(10);
+			uploadFileRequest.setEnableCheckpoint(true);
+			ObjectMetadata objMetadata = new ObjectMetadata();
+			objMetadata.addUserMetadata("prop", "propval");
+			uploadFileRequest.setObjectMetadata(objMetadata);
+
+			UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
+			Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
+			Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
+
+			// download file
+			String filePathNew = key + "-new.txt";
+			DownloadFileRequest downloadFileRequest = new DownloadFileRequest(bucketName, key);
+			downloadFileRequest.setDownloadFile(filePathNew);
+			downloadFileRequest.setTaskNum(10);
+			downloadFileRequest.setEnableCheckpoint(true);
+
+			DownloadFileResult downloadRes = ossClient.downloadFile(downloadFileRequest);
+
+			ObjectMetadata objMeta = downloadRes.getObjectMetadata();
+			Assert.assertEquals(objMeta.getContentLength(), 102400);
+			Assert.assertEquals(objMeta.getObjectType(), "Multipart");
+			Assert.assertEquals(objMeta.getUserMetadata().get("prop"), "propval");
+
+			File fileNew = new File(filePathNew);
+			Assert.assertTrue("comparte file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
+
+			ossClient.deleteObject(bucketName, key);
+			fileNew.delete();
+		} catch (Throwable e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+			ossClient.deleteBucket(bucketName);
+		}
+	}
+
+	@Test
+	public void testUploadFileWithCheckpointFile() {
+		final String key = "obj-download-file-cpf";
+
+		try {
+			File file = createSampleFile(key, 1024 * 500);
+
+			// upload file
+			UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
+			uploadFileRequest.setUploadFile(file.getAbsolutePath());
+			uploadFileRequest.setTaskNum(10);
+			uploadFileRequest.setEnableCheckpoint(true);
+			uploadFileRequest.setCheckpointFile("BingWallpaper.ucp");
+			ObjectMetadata objMetadata = new ObjectMetadata();
+			objMetadata.addUserMetadata("prop", "propval");
+			uploadFileRequest.setObjectMetadata(objMetadata);
+
+			UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
+			Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
+			Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
+
+			// download file
+			String filePathNew = key + "-new.txt";
+			DownloadFileRequest downloadFileRequest = new DownloadFileRequest(bucketName, key);
+			downloadFileRequest.setDownloadFile(filePathNew);
+			downloadFileRequest.setTaskNum(10);
+			downloadFileRequest.setEnableCheckpoint(true);
+			downloadFileRequest.setCheckpointFile("BingWallpaper.dcp");
+
+			DownloadFileResult downloadRes = ossClient.downloadFile(downloadFileRequest);
+
+			ObjectMetadata objMeta = downloadRes.getObjectMetadata();
+			Assert.assertEquals(objMeta.getContentLength(), 102400);
+			Assert.assertEquals(objMeta.getObjectType(), "Multipart");
+			Assert.assertEquals(objMeta.getUserMetadata().get("prop"), "propval");
+
+			File fileNew = new File(filePathNew);
+			Assert.assertTrue("comparte file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
+
+			ossClient.deleteObject(bucketName, key);
+			fileNew.delete();
+		} catch (Throwable e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+			ossClient.deleteBucket(bucketName);
+		}
+	}
 
 }
