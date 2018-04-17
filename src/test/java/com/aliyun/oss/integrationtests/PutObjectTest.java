@@ -30,6 +30,7 @@ import static com.aliyun.oss.integrationtests.TestUtils.genRandomLengthFile;
 import static com.aliyun.oss.integrationtests.TestUtils.removeFile;
 import static com.aliyun.oss.integrationtests.TestUtils.removeFiles;
 import static com.aliyun.oss.integrationtests.TestUtils.waitAll;
+import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_FILE_SIZE_LIMIT;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_OBJECT_CONTENT_TYPE;
 import static com.aliyun.oss.internal.OSSHeaders.OSS_USER_METADATA_PREFIX;
@@ -348,7 +349,7 @@ public class PutObjectTest extends TestBase {
         final String key = "put-object-by-urlsignature";
         final String metaKey0 = "author";
         final String metaValue0 = "aliy";
-        final String expirationString = "Sun, 12 Apr 2018 12:00:00 GMT";
+        final String expirationString = "Sun, 12 Apr 2022 12:00:00 GMT";
         final long inputStreamLength = 128 * 1024; //128KB
         
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.PUT);

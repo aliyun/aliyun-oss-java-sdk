@@ -21,6 +21,8 @@ package com.aliyun.oss.integrationtests;
 
 import junit.framework.Assert;
 
+import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
+
 import java.io.File;
 
 import org.junit.Test;
@@ -51,6 +53,7 @@ public class BucketStatTest extends TestBase {
             uploadFileRequest.setTaskNum(10);
             
             UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
+            waitForCacheExpiration(5);
             Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
             Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
             
@@ -59,6 +62,8 @@ public class BucketStatTest extends TestBase {
                     new InitiateMultipartUploadRequest(bucketName, key);
             InitiateMultipartUploadResult initiateMultipartUploadResult = 
                     ossClient.initiateMultipartUpload(initiateMultipartUploadRequest);
+            waitForCacheExpiration(5);
+            
             Assert.assertEquals(initiateMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
             uploadId = initiateMultipartUploadResult.getUploadId();
             

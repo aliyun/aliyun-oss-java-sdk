@@ -30,6 +30,7 @@ import static com.aliyun.oss.integrationtests.TestUtils.genRandomLengthFile;
 import static com.aliyun.oss.integrationtests.TestUtils.removeFile;
 import static com.aliyun.oss.integrationtests.TestUtils.removeFiles;
 import static com.aliyun.oss.integrationtests.TestUtils.waitAll;
+import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_OBJECT_CONTENT_TYPE;
 
 import java.io.File;
@@ -529,14 +530,13 @@ public class GetObjectTest extends TestBase {
     @Test
     public void testGetObjectByUrlsignature() {    
         final String key = "put-object-by-urlsignature";
-        final String expirationString = "Sun, 12 Apr 2018 12:00:00 GMT";
+        final String expirationString = "Sun, 12 Apr 2022 12:00:00 GMT";
         final long inputStreamLength = 128 * 1024; //128KB
         final long firstByte= inputStreamLength / 2;
         final long lastByte = inputStreamLength - 1;
         
         try {
             ossClient.putObject(bucketName, key, genFixedLengthInputStream(inputStreamLength), null);
-            
             GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key);
             Date expiration = DateUtil.parseRfc822Date(expirationString);
             request.setExpiration(expiration);
@@ -607,6 +607,7 @@ public class GetObjectTest extends TestBase {
         OSSObject o = null;
         matchingETagConstraints.add(eTag);
         getObjectRequest.setMatchingETagConstraints(matchingETagConstraints);
+        waitForCacheExpiration(5);
         try {
             o = ossClient.getObject(getObjectRequest);
             Assert.assertEquals(eTag, o.getObjectMetadata().getETag());
@@ -619,6 +620,7 @@ public class GetObjectTest extends TestBase {
         matchingETagConstraints.clear();
         matchingETagConstraints.add("nonmatching-etag");
         getObjectRequest.setMatchingETagConstraints(matchingETagConstraints);
+        waitForCacheExpiration(5);
         try {
             o = ossClient.getObject(getObjectRequest);
             Assert.fail("Get object should not be successful.");
@@ -632,6 +634,7 @@ public class GetObjectTest extends TestBase {
         List<String> nonmatchingETagConstraints = new ArrayList<String>();
         nonmatchingETagConstraints.add("nonmatching-etag");
         getObjectRequest.setNonmatchingETagConstraints(nonmatchingETagConstraints);
+        waitForCacheExpiration(5);
         try {
             o = ossClient.getObject(getObjectRequest);
             Assert.assertEquals(eTag, o.getObjectMetadata().getETag());
@@ -657,6 +660,7 @@ public class GetObjectTest extends TestBase {
         // Unmodified Since Constraint
         Date unmodifiedSinceConstraint = new Date();
         getObjectRequest.setUnmodifiedSinceConstraint(unmodifiedSinceConstraint);
+        waitForCacheExpiration(5);
         try {
             o = ossClient.getObject(getObjectRequest);
             Assert.assertEquals(eTag, o.getObjectMetadata().getETag());

@@ -82,8 +82,8 @@ public class CallbackTest extends TestBase {
             
             PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
             byte[] buffer = new byte[bufferLength];
-            int nRead = putObjectResult.getCallbackResponseBody().read(buffer);
-            putObjectResult.getCallbackResponseBody().close();
+            int nRead = putObjectResult.getResponse().getContent().read(buffer);
+            putObjectResult.getResponse().getContent().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
                     
             OSSObject obj = ossClient.getObject(bucketName, key);
@@ -116,8 +116,8 @@ public class CallbackTest extends TestBase {
             
             PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
             byte[] buffer = new byte[bufferLength];
-            int nRead = putObjectResult.getCallbackResponseBody().read(buffer);
-            putObjectResult.getCallbackResponseBody().close();
+            int nRead = putObjectResult.getResponse().getContent().read(buffer);
+            putObjectResult.getResponse().getContent().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
             
             OSSObject obj = ossClient.getObject(bucketName, key);
@@ -150,8 +150,8 @@ public class CallbackTest extends TestBase {
             
             PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
             byte[] buffer = new byte[bufferLength];
-            int nRead = putObjectResult.getCallbackResponseBody().read(buffer);
-            putObjectResult.getCallbackResponseBody().close();
+            int nRead = putObjectResult.getResponse().getContent().read(buffer);
+            putObjectResult.getResponse().getContent().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
             
             OSSObject obj = ossClient.getObject(bucketName, key);
@@ -221,8 +221,8 @@ public class CallbackTest extends TestBase {
             
             PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
             byte[] buffer = new byte[bufferLength];
-            int nRead = putObjectResult.getCallbackResponseBody().read(buffer);
-            putObjectResult.getCallbackResponseBody().close();
+            int nRead = putObjectResult.getResponse().getContent().read(buffer);
+            putObjectResult.getResponse().getContent().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
             
             OSSObject obj = ossClient.getObject(bucketName, key);
@@ -256,8 +256,8 @@ public class CallbackTest extends TestBase {
             
             PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
             byte[] buffer = new byte[bufferLength];
-            int nRead = putObjectResult.getCallbackResponseBody().read(buffer);
-            putObjectResult.getCallbackResponseBody().close();
+            int nRead = putObjectResult.getResponse().getContent().read(buffer);
+            putObjectResult.getResponse().getContent().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
             
             OSSObject obj = ossClient.getObject(bucketName, key);
@@ -434,8 +434,8 @@ public class CallbackTest extends TestBase {
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
                         
             byte[] buffer = new byte[bufferLength];
-            int nRead = completeMultipartUploadResult.getCallbackResponseBody().read(buffer);
-            completeMultipartUploadResult.getCallbackResponseBody().close();
+            int nRead = completeMultipartUploadResult.getResponse().getContent().read(buffer);
+            completeMultipartUploadResult.getResponse().getContent().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
                     
             OSSObject obj = ossClient.getObject(bucketName, key);
@@ -531,8 +531,8 @@ public class CallbackTest extends TestBase {
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
                         
             byte[] buffer = new byte[bufferLength];
-            int nRead = completeMultipartUploadResult.getCallbackResponseBody().read(buffer);
-            completeMultipartUploadResult.getCallbackResponseBody().close();
+            int nRead = completeMultipartUploadResult.getResponse().getContent().read(buffer);
+            completeMultipartUploadResult.getResponse().getContent().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
                     
             OSSObject obj = ossClient.getObject(bucketName, key);
@@ -582,8 +582,8 @@ public class CallbackTest extends TestBase {
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
                         
             byte[] buffer = new byte[bufferLength];
-            int nRead = completeMultipartUploadResult.getCallbackResponseBody().read(buffer);
-            completeMultipartUploadResult.getCallbackResponseBody().close();
+            int nRead = completeMultipartUploadResult.getResponse().getContent().read(buffer);
+            completeMultipartUploadResult.getResponse().getContent().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
                     
             OSSObject obj = ossClient.getObject(bucketName, key);
@@ -632,8 +632,8 @@ public class CallbackTest extends TestBase {
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
                         
             byte[] buffer = new byte[bufferLength];
-            int nRead = completeMultipartUploadResult.getCallbackResponseBody().read(buffer);
-            completeMultipartUploadResult.getCallbackResponseBody().close();
+            int nRead = completeMultipartUploadResult.getResponse().getContent().read(buffer);
+            completeMultipartUploadResult.getResponse().getContent().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
                     
             OSSObject obj = ossClient.getObject(bucketName, key);
@@ -682,8 +682,8 @@ public class CallbackTest extends TestBase {
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
                         
             byte[] buffer = new byte[bufferLength];
-            int nRead = completeMultipartUploadResult.getCallbackResponseBody().read(buffer);
-            completeMultipartUploadResult.getCallbackResponseBody().close();
+            int nRead = completeMultipartUploadResult.getResponse().getContent().read(buffer);
+            completeMultipartUploadResult.getResponse().getContent().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
                     
             OSSObject obj = ossClient.getObject(bucketName, key);
@@ -734,8 +734,8 @@ public class CallbackTest extends TestBase {
         	
         	// check callback body
             byte[] buffer = new byte[bufferLength];
-            int nRead = putResult.getCallbackResponseBody().read(buffer);
-            putResult.getCallbackResponseBody().close();
+            int nRead = putResult.getResponse().getContent().read(buffer);
+            putResult.getResponse().getContent().close();
             Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
             
             // get object and check
