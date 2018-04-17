@@ -101,6 +101,7 @@ public class EnvironmentVariableCredentialsProviderTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
+    
     @Ignore
     @Test
     public void testGetEnvironmentVariableCredentialsInOss() {
@@ -133,6 +134,7 @@ public class EnvironmentVariableCredentialsProviderTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
+    
     @Ignore
     @Test
     public void testGetEnvironmentVariableStsCredentialsInOss() {
