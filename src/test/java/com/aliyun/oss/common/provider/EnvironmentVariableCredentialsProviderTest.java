@@ -103,7 +103,6 @@ public class EnvironmentVariableCredentialsProviderTest extends TestBase {
 	}
 
 	@Ignore
-	@Test
 	public void testGetEnvironmentVariableCredentialsInOss() {
 		try {
 			// unset evn
@@ -136,7 +135,6 @@ public class EnvironmentVariableCredentialsProviderTest extends TestBase {
 	}
 
 	@Ignore
-	@Test
 	public void testGetEnvironmentVariableStsCredentialsInOss() {
 		try {
 			// unset evn

@@ -127,7 +127,6 @@ public class STSAssumeRoleSessionCredentialsProviderTest extends TestBase {
 	}
 
 	@Ignore
-	@Test
 	public void testStsAssumeRoleCredentialsProviderInOss() {
 		try {
 			CredentialsProvider credentialsProvider = CredentialsProviderFactory

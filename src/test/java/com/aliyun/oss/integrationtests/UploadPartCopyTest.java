@@ -56,7 +56,6 @@ public class UploadPartCopyTest extends TestBase {
 	private static final int LIST_PART_MAX_RETURNS = 1000;
 
 	@Ignore // TODO Waiting for solving
-	@Test
 	public void testNormalUploadPartCopy() {
 		final String sourceBucket = TestConfig.BUCKET_NAME_PREFIX + "normal-upload-bucket-source";
 		final String targetBucket = TestConfig.BUCKET_NAME_PREFIX + "normal-upload-bucket-target";
@@ -267,7 +266,6 @@ public class UploadPartCopyTest extends TestBase {
 	}
 
 	@Ignore // TODO Waiting for solving
-	@Test
 	public void testNormalUploadPartCopyByRange() {
 		final String sourceBucket = TestConfig.BUCKET_NAME_PREFIX + "normal-upload-by-range-bucket-source";
 		final String targetBucket = TestConfig.BUCKET_NAME_PREFIX + "normal-upload-by-range-bucket-target";
@@ -347,7 +345,6 @@ public class UploadPartCopyTest extends TestBase {
 	}
 
 	@Ignore // TODO Waiting for solving
-	@Test
 	public void testNormalUploadPartCopyWithSpecialChars() {
 		final String sourceBucket = TestConfig.BUCKET_NAME_PREFIX + "normal-upload-part-copy-by-range-bucket-source";
 		final String targetBucket = TestConfig.BUCKET_NAME_PREFIX + "normal-upload-part-copy-by-range-bucket-target";
@@ -425,7 +422,6 @@ public class UploadPartCopyTest extends TestBase {
 	}
 
 	@Ignore // TODO Waiting for solving
-	@Test
 	public void testUnormalUploadPartCopyByRange() {
 		final String sourceBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-upload-by-range-bucket-source";
 		final String targetBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-upload-by-range-bucket-target";

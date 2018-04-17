@@ -276,7 +276,6 @@ public class ObjectAclTest extends TestBase {
 	}
 
 	@Ignore // TODO Waiting for solving
-	@Test
 	public void testUploadMultipartsWithAclHeader() {
 		final String key = "normal-upload-multiparts-with-acl-header";
 		final int partSize = 128 * 1024; // 128KB

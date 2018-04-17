@@ -77,7 +77,6 @@ public class SystemPropertiesCredentialsProviderTest extends TestBase {
 	}
 
 	@Ignore
-	@Test
 	public void testSystemPropertiesCredentialsProviderInOss() {
 		try {
 			System.setProperty(AuthUtils.ACCESS_KEY_SYSTEM_PROPERTY, TestConfig.ROOT_ACCESS_KEY_ID);
@@ -99,7 +98,6 @@ public class SystemPropertiesCredentialsProviderTest extends TestBase {
 	}
 
 	@Ignore
-	@Test
 	public void testSystemPropertiesStsCredentialsProviderInOss() {
 		try {
 			CredentialsProvider assumeRoleCredProvider = CredentialsProviderFactory

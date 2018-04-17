@@ -128,7 +128,6 @@ public class UploadPartTest extends TestBase {
 	}
 
 	@Ignore // TODO Waiting for solving
-	@Test
 	public void testNormalUploadMultiparts() {
 		final String key = "normal-upload-multiparts-object";
 		final int partSize = 128 * 1024; // 128KB
@@ -228,7 +227,6 @@ public class UploadPartTest extends TestBase {
 	}
 
 	@Ignore // TODO Waiting for solving
-	@Test
 	public void testNormalListParts() {
 		final String key = "normal-list-parts-object";
 		final int partSize = 128 * 1024; // 128KB
@@ -349,7 +347,6 @@ public class UploadPartTest extends TestBase {
 	}
 
 	@Ignore // TODO Waiting for solving
-	@Test
 	public void testNormalListPartsWithEncoding() {
 		final String key = "normal-list-parts-常记溪亭日暮，沉醉不知归路";
 		final int partSize = 128 * 1024;
@@ -682,7 +679,6 @@ public class UploadPartTest extends TestBase {
 	}
 
 	@Ignore // TODO Waiting for solving
-	@Test
 	public void testNormalListMultipartUploadsWithEncoding() {
 		try {
 			// Add LIST_UPLOAD_MAX_RETURNS + 1 + lv2KeyCount objects to bucket
@@ -792,7 +788,6 @@ public class UploadPartTest extends TestBase {
 	}
 
 	@Ignore // TODO Waiting for solving
-	@Test
 	public void testNormalCompleteMultipartUpload() {
 		final String key = "normal-complete-multipart-upload-object";
 		final int partSize = 128 * 1024; // 128KB
@@ -884,7 +879,6 @@ public class UploadPartTest extends TestBase {
 	}
 
 	@Ignore // TODO Waiting for solving
-	@Test
 	public void testUnormalCompleteMultipartUpload() {
 		final String key = "unormal-complete-multipart-upload-object";
 		final int partSize = 128 * 1024; // 128KB
@@ -1003,7 +997,6 @@ public class UploadPartTest extends TestBase {
 	}
 
 	@Ignore // TODO Waiting for solving
-	@Test
 	public void testUploadPartWithChunked() {
 		final String key = "upload-part-with-chunked-object";
 		final int partSize = 128 * 1024; // 128KB
