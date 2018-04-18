@@ -40,7 +40,7 @@ public class BucketCORSTest extends TestBase {
     
     @Test
     public void testNormalSetBucketCORS() {
-        final String bucketName = "normal-set-bucket-cors";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "normal-set-bucket-cors";
 
         try {
             ossClient.createBucket(bucketName);
@@ -99,7 +99,7 @@ public class BucketCORSTest extends TestBase {
     
     @Test
     public void testUnormalSetBucketCORS() {
-        final String bucketName = "unormal-set-bucket-cors";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "unormal-set-bucket-cors";
         
         try {
             ossClient.createBucket(bucketName);
@@ -207,7 +207,7 @@ public class BucketCORSTest extends TestBase {
     @Test
     public void testUnormalGetBucketCORS() {
         // Get non-existent bucket
-        final String nonexistentBucket = "unormal-get-bucket-cors";
+        final String nonexistentBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-get-bucket-cors";
         try {
             ossClient.getBucketCORSRules(nonexistentBucket);
             Assert.fail("Get bucket cors should not be successful");
@@ -226,7 +226,7 @@ public class BucketCORSTest extends TestBase {
         }
         
         // Get bucket without setting cors rules
-        final String bucketWithoutCORSRules = "bucket-without-cors-rules";
+        final String bucketWithoutCORSRules = TestConfig.BUCKET_NAME_PREFIX + "bucket-without-cors-rules";
         try {
             ossClient.createBucket(bucketWithoutCORSRules);
             
@@ -243,7 +243,7 @@ public class BucketCORSTest extends TestBase {
     @Test
     public void testUnormalDeleteBucketCORS() {
         // Delete non-existent bucket
-        final String nonexistentBucket = "unormal-delete-bucket-cors";
+        final String nonexistentBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-delete-bucket-cors";
         try {
             ossClient.getBucketCORSRules(nonexistentBucket);
             Assert.fail("Delete bucket cors should not be successful");

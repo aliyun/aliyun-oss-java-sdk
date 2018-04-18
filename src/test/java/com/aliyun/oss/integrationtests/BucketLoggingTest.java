@@ -36,8 +36,8 @@ public class BucketLoggingTest extends TestBase {
 
     @Test
     public void testNormalSetBucketLogging() {
-        final String sourceBucket = "normal-set-bucket-logging-source-1";
-        final String targetBucket = "normal-set-bucket-logging-target-1";
+		final String sourceBucket = TestConfig.BUCKET_NAME_PREFIX + "normal-logging-source-1";
+		final String targetBucket = TestConfig.BUCKET_NAME_PREFIX + "normal-logging-target-1";
         final String targetPrefix = "normal-set-bucket-logging-prefix";
         
         try {
@@ -49,6 +49,8 @@ public class BucketLoggingTest extends TestBase {
             request.setTargetBucket(targetBucket);
             request.setTargetPrefix(targetPrefix);
             ossClient.setBucketLogging(request);
+            
+            waitForCacheExpiration(5);
             
             BucketLoggingResult result = ossClient.getBucketLogging(sourceBucket);
             Assert.assertEquals(targetBucket, result.getTargetBucket());
@@ -103,8 +105,8 @@ public class BucketLoggingTest extends TestBase {
     
     @Test
     public void testUnormalSetBucketLogging() {
-        final String sourceBucket = "unormal-set-bucket-logging-source";
-        final String targetBucket = "unormal-set-bucket-logging-target";
+    	final String sourceBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-set-bucket-logging-source";
+		final String targetBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-set-bucket-logging-target";
         final String targetPrefix = "unormal-set-bucket-logging-prefix";
         
         try {
@@ -167,7 +169,7 @@ public class BucketLoggingTest extends TestBase {
         }
         
         // Get bucket without setting logging rule
-        final String bucketWithoutLoggingRule = "bucket-without-logging-rule";
+        final String bucketWithoutLoggingRule = TestConfig.BUCKET_NAME_PREFIX + "bucket-without-logging-rule";
         try {
             ossClient.createBucket(bucketWithoutLoggingRule);
             
@@ -203,7 +205,7 @@ public class BucketLoggingTest extends TestBase {
         }
         
         // Delete bucket without setting logging rule
-        final String bucketWithoutLoggingRule = "bucket-without-logging-rule";
+        final String bucketWithoutLoggingRule = TestConfig.BUCKET_NAME_PREFIX + "bucket-without-logging-rule";
         try {
             ossClient.createBucket(bucketWithoutLoggingRule);
             

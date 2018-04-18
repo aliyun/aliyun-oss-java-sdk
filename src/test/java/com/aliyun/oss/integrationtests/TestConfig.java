@@ -44,5 +44,8 @@ public final class TestConfig {
     public static int PROXY_PORT = -1;
     public static String PROXY_USER = null;
     public static String PROXY_PASSWORD = null;
-
+    
+	// OSS test bucketName
+	public static String BUCKET_NAME_PREFIX = null;
+	
 }

@@ -62,7 +62,7 @@ public class RequestTimeoutTest extends TestBase {
     @Before
     public void setUp() throws Exception {
         long ticks = new Date().getTime() / 1000 + new Random().nextInt(5000);
-        bucketName = BUCKET_NAME_PREFIX + ticks;
+        bucketName = TestConfig.BUCKET_NAME_PREFIX + ticks;
         
         if (ossClient == null) {
             ClientConfiguration config = new ClientConfiguration();

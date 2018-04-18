@@ -27,8 +27,10 @@ import com.aliyun.oss.common.auth.PublicKey;
 import com.aliyun.oss.common.utils.AuthUtils;
 import com.aliyuncs.exceptions.ClientException;
 import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class RamUtilsTest extends TestBase {
 
     @Test
