@@ -44,140 +44,138 @@ import com.aliyun.oss.model.Permission;
 @SuppressWarnings("deprecation")
 public class BucketAclTest extends TestBase {
 
-    private static final CannedAccessControlList[] acls = {
-        null, 
-        CannedAccessControlList.Private, 
-        CannedAccessControlList.PublicRead, 
-        CannedAccessControlList.PublicReadWrite 
-    };
-    
-    @Test
-    public void testNormalSetBucketAcl() {
-        final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "normal-set-bucket-acl";
-        
-        try {
-            ossClient.createBucket(bucketName);
-            
-            for (CannedAccessControlList acl : acls) {
-                ossClient.setBucketAcl(bucketName, acl);
-                waitForCacheExpiration(5);
-                
-                AccessControlList returnedAcl = ossClient.getBucketAcl(bucketName);
-                if (acl != null && !acl.equals(CannedAccessControlList.Private)) {
-                    Set<Grant> grants = returnedAcl.getGrants();
-                    Assert.assertEquals(1, grants.size());
-                    Grant grant = (Grant) grants.toArray()[0];
-                    
-                    if (acl.equals(CannedAccessControlList.PublicRead)) {
-                        Assert.assertEquals(GroupGrantee.AllUsers, grant.getGrantee());
-                        Assert.assertEquals(Permission.Read, grant.getPermission());
-                    } else if (acl.equals(CannedAccessControlList.PublicReadWrite)) {                        
-                        Assert.assertEquals(GroupGrantee.AllUsers, grant.getGrantee());
-                        Assert.assertEquals(Permission.FullControl, grant.getPermission());
-                    }
-                }
-                
-                Assert.assertEquals(returnedAcl.getRequestId().length(), REQUEST_ID_LEN);
-                if (acl != null ) {
-                    Assert.assertEquals(returnedAcl.getCannedACL(), acl);
-                }
-            }
-            
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        } finally {
-            ossClient.deleteBucket(bucketName);
-        }
-    }
-    
-    @Test
-    public void testUnormalSetBucketAcl() {
-        final String nonexistentBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-set-bucket-acl";
-        
-        try {            
-            // set non-existent bucket
-            try {
-                ossClient.setBucketAcl(nonexistentBucket, CannedAccessControlList.Private);
-                //Assert.fail("Set bucket acl should not be successful");
-            } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
-            }
-            
-            // Set bucket without ownership
-            final String bucketWithoutOwnership = "oss";
-            try {
-                ossClient.setBucketAcl(bucketWithoutOwnership, CannedAccessControlList.Private);
-                Assert.fail("Set bucket acl should not be successful");
-            } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.BUCKET_ALREADY_EXISTS, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(BUCKET_ALREADY_EXIST_ERR));
-            }
-            
-            // Set illegal acl
-            final String illegalAcl = "IllegalAcl";
-            try {
-                CannedAccessControlList.parse(illegalAcl);
-            } catch (Exception e) {
-                Assert.assertTrue(e instanceof IllegalArgumentException);
-            }
-            
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        } finally {
-            ossClient.deleteBucket(nonexistentBucket);
-        }
-    }
-    
-    @Test
-    public void testUnormalGetBucketAcl() {
-        // Get non-existent bucket
-        final String nonexistentBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-get-bucket-acl";
-        try {
-            ossClient.getBucketAcl(nonexistentBucket);
-            Assert.fail("Get bucket acl should not be successful");
-        } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
-        }
-        
-        // Get bucket without ownership
-        final String bucketWithoutOwnership = "oss";
-        try {
-            ossClient.getBucketAcl(bucketWithoutOwnership);
-            Assert.fail("Get bucket referer should not be successful");
-        } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-        }
-        
-        // Get bucket using default acl
-        final String bucketUsingDefaultAcl = TestConfig.BUCKET_NAME_PREFIX + "bucket-using-default-acl";
-        try {
-            ossClient.createBucket(bucketUsingDefaultAcl);
-            
-            AccessControlList returnedACL = ossClient.getBucketAcl(bucketUsingDefaultAcl);
-            Set<Grant> grants = returnedACL.getGrants();
-            // No grants when using default acl
-            Assert.assertEquals(0, grants.size());
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        } finally {
-            ossClient.deleteBucket(bucketUsingDefaultAcl);
-        }
-    }
-    
-    @Test
-    public void testUnormalDoesBucketExist() {
-        final String nonexistentBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-does-bucket-exist";
-        
-        try {
-            Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
-            OSSClient ossClient = new OSSClient("http://oss-cn-taikang.aliyuncs.com", new DefaultCredentialProvider(credentials));
-            ossClient.doesBucketExist(nonexistentBucket);
-            Assert.fail("Does bucket exist should not be successful");
-        } catch (Exception e) {
-            Assert.assertEquals("UnknownHost", e.getMessage());
-        }
-    }
-        
+	private static final CannedAccessControlList[] acls = { null, CannedAccessControlList.Private,
+			CannedAccessControlList.PublicRead, CannedAccessControlList.PublicReadWrite };
+
+	@Test
+	public void testNormalSetBucketAcl() {
+		final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "normal-set-bucket-acl";
+
+		try {
+			ossClient.createBucket(bucketName);
+
+			for (CannedAccessControlList acl : acls) {
+				ossClient.setBucketAcl(bucketName, acl);
+				waitForCacheExpiration(5);
+
+				AccessControlList returnedAcl = ossClient.getBucketAcl(bucketName);
+				if (acl != null && !acl.equals(CannedAccessControlList.Private)) {
+					Set<Grant> grants = returnedAcl.getGrants();
+					Assert.assertEquals(1, grants.size());
+					Grant grant = (Grant) grants.toArray()[0];
+
+					if (acl.equals(CannedAccessControlList.PublicRead)) {
+						Assert.assertEquals(GroupGrantee.AllUsers, grant.getGrantee());
+						Assert.assertEquals(Permission.Read, grant.getPermission());
+					} else if (acl.equals(CannedAccessControlList.PublicReadWrite)) {
+						Assert.assertEquals(GroupGrantee.AllUsers, grant.getGrantee());
+						Assert.assertEquals(Permission.FullControl, grant.getPermission());
+					}
+				}
+
+				Assert.assertEquals(returnedAcl.getRequestId().length(), REQUEST_ID_LEN);
+				if (acl != null) {
+					Assert.assertEquals(returnedAcl.getCannedACL(), acl);
+				}
+			}
+
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		} finally {
+			ossClient.deleteBucket(bucketName);
+		}
+	}
+
+	@Test
+	public void testUnormalSetBucketAcl() {
+		final String nonexistentBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-set-bucket-acl";
+
+		try {
+			// set non-existent bucket
+			try {
+				ossClient.setBucketAcl(nonexistentBucket, CannedAccessControlList.Private);
+				// Assert.fail("Set bucket acl should not be successful");
+			} catch (OSSException e) {
+				Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+				Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+			}
+
+			// Set bucket without ownership
+			final String bucketWithoutOwnership = "oss";
+			try {
+				ossClient.setBucketAcl(bucketWithoutOwnership, CannedAccessControlList.Private);
+				Assert.fail("Set bucket acl should not be successful");
+			} catch (OSSException e) {
+				Assert.assertEquals(OSSErrorCode.BUCKET_ALREADY_EXISTS, e.getErrorCode());
+				Assert.assertTrue(e.getMessage().startsWith(BUCKET_ALREADY_EXIST_ERR));
+			}
+
+			// Set illegal acl
+			final String illegalAcl = "IllegalAcl";
+			try {
+				CannedAccessControlList.parse(illegalAcl);
+			} catch (Exception e) {
+				Assert.assertTrue(e instanceof IllegalArgumentException);
+			}
+
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		} finally {
+			ossClient.deleteBucket(nonexistentBucket);
+		}
+	}
+
+	@Test
+	public void testUnormalGetBucketAcl() {
+		// Get non-existent bucket
+		final String nonexistentBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-get-bucket-acl";
+		try {
+			ossClient.getBucketAcl(nonexistentBucket);
+			Assert.fail("Get bucket acl should not be successful");
+		} catch (OSSException e) {
+			Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+			Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+		}
+
+		// Get bucket without ownership
+		final String bucketWithoutOwnership = "oss";
+		try {
+			ossClient.getBucketAcl(bucketWithoutOwnership);
+			Assert.fail("Get bucket referer should not be successful");
+		} catch (OSSException e) {
+			Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+		}
+
+		// Get bucket using default acl
+		final String bucketUsingDefaultAcl = TestConfig.BUCKET_NAME_PREFIX + "bucket-using-default-acl";
+		try {
+			ossClient.createBucket(bucketUsingDefaultAcl);
+
+			AccessControlList returnedACL = ossClient.getBucketAcl(bucketUsingDefaultAcl);
+			Set<Grant> grants = returnedACL.getGrants();
+			// No grants when using default acl
+			Assert.assertEquals(0, grants.size());
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		} finally {
+			ossClient.deleteBucket(bucketUsingDefaultAcl);
+		}
+	}
+
+	@Test
+	public void testUnormalDoesBucketExist() {
+		final String nonexistentBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-does-bucket-exist";
+
+		try {
+			Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID,
+					TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
+			OSSClient ossClient = new OSSClient("http://oss-cn-taikang.aliyuncs.com",
+					new DefaultCredentialProvider(credentials));
+			ossClient.doesBucketExist(nonexistentBucket);
+			Assert.fail("Does bucket exist should not be successful");
+		} catch (Exception e) {
+			Assert.assertEquals("UnknownHost", e.getMessage());
+		}
+	}
+
 }

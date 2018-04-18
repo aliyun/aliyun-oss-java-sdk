@@ -21,32 +21,32 @@ package com.aliyun.oss.common.provider;
 
 public final class TestConfig {
 
-    // Available region of RAM
-    public static String RAM_REGION_ID = null;
+	// Available region of RAM
+	public static String RAM_REGION_ID = null;
 
-    // Root user's AK/SK
-    public static String ROOT_ACCESS_KEY_ID = null;
-    public static String ROOT_ACCESS_KEY_SECRET = null;
+	// Root user's AK/SK
+	public static String ROOT_ACCESS_KEY_ID = null;
+	public static String ROOT_ACCESS_KEY_SECRET = null;
 
-    // Child user's AK/SK
-    public static String USER_ACCESS_KEY_ID = null;
-    public static String USER_ACCESS_KEY_SECRET = null;
+	// Child user's AK/SK
+	public static String USER_ACCESS_KEY_ID = null;
+	public static String USER_ACCESS_KEY_SECRET = null;
 
-    // Role's ARN
-    public static String RAM_ROLE_ARN = null;
+	// Role's ARN
+	public static String RAM_ROLE_ARN = null;
 
-    // ECS bound role name, note NOT ARN
-    public static String ECS_ROLE_NAME = null;
+	// ECS bound role name, note NOT ARN
+	public static String ECS_ROLE_NAME = null;
 
-    // The RSA key pair
-    public static String PUBLIC_KEY_PATH = null;
-    public static String PRIVATE_KEY_PATH = null;
+	// The RSA key pair
+	public static String PUBLIC_KEY_PATH = null;
+	public static String PRIVATE_KEY_PATH = null;
 
-    // The host authentication server
-    public static String OSS_AUTH_SERVER_HOST = null;
+	// The host authentication server
+	public static String OSS_AUTH_SERVER_HOST = null;
 
-    // OSS test configuration
-    public static String OSS_ENDPOINT = null;
-    public static String OSS_BUCKET = null;
+	// OSS test configuration
+	public static String OSS_ENDPOINT = null;
+	public static String OSS_BUCKET = null;
 
 }

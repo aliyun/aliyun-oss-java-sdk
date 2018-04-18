@@ -37,167 +37,168 @@ import com.aliyun.oss.model.AddBucketCnameRequest;
 
 @Ignore
 public class BucketCnameTest extends TestBase {
-    private static final String[] domains = { "001du.cn", "baidu.com",
-            "filehomeworks.youcase.com", "files.100km.me", "flv.fls.net.cn"};
+	private static final String[] domains = { "001du.cn", "baidu.com", "filehomeworks.youcase.com", "files.100km.me",
+			"flv.fls.net.cn" };
 
-    @Test
-    @SuppressWarnings("deprecation")
-    public void testNormalAddBucketCname() {
-        final String bucketName = "normal-add-bucket-cname";
-        Date curDate;
-        
-        try {
-            ossClient.createBucket(bucketName);
-            
-            // set cname
-            ossClient.addBucketCname(new AddBucketCnameRequest(bucketName).withDomain(domains[0]));
-            
-            curDate = new Date(System.currentTimeMillis());
-            waitForCacheExpiration(5);
-            
-            List<CnameConfiguration> cnames = ossClient.getBucketCname(bucketName);
-            
-            Assert.assertEquals(cnames.size(), 1);
-            Assert.assertEquals(cnames.get(0).getDomain(), domains[0]);
-            Assert.assertEquals(cnames.get(0).getStatus(), CnameConfiguration.CnameStatus.Enabled);
-            Assert.assertEquals(cnames.get(0).getLastMofiedTime().getYear(), curDate.getYear());
-            Assert.assertEquals(cnames.get(0).getLastMofiedTime().getMonth(), curDate.getMonth());
-            Assert.assertEquals(cnames.get(0).getLastMofiedTime().getDay(), curDate.getDay());
-            System.out.println(cnames.get(0));
-            
-            ossClient.deleteBucketCname(bucketName, domains[0]);
-            
-            cnames = ossClient.getBucketCname(bucketName);
-            Assert.assertEquals(cnames.size(), 0);
-            
-            // set multi cname
-            for (String domain : domains) {
-                AddBucketCnameRequest request = new AddBucketCnameRequest(bucketName);
-                request.setDomain(domain);
-                ossClient.addBucketCname(request);
-            }
+	@Test
+	@SuppressWarnings("deprecation")
+	public void testNormalAddBucketCname() {
+		final String bucketName = "normal-add-bucket-cname";
+		Date curDate;
 
-            curDate = new Date(System.currentTimeMillis());
-            waitForCacheExpiration(5);
-            
-            cnames = ossClient.getBucketCname(bucketName);
-            Assert.assertEquals(cnames.size(), domains.length);
-            for (int i = 0; i< cnames.size(); i++) {
-                System.out.println(cnames.get(i));
-                Assert.assertEquals(cnames.get(i).getDomain(), domains[i]);
-                Assert.assertEquals(cnames.get(0).getStatus(), CnameConfiguration.CnameStatus.Enabled);
-                Assert.assertEquals(cnames.get(0).getLastMofiedTime().getYear(), curDate.getYear());
-                Assert.assertEquals(cnames.get(0).getLastMofiedTime().getMonth(), curDate.getMonth());
-                Assert.assertEquals(cnames.get(0).getLastMofiedTime().getDay(), curDate.getDay());            }
-            
-            for (String domain : domains) {
-                DeleteBucketCnameRequest req = new DeleteBucketCnameRequest(bucketName);
-                req.setDomain(domain);
-                ossClient.deleteBucketCname(req);
-            }
-            
-            cnames = ossClient.getBucketCname(bucketName);
-            Assert.assertEquals(cnames.size(), 0);
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        } finally {
-            ossClient.deleteBucket(bucketName);
-        }
-    }
-    
-    @Test
-    public void testNormalDeleteBucketCname() {
-        final String bucketName = "normal-delete-bucket-cname";
-        
-        try {
-            ossClient.createBucket(bucketName);
-            
-            // set cname
-            ossClient.addBucketCname(new AddBucketCnameRequest(bucketName).withDomain(domains[0]));
-            
-            waitForCacheExpiration(5);
-            
-            List<CnameConfiguration> cnames = ossClient.getBucketCname(bucketName);
-            Assert.assertEquals(cnames.size(), 1);
-            
-            ossClient.deleteBucketCname(bucketName, domains[0]);
-            
-            cnames = ossClient.getBucketCname(bucketName);
-            Assert.assertEquals(cnames.size(), 0);
-            
-            // delete not exist cname
-            ossClient.deleteBucketCname(bucketName, domains[0]);
-            
-            cnames = ossClient.getBucketCname(bucketName);
-            Assert.assertEquals(cnames.size(), 0);
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        } finally {
-            ossClient.deleteBucket(bucketName);
-        }
-    }
-    
-    @Test
-    public void testUnormaladdBucketCname() {
-        final String bucketName = "unormal-set-bucket-cname";
-        
-        // parameter invalid
-        try {
-            ossClient.addBucketCname(new AddBucketCnameRequest(bucketName));
-            Assert.fail("Set bucket cname should not be successful");
-        } catch (Exception e) {
-            Assert.assertTrue(e instanceof NullPointerException);
-        }
-        
-        try {
-            ossClient.deleteBucketCname(new DeleteBucketCnameRequest(bucketName));
-            Assert.fail("Delete bucket cname should not be successful");
-        } catch (Exception e) {
-            Assert.assertTrue(e instanceof NullPointerException);
-        }
-        
-        // bucket non-existent 
-        try {            
-            ossClient.addBucketCname(new AddBucketCnameRequest(bucketName).withDomain(domains[0]));
-            Assert.fail("Set bucket cname should not be successful");
-        } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-        }
-        
-        try {
-            ossClient.getBucketCname(bucketName);
-            Assert.fail("get bucket cname should not be successful");
-        } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-        }
-        
-        try {
-            ossClient.deleteBucketCname(new DeleteBucketCnameRequest(bucketName).withDomain(domains[0]));
-            Assert.fail("Delete bucket cname should not be successful");
-        } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-        }
-        
-        // domain invalid
-        try {
-            ossClient.createBucket(bucketName);
-            
-            try {            
-                ossClient.addBucketCname(new AddBucketCnameRequest(bucketName).withDomain("your.com"));
-                Assert.fail("Set bucket cname should not be successful");
-            } catch (OSSException e) {
-                Assert.assertEquals("NoSuchCnameInRecord", e.getErrorCode());
-            }
-            
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        } finally {
-            ossClient.deleteBucket(bucketName);
-        }
-    }
-    
+		try {
+			ossClient.createBucket(bucketName);
+
+			// set cname
+			ossClient.addBucketCname(new AddBucketCnameRequest(bucketName).withDomain(domains[0]));
+
+			curDate = new Date(System.currentTimeMillis());
+			waitForCacheExpiration(5);
+
+			List<CnameConfiguration> cnames = ossClient.getBucketCname(bucketName);
+
+			Assert.assertEquals(cnames.size(), 1);
+			Assert.assertEquals(cnames.get(0).getDomain(), domains[0]);
+			Assert.assertEquals(cnames.get(0).getStatus(), CnameConfiguration.CnameStatus.Enabled);
+			Assert.assertEquals(cnames.get(0).getLastMofiedTime().getYear(), curDate.getYear());
+			Assert.assertEquals(cnames.get(0).getLastMofiedTime().getMonth(), curDate.getMonth());
+			Assert.assertEquals(cnames.get(0).getLastMofiedTime().getDay(), curDate.getDay());
+			System.out.println(cnames.get(0));
+
+			ossClient.deleteBucketCname(bucketName, domains[0]);
+
+			cnames = ossClient.getBucketCname(bucketName);
+			Assert.assertEquals(cnames.size(), 0);
+
+			// set multi cname
+			for (String domain : domains) {
+				AddBucketCnameRequest request = new AddBucketCnameRequest(bucketName);
+				request.setDomain(domain);
+				ossClient.addBucketCname(request);
+			}
+
+			curDate = new Date(System.currentTimeMillis());
+			waitForCacheExpiration(5);
+
+			cnames = ossClient.getBucketCname(bucketName);
+			Assert.assertEquals(cnames.size(), domains.length);
+			for (int i = 0; i < cnames.size(); i++) {
+				System.out.println(cnames.get(i));
+				Assert.assertEquals(cnames.get(i).getDomain(), domains[i]);
+				Assert.assertEquals(cnames.get(0).getStatus(), CnameConfiguration.CnameStatus.Enabled);
+				Assert.assertEquals(cnames.get(0).getLastMofiedTime().getYear(), curDate.getYear());
+				Assert.assertEquals(cnames.get(0).getLastMofiedTime().getMonth(), curDate.getMonth());
+				Assert.assertEquals(cnames.get(0).getLastMofiedTime().getDay(), curDate.getDay());
+			}
+
+			for (String domain : domains) {
+				DeleteBucketCnameRequest req = new DeleteBucketCnameRequest(bucketName);
+				req.setDomain(domain);
+				ossClient.deleteBucketCname(req);
+			}
+
+			cnames = ossClient.getBucketCname(bucketName);
+			Assert.assertEquals(cnames.size(), 0);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		} finally {
+			ossClient.deleteBucket(bucketName);
+		}
+	}
+
+	@Test
+	public void testNormalDeleteBucketCname() {
+		final String bucketName = "normal-delete-bucket-cname";
+
+		try {
+			ossClient.createBucket(bucketName);
+
+			// set cname
+			ossClient.addBucketCname(new AddBucketCnameRequest(bucketName).withDomain(domains[0]));
+
+			waitForCacheExpiration(5);
+
+			List<CnameConfiguration> cnames = ossClient.getBucketCname(bucketName);
+			Assert.assertEquals(cnames.size(), 1);
+
+			ossClient.deleteBucketCname(bucketName, domains[0]);
+
+			cnames = ossClient.getBucketCname(bucketName);
+			Assert.assertEquals(cnames.size(), 0);
+
+			// delete not exist cname
+			ossClient.deleteBucketCname(bucketName, domains[0]);
+
+			cnames = ossClient.getBucketCname(bucketName);
+			Assert.assertEquals(cnames.size(), 0);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		} finally {
+			ossClient.deleteBucket(bucketName);
+		}
+	}
+
+	@Test
+	public void testUnormaladdBucketCname() {
+		final String bucketName = "unormal-set-bucket-cname";
+
+		// parameter invalid
+		try {
+			ossClient.addBucketCname(new AddBucketCnameRequest(bucketName));
+			Assert.fail("Set bucket cname should not be successful");
+		} catch (Exception e) {
+			Assert.assertTrue(e instanceof NullPointerException);
+		}
+
+		try {
+			ossClient.deleteBucketCname(new DeleteBucketCnameRequest(bucketName));
+			Assert.fail("Delete bucket cname should not be successful");
+		} catch (Exception e) {
+			Assert.assertTrue(e instanceof NullPointerException);
+		}
+
+		// bucket non-existent
+		try {
+			ossClient.addBucketCname(new AddBucketCnameRequest(bucketName).withDomain(domains[0]));
+			Assert.fail("Set bucket cname should not be successful");
+		} catch (OSSException e) {
+			Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+		}
+
+		try {
+			ossClient.getBucketCname(bucketName);
+			Assert.fail("get bucket cname should not be successful");
+		} catch (OSSException e) {
+			Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+		}
+
+		try {
+			ossClient.deleteBucketCname(new DeleteBucketCnameRequest(bucketName).withDomain(domains[0]));
+			Assert.fail("Delete bucket cname should not be successful");
+		} catch (OSSException e) {
+			Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+		}
+
+		// domain invalid
+		try {
+			ossClient.createBucket(bucketName);
+
+			try {
+				ossClient.addBucketCname(new AddBucketCnameRequest(bucketName).withDomain("your.com"));
+				Assert.fail("Set bucket cname should not be successful");
+			} catch (OSSException e) {
+				Assert.assertEquals("NoSuchCnameInRecord", e.getErrorCode());
+			}
+
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		} finally {
+			ossClient.deleteBucket(bucketName);
+		}
+	}
+
 }
