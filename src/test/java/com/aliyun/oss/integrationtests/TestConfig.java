@@ -21,28 +21,31 @@ package com.aliyun.oss.integrationtests;
 
 public final class TestConfig {
 
-    // OSS test configuration
-    public static String OSS_TEST_ENDPOINT = null;
-    public static String OSS_TEST_REGION = null;
-    public static String OSS_TEST_ACCESS_KEY_ID = null;
-    public static String OSS_TEST_ACCESS_KEY_SECRET = null;
-    public static String OSS_TEST_ACCESS_KEY_ID_1 = null;
-    public static String OSS_TEST_ACCESS_KEY_SECRET_1 = null;
+	// OSS test configuration
+	public static String OSS_TEST_ENDPOINT = null;
+	public static String OSS_TEST_REGION = null;
+	public static String OSS_TEST_ACCESS_KEY_ID = null;
+	public static String OSS_TEST_ACCESS_KEY_SECRET = null;
+	public static String OSS_TEST_ACCESS_KEY_ID_1 = null;
+	public static String OSS_TEST_ACCESS_KEY_SECRET_1 = null;
 
-    // OSS replication test configuration
-    public static String OSS_TEST_REPLICATION_ENDPOINT = null;
-    public static String OSS_TEST_REPLICATION_ACCESS_KEY_ID = null;
-    public static String OSS_TEST_REPLICATION_ACCESS_KEY_SECRET = null;
+	// OSS replication test configuration
+	public static String OSS_TEST_REPLICATION_ENDPOINT = null;
+	public static String OSS_TEST_REPLICATION_ACCESS_KEY_ID = null;
+	public static String OSS_TEST_REPLICATION_ACCESS_KEY_SECRET = null;
 
-    // OSS sts test configuration
-    public static String STS_TEST_ENDPOINT = null;
-    public static String STS_TEST_ROLE = null;
-    public static String STS_TEST_BUCKET = null;
+	// OSS sts test configuration
+	public static String STS_TEST_ENDPOINT = null;
+	public static String STS_TEST_ROLE = null;
+	public static String STS_TEST_BUCKET = null;
 
-    // OSS proxy test
-    public static String PROXY_HOST = null;
-    public static int PROXY_PORT = -1;
-    public static String PROXY_USER = null;
-    public static String PROXY_PASSWORD = null;
+	// OSS proxy test
+	public static String PROXY_HOST = null;
+	public static int PROXY_PORT = -1;
+	public static String PROXY_USER = null;
+	public static String PROXY_PASSWORD = null;
+
+	// OSS test bucketName
+	public static String BUCKET_NAME_PREFIX = null;
 
 }

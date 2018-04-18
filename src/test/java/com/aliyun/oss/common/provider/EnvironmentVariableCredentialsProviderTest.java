@@ -33,140 +33,142 @@ import com.aliyun.oss.common.auth.CredentialsProviderFactory;
 import com.aliyun.oss.common.auth.EnvironmentVariableCredentialsProvider;
 import com.aliyun.oss.common.utils.AuthUtils;
 import junit.framework.Assert;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class EnvironmentVariableCredentialsProviderTest extends TestBase {
 
-    @Test
-    public void testGetEnvironmentVariableCredentials() {
-        try {
-            // unset evn
-            List<String> envSet = new ArrayList<String>();
-            envSet.add(AuthUtils.ACCESS_KEY_ENV_VAR);
-            envSet.add(AuthUtils.SECRET_KEY_ENV_VAR);
-            envSet.add(AuthUtils.SESSION_TOKEN_ENV_VAR);
-            unsetEnv(envSet);
+	@Test
+	public void testGetEnvironmentVariableCredentials() {
+		try {
+			// unset evn
+			List<String> envSet = new ArrayList<String>();
+			envSet.add(AuthUtils.ACCESS_KEY_ENV_VAR);
+			envSet.add(AuthUtils.SECRET_KEY_ENV_VAR);
+			envSet.add(AuthUtils.SESSION_TOKEN_ENV_VAR);
+			unsetEnv(envSet);
 
-            // set env
-            Map<String, String> envMap = new HashMap<String, String>(System.getenv());
-            envMap.put(AuthUtils.ACCESS_KEY_ENV_VAR, TestConfig.ROOT_ACCESS_KEY_ID);
-            envMap.put(AuthUtils.SECRET_KEY_ENV_VAR, TestConfig.ROOT_ACCESS_KEY_SECRET);
-            setEnv(envMap);
+			// set env
+			Map<String, String> envMap = new HashMap<String, String>(System.getenv());
+			envMap.put(AuthUtils.ACCESS_KEY_ENV_VAR, TestConfig.ROOT_ACCESS_KEY_ID);
+			envMap.put(AuthUtils.SECRET_KEY_ENV_VAR, TestConfig.ROOT_ACCESS_KEY_SECRET);
+			setEnv(envMap);
 
-            // env provider
-            EnvironmentVariableCredentialsProvider credentialsProvider = new EnvironmentVariableCredentialsProvider();
-            Credentials credentials = credentialsProvider.getCredentials();
-            Assert.assertEquals(credentials.getAccessKeyId(), TestConfig.ROOT_ACCESS_KEY_ID);
-            Assert.assertEquals(credentials.getSecretAccessKey(), TestConfig.ROOT_ACCESS_KEY_SECRET);
-            Assert.assertFalse(credentials.useSecurityToken());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
+			// env provider
+			EnvironmentVariableCredentialsProvider credentialsProvider = new EnvironmentVariableCredentialsProvider();
+			Credentials credentials = credentialsProvider.getCredentials();
+			Assert.assertEquals(credentials.getAccessKeyId(), TestConfig.ROOT_ACCESS_KEY_ID);
+			Assert.assertEquals(credentials.getSecretAccessKey(), TestConfig.ROOT_ACCESS_KEY_SECRET);
+			Assert.assertFalse(credentials.useSecurityToken());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
 
-    @Test
-    public void testGetEnvironmentVariableStsCredentials() {
-        try {
-            // unset evn
-            List<String> envSet = new ArrayList<String>();
-            envSet.add(AuthUtils.ACCESS_KEY_ENV_VAR);
-            envSet.add(AuthUtils.SECRET_KEY_ENV_VAR);
-            envSet.add(AuthUtils.SESSION_TOKEN_ENV_VAR);
-            unsetEnv(envSet);
+	@Test
+	public void testGetEnvironmentVariableStsCredentials() {
+		try {
+			// unset evn
+			List<String> envSet = new ArrayList<String>();
+			envSet.add(AuthUtils.ACCESS_KEY_ENV_VAR);
+			envSet.add(AuthUtils.SECRET_KEY_ENV_VAR);
+			envSet.add(AuthUtils.SESSION_TOKEN_ENV_VAR);
+			unsetEnv(envSet);
 
-            CredentialsProvider assumeRoleCredProvider = CredentialsProviderFactory.newSTSAssumeRoleSessionCredentialsProvider(
-                    TestConfig.RAM_REGION_ID, TestConfig.USER_ACCESS_KEY_ID, TestConfig.USER_ACCESS_KEY_SECRET,
-                    TestConfig.RAM_ROLE_ARN);
+			CredentialsProvider assumeRoleCredProvider = CredentialsProviderFactory
+					.newSTSAssumeRoleSessionCredentialsProvider(TestConfig.RAM_REGION_ID, TestConfig.USER_ACCESS_KEY_ID,
+							TestConfig.USER_ACCESS_KEY_SECRET, TestConfig.RAM_ROLE_ARN);
 
-            // set env
-            Credentials assumeRoleCred = assumeRoleCredProvider.getCredentials();
-            Map<String, String> envMap = new HashMap<String, String>(System.getenv());
-            envMap.put(AuthUtils.ACCESS_KEY_ENV_VAR, assumeRoleCred.getAccessKeyId());
-            envMap.put(AuthUtils.SECRET_KEY_ENV_VAR, assumeRoleCred.getSecretAccessKey());
-            envMap.put(AuthUtils.SESSION_TOKEN_ENV_VAR, assumeRoleCred.getSecurityToken());
-            setEnv(envMap);
+			// set env
+			Credentials assumeRoleCred = assumeRoleCredProvider.getCredentials();
+			Map<String, String> envMap = new HashMap<String, String>(System.getenv());
+			envMap.put(AuthUtils.ACCESS_KEY_ENV_VAR, assumeRoleCred.getAccessKeyId());
+			envMap.put(AuthUtils.SECRET_KEY_ENV_VAR, assumeRoleCred.getSecretAccessKey());
+			envMap.put(AuthUtils.SESSION_TOKEN_ENV_VAR, assumeRoleCred.getSecurityToken());
+			setEnv(envMap);
 
-            // env provider
-            EnvironmentVariableCredentialsProvider credentialsProvider = new EnvironmentVariableCredentialsProvider();
-            Credentials credentials = credentialsProvider.getCredentials();
-            Assert.assertEquals(credentials.getAccessKeyId(), assumeRoleCred.getAccessKeyId());
-            Assert.assertEquals(credentials.getSecretAccessKey(), assumeRoleCred.getSecretAccessKey());
-            Assert.assertEquals(credentials.getSecurityToken(), assumeRoleCred.getSecurityToken());
-            Assert.assertTrue(credentials.useSecurityToken());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
+			// env provider
+			EnvironmentVariableCredentialsProvider credentialsProvider = new EnvironmentVariableCredentialsProvider();
+			Credentials credentials = credentialsProvider.getCredentials();
+			Assert.assertEquals(credentials.getAccessKeyId(), assumeRoleCred.getAccessKeyId());
+			Assert.assertEquals(credentials.getSecretAccessKey(), assumeRoleCred.getSecretAccessKey());
+			Assert.assertEquals(credentials.getSecurityToken(), assumeRoleCred.getSecurityToken());
+			Assert.assertTrue(credentials.useSecurityToken());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
 
-    @Test
-    public void testGetEnvironmentVariableCredentialsInOss() {
-        try {
-            // unset evn
-            List<String> envSet = new ArrayList<String>();
-            envSet.add(AuthUtils.ACCESS_KEY_ENV_VAR);
-            envSet.add(AuthUtils.SECRET_KEY_ENV_VAR);
-            envSet.add(AuthUtils.SESSION_TOKEN_ENV_VAR);
-            unsetEnv(envSet);
+	@Ignore
+	public void testGetEnvironmentVariableCredentialsInOss() {
+		try {
+			// unset evn
+			List<String> envSet = new ArrayList<String>();
+			envSet.add(AuthUtils.ACCESS_KEY_ENV_VAR);
+			envSet.add(AuthUtils.SECRET_KEY_ENV_VAR);
+			envSet.add(AuthUtils.SESSION_TOKEN_ENV_VAR);
+			unsetEnv(envSet);
 
-            // set env
-            Map<String, String> env = new HashMap<String, String>(System.getenv());
-            env.put(AuthUtils.ACCESS_KEY_ENV_VAR, TestConfig.ROOT_ACCESS_KEY_ID);
-            env.put(AuthUtils.SECRET_KEY_ENV_VAR, TestConfig.ROOT_ACCESS_KEY_SECRET);
-            setEnv(env);
+			// set env
+			Map<String, String> env = new HashMap<String, String>(System.getenv());
+			env.put(AuthUtils.ACCESS_KEY_ENV_VAR, TestConfig.ROOT_ACCESS_KEY_ID);
+			env.put(AuthUtils.SECRET_KEY_ENV_VAR, TestConfig.ROOT_ACCESS_KEY_SECRET);
+			setEnv(env);
 
-            // env provider
-            EnvironmentVariableCredentialsProvider credentialsProvider = CredentialsProviderFactory
-                    .newEnvironmentVariableCredentialsProvider();
-            String key = "test.txt";
-            String content = "HelloOSS";
+			// env provider
+			EnvironmentVariableCredentialsProvider credentialsProvider = CredentialsProviderFactory
+					.newEnvironmentVariableCredentialsProvider();
+			String key = "test.txt";
+			String content = "HelloOSS";
 
-            // oss put
-            OSS ossClient = new OSSClientBuilder().build(TestConfig.OSS_ENDPOINT, credentialsProvider);
-            ossClient.putObject(TestConfig.OSS_BUCKET, key, new ByteArrayInputStream(content.getBytes()));
-            ossClient.shutdown();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
+			// oss put
+			OSS ossClient = new OSSClientBuilder().build(TestConfig.OSS_ENDPOINT, credentialsProvider);
+			ossClient.putObject(TestConfig.OSS_BUCKET, key, new ByteArrayInputStream(content.getBytes()));
+			ossClient.shutdown();
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
 
-    @Test
-    public void testGetEnvironmentVariableStsCredentialsInOss() {
-        try {
-            // unset evn
-            List<String> envSet = new ArrayList<String>();
-            envSet.add(AuthUtils.ACCESS_KEY_ENV_VAR);
-            envSet.add(AuthUtils.SECRET_KEY_ENV_VAR);
-            envSet.add(AuthUtils.SESSION_TOKEN_ENV_VAR);
-            unsetEnv(envSet);
+	@Ignore
+	public void testGetEnvironmentVariableStsCredentialsInOss() {
+		try {
+			// unset evn
+			List<String> envSet = new ArrayList<String>();
+			envSet.add(AuthUtils.ACCESS_KEY_ENV_VAR);
+			envSet.add(AuthUtils.SECRET_KEY_ENV_VAR);
+			envSet.add(AuthUtils.SESSION_TOKEN_ENV_VAR);
+			unsetEnv(envSet);
 
-            CredentialsProvider assumeRoleCredProvider = CredentialsProviderFactory.newSTSAssumeRoleSessionCredentialsProvider(
-                    TestConfig.RAM_REGION_ID, TestConfig.USER_ACCESS_KEY_ID, TestConfig.USER_ACCESS_KEY_SECRET,
-                    TestConfig.RAM_ROLE_ARN);
+			CredentialsProvider assumeRoleCredProvider = CredentialsProviderFactory
+					.newSTSAssumeRoleSessionCredentialsProvider(TestConfig.RAM_REGION_ID, TestConfig.USER_ACCESS_KEY_ID,
+							TestConfig.USER_ACCESS_KEY_SECRET, TestConfig.RAM_ROLE_ARN);
 
-            // set env
-            Credentials assumeRoleCred = assumeRoleCredProvider.getCredentials();
-            Map<String, String> envMap = new HashMap<String, String>(System.getenv());
-            envMap.put(AuthUtils.ACCESS_KEY_ENV_VAR, assumeRoleCred.getAccessKeyId());
-            envMap.put(AuthUtils.SECRET_KEY_ENV_VAR, assumeRoleCred.getSecretAccessKey());
-            envMap.put(AuthUtils.SESSION_TOKEN_ENV_VAR, assumeRoleCred.getSecurityToken());
-            setEnv(envMap);
+			// set env
+			Credentials assumeRoleCred = assumeRoleCredProvider.getCredentials();
+			Map<String, String> envMap = new HashMap<String, String>(System.getenv());
+			envMap.put(AuthUtils.ACCESS_KEY_ENV_VAR, assumeRoleCred.getAccessKeyId());
+			envMap.put(AuthUtils.SECRET_KEY_ENV_VAR, assumeRoleCred.getSecretAccessKey());
+			envMap.put(AuthUtils.SESSION_TOKEN_ENV_VAR, assumeRoleCred.getSecurityToken());
+			setEnv(envMap);
 
-            // env provider
-            EnvironmentVariableCredentialsProvider credentialsProvider = CredentialsProviderFactory
-                    .newEnvironmentVariableCredentialsProvider();
-            String key = "test.txt";
-            String content = "HelloOSS";
+			// env provider
+			EnvironmentVariableCredentialsProvider credentialsProvider = CredentialsProviderFactory
+					.newEnvironmentVariableCredentialsProvider();
+			String key = "test.txt";
+			String content = "HelloOSS";
 
-            OSS ossClient = new OSSClientBuilder().build(TestConfig.OSS_ENDPOINT, credentialsProvider);
-            ossClient.putObject(TestConfig.OSS_BUCKET, key, new ByteArrayInputStream(content.getBytes()));
-            ossClient.shutdown();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
+			OSS ossClient = new OSSClientBuilder().build(TestConfig.OSS_ENDPOINT, credentialsProvider);
+			ossClient.putObject(TestConfig.OSS_BUCKET, key, new ByteArrayInputStream(content.getBytes()));
+			ossClient.shutdown();
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
 
 }

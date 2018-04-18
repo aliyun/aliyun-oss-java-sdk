@@ -30,34 +30,32 @@ import org.junit.Test;
 
 public class ProfileConfigLoaderTest extends TestBase {
 
-    @Test
-    public void testProfileConfigLoader() {
-        try {
-            // generate profile
-            Map<String, String> options = new HashMap<String, String>();
-            options.put(AuthUtils.OSS_ACCESS_KEY_ID, TEST_ACCESS_KEY_ID);
-            options.put(AuthUtils.OSS_SECRET_ACCESS_KEY, TEST_ACCESS_KEY_SECRET);
-            options.put(AuthUtils.OSS_SESSION_TOKEN, TEST_SECURITY_TOKEN);
-            generateProfileFile(AuthUtils.DEFAULT_PROFILE_PATH,
-                    AuthUtils.DEFAULT_SECTION_NAME, options);
+	@Test
+	public void testProfileConfigLoader() {
+		try {
+			// generate profile
+			Map<String, String> options = new HashMap<String, String>();
+			options.put(AuthUtils.OSS_ACCESS_KEY_ID, TEST_ACCESS_KEY_ID);
+			options.put(AuthUtils.OSS_SECRET_ACCESS_KEY, TEST_ACCESS_KEY_SECRET);
+			options.put(AuthUtils.OSS_SESSION_TOKEN, TEST_SECURITY_TOKEN);
+			generateProfileFile(AuthUtils.DEFAULT_PROFILE_PATH, AuthUtils.DEFAULT_SECTION_NAME, options);
 
-            // load profiel
-            ProfileConfigLoader profileLoader = new ProfileConfigLoader();
-            Map<String, String> properties = profileLoader
-                    .loadProfile(new File(AuthUtils.DEFAULT_PROFILE_PATH));
+			// load profiel
+			ProfileConfigLoader profileLoader = new ProfileConfigLoader();
+			Map<String, String> properties = profileLoader.loadProfile(new File(AuthUtils.DEFAULT_PROFILE_PATH));
 
-            // check
-            Assert.assertEquals(TEST_ACCESS_KEY_ID, properties.get(AuthUtils.OSS_ACCESS_KEY_ID));
-            Assert.assertEquals(TEST_ACCESS_KEY_SECRET, properties.get(AuthUtils.OSS_SECRET_ACCESS_KEY));
-            Assert.assertEquals(TEST_SECURITY_TOKEN, properties.get(AuthUtils.OSS_SESSION_TOKEN));
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
+			// check
+			Assert.assertEquals(TEST_ACCESS_KEY_ID, properties.get(AuthUtils.OSS_ACCESS_KEY_ID));
+			Assert.assertEquals(TEST_ACCESS_KEY_SECRET, properties.get(AuthUtils.OSS_SECRET_ACCESS_KEY));
+			Assert.assertEquals(TEST_SECURITY_TOKEN, properties.get(AuthUtils.OSS_SESSION_TOKEN));
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
 
-    private static final String TEST_ACCESS_KEY_ID = "AccessKeyId";
-    private static final String TEST_ACCESS_KEY_SECRET = "AccessKeySecret";
-    private static final String TEST_SECURITY_TOKEN = "SecurityToken";
+	private static final String TEST_ACCESS_KEY_ID = "AccessKeyId";
+	private static final String TEST_ACCESS_KEY_SECRET = "AccessKeySecret";
+	private static final String TEST_SECURITY_TOKEN = "SecurityToken";
 
 }

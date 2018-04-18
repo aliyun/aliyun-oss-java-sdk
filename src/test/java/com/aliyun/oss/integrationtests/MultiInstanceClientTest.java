@@ -34,86 +34,89 @@ import com.aliyun.oss.model.PutObjectResult;
 
 public class MultiInstanceClientTest extends TestBase {
 
-    @Test
-    public void testMulitInstanceClient() throws Exception {
-        
-        Thread thrd0 = new Thread(new Runnable() {
-            final String keyPrefix = "thread0-";
-            
-            @Override
-            public void run() {
-                for (int i = 0; i < 100; i++) {
-                    OSS client0 = new OSSClientBuilder().build(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET);
-                    InputStream content = TestUtils.genFixedLengthInputStream(128 * 1024);
-                    String key = TestUtils.buildObjectKey(keyPrefix, i);
-                    
-                    try {
-                        PutObjectResult result = client0.putObject(bucketName, key, content, null);
-                        System.out.println(key + ": " + result.getETag());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    } finally {
-                        if (client0 != null) {
-                            System.out.println("shutdown");
-                            client0.shutdown();
-                        }
-                    }
-                }
-            }
-                
-        });
-    
-        Thread thrd1 = new Thread(new Runnable() {
-            final String keyPrefix = "thread1-";
-            
-            @Override
-            public void run() {
-                for (int i = 0; i < 100; i++) {
-                    OSS client1 = new OSSClientBuilder().build(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET);
-                    InputStream content = TestUtils.genFixedLengthInputStream(1 * 1024 * 1024);
-                    String key = TestUtils.buildObjectKey(keyPrefix, i);
-                    
-                    try {
-                        PutObjectResult result = client1.putObject(bucketName, key, content, null);
-                        System.out.println(key + ": " + result.getETag());
-                        Thread.sleep(50);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    } finally {
-                        if (client1 != null) {
-                            System.out.println("shutdown");
-                            client1.shutdown();
-                        }
-                    }
-                }
-            }
-                
-        });
-        
-        thrd0.start();
-        thrd1.start();
-        thrd0.join();
-        thrd1.join();
+	@Test
+	public void testMulitInstanceClient() throws Exception {
 
-    }
-    
-    @Test
-    public void keepUsingAfterClose() {
-        final String key = "key0";
-        OSS client = new OSSClientBuilder().build(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET);
-        InputStream content = TestUtils.genFixedLengthInputStream(128 * 1024);
-        client.putObject(bucketName, key, content, null);
-        
-        client.shutdown();
-        
-        try {
-            content = TestUtils.genFixedLengthInputStream(128 * 1024);
-            client.putObject(bucketName, key, content, null);
-        } catch (ClientException ce) {
-            System.out.println(ce.getMessage());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    
+		Thread thrd0 = new Thread(new Runnable() {
+			final String keyPrefix = "thread0-";
+
+			@Override
+			public void run() {
+				for (int i = 0; i < 100; i++) {
+					OSS client0 = new OSSClientBuilder().build(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID,
+							OSS_TEST_ACCESS_KEY_SECRET);
+					InputStream content = TestUtils.genFixedLengthInputStream(128 * 1024);
+					String key = TestUtils.buildObjectKey(keyPrefix, i);
+
+					try {
+						PutObjectResult result = client0.putObject(bucketName, key, content, null);
+						System.out.println(key + ": " + result.getETag());
+					} catch (Exception e) {
+						e.printStackTrace();
+					} finally {
+						if (client0 != null) {
+							System.out.println("shutdown");
+							client0.shutdown();
+						}
+					}
+				}
+			}
+
+		});
+
+		Thread thrd1 = new Thread(new Runnable() {
+			final String keyPrefix = "thread1-";
+
+			@Override
+			public void run() {
+				for (int i = 0; i < 100; i++) {
+					OSS client1 = new OSSClientBuilder().build(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID,
+							OSS_TEST_ACCESS_KEY_SECRET);
+					InputStream content = TestUtils.genFixedLengthInputStream(1 * 1024 * 1024);
+					String key = TestUtils.buildObjectKey(keyPrefix, i);
+
+					try {
+						PutObjectResult result = client1.putObject(bucketName, key, content, null);
+						System.out.println(key + ": " + result.getETag());
+						Thread.sleep(50);
+					} catch (Exception e) {
+						e.printStackTrace();
+					} finally {
+						if (client1 != null) {
+							System.out.println("shutdown");
+							client1.shutdown();
+						}
+					}
+				}
+			}
+
+		});
+
+		thrd0.start();
+		thrd1.start();
+		thrd0.join();
+		thrd1.join();
+
+	}
+
+	@Test
+	public void keepUsingAfterClose() {
+		final String key = "key0";
+		OSS client = new OSSClientBuilder().build(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID,
+				OSS_TEST_ACCESS_KEY_SECRET);
+		InputStream content = TestUtils.genFixedLengthInputStream(128 * 1024);
+		client.putObject(bucketName, key, content, null);
+
+		client.shutdown();
+
+		try {
+			content = TestUtils.genFixedLengthInputStream(128 * 1024);
+			client.putObject(bucketName, key, content, null);
+		} catch (ClientException ce) {
+			System.out.println(ce.getMessage());
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
 }

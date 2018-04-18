@@ -36,64 +36,64 @@ import com.aliyun.oss.OSSException;
 
 public class DeleteBucketTest extends TestBase {
 
-    @Test
-    public void testDeleteExistingBucket() {
-        final String bucketName = "delete-existing-bucket";
-        
-        try {
-            ossClient.createBucket(bucketName);
-            ossClient.deleteBucket(bucketName);
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        }
-    }
+	@Test
+	public void testDeleteExistingBucket() {
+		final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "delete-existing-bucket";
 
-    @Test
-    public void testDeleteNonexistentBucket() {
-        final String bucketName = "delete-nonexistent-bucket";
-        
-        try {
-            ossClient.deleteBucket(bucketName);
-            Assert.fail("Delete bucket should not be successful.");
-        } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
-        }
-    }
-    
-    @Test
-    public void testDeleteNonemptyBucket() {
-        final String bucketName = "delete-nonempty-bucket";
-        final String key = "delete-nonempty-bucket-key";
-        
-        try {
-            ossClient.createBucket(bucketName);
-            
-            List<String> keys = new ArrayList<String>();
-            keys.add(key);
-            if (!batchPutObject(ossClient, bucketName, keys)) {
-                Assert.fail("batch put object failed");
-            }
-            
-            ossClient.deleteBucket(bucketName);
-            Assert.fail("Delete bucket should not be successful.");
-        } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.BUCKET_NOT_EMPTY, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(BUCKET_NOT_EMPTY_ERR));
-        } finally {
-            deleteBucketWithObjects(ossClient, bucketName);
-        }
-    }
-    
-    @Test
-    public void testDeleteBucketWithoutOwnership() {
-        final String bucketWithoutOwnership = "oss";
-        
-        try {
-            ossClient.deleteBucket(bucketWithoutOwnership);
-            Assert.fail("Delete bucket should not be successful.");
-        } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-        }
-    }
+		try {
+			ossClient.createBucket(bucketName);
+			ossClient.deleteBucket(bucketName);
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void testDeleteNonexistentBucket() {
+		final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "delete-nonexistent-bucket";
+
+		try {
+			ossClient.deleteBucket(bucketName);
+			Assert.fail("Delete bucket should not be successful.");
+		} catch (OSSException e) {
+			Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+			Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+		}
+	}
+
+	@Test
+	public void testDeleteNonemptyBucket() {
+		final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "delete-nonempty-bucket";
+		final String key = "delete-nonempty-bucket-key";
+
+		try {
+			ossClient.createBucket(bucketName);
+
+			List<String> keys = new ArrayList<String>();
+			keys.add(key);
+			if (!batchPutObject(ossClient, bucketName, keys)) {
+				Assert.fail("batch put object failed");
+			}
+
+			ossClient.deleteBucket(bucketName);
+			Assert.fail("Delete bucket should not be successful.");
+		} catch (OSSException e) {
+			Assert.assertEquals(OSSErrorCode.BUCKET_NOT_EMPTY, e.getErrorCode());
+			Assert.assertTrue(e.getMessage().startsWith(BUCKET_NOT_EMPTY_ERR));
+		} finally {
+			deleteBucketWithObjects(ossClient, bucketName);
+		}
+	}
+
+	@Test
+	public void testDeleteBucketWithoutOwnership() {
+		final String bucketWithoutOwnership = "oss";
+
+		try {
+			ossClient.deleteBucket(bucketWithoutOwnership);
+			Assert.fail("Delete bucket should not be successful.");
+		} catch (OSSException e) {
+			Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+		}
+	}
 }

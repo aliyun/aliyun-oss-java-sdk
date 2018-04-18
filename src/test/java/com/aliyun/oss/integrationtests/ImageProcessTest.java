@@ -46,205 +46,205 @@ import com.aliyun.oss.utils.ResourceUtils;
  * Testing image process
  */
 public class ImageProcessTest extends TestBase {
-    
-    final private static String originalImage = "oss/example.jpg";
-    final private static String newImage = "oss/new-example.jpg";
-        
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        ossClient.putObject(bucketName, originalImage, new File(ResourceUtils.getTestFilename(originalImage)));        
-    }
 
-    @Override
-    public void tearDown() throws Exception {
-        ossClient.deleteObject(bucketName, originalImage);
-        ossClient.deleteObject(bucketName, newImage);
-        super.tearDown();
-    }
+	final private static String originalImage = "oss/example.jpg";
+	final private static String newImage = "oss/new-example.jpg";
 
-    @Test
-    public void testResizeImage() {
-        String style = "image/resize,m_fixed,w_100,h_100";  // 缩放
-        
-        try {
-            GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
-            request.setProcess(style);
-            
-            OSSObject ossObject = ossClient.getObject(request);
-            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
-            ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
-            
-            ImageInfo imageInfo = getImageInfo(bucketName, newImage);
-            Assert.assertEquals(imageInfo.getHeight(), 100);
-            Assert.assertEquals(imageInfo.getWidth(), 100);
-            Assert.assertEquals(imageInfo.getFormat(), "jpg");
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
-    
-    @Test
-    public void testCropImage() {
-        String style = "image/crop,w_100,h_100,x_100,y_100,r_1"; // 裁剪
-        
-        try {
-            GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
-            request.setProcess(style);
-            
-            OSSObject ossObject = ossClient.getObject(request);
-            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
-            ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
-            
-            ImageInfo imageInfo = getImageInfo(bucketName, newImage);
-            Assert.assertEquals(imageInfo.getHeight(), 100);
-            Assert.assertEquals(imageInfo.getWidth(), 100);
-            Assert.assertEquals(imageInfo.getFormat(), "jpg");
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
-    
-    @Test
-    public void testRotateImage() {
-        String style = "image/rotate,90"; // 旋转
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+		ossClient.putObject(bucketName, originalImage, new File(ResourceUtils.getTestFilename(originalImage)));
+	}
 
-        try {
-            GetObjectRequest request = new GetObjectRequest(bucketName,
-                    originalImage);
-            request.setProcess(style);
+	@Override
+	public void tearDown() throws Exception {
+		ossClient.deleteObject(bucketName, originalImage);
+		ossClient.deleteObject(bucketName, newImage);
+		super.tearDown();
+	}
 
-            OSSObject ossObject = ossClient.getObject(request);
-            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
-            ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
+	@Test
+	public void testResizeImage() {
+		String style = "image/resize,m_fixed,w_100,h_100"; // 缩放
 
-            ImageInfo imageInfo = getImageInfo(bucketName, originalImage);
-            Assert.assertEquals(imageInfo.getHeight(), 267);
-            Assert.assertEquals(imageInfo.getWidth(), 400);
-            Assert.assertEquals(imageInfo.getSize(), 21839);
-            Assert.assertEquals(imageInfo.getFormat(), "jpg");
+		try {
+			GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
+			request.setProcess(style);
 
-            imageInfo = getImageInfo(bucketName, newImage);
-            Assert.assertEquals(imageInfo.getHeight(), 400);
-            Assert.assertEquals(imageInfo.getWidth(), 267);
-            Assert.assertEquals(imageInfo.getFormat(), "jpg");
+			OSSObject ossObject = ossClient.getObject(request);
+			Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
+			ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
-    
-    @Test
-    public void testSharpenImage() {
-        String style = "image/sharpen,100"; // 锐化
+			ImageInfo imageInfo = getImageInfo(bucketName, newImage);
+			Assert.assertEquals(imageInfo.getHeight(), 100);
+			Assert.assertEquals(imageInfo.getWidth(), 100);
+			Assert.assertEquals(imageInfo.getFormat(), "jpg");
 
-        try {
-            GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
-            request.setProcess(style);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
 
-            OSSObject ossObject = ossClient.getObject(request);
-            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
-            ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
+	@Test
+	public void testCropImage() {
+		String style = "image/crop,w_100,h_100,x_100,y_100,r_1"; // 裁剪
 
-            ImageInfo imageInfo = getImageInfo(bucketName, newImage);
-            Assert.assertEquals(imageInfo.getHeight(), 267);
-            Assert.assertEquals(imageInfo.getWidth(), 400);
-            Assert.assertEquals(imageInfo.getFormat(), "jpg");
+		try {
+			GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
+			request.setProcess(style);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        } 
-    }
-    
-    @Test
-    public void testWatermarkImage() {
-        String style = "image/watermark,text_SGVsbG8g5Zu-54mH5pyN5YqhIQ"; // 文字水印
+			OSSObject ossObject = ossClient.getObject(request);
+			Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
+			ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
 
-        try {
-            GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
-            request.setProcess(style);
+			ImageInfo imageInfo = getImageInfo(bucketName, newImage);
+			Assert.assertEquals(imageInfo.getHeight(), 100);
+			Assert.assertEquals(imageInfo.getWidth(), 100);
+			Assert.assertEquals(imageInfo.getFormat(), "jpg");
 
-            OSSObject ossObject = ossClient.getObject(request);
-            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
-            ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
 
-            ImageInfo imageInfo = getImageInfo(bucketName, newImage);
-            Assert.assertEquals(imageInfo.getHeight(), 267);
-            Assert.assertEquals(imageInfo.getWidth(), 400);
-            Assert.assertEquals(imageInfo.getFormat(), "jpg");
+	@Test
+	public void testRotateImage() {
+		String style = "image/rotate,90"; // 旋转
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        } 
-    }
-    
-    @Test
-    public void testFormatImage() {
-        String style = "image/format,png"; // 文字水印
+		try {
+			GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
+			request.setProcess(style);
 
-        try {
-            GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
-            request.setProcess(style);
+			OSSObject ossObject = ossClient.getObject(request);
+			Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
+			ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
 
-            OSSObject ossObject = ossClient.getObject(request);
-            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
-            ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
+			ImageInfo imageInfo = getImageInfo(bucketName, originalImage);
+			Assert.assertEquals(imageInfo.getHeight(), 267);
+			Assert.assertEquals(imageInfo.getWidth(), 400);
+			Assert.assertEquals(imageInfo.getSize(), 21839);
+			Assert.assertEquals(imageInfo.getFormat(), "jpg");
 
-            ImageInfo imageInfo = getImageInfo(bucketName, newImage);
-            Assert.assertEquals(imageInfo.getHeight(), 267);
-            Assert.assertEquals(imageInfo.getWidth(), 400);
-            Assert.assertEquals(imageInfo.getFormat(), "png");
+			imageInfo = getImageInfo(bucketName, newImage);
+			Assert.assertEquals(imageInfo.getHeight(), 400);
+			Assert.assertEquals(imageInfo.getWidth(), 267);
+			Assert.assertEquals(imageInfo.getFormat(), "jpg");
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        } 
-    }
-    
-    @Test
-    public void testProcessObject() {
-        StringBuilder styleBuilder = new StringBuilder(); 
-        String saveAsKey = "saveaskey-process.jpg";
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
 
-        try {
-            styleBuilder.append("image/resize,m_fixed,w_100,h_100");  // resize
-            styleBuilder.append("|sys/saveas,");
-            styleBuilder.append("o_" + BinaryUtil.toBase64String(saveAsKey.getBytes()));
-            styleBuilder.append(",");
-            styleBuilder.append("b_" + BinaryUtil.toBase64String(bucketName.getBytes()));
-            
-            ProcessObjectRequest request = new ProcessObjectRequest(bucketName, originalImage, styleBuilder.toString());
-            GenericResult processResult = ossClient.processObject(request);
-            Assert.assertEquals(processResult.getRequestId().length(), REQUEST_ID_LEN);
-            String json = IOUtils.readStreamAsString(processResult.getResponse().getContent(), "UTF-8");
-            processResult.getResponse().getContent().close();
-            System.out.println(json);
-            Assert.assertTrue(json.indexOf("\"status\": \"OK\"") > 0);
-            
-            ImageInfo imageInfo = getImageInfo(bucketName, saveAsKey);
-            Assert.assertEquals(imageInfo.getHeight(), 100);
-            Assert.assertEquals(imageInfo.getWidth(), 100);
-            Assert.assertEquals(imageInfo.getFormat(), "jpg");
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        } 
-    }
-    
-    @Test
+	@Test
+	public void testSharpenImage() {
+		String style = "image/sharpen,100"; // 锐化
+
+		try {
+			GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
+			request.setProcess(style);
+
+			OSSObject ossObject = ossClient.getObject(request);
+			Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
+			ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
+
+			ImageInfo imageInfo = getImageInfo(bucketName, newImage);
+			Assert.assertEquals(imageInfo.getHeight(), 267);
+			Assert.assertEquals(imageInfo.getWidth(), 400);
+			Assert.assertEquals(imageInfo.getFormat(), "jpg");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void testWatermarkImage() {
+		String style = "image/watermark,text_SGVsbG8g5Zu-54mH5pyN5YqhIQ"; // 文字水印
+
+		try {
+			GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
+			request.setProcess(style);
+
+			OSSObject ossObject = ossClient.getObject(request);
+			Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
+			ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
+
+			ImageInfo imageInfo = getImageInfo(bucketName, newImage);
+			Assert.assertEquals(imageInfo.getHeight(), 267);
+			Assert.assertEquals(imageInfo.getWidth(), 400);
+			Assert.assertEquals(imageInfo.getFormat(), "jpg");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void testFormatImage() {
+		String style = "image/format,png"; // 文字水印
+
+		try {
+			GetObjectRequest request = new GetObjectRequest(bucketName, originalImage);
+			request.setProcess(style);
+
+			OSSObject ossObject = ossClient.getObject(request);
+			Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
+			ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
+
+			ImageInfo imageInfo = getImageInfo(bucketName, newImage);
+			Assert.assertEquals(imageInfo.getHeight(), 267);
+			Assert.assertEquals(imageInfo.getWidth(), 400);
+			Assert.assertEquals(imageInfo.getFormat(), "png");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void testProcessObject() {
+		StringBuilder styleBuilder = new StringBuilder();
+		String saveAsKey = "saveaskey-process.jpg";
+
+		try {
+			styleBuilder.append("image/resize,m_fixed,w_100,h_100"); // resize
+			styleBuilder.append("|sys/saveas,");
+			styleBuilder.append("o_" + BinaryUtil.toBase64String(saveAsKey.getBytes()));
+			styleBuilder.append(",");
+			styleBuilder.append("b_" + BinaryUtil.toBase64String(bucketName.getBytes()));
+
+			ProcessObjectRequest request = new ProcessObjectRequest(bucketName, originalImage, styleBuilder.toString());
+			GenericResult processResult = ossClient.processObject(request);
+			Assert.assertEquals(processResult.getRequestId().length(), REQUEST_ID_LEN);
+			String json = IOUtils.readStreamAsString(processResult.getResponse().getContent(), "UTF-8");
+			processResult.getResponse().getContent().close();
+			System.out.println(json);
+			Assert.assertTrue(json.indexOf("\"status\": \"OK\"") > 0);
+
+			ImageInfo imageInfo = getImageInfo(bucketName, saveAsKey);
+			Assert.assertEquals(imageInfo.getHeight(), 100);
+			Assert.assertEquals(imageInfo.getWidth(), 100);
+			Assert.assertEquals(imageInfo.getFormat(), "jpg");
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	@Test
 	public void testGeneratePresignedUrlWithProcess() {
 		String style = "image/resize,m_fixed,w_100,h_100"; // 缩放
 
 		try {
 			Date expiration = DateUtil.parseRfc822Date("Wed, 21 Dec 2022 14:20:00 GMT");
-			GeneratePresignedUrlRequest req = new GeneratePresignedUrlRequest(bucketName, originalImage, HttpMethod.GET);
+			GeneratePresignedUrlRequest req = new GeneratePresignedUrlRequest(bucketName, originalImage,
+					HttpMethod.GET);
 			req.setExpiration(expiration);
 			req.setProcess(style);
 
@@ -263,75 +263,76 @@ public class ImageProcessTest extends TestBase {
 			Assert.fail(e.getMessage());
 		}
 	}
-    
-    private static ImageInfo getImageInfo(final String bucket, final String image) throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, JSONException {
-        GetObjectRequest request = new GetObjectRequest(bucketName, image);
-        request.setProcess("image/info");
-        OSSObject ossObject = ossClient.getObject(request);
-        
-        String jsonStr = IOUtils.readStreamAsString(ossObject.getObjectContent(), "UTF-8");
-        ossObject.getObjectContent().close();
-        
-        JSONObject jsonObject = new JSONObject(jsonStr);
 
-        long height = jsonObject.getJSONObject("ImageHeight").getLong("value");
-        long width = jsonObject.getJSONObject("ImageWidth").getLong("value");
-        long size = jsonObject.getJSONObject("FileSize").getLong("value");
-        String format = jsonObject.getJSONObject("Format").getString("value");
-        return new ImageInfo(height, width, size, format);
-    }
-    
-    static class ImageInfo {
-        
-        public ImageInfo(long height, long width, long size, String format) {
-            super();
-            this.height = height;
-            this.width = width;
-            this.size = size;
-            this.format = format;
-        }
+	private static ImageInfo getImageInfo(final String bucket, final String image) throws IOException,
+			IllegalAccessException, InvocationTargetException, NoSuchMethodException, JSONException {
+		GetObjectRequest request = new GetObjectRequest(bucketName, image);
+		request.setProcess("image/info");
+		OSSObject ossObject = ossClient.getObject(request);
 
-        public long getHeight() {
-            return height;
-        }
+		String jsonStr = IOUtils.readStreamAsString(ossObject.getObjectContent(), "UTF-8");
+		ossObject.getObjectContent().close();
 
-        public void setHeight(long height) {
-            this.height = height;
-        }
+		JSONObject jsonObject = new JSONObject(jsonStr);
 
-        public long getWidth() {
-            return width;
-        }
+		long height = jsonObject.getJSONObject("ImageHeight").getLong("value");
+		long width = jsonObject.getJSONObject("ImageWidth").getLong("value");
+		long size = jsonObject.getJSONObject("FileSize").getLong("value");
+		String format = jsonObject.getJSONObject("Format").getString("value");
+		return new ImageInfo(height, width, size, format);
+	}
 
-        public void setWidth(long width) {
-            this.width = width;
-        }
+	static class ImageInfo {
 
-        public long getSize() {
-            return size;
-        }
+		public ImageInfo(long height, long width, long size, String format) {
+			super();
+			this.height = height;
+			this.width = width;
+			this.size = size;
+			this.format = format;
+		}
 
-        public void setSize(long size) {
-            this.size = size;
-        }
-        
-        public String getFormat() {
-            return format;
-        }
+		public long getHeight() {
+			return height;
+		}
 
-        public void setFormat(String format) {
-            this.format = format;
-        }
-        
-        public String toString() {
-            return "[height:" + this.height + ",width:" + this.width + 
-                    ",size:" + this.size + ",format:" + this.format + "]\n";
-        }
+		public void setHeight(long height) {
+			this.height = height;
+		}
 
-        private long height;
-        private long width;
-        private long size;
-        private String format;
-    }
-    
+		public long getWidth() {
+			return width;
+		}
+
+		public void setWidth(long width) {
+			this.width = width;
+		}
+
+		public long getSize() {
+			return size;
+		}
+
+		public void setSize(long size) {
+			this.size = size;
+		}
+
+		public String getFormat() {
+			return format;
+		}
+
+		public void setFormat(String format) {
+			this.format = format;
+		}
+
+		public String toString() {
+			return "[height:" + this.height + ",width:" + this.width + ",size:" + this.size + ",format:" + this.format
+					+ "]\n";
+		}
+
+		private long height;
+		private long width;
+		private long size;
+		private String format;
+	}
+
 }

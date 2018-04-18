@@ -41,108 +41,107 @@ import com.aliyun.oss.internal.SignUtils;
  * Test proxy sign
  */
 public class ProxySignTest {
-    
-    private static String HEADER_PROXY_TYPE = "x-oss-proxy-tunnel-type";
-    private static String HEADER_PROXY_USER = "x-oss-proxy-user";
-    private static String HEADER_PROXY_DEST = "x-oss-proxy-destination";
-    private static String HEADER_PROXY_DEST_REGION = "x-oss-proxy-destination-region";
-    private static String HEADER_PROXY_REAL_HOST = "x-oss-proxy-realhost";
-    
-    private static String HEADER_PROXY_AUTH = "x-drs-proxy-authorization";
-    
-    class ProxyCredentials implements Credentials {
 
-        public ProxyCredentials(String securityToken) {
-            this.securityToken = securityToken;
-        }
+	private static String HEADER_PROXY_TYPE = "x-oss-proxy-tunnel-type";
+	private static String HEADER_PROXY_USER = "x-oss-proxy-user";
+	private static String HEADER_PROXY_DEST = "x-oss-proxy-destination";
+	private static String HEADER_PROXY_DEST_REGION = "x-oss-proxy-destination-region";
+	private static String HEADER_PROXY_REAL_HOST = "x-oss-proxy-realhost";
 
-        @Override
-        public String getAccessKeyId() {
-            return null;
-        }
+	private static String HEADER_PROXY_AUTH = "x-drs-proxy-authorization";
 
-        @Override
-        public String getSecretAccessKey() {
-            return null;
-        }
+	class ProxyCredentials implements Credentials {
 
-        @Override
-        public String getSecurityToken() {
-            return securityToken;
-        }
+		public ProxyCredentials(String securityToken) {
+			this.securityToken = securityToken;
+		}
 
-        @Override
-        public boolean useSecurityToken() {
-            return true;
-        }
-        
-        private String securityToken;
-    }
-    
-    
-    class ProxyRequestSigner implements RequestSigner {
-        
-        public ProxyRequestSigner(Credentials creds) {
-            this.creds = creds;
-        }
+		@Override
+		public String getAccessKeyId() {
+			return null;
+		}
 
-        @Override
-        public void sign(RequestMessage request) throws ClientException {
-            String authToken = creds.getSecurityToken();
-            String canonicalString = SignUtils.buildCanonicalString(request.getMethod().toString(),
-                    buildResourcePath(request), request, null);
-            String signature = ServiceSignature.create().computeSignature(authToken, canonicalString);
-            request.addHeader(HEADER_PROXY_AUTH, signature);
-        }
-        
-        private String buildResourcePath(RequestMessage request) {
-            String bucketName = request.getBucket();
-            String key = request.getKey();
-            String resourcePath = "/" + ((bucketName != null) ? bucketName + "/" : "") + ((key != null ? key : ""));
-            return resourcePath;
-        }
-        
-        private Credentials creds;
-    }
+		@Override
+		public String getSecretAccessKey() {
+			return null;
+		}
 
-    @Ignore
-    public void testProxyAuth() {
-        String bucketName = "sdk-test-md-1";
-        String key = "mingdi/test.txt";
-        String content = "Hello OSS.";
-        String proxyHost = "";
-        String endpoint = "";
-        String accessKeyId = "";
-        String secretAccessKey = "";
-        
-        try {
-            ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
-            conf.setProxyHost(proxyHost);
-            conf.setProxyPort(8080);
-            
-            Credentials credentials = new ProxyCredentials("mingditest");
-            ProxyRequestSigner proxySigner= new ProxyRequestSigner(credentials);
-            List<RequestSigner> signerHandlers = new LinkedList<RequestSigner>();
-            signerHandlers.add(proxySigner);
-            conf.setSignerHandlers(signerHandlers);
-            
-            Map<String, String> proxyHeaders = new LinkedHashMap<String, String>();
-            proxyHeaders.put(HEADER_PROXY_TYPE, "default");
-            proxyHeaders.put(HEADER_PROXY_USER, "diff_bucket_sync_test_user_1");
-            proxyHeaders.put(HEADER_PROXY_DEST, "cn-qingdao");
-            proxyHeaders.put(HEADER_PROXY_DEST_REGION, "cn-qingdao");
-            proxyHeaders.put(HEADER_PROXY_REAL_HOST, endpoint);
-            conf.setDefaultHeaders(proxyHeaders);
+		@Override
+		public String getSecurityToken() {
+			return securityToken;
+		}
 
-            OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, secretAccessKey, conf);
+		@Override
+		public boolean useSecurityToken() {
+			return true;
+		}
 
-            ossClient.putObject(bucketName, key, new ByteArrayInputStream(content.getBytes()));
-            ossClient.getObject(bucketName, key);
-            ossClient.deleteObject(bucketName, key);
-        } catch (Throwable e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
-    
+		private String securityToken;
+	}
+
+	class ProxyRequestSigner implements RequestSigner {
+
+		public ProxyRequestSigner(Credentials creds) {
+			this.creds = creds;
+		}
+
+		@Override
+		public void sign(RequestMessage request) throws ClientException {
+			String authToken = creds.getSecurityToken();
+			String canonicalString = SignUtils.buildCanonicalString(request.getMethod().toString(),
+					buildResourcePath(request), request, null);
+			String signature = ServiceSignature.create().computeSignature(authToken, canonicalString);
+			request.addHeader(HEADER_PROXY_AUTH, signature);
+		}
+
+		private String buildResourcePath(RequestMessage request) {
+			String bucketName = request.getBucket();
+			String key = request.getKey();
+			String resourcePath = "/" + ((bucketName != null) ? bucketName + "/" : "") + ((key != null ? key : ""));
+			return resourcePath;
+		}
+
+		private Credentials creds;
+	}
+
+	@Ignore
+	public void testProxyAuth() {
+		String bucketName = "sdk-test-md-1";
+		String key = "mingdi/test.txt";
+		String content = "Hello OSS.";
+		String proxyHost = "";
+		String endpoint = "";
+		String accessKeyId = "";
+		String secretAccessKey = "";
+
+		try {
+			ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
+			conf.setProxyHost(proxyHost);
+			conf.setProxyPort(8080);
+
+			Credentials credentials = new ProxyCredentials("mingditest");
+			ProxyRequestSigner proxySigner = new ProxyRequestSigner(credentials);
+			List<RequestSigner> signerHandlers = new LinkedList<RequestSigner>();
+			signerHandlers.add(proxySigner);
+			conf.setSignerHandlers(signerHandlers);
+
+			Map<String, String> proxyHeaders = new LinkedHashMap<String, String>();
+			proxyHeaders.put(HEADER_PROXY_TYPE, "default");
+			proxyHeaders.put(HEADER_PROXY_USER, "diff_bucket_sync_test_user_1");
+			proxyHeaders.put(HEADER_PROXY_DEST, "cn-qingdao");
+			proxyHeaders.put(HEADER_PROXY_DEST_REGION, "cn-qingdao");
+			proxyHeaders.put(HEADER_PROXY_REAL_HOST, endpoint);
+			conf.setDefaultHeaders(proxyHeaders);
+
+			OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, secretAccessKey, conf);
+
+			ossClient.putObject(bucketName, key, new ByteArrayInputStream(content.getBytes()));
+			ossClient.getObject(bucketName, key);
+			ossClient.deleteObject(bucketName, key);
+		} catch (Throwable e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+
 }

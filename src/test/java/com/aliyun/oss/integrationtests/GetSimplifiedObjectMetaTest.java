@@ -36,69 +36,69 @@ import com.aliyun.oss.model.PutObjectResult;
 import com.aliyun.oss.model.SimplifiedObjectMeta;
 
 public class GetSimplifiedObjectMetaTest extends TestBase {
-    
-    @Test
-    public void testNormalGetSimplifiedObjectMeta() {
-        final String key = "normal-get-simplified-object-meta";
-        final long inputStreamLength = 1024;
-        
-        try {
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, 
-                    genFixedLengthInputStream(inputStreamLength), null);
-            PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
-            Assert.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
-            
-            GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
-            OSSObject o = ossClient.getObject(getObjectRequest);
-            Assert.assertEquals(bucketName, o.getBucketName());
-            Assert.assertEquals(key, o.getKey());
-            Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
-            o.getObjectContent().close();
-            
-            SimplifiedObjectMeta objectMeta = ossClient.getSimplifiedObjectMeta(bucketName, key);
-            Assert.assertEquals(inputStreamLength, objectMeta.getSize());
-            Assert.assertEquals(putObjectResult.getETag(), objectMeta.getETag());
-            Assert.assertNotNull(objectMeta.getLastModified());
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        }
-    }
-    
-    @Test
-    public void testUnormalGetSimplifiedObjectMeta() throws Exception {
-        // Try to get simplified object meta under nonexistent bucket
-        final String key = "unormal-get-simplified-object-meta";
-        final String nonexistentBucket = "nonexistent-bukcet";
-        try {
-            ossClient.getSimplifiedObjectMeta(nonexistentBucket, key);
-            Assert.fail("Get simplified object meta should not be successful");
-        } catch (OSSException ex) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, ex.getErrorCode());
-            Assert.assertTrue(ex.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
-        }
-        
-        // Try to get nonexistent object
-        final String nonexistentKey = "nonexistent-object";
-        try {
-            ossClient.getSimplifiedObjectMeta(bucketName, nonexistentKey);
-            Assert.fail("Get simplified object meta should not be successful");
-        } catch (OSSException ex) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, ex.getErrorCode());
-            Assert.assertTrue(ex.getMessage().startsWith(NO_SUCH_KEY_ERR));
-        }
-        
-        // SignatureDoesNotMatch 
-        OSS client = new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT, TestConfig.OSS_TEST_ACCESS_KEY_ID, 
-                TestConfig.OSS_TEST_ACCESS_KEY_SECRET + " ");
-        try {
-            client.getSimplifiedObjectMeta(bucketName, nonexistentKey);
-            Assert.fail("Get simplified object meta should not be successful");
-        } catch (OSSException ex) {
-            Assert.assertEquals(OSSErrorCode.SIGNATURE_DOES_NOT_MATCH, ex.getErrorCode());
-        } finally {
-            client.shutdown();
-        } 
-        
-    }
+
+	@Test
+	public void testNormalGetSimplifiedObjectMeta() {
+		final String key = "normal-get-simplified-object-meta";
+		final long inputStreamLength = 1024;
+
+		try {
+			PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key,
+					genFixedLengthInputStream(inputStreamLength), null);
+			PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
+			Assert.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
+
+			GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
+			OSSObject o = ossClient.getObject(getObjectRequest);
+			Assert.assertEquals(bucketName, o.getBucketName());
+			Assert.assertEquals(key, o.getKey());
+			Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+			Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+			o.getObjectContent().close();
+
+			SimplifiedObjectMeta objectMeta = ossClient.getSimplifiedObjectMeta(bucketName, key);
+			Assert.assertEquals(inputStreamLength, objectMeta.getSize());
+			Assert.assertEquals(putObjectResult.getETag(), objectMeta.getETag());
+			Assert.assertNotNull(objectMeta.getLastModified());
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void testUnormalGetSimplifiedObjectMeta() throws Exception {
+		// Try to get simplified object meta under nonexistent bucket
+		final String key = "unormal-get-simplified-object-meta";
+		final String nonexistentBucket = "nonexistent-bukcet";
+		try {
+			ossClient.getSimplifiedObjectMeta(nonexistentBucket, key);
+			Assert.fail("Get simplified object meta should not be successful");
+		} catch (OSSException ex) {
+			Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, ex.getErrorCode());
+			Assert.assertTrue(ex.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+		}
+
+		// Try to get nonexistent object
+		final String nonexistentKey = "nonexistent-object";
+		try {
+			ossClient.getSimplifiedObjectMeta(bucketName, nonexistentKey);
+			Assert.fail("Get simplified object meta should not be successful");
+		} catch (OSSException ex) {
+			Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, ex.getErrorCode());
+			Assert.assertTrue(ex.getMessage().startsWith(NO_SUCH_KEY_ERR));
+		}
+
+		// SignatureDoesNotMatch
+		OSS client = new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT, TestConfig.OSS_TEST_ACCESS_KEY_ID,
+				TestConfig.OSS_TEST_ACCESS_KEY_SECRET + " ");
+		try {
+			client.getSimplifiedObjectMeta(bucketName, nonexistentKey);
+			Assert.fail("Get simplified object meta should not be successful");
+		} catch (OSSException ex) {
+			Assert.assertEquals(OSSErrorCode.SIGNATURE_DOES_NOT_MATCH, ex.getErrorCode());
+		} finally {
+			client.shutdown();
+		}
+
+	}
 }

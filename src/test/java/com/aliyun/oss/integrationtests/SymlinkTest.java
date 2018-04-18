@@ -39,171 +39,165 @@ import com.aliyun.oss.model.ObjectMetadata;
  * Test symlink Link
  */
 public class SymlinkTest extends TestBase {
-    
-    final private static String targetObject = "oss/+< >[]/世界/中国.txt";
-    final private static String content = "Hello OSS";
 
-    @Test
-    public void testNormalCreateSymlink() {
-        final String symLink = "normal-create-sym-link";
+	final private static String targetObject = "oss/+< >[]/世界/中国.txt";
+	final private static String content = "Hello OSS";
 
-        try {
-            ossClient.putObject(bucketName, targetObject,
-                    new ByteArrayInputStream(content.getBytes()));
-            
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentType("text/plain");
-            metadata.addUserMetadata("property", "property-value");
-            
-            CreateSymlinkRequest createSymlinkRequest = new CreateSymlinkRequest(bucketName, symLink, targetObject);
-            createSymlinkRequest.setMetadata(metadata);
-            ossClient.createSymlink(createSymlinkRequest);
+	@Test
+	public void testNormalCreateSymlink() {
+		final String symLink = "normal-create-sym-link";
 
-            OSSSymlink symbolicLink = ossClient.getSymlink(bucketName, symLink);
-            Assert.assertEquals(symbolicLink.getSymlink(), symLink);
-            Assert.assertEquals(symbolicLink.getTarget(), targetObject);
-            Assert.assertEquals(symbolicLink.getMetadata().getContentType(), "text/plain");
-            Assert.assertEquals(symbolicLink.getMetadata().getUserMetadata().get("property"), "property-value");   
-            Assert.assertEquals(symbolicLink.getRequestId().length(), REQUEST_ID_LEN);
-                        
-            ossClient.deleteObject(bucketName, symLink);
-            ossClient.deleteObject(bucketName, targetObject);
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        }
-    }
-    
-    @Test
-    public void testNormalCreateSymlinkChar() {
-        final String symLink = "normal-create-sym-link-[]< >=-?/世界/中国.txt";
+		try {
+			ossClient.putObject(bucketName, targetObject, new ByteArrayInputStream(content.getBytes()));
 
-        try {
-            ossClient.putObject(bucketName, targetObject,
-                    new ByteArrayInputStream(content.getBytes()));
+			ObjectMetadata metadata = new ObjectMetadata();
+			metadata.setContentType("text/plain");
+			metadata.addUserMetadata("property", "property-value");
 
-            ossClient.createSymlink(bucketName, symLink, targetObject);
+			CreateSymlinkRequest createSymlinkRequest = new CreateSymlinkRequest(bucketName, symLink, targetObject);
+			createSymlinkRequest.setMetadata(metadata);
+			ossClient.createSymlink(createSymlinkRequest);
 
-            OSSSymlink symbolicLink = ossClient.getSymlink(bucketName, symLink);
-            Assert.assertEquals(symbolicLink.getSymlink(), symLink);
-            Assert.assertEquals(symbolicLink.getTarget(), targetObject);
-            Assert.assertEquals(symbolicLink.getRequestId().length(), REQUEST_ID_LEN);
-                        
-            ossClient.deleteObject(bucketName, symLink);
-            ossClient.deleteObject(bucketName, targetObject);
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        }
-    }
-    
-    @Test
-    public void testUnnormalCreateSymlink() {
-        final String symLink = "unnormal-create-sym-link";
+			OSSSymlink symbolicLink = ossClient.getSymlink(bucketName, symLink);
+			Assert.assertEquals(symbolicLink.getSymlink(), symLink);
+			Assert.assertEquals(symbolicLink.getTarget(), targetObject);
+			Assert.assertEquals(symbolicLink.getMetadata().getContentType(), "text/plain");
+			Assert.assertEquals(symbolicLink.getMetadata().getUserMetadata().get("property"), "property-value");
+			Assert.assertEquals(symbolicLink.getRequestId().length(), REQUEST_ID_LEN);
 
-        try {
-            ossClient.createSymlink(bucketName, symLink, symLink);
-            
-            OSSSymlink symbolicLink = ossClient.getSymlink(
-                    bucketName, symLink);
-            Assert.assertEquals(symbolicLink.getSymlink(), symLink);
-            Assert.assertEquals(symbolicLink.getTarget(), symLink);
-            
-            try {
-                ossClient.getObject(bucketName, symLink);
-            } catch (OSSException e) {
-                Assert.assertEquals("InvalidTargetType", e.getErrorCode());
-            }
+			ossClient.deleteObject(bucketName, symLink);
+			ossClient.deleteObject(bucketName, targetObject);
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+	}
 
-            ossClient.deleteObject(bucketName, symLink);
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        }
-    }
-    
-    @Test
-    public void testUnnormalgetSymlink() {
-        final String symLink = "unnormal-get-sym-link";
+	@Test
+	public void testNormalCreateSymlinkChar() {
+		final String symLink = "normal-create-sym-link-[]< >=-?/世界/中国.txt";
 
-        try {
-            OSSSymlink symbolicLink = ossClient.getSymlink(bucketName, symLink);
-            Assert.assertNull(symbolicLink.getSymlink());
-        } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
-        }
-        
-        try {
-            ossClient.createSymlink(bucketName, symLink, targetObject);
-            ossClient.getObject(bucketName, symLink);
-        } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_SYM_LINK_TARGET, e.getErrorCode());
-        }
-    }
-    
-    @Test
-    public void testNormalgetSymlinkContent() {
-        final String symLink = "normal-create-sym-link-content";
+		try {
+			ossClient.putObject(bucketName, targetObject, new ByteArrayInputStream(content.getBytes()));
 
-        try {
-            ossClient.putObject(bucketName, targetObject,
-                    new ByteArrayInputStream(content.getBytes()));
+			ossClient.createSymlink(bucketName, symLink, targetObject);
 
-            ossClient.createSymlink(bucketName, symLink, targetObject);
+			OSSSymlink symbolicLink = ossClient.getSymlink(bucketName, symLink);
+			Assert.assertEquals(symbolicLink.getSymlink(), symLink);
+			Assert.assertEquals(symbolicLink.getTarget(), targetObject);
+			Assert.assertEquals(symbolicLink.getRequestId().length(), REQUEST_ID_LEN);
 
-            OSSSymlink symbolicLink = ossClient.getSymlink(
-                    bucketName, symLink);
-            Assert.assertEquals(symbolicLink.getSymlink(), symLink);
-            Assert.assertEquals(symbolicLink.getTarget(), targetObject);
-            Assert.assertEquals(symbolicLink.getRequestId().length(), REQUEST_ID_LEN);
+			ossClient.deleteObject(bucketName, symLink);
+			ossClient.deleteObject(bucketName, targetObject);
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+	}
 
-            // content
-            OSSObject ossObject = ossClient.getObject(bucketName, symLink);
+	@Test
+	public void testUnnormalCreateSymlink() {
+		final String symLink = "unnormal-create-sym-link";
 
-            StringBuilder contentBuilder = new StringBuilder();
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(ossObject.getObjectContent()));
-            while (true) {
-                String line = reader.readLine();
-                if (line == null) break;
-                contentBuilder.append(line);
-            }
-            reader.close();
-            
-            Assert.assertEquals(contentBuilder.toString(), content);
-            
-            // size
-            ObjectMetadata meta = ossClient.getObjectMetadata(bucketName, symLink);
-            Assert.assertEquals(meta.getContentLength(), content.length());
+		try {
+			ossClient.createSymlink(bucketName, symLink, symLink);
 
-            ossClient.deleteObject(bucketName, symLink);
-            ossClient.deleteObject(bucketName, targetObject);
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        }
-    }
-    
-    @Test
-    public void testNormalHeaderSymlink() {
-        final String symLink = "normal-create-sym-link-content";
+			OSSSymlink symbolicLink = ossClient.getSymlink(bucketName, symLink);
+			Assert.assertEquals(symbolicLink.getSymlink(), symLink);
+			Assert.assertEquals(symbolicLink.getTarget(), symLink);
 
-        try {
-            Map<String, String> userMeta = new HashMap<String, String>();
-            userMeta.put("meta", "my");
-            
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setUserMetadata(userMeta);
-            
-            ossClient.putObject(bucketName, targetObject,
-                    new ByteArrayInputStream(content.getBytes()), metadata);
+			try {
+				ossClient.getObject(bucketName, symLink);
+			} catch (OSSException e) {
+				Assert.assertEquals("InvalidTargetType", e.getErrorCode());
+			}
 
-            ossClient.createSymlink(bucketName, symLink, targetObject);
+			ossClient.deleteObject(bucketName, symLink);
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+	}
 
-            ObjectMetadata meta = ossClient.getObjectMetadata(bucketName, symLink);
-            Assert.assertNull(meta.getUserMetadata().get("meta"));
+	@Test
+	public void testUnnormalgetSymlink() {
+		final String symLink = "unnormal-get-sym-link";
 
-            ossClient.deleteObject(bucketName, symLink);
-            ossClient.deleteObject(bucketName, targetObject);
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        }
-    }
-    
+		try {
+			OSSSymlink symbolicLink = ossClient.getSymlink(bucketName, symLink);
+			Assert.assertNull(symbolicLink.getSymlink());
+		} catch (OSSException e) {
+			Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
+		}
+
+		try {
+			ossClient.createSymlink(bucketName, symLink, targetObject);
+			ossClient.getObject(bucketName, symLink);
+		} catch (OSSException e) {
+			Assert.assertEquals(OSSErrorCode.NO_SUCH_SYM_LINK_TARGET, e.getErrorCode());
+		}
+	}
+
+	@Test
+	public void testNormalgetSymlinkContent() {
+		final String symLink = "normal-create-sym-link-content";
+
+		try {
+			ossClient.putObject(bucketName, targetObject, new ByteArrayInputStream(content.getBytes()));
+
+			ossClient.createSymlink(bucketName, symLink, targetObject);
+
+			OSSSymlink symbolicLink = ossClient.getSymlink(bucketName, symLink);
+			Assert.assertEquals(symbolicLink.getSymlink(), symLink);
+			Assert.assertEquals(symbolicLink.getTarget(), targetObject);
+			Assert.assertEquals(symbolicLink.getRequestId().length(), REQUEST_ID_LEN);
+
+			// content
+			OSSObject ossObject = ossClient.getObject(bucketName, symLink);
+
+			StringBuilder contentBuilder = new StringBuilder();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(ossObject.getObjectContent()));
+			while (true) {
+				String line = reader.readLine();
+				if (line == null)
+					break;
+				contentBuilder.append(line);
+			}
+			reader.close();
+
+			Assert.assertEquals(contentBuilder.toString(), content);
+
+			// size
+			ObjectMetadata meta = ossClient.getObjectMetadata(bucketName, symLink);
+			Assert.assertEquals(meta.getContentLength(), content.length());
+
+			ossClient.deleteObject(bucketName, symLink);
+			ossClient.deleteObject(bucketName, targetObject);
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void testNormalHeaderSymlink() {
+		final String symLink = "normal-create-sym-link-content";
+
+		try {
+			Map<String, String> userMeta = new HashMap<String, String>();
+			userMeta.put("meta", "my");
+
+			ObjectMetadata metadata = new ObjectMetadata();
+			metadata.setUserMetadata(userMeta);
+
+			ossClient.putObject(bucketName, targetObject, new ByteArrayInputStream(content.getBytes()), metadata);
+
+			ossClient.createSymlink(bucketName, symLink, targetObject);
+
+			ObjectMetadata meta = ossClient.getObjectMetadata(bucketName, symLink);
+			Assert.assertNull(meta.getUserMetadata().get("meta"));
+
+			ossClient.deleteObject(bucketName, symLink);
+			ossClient.deleteObject(bucketName, targetObject);
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+	}
+
 }

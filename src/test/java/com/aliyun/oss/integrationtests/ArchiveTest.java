@@ -38,108 +38,108 @@ import com.aliyun.oss.model.StorageClass;
 
 public class ArchiveTest extends TestBase {
 
-    @Test
-    public void testNormalCreateArchiveBucket() {
-        String bucketName = "create-archive-test-bucket";
-        String key = "normal-create-archive.txt";
-        String filePath = null;
-        
-        try {
-            // create archive bucket
-            CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
-            createBucketRequest.setStorageClass(StorageClass.Archive);
-            ossClient.createBucket(createBucketRequest);
-            
-            // put archive object
-            filePath = genFixedLengthFile(1024);
-            ossClient.putObject(bucketName, key, new File(filePath));
-            
-            // delete object
-            ossClient.deleteObject(bucketName, key);
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        } finally {
-            removeFile(filePath);
-            ossClient.deleteBucket(bucketName);
-        }
-    }
-    
-    @Ignore
-    public void testNormalRestoreObject() {
-        String bucketName = "restore-object-test-bucket";
-        String key = "normal-restore-object.txt";
-        String filePath = null;
-        
-        try {
-            // create archive bucket
-            CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
-            createBucketRequest.setStorageClass(StorageClass.Archive);
-            ossClient.createBucket(createBucketRequest);
-            
-            // put archive object
-            filePath = genFixedLengthFile(1024);
-            ossClient.putObject(bucketName, key, new File(filePath));
-            
-            ObjectMetadata objectMetadata = ossClient.getObjectMetadata(bucketName, key);
-            
-            // check whether the object is archive class
-            StorageClass storageClass = objectMetadata.getObjectStorageClass();
-            if (storageClass == StorageClass.Archive) {
-                // restore object
-                ossClient.restoreObject(bucketName, key);
-                
-                // wait for restore completed
-                do {
-                    Thread.sleep(1000);
-                    objectMetadata = ossClient.getObjectMetadata(bucketName, key);
-                    System.out.println("x-oss-restore:" + objectMetadata.getObjectRawRestore());
-                } while (!objectMetadata.isRestoreCompleted());
-            }
-            
-            // get restored object
-            OSSObject ossObject = ossClient.getObject(bucketName, key);
-            ossObject.getObjectContent().close();
-            
-            // restore repeatedly
-            ossClient.restoreObject(bucketName, key);
-            
-            // delete object
-            ossClient.deleteObject(bucketName, key);
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        } finally {
-            removeFile(filePath);
-            ossClient.deleteBucket(bucketName);
-        }
-    }
-    
-    @Test
-    public void testUnormalOutofRestore() {
-        String bucketName = "unnormal-restore-test-bucket";
-        String key = "unnormal-restore-object.txt";
-        String filePath = null;
-        
-        try {
-            CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
-            createBucketRequest.setStorageClass(StorageClass.Archive);
-            ossClient.createBucket(createBucketRequest);
-            
-            filePath = genFixedLengthFile(1024);
-            ossClient.putObject(bucketName, key, new File(filePath));
-            
-            try {
-                ossClient.getObject(bucketName, key);
-                Assert.fail("Restore object should not be successful");
-            } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.INVALID_OBJECT_STATE, e.getErrorCode());
-            }    
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        } finally {
-            removeFile(filePath);
-            ossClient.deleteObject(bucketName, key);
-            ossClient.deleteBucket(bucketName);
-        }
-    }
-        
+	@Test
+	public void testNormalCreateArchiveBucket() {
+		String bucketName = TestConfig.BUCKET_NAME_PREFIX + "create-archive-test-bucket";
+		String key = "normal-create-archive.txt";
+		String filePath = null;
+
+		try {
+			// create archive bucket
+			CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
+			createBucketRequest.setStorageClass(StorageClass.Archive);
+			ossClient.createBucket(createBucketRequest);
+
+			// put archive object
+			filePath = genFixedLengthFile(1024);
+			ossClient.putObject(bucketName, key, new File(filePath));
+
+			// delete object
+			ossClient.deleteObject(bucketName, key);
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		} finally {
+			removeFile(filePath);
+			ossClient.deleteBucket(bucketName);
+		}
+	}
+
+	@Ignore
+	public void testNormalRestoreObject() {
+		String bucketName = TestConfig.BUCKET_NAME_PREFIX + "restore-object-test-bucket";
+		String key = "normal-restore-object.txt";
+		String filePath = null;
+
+		try {
+			// create archive bucket
+			CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
+			createBucketRequest.setStorageClass(StorageClass.Archive);
+			ossClient.createBucket(createBucketRequest);
+
+			// put archive object
+			filePath = genFixedLengthFile(1024);
+			ossClient.putObject(bucketName, key, new File(filePath));
+
+			ObjectMetadata objectMetadata = ossClient.getObjectMetadata(bucketName, key);
+
+			// check whether the object is archive class
+			StorageClass storageClass = objectMetadata.getObjectStorageClass();
+			if (storageClass == StorageClass.Archive) {
+				// restore object
+				ossClient.restoreObject(bucketName, key);
+
+				// wait for restore completed
+				do {
+					Thread.sleep(1000);
+					objectMetadata = ossClient.getObjectMetadata(bucketName, key);
+					System.out.println("x-oss-restore:" + objectMetadata.getObjectRawRestore());
+				} while (!objectMetadata.isRestoreCompleted());
+			}
+
+			// get restored object
+			OSSObject ossObject = ossClient.getObject(bucketName, key);
+			ossObject.getObjectContent().close();
+
+			// restore repeatedly
+			ossClient.restoreObject(bucketName, key);
+
+			// delete object
+			ossClient.deleteObject(bucketName, key);
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		} finally {
+			removeFile(filePath);
+			ossClient.deleteBucket(bucketName);
+		}
+	}
+
+	@Test
+	public void testUnormalOutofRestore() {
+		String bucketName = TestConfig.BUCKET_NAME_PREFIX + "unnormal-restore-test-bucket";
+		String key = "unnormal-restore-object.txt";
+		String filePath = null;
+
+		try {
+			CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
+			createBucketRequest.setStorageClass(StorageClass.Archive);
+			ossClient.createBucket(createBucketRequest);
+
+			filePath = genFixedLengthFile(1024);
+			ossClient.putObject(bucketName, key, new File(filePath));
+
+			try {
+				ossClient.getObject(bucketName, key);
+				Assert.fail("Restore object should not be successful");
+			} catch (OSSException e) {
+				Assert.assertEquals(OSSErrorCode.INVALID_OBJECT_STATE, e.getErrorCode());
+			}
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		} finally {
+			removeFile(filePath);
+			ossClient.deleteObject(bucketName, key);
+			ossClient.deleteBucket(bucketName);
+		}
+	}
+
 }

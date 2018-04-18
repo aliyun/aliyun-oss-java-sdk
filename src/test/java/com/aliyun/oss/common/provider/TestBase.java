@@ -37,200 +37,199 @@ import org.junit.BeforeClass;
 
 public class TestBase {
 
-    @BeforeClass
-    public static void onlyOnceSetUp() {
-        // for all tests
-        resetTestConfig();
-    }
+	@BeforeClass
+	public static void onlyOnceSetUp() {
+		// for all tests
+		resetTestConfig();
+	}
 
-    @AfterClass
-    public static void onlyOncetearDown() {
-        // for all tests
-    }
+	@AfterClass
+	public static void onlyOncetearDown() {
+		// for all tests
+	}
 
-    @Before
-    public void setUp() {
-        // for each case
-        try {
-            deleteAllPublicKey();
-        } catch (ClientException e) {
-            e.printStackTrace();
-        }
-    }
+	@Before
+	public void setUp() {
+		// for each case
+		try {
+			deleteAllPublicKey();
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
+	}
 
-    @After
-    public void tearDown() {
-        // for each case
-    }
+	@After
+	public void tearDown() {
+		// for each case
+	}
 
-    public static void resetTestConfig() {
-        if (TestConfig.RAM_REGION_ID == null) {
-            TestConfig.RAM_REGION_ID = System.getenv().get("RAM_REGION_ID");
-        }
+	public static void resetTestConfig() {
+		if (TestConfig.RAM_REGION_ID == null) {
+			TestConfig.RAM_REGION_ID = System.getenv().get("RAM_REGION_ID");
+		}
 
-        if (TestConfig.ROOT_ACCESS_KEY_ID == null) {
-            TestConfig.ROOT_ACCESS_KEY_ID = System.getenv().get("ROOT_ACCESS_KEY_ID");
-        }
+		if (TestConfig.ROOT_ACCESS_KEY_ID == null) {
+			TestConfig.ROOT_ACCESS_KEY_ID = System.getenv().get("ROOT_ACCESS_KEY_ID");
+		}
 
-        if (TestConfig.ROOT_ACCESS_KEY_SECRET == null) {
-            TestConfig.ROOT_ACCESS_KEY_SECRET = System.getenv().get("ROOT_ACCESS_KEY_SECRET");
-        }
+		if (TestConfig.ROOT_ACCESS_KEY_SECRET == null) {
+			TestConfig.ROOT_ACCESS_KEY_SECRET = System.getenv().get("ROOT_ACCESS_KEY_SECRET");
+		}
 
-        if (TestConfig.USER_ACCESS_KEY_ID == null) {
-            TestConfig.USER_ACCESS_KEY_ID = System.getenv().get("USER_ACCESS_KEY_ID");
-        }
+		if (TestConfig.USER_ACCESS_KEY_ID == null) {
+			TestConfig.USER_ACCESS_KEY_ID = System.getenv().get("USER_ACCESS_KEY_ID");
+		}
 
-        if (TestConfig.USER_ACCESS_KEY_SECRET == null) {
-            TestConfig.USER_ACCESS_KEY_SECRET = System.getenv().get("USER_ACCESS_KEY_SECRET");
-        }
+		if (TestConfig.USER_ACCESS_KEY_SECRET == null) {
+			TestConfig.USER_ACCESS_KEY_SECRET = System.getenv().get("USER_ACCESS_KEY_SECRET");
+		}
 
-        if (TestConfig.RAM_ROLE_ARN == null) {
-            TestConfig.RAM_ROLE_ARN = System.getenv().get("RAM_ROLE_ARN");
-        }
+		if (TestConfig.RAM_ROLE_ARN == null) {
+			TestConfig.RAM_ROLE_ARN = System.getenv().get("RAM_ROLE_ARN");
+		}
 
-        if (TestConfig.ECS_ROLE_NAME == null) {
-            TestConfig.ECS_ROLE_NAME = System.getenv().get("ECS_ROLE_NAME");
-        }
+		if (TestConfig.ECS_ROLE_NAME == null) {
+			TestConfig.ECS_ROLE_NAME = System.getenv().get("ECS_ROLE_NAME");
+		}
 
-        if (TestConfig.PUBLIC_KEY_PATH == null) {
-            TestConfig.PUBLIC_KEY_PATH = System.getenv().get("PUBLIC_KEY_PATH");
-        }
+		if (TestConfig.PUBLIC_KEY_PATH == null) {
+			TestConfig.PUBLIC_KEY_PATH = System.getenv().get("PUBLIC_KEY_PATH");
+		}
 
-        if (TestConfig.PRIVATE_KEY_PATH == null) {
-            TestConfig.PRIVATE_KEY_PATH = System.getenv().get("PRIVATE_KEY_PATH");
-        }
+		if (TestConfig.PRIVATE_KEY_PATH == null) {
+			TestConfig.PRIVATE_KEY_PATH = System.getenv().get("PRIVATE_KEY_PATH");
+		}
 
-        if (TestConfig.OSS_ENDPOINT == null) {
-            TestConfig.OSS_ENDPOINT = System.getenv().get("OSS_ENDPOINT");
-        }
+		if (TestConfig.OSS_ENDPOINT == null) {
+			TestConfig.OSS_ENDPOINT = System.getenv().get("OSS_ENDPOINT");
+		}
 
-        if (TestConfig.OSS_BUCKET == null) {
-            TestConfig.OSS_BUCKET = System.getenv().get("OSS_BUCKET");
-        }
-    }
+		if (TestConfig.OSS_BUCKET == null) {
+			TestConfig.OSS_BUCKET = System.getenv().get("OSS_BUCKET");
+		}
+	}
 
-    public static void deleteAllPublicKey() throws ClientException {
-        List<PublicKey> publicKeys = AuthUtils.listPublicKeys(TestConfig.RAM_REGION_ID,
-                TestConfig.ROOT_ACCESS_KEY_ID, TestConfig.ROOT_ACCESS_KEY_SECRET);
-        for (PublicKey pk : publicKeys) {
-            AuthUtils.deletePublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
-                    TestConfig.ROOT_ACCESS_KEY_SECRET, pk.getPublicKeyId());
-        }
-    }
+	public static void deleteAllPublicKey() throws ClientException {
+		List<PublicKey> publicKeys = AuthUtils.listPublicKeys(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
+				TestConfig.ROOT_ACCESS_KEY_SECRET);
+		for (PublicKey pk : publicKeys) {
+			AuthUtils.deletePublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
+					TestConfig.ROOT_ACCESS_KEY_SECRET, pk.getPublicKeyId());
+		}
+	}
 
-    public static void generateProfileFile(String ProfileFilePath, String sectionName, Map<String, String> options)
-            throws IOException {
-        File profileFile = new File(ProfileFilePath);
-        String parent = profileFile.getParent();
-        File parentFile = new File(parent);
+	public static void generateProfileFile(String ProfileFilePath, String sectionName, Map<String, String> options)
+			throws IOException {
+		File profileFile = new File(ProfileFilePath);
+		String parent = profileFile.getParent();
+		File parentFile = new File(parent);
 
-        if (!parentFile.exists()) {
-            parentFile.mkdirs();
-        }
-        if (!profileFile.exists()) {
-            profileFile.createNewFile();
-        }
+		if (!parentFile.exists()) {
+			parentFile.mkdirs();
+		}
+		if (!profileFile.exists()) {
+			profileFile.createNewFile();
+		}
 
-        IniEditor iniEditor = new IniEditor();
-        iniEditor.load(profileFile);
+		IniEditor iniEditor = new IniEditor();
+		iniEditor.load(profileFile);
 
-        if (!iniEditor.hasSection(sectionName)) {
-            iniEditor.addSection(sectionName);
-        }
+		if (!iniEditor.hasSection(sectionName)) {
+			iniEditor.addSection(sectionName);
+		}
 
-        for (Map.Entry<String, String> entry : options.entrySet()) {
-            iniEditor.set(sectionName, entry.getKey(), entry.getValue());
-        }
+		for (Map.Entry<String, String> entry : options.entrySet()) {
+			iniEditor.set(sectionName, entry.getKey(), entry.getValue());
+		}
 
-        iniEditor.save(profileFile);
-    }
+		iniEditor.save(profileFile);
+	}
 
-    /**
-     * Set environment variables to include those in the given map.
-     * 
-     * @param newenv
-     *            the map of new variables to include.
-     */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static void setEnv(Map<String, String> newenv) {
-        try {
-            Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
-            Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
-            theEnvironmentField.setAccessible(true);
-            Map<String, String> env = (Map<String, String>) theEnvironmentField.get(null);
-            env.putAll(newenv);
-            Field theCaseInsensitiveEnvironmentField = processEnvironmentClass
-                    .getDeclaredField("theCaseInsensitiveEnvironment");
-            theCaseInsensitiveEnvironmentField.setAccessible(true);
-            Map<String, String> cienv = (Map<String, String>) theCaseInsensitiveEnvironmentField.get(null);
-            cienv.putAll(newenv);
-        } catch (NoSuchFieldException e) {
-            try {
-                Class[] classes = Collections.class.getDeclaredClasses();
-                Map<String, String> env = System.getenv();
-                for (Class cl : classes) {
-                    if ("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
-                        Field field = cl.getDeclaredField("m");
-                        field.setAccessible(true);
-                        Object obj = field.get(env);
-                        Map<String, String> map = (Map<String, String>) obj;
-                        map.clear();
-                        map.putAll(newenv);
-                    }
-                }
-            } catch (Exception e2) {
-                e2.printStackTrace();
-            }
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
-    }
+	/**
+	 * Set environment variables to include those in the given map.
+	 * 
+	 * @param newenv
+	 *            the map of new variables to include.
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static void setEnv(Map<String, String> newenv) {
+		try {
+			Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
+			Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
+			theEnvironmentField.setAccessible(true);
+			Map<String, String> env = (Map<String, String>) theEnvironmentField.get(null);
+			env.putAll(newenv);
+			Field theCaseInsensitiveEnvironmentField = processEnvironmentClass
+					.getDeclaredField("theCaseInsensitiveEnvironment");
+			theCaseInsensitiveEnvironmentField.setAccessible(true);
+			Map<String, String> cienv = (Map<String, String>) theCaseInsensitiveEnvironmentField.get(null);
+			cienv.putAll(newenv);
+		} catch (NoSuchFieldException e) {
+			try {
+				Class[] classes = Collections.class.getDeclaredClasses();
+				Map<String, String> env = System.getenv();
+				for (Class cl : classes) {
+					if ("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
+						Field field = cl.getDeclaredField("m");
+						field.setAccessible(true);
+						Object obj = field.get(env);
+						Map<String, String> map = (Map<String, String>) obj;
+						map.clear();
+						map.putAll(newenv);
+					}
+				}
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+	}
 
-    /**
-     * Remove the specified variables from the current map of environment
-     * variables.
-     * 
-     * @param vars
-     *            the names of the variables to remove.
-     */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static void unsetEnv(List<String> vars) {
-        try {
-            Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
-            Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
-            theEnvironmentField.setAccessible(true);
-            Map<String, String> env = (Map<String, String>) theEnvironmentField.get(null);
-            for (String v : vars) {
-                env.remove(v);
-            }
-            Field theCaseInsensitiveEnvironmentField = processEnvironmentClass
-                    .getDeclaredField("theCaseInsensitiveEnvironment");
-            theCaseInsensitiveEnvironmentField.setAccessible(true);
-            Map<String, String> cienv = (Map<String, String>) theCaseInsensitiveEnvironmentField.get(null);
-            for (String v : vars) {
-                cienv.remove(v);
-            }
-        } catch (NoSuchFieldException e) {
-            try {
-                Class[] classes = Collections.class.getDeclaredClasses();
-                Map<String, String> env = System.getenv();
-                for (Class cl : classes) {
-                    if ("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
-                        Field field = cl.getDeclaredField("m");
-                        field.setAccessible(true);
-                        Object obj = field.get(env);
-                        Map<String, String> map = (Map<String, String>) obj;
-                        for (String v : vars) {
-                            map.remove(v);
-                        }
-                    }
-                }
-            } catch (Exception e2) {
-                e2.printStackTrace();
-            }
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
-    }
+	/**
+	 * Remove the specified variables from the current map of environment variables.
+	 * 
+	 * @param vars
+	 *            the names of the variables to remove.
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static void unsetEnv(List<String> vars) {
+		try {
+			Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
+			Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
+			theEnvironmentField.setAccessible(true);
+			Map<String, String> env = (Map<String, String>) theEnvironmentField.get(null);
+			for (String v : vars) {
+				env.remove(v);
+			}
+			Field theCaseInsensitiveEnvironmentField = processEnvironmentClass
+					.getDeclaredField("theCaseInsensitiveEnvironment");
+			theCaseInsensitiveEnvironmentField.setAccessible(true);
+			Map<String, String> cienv = (Map<String, String>) theCaseInsensitiveEnvironmentField.get(null);
+			for (String v : vars) {
+				cienv.remove(v);
+			}
+		} catch (NoSuchFieldException e) {
+			try {
+				Class[] classes = Collections.class.getDeclaredClasses();
+				Map<String, String> env = System.getenv();
+				for (Class cl : classes) {
+					if ("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
+						Field field = cl.getDeclaredField("m");
+						field.setAccessible(true);
+						Object obj = field.get(env);
+						Map<String, String> map = (Map<String, String>) obj;
+						for (String v : vars) {
+							map.remove(v);
+						}
+					}
+				}
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+	}
 
 }
