@@ -653,7 +653,7 @@ public class BucketWebsiteTest extends TestBase {
     @Test
     public void testUnormalDeleteBucketWebsite() {
         // Delete non-existent bucket
-        final String nonexistentBucket = "unormal-delete-bucket-website";
+        final String nonexistentBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-delete-bucket-website";
         try {
             ossClient.deleteBucketWebsite(nonexistentBucket);
             Assert.fail("Delete bucket website should not be successful");
