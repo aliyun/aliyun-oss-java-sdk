@@ -78,6 +78,8 @@ public class BucketLoggingTest extends TestBase {
             request.setTargetPrefix(null);
             ossClient.setBucketLogging(request);
             
+            waitForCacheExpiration(5);
+            
             result = ossClient.getBucketLogging(sourceBucket);
             Assert.assertEquals(targetBucket, result.getTargetBucket());
             Assert.assertTrue(result.getTargetPrefix().isEmpty());
@@ -89,6 +91,8 @@ public class BucketLoggingTest extends TestBase {
             request.setTargetBucket(null);
             request.setTargetPrefix(null);
             ossClient.setBucketLogging(request);
+            
+            waitForCacheExpiration(5);
             
             result = ossClient.getBucketLogging(sourceBucket);
             Assert.assertTrue(result.getTargetBucket() == null);
