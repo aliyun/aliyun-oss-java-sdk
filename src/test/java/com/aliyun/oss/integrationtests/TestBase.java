@@ -101,7 +101,7 @@ public class TestBase {
     }
     
     public static String createBucket() {
-    	String ticks = System.currentTimeMillis() / 1000 + "-case";
+        String ticks = System.currentTimeMillis() / 1000 + "-case";
         String bucketName = TestConfig.BUCKET_NAME_PREFIX + ticks;
         getOSSClient().createBucket(bucketName);
         waitForCacheExpiration(2);
