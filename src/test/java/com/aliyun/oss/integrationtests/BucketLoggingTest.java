@@ -36,8 +36,8 @@ public class BucketLoggingTest extends TestBase {
 
     @Test
     public void testNormalSetBucketLogging() {
-		final String sourceBucket = TestConfig.BUCKET_NAME_PREFIX + "normal-logging-source-1";
-		final String targetBucket = TestConfig.BUCKET_NAME_PREFIX + "normal-logging-target-1";
+        final String sourceBucket = TestConfig.BUCKET_NAME_PREFIX + "normal-logging-source-1";
+        final String targetBucket = TestConfig.BUCKET_NAME_PREFIX + "normal-logging-target-1";
         final String targetPrefix = "normal-set-bucket-logging-prefix";
         
         try {
@@ -105,8 +105,8 @@ public class BucketLoggingTest extends TestBase {
     
     @Test
     public void testUnormalSetBucketLogging() {
-    	final String sourceBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-set-bucket-logging-source";
-		final String targetBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-set-bucket-logging-target";
+        final String sourceBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-set-bucket-logging-source";
+        final String targetBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-set-bucket-logging-target";
         final String targetPrefix = "unormal-set-bucket-logging-prefix";
         
         try {

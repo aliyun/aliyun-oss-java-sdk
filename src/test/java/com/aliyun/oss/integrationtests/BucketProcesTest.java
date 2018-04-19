@@ -23,6 +23,8 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
+
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.BucketProcess;
@@ -64,6 +66,8 @@ public class BucketProcesTest extends TestBase {
             imageProcess = new ImageProcess("Both", false, "gif", "-");
             request = new SetBucketProcessRequest(bucketName, imageProcess);
             ossClient.setBucketProcess(request);
+            
+            waitForCacheExpiration(5);
             
             // get 2
             bucketProcess = ossClient.getBucketProcess(new GenericRequest(bucketName));

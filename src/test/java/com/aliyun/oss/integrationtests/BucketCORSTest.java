@@ -21,6 +21,7 @@ package com.aliyun.oss.integrationtests;
 
 import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_BUCKET_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_CORS_CONFIGURATION_ERR;
+import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,8 @@ public class BucketCORSTest extends TestBase {
             
             ossClient.setBucketCORS(request);
             
+            waitForCacheExpiration(5);
+            
             // Get bucket cors
             List<CORSRule> rules = ossClient.getBucketCORSRules(bucketName);
             r0 = rules.get(0);
@@ -80,6 +83,8 @@ public class BucketCORSTest extends TestBase {
             request.addCorsRule(r1);
             
             ossClient.setBucketCORS(request);
+            
+            waitForCacheExpiration(5);
             
             rules = ossClient.getBucketCORSRules(bucketName);
             r1 = rules.get(0);

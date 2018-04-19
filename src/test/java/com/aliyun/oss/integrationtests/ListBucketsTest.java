@@ -41,7 +41,7 @@ public class ListBucketsTest extends TestBase {
     
     @Test
     public void testNormalListBuckets() {
-    	final String bucketNamePrefix = TestConfig.BUCKET_NAME_PREFIX + "normal-list-buckets-";
+        final String bucketNamePrefix = TestConfig.BUCKET_NAME_PREFIX + "normal-list-buckets-";
         
         try {
             List<Bucket> returnedBuckets = ossClient.listBuckets();
@@ -50,6 +50,7 @@ public class ListBucketsTest extends TestBase {
                     ossClient.deleteBucket(bkt.getName());
                 }
             }
+            
             waitForCacheExpiration(5);
             
             List<String> existingBuckets = new ArrayList<String>();

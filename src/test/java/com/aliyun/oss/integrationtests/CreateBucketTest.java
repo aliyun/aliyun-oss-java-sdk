@@ -55,7 +55,7 @@ public class CreateBucketTest extends TestBase {
     
     @Test
     public void testPutWithDefaultLocation() {
-    	final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "bucket-with-default-location";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "bucket-with-default-location";
         
         try {
         	Bucket bucket = ossClient.createBucket(bucketName);
