@@ -40,7 +40,7 @@ public class ArchiveTest extends TestBase {
 
     @Test
     public void testNormalCreateArchiveBucket() {
-    	String bucketName = TestConfig.BUCKET_NAME_PREFIX + "create-archive-test-bucket";
+        String bucketName = TestConfig.BUCKET_NAME_PREFIX + "create-archive-test-bucket";
         String key = "normal-create-archive.txt";
         String filePath = null;
         

@@ -56,8 +56,8 @@ public class PostPolicyTest extends TestBase {
             byte[] binaryData = actualPostPolicy.getBytes("utf-8");
             String actualEncodedPolicy = BinaryUtil.toBase64String(binaryData);
             String expectedEncodedPolicy = "eyJleHBpcmF0aW9uIjoiMjAyMi0wMy0xOVQwMzo0NDowNi40NzZaIiwiY29uZGl0aW9ucyI6W3siYnVja2V0IjoiZ2VuLXB"
-            		+ "vc3QtcG9saWN5In0sWyJlcSIsIiRrZXkiLCJ1c2VyL2VyaWMvXCR7ZmlsZW5hbWV9Il0sWyJzdGFydHMtd2l0aCIsIiRrZXkiLCJ1c2VyL2VyaWMiXSxb"
-            		+ "InN0YXJ0cy13aXRoIiwiJHgtb3NzLW1ldGEtdGFnIiwiZHVtbXlfZXRhZyJdLFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLDEsMTAyNF1dfQ==";
+                    + "vc3QtcG9saWN5In0sWyJlcSIsIiRrZXkiLCJ1c2VyL2VyaWMvXCR7ZmlsZW5hbWV9Il0sWyJzdGFydHMtd2l0aCIsIiRrZXkiLCJ1c2VyL2VyaWMiXSxb"
+                    + "InN0YXJ0cy13aXRoIiwiJHgtb3NzLW1ldGEtdGFnIiwiZHVtbXlfZXRhZyJdLFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLDEsMTAyNF1dfQ==";
             Assert.assertEquals(expectedEncodedPolicy, actualEncodedPolicy);
             
             //String actualPostSignature = ossClient.calculatePostSignature(actualPostPolicy);
