@@ -84,6 +84,8 @@ public class BucketProcesTest extends TestBase {
             request = new SetBucketProcessRequest(bucketName, imageProcess);
             ossClient.setBucketProcess(request);
             
+            waitForCacheExpiration(5);
+            
             // get 3
             bucketProcess = ossClient.getBucketProcess(new GenericRequest(bucketName));
             Assert.assertEquals(bucketProcess.getImageProcess().getCompliedHost(), "Img");
