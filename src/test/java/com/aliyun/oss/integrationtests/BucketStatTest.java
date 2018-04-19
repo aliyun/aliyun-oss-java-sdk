@@ -67,6 +67,8 @@ public class BucketStatTest extends TestBase {
             Assert.assertEquals(initiateMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
             uploadId = initiateMultipartUploadResult.getUploadId();
             
+            waitForCacheExpiration(5);
+            
             BucketStat stat = ossClient.getBucketStat(bucketName);
             System.out.println(stat.getStorageSize() + "," + stat.getObjectCount() + "," + stat.getMultipartUploadCount());
             Assert.assertTrue(stat.getStorageSize() >= 1024 * 300);
