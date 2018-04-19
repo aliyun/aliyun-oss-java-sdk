@@ -65,6 +65,8 @@ public class BucketLifecycleTest extends TestBase {
         try {
             ossClient.createBucket(bucketName);
             
+            waitForCacheExpiration(5);
+            
             SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(bucketName);
             request.AddLifecycleRule(new LifecycleRule(ruleId0, matchPrefix0, RuleStatus.Enabled, 3));
             request.AddLifecycleRule(new LifecycleRule(ruleId1, matchPrefix1, RuleStatus.Enabled, 
