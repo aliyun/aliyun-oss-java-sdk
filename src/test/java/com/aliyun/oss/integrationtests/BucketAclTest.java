@@ -21,6 +21,8 @@ package com.aliyun.oss.integrationtests;
 
 import static com.aliyun.oss.integrationtests.TestConstants.BUCKET_ALREADY_EXIST_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_BUCKET_ERR;
+import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
+
 import java.util.Set;
 
 import junit.framework.Assert;
@@ -58,6 +60,8 @@ public class BucketAclTest extends TestBase {
             
             for (CannedAccessControlList acl : acls) {
                 ossClient.setBucketAcl(bucketName, acl);
+                
+                waitForCacheExpiration(5);
                 
                 AccessControlList returnedAcl = ossClient.getBucketAcl(bucketName);
                 if (acl != null && !acl.equals(CannedAccessControlList.Private)) {

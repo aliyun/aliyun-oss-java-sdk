@@ -27,6 +27,7 @@ import com.aliyun.oss.common.auth.BasicCredentials;
 import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.auth.CredentialsProviderFactory;
 import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class STSAssumeRoleSessionCredentialsProviderTest extends TestBase {
@@ -124,7 +125,7 @@ public class STSAssumeRoleSessionCredentialsProviderTest extends TestBase {
 
     }
 
-    @Test
+    @Ignore
     public void testStsAssumeRoleCredentialsProviderInOss() {
         try {
             CredentialsProvider credentialsProvider = CredentialsProviderFactory

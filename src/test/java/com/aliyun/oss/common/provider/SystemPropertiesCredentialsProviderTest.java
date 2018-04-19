@@ -29,6 +29,7 @@ import com.aliyun.oss.common.auth.CredentialsProviderFactory;
 import com.aliyun.oss.common.auth.SystemPropertiesCredentialsProvider;
 import com.aliyun.oss.common.utils.AuthUtils;
 import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class SystemPropertiesCredentialsProviderTest extends TestBase {
@@ -74,7 +75,7 @@ public class SystemPropertiesCredentialsProviderTest extends TestBase {
         }
     }
 
-    @Test
+    @Ignore
     public void testSystemPropertiesCredentialsProviderInOss() {
         try {
             System.setProperty(AuthUtils.ACCESS_KEY_SYSTEM_PROPERTY, TestConfig.ROOT_ACCESS_KEY_ID);
@@ -95,7 +96,7 @@ public class SystemPropertiesCredentialsProviderTest extends TestBase {
         }
     }
 
-    @Test
+    @Ignore
     public void testSystemPropertiesStsCredentialsProviderInOss() {
         try {
             CredentialsProvider assumeRoleCredProvider = CredentialsProviderFactory.newSTSAssumeRoleSessionCredentialsProvider(

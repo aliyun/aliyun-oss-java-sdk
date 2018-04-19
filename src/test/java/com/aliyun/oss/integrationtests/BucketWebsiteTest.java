@@ -199,7 +199,7 @@ public class BucketWebsiteTest extends TestBase {
             request.AddRoutingRule(rule);
             ossClient.setBucketWebsite(request);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(10);
             
             // check
             result = ossClient.getBucketWebsite(bucketName);
