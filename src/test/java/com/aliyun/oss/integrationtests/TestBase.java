@@ -306,9 +306,9 @@ public class TestBase {
     
     public static void resetTestConfig() {
       // test config
-	  if (TestConfig.BUCKET_NAME_PREFIX == null) {
-		TestConfig.BUCKET_NAME_PREFIX = System.getenv().get("BUCKET_NAME_PREFIX");
-	  }
+      if (TestConfig.BUCKET_NAME_PREFIX == null) {
+          TestConfig.BUCKET_NAME_PREFIX = System.getenv().get("BUCKET_NAME_PREFIX");
+      }
 	  
       if (TestConfig.OSS_TEST_ENDPOINT == null) {
           TestConfig.OSS_TEST_ENDPOINT = System.getenv().get("OSS_TEST_ENDPOINT");
