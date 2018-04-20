@@ -30,7 +30,7 @@ import com.aliyuncs.http.HttpResponse;
 public interface CredentialsFetcher {
 
     /**
-     * Construction license server URL
+     * Construct the URL of the authorization server
      * 
      * @return the url of authorization server
      * @throws ClientException
@@ -38,7 +38,7 @@ public interface CredentialsFetcher {
     public URL buildUrl() throws ClientException;
 
     /**
-     * Sends HTTP request to the license server
+     * Sends HTTP request to the authorization server
      * 
      * @param request
      *          
@@ -48,10 +48,10 @@ public interface CredentialsFetcher {
     public HttpResponse send(HttpRequest request) throws IOException;
 
     /**
-     * Authorization information from server, parse for Credentials
+     * Parse the authorization information returned by the authorization server , resolved as Credentials
      * 
      * @param response
-     *                license server return authorization information
+     * Authorization information returned by the authorization server
      * @return
      * @throws ClientException
      */
@@ -69,7 +69,7 @@ public interface CredentialsFetcher {
      * Get authorization from the authorization server
      * 
      * @param retryTimes
-     *                  failure retry time
+     * 
      * @return credentials
      * @throws ClientException
      */

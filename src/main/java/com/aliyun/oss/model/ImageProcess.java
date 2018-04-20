@@ -87,17 +87,17 @@ public class ImageProcess {
         this.supportAtStyle = supportAtStyle;
     }
 
-    // Img said setting the style of the separator, can only Img; Both said the oss can Img style separator
+    // Img is setting the style of the separator, can only Img; Both is the oss can Img style separator
     private String compliedHost;
-    // Whether to open the original protection
+    // Whether to open the original image protection
     private Boolean sourceFileProtect;
-    // All original protection suffix, * said
+    // the original protection suffix, * is all suffix
     private String sourceFileProtectSuffix;
-    // Custom delimiter
+    // Custom style delimiter
     private String styleDelimiters;
-    // Photo service version is 2, can only read cannot be set
+    // Photo service version is 2, you can only read but can not be set
     private Integer version;
-    // Whether the user can through the OSS domain using the original image processing interface, @ format.Disabled by default
+    // Whether the user can use the old image processing interface through the OSS domain, @ format. Disabled by default
     private Boolean supportAtStyle;
 
 }

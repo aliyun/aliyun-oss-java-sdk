@@ -293,14 +293,14 @@ public final class RequestMarshallers {
                 xmlBody.append("</ErrorDocument>");
             }
 
-            // RoutingRules can do without
+            // <RoutingRules> can be empty
             if (request.getRoutingRules().size() > 0) {
                 xmlBody.append("<RoutingRules>");
                 for (RoutingRule routingRule : request.getRoutingRules()) {
                     xmlBody.append("<RoutingRule>");
                     xmlBody.append("<RuleNumber>" + routingRule.getNumber() + "</RuleNumber>");
 
-                    // Condition words can not, if there is at least one condition
+                    // <Condition> can be empty unless there is at least one condition
                     RoutingRule.Condition condition = routingRule.getCondition();
                     if (condition.getKeyPrefixEquals() != null || condition.getHttpErrorCodeReturnedEquals() > 0) {
                         xmlBody.append("<Condition>");
@@ -315,7 +315,7 @@ public final class RequestMarshallers {
                         xmlBody.append("</Condition>");
                     }
 
-                    // Redirect clause must exist
+                    // <RedirectType> must exist
                     RoutingRule.Redirect redirect = routingRule.getRedirect();
                     xmlBody.append("<Redirect>");
                     if (redirect.getRedirectType() != null) {

@@ -251,7 +251,7 @@ public class GetObjectRequest extends GenericRequest {
      * Otherwise, the download API returns precondition failure (412).
      * 
      * @param date
-     *            "If-Modified-Since" parameter.
+     * "If-Modified-Since" parameter.
      */
     public void setModifiedSinceConstraint(Date date) {
         this.modifiedSinceConstraint = date;

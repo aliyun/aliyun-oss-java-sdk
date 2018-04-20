@@ -165,10 +165,10 @@ public class ListBucketsRequest extends WebServiceRequest {
     }
 
     /**
-     * Sets the bid.
+     * Set the bid.
      * 
      * @param bid
-     *            bid.
+     * bid.
      */
     public void setBid(String bid) {
         this.bid = bid;

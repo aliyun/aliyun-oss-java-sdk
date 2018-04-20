@@ -596,7 +596,7 @@ public class OSSObjectOperation extends OSSOperation {
             metadata = new ObjectMetadata();
         }
 
-        // Set the target file link
+        // Set the target file for the link
         String encodeTargetObject = HttpUtil.urlEncode(target, DEFAULT_CHARSET_NAME);
         metadata.setHeader(OSSHeaders.OSS_HEADER_SYMLINK_TARGET, encodeTargetObject);
         // Set the ContentType of link file, the target file first, and then link to the file

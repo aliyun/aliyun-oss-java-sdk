@@ -292,7 +292,7 @@ public class CopyObjectRequest extends WebServiceRequest {
      * Sets the target object's server side encryption algorithm.
      * 
      * @param serverSideEncryption
-     *            Server side encryption algorithm, null if no encryption.
+     * Server side encryption algorithm, null if no encryption.
      */
     public void setServerSideEncryption(String serverSideEncryption) {
         this.serverSideEncryption = serverSideEncryption;
