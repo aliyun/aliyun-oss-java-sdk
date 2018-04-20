@@ -90,7 +90,7 @@ public class GeneratePresignedUrlRequest {
      * @param key
      *            Object key.
      * @param method
-     *            {@link HttpMethod#GET}。
+     *            {@link HttpMethod#GET}.
      */
     public GeneratePresignedUrlRequest(String bucketName, String key, HttpMethod method) {
         this.bucketName = bucketName;
@@ -243,7 +243,7 @@ public class GeneratePresignedUrlRequest {
      * user's customized metadata. However the key value returned by
      * getUserMetadata does not have the prefix---the prefix is added by SDK
      * automatically. The key is case insensitive and will always be in low case
-     * when it's returned from OSS. For example, if the key is MyUserMeta，the
+     * when it's returned from OSS. For example, if the key is MyUserMeta, the
      * key returned by this method will be myusermeta.
      * </p>
      * 
@@ -343,7 +343,7 @@ public class GeneratePresignedUrlRequest {
      * Sets Http headers.
      * 
      * @param headers
-     *            HTTP Headers。
+     *            HTTP Headers.
      */
     public void setHeaders(Map<String, String> headers) {
         if (headers == null) {

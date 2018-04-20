@@ -68,7 +68,7 @@ public class PartListing extends GenericResult {
     /**
      * Gets the {@link OSSObject} key.
      * 
-     * @return Object key。
+     * @return Object key.
      */
     public String getKey() {
         return key;
@@ -163,7 +163,7 @@ public class PartListing extends GenericResult {
     }
 
     /**
-     * Sets the max parts count. The value comes from （
+     * Sets the max parts count. The value comes from (
      * {@link ListPartsRequest#getMaxParts()}).
      * 
      * @param maxParts

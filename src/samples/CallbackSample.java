@@ -42,7 +42,7 @@ public class CallbackSample {
     private static String accessKeySecret = "*** Provide your AccessKeySecret ***";
     private static String bucketName = "*** Provide bucket name ***";
     
-    // The callback url，for example: http://oss-demo.aliyuncs.com:23450或http://0.0.0.0:9090
+    // The callback url, for example: http://oss-demo.aliyuncs.com:23450 or http://0.0.0.0:9090
     // The service of that url must support the post method.
     private static final String callbackUrl = "<yourCallbackServerUrl>";
     

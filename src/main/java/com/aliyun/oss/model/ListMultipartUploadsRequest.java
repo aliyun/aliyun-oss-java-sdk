@@ -58,7 +58,7 @@ public class ListMultipartUploadsRequest extends GenericRequest {
 
     /**
      * Sets the max number of uploads to return. The both max and default value
-     * is 1000。
+     * is 1000.
      * 
      * @param maxUploads
      *            The max number of uploads.

@@ -125,7 +125,7 @@ public interface OSSErrorCode {
     static final String PRECONDITION_FAILED = "PreconditionFailed";
 
     /**
-     * 304 Not Modified。
+     * 304 Not Modified.
      */
     static final String NOT_MODIFIED = "NotModified";
 

@@ -87,17 +87,17 @@ public class ImageProcess {
         this.supportAtStyle = supportAtStyle;
     }
 
-    // Img表示设置的样式分隔符，只有Img能用；Both表示oss也能用Img的样式分隔符
+    // Img said setting the style of the separator, can only Img; Both said the oss can Img style separator
     private String compliedHost;
-    // 是否开启原图保护
+    // Whether to open the original protection
     private Boolean sourceFileProtect;
-    // 原图保护的后缀，*表示所有
+    // All original protection suffix, * said
     private String sourceFileProtectSuffix;
-    // 自定义样式分隔符
+    // Custom delimiter
     private String styleDelimiters;
-    // 图片服务的版本目前是2，只能读取不能设置
+    // Photo service version is 2, can only read cannot be set
     private Integer version;
-    // 用户是否能够通过OSS域名使用老版图片处理接口，@格式。默认Disabled
+    // Whether the user can through the OSS domain using the original image processing interface, @ format.Disabled by default
     private Boolean supportAtStyle;
 
 }

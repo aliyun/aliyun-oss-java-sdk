@@ -114,7 +114,7 @@ public class UploadPartCopyRequest extends WebServiceRequest {
      * Sets the {@link OSSObject} key.
      * 
      * @param key
-     *            Object key。
+     *            Object key.
      */
     public void setKey(String key) {
         this.key = key;

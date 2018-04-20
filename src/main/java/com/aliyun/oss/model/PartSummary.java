@@ -22,7 +22,7 @@ package com.aliyun.oss.model;
 import java.util.Date;
 
 /**
- * 包含通过Multipart上传模式上传的Part的摘要信息。 The summary information of the part in a
+ * Through the Multipart upload patterns include upload Part of the information. The summary information of the part in a
  * multipart upload.
  *
  */

@@ -22,7 +22,7 @@ package com.aliyun.oss.model;
 import java.io.Serializable;
 
 /**
- * OSS Object ACL。
+ * OSS Object ACL.
  */
 public class ObjectAcl extends GenericResult implements Serializable {
 
@@ -34,7 +34,7 @@ public class ObjectAcl extends GenericResult implements Serializable {
     /**
      * Gets the {@link Owner}.
      * 
-     * @return The {@link Owner}。
+     * @return The {@link Owner}.
      */
     public Owner getOwner() {
         return owner;
@@ -51,9 +51,9 @@ public class ObjectAcl extends GenericResult implements Serializable {
     }
 
     /**
-     * Gets the object's {@link ObjectPermission}。
+     * Gets the object's {@link ObjectPermission}.
      * 
-     * @return Object's {@link ObjectPermission}。
+     * @return Object's {@link ObjectPermission}.
      */
     public ObjectPermission getPermission() {
         return permission;

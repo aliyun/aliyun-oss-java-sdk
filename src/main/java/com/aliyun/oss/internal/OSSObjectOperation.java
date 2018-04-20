@@ -596,10 +596,10 @@ public class OSSObjectOperation extends OSSOperation {
             metadata = new ObjectMetadata();
         }
 
-        // 设置链接的目标文件
+        // Set the target file link
         String encodeTargetObject = HttpUtil.urlEncode(target, DEFAULT_CHARSET_NAME);
         metadata.setHeader(OSSHeaders.OSS_HEADER_SYMLINK_TARGET, encodeTargetObject);
-        // 设置链接文件的ContentType，目标文件优先，然后是链接文件
+        // Set the ContentType of link file, the target file first, and then link to the file
         if (metadata.getContentType() == null) {
             metadata.setContentType(Mimetypes.getInstance().getMimetype(target, symlink));
         }

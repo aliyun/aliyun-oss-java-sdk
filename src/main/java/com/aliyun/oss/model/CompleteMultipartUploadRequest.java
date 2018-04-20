@@ -105,19 +105,19 @@ public class CompleteMultipartUploadRequest extends GenericRequest {
     }
 
     /**
-     * Gets Object ACL。
+     * Gets Object ACL.
      * 
-     * @return Object ACL。
+     * @return Object ACL.
      */
     public CannedAccessControlList getObjectACL() {
         return cannedACL;
     }
 
     /**
-     * Sets Object ACL。
+     * Sets Object ACL.
      * 
      * @param Object
-     *            ACL。
+     *            ACL.
      */
     public void setObjectACL(CannedAccessControlList cannedACL) {
         this.cannedACL = cannedACL;

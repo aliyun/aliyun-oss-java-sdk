@@ -38,7 +38,7 @@ public class AddBucketReplicationRequest extends GenericRequest {
         /**
          * Includes PutObject/PostObject/AppendObject/CopyObject/PutObjectACL/
          * InitiateMultipartUpload/UploadPart/UploadPartCopy/
-         * CompleteMultipartUpload。
+         * CompleteMultipartUpload.
          */
         PUT("PUT"),
 
@@ -48,7 +48,7 @@ public class AddBucketReplicationRequest extends GenericRequest {
         DELETE("DELETE"),
 
         /**
-         * Includes CompleteMultipartUpload，AbortMultipartUpload.
+         * Includes CompleteMultipartUpload, AbortMultipartUpload.
          */
         ABORT("ABORT");
 

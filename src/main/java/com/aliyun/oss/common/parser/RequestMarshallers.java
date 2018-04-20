@@ -293,14 +293,14 @@ public final class RequestMarshallers {
                 xmlBody.append("</ErrorDocument>");
             }
 
-            // RoutingRules可以没有
+            // RoutingRules can do without
             if (request.getRoutingRules().size() > 0) {
                 xmlBody.append("<RoutingRules>");
                 for (RoutingRule routingRule : request.getRoutingRules()) {
                     xmlBody.append("<RoutingRule>");
                     xmlBody.append("<RuleNumber>" + routingRule.getNumber() + "</RuleNumber>");
 
-                    // Condition字句可以没有，如果有至少有一个条件
+                    // Condition words can not, if there is at least one condition
                     RoutingRule.Condition condition = routingRule.getCondition();
                     if (condition.getKeyPrefixEquals() != null || condition.getHttpErrorCodeReturnedEquals() > 0) {
                         xmlBody.append("<Condition>");
@@ -315,7 +315,7 @@ public final class RequestMarshallers {
                         xmlBody.append("</Condition>");
                     }
 
-                    // Redirect子句必须存在
+                    // Redirect clause must exist
                     RoutingRule.Redirect redirect = routingRule.getRedirect();
                     xmlBody.append("<Redirect>");
                     if (redirect.getRedirectType() != null) {

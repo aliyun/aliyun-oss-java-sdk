@@ -22,7 +22,7 @@ package com.aliyun.oss.model;
 /**
  * The status of cross region replication.
  * <p>
- * Currently we have starting，doing，closing three status. After
+ * Currently we have starting, doing, closing three status. After
  * PutBucketReplication is sent, OSS start preparing the replication and at this
  * point the status is 'starting'. And when the replication actually happens,
  * the status is "doing". And once DeleteBucketReplication is called, the OSS
