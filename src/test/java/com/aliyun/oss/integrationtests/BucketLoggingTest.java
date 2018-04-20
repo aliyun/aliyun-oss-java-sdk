@@ -50,7 +50,7 @@ public class BucketLoggingTest extends TestBase {
             request.setTargetPrefix(targetPrefix);
             ossClient.setBucketLogging(request);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(10);
             
             BucketLoggingResult result = ossClient.getBucketLogging(sourceBucket);
             Assert.assertEquals(targetBucket, result.getTargetBucket());
@@ -73,12 +73,14 @@ public class BucketLoggingTest extends TestBase {
             
             ossClient.deleteBucketLogging(sourceBucket);
             
+            waitForCacheExpiration(10);
+            
             // Set target prefix null
             request.setTargetBucket(targetBucket);
             request.setTargetPrefix(null);
             ossClient.setBucketLogging(request);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(10);
             
             result = ossClient.getBucketLogging(sourceBucket);
             Assert.assertEquals(targetBucket, result.getTargetBucket());
@@ -87,12 +89,14 @@ public class BucketLoggingTest extends TestBase {
             
             ossClient.deleteBucketLogging(sourceBucket);
             
+            waitForCacheExpiration(10);
+            
             // Close bucket logging functionality
             request.setTargetBucket(null);
             request.setTargetPrefix(null);
             ossClient.setBucketLogging(request);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(10);
             
             result = ossClient.getBucketLogging(sourceBucket);
             Assert.assertTrue(result.getTargetBucket() == null);

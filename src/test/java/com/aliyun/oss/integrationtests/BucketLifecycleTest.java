@@ -410,6 +410,9 @@ public class BucketLifecycleTest extends TestBase {
         final String bucketWithoutLifecycleConfiguration = TestConfig.BUCKET_NAME_PREFIX + "bucket-without-lifecycle-configuration";
         try {
             ossClient.createBucket(bucketWithoutLifecycleConfiguration);
+            
+            waitForCacheExpiration(10);
+            
             ossClient.deleteBucketLifecycle(bucketWithoutLifecycleConfiguration);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
