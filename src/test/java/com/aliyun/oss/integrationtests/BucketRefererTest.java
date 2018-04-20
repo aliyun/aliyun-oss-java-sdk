@@ -58,7 +58,7 @@ public class BucketRefererTest extends TestBase {
             r.setRefererList(refererList);
             ossClient.setBucketReferer(bucketName, r);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(10);
             
             r = ossClient.getBucketReferer(bucketName);
             List<String> returedRefererList = r.getRefererList();
@@ -74,7 +74,7 @@ public class BucketRefererTest extends TestBase {
             r.clearRefererList();
             ossClient.setBucketReferer(bucketName, r);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(20);
             
             r = ossClient.getBucketReferer(bucketName);
             returedRefererList = r.getRefererList();
@@ -90,7 +90,7 @@ public class BucketRefererTest extends TestBase {
             r.setAllowEmptyReferer(false);
             ossClient.setBucketReferer(bucketName, r);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(20);
             
             r = ossClient.getBucketReferer(bucketName);
             returedRefererList = r.getRefererList();
