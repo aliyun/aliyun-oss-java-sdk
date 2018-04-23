@@ -50,7 +50,7 @@ public class BucketLoggingTest extends TestBase {
             request.setTargetPrefix(targetPrefix);
             ossClient.setBucketLogging(request);
             
-            waitForCacheExpiration(10);
+            waitForCacheExpiration(20);
             
             BucketLoggingResult result = ossClient.getBucketLogging(sourceBucket);
             Assert.assertEquals(targetBucket, result.getTargetBucket());
@@ -217,7 +217,10 @@ public class BucketLoggingTest extends TestBase {
         try {
             ossClient.createBucket(bucketWithoutLoggingRule);
             
+            waitForCacheExpiration(10);
+            
             ossClient.deleteBucketLogging(bucketWithoutLoggingRule);
+            waitForCacheExpiration(10);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {

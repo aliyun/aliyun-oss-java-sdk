@@ -414,6 +414,7 @@ public class BucketLifecycleTest extends TestBase {
             waitForCacheExpiration(10);
             
             ossClient.deleteBucketLifecycle(bucketWithoutLifecycleConfiguration);
+            waitForCacheExpiration(10);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {

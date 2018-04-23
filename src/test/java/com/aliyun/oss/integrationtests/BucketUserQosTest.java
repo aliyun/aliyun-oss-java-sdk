@@ -61,7 +61,7 @@ public class BucketUserQosTest extends TestBase {
             userQos.setStorageCapacity(10000);
             ossClient.setBucketStorageCapacity(new SetBucketStorageCapacityRequest(bucketName).withUserQos(userQos));
             
-            waitForCacheExpiration(10);
+            waitForCacheExpiration(20);
             
             userQos = ossClient.getBucketStorageCapacity(bucketName);
             Assert.assertEquals(userQos.getStorageCapacity(), 10000);
