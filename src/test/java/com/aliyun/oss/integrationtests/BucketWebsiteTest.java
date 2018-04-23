@@ -64,7 +64,7 @@ public class BucketWebsiteTest extends TestBase {
             request.setErrorDocument(null);
             ossClient.setBucketWebsite(request);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(10);
             
             result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
