@@ -261,7 +261,7 @@ public class CreateBucketTest extends TestBase {
             // Create bucket with public-read-write acl
             createBucketRequest.setCannedACL(CannedAccessControlList.PublicReadWrite);
             ossClient.createBucket(createBucketRequest);
-            waitForCacheExpiration(10);
+            waitForCacheExpiration(20);
             returnedAcl = ossClient.getBucketAcl(bucketName);
             grants = returnedAcl.getGrants();
             Assert.assertEquals(1, grants.size());
