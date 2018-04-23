@@ -49,7 +49,7 @@ public class BucketWebsiteTest extends TestBase {
             request.setErrorDocument(errorDocument);
             ossClient.setBucketWebsite(request);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(20);
             
             BucketWebsiteResult result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
