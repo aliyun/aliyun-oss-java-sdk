@@ -354,7 +354,7 @@ public class BucketWebsiteTest extends TestBase {
             request.AddRoutingRule(rule);
             ossClient.setBucketWebsite(request);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(10);
             
             BucketWebsiteResult result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
@@ -396,7 +396,7 @@ public class BucketWebsiteTest extends TestBase {
             request.setIndexDocument(indexDocument);
             ossClient.setBucketWebsite(request);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(10);
             
             result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());

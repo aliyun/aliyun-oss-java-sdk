@@ -23,6 +23,8 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
+
 import com.aliyun.oss.model.BucketInfo;
 import com.aliyun.oss.model.BucketList;
 import com.aliyun.oss.model.CannedAccessControlList;
@@ -38,6 +40,8 @@ public class BucketInfoTest extends TestBase {
     public void testGetBucketInfo() {
         try {
             ossClient.setBucketAcl(bucketName, CannedAccessControlList.PublicRead);
+            
+            waitForCacheExpiration(10);
             
             BucketInfo info = ossClient.getBucketInfo(bucketName);
             Assert.assertEquals(info.getBucket().getName(), bucketName);
