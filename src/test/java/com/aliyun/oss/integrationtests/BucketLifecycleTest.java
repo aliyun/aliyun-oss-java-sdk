@@ -370,9 +370,11 @@ public class BucketLifecycleTest extends TestBase {
         }
         
         // Get bucket without setting lifecycle configuration
-        final String bucketWithoutLifecycleConfiguration = TestConfig.BUCKET_NAME_PREFIX + "bucket-without-lifecycle-configuration";
+        final String bucketWithoutLifecycleConfiguration = TestConfig.BUCKET_NAME_PREFIX + "bucket-without-lifecycle-" + System.currentTimeMillis() / 1000;
         try {
             ossClient.createBucket(bucketWithoutLifecycleConfiguration);
+            
+            waitForCacheExpiration(5);
             
             ossClient.getBucketLifecycle(bucketWithoutLifecycleConfiguration);
             Assert.fail("Get bucket lifecycle should not be successful");
@@ -380,7 +382,6 @@ public class BucketLifecycleTest extends TestBase {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_LIFECYCLE, e.getErrorCode());
             Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_LIFECYCLE_ERR));
         } finally {
-            TestUtils.waitForCacheExpiration(5);
             ossClient.deleteBucket(bucketWithoutLifecycleConfiguration);
         }
     }
@@ -411,10 +412,9 @@ public class BucketLifecycleTest extends TestBase {
         try {
             ossClient.createBucket(bucketWithoutLifecycleConfiguration);
             
-            waitForCacheExpiration(10);
+            waitForCacheExpiration(5);
             
             ossClient.deleteBucketLifecycle(bucketWithoutLifecycleConfiguration);
-            waitForCacheExpiration(10);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {

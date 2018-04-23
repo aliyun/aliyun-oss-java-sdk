@@ -87,6 +87,8 @@ public class BucketWebsiteTest extends TestBase {
         try {
             ossClient.createBucket(bucketName);
             
+            waitForCacheExpiration(10);
+            
             // Set index document and mirror
             SetBucketWebsiteRequest request = new SetBucketWebsiteRequest(bucketName);
             RoutingRule rule = new RoutingRule();
@@ -636,11 +638,11 @@ public class BucketWebsiteTest extends TestBase {
         }
         
         // Get bucket without setting website configuration
-        final String bucketWithoutWebsiteConfiguration = TestConfig.BUCKET_NAME_PREFIX + "bucket-without-website-configuration";
+        final String bucketWithoutWebsiteConfiguration = TestConfig.BUCKET_NAME_PREFIX + "bucket-without-website-" + System.currentTimeMillis() / 1000;
         try {
             ossClient.createBucket(bucketWithoutWebsiteConfiguration);
             
-            waitForCacheExpiration(20);
+            waitForCacheExpiration(5);
             
             ossClient.getBucketWebsite(bucketWithoutWebsiteConfiguration);
             Assert.fail("Get bucket website should not be successful");
@@ -678,7 +680,7 @@ public class BucketWebsiteTest extends TestBase {
         try {
             ossClient.createBucket(bucketWithoutWebsiteConfiguration);
             
-            waitForCacheExpiration(20);
+            waitForCacheExpiration(5);
             
             ossClient.deleteBucketWebsite(bucketWithoutWebsiteConfiguration);
         } catch (Exception e) {
