@@ -86,7 +86,7 @@ public class BucketProcesTest extends TestBase {
             request = new SetBucketProcessRequest(bucketName, imageProcess);
             ossClient.setBucketProcess(request);
             
-            waitForCacheExpiration(20);
+            waitForCacheExpiration(30);
             
             // get 3
             bucketProcess = ossClient.getBucketProcess(new GenericRequest(bucketName));

@@ -198,6 +198,7 @@ public class BucketLifecycleTest extends TestBase {
                 Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_LIFECYCLE_ERR));
             }
         } catch (OSSException e) {
+        	e.printStackTrace();
             Assert.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);

@@ -86,11 +86,11 @@ public class GeneratePresignedUrlRequest {
      * Constructor.
      * 
      * @param bucketName
-     * Bucket name.
+     *            Bucket name.
      * @param key
-     * Object key.
+     *            Object key.
      * @param method
-     * {@link HttpMethod#GET}.
+     *            {@link HttpMethod#GET}.
      */
     public GeneratePresignedUrlRequest(String bucketName, String key, HttpMethod method) {
         this.bucketName = bucketName;
@@ -343,7 +343,7 @@ public class GeneratePresignedUrlRequest {
      * Sets Http headers.
      * 
      * @param headers
-     * HTTP Headers.
+     *            HTTP Headers.
      */
     public void setHeaders(Map<String, String> headers) {
         if (headers == null) {
