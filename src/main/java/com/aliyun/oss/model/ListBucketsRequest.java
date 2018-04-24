@@ -165,7 +165,7 @@ public class ListBucketsRequest extends WebServiceRequest {
     }
 
     /**
-     * Set the bid.
+     * Sets the bid.
      * 
      * @param bid
      *            bid.

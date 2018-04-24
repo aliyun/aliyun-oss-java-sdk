@@ -105,7 +105,7 @@ public class CompleteMultipartUploadRequest extends GenericRequest {
     }
 
     /**
-     * Get Object ACL.
+     * Gets Object ACL.
      * 
      * @return Object ACL.
      */
@@ -114,7 +114,7 @@ public class CompleteMultipartUploadRequest extends GenericRequest {
     }
 
     /**
-     * Set Object ACL.
+     * Sets Object ACL.
      * 
      * @param Object
      * ACL.

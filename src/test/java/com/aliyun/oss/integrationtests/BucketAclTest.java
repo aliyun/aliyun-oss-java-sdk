@@ -61,7 +61,7 @@ public class BucketAclTest extends TestBase {
             for (CannedAccessControlList acl : acls) {
                 ossClient.setBucketAcl(bucketName, acl);
                 
-                waitForCacheExpiration(10);
+                waitForCacheExpiration(20);
                 
                 AccessControlList returnedAcl = ossClient.getBucketAcl(bucketName);
                 if (acl != null && !acl.equals(CannedAccessControlList.Private)) {

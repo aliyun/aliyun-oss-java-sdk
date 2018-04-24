@@ -109,7 +109,7 @@ public class BucketLifecycleTest extends TestBase {
             
             ossClient.setBucketLifecycle(request);
             
-            waitForCacheExpiration(10);
+            waitForCacheExpiration(20);
             
             List<LifecycleRule> rules = ossClient.getBucketLifecycle(bucketName);
             Assert.assertEquals(rules.size(), 6);
@@ -176,7 +176,7 @@ public class BucketLifecycleTest extends TestBase {
             request.AddLifecycleRule(new LifecycleRule(nullRuleId, matchPrefix0, RuleStatus.Enabled, 7));
             ossClient.setBucketLifecycle(request);
             
-            waitForCacheExpiration(10);
+            waitForCacheExpiration(20);
             
             rules = ossClient.getBucketLifecycle(bucketName);
             Assert.assertEquals(rules.size(), 1);

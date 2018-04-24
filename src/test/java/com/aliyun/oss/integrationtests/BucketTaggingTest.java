@@ -41,6 +41,8 @@ public class BucketTaggingTest extends TestBase {
             request.setTag("tk2", "tv2");
             ossClient.setBucketTagging(request);
             
+            waitForCacheExpiration(20);
+            
             TagSet tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
             Assert.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
             Map<String, String> tags = tagSet.getAllTags();

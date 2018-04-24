@@ -30,6 +30,7 @@ import static com.aliyun.oss.integrationtests.TestUtils.genRandomLengthFile;
 import static com.aliyun.oss.integrationtests.TestUtils.removeFile;
 import static com.aliyun.oss.integrationtests.TestUtils.removeFiles;
 import static com.aliyun.oss.integrationtests.TestUtils.waitAll;
+import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_OBJECT_CONTENT_TYPE;
 
 import java.io.File;
@@ -658,6 +659,7 @@ public class GetObjectTest extends TestBase {
         Date unmodifiedSinceConstraint = new Date();
         getObjectRequest.setUnmodifiedSinceConstraint(unmodifiedSinceConstraint);
         try {
+        	waitForCacheExpiration(10);
             o = ossClient.getObject(getObjectRequest);
             Assert.assertEquals(eTag, o.getObjectMetadata().getETag());
         } catch (OSSException e) {

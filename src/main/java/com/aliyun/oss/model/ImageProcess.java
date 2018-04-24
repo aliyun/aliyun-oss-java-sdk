@@ -86,8 +86,8 @@ public class ImageProcess {
     public void setSupportAtStyle(Boolean supportAtStyle) {
         this.supportAtStyle = supportAtStyle;
     }
-
-    // Img is setting the style of the separator, can only Img; Both is the oss can Img style separator
+    
+    // IMG domain name access, style separator only Img can be used; OSS domain name and IMG domain name can use Img style separator.
     private String compliedHost;
     // Whether to open the original image protection
     private Boolean sourceFileProtect;
