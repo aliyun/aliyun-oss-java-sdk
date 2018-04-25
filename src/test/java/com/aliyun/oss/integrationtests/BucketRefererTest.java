@@ -39,7 +39,7 @@ public class BucketRefererTest extends TestBase {
     
     @Test
     public void testNormalSetBucketReferer() {
-        final String bucketName = TestConfig.BUCKET_NAME_PREFIX+"normal-set-bucket-referer-source";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "normal-set-bucket-referer-source";
         final String referer0 = "http://www.aliyun.com";
         final String referer1 = "https://www.aliyun.com";
         final String referer2 = "http://www.*.com";
@@ -58,7 +58,7 @@ public class BucketRefererTest extends TestBase {
             r.setRefererList(refererList);
             ossClient.setBucketReferer(bucketName, r);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(10);
             
             r = ossClient.getBucketReferer(bucketName);
             List<String> returedRefererList = r.getRefererList();
@@ -74,7 +74,8 @@ public class BucketRefererTest extends TestBase {
             r.clearRefererList();
             ossClient.setBucketReferer(bucketName, r);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(20);
+            
             r = ossClient.getBucketReferer(bucketName);
             returedRefererList = r.getRefererList();
             Assert.assertTrue(r.isAllowEmptyReferer());
@@ -89,7 +90,8 @@ public class BucketRefererTest extends TestBase {
             r.setAllowEmptyReferer(false);
             ossClient.setBucketReferer(bucketName, r);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(20);
+            
             r = ossClient.getBucketReferer(bucketName);
             returedRefererList = r.getRefererList();
             Assert.assertFalse(r.isAllowEmptyReferer());
@@ -106,7 +108,7 @@ public class BucketRefererTest extends TestBase {
     
     @Test
     public void testUnormalSetBucketReferer() {
-        final String bucketName = TestConfig.BUCKET_NAME_PREFIX+"unormal-set-bucket-referer";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "unormal-set-bucket-referer";
         final String referer0 = "http://www.aliyun.com";
         final String referer1 = "https://www.aliyun.com";
         
@@ -156,7 +158,7 @@ public class BucketRefererTest extends TestBase {
     @Test
     public void testUnormalGetBucketReferer() {
         // Get non-existent bucket
-        final String nonexistentBucket = TestConfig.BUCKET_NAME_PREFIX+"unormal-get-bucket-referer";
+        final String nonexistentBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-get-bucket-referer";
         try {
             ossClient.getBucketReferer(nonexistentBucket);
             Assert.fail("Get bucket referer should not be successful");
@@ -175,7 +177,7 @@ public class BucketRefererTest extends TestBase {
         }
         
         // Get bucket without setting referer list
-        final String bucketWithoutRefererRule = TestConfig.BUCKET_NAME_PREFIX+"bucket-without-referer";
+        final String bucketWithoutRefererRule = TestConfig.BUCKET_NAME_PREFIX + "bucket-without-referer";
         try {
             ossClient.createBucket(bucketWithoutRefererRule);
             

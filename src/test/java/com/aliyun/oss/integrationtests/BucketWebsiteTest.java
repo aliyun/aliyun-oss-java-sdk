@@ -36,7 +36,7 @@ public class BucketWebsiteTest extends TestBase {
 
     @Test
     public void testNormalSetBucketWebsite() {
-        final String bucketName = TestConfig.BUCKET_NAME_PREFIX+"normal-set-bucket-website";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "normal-set-bucket-website";
         final String indexDocument = "index.html";
         final String errorDocument = "error.html";
         
@@ -49,7 +49,7 @@ public class BucketWebsiteTest extends TestBase {
             request.setErrorDocument(errorDocument);
             ossClient.setBucketWebsite(request);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(20);
             
             BucketWebsiteResult result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
@@ -64,7 +64,7 @@ public class BucketWebsiteTest extends TestBase {
             request.setErrorDocument(null);
             ossClient.setBucketWebsite(request);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(20);
             
             result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
@@ -81,11 +81,13 @@ public class BucketWebsiteTest extends TestBase {
     
     @Test
     public void testNormalSetBucketWebsiteWithMirror() {
-        final String bucketName = TestConfig.BUCKET_NAME_PREFIX+"normal-set-bucket-website-mirror";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "normal-set-bucket-website-mirror";
         final String indexDocument = "index.html";
         
         try {
             ossClient.createBucket(bucketName);
+            
+            waitForCacheExpiration(10);
             
             // Set index document and mirror
             SetBucketWebsiteRequest request = new SetBucketWebsiteRequest(bucketName);
@@ -98,7 +100,8 @@ public class BucketWebsiteTest extends TestBase {
             request.setIndexDocument(indexDocument);
             request.AddRoutingRule(rule);
             ossClient.setBucketWebsite(request);
-            waitForCacheExpiration(5);
+            
+            waitForCacheExpiration(20);
             
             // check
             BucketWebsiteResult result = ossClient.getBucketWebsite(bucketName);
@@ -114,6 +117,8 @@ public class BucketWebsiteTest extends TestBase {
             ossClient.deleteBucketWebsite(bucketName);
             waitForCacheExpiration(5);
             
+            waitForCacheExpiration(20);
+            
             // set mirror with key prefix
             request = new SetBucketWebsiteRequest(bucketName);
             rule = new RoutingRule();
@@ -126,7 +131,8 @@ public class BucketWebsiteTest extends TestBase {
             request.setIndexDocument(indexDocument);
             request.AddRoutingRule(rule);
             ossClient.setBucketWebsite(request);
-            waitForCacheExpiration(5);
+            
+            waitForCacheExpiration(20);
             
             // check
             result = ossClient.getBucketWebsite(bucketName);
@@ -160,7 +166,7 @@ public class BucketWebsiteTest extends TestBase {
             request.AddRoutingRule(rule);
             ossClient.setBucketWebsite(request);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(20);
             
             // check
             result = ossClient.getBucketWebsite(bucketName);
@@ -197,7 +203,7 @@ public class BucketWebsiteTest extends TestBase {
             request.AddRoutingRule(rule);
             ossClient.setBucketWebsite(request);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(20);
             
             // check
             result = ossClient.getBucketWebsite(bucketName);
@@ -226,7 +232,7 @@ public class BucketWebsiteTest extends TestBase {
     
     @Test
     public void testNormalSetBucketWebsiteWithRedirect() {
-        final String bucketName = TestConfig.BUCKET_NAME_PREFIX+"normal-set-bucket-website-redirect";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "normal-set-bucket-website-redirect";
         final String indexDocument = "index.html";
         
         try {
@@ -249,7 +255,7 @@ public class BucketWebsiteTest extends TestBase {
             request.AddRoutingRule(rule);
             ossClient.setBucketWebsite(request);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(20);
             
             BucketWebsiteResult result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
@@ -292,7 +298,7 @@ public class BucketWebsiteTest extends TestBase {
             request.setIndexDocument(indexDocument);
             ossClient.setBucketWebsite(request);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(20);
             
             result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
@@ -329,7 +335,7 @@ public class BucketWebsiteTest extends TestBase {
     
     @Test
     public void testNormalSetBucketWebsiteWithCDNRedirect() {
-        final String bucketName = TestConfig.BUCKET_NAME_PREFIX+"normal-set-bucket-website-redirect-cdn";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "normal-set-bucket-website-redirect-cdn";
         final String indexDocument = "index.html";
         
         try {
@@ -352,7 +358,7 @@ public class BucketWebsiteTest extends TestBase {
             request.AddRoutingRule(rule);
             ossClient.setBucketWebsite(request);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(20);
             
             BucketWebsiteResult result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
@@ -394,7 +400,7 @@ public class BucketWebsiteTest extends TestBase {
             request.setIndexDocument(indexDocument);
             ossClient.setBucketWebsite(request);
             
-            waitForCacheExpiration(5);
+            waitForCacheExpiration(10);
             
             result = ossClient.getBucketWebsite(bucketName);
             Assert.assertEquals(indexDocument, result.getIndexDocument());
@@ -431,7 +437,7 @@ public class BucketWebsiteTest extends TestBase {
     
     @Test
     public void testUnormalSetBucketWebsiteWithMirror() {
-        final String bucketName = TestConfig.BUCKET_NAME_PREFIX+"unormal-set-bucket-website-mirror";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "unormal-set-bucket-website-mirror";
         final String indexDocument = "index.html";
         
         try {
@@ -511,7 +517,7 @@ public class BucketWebsiteTest extends TestBase {
     
     @Test
     public void testUnormalSetBucketWebsiteWithRedirect() {
-        final String bucketName = TestConfig.BUCKET_NAME_PREFIX+"unormal-set-bucket-website-redirect";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "unormal-set-bucket-website-redirect";
         final String indexDocument = "index.html";
         
         try {
@@ -575,7 +581,7 @@ public class BucketWebsiteTest extends TestBase {
     
     @Test
     public void testUnormalSetBucketWebsite() {
-        final String bucketName = TestConfig.BUCKET_NAME_PREFIX+"unormal-set-bucket-website";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "unormal-set-bucket-website";
         final String indexDocument = "index.html";
         final String errorDocument = "error.html";
         
@@ -634,9 +640,11 @@ public class BucketWebsiteTest extends TestBase {
         }
         
         // Get bucket without setting website configuration
-        final String bucketWithoutWebsiteConfiguration = TestConfig.BUCKET_NAME_PREFIX+"bucket-without-website-configuration";
+        final String bucketWithoutWebsiteConfiguration = TestConfig.BUCKET_NAME_PREFIX + "bucket-without-website-" + System.currentTimeMillis() / 1000;
         try {
             ossClient.createBucket(bucketWithoutWebsiteConfiguration);
+            
+            waitForCacheExpiration(5);
             
             ossClient.getBucketWebsite(bucketWithoutWebsiteConfiguration);
             Assert.fail("Get bucket website should not be successful");
@@ -651,7 +659,7 @@ public class BucketWebsiteTest extends TestBase {
     @Test
     public void testUnormalDeleteBucketWebsite() {
         // Delete non-existent bucket
-        final String nonexistentBucket = "unormal-delete-bucket-website";
+        final String nonexistentBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-delete-bucket-website";
         try {
             ossClient.deleteBucketWebsite(nonexistentBucket);
             Assert.fail("Delete bucket website should not be successful");
@@ -670,9 +678,12 @@ public class BucketWebsiteTest extends TestBase {
         }
         
         // Delete bucket without setting website configuration
-        final String bucketWithoutWebsiteConfiguration = TestConfig.BUCKET_NAME_PREFIX+"bucket-without-website-configuration";
+        final String bucketWithoutWebsiteConfiguration = TestConfig.BUCKET_NAME_PREFIX + "bucket-without-website-configuration";
         try {
             ossClient.createBucket(bucketWithoutWebsiteConfiguration);
+            
+            waitForCacheExpiration(5);
+            
             ossClient.deleteBucketWebsite(bucketWithoutWebsiteConfiguration);
         } catch (Exception e) {
             Assert.fail(e.getMessage());

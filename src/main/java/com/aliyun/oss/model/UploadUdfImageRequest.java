@@ -24,7 +24,7 @@ import java.io.InputStream;
 /**
  * This is the request class to upload the UDF image.
  * 
- * UDF Image有格式要求，详见API说明。
+ * UDF Image format requirements, see the API specification.
  */
 public class UploadUdfImageRequest extends UdfGenericRequest {
 

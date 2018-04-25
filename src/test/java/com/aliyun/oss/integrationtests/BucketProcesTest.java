@@ -25,6 +25,8 @@ import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 
 import org.junit.Test;
 
+import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
+
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.BucketProcess;
@@ -51,7 +53,9 @@ public class BucketProcesTest extends TestBase {
             ImageProcess imageProcess = new ImageProcess("Img", true, "jpg,png", "/,-");
             SetBucketProcessRequest request = new SetBucketProcessRequest(bucketName, imageProcess);
             ossClient.setBucketProcess(request);
-            waitForCacheExpiration(5);
+            
+            waitForCacheExpiration(20);
+            
             // get 1
             bucketProcess = ossClient.getBucketProcess(new GenericRequest(bucketName));
             Assert.assertEquals(bucketProcess.getImageProcess().getCompliedHost(), "Img");
@@ -66,7 +70,9 @@ public class BucketProcesTest extends TestBase {
             imageProcess = new ImageProcess("Both", false, "gif", "-");
             request = new SetBucketProcessRequest(bucketName, imageProcess);
             ossClient.setBucketProcess(request);
-            waitForCacheExpiration(5);
+            
+            waitForCacheExpiration(20);
+            
             // get 2
             bucketProcess = ossClient.getBucketProcess(new GenericRequest(bucketName));
             Assert.assertEquals(bucketProcess.getImageProcess().getCompliedHost(), "Both");
@@ -81,7 +87,9 @@ public class BucketProcesTest extends TestBase {
             imageProcess = new ImageProcess("Img", true, "*", "/", true);
             request = new SetBucketProcessRequest(bucketName, imageProcess);
             ossClient.setBucketProcess(request);
-            waitForCacheExpiration(5);
+            
+            waitForCacheExpiration(30);
+            
             // get 3
             bucketProcess = ossClient.getBucketProcess(new GenericRequest(bucketName));
             Assert.assertEquals(bucketProcess.getImageProcess().getCompliedHost(), "Img");

@@ -662,6 +662,7 @@ public class GetObjectTest extends TestBase {
         getObjectRequest.setUnmodifiedSinceConstraint(unmodifiedSinceConstraint);
         waitForCacheExpiration(5);
         try {
+        	waitForCacheExpiration(10);
             o = ossClient.getObject(getObjectRequest);
             Assert.assertEquals(eTag, o.getObjectMetadata().getETag());
         } catch (OSSException e) {

@@ -107,7 +107,7 @@ public class OSSUploadOperation {
          * Check if the local file matches the checkpoint.
          */
         public synchronized boolean isValid(String uploadFile) {
-            // 比较checkpoint的magic和md5
+            // Compare checkpoint the magic and md5
             // Compares the magic field in checkpoint and the file's md5.
             if (this.magic == null || !this.magic.equals(UPLOAD_MAGIC) || this.md5 != hashCode()) {
                 return false;

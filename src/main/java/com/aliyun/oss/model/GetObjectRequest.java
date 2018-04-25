@@ -239,7 +239,7 @@ public class GetObjectRequest extends GenericRequest {
      * than the actual file's modified time, the file would be downloaded.
      * Otherwise, the download API returns precondition failure (412).
      * 
-     * @return “If-Modified-Since” timestamp.
+     * @return "If-Modified-Since" timestamp.
      */
     public Date getModifiedSinceConstraint() {
         return modifiedSinceConstraint;
@@ -251,7 +251,7 @@ public class GetObjectRequest extends GenericRequest {
      * Otherwise, the download API returns precondition failure (412).
      * 
      * @param date
-     *            “If-Modified-Since” parameter.
+     *            "If-Modified-Since" parameter.
      */
     public void setModifiedSinceConstraint(Date date) {
         this.modifiedSinceConstraint = date;

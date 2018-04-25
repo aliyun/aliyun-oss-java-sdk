@@ -214,7 +214,7 @@ public class CopyObjectRequest extends WebServiceRequest {
     /**
      * Gets the ETag non-matching constraints.
      * 
-     * @return ETag non-matching constraints。
+     * @return ETag non-matching constraints.
      */
     public List<String> getNonmatchingEtagConstraints() {
         return nonmatchingEtagConstraints;
@@ -282,7 +282,7 @@ public class CopyObjectRequest extends WebServiceRequest {
     /**
      * Gets the target object's server side encryption algorithm.
      * 
-     * @return Server side encryption algorithm，null if no encryption.
+     * @return Server side encryption algorithm, null if no encryption.
      */
     public String getServerSideEncryption() {
         return this.serverSideEncryption;
@@ -292,7 +292,7 @@ public class CopyObjectRequest extends WebServiceRequest {
      * Sets the target object's server side encryption algorithm.
      * 
      * @param serverSideEncryption
-     *            Server side encryption algorithm，null if no encryption.
+     * Server side encryption algorithm, null if no encryption.
      */
     public void setServerSideEncryption(String serverSideEncryption) {
         this.serverSideEncryption = serverSideEncryption;

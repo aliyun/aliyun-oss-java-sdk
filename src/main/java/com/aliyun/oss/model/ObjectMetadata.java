@@ -49,7 +49,7 @@ public class ObjectMetadata {
      * <p>
      * The custom metadata would be appended with x-oss-meta- in the request to
      * OSS. But here the caller should not use x-oss-meta- as the prefix for the
-     * keys of the Map instance returned. Meanwhile，the keys is case insenstive
+     * keys of the Map instance returned. Meanwhile, the keys is case insenstive
      * and all keys returned from OSS server is in lower case.
      * </p>
      * 

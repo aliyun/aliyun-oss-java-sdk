@@ -41,7 +41,7 @@ public class BucketCORSTest extends TestBase {
     
     @Test
     public void testNormalSetBucketCORS() {
-        final String bucketName = TestConfig.BUCKET_NAME_PREFIX+"normal-set-bucket-cors";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "normal-set-bucket-cors";
 
         try {
             ossClient.createBucket(bucketName);
@@ -61,6 +61,8 @@ public class BucketCORSTest extends TestBase {
             
             ossClient.setBucketCORS(request);
             waitForCacheExpiration(5);
+            
+            waitForCacheExpiration(10);
             
             // Get bucket cors
             List<CORSRule> rules = ossClient.getBucketCORSRules(bucketName);
@@ -82,7 +84,9 @@ public class BucketCORSTest extends TestBase {
             request.addCorsRule(r1);
             
             ossClient.setBucketCORS(request);
-            waitForCacheExpiration(5);
+            
+            waitForCacheExpiration(20);
+            
             rules = ossClient.getBucketCORSRules(bucketName);
             r1 = rules.get(0);
             Assert.assertEquals(1, rules.size());
@@ -101,7 +105,7 @@ public class BucketCORSTest extends TestBase {
     
     @Test
     public void testUnormalSetBucketCORS() {
-        final String bucketName = TestConfig.BUCKET_NAME_PREFIX+"unormal-set-bucket-cors";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "unormal-set-bucket-cors";
         
         try {
             ossClient.createBucket(bucketName);
@@ -209,7 +213,7 @@ public class BucketCORSTest extends TestBase {
     @Test
     public void testUnormalGetBucketCORS() {
         // Get non-existent bucket
-        final String nonexistentBucket = TestConfig.BUCKET_NAME_PREFIX+"unormal-get-bucket-cors";
+        final String nonexistentBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-get-bucket-cors";
         try {
             ossClient.getBucketCORSRules(nonexistentBucket);
             Assert.fail("Get bucket cors should not be successful");
@@ -228,7 +232,7 @@ public class BucketCORSTest extends TestBase {
         }
         
         // Get bucket without setting cors rules
-        final String bucketWithoutCORSRules = TestConfig.BUCKET_NAME_PREFIX+"bucket-without-cors-rules";
+        final String bucketWithoutCORSRules = TestConfig.BUCKET_NAME_PREFIX + "bucket-without-cors-rules";
         try {
             ossClient.createBucket(bucketWithoutCORSRules);
             
@@ -245,7 +249,7 @@ public class BucketCORSTest extends TestBase {
     @Test
     public void testUnormalDeleteBucketCORS() {
         // Delete non-existent bucket
-        final String nonexistentBucket = TestConfig.BUCKET_NAME_PREFIX+"unormal-delete-bucket-cors";
+        final String nonexistentBucket = TestConfig.BUCKET_NAME_PREFIX + "unormal-delete-bucket-cors";
         try {
             ossClient.getBucketCORSRules(nonexistentBucket);
             Assert.fail("Delete bucket cors should not be successful");

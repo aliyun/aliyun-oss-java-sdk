@@ -161,11 +161,11 @@ public class GetProgressSample {
         try {
             File fh = createSampleFile();
             
-            // 带进度条的上传 
+            // With the progress bar to upload 
             client.putObject(new PutObjectRequest(bucketName, key, fh).
                     <PutObjectRequest>withProgressListener(new PutObjectProgressListener()));
             
-            // 带进度条的下载
+            // With the progress bar to download
             client.getObject(new GetObjectRequest(bucketName, key).
                     <GetObjectRequest>withProgressListener(new GetObjectProgressListener()), fh);
             

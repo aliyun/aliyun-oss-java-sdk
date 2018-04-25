@@ -60,7 +60,7 @@ public class OSSObject extends GenericResult implements Closeable {
     /**
      * Gets the object's metadata
      * 
-     * @return Object's metadata in（{@link ObjectMetadata}
+     * @return Object's metadata in {@link ObjectMetadata}
      */
     public ObjectMetadata getObjectMetadata() {
         return metadata;

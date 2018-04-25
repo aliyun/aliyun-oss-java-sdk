@@ -34,7 +34,7 @@ public class AbortMultipartUploadRequest extends GenericRequest {
      * @param bucketName
      *            Bucket name.
      * @param key
-     *            Object key。
+     *            Object key.
      * @param uploadId
      *            The multipart upload Id.
      */

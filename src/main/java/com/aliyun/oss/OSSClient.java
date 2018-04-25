@@ -132,7 +132,7 @@ public class OSSClient implements OSS {
     }
 
     /**
-     * Uses the specified OSS Endpoint、a security token from AliCloud STS and
+     * Uses the specified OSS Endpoint, a security token from AliCloud STS and
      * Access Id/Access Key to create a new {@link OSSClient} instance.
      * 
      * @param endpoint
@@ -150,15 +150,15 @@ public class OSSClient implements OSS {
     }
 
     /**
-     * Uses a specified OSS Endpoint、Access Id, Access Key、Client side
+     * Uses a specified OSS Endpoint, Access Id, Access Key, Client side
      * configuration to create a {@link OSSClient} instance.
      * 
      * @param endpoint
-     *            OSS Endpoint。
+     *            OSS Endpoint.
      * @param accessKeyId
-     *            Access Key ID。
+     *            Access Key ID.
      * @param secretAccessKey
-     *            Secret Access Key。
+     *            Secret Access Key.
      * @param config
      *            A {@link ClientConfiguration} instance. The method would use
      *            default configuration if it's null.
@@ -174,7 +174,7 @@ public class OSSClient implements OSS {
      * {@link OSSClient} instance.
      * 
      * @param endpoint
-     *            OSS Endpoint。
+     *            OSS Endpoint.
      * @param accessKeyId
      *            Access Key Id provided by STS.
      * @param secretAccessKey
@@ -196,7 +196,7 @@ public class OSSClient implements OSS {
      * a new {@link OSSClient} instance.
      * 
      * @param endpoint
-     *            OSS services Endpoint。
+     *            OSS services Endpoint.
      * @param credsProvider
      *            Credentials provider which has access key Id and access Key
      *            secret.
@@ -266,7 +266,7 @@ public class OSSClient implements OSS {
      * directly to access the OSS.
      * 
      * @param uri
-     *            URI。
+     *            URI.
      */
     private boolean isIpOrLocalhost(URI uri) {
         if (uri.getHost().equals("localhost")) {

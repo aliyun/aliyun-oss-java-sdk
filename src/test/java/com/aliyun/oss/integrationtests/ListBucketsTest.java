@@ -50,6 +50,7 @@ public class ListBucketsTest extends TestBase {
                     ossClient.deleteBucket(bkt.getName());
                 }
             }
+            
             waitForCacheExpiration(5);
             
             List<String> existingBuckets = new ArrayList<String>();

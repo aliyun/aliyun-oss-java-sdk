@@ -107,7 +107,7 @@ public class OSSDownloadOperation {
          * Check if the object matches the checkpoint information.
          */
         public synchronized boolean isValid(OSSObjectOperation objectOperation) {
-            // 比较checkpoint的magic和md5
+            // Compare checkpoint the magic and md5
             if (this.magic == null || !this.magic.equals(DOWNLOAD_MAGIC) || this.md5 != hashCode()) {
                 return false;
             }

@@ -68,7 +68,6 @@ public class TestBase {
     protected static final String INVALID_ACCESS_ID = "InvalidAccessId";
     protected static final String INVALID_ACCESS_KEY = "InvalidAccessKey";
     
-//    protected static final String BUCKET_NAME_PREFIX = "oss-java-sdk-";
     protected static final String USER_DIR = System.getProperty("user.dir");
     protected static final String UPLOAD_DIR = USER_DIR + File.separator + "upload" + File.separator;
     protected static final String DOWNLOAD_DIR = USER_DIR + File.separator + "download" + File.separator;
@@ -102,7 +101,7 @@ public class TestBase {
     }
     
     public static String createBucket() {
-        String ticks = new Date().getTime() / 1000+"-"+System.getProperty("java.version").substring(0, 3).replace(".", "-")+"-"+System.getProperty("sun.arch.data.model");
+        String ticks = System.currentTimeMillis() / 1000 + "-case";
         String bucketName = TestConfig.BUCKET_NAME_PREFIX + ticks;
         getOSSClient().createBucket(bucketName);
         waitForCacheExpiration(2);
@@ -307,10 +306,10 @@ public class TestBase {
     
     public static void resetTestConfig() {
       // test config
-	 if (TestConfig.BUCKET_NAME_PREFIX == null) {
-         TestConfig.BUCKET_NAME_PREFIX = System.getenv().get("BUCKET_NAME_PREFIX");
-     }
-    	 
+      if (TestConfig.BUCKET_NAME_PREFIX == null) {
+          TestConfig.BUCKET_NAME_PREFIX = System.getenv().get("BUCKET_NAME_PREFIX");
+      }
+	  
       if (TestConfig.OSS_TEST_ENDPOINT == null) {
           TestConfig.OSS_TEST_ENDPOINT = System.getenv().get("OSS_TEST_ENDPOINT");
       }

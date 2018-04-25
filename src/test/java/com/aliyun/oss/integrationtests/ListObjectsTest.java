@@ -42,7 +42,7 @@ public class ListObjectsTest extends TestBase {
     
     @Test
     public void testNormalListObjects() {
-        final String bucketName = TestConfig.BUCKET_NAME_PREFIX+"normal-list-objects";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "normal-list-objects";
         
         try {
             ossClient.createBucket(bucketName);
@@ -162,7 +162,7 @@ public class ListObjectsTest extends TestBase {
 
     @Test
     public void testUnormalListObjects() {
-        final String bucketName = TestConfig.BUCKET_NAME_PREFIX+"unormal-list-objects";
+        final String bucketName = TestConfig.BUCKET_NAME_PREFIX + "unormal-list-objects";
         
         try {
             ossClient.createBucket(bucketName);
