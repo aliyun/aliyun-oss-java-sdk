@@ -2586,39 +2586,39 @@ public final class ResponseParsers {
     
     public static final class CreateVpcipResultResponseParser implements ResponseParser<Vpcip> {
     	
-    	@Override
-    	public Vpcip parse(ResponseMessage response) throws ResponseParseException {
-    		try {
-    			Vpcip result = parseGetCreateVpcipResult(response.getContent());
-    			result.setRequestId(response.getRequestId());
-    			return result;
-    		} finally {
-    			safeCloseResponse(response);
-    		}
-    	}
+        @Override
+        public Vpcip parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                Vpcip result = parseGetCreateVpcipResult(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+    	    } finally {
+    	        safeCloseResponse(response);
+    	    }
+        }
     	
     }
 	
     public static final class ListVpcipResultResponseParser implements ResponseParser<List<Vpcip>> {
-    	@Override
-    	public List<Vpcip> parse(ResponseMessage response) throws ResponseParseException {
-    		try {
-    			return parseListVpcipResult(response.getContent());
-    		} finally {
-    			safeCloseResponse(response);
-    		}
-    	}
+        @Override
+        public List<Vpcip> parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                return parseListVpcipResult(response.getContent());
+            } finally {
+    		    safeCloseResponse(response);
+            }
+        }
     }
     
     public static final class ListVpcPolicyResultResponseParser implements ResponseParser<List<VpcPolicy>> {
-    	@Override
-    	public List<VpcPolicy> parse(ResponseMessage response) throws ResponseParseException {
-    		try {
-    			return parseListVpcPolicyResult(response.getContent());
-    		} finally {
-    			safeCloseResponse(response);
-    		}
-    	}
+        @Override
+        public List<VpcPolicy> parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                return parseListVpcPolicyResult(response.getContent());
+            } finally {
+    		    safeCloseResponse(response);
+            }
+        }
     }
     
     /**
@@ -2626,29 +2626,29 @@ public final class ResponseParsers {
      */
     public static Vpcip parseGetCreateVpcipResult(InputStream responseBody) throws ResponseParseException {
     	
-    	try {
-    		Element root = getXmlRootElement(responseBody);
-    		Vpcip vpcip = new Vpcip();
+        try {
+            Element root = getXmlRootElement(responseBody);
+            Vpcip vpcip = new Vpcip();
     		
-    		if (root.getChild("Region") != null) {
-    			vpcip.setRegion(root.getChildText("Region"));
-    		}
-    		if (root.getChild("VpcId") != null) {
-    			vpcip.setVpcId(root.getChildText("VpcId"));
-    		}
-    		if (root.getChild("Vip") != null) {
-    			vpcip.setVip(root.getChildText("Vip"));
-    		}
-    		if (root.getChild("Label") != null) {
-    			vpcip.setLabel(root.getChildText("Label"));
-    		}
+            if (root.getChild("Region") != null) {
+                vpcip.setRegion(root.getChildText("Region"));
+            }
+            if (root.getChild("VpcId") != null) {
+                vpcip.setVpcId(root.getChildText("VpcId"));
+    	    }
+            if (root.getChild("Vip") != null) {
+                vpcip.setVip(root.getChildText("Vip"));
+    	    }
+            if (root.getChild("Label") != null) {
+                vpcip.setLabel(root.getChildText("Label"));
+    	    }
     		
-    		return vpcip;
-    	} catch (JDOMParseException e) {
-    		throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
-    	} catch (Exception e) {
-    		throw new ResponseParseException(e.getMessage(), e);
-    	}
+            return vpcip;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
     	
     }
 	
@@ -2658,27 +2658,27 @@ public final class ResponseParsers {
     @SuppressWarnings("unchecked")
     public static List<Vpcip> parseListVpcipResult(InputStream responseBody) throws ResponseParseException {
     	
-    	try {
-    		Element root = getXmlRootElement(responseBody);
+        try {
+            Element root = getXmlRootElement(responseBody);
     		
-    		List<Vpcip> vpcipList = new ArrayList<Vpcip>();
-    		List<Element> vpcips = root.getChildren("Vpcip");
+            List<Vpcip> vpcipList = new ArrayList<Vpcip>();
+            List<Element> vpcips = root.getChildren("Vpcip");
     		
-    		for (Element e : vpcips) {
-    			Vpcip vpcipInfo = new Vpcip();
-    			vpcipInfo.setRegion(e.getChildText("Region"));
-    			vpcipInfo.setVpcId(e.getChildText("VpcId"));
-    			vpcipInfo.setVip(e.getChildText("Vip"));
-    			vpcipInfo.setLabel(e.getChildText("Label"));
-    			vpcipList.add(vpcipInfo);
-    		}
+            for (Element e : vpcips) {
+                Vpcip vpcipInfo = new Vpcip();
+                vpcipInfo.setRegion(e.getChildText("Region"));
+                vpcipInfo.setVpcId(e.getChildText("VpcId"));
+                vpcipInfo.setVip(e.getChildText("Vip"));
+                vpcipInfo.setLabel(e.getChildText("Label"));
+                vpcipList.add(vpcipInfo);
+            }
     		
-    		return vpcipList;
-    	} catch (JDOMParseException e) {
-    		throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
-    	} catch (Exception e) {
-    		throw new ResponseParseException(e.getMessage(), e);
-    	}
+            return vpcipList;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
     	
     }
 	
@@ -2688,27 +2688,26 @@ public final class ResponseParsers {
     @SuppressWarnings("unchecked")
     public static List<VpcPolicy> parseListVpcPolicyResult(InputStream responseBody) throws ResponseParseException {
     	
-    	try {
-    		Element root = getXmlRootElement(responseBody);
-    		List<VpcPolicy> vpcipList = new ArrayList<VpcPolicy>();
-    		List<Element> vpcips = root.getChildren("Vpcip");
+        try {
+            Element root = getXmlRootElement(responseBody);
+            List<VpcPolicy> vpcipList = new ArrayList<VpcPolicy>();
+            List<Element> vpcips = root.getChildren("Vpcip");
     		
-    		for (Element e : vpcips) {
-    			VpcPolicy vpcipInfo = new VpcPolicy();
+            for (Element e : vpcips) {
+                VpcPolicy vpcipInfo = new VpcPolicy();
     			
-    			vpcipInfo.setRegion(e.getChildText("Region"));
-    			vpcipInfo.setVpcId(e.getChildText("VpcId"));
-    			vpcipInfo.setVip(e.getChildText("Vip"));
-    			vpcipList.add(vpcipInfo);
-    		}
+                vpcipInfo.setRegion(e.getChildText("Region"));
+                vpcipInfo.setVpcId(e.getChildText("VpcId"));
+                vpcipInfo.setVip(e.getChildText("Vip"));
+                vpcipList.add(vpcipInfo);
+            }
     		
-    		return vpcipList;
-    	} catch (JDOMParseException e) {
-    		throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
-    	} catch (Exception e) {
-    		throw new ResponseParseException(e.getMessage(), e);
-    	}
+            return vpcipList;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
     	
     }	
-    
 }

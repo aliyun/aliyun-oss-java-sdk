@@ -936,102 +936,102 @@ public final class RequestMarshallers {
     public static final class CreateVpcipRequestMarshaller implements RequestMarshaller<CreateVpcipRequest> {
     	
     	@Override
-    	public FixedLengthInputStream marshall(CreateVpcipRequest request) {
-    		StringBuffer xmlBody = new StringBuffer();
+        public FixedLengthInputStream marshall(CreateVpcipRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
     		
-    		if (request.getRegion() != null || request.getVSwitchId() != null) {
-    			xmlBody.append("<CreateVpcip>");
-    			if (request.getRegion() != null) {
-    				xmlBody.append("<Region>" + request.getRegion() + "</Region>");
-    			}
-    			if (request.getVSwitchId() != null) {
-    				xmlBody.append("<VSwitchId>" + request.getVSwitchId() + "</VSwitchId>");
-    			}
-    			if(request.getLabal() != null){
-    				xmlBody.append("<Label>" + request.getLabal() + "</Label>");
-    			}
-    			xmlBody.append("</CreateVpcip>");
-    		}
+            if (request.getRegion() != null || request.getVSwitchId() != null) {
+                xmlBody.append("<CreateVpcip>");
+                if (request.getRegion() != null) {
+                    xmlBody.append("<Region>" + request.getRegion() + "</Region>");
+                }
+                if (request.getVSwitchId() != null) {
+                    xmlBody.append("<VSwitchId>" + request.getVSwitchId() + "</VSwitchId>");
+                }
+                if(request.getLabal() != null){
+                    xmlBody.append("<Label>" + request.getLabal() + "</Label>");
+                }
+                xmlBody.append("</CreateVpcip>");
+            }
     		
-    		return stringMarshaller.marshall(xmlBody.toString());
-    	}
+            return stringMarshaller.marshall(xmlBody.toString());
+        }
     	
     }
     
     public static final class DeleteVpcipRequestMarshaller implements RequestMarshaller<DeleteVpcipRequest> {
     	
-    	@Override
-    	public FixedLengthInputStream marshall(DeleteVpcipRequest deleteVpcipRequest) {
-    		StringBuffer xmlBody = new StringBuffer();
-    		VpcPolicy request = deleteVpcipRequest.getVpcPolicy();
+        @Override
+        public FixedLengthInputStream marshall(DeleteVpcipRequest deleteVpcipRequest) {
+            StringBuffer xmlBody = new StringBuffer();
+            VpcPolicy request = deleteVpcipRequest.getVpcPolicy();
     		
-    		if (request.getRegion() != null || request.getVpcId() != null || request.getVip() != null) {
-    			xmlBody.append("<DeleteVpcip>");
-    			if (request.getRegion() != null) {
-    				xmlBody.append("<Region>" + request.getRegion() + "</Region>");
-    			}
-    			if (request.getVpcId() != null) {
-    				xmlBody.append("<VpcId>" + request.getVpcId() + "</VpcId>");
-    			}
-    			if (request.getVip() != null) {
-    				xmlBody.append("<Vip>" + request.getVip() + "</Vip>");
-    			}
-    			xmlBody.append("</DeleteVpcip>");
-    		}
+            if (request.getRegion() != null || request.getVpcId() != null || request.getVip() != null) {
+                xmlBody.append("<DeleteVpcip>");
+                if (request.getRegion() != null) {
+                    xmlBody.append("<Region>" + request.getRegion() + "</Region>");
+                }
+                if (request.getVpcId() != null) {
+                    xmlBody.append("<VpcId>" + request.getVpcId() + "</VpcId>");
+    	        }
+                if (request.getVip() != null) {
+                    xmlBody.append("<Vip>" + request.getVip() + "</Vip>");
+    	        }
+                xmlBody.append("</DeleteVpcip>");
+            }
     		
-    		return stringMarshaller.marshall(xmlBody.toString());
-    	}
+            return stringMarshaller.marshall(xmlBody.toString());
+        }
     	
     }
     
     public static final class DeleteBucketVpcipRequestMarshaller implements RequestMarshaller<VpcPolicy> {
     	
-    	@Override
-    	public FixedLengthInputStream marshall(VpcPolicy request) {
-    		StringBuffer xmlBody = new StringBuffer();
+        @Override
+        public FixedLengthInputStream marshall(VpcPolicy request) {
+            StringBuffer xmlBody = new StringBuffer();
     		
-    		if (request.getRegion() != null || request.getVpcId() != null || request.getVip() != null) {
-    			xmlBody.append("<DeleteBucketVpcPolicy>");
-    			if (request.getRegion() != null) {
-    				xmlBody.append("<Region>" + request.getRegion() + "</Region>");
-    			}
-    			if (request.getVpcId() != null) {
-    				xmlBody.append("<VpcId>" + request.getVpcId() + "</VpcId>");
-    			}
-    			if (request.getVip() != null) {
-    				xmlBody.append("<Vip>" + request.getVip() + "</Vip>");
-    			}
-    			xmlBody.append("</DeleteBucketVpcPolicy>");
-    		}
+            if (request.getRegion() != null || request.getVpcId() != null || request.getVip() != null) {
+                xmlBody.append("<DeleteBucketVpcPolicy>");
+                if (request.getRegion() != null) {
+                    xmlBody.append("<Region>" + request.getRegion() + "</Region>");
+    	        }
+                if (request.getVpcId() != null) {
+                    xmlBody.append("<VpcId>" + request.getVpcId() + "</VpcId>");
+    	        }
+                if (request.getVip() != null) {
+                    xmlBody.append("<Vip>" + request.getVip() + "</Vip>");
+    	        }
+                xmlBody.append("</DeleteBucketVpcPolicy>");
+            }
     		
-    		return stringMarshaller.marshall(xmlBody.toString());
-    	}
+            return stringMarshaller.marshall(xmlBody.toString());
+        }
     	
     }
     
     public static final class CreateBucketVpcipRequestMarshaller implements RequestMarshaller<CreateBucketVpcipRequest> {
     	
-    	@Override
-    	public FixedLengthInputStream marshall(CreateBucketVpcipRequest bucketVpcPolicyRequest) {
-    		StringBuffer xmlBody = new StringBuffer();
-    		VpcPolicy request = bucketVpcPolicyRequest.getVpcPolicy();
+        @Override
+        public FixedLengthInputStream marshall(CreateBucketVpcipRequest bucketVpcPolicyRequest) {
+            StringBuffer xmlBody = new StringBuffer();
+            VpcPolicy request = bucketVpcPolicyRequest.getVpcPolicy();
     		
-    		if (request.getRegion() != null || request.getVpcId() != null || request.getVip() != null) {
-    			xmlBody.append("<CreateBucketVpcPolicy>");
-    			if (request.getRegion() != null) {
-    				xmlBody.append("<Region>" + request.getRegion() + "</Region>");
-    			}
-    			if (request.getVpcId() != null) {
-    				xmlBody.append("<VpcId>" + request.getVpcId() + "</VpcId>");
-    			}
-    			if (request.getVip() != null) {
-    				xmlBody.append("<Vip>" + request.getVip() + "</Vip>");
-    			}
-    			xmlBody.append("</CreateBucketVpcPolicy>");
-    		}
+            if (request.getRegion() != null || request.getVpcId() != null || request.getVip() != null) {
+                xmlBody.append("<CreateBucketVpcPolicy>");
+                if (request.getRegion() != null) {
+                    xmlBody.append("<Region>" + request.getRegion() + "</Region>");
+    	        }
+                if (request.getVpcId() != null) {
+                    xmlBody.append("<VpcId>" + request.getVpcId() + "</VpcId>");
+    	        }
+                if (request.getVip() != null) {
+                    xmlBody.append("<Vip>" + request.getVip() + "</Vip>");
+    	        }
+                xmlBody.append("</CreateBucketVpcPolicy>");
+            }
     		
-    		return stringMarshaller.marshall(xmlBody.toString());
-    	}
+            return stringMarshaller.marshall(xmlBody.toString());
+        }
     	
     }
 

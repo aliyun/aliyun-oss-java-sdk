@@ -19,21 +19,20 @@
 
 package com.aliyun.oss.model;
 
-public class DeleteBucketVpcipRequest extends GenericRequest{
+public class DeleteBucketVpcipRequest extends GenericRequest {
 
-	public VpcPolicy getVpcPolicy() {
-		return vpcPolicy;
-	}
+    public VpcPolicy getVpcPolicy() {
+        return vpcPolicy;
+    }
 
-	public void setVpcPolicy(VpcPolicy vpcPolicy) {
-		this.vpcPolicy = vpcPolicy;
-	}
-	
-	@Override
-	public String toString() {
-		return "DeleteBucketVpcipRequest [vpcPolicy=" + vpcPolicy + "]";
-	}
+    public void setVpcPolicy(VpcPolicy vpcPolicy) {
+        this.vpcPolicy = vpcPolicy;
+    }
 
-	private VpcPolicy vpcPolicy;
-	
+    @Override
+    public String toString() {
+        return "DeleteBucketVpcipRequest [vpcPolicy=" + vpcPolicy + "]";
+    }
+
+    private VpcPolicy vpcPolicy;
 }

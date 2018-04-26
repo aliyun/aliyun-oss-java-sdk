@@ -21,18 +21,18 @@ package com.aliyun.oss.model;
 
 public class CreateVpcipResult extends GenericResult {
 
-	public Vpcip getVpcip() {
-		return vpcip;
-	}
+    public Vpcip getVpcip() {
+        return vpcip;
+    }
 
-	public void setVpcip(Vpcip vpcip) {
-		this.vpcip = vpcip;
-	}
+    public void setVpcip(Vpcip vpcip) {
+        this.vpcip = vpcip;
+    }
 
-	@Override
-	public String toString() {
-		return "CreateVpcipResult [vpcip=" + vpcip + "]";
-	}
+    @Override
+    public String toString() {
+        return "CreateVpcipResult [vpcip=" + vpcip + "]";
+    }
 
-	private Vpcip vpcip;
+    private Vpcip vpcip;
 }

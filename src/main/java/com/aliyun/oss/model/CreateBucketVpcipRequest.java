@@ -18,21 +18,20 @@
  */
 package com.aliyun.oss.model;
 
-public class CreateBucketVpcipRequest extends GenericRequest{
+public class CreateBucketVpcipRequest extends GenericRequest {
 
-	public VpcPolicy getVpcPolicy() {
-		return vpcPolicy;
-	}
+    public VpcPolicy getVpcPolicy() {
+        return vpcPolicy;
+    }
 
-	public void setVpcPolicy(VpcPolicy vpcPolicy) {
-		this.vpcPolicy = vpcPolicy;
-	}
+    public void setVpcPolicy(VpcPolicy vpcPolicy) {
+        this.vpcPolicy = vpcPolicy;
+    }
 
-	@Override
-	public String toString() {
-		return "CreateBucketVpcipRequest [vpcPolicy=" + vpcPolicy + "]";
-	}
-	
-	private VpcPolicy vpcPolicy;
-	
+    @Override
+    public String toString() {
+        return "CreateBucketVpcipRequest [vpcPolicy=" + vpcPolicy + "]";
+    }
+
+    private VpcPolicy vpcPolicy;
 }

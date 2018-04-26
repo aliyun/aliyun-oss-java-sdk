@@ -1176,11 +1176,11 @@ public class OSSBucketOperation extends OSSOperation {
      * @throws OSSException
      * @throws ClientException
      */
-	public CreateVpcipResult createVpcip(CreateVpcipRequest createVpcipRequest) throws OSSException, ClientException{
+    public CreateVpcipResult createVpcip(CreateVpcipRequest createVpcipRequest) throws OSSException, ClientException{
 		
-		assertParameterNotNull(createVpcipRequest, "createVpcipRequest");
-		String region = createVpcipRequest.getRegion();
-		String vSwitchId = createVpcipRequest.getVSwitchId();
+        assertParameterNotNull(createVpcipRequest, "createVpcipRequest");
+        String region = createVpcipRequest.getRegion();
+        String vSwitchId = createVpcipRequest.getVSwitchId();
 		
         assertParameterNotNull(region, "region");
         assertParameterNotNull(vSwitchId, "vSwitchId");
@@ -1189,35 +1189,35 @@ public class OSSBucketOperation extends OSSOperation {
         params.put(RequestParameters.VPCIP, null);
         
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint()).setParameters(params)
-                .setMethod(HttpMethod.POST).setInputStreamWithLength(createVpcipRequestMarshaller.marshall(createVpcipRequest))
-                .setOriginalRequest(createVpcipRequest).build();
+        	    .setMethod(HttpMethod.POST).setInputStreamWithLength(createVpcipRequestMarshaller.marshall(createVpcipRequest))
+        	    .setOriginalRequest(createVpcipRequest).build();
         
         CreateVpcipResult createVpcipResult = new CreateVpcipResult();
         Vpcip vpcip = doOperation(request, createVpcipResultResponseParser, null, null, true);
         createVpcipResult.setVpcip(vpcip);
-		return createVpcipResult;
-	}
+        return createVpcipResult;
+    }
 	
 	/**
 	 * List all  Vpcips.
 	 * @return List<Vpcip>
 	 */
-	public List<Vpcip> listVpcip() {
+    public List<Vpcip> listVpcip() {
 		
-		Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<String, String>();
         params.put(RequestParameters.VPCIP, null);
 		
-		RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.GET).setParameters(params).build();
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        	    .setMethod(HttpMethod.GET).setParameters(params).build();
 		
-		return doOperation(request, listVpcipResultResponseParser, null, null,true);
-	}
+        return doOperation(request, listVpcipResultResponseParser, null, null,true);
+    }
 
 	/**
 	 * Delete a Vpcip.
 	 * @param deleteVpcipRequest
 	 */
-	public void deleteVpcip(DeleteVpcipRequest deleteVpcipRequest) {
+    public void deleteVpcip(DeleteVpcipRequest deleteVpcipRequest) {
 		
         assertParameterNotNull(deleteVpcipRequest, "deleteVpcipRequest");
         VpcPolicy vpcPolicy = deleteVpcipRequest.getVpcPolicy();
@@ -1229,27 +1229,27 @@ public class OSSBucketOperation extends OSSOperation {
         assertParameterNotNull(vpcId, "vpcId");
         assertParameterNotNull(vip, "vip");
         
-		Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<String, String>();
         params.put(RequestParameters.VPCIP, null);
         
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-        		.setParameters(params).setMethod(HttpMethod.DELETE)
-                .setInputStreamWithLength(deleteVpcipRequestMarshaller.marshall(deleteVpcipRequest))
-                .setOriginalRequest(deleteVpcipRequest).build();
+        	    .setParameters(params).setMethod(HttpMethod.DELETE)
+        	    .setInputStreamWithLength(deleteVpcipRequestMarshaller.marshall(deleteVpcipRequest))
+        	    .setOriginalRequest(deleteVpcipRequest).build();
 
         doOperation(request, emptyResponseParser, null, null);
-	}
+    }
 	
 	/**
 	 * Create BucketVpcip replication.
 	 * @param createBucketVpcipRequest
 	 */
-	public void createBucketVpcip(CreateBucketVpcipRequest createBucketVpcipRequest) {
+    public void createBucketVpcip(CreateBucketVpcipRequest createBucketVpcipRequest) {
 		
-		String bucketName = createBucketVpcipRequest.getBucketName();
-		assertParameterNotNull(bucketName, "bucketName");
-		assertParameterNotNull(createBucketVpcipRequest, "createBucketVpcipRequest");
-		VpcPolicy vpcPolicy = createBucketVpcipRequest.getVpcPolicy();
+        String bucketName = createBucketVpcipRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        assertParameterNotNull(createBucketVpcipRequest, "createBucketVpcipRequest");
+        VpcPolicy vpcPolicy = createBucketVpcipRequest.getVpcPolicy();
         String region = vpcPolicy.getRegion();
         String vpcId = vpcPolicy.getVpcId();
         String vip = vpcPolicy.getVip();
@@ -1264,21 +1264,21 @@ public class OSSBucketOperation extends OSSOperation {
         
         
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.POST).setParameters(params).setBucket(bucketName)
-                .setInputStreamWithLength(createBucketVpcipRequestMarshaller.marshall(createBucketVpcipRequest))
-                .setOriginalRequest(createBucketVpcipRequest).build();
+        	    .setMethod(HttpMethod.POST).setParameters(params).setBucket(bucketName)
+        	    .setInputStreamWithLength(createBucketVpcipRequestMarshaller.marshall(createBucketVpcipRequest))
+        	    .setOriginalRequest(createBucketVpcipRequest).build();
         
         doOperation(request, emptyResponseParser, bucketName, null);
-	}
+    }
 	
 	/**
 	 * Delete a BucketVpcip.
 	 * @param deleteBucketVpcipRequest
 	 */
-	public void deleteBucketVpcip(DeleteBucketVpcipRequest deleteBucketVpcipRequest) {
+    public void deleteBucketVpcip(DeleteBucketVpcipRequest deleteBucketVpcipRequest) {
 		
-		String bucketName = deleteBucketVpcipRequest.getBucketName();
-		assertParameterNotNull(bucketName, "bucketName");
+        String bucketName = deleteBucketVpcipRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
         assertParameterNotNull(deleteBucketVpcipRequest, "deleteBucketVpcipRequest");
         VpcPolicy vpcPolicy = deleteBucketVpcipRequest.getVpcPolicy();
         String region = vpcPolicy.getRegion();
@@ -1299,24 +1299,23 @@ public class OSSBucketOperation extends OSSOperation {
                 .setOriginalRequest(vpcPolicy).build();
 
         doOperation(request, emptyResponseParser, bucketName, null);
-	}
+    }
 	
 	/**
 	 * List all  BucketVpcips.
 	 * @return List<VpcPolicy>
 	 */
-	public List<VpcPolicy> getBucketVpcip(GenericRequest genericRequest) {
+    public List<VpcPolicy> getBucketVpcip(GenericRequest genericRequest) {
 		
-		String bucketName = genericRequest.getBucketName();
-		assertParameterNotNull(bucketName, "bucketName");
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
 		
         Map<String, String> params = new HashMap<String, String>();
         params.put(RequestParameters.VIP, null);
         
-		RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params).build();
 		
-		return doOperation(request, listVpcPolicyResultResponseParser, bucketName, null,true);
-	}
-	
+        return doOperation(request, listVpcPolicyResultResponseParser, bucketName, null,true);
+    }
 }

@@ -98,5 +98,4 @@ public final class RequestParameters {
     
     public static final String VPCIP = "vpcip";
     public static final String VIP = "vip";
-
 }

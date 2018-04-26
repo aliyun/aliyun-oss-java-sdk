@@ -2326,5 +2326,4 @@ public interface OSS {
      * @throws ClientException
      */
     public void deleteBucketVpcip(DeleteBucketVpcipRequest deleteBucketVpcipRequest) throws OSSException, ClientException;
-
 }

@@ -21,37 +21,36 @@ package com.aliyun.oss.model;
 
 public class CreateVpcipRequest extends GenericRequest {
 
-	public String getRegion() {
-		return region;
-	}
+    public String getRegion() {
+        return region;
+    }
 
-	public void setRegion(String region) {
-		this.region = region;
-	}
+    public void setRegion(String region) {
+        this.region = region;
+    }
 
-	public String getLabal() {
-		return labal;
-	}
+    public String getLabal() {
+        return labal;
+    }
 
-	public void setLabal(String labal) {
-		this.labal = labal;
-	}
+    public void setLabal(String labal) {
+        this.labal = labal;
+    }
 
-	public String getVSwitchId() {
-		return vSwitchId;
-	}
+    public String getVSwitchId() {
+        return vSwitchId;
+    }
 
-	public void setVSwitchId(String vSwitchId) {
-		this.vSwitchId = vSwitchId;
-	}
+    public void setVSwitchId(String vSwitchId) {
+        this.vSwitchId = vSwitchId;
+    }
 
 	@Override
-	public String toString() {
-		return "CreateVpcipRequest [region=" + region + ", vSwitchId=" + vSwitchId + ", labal=" + labal + "]";
-	}
+    public String toString() {
+	    return "CreateVpcipRequest [region=" + region + ", vSwitchId=" + vSwitchId + ", labal=" + labal + "]";
+    }
 	
-	private String region;
-	private String vSwitchId;
-	private String labal;
-
+    private String region;
+    private String vSwitchId;
+    private String labal;
 }

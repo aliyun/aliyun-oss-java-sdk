@@ -21,37 +21,36 @@ package com.aliyun.oss.model;
 
 public class VpcPolicy extends GenericRequest {
 
-	public String getRegion() {
-		return region;
-	}
+    public String getRegion() {
+        return region;
+    }
 
-	public void setRegion(String region) {
-		this.region = region;
-	}
+    public void setRegion(String region) {
+        this.region = region;
+    }
 
-	public String getVpcId() {
-		return vpcId;
-	}
+    public String getVpcId() {
+        return vpcId;
+    }
 
-	public void setVpcId(String vpcId) {
-		this.vpcId = vpcId;
-	}
+    public void setVpcId(String vpcId) {
+        this.vpcId = vpcId;
+    }
 
-	public String getVip() {
-		return vip;
-	}
+    public String getVip() {
+        return vip;
+    }
 
-	public void setVip(String vip) {
-		this.vip = vip;
-	}
+    public void setVip(String vip) {
+        this.vip = vip;
+    }
 
-	@Override
-	public String toString() {
-		return "VpcPolicy [region=" + region + ", vpcId=" + vpcId + ", vip=" + vip + "]";
-	}
-	
-	private String region;
-	private String vpcId;
-	private String vip;
+    @Override
+    public String toString() {
+        return "VpcPolicy [region=" + region + ", vpcId=" + vpcId + ", vip=" + vip + "]";
+    }
 
+    private String region;
+    private String vpcId;
+    private String vip;
 }
