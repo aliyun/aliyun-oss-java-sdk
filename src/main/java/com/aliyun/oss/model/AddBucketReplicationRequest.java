@@ -102,6 +102,26 @@ public class AddBucketReplicationRequest extends GenericRequest {
         this.targetBucketLocation = targetBucketLocation;
     }
 
+    public String getTargetCloud()
+    {
+        return this.targetCloud;
+    }
+
+    public void setTargetCloud(String targetCloud)
+    {
+        this.targetCloud = targetCloud;
+    }
+
+    public String getTargetCloudLocation()
+    {
+        return this.targetCloudLocation;
+    }
+
+    public void setTargetCloudLocation( String targetCloudLocation)
+    {
+        this.targetCloudLocation = targetCloudLocation;
+    }
+
     public boolean isEnableHistoricalObjectReplication() {
         return enableHistoricalObjectReplication;
     }
@@ -135,6 +155,8 @@ public class AddBucketReplicationRequest extends GenericRequest {
     private String replicationRuleID = "";
     private String targetBucketName;
     private String targetBucketLocation;
+    private String targetCloud;
+    private String targetCloudLocation;
     private boolean enableHistoricalObjectReplication = true;
     private List<String> objectPrefixList = new ArrayList<String>();
     private List<ReplicationAction> replicationActionList = new ArrayList<ReplicationAction>();
