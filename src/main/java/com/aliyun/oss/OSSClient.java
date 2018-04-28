@@ -712,7 +712,7 @@ public class OSSClient implements OSS {
         if (request.getContentType() != null && !request.getContentType().trim().equals("")) {
             requestMessage.addHeader(HttpHeaders.CONTENT_TYPE, request.getContentType());
         }
-        if (request.getContentMD5() != null && request.getContentMD5().trim().equals("")) {
+        if (request.getContentMD5() != null && !request.getContentMD5().trim().equals("")) {
             requestMessage.addHeader(HttpHeaders.CONTENT_MD5, request.getContentMD5());
         }
         for (Map.Entry<String, String> h : request.getUserMetadata().entrySet()) {
