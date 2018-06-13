@@ -62,6 +62,8 @@ import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_UDF_LOG;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_RESTORE;
 import static com.aliyun.oss.internal.RequestParameters.UPLOAD_ID;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_QOS;
+import static com.aliyun.oss.internal.RequestParameters.VPCIP;
+import static com.aliyun.oss.internal.RequestParameters.VIP;
 import static com.aliyun.oss.model.ResponseHeaderOverrides.RESPONSE_HEADER_CACHE_CONTROL;
 import static com.aliyun.oss.model.ResponseHeaderOverrides.RESPONSE_HEADER_CONTENT_DISPOSITION;
 import static com.aliyun.oss.model.ResponseHeaderOverrides.RESPONSE_HEADER_CONTENT_ENCODING;
@@ -93,7 +95,7 @@ public class SignUtils {
             SUBRESOURCE_STATUS, SUBRESOURCE_VOD, SUBRESOURCE_START_TIME, SUBRESOURCE_END_TIME, SUBRESOURCE_PROCESS,
             SUBRESOURCE_PROCESS_CONF, SUBRESOURCE_SYMLINK, SUBRESOURCE_STAT, SUBRESOURCE_UDF, SUBRESOURCE_UDF_NAME,
             SUBRESOURCE_UDF_IMAGE, SUBRESOURCE_UDF_IMAGE_DESC, SUBRESOURCE_UDF_APPLICATION, SUBRESOURCE_UDF_LOG,
-            SUBRESOURCE_RESTORE, });
+            SUBRESOURCE_RESTORE, VPCIP, VIP});
 
     public static String buildCanonicalString(String method, String resourcePath, RequestMessage request,
             String expires) {
