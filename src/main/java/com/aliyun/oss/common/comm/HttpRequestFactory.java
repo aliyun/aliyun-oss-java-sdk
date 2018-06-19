@@ -66,7 +66,11 @@ class HttpRequestFactory {
         } else if (method == HttpMethod.GET) {
             httpRequest = new HttpGet(uri);
         } else if (method == HttpMethod.DELETE) {
-            httpRequest = new HttpDelete(uri);
+            HttpDeleteWithBody deleteMethod = new HttpDeleteWithBody(uri);
+            if (request.getContent() != null) {
+                deleteMethod.setEntity(new RepeatableInputStreamEntity(request));
+            }
+            httpRequest = deleteMethod;
         } else if (method == HttpMethod.HEAD) {
             httpRequest = new HttpHead(uri);
         } else if (method == HttpMethod.OPTIONS) {
