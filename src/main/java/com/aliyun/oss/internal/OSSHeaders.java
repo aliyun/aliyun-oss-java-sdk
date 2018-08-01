@@ -80,4 +80,10 @@ public interface OSSHeaders extends HttpHeaders {
     static final String OSS_ONGOING_RESTORE = "ongoing-request=\"true\"";
 
     static final String OSS_BUCKET_REGION = "x-oss-bucket-region";
+
+    static final String OSS_SELECT_PREFIX = "x-oss-select";
+    static final String OSS_SELECT_CSV_ROWS = OSS_SELECT_PREFIX + "-csv-rows";
+    static final String OSS_SELECT_CSV_SPLITS = OSS_SELECT_PREFIX + "-csv-splits";
+    static final String OSS_SELECT_INPUT_LINE_RANGE = OSS_SELECT_PREFIX + "-line-range";
+    static final String OSS_SELECT_INPUT_SPLIT_RANGE = OSS_SELECT_PREFIX + "-split-range";
 }

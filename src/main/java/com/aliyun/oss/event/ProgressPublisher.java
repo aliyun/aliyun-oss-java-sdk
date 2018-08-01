@@ -33,6 +33,15 @@ public class ProgressPublisher {
         listener.progressChanged(new ProgressEvent(eventType));
     }
 
+
+    public static void publishSelectProgress(final ProgressListener listener, final ProgressEventType eventType,
+                                             final long scannedBytes) {
+        if (listener == ProgressListener.NOOP || listener == null || eventType == null) {
+            return;
+        }
+        listener.progressChanged(new ProgressEvent(eventType, scannedBytes));
+    }
+
     public static void publishRequestContentLength(final ProgressListener listener, final long bytes) {
         publishByteCountEvent(listener, REQUEST_CONTENT_LENGTH_EVENT, bytes);
     }
