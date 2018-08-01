@@ -72,6 +72,8 @@ public final class RequestMarshallers {
     public static final UpgradeUdfApplicationRequestMarshaller upgradeUdfApplicationRequestMarshaller = new UpgradeUdfApplicationRequestMarshaller();
     public static final ResizeUdfApplicationRequestMarshaller resizeUdfApplicationRequestMarshaller = new ResizeUdfApplicationRequestMarshaller();
     public static final ProcessObjectRequestMarshaller processObjectRequestMarshaller = new ProcessObjectRequestMarshaller();
+    public static final PutBucketRequestPaymentMarshaller putBucketRequestPaymentMarshaller = new PutBucketRequestPaymentMarshaller();
+
 
     public static final CreateSelectObjectMetadataRequestMarshaller createSelectObjectMetadataRequestMarshaller = new CreateSelectObjectMetadataRequestMarshaller();
     public static final SelectObjectRequestMarshaller selectObjectRequestMarshaller = new SelectObjectRequestMarshaller();
@@ -946,6 +948,28 @@ public final class RequestMarshallers {
             byte[] rawData = null;
             try {
                 rawData = processBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+
+    }
+
+
+    public static final class PutBucketRequestPaymentMarshaller
+        implements RequestMarshaller2<PutBucketRequestPaymentRequest> {
+
+        @Override
+        public byte[] marshall(PutBucketRequestPaymentRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<RequestPaymentConfiguration>");
+            xmlBody.append("<Payer>" + request.getPayer().toString() + "</Payer>");
+            xmlBody.append("</RequestPaymentConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
             } catch (UnsupportedEncodingException e) {
                 throw new ClientException("Unsupported encoding " + e.getMessage(), e);
             }
