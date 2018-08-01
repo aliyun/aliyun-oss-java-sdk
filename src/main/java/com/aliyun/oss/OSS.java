@@ -577,6 +577,23 @@ public interface OSS {
     public CopyObjectResult copyObject(CopyObjectRequest copyObjectRequest) throws OSSException, ClientException;
 
     /**
+     * Select the {@link OSSObject} from the bucket specified in
+     * {@link SelectObjectRequest} parameter
+     * @param selectObjectRequest
+     *          A {@link SelectObjectRequest} instance which specifies the
+     *              bucket name
+     *              object key
+     *              filter expression
+     *              input serialization
+     *              output serialization
+     * @return A {@link OSSObject} instance will be returned. The caller is
+     *          responsible to close the connection after usage.
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public OSSObject selectObject(SelectObjectRequest selectObjectRequest) throws OSSException, ClientException;
+
+    /**
      * Gets a {@link OSSObject} from {@link Bucket}.
      * 
      * @param bucketName
@@ -678,6 +695,16 @@ public interface OSS {
      *
      */
     public ObjectMetadata getObjectMetadata(GenericRequest genericRequest) throws OSSException, ClientException;
+
+    /**
+     * Create select object metadata(create metadata if not exists or overwrite flag set in {@link CreateSelectObjectMetadataRequest})
+     *
+     * @param createSelectObjectMetadataRequest
+     *            {@link CreateSelectObjectMetadataRequest} create select object metadata request.
+     *
+     * @return The {@link SelectObjectMetadata} instance.
+     */
+    public SelectObjectMetadata createSelectObjectMetadata(CreateSelectObjectMetadataRequest createSelectObjectMetadataRequest) throws OSSException, ClientException;
 
     /**
      * Append the data to the appendable object specified in

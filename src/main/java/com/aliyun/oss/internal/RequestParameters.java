@@ -49,6 +49,8 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_END_TIME = "endTime";
     public static final String SUBRESOURCE_PROCESS_CONF = "processConfiguration";
     public static final String SUBRESOURCE_PROCESS = "x-oss-process";
+    public static final String SUBRESOURCE_CSV_SELECT = "csv/select";
+    public static final String SUBRESOURCE_CSV_META = "csv/meta";
     public static final String SUBRESOURCE_SYMLINK = "symlink";
     public static final String SUBRESOURCE_STAT = "stat";
     public static final String SUBRESOURCE_RESTORE = "restore";
