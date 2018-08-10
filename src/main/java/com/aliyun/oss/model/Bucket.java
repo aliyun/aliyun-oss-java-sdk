@@ -63,6 +63,9 @@ public class Bucket extends GenericResult {
     // location.
     private String intranetEndpoint;
 
+    // The type of availabilityZone. 0 means normal cluster, 1 means 2AZ cluster, 2 means 3AZ cluster.
+    private AvailabilityZoneType availabilityZoneType;
+
     /**
      * Default constructor.
      */
@@ -95,7 +98,7 @@ public class Bucket extends GenericResult {
                     + ", location=" + getLocation() + "]";
         } else {
             return "OSSBucket [name=" + getName() + ", creationDate=" + getCreationDate() + ", owner=" + getOwner()
-                    + ", location=" + getLocation() + ", storageClass=" + getStorageClass() + "]";
+                    + ", location=" + getLocation() + ", storageClass=" + getStorageClass() + ", availabilityZoneType=" + getAvailabilityZoneType() + "]";
         }
     }
 
@@ -228,5 +231,22 @@ public class Bucket extends GenericResult {
      */
     public void setIntranetEndpoint(String endpoint) {
         this.intranetEndpoint = endpoint;
+    }
+
+    /**
+     * Gets the availabilityZoneType
+     * @return Bucket availabilityZoneType
+     */
+    public AvailabilityZoneType getAvailabilityZoneType() {
+        return availabilityZoneType;
+    }
+
+    /**
+     * Sets the availabilityZoneType
+     * @param availabilityZoneType
+     *            Bucket availabilityZoneType
+     */
+    public void setAvailabilityZoneType(AvailabilityZoneType availabilityZoneType) {
+        this.availabilityZoneType = availabilityZoneType;
     }
 }

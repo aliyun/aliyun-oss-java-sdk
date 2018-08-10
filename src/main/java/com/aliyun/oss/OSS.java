@@ -2281,6 +2281,17 @@ public interface OSS {
      */
     public GenericResult processObject(ProcessObjectRequest processObjectRequest) throws OSSException, ClientException;
 
+
+  /**
+   * get the availabilityZoneType list for region
+   * @param region
+   * @param type
+   * @return
+   * @throws OSSException
+   * @throws ClientException
+   */
+    public List<AvailabilityZoneType> getAvailabilityZoneType(String region) throws OSSException, ClientException;
+
     /**
      * Creates UDF
      * 

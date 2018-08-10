@@ -44,7 +44,6 @@ import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.comm.ResponseHandler;
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.comm.ServiceClient;
-import com.aliyun.oss.common.parser.RequestMarshallers;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.ExceptionFactory;
 import com.aliyun.oss.common.utils.HttpHeaders;
@@ -1107,5 +1106,20 @@ public class OSSBucketOperation extends OSSOperation {
             .setOriginalRequest(genericRequest).build();
 
         return doOperation(request, getBucketRequestPaymentResponseParser, bucketName, null, true);
+    }
+
+
+    public List<AvailabilityZoneType> getAvailabilityZoneType(GetAvailabilityZoneTypeRequest getAvailabilityZoneTypeRequest) throws ClientException {
+        assertParameterNotNull(getAvailabilityZoneTypeRequest, "getAvailabilityZoneTypeRequest");
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_AVAILABILITY_ZONE, null);
+        params.put(RequestParameters.LOCATION, getAvailabilityZoneTypeRequest.getLocation());
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.GET).setParameters(params)
+            .setOriginalRequest(getAvailabilityZoneTypeRequest).build();
+        List<AvailabilityZoneType> list = doOperation(request, getAvailabilityResponseParser, null, null, true);
+
+        return list;
     }
 }
