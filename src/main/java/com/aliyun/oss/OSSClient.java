@@ -1329,6 +1329,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public List<AvailabilityZoneType> getAvailabilityZoneType(String region) throws ClientException {
+        return this.bucketOperation.getAvailabilityZoneType(new GetAvailabilityZoneTypeRequest(region));
+    }
+
+    @Override
     public void createUdf(CreateUdfRequest createUdfRequest) throws OSSException, ClientException {
         this.udfOperation.createUdf(createUdfRequest);
     }
