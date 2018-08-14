@@ -1108,4 +1108,114 @@ public class OSSBucketOperation extends OSSOperation {
 
         return doOperation(request, getBucketRequestPaymentResponseParser, bucketName, null, true);
     }
+
+
+    public String initiateWormConfiguration(InitiateWormConfigurationRequest initiateWormConfigurationRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(initiateWormConfigurationRequest, "initiateWormConfigurationRequest");
+
+        String bucketName = initiateWormConfigurationRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_WORM, null);
+
+        byte[] rawContent = initiateWormConfigurationRequestMarshaller.marshall(initiateWormConfigurationRequest);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        addRequestRequiredHeaders(headers, rawContent);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.POST).setBucket(bucketName).setParameters(params).setHeaders(headers)
+            .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+            .setOriginalRequest(initiateWormConfigurationRequest).build();
+
+        return doOperation(request, initiateWormConfigurationResponseParser, bucketName, null, true);
+    }
+
+    public void abortBucketWorm(CommonWormConfigurationRequest commonWormConfigurationRequest) throws OSSException, ClientException {
+        assertParameterNotNull(commonWormConfigurationRequest, "commonWormConfigurationRequest");
+
+        String bucketName = commonWormConfigurationRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        String wormId = commonWormConfigurationRequest.getWormId();
+        assertParameterNotNull(wormId, "wormId");
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_WORM_ID, wormId);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
+            .setOriginalRequest(commonWormConfigurationRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, null, true);
+    }
+
+    public void completeBucketWorm(CommonWormConfigurationRequest commonWormConfigurationRequest) throws OSSException, ClientException {
+        assertParameterNotNull(commonWormConfigurationRequest, "commonWormConfigurationRequest");
+
+        String bucketName = commonWormConfigurationRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        String wormId = commonWormConfigurationRequest.getWormId();
+        assertParameterNotNull(wormId, "wormId");
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_WORM_ID, wormId);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.POST).setBucket(bucketName).setParameters(params)
+            .setOriginalRequest(commonWormConfigurationRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, null, true);
+    }
+
+    public void extendBucketWorm(ExtendWormConfigurationRequest extendWormConfigurationRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(extendWormConfigurationRequest, "commonWormConfigurationRequest");
+
+        String bucketName = extendWormConfigurationRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        String wormId = extendWormConfigurationRequest.getWormId();
+        assertParameterNotNull(wormId, "wormId");
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_WORM_ID, wormId);
+
+        byte[] rawContent = extendWormConfigurationRequestMarshaller.marshall(extendWormConfigurationRequest);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        addRequestRequiredHeaders(headers, rawContent);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.POST).setBucket(bucketName).setParameters(params).setHeaders(headers)
+            .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+            .setOriginalRequest(extendWormConfigurationRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, null, true);
+    }
+
+    public WormConfiguration getBucketWorm(GenericRequest getBucketWormRequest) throws OSSException, ClientException {
+        assertParameterNotNull(getBucketWormRequest, "commonWormConfigurationRequest");
+
+        String bucketName = getBucketWormRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_WORM, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+            .setOriginalRequest(getBucketWormRequest).build();
+
+        return doOperation(request, getWormConfigurationResponseParser, bucketName, null, true);
+    }
+
 }
