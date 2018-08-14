@@ -25,7 +25,9 @@ import static com.aliyun.oss.internal.OSSUtils.trimQuotes;
 
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.zip.CheckedInputStream;
 
@@ -74,6 +76,8 @@ public final class ResponseParsers {
     public static final GetBucketStatResponseParser getBucketStatResponseParser = new GetBucketStatResponseParser();
     public static final GetBucketQosResponseParser getBucketQosResponseParser = new GetBucketQosResponseParser();
     public static final GetBucketRequestPaymentResponseParser getBucketRequestPaymentResponseParser = new GetBucketRequestPaymentResponseParser();
+    public static final InitiateWormConfigurationResponseParser initiateWormConfigurationResponseParser = new InitiateWormConfigurationResponseParser();
+    public static final GetWormConfigurationResponseParser getWormConfigurationResponseParser = new GetWormConfigurationResponseParser();
 
     public static final ListObjectsReponseParser listObjectsReponseParser = new ListObjectsReponseParser();
     public static final PutObjectReponseParser putObjectReponseParser = new PutObjectReponseParser();
@@ -903,6 +907,30 @@ public final class ResponseParsers {
             }
         }
 
+    }
+
+    public static final class InitiateWormConfigurationResponseParser implements ResponseParser<String> {
+
+        @Override
+        public String parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                return response.getHeaders().get("x-oss-worm-id");
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+    }
+
+    public static final class GetWormConfigurationResponseParser implements ResponseParser<WormConfiguration> {
+
+        @Override
+        public WormConfiguration parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                return parseGetWormConfiguration(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
     }
 
     public static <ResultType extends GenericResult> void setCRC(ResultType result, ResponseMessage response) {
@@ -2623,6 +2651,30 @@ public final class ResponseParsers {
             String payerString = root.getChildText("Payer");
 
             return RequestPayer.parse(payerString);
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Unmarshall bucket worm configuration response body to WormConfiguration.
+     */
+    public static WormConfiguration parseGetWormConfiguration(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            WormConfiguration wormConfiguration = new WormConfiguration();
+
+            Element root = getXmlRootElement(responseBody);
+            wormConfiguration.setBucketName(root.getChildText("Bucket"));
+            wormConfiguration.setWormId(root.getChildText("WormId"));
+            wormConfiguration.setState(WormConfiguration.WormState.parse(root.getChildText("State")));
+            wormConfiguration.setCreateDate(new SimpleDateFormat().parse(root.getChildText("CreatedDate")));
+            wormConfiguration.setLockedDate(new SimpleDateFormat().parse(root.getChildText("LockedDate")));
+            wormConfiguration.setRetensionPeriodInDays(Integer.parseInt(root.getChildText("RetensionPeriodInDays")));
+
+            return wormConfiguration;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
