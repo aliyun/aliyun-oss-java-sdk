@@ -2670,8 +2670,8 @@ public final class ResponseParsers {
             wormConfiguration.setBucketName(root.getChildText("Bucket"));
             wormConfiguration.setWormId(root.getChildText("WormId"));
             wormConfiguration.setState(WormConfiguration.WormState.parse(root.getChildText("State")));
-            wormConfiguration.setCreateDate(new SimpleDateFormat().parse(root.getChildText("CreatedDate")));
-            wormConfiguration.setLockedDate(new SimpleDateFormat().parse(root.getChildText("LockedDate")));
+            wormConfiguration.setCreateDate(DateUtil.parseIso8601Date(root.getChildText("CreatedDate")));
+            wormConfiguration.setLockedDate(DateUtil.parseIso8601Date(root.getChildText("LockedDate")));
             wormConfiguration.setRetensionPeriodInDays(Integer.parseInt(root.getChildText("RetensionPeriodInDays")));
 
             return wormConfiguration;
