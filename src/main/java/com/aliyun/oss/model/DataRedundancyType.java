@@ -3,26 +3,21 @@ package com.aliyun.oss.model;
 /**
  * the availabilityZoneType for region
  */
-public enum AvailabilityZoneType {
+public enum DataRedundancyType {
 
     /**
-     * 1 Cluster
+     * Locally redundant storage
      */
-    Normal("Normal"),
+    LRS("LRS"),
 
     /**
-     * 2 Cluster
+     * Zone-redundant storage
      */
-    Two_AZ("2AZ"),
-
-    /**
-     * 3 Cluster
-     */
-    Three_AZ("3AZ");
+    ZRS("ZRS");
 
     private String typeString;
 
-    AvailabilityZoneType(String typeString) {
+    DataRedundancyType(String typeString) {
         this.typeString = typeString;
     }
 
@@ -31,8 +26,8 @@ public enum AvailabilityZoneType {
         return this.typeString;
     }
 
-    public static AvailabilityZoneType parse(String typeString) {
-        for (AvailabilityZoneType type : AvailabilityZoneType.values()) {
+    public static DataRedundancyType parse(String typeString) {
+        for (DataRedundancyType type : DataRedundancyType.values()) {
             if (type.toString().equals(typeString)) {
                 return type;
             }

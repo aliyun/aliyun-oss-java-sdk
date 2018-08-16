@@ -852,7 +852,7 @@ public interface OSS {
 
     /**
      * Restores the object of archive storage. The function is not applicable to
-     * Normal or IA storage. The restoreObject() needs to be called prior to
+     * LRS or IA storage. The restoreObject() needs to be called prior to
      * calling getObject() on an archive object.
      * 
      * @param bucketName
@@ -865,7 +865,7 @@ public interface OSS {
 
     /**
      * Restores the object of archive storage. The function is not applicable to
-     * Normal or IA storage. The restoreObject() needs to be called prior to
+     * LRS or IA storage. The restoreObject() needs to be called prior to
      * calling getObject() on an archive object.
      * 
      * @param genericRequest
@@ -2281,16 +2281,6 @@ public interface OSS {
      */
     public GenericResult processObject(ProcessObjectRequest processObjectRequest) throws OSSException, ClientException;
 
-
-  /**
-   * get the availabilityZoneType list for region
-   * @param region
-   * @param type
-   * @return
-   * @throws OSSException
-   * @throws ClientException
-   */
-    public List<AvailabilityZoneType> getAvailabilityZoneType(String region) throws OSSException, ClientException;
 
     /**
      * Creates UDF

@@ -64,7 +64,7 @@ public class Bucket extends GenericResult {
     private String intranetEndpoint;
 
     // The type of availabilityZone. 0 means normal cluster, 1 means 2AZ cluster, 2 means 3AZ cluster.
-    private AvailabilityZoneType availabilityZoneType;
+    private DataRedundancyType dataRedundancyType;
 
     /**
      * Default constructor.
@@ -98,7 +98,7 @@ public class Bucket extends GenericResult {
                     + ", location=" + getLocation() + "]";
         } else {
             return "OSSBucket [name=" + getName() + ", creationDate=" + getCreationDate() + ", owner=" + getOwner()
-                    + ", location=" + getLocation() + ", storageClass=" + getStorageClass() + ", availabilityZoneType=" + getAvailabilityZoneType() + "]";
+                    + ", location=" + getLocation() + ", storageClass=" + getStorageClass() + ", dataRedundancyType=" + getDataRedundancyType() + "]";
         }
     }
 
@@ -234,19 +234,19 @@ public class Bucket extends GenericResult {
     }
 
     /**
-     * Gets the availabilityZoneType
-     * @return Bucket availabilityZoneType
+     * Gets the dataRedundancyType
+     * @return Bucket dataRedundancyType
      */
-    public AvailabilityZoneType getAvailabilityZoneType() {
-        return availabilityZoneType;
+    public DataRedundancyType getDataRedundancyType() {
+        return dataRedundancyType;
     }
 
     /**
-     * Sets the availabilityZoneType
-     * @param availabilityZoneType
-     *            Bucket availabilityZoneType
+     * Sets the dataRedundancyType
+     * @param dataRedundancyType
+     *            Bucket dataRedundancyType
      */
-    public void setAvailabilityZoneType(AvailabilityZoneType availabilityZoneType) {
-        this.availabilityZoneType = availabilityZoneType;
+    public void setDataRedundancyType(DataRedundancyType dataRedundancyType) {
+        this.dataRedundancyType = dataRedundancyType;
     }
 }

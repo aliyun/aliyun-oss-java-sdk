@@ -74,7 +74,6 @@ public final class ResponseParsers {
     public static final GetBucketStatResponseParser getBucketStatResponseParser = new GetBucketStatResponseParser();
     public static final GetBucketQosResponseParser getBucketQosResponseParser = new GetBucketQosResponseParser();
     public static final GetBucketRequestPaymentResponseParser getBucketRequestPaymentResponseParser = new GetBucketRequestPaymentResponseParser();
-    public static final GetAvailabilityResponseParser getAvailabilityResponseParser = new GetAvailabilityResponseParser();
 
     public static final ListObjectsReponseParser listObjectsReponseParser = new ListObjectsReponseParser();
     public static final PutObjectReponseParser putObjectReponseParser = new PutObjectReponseParser();
@@ -899,18 +898,6 @@ public final class ResponseParsers {
         public RequestPayer parse(ResponseMessage response) throws ResponseParseException {
             try {
                 return parseGetBucketRequestPayment(response.getContent());
-            } finally {
-                safeCloseResponse(response);
-            }
-        }
-    }
-
-    public static final class GetAvailabilityResponseParser implements ResponseParser<List<AvailabilityZoneType>> {
-
-        @Override
-        public List<AvailabilityZoneType> parse(ResponseMessage response) throws ResponseParseException {
-            try {
-                return parseGetAvailabilityZoneType(response.getContent());
             } finally {
                 safeCloseResponse(response);
             }
@@ -2232,8 +2219,8 @@ public final class ResponseParsers {
             if (bucketElem.getChild("StorageClass") != null) {
                 bucket.setStorageClass(StorageClass.parse(bucketElem.getChildText("StorageClass")));
             }
-            if (bucketElem.getChildText("AvailabilityZoneType") != null) {
-                bucket.setAvailabilityZoneType(AvailabilityZoneType.parse(bucketElem.getChildText("AvailabilityZoneType")));
+            if (bucketElem.getChildText("DataRedundancyType") != null) {
+                bucket.setDataRedundancyType(DataRedundancyType.parse(bucketElem.getChildText("DataRedundancyType")));
             }
             bucketInfo.setBucket(bucket);
 
@@ -2638,29 +2625,6 @@ public final class ResponseParsers {
             String payerString = root.getChildText("Payer");
 
             return RequestPayer.parse(payerString);
-        } catch (JDOMParseException e) {
-            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
-        } catch (Exception e) {
-            throw new ResponseParseException(e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Unmarshall response body to AvailabilityZoneType List.
-     */
-    public static List<AvailabilityZoneType> parseGetAvailabilityZoneType(InputStream responseBody) throws ResponseParseException {
-
-        try {
-            Element root = getXmlRootElement(responseBody);
-
-            List<AvailabilityZoneType> list = new ArrayList<AvailabilityZoneType>();
-            List<Element> availabilityZoneTypeChildren = root.getChildren("AvailabilityZoneType");
-
-            for (Element availabilityZoneTypeElement : availabilityZoneTypeChildren) {
-                list.add(AvailabilityZoneType.parse(availabilityZoneTypeElement.getText()));
-            }
-
-            return list;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
