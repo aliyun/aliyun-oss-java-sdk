@@ -3,26 +3,17 @@ package com.aliyun.oss.model;
 import java.util.Date;
 
 public class WormConfiguration extends GenericResult {
-
-    private String bucketName;
-
+    
     private String wormId;
 
     private WormState state;
 
-    private Date createDate;
+    private Date creationDate;
 
-    private Date lockedDate;
+    private Date expirationDate;
 
-    private int retensionPeriodInDays;
-
-    public String getBucketName() {
-        return bucketName;
-    }
-
-    public void setBucketName(String bucketName) {
-        this.bucketName = bucketName;
-    }
+    private int retentionPeriodInDays;
+    
 
     public String getWormId() {
         return wormId;
@@ -40,28 +31,28 @@ public class WormConfiguration extends GenericResult {
         this.state = state;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public Date getCreationDate() {
+        return creationDate;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
-    public Date getLockedDate() {
-        return lockedDate;
+    public Date getExpirationDate() {
+        return expirationDate;
     }
 
-    public void setLockedDate(Date lockedDate) {
-        this.lockedDate = lockedDate;
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
     }
 
-    public int getRetensionPeriodInDays() {
-        return retensionPeriodInDays;
+    public int getRetentionPeriodInDays() {
+        return retentionPeriodInDays;
     }
 
-    public void setRetensionPeriodInDays(int retensionPeriodInDays) {
-        this.retensionPeriodInDays = retensionPeriodInDays;
+    public void setRetentionPeriodInDays(int retentionPeriodInDays) {
+        this.retentionPeriodInDays = retentionPeriodInDays;
     }
 
 

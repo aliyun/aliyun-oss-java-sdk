@@ -25,9 +25,7 @@ import static com.aliyun.oss.internal.OSSUtils.trimQuotes;
 
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.zip.CheckedInputStream;
 
@@ -2667,12 +2665,21 @@ public final class ResponseParsers {
             WormConfiguration wormConfiguration = new WormConfiguration();
 
             Element root = getXmlRootElement(responseBody);
-            wormConfiguration.setBucketName(root.getChildText("Bucket"));
             wormConfiguration.setWormId(root.getChildText("WormId"));
-            wormConfiguration.setState(WormConfiguration.WormState.parse(root.getChildText("State")));
-            wormConfiguration.setCreateDate(DateUtil.parseIso8601Date(root.getChildText("CreatedDate")));
-            wormConfiguration.setLockedDate(DateUtil.parseIso8601Date(root.getChildText("LockedDate")));
-            wormConfiguration.setRetensionPeriodInDays(Integer.parseInt(root.getChildText("RetensionPeriodInDays")));
+            if(root.getChildText("State") != null){
+                wormConfiguration.setState(WormConfiguration.WormState.parse(root.getChildText("State")));
+            }
+            if(root.getChildText("CreationDate") != null){
+                wormConfiguration.setCreationDate(DateUtil.parseIso8601Date(root.getChildText("CreationDate")));
+            }
+
+            if(root.getChildText("ExpirationDate") != null){
+                wormConfiguration.setExpirationDate(DateUtil.parseIso8601Date(root.getChildText("ExpirationDate")));
+            }
+
+            if(root.getChildText("RetentionPeriodInDays") != null) {
+               wormConfiguration.setRetentionPeriodInDays(Integer.parseInt(root.getChildText("RetentionPeriodInDays")));
+            }
 
             return wormConfiguration;
         } catch (JDOMParseException e) {
