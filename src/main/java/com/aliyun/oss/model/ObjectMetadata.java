@@ -38,7 +38,7 @@ public class ObjectMetadata {
     private Map<String, String> userMetadata = new HashMap<String, String>();
 
     // Other non-custom metadata.
-    private Map<String, Object> metadata = new HashMap<String, Object>();
+    protected Map<String, Object> metadata = new HashMap<String, Object>();
 
     public static final String AES_256_SERVER_SIDE_ENCRYPTION = "AES256";
 

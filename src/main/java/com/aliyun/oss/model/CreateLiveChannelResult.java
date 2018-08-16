@@ -42,8 +42,6 @@ public class CreateLiveChannelResult extends GenericResult {
 
     /**
      * Gets the playback urls.
-     * 
-     * @return The playback urls.
      */
     public void setPlayUrls(List<String> playUrls) {
         this.playUrls = playUrls;
