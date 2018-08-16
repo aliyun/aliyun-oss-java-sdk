@@ -1109,17 +1109,4 @@ public class OSSBucketOperation extends OSSOperation {
     }
 
 
-    public List<AvailabilityZoneType> getAvailabilityZoneType(GetAvailabilityZoneTypeRequest getAvailabilityZoneTypeRequest) throws ClientException {
-        assertParameterNotNull(getAvailabilityZoneTypeRequest, "getAvailabilityZoneTypeRequest");
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put(SUBRESOURCE_AVAILABILITY_ZONE, null);
-        params.put(RequestParameters.LOCATION, getAvailabilityZoneTypeRequest.getLocation());
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-            .setMethod(HttpMethod.GET).setParameters(params)
-            .setOriginalRequest(getAvailabilityZoneTypeRequest).build();
-        List<AvailabilityZoneType> list = doOperation(request, getAvailabilityResponseParser, null, null, true);
-
-        return list;
-    }
 }

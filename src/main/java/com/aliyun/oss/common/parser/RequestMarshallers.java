@@ -24,7 +24,6 @@ import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -192,7 +191,9 @@ public final class RequestMarshallers {
         @Override
         public FixedLengthInputStream marshall(CreateBucketRequest request) {
             StringBuffer xmlBody = new StringBuffer();
-            if (request.getLocationConstraint() != null) {
+            if (request.getLocationConstraint() != null
+                || request.getStorageClass() != null
+                || request.getDataRedundancyType() != null) {
                 xmlBody.append("<CreateBucketConfiguration>");
                 if (request.getLocationConstraint() != null) {
                     xmlBody.append("<LocationConstraint>" + request.getLocationConstraint() + "</LocationConstraint>");
@@ -200,8 +201,8 @@ public final class RequestMarshallers {
                 if (request.getStorageClass() != null) {
                     xmlBody.append("<StorageClass>" + request.getStorageClass().toString() + "</StorageClass>");
                 }
-                if (request.getAvailabilityZoneType() != null) {
-                    xmlBody.append("<AvailabilityZoneType>" + request.getAvailabilityZoneType().toString() + "</AvailabilityZoneType>");
+                if (request.getDataRedundancyType() != null) {
+                    xmlBody.append("<DataRedundancyType>" + request.getDataRedundancyType().toString() + "</DataRedundancyType>");
                 }
                 xmlBody.append("</CreateBucketConfiguration>");
             }
