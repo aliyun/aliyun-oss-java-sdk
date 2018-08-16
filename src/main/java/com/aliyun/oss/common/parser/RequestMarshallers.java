@@ -615,7 +615,13 @@ public final class RequestMarshallers {
             xmlBody.append("<ID>" + escapeKey(request.getReplicationRuleID()) + "</ID>");
             xmlBody.append("<Destination>");
             xmlBody.append("<Bucket>" + request.getTargetBucketName() + "</Bucket>");
-            xmlBody.append("<Location>" + request.getTargetBucketLocation() + "</Location>");
+            if (request.getTargetBucketLocation() != null) {
+                xmlBody.append("<Location>" + request.getTargetBucketLocation() + "</Location>");
+            } else if (request.getTargetCloud() != null && request.getTargetCloudLocation() != null) {
+                xmlBody.append("<Cloud>" + request.getTargetCloud() + "</Cloud>");
+                xmlBody.append("<CloudLocation>" + request.getTargetCloudLocation() + "</CloudLocation>");
+            }
+
             xmlBody.append("</Destination>");
             if (request.isEnableHistoricalObjectReplication()) {
                 xmlBody.append("<HistoricalObjectReplication>" + "enabled" + "</HistoricalObjectReplication>");
