@@ -1169,6 +1169,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
             .setMethod(HttpMethod.POST).setBucket(bucketName).setParameters(params)
+            .setInputStream(new ByteArrayInputStream(new byte[0])).setInputSize(0)
             .setOriginalRequest(commonWormConfigurationRequest).build();
 
         doOperation(request, emptyResponseParser, bucketName, null, true);
