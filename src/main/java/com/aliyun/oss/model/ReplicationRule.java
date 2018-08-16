@@ -61,6 +61,19 @@ public class ReplicationRule {
         this.targetBucketLocation = targetBucketLocation;
     }
 
+    public String getTargetCloud(){
+        return this.targetCloud;
+    }
+    public void setTargetCloud(String targetCloud){
+        this.targetCloud = targetCloud;
+    }
+    public String getTargetCloudLocation(){
+        return this.targetCloudLocation;
+    }
+    public void setTargetCloudLocation(String targetCloudLocation){
+        this.targetCloudLocation = targetCloudLocation;
+    }
+
     public boolean isEnableHistoricalObjectReplication() {
         return enableHistoricalObjectReplication;
     }
@@ -95,6 +108,8 @@ public class ReplicationRule {
     private ReplicationStatus replicationStatus;
     private String targetBucketName;
     private String targetBucketLocation;
+    private String targetCloud;
+    private String targetCloudLocation;
     private boolean enableHistoricalObjectReplication;
     private List<String> objectPrefixList;
     private List<ReplicationAction> replicationActionList;
