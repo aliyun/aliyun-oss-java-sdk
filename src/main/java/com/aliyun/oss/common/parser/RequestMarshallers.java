@@ -513,6 +513,9 @@ public final class RequestMarshallers {
             xmlBody.append("<SelectRequest>");
 
             xmlBody.append("<Expression>" + BinaryUtil.toBase64String(request.getExpression().getBytes()) + "</Expression>");
+            xmlBody.append("<Options>");
+            xmlBody.append("<SkipPartialDataRecord>" + request.isSkipPartialDataRecord() + "</SkipPartialDataRecord>");
+            xmlBody.append("</Options>");
             InputSerialization inputSerialization = request.getInputSerialization();
             CSVFormat csvInputFormat = inputSerialization.getCsvInputFormat();
             xmlBody.append("<InputSerialization>");
@@ -539,9 +542,11 @@ public final class RequestMarshallers {
             xmlBody.append("<RecordDelimiter>" + BinaryUtil.toBase64String(csvOutputFormat.getRecordDelimiter().getBytes()) + "</RecordDelimiter>");
             xmlBody.append("<FieldDelimiter>" + BinaryUtil.toBase64String(csvOutputFormat.getFieldDelimiter().toString().getBytes()) + "</FieldDelimiter>");
             xmlBody.append("<QuoteCharacter>" + BinaryUtil.toBase64String(csvOutputFormat.getQuoteChar().toString().getBytes()) + "</QuoteCharacter>");
-            xmlBody.append("<KeepAllColumns>" + outputSerialization.isKeepAllColumns() + "</KeepAllColumns>");
             xmlBody.append("</CSV>");
+            xmlBody.append("<KeepAllColumns>" + outputSerialization.isKeepAllColumns() + "</KeepAllColumns>");
             xmlBody.append("<OutputRawData>" + outputSerialization.isOutputRawData() + "</OutputRawData>");
+            xmlBody.append("<OutputHeader>" + outputSerialization.isOutputHeader() + "</OutputHeader>");
+            xmlBody.append("<EnablePayloadCrc>" + outputSerialization.isPayloadCrcEnabled() + "</EnablePayloadCrc>");
             xmlBody.append("</OutputSerialization>");
             xmlBody.append("</SelectRequest>");
 

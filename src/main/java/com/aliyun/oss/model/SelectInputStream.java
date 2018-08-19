@@ -7,8 +7,8 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.zip.CRC32;
 
-import static com.aliyun.oss.event.ProgressPublisher.publishProgress;
 import static com.aliyun.oss.event.ProgressPublisher.publishSelectProgress;
 
 public class SelectInputStream extends FilterInputStream {
@@ -46,13 +46,15 @@ public class SelectInputStream extends FilterInputStream {
     private boolean finished;
     private ProgressListener selectProgressListener;
     private long nextNotificationScannedSize;
+    private boolean payloadCrcEnabled;
+    private CRC32 crc32;
     /**
      * payload checksum is the last 4 bytes in one frame, we use this flag to indicate whether we
      * need read the 4 bytes before we advance to next frame.
      */
     private boolean firstReadFrame;
 
-    public SelectInputStream(InputStream in, ProgressListener selectProgressListener) {
+    public SelectInputStream(InputStream in, ProgressListener selectProgressListener, boolean payloadCrcEnabled) {
         super(in);
         currentFrameOffset = 0;
         currentFramePayloadLength = 0;
@@ -65,6 +67,11 @@ public class SelectInputStream extends FilterInputStream {
         firstReadFrame = true;
         this.selectProgressListener = selectProgressListener;
         this.nextNotificationScannedSize = DEFAULT_NOTIFICATION_THRESHOLD;
+        this.payloadCrcEnabled = payloadCrcEnabled;
+        if (this.payloadCrcEnabled) {
+            this.crc32 = new CRC32();
+            this.crc32.reset();
+        }
     }
 
     private void internalRead(byte[] buf, int off, int len) throws IOException {
@@ -78,10 +85,22 @@ public class SelectInputStream extends FilterInputStream {
         }
     }
 
+    private void validateCheckSum(byte[] checksumBytes, CRC32 crc32) throws IOException {
+        if (payloadCrcEnabled) {
+            int currentChecksum = ByteBuffer.wrap(checksumBytes).getInt();
+            if (crc32.getValue() != ((long)currentChecksum & 0xffffffffL)) {
+                throw new IOException("select frame crc check failed, actual: " + crc32.getValue()
+                        + ", expect: " + currentChecksum);
+            }
+        }
+    }
+
     private void readFrame() throws IOException {
         while (currentFrameOffset >= currentFramePayloadLength && !finished) {
             if (!firstReadFrame) {
                 internalRead(currentFramePayloadChecksumBytes, 0, 4);
+                validateCheckSum(currentFramePayloadChecksumBytes, crc32);
+                crc32.reset();
             }
             firstReadFrame = false;
             //advance to next frame
@@ -93,6 +112,9 @@ public class SelectInputStream extends FilterInputStream {
             internalRead(currentFramePayloadLengthBytes, 0, 4);
             internalRead(currentFrameHeaderChecksumBytes, 0, 4);
             internalRead(scannedDataBytes, 0, 8);
+            if (payloadCrcEnabled) {
+                crc32.update(scannedDataBytes);
+            }
 
             currentFrameTypeBytes[0] = 0;
             int type = ByteBuffer.wrap(currentFrameTypeBytes).getInt();
@@ -108,23 +130,31 @@ public class SelectInputStream extends FilterInputStream {
                     currentFramePayloadLength = ByteBuffer.wrap(currentFramePayloadLengthBytes).getInt() - 8;
                     byte[] totalScannedDataSizeBytes = new byte[8];
                     internalRead(totalScannedDataSizeBytes, 0, 8);
-
                     byte[] statusBytes = new byte[4];
                     internalRead(statusBytes, 0, 4);
-
+                    if (payloadCrcEnabled) {
+                        crc32.update(totalScannedDataSizeBytes);
+                        crc32.update(statusBytes);
+                    }
                     int status = ByteBuffer.wrap(statusBytes).getInt();
                     int errorMessageSize = (int)(currentFramePayloadLength - 12);
+                    String error = "";
                     if (errorMessageSize > 0) {
                         byte[] errorMessageBytes = new byte[errorMessageSize];
                         internalRead(errorMessageBytes, 0, errorMessageSize);
-                        String error = new String(errorMessageBytes);
-                        if (status / 100 != 2) {
-                            throw new IOException("Oss Select encounter error: code: " + status + ", message: " + error);
+                        error = new String(errorMessageBytes);
+                        if (payloadCrcEnabled) {
+                            crc32.update(errorMessageBytes);
                         }
                     }
                     finished = true;
                     currentFramePayloadLength = currentFrameOffset;
                     internalRead(currentFramePayloadChecksumBytes, 0, 4);
+
+                    validateCheckSum(currentFramePayloadChecksumBytes, crc32);
+                    if (status / 100 != 2) {
+                        throw new IOException("Oss Select encounter error: code: " + status + ", message: " + error);
+                    }
                     break;
                 default:
                     throw new IOException("unsupported frame type found: " + type);
@@ -148,6 +178,9 @@ public class SelectInputStream extends FilterInputStream {
         int byteRead = in.read();
         if (byteRead >= 0) {
             currentFrameOffset++;
+            if (payloadCrcEnabled) {
+                crc32.update(byteRead);
+            }
         }
         return byteRead;
     }
@@ -165,6 +198,9 @@ public class SelectInputStream extends FilterInputStream {
             int bytes = in.read(buf, off, bytesToRead);
             if (bytes > 0) {
                 currentFrameOffset += bytes;
+                if (payloadCrcEnabled) {
+                    crc32.update(buf, off, bytes);
+                }
             }
             return bytes;
         }
