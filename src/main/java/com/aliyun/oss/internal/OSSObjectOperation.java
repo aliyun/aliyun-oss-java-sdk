@@ -33,6 +33,7 @@ import static com.aliyun.oss.internal.OSSConstants.DEFAULT_BUFFER_SIZE;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
 import static com.aliyun.oss.internal.OSSHeaders.OSS_SELECT_CSV_ROWS;
 import static com.aliyun.oss.internal.OSSHeaders.OSS_SELECT_CSV_SPLITS;
+import static com.aliyun.oss.internal.OSSHeaders.OSS_SELECT_OUTPUT_RAW;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.addDateHeader;
 import static com.aliyun.oss.internal.OSSUtils.addHeader;
@@ -271,8 +272,9 @@ public class OSSObjectOperation extends OSSOperation {
             OSSObject ossObject = doOperation(request, new GetObjectResponseParser(bucketName, key), bucketName, key, true);
             publishProgress(selectProgressListener, ProgressEventType.SELECT_STARTED_EVENT);
             InputStream inputStream = ossObject.getObjectContent();
-            if (!selectObjectRequest.getOutputSerialization().isOutputRawData()) {
-                ossObject.setObjectContent(new SelectInputStream(inputStream, selectProgressListener));
+            if (!Boolean.parseBoolean(ossObject.getObjectMetadata().getRawMetadata().get(OSS_SELECT_OUTPUT_RAW).toString())) {
+                ossObject.setObjectContent(new SelectInputStream(inputStream, selectProgressListener,
+                        selectObjectRequest.getOutputSerialization().isPayloadCrcEnabled()));
             }
             return ossObject;
         } catch (RuntimeException e) {

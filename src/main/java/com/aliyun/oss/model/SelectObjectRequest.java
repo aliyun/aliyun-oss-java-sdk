@@ -21,6 +21,7 @@ public class SelectObjectRequest extends GetObjectRequest {
     }
 
     private String expression;
+    private boolean skipPartialDataRecord = false;
     private ExpressionType expressionType = ExpressionType.SQL;
     private InputSerialization inputSerialization = new InputSerialization();
     private OutputSerialization outputSerialization = new OutputSerialization();
@@ -172,6 +173,19 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     public SelectObjectRequest withExpression(String expression) {
         setExpression(expression);
+        return this;
+    }
+
+    public boolean isSkipPartialDataRecord() {
+        return skipPartialDataRecord;
+    }
+
+    public void setSkipPartialDataRecord(boolean skipPartialDataRecord) {
+        this.skipPartialDataRecord = skipPartialDataRecord;
+    }
+
+    public SelectObjectRequest withSkipPartialDataRecord(boolean skipPartialDataRecord) {
+        setSkipPartialDataRecord(skipPartialDataRecord);
         return this;
     }
 
