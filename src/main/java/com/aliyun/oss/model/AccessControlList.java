@@ -26,7 +26,7 @@ import java.util.Set;
 
 /**
  * The class encapsulates the access control list (ACL) information of OSS. It
- * includes an owner and a group of <{@link Grantee},{@link Permission}> pair.
+ * includes an owner and a group of &lt;{@link Grantee},{@link Permission}&gt; pair.
  */
 public class AccessControlList extends GenericResult implements Serializable {
 
