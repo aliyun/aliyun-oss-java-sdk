@@ -153,8 +153,8 @@ public class BucketWebsiteTest extends TestBase {
             rule.getRedirect().setMirrorURL("http://oss-test.aliyun-inc.com/mirror-test/");
             rule.getRedirect().setMirrorSecondaryURL(null);
             rule.getRedirect().setMirrorProbeURL(null);
-            rule.getRedirect().setPassQueryString(null);
-            rule.getRedirect().setPassOriginalSlashes(null);
+            rule.getRedirect().setMirrorPassQueryString(null);
+            rule.getRedirect().setMirrorPassOriginalSlashes(null);
             
             request.setIndexDocument(indexDocument);
             request.AddRoutingRule(rule);
@@ -174,8 +174,8 @@ public class BucketWebsiteTest extends TestBase {
             Assert.assertEquals(rr.getRedirect().getMirrorURL(), "http://oss-test.aliyun-inc.com/mirror-test/");
             Assert.assertNull(rr.getRedirect().getMirrorSecondaryURL());
             Assert.assertNull(rr.getRedirect().getMirrorProbeURL());
-            Assert.assertFalse(rr.getRedirect().isPassQueryString());
-            Assert.assertFalse(rr.getRedirect().isPassOriginalSlashes());
+            Assert.assertFalse(rr.getRedirect().isMirrorPassQueryString());
+            Assert.assertFalse(rr.getRedirect().isMirrorPassOriginalSlashes());
             Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
 
             ossClient.deleteBucketWebsite(bucketName);
@@ -190,8 +190,8 @@ public class BucketWebsiteTest extends TestBase {
             rule.getRedirect().setMirrorURL("http://oss-test.aliyun-inc.com/mirror-test/");
             rule.getRedirect().setMirrorSecondaryURL("http://oss-test.aliyun-inc.com/mirror-secodary/");
             rule.getRedirect().setMirrorProbeURL("http://oss-test.aliyun-inc.com/mirror-probe/");
-            rule.getRedirect().setPassQueryString(true);
-            rule.getRedirect().setPassOriginalSlashes(true);
+            rule.getRedirect().setMirrorPassQueryString(true);
+            rule.getRedirect().setMirrorPassOriginalSlashes(true);
             
             request.setIndexDocument(indexDocument);
             request.AddRoutingRule(rule);
@@ -211,8 +211,8 @@ public class BucketWebsiteTest extends TestBase {
             Assert.assertEquals(rr.getRedirect().getMirrorURL(), "http://oss-test.aliyun-inc.com/mirror-test/");
             Assert.assertEquals(rr.getRedirect().getMirrorSecondaryURL(), "http://oss-test.aliyun-inc.com/mirror-secodary/");
             Assert.assertEquals(rr.getRedirect().getMirrorProbeURL(), "http://oss-test.aliyun-inc.com/mirror-probe/");
-            Assert.assertTrue(rr.getRedirect().isPassQueryString());
-            Assert.assertTrue(rr.getRedirect().isPassOriginalSlashes());
+            Assert.assertTrue(rr.getRedirect().isMirrorPassQueryString());
+            Assert.assertTrue(rr.getRedirect().isMirrorPassOriginalSlashes());
             Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
             
             ossClient.deleteBucketWebsite(bucketName);

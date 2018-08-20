@@ -1840,6 +1840,26 @@ public interface OSS {
     public UserQos getBucketStorageCapacity(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
+     * set the payer kind for the bucket request.
+     *
+     * @param payer
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public void putBucketRequestPayment(String bucketName, RequestPayer payer) throws OSSException, ClientException;
+
+    /**
+     * get the payer kind for the bucket request.
+     *
+     * @param bucketName
+     * @return
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public RequestPayer getBucketRequesterPayment(String bucketName) throws OSSException, ClientException;
+
+
+  /**
      * File upload
      * 
      * This method will automatically split files into parts and upload them in

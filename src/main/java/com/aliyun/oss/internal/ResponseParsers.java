@@ -26,13 +26,10 @@ import static com.aliyun.oss.internal.OSSUtils.trimQuotes;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.zip.CheckedInputStream;
 
+import com.aliyun.oss.model.*;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.JDOMParseException;
@@ -43,75 +40,12 @@ import com.aliyun.oss.common.parser.ResponseParseException;
 import com.aliyun.oss.common.parser.ResponseParser;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.HttpUtil;
-import com.aliyun.oss.model.AccessControlList;
 import com.aliyun.oss.model.AddBucketReplicationRequest.ReplicationAction;
-import com.aliyun.oss.model.AppendObjectResult;
-import com.aliyun.oss.model.Bucket;
-import com.aliyun.oss.model.BucketInfo;
-import com.aliyun.oss.model.BucketList;
-import com.aliyun.oss.model.BucketLoggingResult;
-import com.aliyun.oss.model.BucketMetadata;
-import com.aliyun.oss.model.BucketProcess;
-import com.aliyun.oss.model.BucketReferer;
-import com.aliyun.oss.model.BucketReplicationProgress;
-import com.aliyun.oss.model.BucketStat;
-import com.aliyun.oss.model.BucketWebsiteResult;
-import com.aliyun.oss.model.CannedAccessControlList;
-import com.aliyun.oss.model.CannedUdfAcl;
-import com.aliyun.oss.model.CnameConfiguration;
-import com.aliyun.oss.model.CompleteMultipartUploadResult;
-import com.aliyun.oss.model.CopyObjectResult;
-import com.aliyun.oss.model.CreateLiveChannelResult;
-import com.aliyun.oss.model.DeleteObjectsResult;
-import com.aliyun.oss.model.GenericResult;
-import com.aliyun.oss.model.GetBucketImageResult;
-import com.aliyun.oss.model.ImageProcess;
-import com.aliyun.oss.model.LiveChannel;
-import com.aliyun.oss.model.LiveChannelInfo;
-import com.aliyun.oss.model.LiveChannelListing;
-import com.aliyun.oss.model.LiveChannelStat;
-import com.aliyun.oss.model.LiveRecord;
 import com.aliyun.oss.model.LiveChannelStat.AudioStat;
 import com.aliyun.oss.model.LiveChannelStat.VideoStat;
-import com.aliyun.oss.model.LiveChannelStatus;
-import com.aliyun.oss.model.LiveChannelTarget;
-import com.aliyun.oss.model.OSSSymlink;
-import com.aliyun.oss.model.ReplicationRule;
-import com.aliyun.oss.model.GetImageStyleResult;
-import com.aliyun.oss.model.GroupGrantee;
-import com.aliyun.oss.model.InitiateMultipartUploadResult;
-import com.aliyun.oss.model.InstanceFlavor;
-import com.aliyun.oss.model.LifecycleRule;
-import com.aliyun.oss.model.ReplicationStatus;
-import com.aliyun.oss.model.RestoreObjectResult;
-import com.aliyun.oss.model.RoutingRule;
-import com.aliyun.oss.model.StorageClass;
 import com.aliyun.oss.model.LifecycleRule.RuleStatus;
 import com.aliyun.oss.model.LifecycleRule.StorageTransition;
-import com.aliyun.oss.model.MultipartUpload;
-import com.aliyun.oss.model.MultipartUploadListing;
-import com.aliyun.oss.model.OSSObject;
-import com.aliyun.oss.model.OSSObjectSummary;
-import com.aliyun.oss.model.ObjectAcl;
-import com.aliyun.oss.model.ObjectListing;
-import com.aliyun.oss.model.ObjectMetadata;
-import com.aliyun.oss.model.ObjectPermission;
-import com.aliyun.oss.model.Owner;
-import com.aliyun.oss.model.PartListing;
-import com.aliyun.oss.model.PartSummary;
-import com.aliyun.oss.model.Permission;
-import com.aliyun.oss.model.PutObjectResult;
-import com.aliyun.oss.model.PushflowStatus;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
-import com.aliyun.oss.model.SimplifiedObjectMeta;
-import com.aliyun.oss.model.Style;
-import com.aliyun.oss.model.TagSet;
-import com.aliyun.oss.model.UdfApplicationInfo;
-import com.aliyun.oss.model.UdfApplicationLog;
-import com.aliyun.oss.model.UdfImageInfo;
-import com.aliyun.oss.model.UdfInfo;
-import com.aliyun.oss.model.UploadPartCopyResult;
-import com.aliyun.oss.model.UserQos;
 
 /*
  * A collection of parsers that parse HTTP reponses into corresponding human-readable results.
@@ -139,6 +73,7 @@ public final class ResponseParsers {
     public static final GetBucketInfoResponseParser getBucketInfoResponseParser = new GetBucketInfoResponseParser();
     public static final GetBucketStatResponseParser getBucketStatResponseParser = new GetBucketStatResponseParser();
     public static final GetBucketQosResponseParser getBucketQosResponseParser = new GetBucketQosResponseParser();
+    public static final GetBucketRequestPaymentResponseParser getBucketRequestPaymentResponseParser = new GetBucketRequestPaymentResponseParser();
 
     public static final ListObjectsReponseParser listObjectsReponseParser = new ListObjectsReponseParser();
     public static final PutObjectReponseParser putObjectReponseParser = new PutObjectReponseParser();
@@ -949,6 +884,20 @@ public final class ResponseParsers {
         public List<UdfApplicationInfo> parse(ResponseMessage response) throws ResponseParseException {
             try {
                 return parseListUdfApplicationInfo(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
+
+
+    public static final class GetBucketRequestPaymentResponseParser implements ResponseParser<RequestPayer> {
+
+        @Override
+        public RequestPayer parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                return parseGetBucketRequestPayment(response.getContent());
             } finally {
                 safeCloseResponse(response);
             }
@@ -1859,7 +1808,20 @@ public final class ResponseParsers {
                         rule.getCondition().setKeyPrefixEquals(condElem.getChildText("KeyPrefixEquals"));
                         if (condElem.getChild("HttpErrorCodeReturnedEquals") != null) {
                             rule.getCondition().setHttpErrorCodeReturnedEquals(
-                                    Integer.parseInt(condElem.getChildText("HttpErrorCodeReturnedEquals")));
+                                Integer.parseInt(condElem.getChildText("HttpErrorCodeReturnedEquals")));
+                        }
+                        List<Element> includeHeadersElem = condElem.getChildren("IncludeHeader");
+                        if (includeHeadersElem != null && includeHeadersElem.size() > 0) {
+                            List<RoutingRule.IncludeHeader> includeHeaders = new ArrayList<RoutingRule.IncludeHeader>();
+                            for (Element includeHeaderElem : includeHeadersElem) {
+                                RoutingRule.IncludeHeader includeHeader = new RoutingRule.IncludeHeader();
+                                includeHeader.setKey(includeHeaderElem.getChildText("Key"));
+                                includeHeader.setEquals(includeHeaderElem.getChildText("Equals"));
+                                includeHeader.setStartsWith(includeHeaderElem.getChildText("StartsWith"));
+                                includeHeader.setEndsWith(includeHeaderElem.getChildText("EndsWith"));
+                                includeHeaders.add(includeHeader);
+                            }
+                            rule.getCondition().setIncludeHeaders(includeHeaders);
                         }
                     }
 
@@ -1883,12 +1845,57 @@ public final class ResponseParsers {
                     rule.getRedirect().setMirrorSecondaryURL(redirectElem.getChildText("MirrorURLSlave"));
                     rule.getRedirect().setMirrorProbeURL(redirectElem.getChildText("MirrorURLProbe"));
                     if (redirectElem.getChildText("MirrorPassQueryString") != null) {
-                        rule.getRedirect().setPassQueryString(
+                        rule.getRedirect().setMirrorPassQueryString(
                                 Boolean.valueOf(redirectElem.getChildText("MirrorPassQueryString")));
                     }
                     if (redirectElem.getChildText("MirrorPassOriginalSlashes") != null) {
-                        rule.getRedirect().setPassOriginalSlashes(
+                        rule.getRedirect().setMirrorPassOriginalSlashes(
                                 Boolean.valueOf(redirectElem.getChildText("MirrorPassOriginalSlashes")));
+                    }
+                    if (redirectElem.getChildText("PassQueryString") != null) {
+                        rule.getRedirect().setPassQueryString(
+                            Boolean.valueOf(redirectElem.getChildText("PassQueryString")));
+                    }
+                    if (redirectElem.getChildText("MirrorFollowRedirect") != null) {
+                        rule.getRedirect().setMirrorFollowRedirect(
+                            Boolean.valueOf(redirectElem.getChildText("MirrorFollowRedirect")));
+                    }
+                    if (redirectElem.getChildText("MirrorUserLastModified") != null) {
+                        rule.getRedirect().setMirrorUserLastModified(
+                            Boolean.valueOf(redirectElem.getChildText("MirrorUserLastModified")));
+                    }
+                    if (redirectElem.getChildText("MirrorIsExpressTunnel") != null) {
+                        rule.getRedirect().setMirrorIsExpressTunnel(
+                            Boolean.valueOf(redirectElem.getChildText("MirrorIsExpressTunnel")));
+                    }
+                    if (redirectElem.getChildText("MirrorDstRegion") != null) {
+                        rule.getRedirect().setMirrorDstRegion(
+                            redirectElem.getChildText("MirrorDstRegion"));
+                    }
+                    if (redirectElem.getChildText("MirrorDstVpcId") != null) {
+                        rule.getRedirect().setMirrorDstVpcId(
+                            redirectElem.getChildText("MirrorDstVpcId"));
+                    }
+
+                    Element mirrorHeadersElem = redirectElem.getChild("MirrorHeaders");
+                    if (mirrorHeadersElem != null) {
+                        RoutingRule.MirrorHeaders mirrorHeaders = new RoutingRule.MirrorHeaders();
+                        mirrorHeaders.setPassAll(Boolean.valueOf(mirrorHeadersElem.getChildText("PassAll")));
+                        mirrorHeaders.setPass(parseStringListFromElemet(mirrorHeadersElem.getChildren("Pass")));
+                        mirrorHeaders.setRemove(parseStringListFromElemet(mirrorHeadersElem.getChildren("Remove")));
+                        List<Element> setElementList = mirrorHeadersElem.getChildren("Set");
+                        if (setElementList != null && setElementList.size() > 0) {
+                            List<Map<String, String>> setList = new ArrayList<Map<String, String>>();
+                            for (Element setElement : setElementList) {
+                                Map<String, String> map = new HashMap<String, String>();
+                                map.put("Key", setElement.getChildText("Key"));
+                                map.put("Value", setElement.getChildText("Value"));
+                                setList.add(map);
+                            }
+                            mirrorHeaders.setSet(setList);
+                        }
+
+                        rule.getRedirect().setMirrorHeaders(mirrorHeaders);
                     }
 
                     result.AddRoutingRule(rule);
@@ -1901,6 +1908,23 @@ public final class ResponseParsers {
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
+    }
+
+    /**
+     * 转换ElementList to StringList
+     *
+     * @param elementList
+     * @return
+     */
+    private static List<String> parseStringListFromElemet(List<Element> elementList) {
+        if (elementList != null && elementList.size() > 0) {
+            List<String> list = new ArrayList<String>();
+            for (Element element : elementList) {
+                list.add(element.getText());
+            }
+            return list;
+        }
+        return null;
     }
 
     /**
@@ -2577,6 +2601,24 @@ public final class ResponseParsers {
             }
 
             return cnames;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Unmarshall bucket request payment response body to RequestPayer.
+     */
+    public static RequestPayer parseGetBucketRequestPayment(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+
+            String payerString = root.getChildText("Payer");
+
+            return RequestPayer.parse(payerString);
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {

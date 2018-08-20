@@ -24,6 +24,7 @@ import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +72,7 @@ public final class RequestMarshallers {
     public static final UpgradeUdfApplicationRequestMarshaller upgradeUdfApplicationRequestMarshaller = new UpgradeUdfApplicationRequestMarshaller();
     public static final ResizeUdfApplicationRequestMarshaller resizeUdfApplicationRequestMarshaller = new ResizeUdfApplicationRequestMarshaller();
     public static final ProcessObjectRequestMarshaller processObjectRequestMarshaller = new ProcessObjectRequestMarshaller();
+    public static final PutBucketRequestPaymentMarshaller putBucketRequestPaymentMarshaller = new PutBucketRequestPaymentMarshaller();
 
     public static final CreateSelectObjectMetadataRequestMarshaller createSelectObjectMetadataRequestMarshaller = new CreateSelectObjectMetadataRequestMarshaller();
     public static final SelectObjectRequestMarshaller selectObjectRequestMarshaller = new SelectObjectRequestMarshaller();
@@ -288,6 +290,24 @@ public final class RequestMarshallers {
                             xmlBody.append("<HttpErrorCodeReturnedEquals>" + condition.getHttpErrorCodeReturnedEquals()
                                     + "</HttpErrorCodeReturnedEquals>");
                         }
+                        if (condition.getIncludeHeaders() != null && condition.getIncludeHeaders().size() > 0) {
+                            for (RoutingRule.IncludeHeader includeHeader : condition.getIncludeHeaders()) {
+                                xmlBody.append("<IncludeHeader>");
+                                if (includeHeader.getKey() != null) {
+                                    xmlBody.append("<Key>" + includeHeader.getKey() + "</Key>");
+                                }
+                                if (includeHeader.getEquals() != null) {
+                                    xmlBody.append("<Equals>" + includeHeader.getEquals() + "</Equals>");
+                                }
+                                if (includeHeader.getStartsWith() != null) {
+                                    xmlBody.append("<StartsWith>" + includeHeader.getStartsWith() + "</StartsWith>");
+                                }
+                                if (includeHeader.getEndsWith() != null) {
+                                    xmlBody.append("<EndsWith>" + includeHeader.getEndsWith() + "</EndsWith>");
+                                }
+                                xmlBody.append("</IncludeHeader>");
+                            }
+                        }
                         xmlBody.append("</Condition>");
                     }
 
@@ -323,13 +343,61 @@ public final class RequestMarshallers {
                     if (redirect.getMirrorProbeURL() != null) {
                         xmlBody.append("<MirrorURLProbe>" + redirect.getMirrorProbeURL() + "</MirrorURLProbe>");
                     }
-                    if (redirect.isPassQueryString() != null) {
+                    if (redirect.isMirrorPassQueryString() != null) {
                         xmlBody.append(
-                                "<MirrorPassQueryString>" + redirect.isPassQueryString() + "</MirrorPassQueryString>");
+                                "<MirrorPassQueryString>" + redirect.isMirrorPassQueryString() + "</MirrorPassQueryString>");
                     }
-                    if (redirect.isPassOriginalSlashes() != null) {
-                        xmlBody.append("<MirrorPassOriginalSlashes>" + redirect.isPassOriginalSlashes()
+                    if (redirect.isMirrorPassOriginalSlashes() != null) {
+                        xmlBody.append("<MirrorPassOriginalSlashes>" + redirect.isMirrorPassOriginalSlashes()
                                 + "</MirrorPassOriginalSlashes>");
+                    }
+                    if (redirect.isPassQueryString() != null) {
+                        xmlBody.append("<PassQueryString>" + redirect.isPassQueryString()
+                            + "</PassQueryString>");
+                    }
+                    if (redirect.isMirrorFollowRedirect() != null) {
+                        xmlBody.append("<MirrorFollowRedirect>" + redirect.isMirrorFollowRedirect()
+                            + "</MirrorFollowRedirect>");
+                    }
+                    if (redirect.isMirrorUserLastModified() != null) {
+                        xmlBody.append("<MirrorUserLastModified>" + redirect.isMirrorUserLastModified()
+                            + "</MirrorUserLastModified>");
+                    }
+                    if (redirect.isMirrorIsExpressTunnel() != null) {
+                        xmlBody.append("<MirrorIsExpressTunnel>" + redirect.isMirrorIsExpressTunnel()
+                            + "</MirrorIsExpressTunnel>");
+                    }
+                    if (redirect.getMirrorDstRegion() != null) {
+                        xmlBody.append("<MirrorDstRegion>" + redirect.getMirrorDstRegion()
+                            + "</MirrorDstRegion>");
+                    }
+                    if (redirect.getMirrorDstVpcId() != null) {
+                        xmlBody.append("<MirrorDstVpcId>" + redirect.getMirrorDstVpcId()
+                            + "</MirrorDstVpcId>");
+                    }
+                    if (redirect.getMirrorHeaders() != null) {
+                        xmlBody.append("<MirrorHeaders>");
+                        RoutingRule.MirrorHeaders mirrorHeaders = redirect.getMirrorHeaders();
+                        xmlBody.append("<PassAll>" + mirrorHeaders.isPassAll() + "</PassAll>");
+                        if (mirrorHeaders.getPass() != null && mirrorHeaders.getPass().size() > 0) {
+                            for (String pass : mirrorHeaders.getPass()) {
+                                xmlBody.append("<Pass>" + pass + "</Pass>");
+                            }
+                        }
+                        if (mirrorHeaders.getRemove() != null && mirrorHeaders.getRemove().size() > 0) {
+                            for (String remove : mirrorHeaders.getRemove()) {
+                                xmlBody.append("<Remove>" + remove + "</Remove>");
+                            }
+                        }
+                        if (mirrorHeaders.getSet() != null && mirrorHeaders.getSet().size() > 0) {
+                            for (Map<String, String> setMap : mirrorHeaders.getSet()) {
+                                xmlBody.append("<Set>");
+                                xmlBody.append("<Key>" + setMap.get("Key") + "</Key>");
+                                xmlBody.append("<Value>" + setMap.get("Value") + "</Value>");
+                                xmlBody.append("</Set>");
+                            }
+                        }
+                        xmlBody.append("</MirrorHeaders>");
                     }
                     xmlBody.append("</Redirect>");
                     xmlBody.append("</RoutingRule>");
@@ -338,6 +406,7 @@ public final class RequestMarshallers {
             }
 
             xmlBody.append("</WebsiteConfiguration>");
+
             return stringMarshaller.marshall(xmlBody.toString());
         }
 
@@ -879,6 +948,28 @@ public final class RequestMarshallers {
             byte[] rawData = null;
             try {
                 rawData = processBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+
+    }
+
+
+    public static final class PutBucketRequestPaymentMarshaller
+        implements RequestMarshaller2<PutBucketRequestPaymentRequest> {
+
+        @Override
+        public byte[] marshall(PutBucketRequestPaymentRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<RequestPaymentConfiguration>");
+            xmlBody.append("<Payer>" + request.getPayer().toString() + "</Payer>");
+            xmlBody.append("</RequestPaymentConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
             } catch (UnsupportedEncodingException e) {
                 throw new ClientException("Unsupported encoding " + e.getMessage(), e);
             }

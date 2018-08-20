@@ -62,6 +62,10 @@ public class RequestMessage extends HttpMesssage {
     /* The original request provided by user */
     private final WebServiceRequest originalRequest;
 
+    public RequestMessage(){
+        this.originalRequest = WebServiceRequest.NOOP;
+    }
+
     public RequestMessage(String bucketName, String key) {
         this(null, bucketName, key);
     }

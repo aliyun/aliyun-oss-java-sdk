@@ -50,4 +50,5 @@ public enum ProgressEventType {
      * Select object events.
      */
     SELECT_STARTED_EVENT, SELECT_SCAN_EVENT, SELECT_COMPLETED_EVENT, SELECT_FAILED_EVENT
+
 }
