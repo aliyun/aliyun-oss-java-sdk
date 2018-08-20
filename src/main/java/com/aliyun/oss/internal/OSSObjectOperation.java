@@ -31,8 +31,6 @@ import static com.aliyun.oss.common.utils.LogUtils.logException;
 import static com.aliyun.oss.event.ProgressPublisher.publishProgress;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_BUFFER_SIZE;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
-import static com.aliyun.oss.internal.OSSHeaders.OSS_SELECT_CSV_ROWS;
-import static com.aliyun.oss.internal.OSSHeaders.OSS_SELECT_CSV_SPLITS;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.addDateHeader;
 import static com.aliyun.oss.internal.OSSUtils.addHeader;
@@ -193,92 +191,6 @@ public class OSSObjectOperation extends OSSOperation {
         }
 
         return result;
-    }
-
-    public SelectObjectMetadata createSelectObjectMetadata(CreateSelectObjectMetadataRequest createSelectObjectMetadataRequest) throws OSSException, ClientException {
-        String process = createSelectObjectMetadataRequest.getProcess();
-        assertParameterNotNull(process, "process");
-
-        GenericRequest genericRequest = new GenericRequest(
-            createSelectObjectMetadataRequest.getBucketName(), createSelectObjectMetadataRequest.getKey());
-        genericRequest.getParameters().put(RequestParameters.SUBRESOURCE_PROCESS, process);
-
-        String bucketName = genericRequest.getBucketName();
-        String key = genericRequest.getKey();
-
-        assertParameterNotNull(bucketName, "bucketName");
-        assertParameterNotNull(key, "key");
-        ensureBucketNameValid(bucketName);
-        ensureObjectKeyValid(key);
-
-        byte[] content = createSelectObjectMetadataRequestMarshaller.marshall(createSelectObjectMetadataRequest);
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-            .setMethod(HttpMethod.POST).setInputSize(content.length).setInputStream(new ByteArrayInputStream(content))
-            .setBucket(bucketName).setKey(key).setOriginalRequest(genericRequest)
-            .build();
-
-        ObjectMetadata objectMetadata = doOperation(request, getObjectMetadataResponseParser, bucketName, key, true, null, null);
-        SelectObjectMetadata selectObjectMetadata = new SelectObjectMetadata(objectMetadata);
-        selectObjectMetadata.setCsvObjectMetadata(
-            new SelectObjectMetadata.CsvObjectMetadata()
-                .withTotalLines(Integer.parseInt(objectMetadata.getRawMetadata().get(OSS_SELECT_CSV_ROWS).toString()))
-                .withSplits(Integer.parseInt(objectMetadata.getRawMetadata().get(OSS_SELECT_CSV_SPLITS).toString())));
-        return selectObjectMetadata;
-    }
-
-    /**
-     * Select an object from oss.
-     */
-    public OSSObject selectObject(SelectObjectRequest selectObjectRequest) throws OSSException, ClientException {
-        assertParameterNotNull(selectObjectRequest, "selectObjectRequest");
-        String bucketName = selectObjectRequest.getBucketName();
-        String key = selectObjectRequest.getKey();
-        assertParameterNotNull(bucketName, "bucketName");
-        assertParameterNotNull(key, "key");
-        ensureBucketNameValid(bucketName);
-        ensureObjectKeyValid(key);
-        Map<String, String> headers = new HashMap<String, String>();
-        populateGetObjectRequestHeaders(selectObjectRequest, headers);
-
-        Map<String, String> params = new HashMap<String, String>();
-        populateResponseHeaderParameters(params, selectObjectRequest.getResponseHeaders());
-        String process = selectObjectRequest.getProcess();
-        assertParameterNotNull(process, "process");
-
-        params.put(RequestParameters.SUBRESOURCE_PROCESS, process);
-
-        SelectObjectRequest.ExpressionType expressionType = selectObjectRequest.getExpressionType();
-        if (expressionType != SelectObjectRequest.ExpressionType.SQL) {
-            throw new IllegalArgumentException("Select object only support sql expression");
-        }
-        if (selectObjectRequest.getExpression() == null) {
-            throw new IllegalArgumentException("Select expression is null");
-        }
-        if (selectObjectRequest.getLineRange() != null && selectObjectRequest.getSplitRange() != null) {
-            throw new IllegalArgumentException("Line range and split range of select request should not both set");
-        }
-
-        byte[] content = selectObjectRequestMarshaller.marshall(selectObjectRequest);
-
-        headers.put(HttpHeaders.CONTENT_MD5, BinaryUtil.toBase64String(BinaryUtil.calculateMd5(content)));
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-            .setMethod(HttpMethod.POST).setBucket(bucketName).setKey(key).setHeaders(headers)
-            .setInputSize(content.length).setInputStream(new ByteArrayInputStream(content))
-            .setParameters(params).setOriginalRequest(selectObjectRequest).build();
-        //select progress listener(scanned bytes)
-        final ProgressListener selectProgressListener = selectObjectRequest.getSelectProgressListener();
-        try {
-            OSSObject ossObject = doOperation(request, new GetObjectResponseParser(bucketName, key), bucketName, key, true);
-            publishProgress(selectProgressListener, ProgressEventType.SELECT_STARTED_EVENT);
-            InputStream inputStream = ossObject.getObjectContent();
-            if (!selectObjectRequest.getOutputSerialization().isOutputRawData()) {
-                ossObject.setObjectContent(new SelectInputStream(inputStream, selectProgressListener));
-            }
-            return ossObject;
-        } catch (RuntimeException e) {
-            publishProgress(selectProgressListener, ProgressEventType.SELECT_FAILED_EVENT);
-            throw e;
-        }
     }
 
     /**
