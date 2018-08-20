@@ -1188,6 +1188,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_WORM_ID, wormId);
+        params.put(SUBRESOURCE_WORM_EXTEND, null);
 
         byte[] rawContent = extendWormConfigurationRequestMarshaller.marshall(extendWormConfigurationRequest);
 
