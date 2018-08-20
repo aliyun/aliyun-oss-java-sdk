@@ -1846,7 +1846,7 @@ public interface OSS {
      * @throws OSSException
      * @throws ClientException
      */
-    public void abortBucketWorm(CommonWormConfigurationRequest request) throws OSSException, ClientException;
+    public void abortBucketWorm(GenericRequest request) throws OSSException, ClientException;
 
     /**
      * Lock the worm cofiguration for the bucket.
@@ -1854,7 +1854,7 @@ public interface OSS {
      * @throws OSSException
      * @throws ClientException
      */
-    public void completeBucketWorm(CommonWormConfigurationRequest request) throws OSSException, ClientException;
+    public void completeBucketWorm(CompleteWormConfigurationRequest request) throws OSSException, ClientException;
 
     /**
      * Extend the worm cofiguration for the bucket.

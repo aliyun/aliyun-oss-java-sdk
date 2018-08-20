@@ -1,9 +1,9 @@
 package com.aliyun.oss.model;
 
-public class CommonWormConfigurationRequest extends GenericRequest {
+public class CompleteWormConfigurationRequest extends GenericRequest {
     private String wormId;
 
-    public CommonWormConfigurationRequest(String bucketName, String wormId) {
+    public CompleteWormConfigurationRequest(String bucketName, String wormId) {
         super(bucketName);
         this.wormId = wormId;
     }

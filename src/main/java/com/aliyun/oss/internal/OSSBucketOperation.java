@@ -44,7 +44,6 @@ import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.comm.ResponseHandler;
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.comm.ServiceClient;
-import com.aliyun.oss.common.parser.RequestMarshallers;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.ExceptionFactory;
 import com.aliyun.oss.common.utils.HttpHeaders;
@@ -1134,34 +1133,31 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, initiateWormConfigurationResponseParser, bucketName, null, true);
     }
 
-    public void abortBucketWorm(CommonWormConfigurationRequest commonWormConfigurationRequest) throws OSSException, ClientException {
-        assertParameterNotNull(commonWormConfigurationRequest, "commonWormConfigurationRequest");
+    public void abortBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "commonWormConfigurationRequest");
 
-        String bucketName = commonWormConfigurationRequest.getBucketName();
+        String bucketName = genericRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
 
-        String wormId = commonWormConfigurationRequest.getWormId();
-        assertParameterNotNull(wormId, "wormId");
-
         Map<String, String> params = new HashMap<String, String>();
-        params.put(SUBRESOURCE_WORM_ID, wormId);
+        params.put(SUBRESOURCE_WORM, null);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
             .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
-            .setOriginalRequest(commonWormConfigurationRequest).build();
+            .setOriginalRequest(genericRequest).build();
 
         doOperation(request, emptyResponseParser, bucketName, null, true);
     }
 
-    public void completeBucketWorm(CommonWormConfigurationRequest commonWormConfigurationRequest) throws OSSException, ClientException {
-        assertParameterNotNull(commonWormConfigurationRequest, "commonWormConfigurationRequest");
+    public void completeBucketWorm(CompleteWormConfigurationRequest completeWormConfigurationRequest) throws OSSException, ClientException {
+        assertParameterNotNull(completeWormConfigurationRequest, "completeWormConfigurationRequest");
 
-        String bucketName = commonWormConfigurationRequest.getBucketName();
+        String bucketName = completeWormConfigurationRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
 
-        String wormId = commonWormConfigurationRequest.getWormId();
+        String wormId = completeWormConfigurationRequest.getWormId();
         assertParameterNotNull(wormId, "wormId");
 
         Map<String, String> params = new HashMap<String, String>();
@@ -1170,7 +1166,7 @@ public class OSSBucketOperation extends OSSOperation {
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
             .setMethod(HttpMethod.POST).setBucket(bucketName).setParameters(params)
             .setInputStream(new ByteArrayInputStream(new byte[0])).setInputSize(0)
-            .setOriginalRequest(commonWormConfigurationRequest).build();
+            .setOriginalRequest(completeWormConfigurationRequest).build();
 
         doOperation(request, emptyResponseParser, bucketName, null, true);
     }
