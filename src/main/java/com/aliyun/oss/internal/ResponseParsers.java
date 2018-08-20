@@ -1875,10 +1875,6 @@ public final class ResponseParsers {
                         rule.getRedirect().setMirrorDstVpcId(
                             redirectElem.getChildText("MirrorDstVpcId"));
                     }
-                    if (redirectElem.getChildText("MirrorUsingRole") != null) {
-                        rule.getRedirect().setMirrorUsingRole(
-                            Boolean.valueOf(redirectElem.getChildText("MirrorUsingRole")));
-                    }
 
                     Element mirrorHeadersElem = redirectElem.getChild("MirrorHeaders");
                     if (mirrorHeadersElem != null) {
