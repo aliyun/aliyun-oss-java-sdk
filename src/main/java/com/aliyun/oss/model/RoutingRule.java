@@ -420,14 +420,6 @@ public class RoutingRule {
             this.mirrorDstVpcId = mirrorDstVpcId;
         }
 
-        public Boolean isMirrorUsingRole() {
-            return mirrorUsingRole;
-        }
-
-        public void setMirrorUsingRole(Boolean mirrorUsingRole) {
-            this.mirrorUsingRole = mirrorUsingRole;
-        }
-
         public MirrorHeaders getMirrorHeaders() {
             return mirrorHeaders;
         }
@@ -571,11 +563,6 @@ public class RoutingRule {
          * The vpc id of destination when taking high-speed channel on Back-to-Origin.
          */
         private String mirrorDstVpcId;
-
-        /**
-         * Flags of saving Symlink Origin-to-Back
-         */
-        private Boolean mirrorUsingRole;
 
         private MirrorHeaders mirrorHeaders;
 
