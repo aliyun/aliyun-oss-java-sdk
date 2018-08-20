@@ -55,6 +55,7 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_REQUEST_PAYMENT = "requestPayment";
     public static final String SUBRESOURCE_WORM = "worm";
     public static final String SUBRESOURCE_WORM_ID = "wormId";
+    public static final String SUBRESOURCE_WORM_EXTEND = "extend";
 
     public static final String SUBRESOURCE_UDF = "udf";
     public static final String SUBRESOURCE_UDF_NAME = "udfName";
