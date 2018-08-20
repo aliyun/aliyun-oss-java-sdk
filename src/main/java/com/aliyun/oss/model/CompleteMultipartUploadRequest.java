@@ -116,7 +116,7 @@ public class CompleteMultipartUploadRequest extends GenericRequest {
     /**
      * Sets Object ACL。
      * 
-     * @param Object
+     * @param cannedACL
      *            ACL。
      */
     public void setObjectACL(CannedAccessControlList cannedACL) {

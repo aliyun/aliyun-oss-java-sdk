@@ -36,7 +36,7 @@ import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
  * <p>
  * Object Store Service (a.k.a OSS) is the massive, secure, low cost and highly
  * reliable public storage which could be accessed from anywhere at anytime via
- * REST APIs, SDKs or web console. <br />
+ * REST APIs, SDKs or web console. <br>
  * Developers could use OSS to create any services that need huge data storage
  * and access throughput, such as media sharing web apps, cloud storage service
  * or enterprise or personal data backup.
@@ -270,8 +270,8 @@ public interface OSS {
      * @param bucketName
      *            Bucket name.
      * @param tags
-     *            The dictionary that contains the tags in the form of <key,
-     *            value> pairs
+     *            The dictionary that contains the tags in the form of &lt;key,
+     *            value&gt; pairs
      */
     public void setBucketTagging(String bucketName, Map<String, String> tags) throws OSSException, ClientException;
 
@@ -281,8 +281,8 @@ public interface OSS {
      * @param bucketName
      *            Bucket name.
      * @param tagSet
-     *            {@link TagSet} instance that has the tags in the form of <key,
-     *            value> paris.
+     *            {@link TagSet} instance that has the tags in the form of &lt;key,
+     *            value&gt; paris.
      */
     public void setBucketTagging(String bucketName, TagSet tagSet) throws OSSException, ClientException;
 
@@ -613,6 +613,23 @@ public interface OSS {
     public OSSObject getObject(GetObjectRequest getObjectRequest) throws OSSException, ClientException;
 
     /**
+     * Select the {@link OSSObject} from the bucket specified in
+     * {@link SelectObjectRequest} parameter
+     * @param selectObjectRequest
+     *          A {@link SelectObjectRequest} instance which specifies the
+     *              bucket name
+     *              object key
+     *              filter expression
+     *              input serialization
+     *              output serialization
+     * @return A {@link OSSObject} instance will be returned. The caller is
+     *          responsible to close the connection after usage.
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public OSSObject selectObject(SelectObjectRequest selectObjectRequest) throws OSSException, ClientException;
+
+    /**
      * Gets the {@link OSSObject} from the signed Url.
      * 
      * @param signedUrl
@@ -678,6 +695,16 @@ public interface OSS {
      *
      */
     public ObjectMetadata getObjectMetadata(GenericRequest genericRequest) throws OSSException, ClientException;
+
+    /**
+     * Create select object metadata(create metadata if not exists or overwrite flag set in {@link CreateSelectObjectMetadataRequest})
+     *
+     * @param createSelectObjectMetadataRequest
+     *            {@link CreateSelectObjectMetadataRequest} create select object metadata request.
+     *
+     * @return The {@link SelectObjectMetadata} instance.
+     */
+    public SelectObjectMetadata createSelectObjectMetadata(CreateSelectObjectMetadataRequest createSelectObjectMetadataRequest) throws OSSException, ClientException;
 
     /**
      * Append the data to the appendable object specified in
@@ -1846,7 +1873,7 @@ public interface OSS {
      *
      * @param uploadFileRequest
      *            A {@link UploadFileRequest} instance that specifies the bucket
-     *            name, object key, file path ,part size (>100K) and thread
+     *            name, object key, file path ,part size (&gt; 100K) and thread
      *            count (from 1 to 1000) and checkpoint file.
      * @return A {@link UploadFileRequest} instance which has the new uploaded
      *         file's key, ETag, location.
@@ -1868,7 +1895,7 @@ public interface OSS {
      * 
      * @param downloadFileRequest
      *            A {@link DownloadFileRequest} instance that specifies the
-     *            bucket name, object key, file path, part size (>100K) and
+     *            bucket name, object key, file path, part size (&gt; 100K) and
      *            thread count (from 1 to 1000) and checkpoint file. Also it
      *            could have the ETag and ModifiedSince constraints.
      * @return A {@link DownloadFileResult} instance that has the
