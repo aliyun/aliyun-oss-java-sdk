@@ -1180,6 +1180,19 @@ public class OSSClient implements OSS {
         return this.bucketOperation.getBucketStorageCapacity(genericRequest);
     }
 
+
+    @Override
+    public void putBucketRequestPayment(String bucketName, RequestPayer payer) throws OSSException, ClientException {
+        PutBucketRequestPaymentRequest requestPaymentRequest = new PutBucketRequestPaymentRequest(bucketName);
+        requestPaymentRequest.setPayer(payer);
+        this.bucketOperation.putBucketRequestPayment(requestPaymentRequest);
+    }
+
+    @Override
+    public RequestPayer getBucketRequesterPayment(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketRequestPayment(new GenericRequest(bucketName));
+    }
+
     @Override
     public UploadFileResult uploadFile(UploadFileRequest uploadFileRequest) throws Throwable {
         return this.uploadOperation.uploadFile(uploadFileRequest);

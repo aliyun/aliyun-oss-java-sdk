@@ -20,6 +20,8 @@
 package com.aliyun.oss.model;
 
 import java.text.MessageFormat;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A rule that identifies a condition and the redirect that is applied when the
@@ -59,6 +61,14 @@ public class RoutingRule {
             this.httpErrorCodeReturnedEquals = httpErrorCodeReturnedEquals;
         }
 
+        public List<IncludeHeader> getIncludeHeaders() {
+            return includeHeaders;
+        }
+
+        public void setIncludeHeaders(List<IncludeHeader> includeHeaders) {
+            this.includeHeaders = includeHeaders;
+        }
+
         public void ensureConditionValid() {
 
         }
@@ -74,6 +84,64 @@ public class RoutingRule {
          * redirect applies.
          */
         private Integer httpErrorCodeReturnedEquals;
+
+        private List<IncludeHeader> includeHeaders;
+
+    }
+
+
+    public static class IncludeHeader {
+        /**
+         * name of header
+         */
+        private String key;
+
+        /**
+         * key should be equal to the given value
+         */
+        private String equals;
+
+        /**
+         * key should be start with the given value
+         */
+        private String startsWith;
+
+        /**
+         * key should be end with the given value
+         */
+        private String endsWith;
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        public String getEquals() {
+            return equals;
+        }
+
+        public void setEquals(String equals) {
+            this.equals = equals;
+        }
+
+        public String getStartsWith() {
+            return startsWith;
+        }
+
+        public void setStartsWith(String startsWith) {
+            this.startsWith = startsWith;
+        }
+
+        public String getEndsWith() {
+            return endsWith;
+        }
+
+        public void setEndsWith(String endsWith) {
+            this.endsWith = endsWith;
+        }
     }
 
     public static enum RedirectType {
@@ -142,6 +210,61 @@ public class RoutingRule {
             }
 
             throw new IllegalArgumentException("Unable to parse " + protocolString);
+        }
+    }
+
+    public static class MirrorHeaders{
+
+        /**
+         * Flags of passing all headers to source site.
+         */
+        private boolean passAll;
+
+        /**
+         * Only headers include in list can be passed to source site.
+         */
+        private List<String> pass;
+
+        /**
+         * Headers include in list cannot be passed to source site.
+         */
+        private List<String> remove;
+
+        /**
+         * Define the value for some headers.
+         */
+        private List<Map<String, String>> set;
+
+        public boolean isPassAll() {
+            return passAll;
+        }
+
+        public void setPassAll(boolean passAll) {
+            this.passAll = passAll;
+        }
+
+        public List<String> getPass() {
+            return pass;
+        }
+
+        public void setPass(List<String> pass) {
+            this.pass = pass;
+        }
+
+        public List<String> getRemove() {
+            return remove;
+        }
+
+        public void setRemove(List<String> remove) {
+            this.remove = remove;
+        }
+
+        public List<Map<String, String>> getSet() {
+            return set;
+        }
+
+        public void setSet(List<Map<String, String>> set) {
+            this.set = set;
         }
     }
 
@@ -233,6 +356,22 @@ public class RoutingRule {
             this.mirrorProbeURL = mirrorProbeURL;
         }
 
+        public Boolean isMirrorPassQueryString() {
+            return mirrorPassQueryString;
+        }
+
+        public void setMirrorPassQueryString(Boolean mirrorPassQueryString) {
+            this.mirrorPassQueryString = mirrorPassQueryString;
+        }
+
+        public Boolean isMirrorPassOriginalSlashes() {
+            return mirrorPassOriginalSlashes;
+        }
+
+        public void setMirrorPassOriginalSlashes(Boolean mirrorPassOriginalSlashes) {
+            this.mirrorPassOriginalSlashes = mirrorPassOriginalSlashes;
+        }
+
         public Boolean isPassQueryString() {
             return passQueryString;
         }
@@ -241,12 +380,52 @@ public class RoutingRule {
             this.passQueryString = passQueryString;
         }
 
-        public Boolean isPassOriginalSlashes() {
-            return passOriginalSlashes;
+        public Boolean isMirrorFollowRedirect() {
+            return mirrorFollowRedirect;
         }
 
-        public void setPassOriginalSlashes(Boolean passOriginalSlashes) {
-            this.passOriginalSlashes = passOriginalSlashes;
+        public void setMirrorFollowRedirect(Boolean mirrorFollowRedirect) {
+            this.mirrorFollowRedirect = mirrorFollowRedirect;
+        }
+
+        public Boolean isMirrorUserLastModified() {
+            return mirrorUserLastModified;
+        }
+
+        public void setMirrorUserLastModified(Boolean mirrorUserLastModified) {
+            this.mirrorUserLastModified = mirrorUserLastModified;
+        }
+
+        public Boolean isMirrorIsExpressTunnel() {
+            return mirrorIsExpressTunnel;
+        }
+
+        public void setMirrorIsExpressTunnel(Boolean mirrorIsExpressTunnel) {
+            this.mirrorIsExpressTunnel = mirrorIsExpressTunnel;
+        }
+
+        public String getMirrorDstRegion() {
+            return mirrorDstRegion;
+        }
+
+        public void setMirrorDstRegion(String mirrorDstRegion) {
+            this.mirrorDstRegion = mirrorDstRegion;
+        }
+
+        public String getMirrorDstVpcId() {
+            return mirrorDstVpcId;
+        }
+
+        public void setMirrorDstVpcId(String mirrorDstVpcId) {
+            this.mirrorDstVpcId = mirrorDstVpcId;
+        }
+
+        public MirrorHeaders getMirrorHeaders() {
+            return mirrorHeaders;
+        }
+
+        public void setMirrorHeaders(MirrorHeaders mirrorHeaders) {
+            this.mirrorHeaders = mirrorHeaders;
         }
 
         /**
@@ -345,13 +524,48 @@ public class RoutingRule {
          * Flag of passing the query string to the source site. By default it's
          * false.
          */
-        private Boolean passQueryString;
+        private Boolean mirrorPassQueryString;
 
         /**
          * Flag of passing the redundant backslash between host and uri to
          * source site. By default it's false.
          */
-        private Boolean passOriginalSlashes;
+        private Boolean mirrorPassOriginalSlashes;
+
+        /**
+         * Flag of passing the query string to the source site. By default it's
+         * false. The passQueryString applies to all kind of RoutingRule while the mirrorPassQueryString can only work on Back-to-Origin.
+         */
+        private Boolean passQueryString;
+
+        /**
+         * Flags of following with the 3xx response from source site. By default it's true.
+         */
+        private Boolean mirrorFollowRedirect = true;
+
+        /**
+         * Flags of accepting the user-setting of lastModifiedTime in the response from source site. By default it's false.
+         */
+        private Boolean mirrorUserLastModified;
+
+        /**
+         * Flags of take high-speed channel on Back-to-Origin. By default it's false.
+         */
+        private Boolean mirrorIsExpressTunnel;
+
+
+        /**
+         * Need when the mirrorIsExpressTunnel is true, means the destination region for high-speed channel.
+         */
+        private String mirrorDstRegion;
+
+        /**
+         * The vpc id of destination when taking high-speed channel on Back-to-Origin.
+         */
+        private String mirrorDstVpcId;
+
+        private MirrorHeaders mirrorHeaders;
+
     }
 
     public Integer getNumber() {
