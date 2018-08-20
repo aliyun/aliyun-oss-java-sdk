@@ -172,5 +172,5 @@
       </plugin> 
     </plugins> 
   </build>  
-  <contributors><contributor><properties><provider>xiandeng.wxd@alibaba-inc.com</provider><codeName>null</codeName><codeUrl>https://github.com/HalfStackDeveloper/aliyun-oss-java-sdk.git commit:6a3c0d2</codeUrl><description>contributors added by SCM Plugin, please don't modify it!</description></properties></contributor></contributors>
+  <contributors><contributor><properties><provider>xiandeng.wxd@alibaba-inc.com</provider><codeName>null</codeName><codeUrl>https://github.com/HalfStackDeveloper/aliyun-oss-java-sdk.git commit:9ed3607</codeUrl><description>contributors added by SCM Plugin, please don't modify it!</description></properties></contributor></contributors>
 </project>

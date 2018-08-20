@@ -1189,13 +1189,13 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void abortBucketWorm(CommonWormConfigurationRequest commonWormConfigurationRequest) throws OSSException, ClientException {
-        this.bucketOperation.abortBucketWorm(commonWormConfigurationRequest);
+    public void abortBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException {
+        this.bucketOperation.abortBucketWorm(genericRequest);
     }
 
     @Override
-    public void completeBucketWorm(CommonWormConfigurationRequest commonWormConfigurationRequest) throws OSSException, ClientException {
-        this.bucketOperation.completeBucketWorm(commonWormConfigurationRequest);
+    public void completeBucketWorm(CompleteWormConfigurationRequest completeWormConfigurationRequest) throws OSSException, ClientException {
+        this.bucketOperation.completeBucketWorm(completeWormConfigurationRequest);
     }
 
     @Override
