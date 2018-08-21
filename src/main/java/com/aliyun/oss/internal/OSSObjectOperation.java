@@ -930,6 +930,7 @@ public class OSSObjectOperation extends OSSOperation {
                 copyObjectRequest.getNonmatchingEtagConstraints());
 
         addHeader(headers, OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION, copyObjectRequest.getServerSideEncryption());
+        addHeader(headers, OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION_KEY_ID, copyObjectRequest.getServerSideEncryptionKeyId());
 
         ObjectMetadata newObjectMetadata = copyObjectRequest.getNewObjectMetadata();
         if (newObjectMetadata != null) {

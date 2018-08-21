@@ -44,6 +44,9 @@ public class CopyObjectRequest extends WebServiceRequest {
     // Target server's encryption algorithm.
     private String serverSideEncryption;
 
+    // Target server's encryption key ID.
+    private String serverSideEncryptionKeyID;
+
     // Target object's metadata information.
     private ObjectMetadata newObjectMetadata;
 
@@ -296,5 +299,24 @@ public class CopyObjectRequest extends WebServiceRequest {
      */
     public void setServerSideEncryption(String serverSideEncryption) {
         this.serverSideEncryption = serverSideEncryption;
+    }
+
+    /**
+     * Gets the target object's server side encryption key ID.
+     *
+     * @return Server side encryption key ID，null if no encryption key ID.
+     */
+    public String getServerSideEncryptionKeyId() {
+        return this.serverSideEncryptionKeyID;
+    }
+
+    /**
+     * Sets the target object's server side encryption key ID.
+     *
+     * @param serverSideEncryptionKeyId
+     *            Server side encryption key ID，null if no encryption key ID.
+     */
+    public void setServerSideEncryptionKeyId(String serverSideEncryptionKeyId) {
+        this.serverSideEncryptionKeyID = serverSideEncryptionKeyId;
     }
 }
