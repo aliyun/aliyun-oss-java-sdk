@@ -92,6 +92,7 @@ public class SelectInputStream extends FilterInputStream {
                 throw new IOException("select frame crc check failed, actual: " + crc32.getValue()
                         + ", expect: " + currentChecksum);
             }
+            crc32.reset();
         }
     }
 
@@ -100,7 +101,6 @@ public class SelectInputStream extends FilterInputStream {
             if (!firstReadFrame) {
                 internalRead(currentFramePayloadChecksumBytes, 0, 4);
                 validateCheckSum(currentFramePayloadChecksumBytes, crc32);
-                crc32.reset();
             }
             firstReadFrame = false;
             //advance to next frame
