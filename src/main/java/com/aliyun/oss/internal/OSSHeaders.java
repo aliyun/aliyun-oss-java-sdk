@@ -31,6 +31,7 @@ public interface OSSHeaders extends HttpHeaders {
     static final String OSS_VERSION_ID = "x-oss-version-id";
 
     static final String OSS_SERVER_SIDE_ENCRYPTION = "x-oss-server-side-encryption";
+    static final String OSS_SERVER_SIDE_ENCRYPTION_KEY_ID = "x-oss-server-side-encryption-key-id";
 
     static final String GET_OBJECT_IF_MODIFIED_SINCE = "If-Modified-Since";
     static final String GET_OBJECT_IF_UNMODIFIED_SINCE = "If-Unmodified-Since";
