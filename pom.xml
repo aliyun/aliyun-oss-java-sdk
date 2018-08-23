@@ -7,9 +7,9 @@
     <artifactId>parent-pom</artifactId>  
     <version>1.0.2</version> 
   </parent>  
-  <groupId>com.aliyun.oss</groupId>  
-  <artifactId>aliyun-sdk-oss-consolenew</artifactId>
-  <version>0.0.1-select-SNAPSHOT</version>
+  <groupId>com.aliyun.oss</groupId>
+  <artifactId>console-java-sdk</artifactId>
+  <version>1.0.1-select-SNAPSHOT</version>
   <packaging>jar</packaging>  
   <name>Aliyun OSS SDK for Console</name>
   <description>The Aliyun OSS SDK for Console used for accessing Aliyun Object Storage Service</description>
