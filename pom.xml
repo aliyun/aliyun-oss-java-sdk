@@ -8,8 +8,8 @@
     <version>1.0.2</version> 
   </parent>  
   <groupId>com.aliyun.oss</groupId>  
-  <artifactId>aliyun-sdk-oss-consolenew</artifactId>
-  <version>0.0.1</version>
+  <artifactId>console-java-sdk</artifactId>
+  <version>1.0.0</version>
   <packaging>jar</packaging>  
   <name>Aliyun OSS SDK for Console</name>
   <description>The Aliyun OSS SDK for Console used for accessing Aliyun Object Storage Service</description>
