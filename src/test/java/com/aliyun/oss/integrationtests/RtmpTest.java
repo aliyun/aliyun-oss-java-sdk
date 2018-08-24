@@ -566,7 +566,7 @@ public class RtmpTest extends TestBase {
             ossClient.createLiveChannel(createLiveChannelRequest);
             ossClient.setBucketAcl(bucketName, CannedAccessControlList.PublicReadWrite);
 
-            long startTime = System.currentTimeMillis() / 1000 - 8*3600;
+            long startTime = System.currentTimeMillis() / 1000 - 3600;
             long endTime = System.currentTimeMillis() / 1000 + 3600;
             try {
                 OSSObject o = ossClient.getVodPlaylist(bucketName, liveChannel, startTime, endTime);
