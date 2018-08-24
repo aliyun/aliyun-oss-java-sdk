@@ -2143,6 +2143,45 @@ public interface OSS {
             throws OSSException, ClientException;
 
     /**
+     * Generates and returns a VOD playlist (m3u8 format) for the *.ts files with specified
+     * time range under the Live Channel, but this VOD playlist would not be stored in OSS Server.
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param liveChannelName
+     *            Live Channel name.
+     * @param startTime
+     *            The start time of the playlist in epoch time (means *.ts files
+     *            time is same or later than it)
+     * @param endTime
+     *            The end time of the playlist in epoch time(means *.ts files
+     *            time is no later than it).
+     * @return A {@link OSSObject} instance.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public OSSObject getVodPlaylist(String bucketName, String liveChannelName, long startTime,
+                                    long endTime) throws OSSException, ClientException;
+
+    /**
+     * Generates and returns a VOD playlist (m3u8 format) for the *.ts files with specified
+     * time range under the Live Channel, but this VOD playlist would not be stored in OSS Server.
+     *
+     * @param getVodPlaylistRequest
+     *            A {@link GetVodPlaylistRequest} instance the specifies
+     *            the bucket name and the Live Channel name.
+     * @return A {@link OSSObject} instance.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public OSSObject getVodPlaylist(GetVodPlaylistRequest getVodPlaylistRequest)
+            throws OSSException, ClientException;
+
+    /**
      * Generates a RTMP pushing streaming address in the Live Channel.
      * 
      * @param bucketName

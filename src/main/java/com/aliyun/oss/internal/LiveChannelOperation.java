@@ -32,6 +32,7 @@ import static com.aliyun.oss.internal.ResponseParsers.getLiveChannelHistoryRespo
 import static com.aliyun.oss.internal.ResponseParsers.getLiveChannelInfoResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getLiveChannelStatResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.listLiveChannelsReponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.GetObjectResponseParser;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -65,6 +66,8 @@ import com.aliyun.oss.model.LiveChannelListing;
 import com.aliyun.oss.model.LiveChannelStat;
 import com.aliyun.oss.model.LiveRecord;
 import com.aliyun.oss.model.SetLiveChannelRequest;
+import com.aliyun.oss.model.GetVodPlaylistRequest;
+import com.aliyun.oss.model.OSSObject;
 
 /**
  * Live channel operation.
@@ -268,7 +271,7 @@ public class LiveChannelOperation extends OSSOperation {
         String bucketName = generateVodPlaylistRequest.getBucketName();
         String liveChannelName = generateVodPlaylistRequest.getLiveChannelName();
         String playlistName = generateVodPlaylistRequest.getPlaylistName();
-        Long startTime = generateVodPlaylistRequest.getStratTime();
+        Long startTime = generateVodPlaylistRequest.getStartTime();
         Long endTime = generateVodPlaylistRequest.getEndTime();
 
         assertParameterNotNull(bucketName, "bucketName");
@@ -276,7 +279,7 @@ public class LiveChannelOperation extends OSSOperation {
         assertParameterNotNull(liveChannelName, "liveChannelName");
         ensureLiveChannelNameValid(liveChannelName);
         assertParameterNotNull(playlistName, "playlistName");
-        assertParameterNotNull(startTime, "stratTime");
+        assertParameterNotNull(startTime, "startTime");
         assertParameterNotNull(endTime, "endTime");
 
         Map<String, String> parameters = new HashMap<String, String>();
@@ -291,6 +294,35 @@ public class LiveChannelOperation extends OSSOperation {
                 .setOriginalRequest(generateVodPlaylistRequest).build();
 
         doOperation(request, emptyResponseParser, bucketName, key);
+    }
+
+    public OSSObject getVodPlaylist(GetVodPlaylistRequest getVodPlaylistRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(getVodPlaylistRequest, "getVodPlaylistRequest");
+
+        String bucketName = getVodPlaylistRequest.getBucketName();
+        String liveChannelName = getVodPlaylistRequest.getLiveChannelName();
+        Long startTime = getVodPlaylistRequest.getStartTime();
+        Long endTime = getVodPlaylistRequest.getEndTime();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        assertParameterNotNull(liveChannelName, "liveChannelName");
+        ensureLiveChannelNameValid(liveChannelName);
+        assertParameterNotNull(startTime, "startTime");
+        assertParameterNotNull(endTime, "endTime");
+
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put(RequestParameters.SUBRESOURCE_VOD, null);
+        parameters.put(RequestParameters.SUBRESOURCE_START_TIME, startTime.toString());
+        parameters.put(RequestParameters.SUBRESOURCE_END_TIME, endTime.toString());
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(liveChannelName).setParameters(parameters)
+                .setInputStream(new ByteArrayInputStream(new byte[0])).setInputSize(0)
+                .setOriginalRequest(getVodPlaylistRequest).build();
+
+        return doOperation(request, new GetObjectResponseParser(bucketName, liveChannelName), bucketName, liveChannelName, true);
     }
 
     public String generateRtmpUri(GenerateRtmpUriRequest request) throws OSSException, ClientException {

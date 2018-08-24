@@ -1279,6 +1279,19 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public OSSObject getVodPlaylist(String bucketName, String liveChannelName, long startTime,
+                                    long endTime) throws OSSException, ClientException {
+        return this.getVodPlaylist(
+                new GetVodPlaylistRequest(bucketName, liveChannelName, startTime, endTime));
+    }
+
+    @Override
+    public OSSObject getVodPlaylist(GetVodPlaylistRequest getVodPlaylistRequest)
+            throws OSSException, ClientException {
+        return liveChannelOperation.getVodPlaylist(getVodPlaylistRequest);
+    }
+
+    @Override
     public String generateRtmpUri(String bucketName, String liveChannelName, String PlaylistName, long expires)
             throws OSSException, ClientException {
         return this.generateRtmpUri(new GenerateRtmpUriRequest(bucketName, liveChannelName, PlaylistName, expires));
