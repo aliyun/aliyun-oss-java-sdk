@@ -9,7 +9,7 @@ public class CSVFormat implements Serializable {
         Use // we can use csv header in select sql
     }
     //Define the first line of input. Valid values: None, Ignore, Use.
-    private Header headerInfo = Header.Ignore;
+    private Header headerInfo = Header.None;
 
     //Define the delimiter for records
     private String recordDelimiter = "\n";
