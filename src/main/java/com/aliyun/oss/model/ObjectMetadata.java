@@ -19,6 +19,7 @@
 
 package com.aliyun.oss.model;
 
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.Collections;
 import java.util.Date;
@@ -341,6 +342,21 @@ public class ObjectMetadata {
      */
     public String getRequestId() {
         return (String) metadata.get(OSSHeaders.OSS_HEADER_REQUEST_ID);
+    }
+
+    /**
+     * Gets the service crc.
+     *
+     * @return service crc.
+     */
+    public Long getServiceCRC() {
+        String strSrvCrc = (String) metadata.get(OSSHeaders.OSS_HASH_CRC64_ECMA);
+
+        if (strSrvCrc != null) {
+            BigInteger bi = new BigInteger(strSrvCrc);
+            return bi.longValue();
+        }
+        return null;
     }
 
     /**

@@ -715,6 +715,28 @@ public interface OSS {
     public SelectObjectMetadata createSelectObjectMetadata(CreateSelectObjectMetadataRequest createSelectObjectMetadataRequest) throws OSSException, ClientException;
 
     /**
+     * Gets all the head data of {@link OSSObject}.
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param key
+     *            Object key.
+     *
+     * @return The {@link ObjectMetadata} instance.
+     */
+    public ObjectMetadata headObject(String bucketName, String key) throws OSSException, ClientException;
+
+    /**
+     * Gets all the head data of {@link OSSObject}.
+     *
+     * @param headObjectRequest
+     *            A {@link HeadObjectRequest} instance which specifies the
+     *            bucket name and object key, and some constraint information can be set.
+     * @return The {@link ObjectMetadata} instance.
+     */
+    public ObjectMetadata headObject(HeadObjectRequest headObjectRequest) throws OSSException, ClientException;
+
+    /**
      * Append the data to the appendable object specified in
      * {@link AppendObjectRequest}. It's not applicable to normal OSS object.
      * 

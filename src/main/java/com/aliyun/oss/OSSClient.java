@@ -583,6 +583,16 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public ObjectMetadata headObject(String bucketName, String key) throws OSSException, ClientException {
+        return this.headObject(new HeadObjectRequest(bucketName, key));
+    }
+
+    @Override
+    public ObjectMetadata headObject(HeadObjectRequest headObjectRequest) throws OSSException, ClientException {
+        return objectOperation.headObject(headObjectRequest);
+    }
+
+    @Override
     public AppendObjectResult appendObject(AppendObjectRequest appendObjectRequest)
             throws OSSException, ClientException {
         return objectOperation.appendObject(appendObjectRequest);

@@ -151,6 +151,7 @@ public final class ResponseParsers {
     public static final GetSimplifiedObjectMetaResponseParser getSimplifiedObjectMetaResponseParser = new GetSimplifiedObjectMetaResponseParser();
     public static final RestoreObjectResponseParser restoreObjectResponseParser = new RestoreObjectResponseParser();
     public static final ProcessObjectResponseParser processObjectResponseParser = new ProcessObjectResponseParser();
+    public static final HeadObjectResponseParser headObjectResponseParser = new HeadObjectResponseParser();
 
     public static final CompleteMultipartUploadResponseParser completeMultipartUploadResponseParser = new CompleteMultipartUploadResponseParser();
     public static final CompleteMultipartUploadProcessResponseParser completeMultipartUploadProcessResponseParser = new CompleteMultipartUploadProcessResponseParser();
@@ -732,6 +733,18 @@ public final class ResponseParsers {
             }
         }
 
+    }
+
+    public static final class HeadObjectResponseParser implements ResponseParser<ObjectMetadata> {
+
+        @Override
+        public ObjectMetadata parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                return parseObjectMetadata(response.getHeaders());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
     }
 
     public static final class CopyObjectResponseParser implements ResponseParser<CopyObjectResult> {
