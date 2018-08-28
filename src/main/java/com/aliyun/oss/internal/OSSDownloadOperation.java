@@ -48,6 +48,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import com.aliyun.oss.InconsistentException;
+import com.aliyun.oss.common.utils.CRC64;
+import com.aliyun.oss.common.utils.IOUtils;
 import com.aliyun.oss.event.ProgressEventType;
 import com.aliyun.oss.event.ProgressListener;
 import com.aliyun.oss.event.ProgressPublisher;
@@ -58,6 +61,7 @@ import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.SimplifiedObjectMeta;
+import com.aliyun.oss.model.HeadObjectRequest;
 
 /**
  * OSSDownloadOperation
@@ -254,11 +258,34 @@ public class OSSDownloadOperation {
             this.exception = exception;
         }
 
+        public Long getClientCRC() { return clientCRC; }
+
+        public void setClientCRC(Long clientCRC) { this.clientCRC = clientCRC; }
+
+        public Long getServerCRC() {
+            return serverCRC;
+        }
+
+        public void setServerCRC(Long serverCRC) {
+            this.serverCRC = serverCRC;
+        }
+
+        public long getLength() {
+            return length;
+        }
+
+        public void setLength(long length) {
+            this.length = length;
+        }
         private int number; // part number, starting from 1.
         private long start; // start index in the part.
         private long end; // end index in the part.
         private boolean failed; // flag of part upload failure.
         private Exception exception; // Exception during part upload.
+        private Long clientCRC; // client crc of this part
+        private Long serverCRC; // server crc of this file
+
+        private long length;
     }
 
     static class DownloadResult {
@@ -354,6 +381,19 @@ public class OSSDownloadOperation {
             }
         }
 
+        // check crc64
+        if(objectOperation.getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
+            Long clientCRC = calcObjectCRCFromParts(downloadResult.getPartResults());
+            Long serverCRC = downloadResult.getPartResults().get(0).getServerCRC();
+            try {
+                OSSUtils.checkChecksum(clientCRC, serverCRC, downloadResult.getObjectMetadata().getRequestId());
+            } catch (Exception e) {
+                ProgressPublisher.publishProgress(listener, ProgressEventType.TRANSFER_FAILED_EVENT);
+                throw new InconsistentException(clientCRC, serverCRC, downloadResult.getObjectMetadata().getRequestId());
+            }
+        }
+
+
         // Publish the complete status.
         ProgressPublisher.publishProgress(listener, ProgressEventType.TRANSFER_COMPLETED_EVENT);
 
@@ -396,6 +436,18 @@ public class OSSDownloadOperation {
                 rf.close();
             }
         }
+    }
+
+    private static Long calcObjectCRCFromParts(List<PartResult> partResults) {
+        long crc = 0;
+
+        for (PartResult partResult : partResults) {
+            if (partResult.getClientCRC() == null || partResult.getLength() <= 0) {
+                return null;
+            }
+            crc = CRC64.combine(crc, partResult.getClientCRC(), partResult.getLength());
+        }
+        return new Long(crc);
     }
 
     private DownloadResult download(DownloadCheckPoint downloadCheckPoint, DownloadFileRequest downloadFileRequest)
@@ -509,6 +561,12 @@ public class OSSDownloadOperation {
                     output.write(buffer, 0, bytesRead);
                 }
 
+                if (objectOperation.getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
+                    Long clientCRC = IOUtils.getCRCValue(content);
+                    tr.setClientCRC(clientCRC);
+                    tr.setServerCRC(objectMetadata.getServerCRC());
+                    tr.setLength(objectMetadata.getContentLength());
+                }
                 downloadCheckPoint.update(partIndex, true);
                 if (downloadFileRequest.isEnableCheckpoint()) {
                     downloadCheckPoint.dump(downloadFileRequest.getCheckpointFile());

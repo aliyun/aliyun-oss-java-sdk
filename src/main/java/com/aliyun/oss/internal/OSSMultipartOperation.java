@@ -178,8 +178,8 @@ public class OSSMultipartOperation extends OSSOperation {
                     reponseHandlers);
         }
 
-        result.setClientCRC(calcObjectCRCFromParts(completeMultipartUploadRequest.getPartETags()));
         if (getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
+            result.setClientCRC(calcObjectCRCFromParts(completeMultipartUploadRequest.getPartETags()));
             OSSUtils.checkChecksum(result.getClientCRC(), result.getServerCRC(), result.getRequestId());
         }
 

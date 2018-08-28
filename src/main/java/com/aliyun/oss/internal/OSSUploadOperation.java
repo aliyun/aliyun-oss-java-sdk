@@ -43,6 +43,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import com.aliyun.oss.InconsistentException;
+import com.aliyun.oss.common.utils.CRC64;
 import com.aliyun.oss.event.ProgressEventType;
 import com.aliyun.oss.event.ProgressListener;
 import com.aliyun.oss.event.ProgressPublisher;
@@ -260,11 +262,20 @@ public class OSSUploadOperation {
             this.exception = exception;
         }
 
+        public Long getPartCRC() {
+            return partCRC;
+        }
+
+        public void setPartCRC(Long partCRC) {
+            this.partCRC = partCRC;
+        }
+
         private int number; // part number
         private long offset; // offset in the file
         private long length; // part size
         private boolean failed; // part upload failure flag
         private Exception exception; // part upload exception
+        private Long partCRC;
     }
 
     public OSSUploadOperation(OSSMultipartOperation multipartOperation) {
@@ -340,12 +351,36 @@ public class OSSUploadOperation {
         CompleteMultipartUploadResult multipartUploadResult = complete(uploadCheckPoint, uploadFileRequest);
         uploadFileResult.setMultipartUploadResult(multipartUploadResult);
 
+        // check crc64
+        if (multipartOperation.getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
+            Long clientCRC = calcObjectCRCFromParts(partResults);
+            multipartUploadResult.setClientCRC(clientCRC);
+            try {
+                OSSUtils.checkChecksum(clientCRC, multipartUploadResult.getServerCRC(), multipartUploadResult.getRequestId());
+            } catch (Exception e) {
+                ProgressPublisher.publishProgress(listener, ProgressEventType.TRANSFER_FAILED_EVENT);
+                throw new InconsistentException(clientCRC, multipartUploadResult.getServerCRC(), multipartUploadResult.getRequestId());
+            }
+        }
+
         // The checkpoint is enabled and upload the checkpoint file.
         if (uploadFileRequest.isEnableCheckpoint()) {
             remove(uploadFileRequest.getCheckpointFile());
         }
 
         return uploadFileResult;
+    }
+
+    private static Long calcObjectCRCFromParts(List<PartResult> partResults) {
+        long crc = 0;
+
+        for (PartResult partResult : partResults) {
+            if (partResult.getPartCRC() == null || partResult.getLength() <= 0) {
+                return null;
+            }
+            crc = CRC64.combine(crc, partResult.getPartCRC(), partResult.getLength());
+        }
+        return new Long(crc);
     }
 
     private void prepare(UploadCheckPoint uploadCheckPoint, UploadFileRequest uploadFileRequest) {
@@ -462,6 +497,11 @@ public class OSSUploadOperation {
 
                 UploadPartResult uploadPartResult = multipartOperation.uploadPart(uploadPartRequest);
 
+                if(multipartOperation.getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
+                    OSSUtils.checkChecksum(uploadPartResult.getClientCRC(), uploadPartResult.getServerCRC(), uploadPartResult.getRequestId());
+                    tr.setPartCRC(uploadPartResult.getClientCRC());
+                    tr.setLength(uploadPartResult.getPartSize());
+                }
                 PartETag partETag = new PartETag(uploadPartResult.getPartNumber(), uploadPartResult.getETag());
                 uploadCheckPoint.update(partIndex, partETag, true);
                 if (uploadFileRequest.isEnableCheckpoint()) {

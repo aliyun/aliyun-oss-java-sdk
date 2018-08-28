@@ -527,7 +527,7 @@ public class OSSObjectOperation extends OSSOperation {
     }
 
     /**
-     * Check if the object key exists under the specified bucket.
+     * Get head information.
      */
     public ObjectMetadata headObject(HeadObjectRequest headObjectRequest) throws OSSException, ClientException {
 

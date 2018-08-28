@@ -349,7 +349,7 @@ public class ObjectMetadata {
      *
      * @return service crc.
      */
-    public Long getServiceCRC() {
+    public Long getServerCRC() {
         String strSrvCrc = (String) metadata.get(OSSHeaders.OSS_HASH_CRC64_ECMA);
 
         if (strSrvCrc != null) {
