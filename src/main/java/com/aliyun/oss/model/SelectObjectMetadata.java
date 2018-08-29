@@ -30,18 +30,18 @@ public class SelectObjectMetadata extends ObjectMetadata {
     }
 
     public static class CsvObjectMetadata {
-        private int totalLines;
+        private long totalLines;
         private int splits;
 
-        public int getTotalLines() {
+        public long getTotalLines() {
             return totalLines;
         }
 
-        public void setTotalLines(int totalLines) {
+        public void setTotalLines(long totalLines) {
             this.totalLines = totalLines;
         }
 
-        public CsvObjectMetadata withTotalLines(int totalLines) {
+        public CsvObjectMetadata withTotalLines(long totalLines) {
             setTotalLines(totalLines);
             return this;
         }

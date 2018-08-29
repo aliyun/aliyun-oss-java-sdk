@@ -218,13 +218,25 @@ public class OSSObjectOperation extends OSSOperation {
                 .setBucket(bucketName).setKey(key).setOriginalRequest(genericRequest)
                 .build();
 
-        ObjectMetadata objectMetadata = doOperation(request, getObjectMetadataResponseParser, bucketName, key, true, null, null);
-        SelectObjectMetadata selectObjectMetadata = new SelectObjectMetadata(objectMetadata);
-        selectObjectMetadata.setCsvObjectMetadata(
-                new SelectObjectMetadata.CsvObjectMetadata()
-                        .withTotalLines(Integer.parseInt(objectMetadata.getRawMetadata().get(OSS_SELECT_CSV_ROWS).toString()))
-                        .withSplits(Integer.parseInt(objectMetadata.getRawMetadata().get(OSS_SELECT_CSV_SPLITS).toString())));
-        return selectObjectMetadata;
+        //create meta progress listener(scanned bytes)
+        final ProgressListener selectProgressListener = createSelectObjectMetadataRequest.getSelectProgressListener();
+        try {
+            OSSObject ossObject = doOperation(request, new GetObjectResponseParser(bucketName, key), bucketName, key, true);
+            publishProgress(selectProgressListener, ProgressEventType.SELECT_STARTED_EVENT);
+            SelectObjectMetadata selectObjectMetadata = new SelectObjectMetadata(ossObject.getObjectMetadata());
+            InputStream in = ossObject.getObjectContent();
+            CreateSelectMetaInputStream warppedStream = new CreateSelectMetaInputStream(in, selectObjectMetadata, selectProgressListener);
+            while (warppedStream.read() != -1) {
+                //read until eof
+            }
+            return selectObjectMetadata;
+        } catch (IOException e) {
+            publishProgress(selectProgressListener, ProgressEventType.SELECT_FAILED_EVENT);
+            throw new RuntimeException(e);
+        } catch (RuntimeException e) {
+            publishProgress(selectProgressListener, ProgressEventType.SELECT_FAILED_EVENT);
+            throw e;
+        }
     }
 
     /**
