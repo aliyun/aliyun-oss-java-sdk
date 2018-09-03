@@ -139,7 +139,7 @@ public class CreateSelectMetaInputStream extends FilterInputStream {
                     }
 
                     selectObjectMetadata.setCsvObjectMetadata(
-                            new SelectObjectMetadata.CsvObjectMetadata()
+                            new SelectObjectMetadata.CSVObjectMetadata()
                                     .withSplits(ByteBuffer.wrap(splitBytes).getInt())
                                     .withTotalLines(ByteBuffer.wrap(totalLineBytes).getLong()));
                     break;
