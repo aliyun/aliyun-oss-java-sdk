@@ -1,11 +1,14 @@
 package com.aliyun.oss.model;
 
+import com.aliyun.oss.event.ProgressListener;
+
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_CSV_META;
 
 public class CreateSelectObjectMetadataRequest extends HeadObjectRequest {
     private String process;
     private InputSerialization inputSerialization = new InputSerialization();
     private boolean overwrite;
+    private ProgressListener selectProgressListener;
 
     public CreateSelectObjectMetadataRequest(String bucketName, String key) {
         super(bucketName, key);
@@ -49,6 +52,19 @@ public class CreateSelectObjectMetadataRequest extends HeadObjectRequest {
 
     public CreateSelectObjectMetadataRequest withOverwrite(boolean overwrite) {
         setOverwrite(overwrite);
+        return this;
+    }
+
+    public ProgressListener getSelectProgressListener() {
+        return selectProgressListener;
+    }
+
+    public void setSelectProgressListener(ProgressListener selectProgressListener) {
+        this.selectProgressListener = selectProgressListener;
+    }
+
+    public CreateSelectObjectMetadataRequest withSelectProgressListener(ProgressListener selectProgressListener) {
+        setSelectProgressListener(selectProgressListener);
         return this;
     }
 }

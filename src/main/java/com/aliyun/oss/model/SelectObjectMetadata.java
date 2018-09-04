@@ -2,12 +2,12 @@ package com.aliyun.oss.model;
 
 /**
  * Metadata for select object requests.
- * For example, {@link CsvObjectMetadata} contains total lines so that
+ * For example, {@link CSVObjectMetadata} contains total lines so that
  * users can do line-range query for select requests
  */
 public class SelectObjectMetadata extends ObjectMetadata {
 
-    private CsvObjectMetadata csvObjectMetadata;
+    private CSVObjectMetadata csvObjectMetadata;
 
     public SelectObjectMetadata() {}
 
@@ -16,32 +16,32 @@ public class SelectObjectMetadata extends ObjectMetadata {
         metadata.putAll(objectMetadata.getRawMetadata());
     }
 
-    public CsvObjectMetadata getCsvObjectMetadata() {
+    public CSVObjectMetadata getCsvObjectMetadata() {
         return csvObjectMetadata;
     }
 
-    public void setCsvObjectMetadata(CsvObjectMetadata csvObjectMetadata) {
+    public void setCsvObjectMetadata(CSVObjectMetadata csvObjectMetadata) {
         this.csvObjectMetadata = csvObjectMetadata;
     }
 
-    public SelectObjectMetadata withCsvObjectMetadata(CsvObjectMetadata csvObjectMetadata) {
+    public SelectObjectMetadata withCsvObjectMetadata(CSVObjectMetadata csvObjectMetadata) {
         setCsvObjectMetadata(csvObjectMetadata);
         return this;
     }
 
-    public static class CsvObjectMetadata {
-        private int totalLines;
+    public static class CSVObjectMetadata {
+        private long totalLines;
         private int splits;
 
-        public int getTotalLines() {
+        public long getTotalLines() {
             return totalLines;
         }
 
-        public void setTotalLines(int totalLines) {
+        public void setTotalLines(long totalLines) {
             this.totalLines = totalLines;
         }
 
-        public CsvObjectMetadata withTotalLines(int totalLines) {
+        public CSVObjectMetadata withTotalLines(long totalLines) {
             setTotalLines(totalLines);
             return this;
         }
@@ -54,7 +54,7 @@ public class SelectObjectMetadata extends ObjectMetadata {
             this.splits = splits;
         }
 
-        public CsvObjectMetadata withSplits(int splits) {
+        public CSVObjectMetadata withSplits(int splits) {
             setSplits(splits);
             return this;
         }

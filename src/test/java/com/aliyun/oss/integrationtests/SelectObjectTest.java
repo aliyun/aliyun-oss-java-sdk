@@ -54,7 +54,8 @@ public class SelectObjectTest extends TestBase {
 
         SelectObjectRequest selectObjectRequest =
                 new SelectObjectRequest(bucketName, key)
-                        .withInputSerialization(new InputSerialization().withCsvInputFormat(new CSVFormat()))
+                        .withInputSerialization(new InputSerialization().withCsvInputFormat(
+                            new CSVFormat().withHeaderInfo(CSVFormat.Header.Ignore)))
                         .withOutputSerialization(new OutputSerialization().withCsvOutputFormat(new CSVFormat()));
         selectObjectRequest.setExpression("select * from ossobject");
         OSSObject ossObject = ossClient.selectObject(selectObjectRequest);
@@ -66,6 +67,10 @@ public class SelectObjectTest extends TestBase {
         }
 
         Assert.assertEquals(new String(buffer, 0, off), content.substring(content.indexOf("\n") + 1));
+
+        ossClient.createSelectObjectMetadata(
+            new CreateSelectObjectMetadataRequest(bucketName, key)
+                .withInputSerialization(new InputSerialization().withCsvInputFormat(new CSVFormat())));
 
         selectObjectRequest.setLineRange(1, 3);
         OSSObject rangeOssObject = ossClient.selectObject(selectObjectRequest);
