@@ -19,73 +19,7 @@
 
 package com.aliyun.oss.internal;
 
-import static com.aliyun.oss.common.parser.RequestMarshallers.*;
-import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
-import static com.aliyun.oss.common.utils.CodingUtils.assertStringNotNullOrEmpty;
-import static com.aliyun.oss.common.utils.CodingUtils.assertTrue;
-import static com.aliyun.oss.common.utils.IOUtils.checkFile;
-import static com.aliyun.oss.common.utils.IOUtils.newRepeatableInputStream;
-import static com.aliyun.oss.common.utils.IOUtils.safeClose;
-import static com.aliyun.oss.common.utils.LogUtils.getLog;
-import static com.aliyun.oss.common.utils.LogUtils.logException;
-import static com.aliyun.oss.event.ProgressPublisher.publishProgress;
-import static com.aliyun.oss.internal.OSSConstants.DEFAULT_BUFFER_SIZE;
-import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
-import static com.aliyun.oss.internal.OSSHeaders.OSS_SELECT_CSV_ROWS;
-import static com.aliyun.oss.internal.OSSHeaders.OSS_SELECT_CSV_SPLITS;
-import static com.aliyun.oss.internal.OSSHeaders.OSS_SELECT_OUTPUT_RAW;
-import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
-import static com.aliyun.oss.internal.OSSUtils.addDateHeader;
-import static com.aliyun.oss.internal.OSSUtils.addHeader;
-import static com.aliyun.oss.internal.OSSUtils.addStringListHeader;
-import static com.aliyun.oss.internal.OSSUtils.determineInputStreamLength;
-import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
-import static com.aliyun.oss.internal.OSSUtils.ensureObjectKeyValid;
-import static com.aliyun.oss.internal.OSSUtils.ensureCallbackValid;
-import static com.aliyun.oss.internal.OSSUtils.joinETags;
-import static com.aliyun.oss.internal.OSSUtils.populateRequestMetadata;
-import static com.aliyun.oss.internal.OSSUtils.populateResponseHeaderParameters;
-import static com.aliyun.oss.internal.OSSUtils.populateRequestCallback;
-import static com.aliyun.oss.internal.OSSUtils.removeHeader;
-import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
-import static com.aliyun.oss.internal.RequestParameters.ENCODING_TYPE;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_ACL;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_DELETE;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_OBJECTMETA;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_SYMLINK;
-import static com.aliyun.oss.internal.ResponseParsers.appendObjectResponseParser;
-import static com.aliyun.oss.internal.ResponseParsers.copyObjectResponseParser;
-import static com.aliyun.oss.internal.ResponseParsers.deleteObjectsResponseParser;
-import static com.aliyun.oss.internal.ResponseParsers.getObjectAclResponseParser;
-import static com.aliyun.oss.internal.ResponseParsers.getObjectMetadataResponseParser;
-import static com.aliyun.oss.internal.ResponseParsers.putObjectReponseParser;
-import static com.aliyun.oss.internal.ResponseParsers.putObjectProcessReponseParser;
-import static com.aliyun.oss.internal.ResponseParsers.getSimplifiedObjectMetaResponseParser;
-import static com.aliyun.oss.internal.ResponseParsers.getSymbolicLinkResponseParser;
-
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.CheckedInputStream;
-
-import com.aliyun.oss.model.*;
-import org.apache.http.HttpStatus;
-
-import com.aliyun.oss.ClientException;
-import com.aliyun.oss.HttpMethod;
-import com.aliyun.oss.OSSErrorCode;
-import com.aliyun.oss.OSSException;
-import com.aliyun.oss.ServiceException;
+import com.aliyun.oss.*;
 import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.comm.ResponseHandler;
@@ -93,18 +27,31 @@ import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.comm.ServiceClient;
 import com.aliyun.oss.common.comm.io.RepeatableFileInputStream;
 import com.aliyun.oss.common.parser.ResponseParser;
-import com.aliyun.oss.common.utils.BinaryUtil;
-import com.aliyun.oss.common.utils.CRC64;
-import com.aliyun.oss.common.utils.DateUtil;
-import com.aliyun.oss.common.utils.ExceptionFactory;
-import com.aliyun.oss.common.utils.HttpHeaders;
-import com.aliyun.oss.common.utils.HttpUtil;
-import com.aliyun.oss.common.utils.IOUtils;
-import com.aliyun.oss.common.utils.RangeSpec;
+import com.aliyun.oss.common.utils.*;
 import com.aliyun.oss.event.ProgressEventType;
 import com.aliyun.oss.event.ProgressInputStream;
 import com.aliyun.oss.event.ProgressListener;
-import com.aliyun.oss.internal.ResponseParsers.GetObjectResponseParser;
+import com.aliyun.oss.internal.ResponseParsers.*;
+import com.aliyun.oss.model.*;
+import org.apache.http.HttpStatus;
+
+import java.io.*;
+import java.net.URL;
+import java.util.*;
+import java.util.zip.CheckedInputStream;
+
+import static com.aliyun.oss.common.parser.RequestMarshallers.*;
+import static com.aliyun.oss.common.utils.CodingUtils.*;
+import static com.aliyun.oss.common.utils.IOUtils.*;
+import static com.aliyun.oss.common.utils.LogUtils.getLog;
+import static com.aliyun.oss.common.utils.LogUtils.logException;
+import static com.aliyun.oss.event.ProgressPublisher.publishProgress;
+import static com.aliyun.oss.internal.OSSConstants.DEFAULT_BUFFER_SIZE;
+import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
+import static com.aliyun.oss.internal.OSSHeaders.OSS_SELECT_OUTPUT_RAW;
+import static com.aliyun.oss.internal.OSSUtils.*;
+import static com.aliyun.oss.internal.RequestParameters.*;
+import static com.aliyun.oss.internal.ResponseParsers.*;
 
 /**
  * Object operation.
@@ -141,7 +88,7 @@ public class OSSObjectOperation extends OSSOperation {
      * Upload input stream to oss by using url signature.
      */
     public PutObjectResult putObject(URL signedUrl, InputStream requestContent, long contentLength,
-            Map<String, String> requestHeaders, boolean useChunkEncoding) throws OSSException, ClientException {
+                                     Map<String, String> requestHeaders, boolean useChunkEncoding) throws OSSException, ClientException {
 
         assertParameterNotNull(signedUrl, "signedUrl");
         assertParameterNotNull(requestContent, "requestContent");
@@ -218,13 +165,25 @@ public class OSSObjectOperation extends OSSOperation {
                 .setBucket(bucketName).setKey(key).setOriginalRequest(genericRequest)
                 .build();
 
-        ObjectMetadata objectMetadata = doOperation(request, getObjectMetadataResponseParser, bucketName, key, true, null, null);
-        SelectObjectMetadata selectObjectMetadata = new SelectObjectMetadata(objectMetadata);
-        selectObjectMetadata.setCsvObjectMetadata(
-                new SelectObjectMetadata.CsvObjectMetadata()
-                        .withTotalLines(Integer.parseInt(objectMetadata.getRawMetadata().get(OSS_SELECT_CSV_ROWS).toString()))
-                        .withSplits(Integer.parseInt(objectMetadata.getRawMetadata().get(OSS_SELECT_CSV_SPLITS).toString())));
-        return selectObjectMetadata;
+        //create meta progress listener(scanned bytes)
+        final ProgressListener selectProgressListener = createSelectObjectMetadataRequest.getSelectProgressListener();
+        try {
+            OSSObject ossObject = doOperation(request, new GetObjectResponseParser(bucketName, key), bucketName, key, true);
+            publishProgress(selectProgressListener, ProgressEventType.SELECT_STARTED_EVENT);
+            SelectObjectMetadata selectObjectMetadata = new SelectObjectMetadata(ossObject.getObjectMetadata());
+            InputStream in = ossObject.getObjectContent();
+            CreateSelectMetaInputStream warppedStream = new CreateSelectMetaInputStream(in, selectObjectMetadata, selectProgressListener);
+            while (warppedStream.read() != -1) {
+                //read until eof
+            }
+            return selectObjectMetadata;
+        } catch (IOException e) {
+            publishProgress(selectProgressListener, ProgressEventType.SELECT_FAILED_EVENT);
+            throw new RuntimeException(e);
+        } catch (RuntimeException e) {
+            publishProgress(selectProgressListener, ProgressEventType.SELECT_FAILED_EVENT);
+            throw e;
+        }
     }
 
     /**
@@ -810,7 +769,7 @@ public class OSSObjectOperation extends OSSOperation {
     }
 
     private <RequestType extends PutObjectRequest, ResponseType> ResponseType writeObjectInternal(WriteMode mode,
-            RequestType originalRequest, ResponseParser<ResponseType> responseParser) {
+                                                                                                  RequestType originalRequest, ResponseParser<ResponseType> responseParser) {
 
         final String bucketName = originalRequest.getBucketName();
         final String key = originalRequest.getKey();
