@@ -29,15 +29,21 @@ import javax.crypto.spec.SecretKeySpec;
 import com.aliyun.oss.common.utils.BinaryUtil;
 
 /**
- * Used for computing Hmac-SHA1 signature.
+ * Used for computing Hmac signature.
  */
-public class HmacSHA1Signature extends ServiceSignature {
+public class HmacSignature extends ServiceSignature {
+
+    /* Hmac SHA1 Signature method */
+    public static final String SHA1 = "HmacSHA1";
+
+    /* Hmac SHA256 Signature method */
+    public static final String SHA256 = "HmacSHA256";
 
     /* The default encoding. */
-    private static final String DEFAULT_ENCODING = "UTF-8";
+    private String encoding = "UTF-8";
 
     /* Signature method. */
-    private static final String ALGORITHM = "HmacSHA1";
+    private String algorithm = SHA1;
 
     /* Signature version. */
     private static final String VERSION = "1";
@@ -47,8 +53,19 @@ public class HmacSHA1Signature extends ServiceSignature {
     /* Prototype of the Mac instance. */
     private static Mac macInstance;
 
+    public HmacSignature() {}
+
+    public HmacSignature(String algorithm) {
+        this.algorithm = algorithm;
+    }
+
+    public HmacSignature(String algorithm, String encoding) {
+        this.algorithm = algorithm;
+        this.encoding = encoding;
+    }
+
     public String getAlgorithm() {
-        return ALGORITHM;
+        return algorithm;
     }
 
     public String getVersion() {
@@ -57,10 +74,10 @@ public class HmacSHA1Signature extends ServiceSignature {
 
     public String computeSignature(String key, String data) {
         try {
-            byte[] signData = sign(key.getBytes(DEFAULT_ENCODING), data.getBytes(DEFAULT_ENCODING));
+            byte[] signData = sign(key.getBytes(encoding), data.getBytes(encoding));
             return BinaryUtil.toBase64String(signData);
         } catch (UnsupportedEncodingException ex) {
-            throw new RuntimeException("Unsupported algorithm: " + DEFAULT_ENCODING, ex);
+            throw new RuntimeException("Unsupported algorithm: " + encoding, ex);
         }
     }
 
@@ -72,7 +89,7 @@ public class HmacSHA1Signature extends ServiceSignature {
             if (macInstance == null) {
                 synchronized (LOCK) {
                     if (macInstance == null) {
-                        macInstance = Mac.getInstance(ALGORITHM);
+                        macInstance = Mac.getInstance(algorithm);
                     }
                 }
             }
@@ -82,12 +99,12 @@ public class HmacSHA1Signature extends ServiceSignature {
                 mac = (Mac) macInstance.clone();
             } catch (CloneNotSupportedException e) {
                 // If it is not clonable, create a new one.
-                mac = Mac.getInstance(ALGORITHM);
+                mac = Mac.getInstance(algorithm);
             }
-            mac.init(new SecretKeySpec(key, ALGORITHM));
+            mac.init(new SecretKeySpec(key, algorithm));
             return mac.doFinal(data);
         } catch (NoSuchAlgorithmException ex) {
-            throw new RuntimeException("Unsupported algorithm: " + ALGORITHM, ex);
+            throw new RuntimeException("Unsupported algorithm: " + algorithm, ex);
         } catch (InvalidKeyException ex) {
             throw new RuntimeException("Invalid key: " + key, ex);
         }

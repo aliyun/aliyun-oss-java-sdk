@@ -52,11 +52,12 @@ public abstract class ServiceSignature {
     /**
      *
      * Creates the default <code>ServiceSignature</code> instance which is
-     * {@link HmacSHA1Signature}.
+     * {@link HmacSignature}.
      * 
      * @return The default <code>ServiceSignature</code> instance
      */
     public static ServiceSignature create() {
-        return new HmacSHA1Signature();
+        return new HmacSignature();
     }
+
 }

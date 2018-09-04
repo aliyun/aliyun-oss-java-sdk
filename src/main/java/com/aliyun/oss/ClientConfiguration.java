@@ -34,6 +34,7 @@ import com.aliyun.oss.common.comm.Protocol;
 import com.aliyun.oss.common.utils.ResourceManager;
 import com.aliyun.oss.common.utils.VersionInfoUtils;
 import com.aliyun.oss.internal.OSSConstants;
+import com.aliyun.oss.internal.SignParameters;
 
 /**
  * Client configurations for accessing to OSS services.
@@ -58,6 +59,8 @@ public class ClientConfiguration {
     public static final boolean DEFAULT_USE_REAPER = true;
 
     public static final String DEFAULT_CNAME_EXCLUDE_LIST = "aliyuncs.com,aliyun-inc.com,aliyun.com";
+
+    public static final String DEFAULT_SIGNATURE_VERSION = SignParameters.AUTH_V1;
 
     protected String userAgent = DEFAULT_USER_AGENT;
     protected int maxErrorRetry = DEFAULT_MAX_RETRIES;
@@ -94,9 +97,11 @@ public class ClientConfiguration {
 
     protected List<RequestSigner> signerHandlers = new LinkedList<RequestSigner>();
 
+    protected String signatureVersion = DEFAULT_SIGNATURE_VERSION;
+
     /**
      * Gets the user agent string.
-     * 
+     *
      * @return The user agent string.
      */
     public String getUserAgent() {
@@ -105,7 +110,7 @@ public class ClientConfiguration {
 
     /**
      * Sets the user agent string.
-     * 
+     *
      * @param userAgent
      *            The user agent string.
      */
@@ -115,7 +120,7 @@ public class ClientConfiguration {
 
     /**
      * Gets proxy host.
-     * 
+     *
      * @return The proxy host in string.
      */
     public String getProxyHost() {
@@ -124,7 +129,7 @@ public class ClientConfiguration {
 
     /**
      * Sets the proxy host.
-     * 
+     *
      * @param proxyHost
      *            The proxy host in string.
      */
@@ -134,7 +139,7 @@ public class ClientConfiguration {
 
     /**
      * Gets the proxy host's port.
-     * 
+     *
      * @return The proxy host.
      */
     public int getProxyPort() {
@@ -143,7 +148,7 @@ public class ClientConfiguration {
 
     /**
      * Sets proxy port.
-     * 
+     *
      * @param proxyPort
      *            The proxy port.
      * @throws ClientException
@@ -159,7 +164,7 @@ public class ClientConfiguration {
 
     /**
      * Gets the proxy user name.
-     * 
+     *
      * @return The user name.
      */
     public String getProxyUsername() {
@@ -168,7 +173,7 @@ public class ClientConfiguration {
 
     /**
      * Sets the proxy user name.
-     * 
+     *
      * @param proxyUsername
      *            The user name.
      */
@@ -178,7 +183,7 @@ public class ClientConfiguration {
 
     /**
      * Gets the proxy user password.
-     * 
+     *
      * @return The proxy user password.
      */
     public String getProxyPassword() {
@@ -187,7 +192,7 @@ public class ClientConfiguration {
 
     /**
      * Sets the proxy user password.
-     * 
+     *
      * @param proxyPassword
      *            The proxy user password.
      */
@@ -198,7 +203,7 @@ public class ClientConfiguration {
     /**
      * Gets the proxy server's domain, which could do the NTLM authentiation
      * (optional).
-     * 
+     *
      * @return The proxy domain name.
      */
     public String getProxyDomain() {
@@ -208,7 +213,7 @@ public class ClientConfiguration {
     /**
      * Sets the proxy server's domain, which could do the NTLM authentication
      * (optional).
-     * 
+     *
      * @param proxyDomain
      *            The proxy domain name.
      */
@@ -218,7 +223,7 @@ public class ClientConfiguration {
 
     /**
      * Gets the proxy host's NTLM authentication server.
-     * 
+     *
      * @return The NTLM authentication server name.
      */
     public String getProxyWorkstation() {
@@ -228,7 +233,7 @@ public class ClientConfiguration {
     /**
      * Sets the proxy host's NTLM authentication server(optional, if the proxy
      * server does not require NTLM authentication, then it's not needed).
-     * 
+     *
      * @param proxyWorkstation
      *            The proxy host's NTLM authentication server name.
      */
@@ -238,7 +243,7 @@ public class ClientConfiguration {
 
     /**
      * Gets the max connection count.
-     * 
+     *
      * @return The max connection count. By default it's 1024.
      */
     public int getMaxConnections() {
@@ -247,7 +252,7 @@ public class ClientConfiguration {
 
     /**
      * Sets the max connection count.
-     * 
+     *
      * @param maxConnections
      *            The max connection count.
      */
@@ -258,7 +263,7 @@ public class ClientConfiguration {
     /**
      * Gets the socket timeout in millisecond. 0 means infinite timeout, not
      * recommended.
-     * 
+     *
      * @return The socket timeout in millisecond.
      */
     public int getSocketTimeout() {
@@ -268,7 +273,7 @@ public class ClientConfiguration {
     /**
      * Sets the socket timeout in millisecond. 0 means infinite timeout, not
      * recommended.
-     * 
+     *
      * @param socketTimeout
      *            The socket timeout in millisecond.
      */
@@ -278,7 +283,7 @@ public class ClientConfiguration {
 
     /**
      * Gets the socket connection timeout in millisecond.
-     * 
+     *
      * @return The socket connection timeout in millisecond.
      */
     public int getConnectionTimeout() {
@@ -287,7 +292,7 @@ public class ClientConfiguration {
 
     /**
      * Sets the socket connection timeout in millisecond.
-     * 
+     *
      * @param connectionTimeout
      *            The socket connection timeout in millisecond.
      */
@@ -299,7 +304,7 @@ public class ClientConfiguration {
      * Gets the timeout in millisecond for retrieving an available connection
      * from the connection manager. 0 means infinite and -1 means not defined.
      * By default it's -1.
-     * 
+     *
      * @return The timeout in millisecond.
      */
     public int getConnectionRequestTimeout() {
@@ -309,7 +314,7 @@ public class ClientConfiguration {
     /**
      * Sets the timeout in millisecond for retrieving an available connection
      * from the connection manager.
-     * 
+     *
      * @param connectionRequestTimeout
      *            The timeout in millisecond.
      */
@@ -319,7 +324,7 @@ public class ClientConfiguration {
 
     /**
      * Gets the max retry count upon a retryable error. By default it's 3.
-     * 
+     *
      * @return The max retry count.
      */
     public int getMaxErrorRetry() {
@@ -328,7 +333,7 @@ public class ClientConfiguration {
 
     /**
      * Sets the max retry count upon a retryable error. By default it's 3.
-     * 
+     *
      * @param maxErrorRetry
      *            The max retry count.
      */
@@ -339,7 +344,7 @@ public class ClientConfiguration {
     /**
      * Gets the connection TTL (time to live). Http connection is cached by the
      * connection manager with a TTL.
-     * 
+     *
      * @return The connection TTL in millisecond.
      */
     public long getConnectionTTL() {
@@ -349,7 +354,7 @@ public class ClientConfiguration {
     /**
      * Sets the connection TTL (time to live). Http connection is cached by the
      * connection manager with a TTL.
-     * 
+     *
      * @param connectionTTL
      *            The connection TTL in millisecond.
      */
@@ -376,7 +381,7 @@ public class ClientConfiguration {
     /**
      * Gets the connection's max idle time. If a connection has been idle for
      * more than this number, it would be closed.
-     * 
+     *
      * @return The connection's max idle time in millisecond.
      */
     public long getIdleConnectionTime() {
@@ -386,7 +391,7 @@ public class ClientConfiguration {
     /**
      * Sets the connection's max idle time. If a connection has been idle for
      * more than this number, it would be closed.
-     * 
+     *
      * @param idleConnectionTime
      *            The connection's max idle time in millisecond.
      */
@@ -411,7 +416,7 @@ public class ClientConfiguration {
     /**
      * Gets the immutable excluded CName list----any domain ends with an item in
      * this list will not do Cname resolution.
-     * 
+     *
      * @return The excluded CName list, immutable.
      */
     public List<String> getCnameExcludeList() {
@@ -428,7 +433,7 @@ public class ClientConfiguration {
     /**
      * Sets the immutable excluded CName list----any domain ends with an item in
      * this list will not do Cname resolution.
-     * 
+     *
      * @param cnameExcludeList
      *            The excluded CName list, immutable.
      */
@@ -449,7 +454,7 @@ public class ClientConfiguration {
 
     /**
      * Append default excluded CName list.
-     * 
+     *
      * @param excludeList
      *            The excluded CName list.
      */
@@ -464,7 +469,7 @@ public class ClientConfiguration {
 
     /**
      * Gets the flag if supporting Cname in the endpoint. By default it's true.
-     * 
+     *
      * @return True if supporting Cname; False if not.
      */
     public boolean isSupportCname() {
@@ -473,7 +478,7 @@ public class ClientConfiguration {
 
     /**
      * Sets the flag if supporting Cname in the endpoint. By default it's true.
-     * 
+     *
      * <p>
      * If this value is set true, when building a canonical url, the host would
      * be checked against the Cname excluded list. If that host is found in the
@@ -481,7 +486,7 @@ public class ClientConfiguration {
      * domain). If the host is found, then it's thought as CName. If this value
      * is set false, then always uses TLD to access the endpoint.
      * </p>
-     * 
+     *
      * @param supportCname
      *            The flag if supporting CName.
      */
@@ -494,7 +499,7 @@ public class ClientConfiguration {
      * Gets the flag of using SLD (Second Level Domain) style to access the
      * endpoint. By default it's false. When using SLD, then the bucket endpoint
      * would be: http://host/bucket. Otherwise, it will be http://bucket.host
-     * 
+     *
      * @return True if it's enabled; False if it's disabled.
      */
     public boolean isSLDEnabled() {
@@ -504,7 +509,7 @@ public class ClientConfiguration {
     /**
      * Sets the flag of using SLD (Second Level Domain) style to access the
      * endpoint. By default it's false.
-     * 
+     *
      * @param enabled
      *            True if it's enabled; False if it's disabled.
      */
@@ -516,7 +521,7 @@ public class ClientConfiguration {
     /**
      * The connection idle time threshold in millisecond that triggers the
      * validation. By default it's 2000.
-     * 
+     *
      * @return The connection idle time threshold.
      */
     public int getValidateAfterInactivity() {
@@ -525,7 +530,7 @@ public class ClientConfiguration {
 
     /**
      * Gets the flag of enabling request timeout. By default it's disabled.
-     * 
+     *
      * @return true enabled; false disabled.
      */
     public boolean isRequestTimeoutEnabled() {
@@ -534,7 +539,7 @@ public class ClientConfiguration {
 
     /**
      * Gets the flag of enabling request timeout. By default it's disabled.
-     * 
+     *
      * @param requestTimeoutEnabled
      *            true to enable; false to disable.
      */
@@ -585,7 +590,7 @@ public class ClientConfiguration {
      * Sets the default http headers. All these headers would be automatically
      * added in every request. And if a header is also specified in the request,
      * the default one will be overwritten.
-     * 
+     *
      * @param defaultHeaders
      *            Default http headers.
      */
@@ -595,7 +600,7 @@ public class ClientConfiguration {
 
     /**
      * Add a default header into the default header list.
-     * 
+     *
      * @param key
      *            The default header name.
      * @param value
@@ -608,7 +613,7 @@ public class ClientConfiguration {
     /**
      * Gets the flag of enabling CRC checksum on upload and download. By default
      * it's true.
-     * 
+     *
      * @return true enable CRC;false disable CRC.
      */
     public boolean isCrcCheckEnabled() {
@@ -618,7 +623,7 @@ public class ClientConfiguration {
     /**
      * Sets the flag of enabling CRC checksum on upload and download. By default
      * it's true.
-     * 
+     *
      * @param crcCheckEnabled
      *            True to enable CRC; False to disable CRC.
      */
@@ -628,7 +633,7 @@ public class ClientConfiguration {
 
     /**
      * Gets signer handlers
-     * 
+     *
      * @return signer handlers
      */
     public List<RequestSigner> getSignerHandlers() {
@@ -637,7 +642,7 @@ public class ClientConfiguration {
 
     /**
      * Sets signer handlers using for authentication of the proxy server.
-     * 
+     *
      * @param signerHandlers
      */
     public void setSignerHandlers(List<RequestSigner> signerHandlers) {
@@ -652,4 +657,21 @@ public class ClientConfiguration {
         }
     }
 
+    /**
+     * Gets signature version
+     *
+     * @return signature version
+     */
+    public String getSignatureVersion() {
+        return signatureVersion;
+    }
+
+    /**
+     * Sets signature version for all request.
+     *
+     * @param signatureVersion
+     */
+    public void setSignatureVersion(String signatureVersion) {
+        this.signatureVersion = signatureVersion;
+    }
 }

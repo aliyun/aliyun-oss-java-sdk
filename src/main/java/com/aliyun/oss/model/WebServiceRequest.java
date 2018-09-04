@@ -19,8 +19,10 @@
 
 package com.aliyun.oss.model;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.aliyun.oss.event.ProgressListener;
 
@@ -37,6 +39,8 @@ public abstract class WebServiceRequest {
 
     private Map<String, String> parameters = new LinkedHashMap<String, String>();
     private Map<String, String> headers = new LinkedHashMap<String, String>();
+
+    private Set<String> additionalHeaderNames = new HashSet<String>();
 
     public void setProgressListener(ProgressListener progressListener) {
         this.progressListener = (progressListener == null) ? ProgressListener.NOOP : progressListener;
@@ -75,6 +79,18 @@ public abstract class WebServiceRequest {
 
     public void addHeader(String key, String value) {
         this.headers.put(key, value);
+    }
+
+    public Set<String> getAdditionalHeaderNames() {
+        return additionalHeaderNames;
+    }
+
+    public void setAdditionalHeaderNames(Set<String> additionalHeaderNames) {
+        this.additionalHeaderNames = additionalHeaderNames;
+    }
+
+    public void addAdditionalHeaderName(String name) {
+        this.additionalHeaderNames.add(name);
     }
 
     public boolean isLogEnabled() {

@@ -26,10 +26,6 @@ import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_OSS_ENDPOINT;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
-import static com.aliyun.oss.internal.OSSUtils.populateResponseHeaderParameters;
-import static com.aliyun.oss.internal.RequestParameters.OSS_ACCESS_KEY_ID;
-import static com.aliyun.oss.internal.RequestParameters.SECURITY_TOKEN;
-import static com.aliyun.oss.internal.RequestParameters.SIGNATURE;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,8 +40,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,26 +48,12 @@ import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.ServiceSignature;
 import com.aliyun.oss.common.comm.DefaultServiceClient;
-import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.comm.ServiceClient;
 import com.aliyun.oss.common.comm.TimeoutServiceClient;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.DateUtil;
-import com.aliyun.oss.common.utils.HttpHeaders;
-import com.aliyun.oss.common.utils.HttpUtil;
-import com.aliyun.oss.internal.CORSOperation;
-import com.aliyun.oss.internal.LiveChannelOperation;
-import com.aliyun.oss.internal.OSSBucketOperation;
-import com.aliyun.oss.internal.OSSDownloadOperation;
-import com.aliyun.oss.internal.OSSHeaders;
-import com.aliyun.oss.internal.OSSMultipartOperation;
-import com.aliyun.oss.internal.OSSObjectOperation;
-import com.aliyun.oss.internal.OSSUdfOperation;
-import com.aliyun.oss.internal.OSSUploadOperation;
-import com.aliyun.oss.internal.OSSUtils;
-import com.aliyun.oss.internal.RequestParameters;
-import com.aliyun.oss.internal.SignUtils;
+import com.aliyun.oss.internal.*;
 import com.aliyun.oss.model.*;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
 
@@ -691,7 +671,6 @@ public class OSSClient implements OSS {
 
         assertParameterNotNull(request, "request");
 
-        String bucketName = request.getBucketName();
         if (request.getBucketName() == null) {
             throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getString("MustSetBucketName"));
         }
@@ -700,74 +679,13 @@ public class OSSClient implements OSS {
         if (request.getExpiration() == null) {
             throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getString("MustSetExpiration"));
         }
+        String url;
 
-        Credentials currentCreds = credsProvider.getCredentials();
-        String accessId = currentCreds.getAccessKeyId();
-        String accessKey = currentCreds.getSecretAccessKey();
-        boolean useSecurityToken = currentCreds.useSecurityToken();
-        HttpMethod method = request.getMethod() != null ? request.getMethod() : HttpMethod.GET;
-
-        String expires = String.valueOf(request.getExpiration().getTime() / 1000L);
-        String key = request.getKey();
-        ClientConfiguration config = serviceClient.getClientConfiguration();
-        String resourcePath = OSSUtils.determineResourcePath(bucketName, key, config.isSLDEnabled());
-
-        RequestMessage requestMessage = new RequestMessage(bucketName, key);
-        requestMessage.setEndpoint(OSSUtils.determineFinalEndpoint(endpoint, bucketName, config));
-        requestMessage.setMethod(method);
-        requestMessage.setResourcePath(resourcePath);
-        requestMessage.setHeaders(request.getHeaders());
-
-        requestMessage.addHeader(HttpHeaders.DATE, expires);
-        if (request.getContentType() != null && !request.getContentType().trim().equals("")) {
-            requestMessage.addHeader(HttpHeaders.CONTENT_TYPE, request.getContentType());
+        if (serviceClient.getClientConfiguration().getSignatureVersion() != null && serviceClient.getClientConfiguration().getSignatureVersion().equals(SignParameters.AUTH_V2)) {
+            url = SignV2Utils.buildSignedURL(request, credsProvider.getCredentials(), serviceClient.getClientConfiguration(), endpoint);
+        } else {
+            url = SignUtils.buildSignedURL(request, credsProvider.getCredentials(), serviceClient.getClientConfiguration(), endpoint);
         }
-        if (request.getContentMD5() != null && request.getContentMD5().trim().equals("")) {
-            requestMessage.addHeader(HttpHeaders.CONTENT_MD5, request.getContentMD5());
-        }
-        for (Map.Entry<String, String> h : request.getUserMetadata().entrySet()) {
-            requestMessage.addHeader(OSSHeaders.OSS_USER_METADATA_PREFIX + h.getKey(), h.getValue());
-        }
-
-        Map<String, String> responseHeaderParams = new HashMap<String, String>();
-        populateResponseHeaderParameters(responseHeaderParams, request.getResponseHeaders());
-        if (responseHeaderParams.size() > 0) {
-            requestMessage.setParameters(responseHeaderParams);
-        }
-
-        if (request.getQueryParameter() != null && request.getQueryParameter().size() > 0) {
-            for (Map.Entry<String, String> entry : request.getQueryParameter().entrySet()) {
-                requestMessage.addParameter(entry.getKey(), entry.getValue());
-            }
-        }
-
-        if (request.getProcess() != null && !request.getProcess().trim().equals("")) {
-            requestMessage.addParameter(RequestParameters.SUBRESOURCE_PROCESS, request.getProcess());
-        }
-
-        if (useSecurityToken) {
-            requestMessage.addParameter(SECURITY_TOKEN, currentCreds.getSecurityToken());
-        }
-
-        String canonicalResource = "/" + ((bucketName != null) ? bucketName : "") + ((key != null ? "/" + key : ""));
-        String canonicalString = SignUtils.buildCanonicalString(method.toString(), canonicalResource, requestMessage,
-                expires);
-        String signature = ServiceSignature.create().computeSignature(accessKey, canonicalString);
-
-        Map<String, String> params = new LinkedHashMap<String, String>();
-        params.put(HttpHeaders.EXPIRES, expires);
-        params.put(OSS_ACCESS_KEY_ID, accessId);
-        params.put(SIGNATURE, signature);
-        params.putAll(requestMessage.getParameters());
-
-        String queryString = HttpUtil.paramToQueryString(params, DEFAULT_CHARSET_NAME);
-
-        /* Compse HTTP request uri. */
-        String url = requestMessage.getEndpoint().toString();
-        if (!url.endsWith("/")) {
-            url += "/";
-        }
-        url += resourcePath + "?" + queryString;
 
         try {
             return new URL(url);

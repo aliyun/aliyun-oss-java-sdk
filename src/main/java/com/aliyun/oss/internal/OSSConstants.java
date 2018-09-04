@@ -42,9 +42,6 @@ public final class OSSConstants {
 
     public static final int OBJECT_NAME_MAX_LENGTH = 1024;
 
-    public static final String OSS_AUTHORIZATION_PREFIX = "OSS ";
-    public static final String OSS_AUTHORIZATION_SEPERATOR = ":";
-
     public static final String LOGGER_PACKAGE_NAME = "com.aliyun.oss";
 
     public static final String PROTOCOL_HTTP = "http://";

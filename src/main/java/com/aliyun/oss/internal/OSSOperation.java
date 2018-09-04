@@ -165,16 +165,16 @@ public abstract class OSSOperation {
         }
     }
 
-    private static RequestSigner createSigner(HttpMethod method, String bucketName, String key, Credentials creds) {
+    private static RequestSigner createSigner(HttpMethod method, String bucketName, String key, Credentials creds, String signatureVersion) {
         String resourcePath = "/" + ((bucketName != null) ? bucketName + "/" : "") + ((key != null ? key : ""));
 
-        return new OSSRequestSigner(method.toString(), resourcePath, creds);
+        return new OSSRequestSigner(method.toString(), resourcePath, creds, signatureVersion);
     }
 
     protected ExecutionContext createDefaultContext(HttpMethod method, String bucketName, String key) {
         ExecutionContext context = new ExecutionContext();
         context.setCharset(DEFAULT_CHARSET_NAME);
-        context.setSigner(createSigner(method, bucketName, key, credsProvider.getCredentials()));
+        context.setSigner(createSigner(method, bucketName, key, credsProvider.getCredentials(), client.getClientConfiguration().getSignatureVersion()));
         context.addResponseHandler(errorResponseHandler);
         if (method == HttpMethod.POST) {
             context.setRetryStrategy(noRetryStrategy);

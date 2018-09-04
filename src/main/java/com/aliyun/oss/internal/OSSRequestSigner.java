@@ -22,7 +22,6 @@ package com.aliyun.oss.internal;
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.RequestSigner;
-import com.aliyun.oss.common.auth.ServiceSignature;
 import com.aliyun.oss.common.comm.RequestMessage;
 
 public class OSSRequestSigner implements RequestSigner {
@@ -31,12 +30,16 @@ public class OSSRequestSigner implements RequestSigner {
 
     /* Note that resource path should not have been url-encoded. */
     private String resourcePath;
+
     private Credentials creds;
 
-    public OSSRequestSigner(String httpMethod, String resourcePath, Credentials creds) {
+    private String signatureVersion;
+
+    public OSSRequestSigner(String httpMethod, String resourcePath, Credentials creds, String signatureVersion) {
         this.httpMethod = httpMethod;
         this.resourcePath = resourcePath;
         this.creds = creds;
+        this.signatureVersion = signatureVersion;
     }
 
     @Override
@@ -45,9 +48,15 @@ public class OSSRequestSigner implements RequestSigner {
         String secretAccessKey = creds.getSecretAccessKey();
 
         if (accessKeyId.length() > 0 && secretAccessKey.length() > 0) {
-            String canonicalString = SignUtils.buildCanonicalString(httpMethod, resourcePath, request, null);
-            String signature = ServiceSignature.create().computeSignature(secretAccessKey, canonicalString);
-            request.addHeader(OSSHeaders.AUTHORIZATION, OSSUtils.composeRequestAuthorization(accessKeyId, signature));
+            String signature;
+
+            if (SignParameters.AUTH_V2.equals(signatureVersion)) {
+                signature = SignV2Utils.buildSignature(secretAccessKey, httpMethod, resourcePath, request);
+                request.addHeader(OSSHeaders.AUTHORIZATION, SignV2Utils.composeRequestAuthorization(accessKeyId,signature, request));
+            } else {
+                signature = SignUtils.buildSignature(secretAccessKey, httpMethod, resourcePath, request);
+                request.addHeader(OSSHeaders.AUTHORIZATION, SignUtils.composeRequestAuthorization(accessKeyId, signature));
+            }
         }
     }
 }

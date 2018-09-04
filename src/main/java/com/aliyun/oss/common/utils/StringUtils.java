@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.text.Collator;
+import java.util.Collection;
 import java.util.Locale;
 
 /**
@@ -144,6 +145,25 @@ public class StringUtils {
             if (i < parts.length - 1) {
                 builder.append(joiner);
             }
+        }
+        return builder.toString();
+    }
+
+    /**
+     * Joins the strings in collection with joiner between each string
+     * @param joiner the string to insert between the strings in collection
+     * @param collection the collection to join
+     */
+    public static String join(String joiner, Collection<String> collection) {
+        StringBuilder builder = new StringBuilder();
+        int i = 0;
+
+        for (String part : collection) {
+            builder.append(part);
+            if (i < collection.size() - 1) {
+                builder.append(joiner);
+            }
+            i++;
         }
         return builder.toString();
     }
