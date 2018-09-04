@@ -1133,10 +1133,10 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, initiateWormConfigurationResponseParser, bucketName, null, true);
     }
 
-    public void abortBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException {
-        assertParameterNotNull(genericRequest, "commonWormConfigurationRequest");
+    public void abortBucketWorm(GenericRequest abortWormRequest) throws OSSException, ClientException {
+        assertParameterNotNull(abortWormRequest, "abortWormRequest");
 
-        String bucketName = genericRequest.getBucketName();
+        String bucketName = abortWormRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
 
@@ -1145,7 +1145,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
             .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
-            .setOriginalRequest(genericRequest).build();
+            .setOriginalRequest(abortWormRequest).build();
 
         doOperation(request, emptyResponseParser, bucketName, null, true);
     }
@@ -1173,7 +1173,7 @@ public class OSSBucketOperation extends OSSOperation {
 
     public void extendBucketWorm(ExtendWormConfigurationRequest extendWormConfigurationRequest) throws OSSException, ClientException {
 
-        assertParameterNotNull(extendWormConfigurationRequest, "commonWormConfigurationRequest");
+        assertParameterNotNull(extendWormConfigurationRequest, "extendWormConfigurationRequest");
 
         String bucketName = extendWormConfigurationRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
@@ -1200,7 +1200,7 @@ public class OSSBucketOperation extends OSSOperation {
     }
 
     public WormConfiguration getBucketWorm(GenericRequest getBucketWormRequest) throws OSSException, ClientException {
-        assertParameterNotNull(getBucketWormRequest, "commonWormConfigurationRequest");
+        assertParameterNotNull(getBucketWormRequest, "getBucketWormRequest");
 
         String bucketName = getBucketWormRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
