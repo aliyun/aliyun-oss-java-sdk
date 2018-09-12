@@ -24,7 +24,7 @@ public class CreateSelectMetaInputStream extends FilterInputStream {
      * |--frame type(4 bytes)--|--payload length(4 bytes)--|--header checksum(4 bytes)--|
      * |--scanned data bytes(8 bytes)--|--total scan size(8 bytes)--|
      * |--status code(4 bytes)--|--total splits count(4 bytes)--|
-     * |--total lines(8 bytes)--|--columns count(4bytes)--|--payload checksum(4 bytes)--|
+     * |--total lines(8 bytes)--|--columns count(4 bytes)--|--error message(optional)--|--payload checksum(4 bytes)--|
      */
     private static final int END_FRAME_MAGIC = 8388614;
     private static final int SELECT_VERSION = 1;
@@ -129,13 +129,22 @@ public class CreateSelectMetaInputStream extends FilterInputStream {
                     crc32.update(totalLineBytes);
                     crc32.update(columnBytes);
                     int status = ByteBuffer.wrap(statusBytes).getInt();
+                    int errorMessageSize = (int)(currentFramePayloadLength - 28);
+                    String error = "";
+                    if (errorMessageSize > 0) {
+                        byte[] errorMessageBytes = new byte[errorMessageSize];
+                        internalRead(errorMessageBytes, 0, errorMessageSize);
+                        error = new String(errorMessageBytes);
+                        crc32.update(errorMessageBytes);
+                    }
+
                     finished = true;
                     currentFramePayloadLength = currentFrameOffset;
                     internalRead(currentFramePayloadChecksumBytes, 0, 4);
 
                     validateCheckSum(currentFramePayloadChecksumBytes, crc32);
                     if (status / 100 != 2) {
-                        throw new IOException("Oss Select create meta encounter error: code: " + status);
+                        throw new IOException("Oss Select create meta encounter error code: " + status + ", message: " + error);
                     }
 
                     selectObjectMetadata.setCsvObjectMetadata(
