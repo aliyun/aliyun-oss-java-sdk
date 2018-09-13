@@ -54,7 +54,7 @@ public class ProfilesConfigFileTest extends TestBase {
 
             new File(AuthUtils.DEFAULT_PROFILE_PATH).delete();
 
-            // Normal
+            // LRS
             options = new HashMap<String, String>();
             options.put(AuthUtils.OSS_ACCESS_KEY_ID, TEST_ACCESS_KEY_ID);
             options.put(AuthUtils.OSS_SECRET_ACCESS_KEY, TEST_ACCESS_KEY_SECRET);
@@ -99,7 +99,7 @@ public class ProfilesConfigFileTest extends TestBase {
 
             new File(AuthUtils.DEFAULT_PROFILE_PATH).delete();
 
-            // Normal
+            // LRS
             options = new HashMap<String, String>();
             options.put(AuthUtils.OSS_ACCESS_KEY_ID, TEST_ACCESS_KEY_ID);
             options.put(AuthUtils.OSS_SECRET_ACCESS_KEY, TEST_ACCESS_KEY_SECRET);

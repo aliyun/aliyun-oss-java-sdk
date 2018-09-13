@@ -24,6 +24,7 @@ public class CreateBucketRequest extends GenericRequest {
     private String locationConstraint;
     private CannedAccessControlList cannedACL;
     private StorageClass storageClass;
+    private DataRedundancyType dataRedundancyType;
 
     public CreateBucketRequest(String bucketName) {
         super(bucketName);
@@ -77,6 +78,14 @@ public class CreateBucketRequest extends GenericRequest {
         this.storageClass = storageClass;
     }
 
+    public DataRedundancyType getDataRedundancyType() {
+        return dataRedundancyType;
+    }
+
+    public void setDataRedundancyType(DataRedundancyType type) {
+        this.dataRedundancyType = type;
+    }
+
     public CreateBucketRequest withCannedACL(CannedAccessControlList cannedACL) {
         setCannedACL(cannedACL);
         return this;
@@ -84,6 +93,11 @@ public class CreateBucketRequest extends GenericRequest {
 
     public CreateBucketRequest withStorageType(StorageClass storageClass) {
         setStorageClass(storageClass);
+        return this;
+    }
+
+    public CreateBucketRequest withAvailabilityZoneType(DataRedundancyType type) {
+        setDataRedundancyType(type);
         return this;
     }
 }

@@ -414,7 +414,7 @@ public class GetObjectTest extends TestBase {
         try {
             ossClient.putObject(bucketName, key, genFixedLengthInputStream(inputStreamLength), null);
             
-            // Normal range [a-b]
+            // LRS range [a-b]
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             getObjectRequest.setRange(0, inputStreamLength / 2 - 1);
             OSSObject o = ossClient.getObject(getObjectRequest);

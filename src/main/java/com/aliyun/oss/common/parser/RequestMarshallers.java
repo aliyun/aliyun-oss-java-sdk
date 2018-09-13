@@ -24,7 +24,6 @@ import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -73,6 +72,11 @@ public final class RequestMarshallers {
     public static final ResizeUdfApplicationRequestMarshaller resizeUdfApplicationRequestMarshaller = new ResizeUdfApplicationRequestMarshaller();
     public static final ProcessObjectRequestMarshaller processObjectRequestMarshaller = new ProcessObjectRequestMarshaller();
     public static final PutBucketRequestPaymentMarshaller putBucketRequestPaymentMarshaller = new PutBucketRequestPaymentMarshaller();
+
+    public static final InitiateWormConfigurationRequestMarshaller initiateWormConfigurationRequestMarshaller = new InitiateWormConfigurationRequestMarshaller();
+    public static final ExtendWormConfigurationRequestMarshaller extendWormConfigurationRequestMarshaller = new ExtendWormConfigurationRequestMarshaller();
+    public static final CreateSelectObjectMetadataRequestMarshaller createSelectObjectMetadataRequestMarshaller = new CreateSelectObjectMetadataRequestMarshaller();
+    public static final SelectObjectRequestMarshaller selectObjectRequestMarshaller = new SelectObjectRequestMarshaller();
 
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
 
@@ -188,13 +192,18 @@ public final class RequestMarshallers {
         @Override
         public FixedLengthInputStream marshall(CreateBucketRequest request) {
             StringBuffer xmlBody = new StringBuffer();
-            if (request.getLocationConstraint() != null || request.getStorageClass() != null) {
+            if (request.getLocationConstraint() != null
+                || request.getStorageClass() != null
+                || request.getDataRedundancyType() != null) {
                 xmlBody.append("<CreateBucketConfiguration>");
                 if (request.getLocationConstraint() != null) {
                     xmlBody.append("<LocationConstraint>" + request.getLocationConstraint() + "</LocationConstraint>");
                 }
                 if (request.getStorageClass() != null) {
                     xmlBody.append("<StorageClass>" + request.getStorageClass().toString() + "</StorageClass>");
+                }
+                if (request.getDataRedundancyType() != null) {
+                    xmlBody.append("<DataRedundancyType>" + request.getDataRedundancyType().toString() + "</DataRedundancyType>");
                 }
                 xmlBody.append("</CreateBucketConfiguration>");
             }
@@ -541,6 +550,87 @@ public final class RequestMarshallers {
             return stringMarshaller.marshall(xmlBody.toString());
         }
 
+    }
+
+    public static final class CreateSelectObjectMetadataRequestMarshaller
+            implements RequestMarshaller2<CreateSelectObjectMetadataRequest> {
+
+        @Override
+        public byte[] marshall(CreateSelectObjectMetadataRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            InputSerialization inputSerialization = request.getInputSerialization();
+            CSVFormat csvFormat = inputSerialization.getCsvInputFormat();
+            xmlBody.append("<CsvMetaRequest>");
+            xmlBody.append("<InputSerialization>");
+            xmlBody.append("<CompressionType>" + inputSerialization.getCompressionType() + "</CompressionType>");
+            xmlBody.append("<CSV>");
+            xmlBody.append("<RecordDelimiter>" + BinaryUtil.toBase64String(csvFormat.getRecordDelimiter().getBytes()) + "</RecordDelimiter>");
+            xmlBody.append("<FieldDelimiter>" + BinaryUtil.toBase64String(csvFormat.getFieldDelimiter().toString().getBytes()) + "</FieldDelimiter>");
+            xmlBody.append("<QuoteCharacter>" + BinaryUtil.toBase64String(csvFormat.getQuoteChar().toString().getBytes()) + "</QuoteCharacter>");
+            xmlBody.append("</CSV>");
+            xmlBody.append("</InputSerialization>");
+            xmlBody.append("<OverwriteIfExists>" + request.isOverwrite() + "</OverwriteIfExists>");
+            xmlBody.append("</CsvMetaRequest>");
+
+            try {
+                return xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class SelectObjectRequestMarshaller implements RequestMarshaller2<SelectObjectRequest> {
+
+        @Override
+        public byte[] marshall(SelectObjectRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<SelectRequest>");
+
+            xmlBody.append("<Expression>" + BinaryUtil.toBase64String(request.getExpression().getBytes()) + "</Expression>");
+            xmlBody.append("<Options>");
+            xmlBody.append("<SkipPartialDataRecord>" + request.isSkipPartialDataRecord() + "</SkipPartialDataRecord>");
+            xmlBody.append("</Options>");
+            InputSerialization inputSerialization = request.getInputSerialization();
+            CSVFormat csvInputFormat = inputSerialization.getCsvInputFormat();
+            xmlBody.append("<InputSerialization>");
+            xmlBody.append("<CompressionType>" + inputSerialization.getCompressionType() + "</CompressionType>");
+            xmlBody.append("<CSV>");
+            xmlBody.append("<FileHeaderInfo>" + csvInputFormat.getHeaderInfo() + "</FileHeaderInfo>");
+            xmlBody.append("<RecordDelimiter>" + BinaryUtil.toBase64String(csvInputFormat.getRecordDelimiter().getBytes()) + "</RecordDelimiter>");
+            xmlBody.append("<FieldDelimiter>" + BinaryUtil.toBase64String(csvInputFormat.getFieldDelimiter().toString().getBytes()) + "</FieldDelimiter>");
+            xmlBody.append("<QuoteCharacter>" + BinaryUtil.toBase64String(csvInputFormat.getQuoteChar().toString().getBytes()) + "</QuoteCharacter>");
+            xmlBody.append("<Comments>" + BinaryUtil.toBase64String(csvInputFormat.getCommentChar().toString().getBytes()) + "</Comments>");
+
+            if (request.getLineRange() != null) {
+                xmlBody.append("<Range>" + request.lineRangeToString(request.getLineRange()) + "</Range>");
+            }
+            if (request.getSplitRange() != null) {
+                xmlBody.append("<Range>" + request.splitRangeToString(request.getSplitRange()) + "</Range>");
+            }
+            xmlBody.append("</CSV>");
+            xmlBody.append("</InputSerialization>");
+            OutputSerialization outputSerialization = request.getOutputSerialization();
+            CSVFormat csvOutputFormat = outputSerialization.getCsvOutputFormat();
+            xmlBody.append("<OutputSerialization>");
+            xmlBody.append("<CSV>");
+            xmlBody.append("<RecordDelimiter>" + BinaryUtil.toBase64String(csvOutputFormat.getRecordDelimiter().getBytes()) + "</RecordDelimiter>");
+            xmlBody.append("<FieldDelimiter>" + BinaryUtil.toBase64String(csvOutputFormat.getFieldDelimiter().toString().getBytes()) + "</FieldDelimiter>");
+            xmlBody.append("<QuoteCharacter>" + BinaryUtil.toBase64String(csvOutputFormat.getQuoteChar().toString().getBytes()) + "</QuoteCharacter>");
+            xmlBody.append("</CSV>");
+            xmlBody.append("<KeepAllColumns>" + outputSerialization.isKeepAllColumns() + "</KeepAllColumns>");
+            xmlBody.append("<OutputRawData>" + outputSerialization.isOutputRawData() + "</OutputRawData>");
+            xmlBody.append("<OutputHeader>" + outputSerialization.isOutputHeader() + "</OutputHeader>");
+            xmlBody.append("<EnablePayloadCrc>" + outputSerialization.isPayloadCrcEnabled() + "</EnablePayloadCrc>");
+            xmlBody.append("</OutputSerialization>");
+            xmlBody.append("</SelectRequest>");
+
+            try {
+                return xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+        }
     }
 
     public static final class DeleteObjectsRequestMarshaller implements RequestMarshaller2<DeleteObjectsRequest> {
@@ -892,6 +982,46 @@ public final class RequestMarshallers {
             return rawData;
         }
 
+    }
+
+    public static final class InitiateWormConfigurationRequestMarshaller
+        implements RequestMarshaller2<InitiateWormConfigurationRequest> {
+
+        @Override
+        public byte[] marshall(InitiateWormConfigurationRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<InitiateWormConfiguration>");
+            xmlBody.append("<RetentionPeriodInDays>" + request.getRetentionPeriodInDays() + "</RetentionPeriodInDays>");
+            xmlBody.append("</InitiateWormConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+    }
+
+    public static final class ExtendWormConfigurationRequestMarshaller
+        implements RequestMarshaller2<ExtendWormConfigurationRequest> {
+
+        @Override
+        public byte[] marshall(ExtendWormConfigurationRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<ExtendWormConfiguration>");
+            xmlBody.append("<RetentionPeriodInDays>" + request.getRetentionPeriodInDays() + "</RetentionPeriodInDays>");
+            xmlBody.append("</ExtendWormConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
     }
 
     private static enum EscapedChar {
