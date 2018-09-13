@@ -33,14 +33,12 @@ import java.io.InputStream;
  * content. The user metadata is a dictionary of key-value entries to store some
  * custom data about the object.
  * </p>
- * <p>
  * Object naming rules
  * <ul>
  * <li>use UTF-8 encoding</li>
  * <li>Length is between 1 to 1023</li>
  * <li>Could not have slash or backslash</li>
  * </ul>
- * </p>
  *
  */
 public class OSSObject extends GenericResult implements Closeable {

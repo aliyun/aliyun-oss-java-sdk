@@ -88,7 +88,7 @@ public class Callback {
 
     /**
      * Sets the callback body.For example:
-     * key=$(key)&etag=$(etag)&my_var=$(x:my_var). It supports the OSS system
+     * key=$(key) &amp; etag=$(etag) &amp; my_var=$(x:my_var). It supports the OSS system
      * variable, custom defined variable or constant and custom defined
      * variable's callbackVar.
      * 
@@ -124,12 +124,12 @@ public class Callback {
     /**
      * Sets user customized parameter(s).
      *
-     * Customized parameter is a Map<key,value> instance. In the callback
+     * Customized parameter is a Map&lt;key,value&gt; instance. In the callback
      * request, OSS would put these parameters into the post body. The keys must
      * start with "x:", such as x:my_var.
      * 
      * @param callbackVar
-     *            A {@link Map} instance that stores the <key, value> pairs.
+     *            A {@link Map} instance that stores the &lt;key, value&gt; pairs.
      */
     public void setCallbackVar(Map<String, String> callbackVar) {
         this.callbackVar.clear();
