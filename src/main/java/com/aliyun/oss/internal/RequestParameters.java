@@ -49,10 +49,16 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_END_TIME = "endTime";
     public static final String SUBRESOURCE_PROCESS_CONF = "processConfiguration";
     public static final String SUBRESOURCE_PROCESS = "x-oss-process";
+    public static final String SUBRESOURCE_CSV_SELECT = "csv/select";
+    public static final String SUBRESOURCE_CSV_META = "csv/meta";
+    public static final String SUBRESOURCE_SQL = "sql";
     public static final String SUBRESOURCE_SYMLINK = "symlink";
     public static final String SUBRESOURCE_STAT = "stat";
     public static final String SUBRESOURCE_RESTORE = "restore";
     public static final String SUBRESOURCE_REQUEST_PAYMENT = "requestPayment";
+    public static final String SUBRESOURCE_WORM = "worm";
+    public static final String SUBRESOURCE_WORM_ID = "wormId";
+    public static final String SUBRESOURCE_WORM_EXTEND = "wormExtend";
 
     public static final String SUBRESOURCE_UDF = "udf";
     public static final String SUBRESOURCE_UDF_NAME = "udfName";
@@ -96,5 +102,4 @@ public final class RequestParameters {
     public static final String PLAYLIST_NAME = "playlistName";
     public static final String SINCE = "since";
     public static final String TAIL = "tail";
-
 }

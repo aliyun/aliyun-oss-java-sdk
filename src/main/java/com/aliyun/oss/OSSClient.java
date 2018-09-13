@@ -562,6 +562,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public OSSObject selectObject(SelectObjectRequest selectObjectRequest) throws OSSException, ClientException {
+        return objectOperation.selectObject(selectObjectRequest);
+    }
+
+    @Override
     public SimplifiedObjectMeta getSimplifiedObjectMeta(String bucketName, String key)
             throws OSSException, ClientException {
         return this.getSimplifiedObjectMeta(new GenericRequest(bucketName, key));
@@ -576,6 +581,11 @@ public class OSSClient implements OSS {
     @Override
     public ObjectMetadata getObjectMetadata(String bucketName, String key) throws OSSException, ClientException {
         return this.getObjectMetadata(new GenericRequest(bucketName, key));
+    }
+
+    @Override
+    public SelectObjectMetadata createSelectObjectMetadata(CreateSelectObjectMetadataRequest createSelectObjectMetadataRequest) throws OSSException, ClientException {
+        return objectOperation.createSelectObjectMetadata(createSelectObjectMetadataRequest);
     }
 
     @Override
@@ -1181,6 +1191,31 @@ public class OSSClient implements OSS {
     @Override
     public RequestPayer getBucketRequesterPayment(String bucketName) throws OSSException, ClientException {
         return this.bucketOperation.getBucketRequestPayment(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public String initiateWormConfiguration(InitiateWormConfigurationRequest initiateWormConfigurationRequest) throws OSSException, ClientException {
+        return this.bucketOperation.initiateWormConfiguration(initiateWormConfigurationRequest);
+    }
+
+    @Override
+    public void abortBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException {
+        this.bucketOperation.abortBucketWorm(genericRequest);
+    }
+
+    @Override
+    public void completeBucketWorm(CompleteWormConfigurationRequest completeWormConfigurationRequest) throws OSSException, ClientException {
+        this.bucketOperation.completeBucketWorm(completeWormConfigurationRequest);
+    }
+
+    @Override
+    public void extendBucketWorm(ExtendWormConfigurationRequest extendWormConfigurationRequest) throws OSSException, ClientException {
+        this.bucketOperation.extendBucketWorm(extendWormConfigurationRequest);
+    }
+
+    @Override
+    public WormConfiguration getBucketWorm(GenericRequest getBucketWormRequest) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketWorm(getBucketWormRequest);
     }
 
     @Override

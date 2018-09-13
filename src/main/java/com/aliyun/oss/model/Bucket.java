@@ -30,14 +30,12 @@ import java.util.Date;
  * mapped to one or multiple buckets. An OSS account could only create up to 10
  * bucket. And there's no limit on the files count or size under a bucket.
  * </p>
- * <p>
  * Bucket naming rules:
  * <ul>
  * <li>Can only contain low case letter, number or dash(-).</li>
  * <li>Can only start with low case letter or number.</li>
  * <li>The length must be between 3 to 63 bytes.</li>
  * </ul>
- * </p>
  */
 public class Bucket extends GenericResult {
 
@@ -62,6 +60,9 @@ public class Bucket extends GenericResult {
     // Internal endpoint. It could be accessed within AliCloud under the same
     // location.
     private String intranetEndpoint;
+
+    // The type of availabilityZone. 0 means normal cluster, 1 means 2AZ cluster, 2 means 3AZ cluster.
+    private DataRedundancyType dataRedundancyType;
 
     /**
      * Default constructor.
@@ -95,7 +96,7 @@ public class Bucket extends GenericResult {
                     + ", location=" + getLocation() + "]";
         } else {
             return "OSSBucket [name=" + getName() + ", creationDate=" + getCreationDate() + ", owner=" + getOwner()
-                    + ", location=" + getLocation() + ", storageClass=" + getStorageClass() + "]";
+                    + ", location=" + getLocation() + ", storageClass=" + getStorageClass() + ", dataRedundancyType=" + getDataRedundancyType() + "]";
         }
     }
 
@@ -228,5 +229,22 @@ public class Bucket extends GenericResult {
      */
     public void setIntranetEndpoint(String endpoint) {
         this.intranetEndpoint = endpoint;
+    }
+
+    /**
+     * Gets the dataRedundancyType
+     * @return Bucket dataRedundancyType
+     */
+    public DataRedundancyType getDataRedundancyType() {
+        return dataRedundancyType;
+    }
+
+    /**
+     * Sets the dataRedundancyType
+     * @param dataRedundancyType
+     *            Bucket dataRedundancyType
+     */
+    public void setDataRedundancyType(DataRedundancyType dataRedundancyType) {
+        this.dataRedundancyType = dataRedundancyType;
     }
 }
