@@ -1832,7 +1832,49 @@ public interface OSS {
     public RequestPayer getBucketRequesterPayment(String bucketName) throws OSSException, ClientException;
 
 
-  /**
+    /**
+     * Init the worm cofiguration for the bucket.
+     * @param request
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public String initiateWormConfiguration(InitiateWormConfigurationRequest request) throws OSSException, ClientException;
+
+    /**
+     * abort the worm cofiguration for the bucket.
+     * @param request
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public void abortBucketWorm(GenericRequest request) throws OSSException, ClientException;
+
+    /**
+     * Lock the worm cofiguration for the bucket.
+     * @param request
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public void completeBucketWorm(CompleteWormConfigurationRequest request) throws OSSException, ClientException;
+
+    /**
+     * Extend the worm cofiguration for the bucket.
+     * @param request
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public void extendBucketWorm(ExtendWormConfigurationRequest request) throws OSSException, ClientException;
+
+
+    /**
+     * Get the worm cofiguration of the bucket.
+     * @param request
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public WormConfiguration getBucketWorm(GenericRequest request) throws OSSException, ClientException;
+
+
+    /**
      * File upload
      * 
      * This method will automatically split files into parts and upload them in

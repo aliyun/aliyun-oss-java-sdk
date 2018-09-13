@@ -74,6 +74,8 @@ public final class ResponseParsers {
     public static final GetBucketStatResponseParser getBucketStatResponseParser = new GetBucketStatResponseParser();
     public static final GetBucketQosResponseParser getBucketQosResponseParser = new GetBucketQosResponseParser();
     public static final GetBucketRequestPaymentResponseParser getBucketRequestPaymentResponseParser = new GetBucketRequestPaymentResponseParser();
+    public static final InitiateWormConfigurationResponseParser initiateWormConfigurationResponseParser = new InitiateWormConfigurationResponseParser();
+    public static final GetWormConfigurationResponseParser getWormConfigurationResponseParser = new GetWormConfigurationResponseParser();
 
     public static final ListObjectsReponseParser listObjectsReponseParser = new ListObjectsReponseParser();
     public static final PutObjectReponseParser putObjectReponseParser = new PutObjectReponseParser();
@@ -898,6 +900,30 @@ public final class ResponseParsers {
         public RequestPayer parse(ResponseMessage response) throws ResponseParseException {
             try {
                 return parseGetBucketRequestPayment(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+    }
+
+    public static final class InitiateWormConfigurationResponseParser implements ResponseParser<String> {
+
+        @Override
+        public String parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                return response.getHeaders().get("x-oss-worm-id");
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+    }
+
+    public static final class GetWormConfigurationResponseParser implements ResponseParser<WormConfiguration> {
+
+        @Override
+        public WormConfiguration parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                return parseGetWormConfiguration(response.getContent());
             } finally {
                 safeCloseResponse(response);
             }
@@ -2621,6 +2647,39 @@ public final class ResponseParsers {
             String payerString = root.getChildText("Payer");
 
             return RequestPayer.parse(payerString);
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Unmarshall bucket worm configuration response body to WormConfiguration.
+     */
+    public static WormConfiguration parseGetWormConfiguration(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            WormConfiguration wormConfiguration = new WormConfiguration();
+
+            Element root = getXmlRootElement(responseBody);
+            wormConfiguration.setWormId(root.getChildText("WormId"));
+            if(root.getChildText("State") != null){
+                wormConfiguration.setState(WormConfiguration.WormState.parse(root.getChildText("State")));
+            }
+            if(root.getChildText("CreationDate") != null){
+                wormConfiguration.setCreationDate(DateUtil.parseIso8601Date(root.getChildText("CreationDate")));
+            }
+
+            if(root.getChildText("ExpirationDate") != null){
+                wormConfiguration.setExpirationDate(DateUtil.parseIso8601Date(root.getChildText("ExpirationDate")));
+            }
+
+            if(root.getChildText("RetentionPeriodInDays") != null) {
+               wormConfiguration.setRetentionPeriodInDays(Integer.parseInt(root.getChildText("RetentionPeriodInDays")));
+            }
+
+            return wormConfiguration;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
