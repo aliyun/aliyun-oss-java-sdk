@@ -30,14 +30,12 @@ import java.util.Date;
  * mapped to one or multiple buckets. An OSS account could only create up to 10
  * bucket. And there's no limit on the files count or size under a bucket.
  * </p>
- * <p>
  * Bucket naming rules:
  * <ul>
  * <li>Can only contain low case letter, number or dash(-).</li>
  * <li>Can only start with low case letter or number.</li>
  * <li>The length must be between 3 to 63 bytes.</li>
  * </ul>
- * </p>
  */
 public class Bucket extends GenericResult {
 
