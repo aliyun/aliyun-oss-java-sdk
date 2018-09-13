@@ -73,6 +73,9 @@ public final class RequestMarshallers {
     public static final ProcessObjectRequestMarshaller processObjectRequestMarshaller = new ProcessObjectRequestMarshaller();
     public static final PutBucketRequestPaymentMarshaller putBucketRequestPaymentMarshaller = new PutBucketRequestPaymentMarshaller();
 
+    public static final InitiateWormConfigurationRequestMarshaller initiateWormConfigurationRequestMarshaller = new InitiateWormConfigurationRequestMarshaller();
+    public static final ExtendWormConfigurationRequestMarshaller extendWormConfigurationRequestMarshaller = new ExtendWormConfigurationRequestMarshaller();
+
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
 
     }
@@ -896,6 +899,46 @@ public final class RequestMarshallers {
             return rawData;
         }
 
+    }
+
+    public static final class InitiateWormConfigurationRequestMarshaller
+        implements RequestMarshaller2<InitiateWormConfigurationRequest> {
+
+        @Override
+        public byte[] marshall(InitiateWormConfigurationRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<InitiateWormConfiguration>");
+            xmlBody.append("<RetentionPeriodInDays>" + request.getRetentionPeriodInDays() + "</RetentionPeriodInDays>");
+            xmlBody.append("</InitiateWormConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+    }
+
+    public static final class ExtendWormConfigurationRequestMarshaller
+        implements RequestMarshaller2<ExtendWormConfigurationRequest> {
+
+        @Override
+        public byte[] marshall(ExtendWormConfigurationRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<ExtendWormConfiguration>");
+            xmlBody.append("<RetentionPeriodInDays>" + request.getRetentionPeriodInDays() + "</RetentionPeriodInDays>");
+            xmlBody.append("</ExtendWormConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
     }
 
     private static enum EscapedChar {

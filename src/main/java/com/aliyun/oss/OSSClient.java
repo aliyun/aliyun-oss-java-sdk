@@ -1184,6 +1184,31 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public String initiateWormConfiguration(InitiateWormConfigurationRequest initiateWormConfigurationRequest) throws OSSException, ClientException {
+        return this.bucketOperation.initiateWormConfiguration(initiateWormConfigurationRequest);
+    }
+
+    @Override
+    public void abortBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException {
+        this.bucketOperation.abortBucketWorm(genericRequest);
+    }
+
+    @Override
+    public void completeBucketWorm(CompleteWormConfigurationRequest completeWormConfigurationRequest) throws OSSException, ClientException {
+        this.bucketOperation.completeBucketWorm(completeWormConfigurationRequest);
+    }
+
+    @Override
+    public void extendBucketWorm(ExtendWormConfigurationRequest extendWormConfigurationRequest) throws OSSException, ClientException {
+        this.bucketOperation.extendBucketWorm(extendWormConfigurationRequest);
+    }
+
+    @Override
+    public WormConfiguration getBucketWorm(GenericRequest getBucketWormRequest) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketWorm(getBucketWormRequest);
+    }
+
+    @Override
     public UploadFileResult uploadFile(UploadFileRequest uploadFileRequest) throws Throwable {
         return this.uploadOperation.uploadFile(uploadFileRequest);
     }
