@@ -173,7 +173,9 @@ public class BucketAclTest extends TestBase {
             ossClient.doesBucketExist(nonexistentBucket);
             Assert.fail("Does bucket exist should not be successful");
         } catch (Exception e) {
-            Assert.assertEquals("UnknownHost", e.getMessage());
+            Assert.assertEquals("unormal-does-bucket-exist.oss-cn-taikang.aliyuncs.com\n" +
+                    "[ErrorCode]: UnknownHost\n" +
+                    "[RequestId]: Unknown", e.getMessage());
         }
     }
         
