@@ -562,6 +562,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public OSSObject selectObject(SelectObjectRequest selectObjectRequest) throws OSSException, ClientException {
+        return objectOperation.selectObject(selectObjectRequest);
+    }
+
+    @Override
     public SimplifiedObjectMeta getSimplifiedObjectMeta(String bucketName, String key)
             throws OSSException, ClientException {
         return this.getSimplifiedObjectMeta(new GenericRequest(bucketName, key));
@@ -576,6 +581,11 @@ public class OSSClient implements OSS {
     @Override
     public ObjectMetadata getObjectMetadata(String bucketName, String key) throws OSSException, ClientException {
         return this.getObjectMetadata(new GenericRequest(bucketName, key));
+    }
+
+    @Override
+    public SelectObjectMetadata createSelectObjectMetadata(CreateSelectObjectMetadataRequest createSelectObjectMetadataRequest) throws OSSException, ClientException {
+        return objectOperation.createSelectObjectMetadata(createSelectObjectMetadataRequest);
     }
 
     @Override

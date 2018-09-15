@@ -154,7 +154,7 @@ public class ClientException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return getErrorMessage() + "\n[ErrorCode]: " + errorCode != null ? errorCode
-                : "" + "\n[RequestId]: " + requestId != null ? requestId : "";
+        return getErrorMessage() + "\n[ErrorCode]: " + (errorCode != null ? errorCode
+                : "") + "\n[RequestId]: " + (requestId != null ? requestId : "");
     }
 }
