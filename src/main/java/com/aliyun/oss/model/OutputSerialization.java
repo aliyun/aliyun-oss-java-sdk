@@ -7,7 +7,6 @@ import java.io.Serializable;
  */
 public class OutputSerialization implements Serializable {
     private CSVFormat csvOutputFormat = new CSVFormat();
-    private String compressionType = CompressionType.NONE.name();
     private boolean keepAllColumns = false;
     private boolean payloadCrcEnabled = false;
     private boolean outputRawData = false;
@@ -23,19 +22,6 @@ public class OutputSerialization implements Serializable {
 
     public OutputSerialization withCsvOutputFormat(CSVFormat csvFormat) {
         setCsvOutputFormat(csvFormat);
-        return this;
-    }
-
-    public String getCompressionType() {
-        return compressionType;
-    }
-
-    public void setCompressionType(CompressionType compressionType) {
-        this.compressionType = compressionType.name();
-    }
-
-    public OutputSerialization withCompressionType(CompressionType compressionType) {
-        setCompressionType(compressionType);
         return this;
     }
 

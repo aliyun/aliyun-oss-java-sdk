@@ -525,7 +525,7 @@ public final class RequestMarshallers {
             xmlBody.append("<RecordDelimiter>" + BinaryUtil.toBase64String(csvInputFormat.getRecordDelimiter().getBytes()) + "</RecordDelimiter>");
             xmlBody.append("<FieldDelimiter>" + BinaryUtil.toBase64String(csvInputFormat.getFieldDelimiter().toString().getBytes()) + "</FieldDelimiter>");
             xmlBody.append("<QuoteCharacter>" + BinaryUtil.toBase64String(csvInputFormat.getQuoteChar().toString().getBytes()) + "</QuoteCharacter>");
-            xmlBody.append("<Comments>" + BinaryUtil.toBase64String(csvInputFormat.getCommentChar().toString().getBytes()) + "</Comments>");
+            xmlBody.append("<CommentCharacter>" + BinaryUtil.toBase64String(csvInputFormat.getCommentChar().toString().getBytes()) + "</CommentCharacter>");
 
             if (request.getLineRange() != null) {
                 xmlBody.append("<Range>" + request.lineRangeToString(request.getLineRange()) + "</Range>");

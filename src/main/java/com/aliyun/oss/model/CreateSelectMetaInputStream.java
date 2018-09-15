@@ -147,7 +147,7 @@ public class CreateSelectMetaInputStream extends FilterInputStream {
                         throw new IOException("Oss Select create meta encounter error code: " + status + ", message: " + error);
                     }
 
-                    selectObjectMetadata.setCsvObjectMetadata(
+                    selectObjectMetadata.withCsvObjectMetadata(
                             new SelectObjectMetadata.CSVObjectMetadata()
                                     .withSplits(ByteBuffer.wrap(splitBytes).getInt())
                                     .withTotalLines(ByteBuffer.wrap(totalLineBytes).getLong()));
