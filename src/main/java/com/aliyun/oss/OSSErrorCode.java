@@ -251,4 +251,9 @@ public interface OSSErrorCode {
      * The archive file is not restored before usage.
      */
     static final String INVALID_OBJECT_STATE = "InvalidObjectState";
+
+    /**
+     * the bucket worm configuration does not exist.
+     */
+    static final String NO_SUCH_WORM_CONFIGURATION = "NoSuchWORMConfiguration";
 }
