@@ -59,7 +59,9 @@ public class WormConfiguration extends GenericResult {
     public enum WormState {
         IN_PROGRESS("InProgress"),
 
-        LOCKED("Locked");
+        LOCKED("Locked"),
+
+        EXPIRED("Expired");
 
         private String name;
 
