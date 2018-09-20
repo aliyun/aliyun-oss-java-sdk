@@ -42,6 +42,8 @@ public class ObjectMetadata {
 
     public static final String AES_256_SERVER_SIDE_ENCRYPTION = "AES256";
 
+    public static final String KMS_SERVER_SIDE_ENCRYPTION = "KMS";
+
     /**
      * <p>
      * Gets the user's custom metadata.
@@ -280,6 +282,25 @@ public class ObjectMetadata {
      */
     public void setServerSideEncryption(String serverSideEncryption) {
         metadata.put(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION, serverSideEncryption);
+    }
+
+    /**
+     * Gets the object's server side encryption key ID.
+     *
+     * @return The server side encryption key ID. Null means no encryption key ID.
+     */
+    public String getServerSideEncryptionKeyId() {
+        return (String) metadata.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION_KEY_ID);
+    }
+
+    /**
+     * Sets the object's server side encryption key ID.
+     *
+     * @param serverSideEncryptionKeyId
+     *            The server side encryption key ID.
+     */
+    public void setServerSideEncryptionKeyId(String serverSideEncryptionKeyId) {
+        metadata.put(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION_KEY_ID, serverSideEncryptionKeyId);
     }
 
     /**
