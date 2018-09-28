@@ -62,18 +62,7 @@ import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.HttpHeaders;
 import com.aliyun.oss.common.utils.HttpUtil;
-import com.aliyun.oss.internal.CORSOperation;
-import com.aliyun.oss.internal.LiveChannelOperation;
-import com.aliyun.oss.internal.OSSBucketOperation;
-import com.aliyun.oss.internal.OSSDownloadOperation;
-import com.aliyun.oss.internal.OSSHeaders;
-import com.aliyun.oss.internal.OSSMultipartOperation;
-import com.aliyun.oss.internal.OSSObjectOperation;
-import com.aliyun.oss.internal.OSSUdfOperation;
-import com.aliyun.oss.internal.OSSUploadOperation;
-import com.aliyun.oss.internal.OSSUtils;
-import com.aliyun.oss.internal.RequestParameters;
-import com.aliyun.oss.internal.SignUtils;
+import com.aliyun.oss.internal.*;
 import com.aliyun.oss.model.*;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
 
@@ -328,6 +317,7 @@ public class OSSClient implements OSS {
         return serviceClient.getClientConfiguration();
     }
 
+
     @Override
     public Bucket createBucket(String bucketName) throws OSSException, ClientException {
         return this.createBucket(new CreateBucketRequest(bucketName));
@@ -346,6 +336,11 @@ public class OSSClient implements OSS {
     @Override
     public void deleteBucket(GenericRequest genericRequest) throws OSSException, ClientException {
         bucketOperation.deleteBucket(genericRequest);
+    }
+
+    @Override
+    public ListUserRegionsResult listUserRegions() throws OSSException, ClientException {
+        return bucketOperation.listUserRegions();
     }
 
     @Override
