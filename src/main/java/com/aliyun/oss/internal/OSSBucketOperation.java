@@ -132,6 +132,9 @@ public class OSSBucketOperation extends OSSOperation {
         if (listBucketRequest.getBid() != null) {
             params.put(BID, listBucketRequest.getBid());
         }
+        if (listBucketRequest.isRegionList()) {
+            params.put(SUBRESOURCE_REGION_LIST, null);
+        }
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.GET).setParameters(params).setOriginalRequest(listBucketRequest).build();
@@ -1213,6 +1216,15 @@ public class OSSBucketOperation extends OSSOperation {
             .setOriginalRequest(getBucketWormRequest).build();
 
         return doOperation(request, getWormConfigurationResponseParser, bucketName, null, true);
+    }
+
+    public ListUserRegionsResult listUserRegions() throws OSSException, ClientException {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_USER_REGION, null);
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setParameters(params).build();
+
+        return doOperation(request, listUserRegionResponseParser, null, null, true);
     }
 
 }

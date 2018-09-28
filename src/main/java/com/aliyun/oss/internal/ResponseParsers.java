@@ -52,6 +52,7 @@ import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
  */
 public final class ResponseParsers {
 
+    public static final ListUserRegionResponseParser listUserRegionResponseParser = new ListUserRegionResponseParser();
     public static final ListBucketResponseParser listBucketResponseParser = new ListBucketResponseParser();
     public static final ListImageStyleResponseParser listImageStyleResponseParser = new ListImageStyleResponseParser();
     public static final GetBucketRefererResponseParser getBucketRefererResponseParser = new GetBucketRefererResponseParser();
@@ -116,6 +117,21 @@ public final class ResponseParsers {
             // Close response and return it directly without parsing.
             safeCloseResponse(response);
             return response;
+        }
+
+    }
+
+    public static final class ListUserRegionResponseParser implements ResponseParser<ListUserRegionsResult> {
+
+        @Override
+        public ListUserRegionsResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                ListUserRegionsResult result = parseListUserRegion(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
         }
 
     }
@@ -1137,6 +1153,37 @@ public final class ResponseParsers {
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
+    }
+
+    /**
+     * Unmarshall list user regions response body to region list.
+     */
+    @SuppressWarnings("unchecked")
+    public static ListUserRegionsResult parseListUserRegion(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+
+            ListUserRegionsResult result = new ListUserRegionsResult();
+
+            List<Region> regions = new ArrayList<Region>();
+            if (root.getChild("Regions") != null) {
+                List<Element> bucketElems = root.getChild("Regions").getChildren("Region");
+                for (Element e : bucketElems) {
+                    Region region = new Region();
+                    region.setRegion(e.getText());
+                    regions.add(region);
+                }
+            }
+            result.setRegions(regions);
+
+            return result;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
     }
 
     /**
