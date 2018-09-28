@@ -98,6 +98,11 @@ public interface OSS {
     public void deleteBucket(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
+     * List user regions about buckets
+     */
+    public ListUserRegionsResult listUserRegions() throws OSSException, ClientException;
+
+    /**
      * Returns all {@link Bucket} instances of the current account.
      * 
      * @return A list of {@link Bucket} instances. If there's no buckets, the
