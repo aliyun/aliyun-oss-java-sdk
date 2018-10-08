@@ -205,13 +205,16 @@ public class OSSDownloadOperation {
             result = prime * result + (isCompleted ? 1231 : 1237);
             result = prime * result + (int) (end ^ (end >>> 32));
             result = prime * result + (int) (start ^ (start >>> 32));
+            result = prime * result + (int) (crc ^ (crc >>> 32));
             return result;
         }
 
         public int index; // part index (starting from 0).
         public long start; // start index;
         public long end; // end index;
-        public boolean isCompleted; // flag of part download finished or not.
+        public boolean isCompleted; // flag of part download finished or not;
+        public long length; // length of part
+        public long crc; // part crc.
     }
 
     static class PartResult {
@@ -220,6 +223,14 @@ public class OSSDownloadOperation {
             this.number = number;
             this.start = start;
             this.end = end;
+        }
+
+        public PartResult(int number, long start, long end, long length, long clientCRC) {
+            this.number = number;
+            this.start = start;
+            this.end = end;
+            this.length = length;
+            this.clientCRC = clientCRC;
         }
 
         public long getStart() {
@@ -374,7 +385,11 @@ public class OSSDownloadOperation {
 
         // Concurrently download parts.
         DownloadResult downloadResult = download(downloadCheckPoint, downloadFileRequest);
+        Long serverCRC = null;
         for (PartResult partResult : downloadResult.getPartResults()) {
+            if (partResult.getServerCRC() != null) {
+                serverCRC = partResult.getServerCRC();
+            }
             if (partResult.isFailed()) {
                 ProgressPublisher.publishProgress(listener, ProgressEventType.TRANSFER_PART_FAILED_EVENT);
                 throw partResult.getException();
@@ -384,7 +399,6 @@ public class OSSDownloadOperation {
         // check crc64
         if(objectOperation.getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
             Long clientCRC = calcObjectCRCFromParts(downloadResult.getPartResults());
-            Long serverCRC = downloadResult.getPartResults().get(0).getServerCRC();
             try {
                 OSSUtils.checkChecksum(clientCRC, serverCRC, downloadResult.getObjectMetadata().getRequestId());
             } catch (Exception e) {
@@ -480,7 +494,8 @@ public class OSSDownloadOperation {
                 tasks.add(task);
             } else {
                 taskResults.add(new PartResult(i + 1, downloadCheckPoint.downloadParts.get(i).start,
-                        downloadCheckPoint.downloadParts.get(i).end));
+                        downloadCheckPoint.downloadParts.get(i).end, downloadCheckPoint.downloadParts.get(i).length,
+                        downloadCheckPoint.downloadParts.get(i).crc));
             }
         }
         service.shutdown();
@@ -566,6 +581,8 @@ public class OSSDownloadOperation {
                     tr.setClientCRC(clientCRC);
                     tr.setServerCRC(objectMetadata.getServerCRC());
                     tr.setLength(objectMetadata.getContentLength());
+                    downloadPart.length = objectMetadata.getContentLength();
+                    downloadPart.crc = clientCRC;
                 }
                 downloadCheckPoint.update(partIndex, true);
                 if (downloadFileRequest.isEnableCheckpoint()) {

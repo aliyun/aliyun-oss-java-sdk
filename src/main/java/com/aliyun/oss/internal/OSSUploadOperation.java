@@ -205,6 +205,7 @@ public class OSSUploadOperation {
             result = prime * result + number;
             result = prime * result + (int) (offset ^ (offset >>> 32));
             result = prime * result + (int) (size ^ (size >>> 32));
+            result = prime * result + (int) (crc ^ (crc >>> 32));
             return result;
         }
 
@@ -212,6 +213,7 @@ public class OSSUploadOperation {
         public long offset; // the offset in the file
         public long size; // part size
         public boolean isCompleted; // upload completeness flag.
+        public long crc; //part crc
     }
 
     static class PartResult {
@@ -220,6 +222,13 @@ public class OSSUploadOperation {
             this.number = number;
             this.offset = offset;
             this.length = length;
+        }
+
+        public PartResult(int number, long offset, long length, long partCRC) {
+            this.number = number;
+            this.offset = offset;
+            this.length = length;
+            this.partCRC = partCRC;
         }
 
         public int getNumber() {
@@ -432,7 +441,7 @@ public class OSSUploadOperation {
                         multipartOperation, listener)));
             } else {
                 taskResults.add(new PartResult(i + 1, uploadCheckPoint.uploadParts.get(i).offset,
-                        uploadCheckPoint.uploadParts.get(i).size));
+                        uploadCheckPoint.uploadParts.get(i).size, uploadCheckPoint.uploadParts.get(i).crc));
             }
         }
         service.shutdown();
@@ -501,6 +510,7 @@ public class OSSUploadOperation {
                     OSSUtils.checkChecksum(uploadPartResult.getClientCRC(), uploadPartResult.getServerCRC(), uploadPartResult.getRequestId());
                     tr.setPartCRC(uploadPartResult.getClientCRC());
                     tr.setLength(uploadPartResult.getPartSize());
+                    uploadPart.crc = uploadPartResult.getClientCRC();
                 }
                 PartETag partETag = new PartETag(uploadPartResult.getPartNumber(), uploadPartResult.getETag());
                 uploadCheckPoint.update(partIndex, partETag, true);
