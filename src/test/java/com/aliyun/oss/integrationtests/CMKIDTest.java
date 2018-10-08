@@ -17,26 +17,23 @@ import java.util.*;
 
 public class CMKIDTest extends TestBase {
 
-    private String CMS_ID = "7fcfd1f0-339c-4f5e-9ba7-58bb04b9930f";
-
     private String key = "CMKIDTest";
 
-    private String uploadLocalFilePath = "upload";
+    private String uploadLocalFilePath = "uploadFile";
 
-    private String downloadLocalFilePath = "download";
+    private String downloadLocalFilePath = "downloadFile";
 
     @Test
     public void testPutObjectWithCMKID() {
         try {
-            final File sampleFile = createSampleFile(uploadLocalFilePath, 2 * 1024 * 1024);
+            final File sampleFile = createSampleFile(uploadLocalFilePath, 1 * 1024 * 1024);
 
             final ObjectMetadata metadata = new ObjectMetadata();
             metadata.setServerSideEncryption(ObjectMetadata.KMS_SERVER_SIDE_ENCRYPTION);
-            metadata.setServerSideEncryptionKeyId(CMS_ID);
+            metadata.setServerSideEncryptionKeyId(TestConfig.CMK_ID);
             ossClient.putObject(bucketName, key, sampleFile, metadata);
-            ossClient.getObject(new GetObjectRequest(bucketName, key), new File(downloadLocalFilePath));
-
-            System.out.println(compareFile(sampleFile.getAbsolutePath(), downloadLocalFilePath));
+            ObjectMetadata objectMetadata = ossClient.getObject(new GetObjectRequest(bucketName, key), new File(downloadLocalFilePath));
+            Assert.assertEquals(TestConfig.CMK_ID, objectMetadata.getServerSideEncryptionKeyId());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -47,7 +44,7 @@ public class CMKIDTest extends TestBase {
         HttpURLConnection conn = null;
 
         try {
-            final File sampleFile = createSampleFile(uploadLocalFilePath, 2 * 1024 * 1024);
+            final File sampleFile = createSampleFile(uploadLocalFilePath, 1 * 1024 * 1024);
 
             String urlStr = TestConfig.OSS_TEST_ENDPOINT.replace("http://", "http://" + bucketName + ".");
 
@@ -58,7 +55,7 @@ public class CMKIDTest extends TestBase {
                     + sampleFile.getAbsolutePath());
             formFields.put("OSSAccessKeyId", TestConfig.OSS_TEST_ACCESS_KEY_ID);
             formFields.put("x-oss-server-side-encryption", ObjectMetadata.KMS_SERVER_SIDE_ENCRYPTION);
-            formFields.put("x-oss-server-side-encryption-key-id", CMS_ID);
+            formFields.put("x-oss-server-side-encryption-key-id", TestConfig.CMK_ID);
             String policy
                     = "{\"expiration\": \"2120-01-01T12:00:00.000Z\",\"conditions\": [[\"content-length-range\", 0, 104857600]]}";
             String encodePolicy = new String(Base64.encodeBase64(policy.getBytes()));
@@ -148,9 +145,8 @@ public class CMKIDTest extends TestBase {
             System.out.println(strBuf.toString());
             reader.close();
 
-            ossClient.getObject(new GetObjectRequest(bucketName, key), new File(downloadLocalFilePath));
-
-            System.out.println(compareFile(sampleFile.getAbsolutePath(), downloadLocalFilePath));
+            ObjectMetadata objectMetadata = ossClient.getObject(new GetObjectRequest(bucketName, key), new File(downloadLocalFilePath));
+            Assert.assertEquals(TestConfig.CMK_ID, objectMetadata.getServerSideEncryptionKeyId());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
@@ -178,10 +174,10 @@ public class CMKIDTest extends TestBase {
     @Test
     public void testInitMultipartUploadWithCMKID() {
         try {
-            final File sampleFile = createSampleFile(uploadLocalFilePath, 2 * 1024 * 1024);
+            final File sampleFile = createSampleFile(uploadLocalFilePath, 1 * 1024 * 1024);
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setServerSideEncryption(ObjectMetadata.KMS_SERVER_SIDE_ENCRYPTION);
-            metadata.setServerSideEncryptionKeyId(CMS_ID);
+            metadata.setServerSideEncryptionKeyId(TestConfig.CMK_ID);
 
             InitiateMultipartUploadRequest request = new InitiateMultipartUploadRequest(bucketName, key, metadata);
             InitiateMultipartUploadResult result = ossClient.initiateMultipartUpload(request);
@@ -220,9 +216,9 @@ public class CMKIDTest extends TestBase {
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             ossClient.completeMultipartUpload(completeMultipartUploadRequest);
 
-            ossClient.getObject(new GetObjectRequest(bucketName, key), new File(downloadLocalFilePath));
+            ObjectMetadata objectMetadata = ossClient.getObject(new GetObjectRequest(bucketName, key), new File(downloadLocalFilePath));
 
-            System.out.println(compareFile(sampleFile.getAbsolutePath(), downloadLocalFilePath));
+            Assert.assertEquals(TestConfig.CMK_ID, objectMetadata.getServerSideEncryptionKeyId());
         } catch (IOException e) {
             Assert.fail(e.getMessage());
         }
@@ -231,25 +227,23 @@ public class CMKIDTest extends TestBase {
     @Test
     public void testCopyObjectWithCMKID() {
         try {
-            final String sourceBucketName = "src_bucket";
+            final String sourceBucketName = createBucket();
             final String sourceKey = "src_key";
-
+            final File sampleFile = createSampleFile(uploadLocalFilePath, 1 * 1024 * 1024);
             final CopyObjectRequest request =
                     new CopyObjectRequest(sourceBucketName, sourceKey, bucketName, key);
 
-            final ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setServerSideEncryption(ObjectMetadata.KMS_SERVER_SIDE_ENCRYPTION);
-            metadata.setServerSideEncryptionKeyId(CMS_ID);
-            request.setNewObjectMetadata(metadata);
+            ossClient.putObject(sourceBucketName, sourceKey, sampleFile);
+
+            request.setServerSideEncryption(ObjectMetadata.KMS_SERVER_SIDE_ENCRYPTION);
+            request.setServerSideEncryptionKeyId(TestConfig.CMK_ID);
             ossClient.copyObject(request);
 
-            String sourceLocalFilePath = "source";
             String copyLocalFilePath = "copy";
 
-            ossClient.getObject(new GetObjectRequest(sourceBucketName, sourceKey), new File(sourceLocalFilePath));
-            ossClient.getObject(new GetObjectRequest(bucketName, key), new File(copyLocalFilePath));
+            ObjectMetadata metadataCopy = ossClient.getObject(new GetObjectRequest(bucketName, key), new File(copyLocalFilePath));
 
-            System.out.println(compareFile(sourceLocalFilePath, copyLocalFilePath));
+            Assert.assertEquals(TestConfig.CMK_ID, metadataCopy.getServerSideEncryptionKeyId());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -265,7 +259,7 @@ public class CMKIDTest extends TestBase {
 
             meta.setContentType("text/plain");
             meta.setServerSideEncryption(ObjectMetadata.KMS_SERVER_SIDE_ENCRYPTION);
-            meta.setServerSideEncryptionKeyId(CMS_ID);
+            meta.setServerSideEncryptionKeyId(TestConfig.CMK_ID);
 
             AppendObjectRequest appendObjectRequest = new AppendObjectRequest(bucketName, key, new ByteArrayInputStream(content1.getBytes()),meta);
 
@@ -288,7 +282,7 @@ public class CMKIDTest extends TestBase {
                 sb.append(line);
             }
 
-            System.out.println(sb.toString().equals(content1 + content2));
+            Assert.assertTrue(sb.toString().equals(content1 + content2));
         } catch (IOException e) {
             Assert.fail(e.getMessage());
         }
