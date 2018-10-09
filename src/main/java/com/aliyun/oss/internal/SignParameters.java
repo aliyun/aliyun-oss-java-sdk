@@ -22,6 +22,8 @@ public class SignParameters {
 
     public static final String AUTHORIZATION_PREFIX_V2 = "OSS2 ";
 
+    public static final String AUTHORIZATION_V2 = "OSS2";
+
     public static final String AUTHORIZATION_ACCESS_KEY_ID = "AccessKeyId";
 
     public static final String AUTHORIZATION_ADDITIONAL_HEADERS = "AdditionalHeaders";

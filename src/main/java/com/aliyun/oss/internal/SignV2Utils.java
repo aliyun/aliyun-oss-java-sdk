@@ -3,11 +3,10 @@ package com.aliyun.oss.internal;
 import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.common.auth.Credentials;
-import com.aliyun.oss.common.auth.HmacSignature;
+import com.aliyun.oss.common.auth.HmacSHA256Signature;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.utils.HttpHeaders;
 import com.aliyun.oss.common.utils.HttpUtil;
-import com.aliyun.oss.common.utils.StringUtils;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 
 import java.net.URI;
@@ -193,22 +192,20 @@ public class SignV2Utils {
         }
 
         String canonicalResource = "/" + ((bucketName != null) ? bucketName : "") + ((key != null ? "/" + key : ""));
+        requestMessage.addParameter(OSS_SIGNATURE_VERSION, SignParameters.AUTHORIZATION_V2);
+        requestMessage.addParameter(OSS_EXPIRES, expires);
+        requestMessage.addParameter(OSS_ACCESS_KEY_ID_PARAM, accessId);
         Set<String> rawAdditionalHeaderNames = buildRawAdditionalHeaderNames(request.getHeaders().keySet(), request.getAdditionalHeaderNames());
-        Set<String> sortedAdditionalHeaderNames = buildSortedAdditionalHeaderNames(request.getHeaders().keySet(), request.getAdditionalHeaderNames());
         String canonicalString = buildCanonicalString(method.toString(), canonicalResource, requestMessage, rawAdditionalHeaderNames);
-        String signature = new HmacSignature(HmacSignature.SHA256).computeSignature(accessKey, canonicalString);
+        String signature = new HmacSHA256Signature().computeSignature(accessKey, canonicalString);
 
         Map<String, String> params = new LinkedHashMap<String, String>();
-        params.put(OSS_SIGNATURE_VERSION, "OSS2");
-        params.put(OSS_EXPIRES, expires);
-        params.put(OSS_ACCESS_KEY_ID_PARAM, accessId);
-        params.put(OSS_ADDITIONAL_HEADERS, StringUtils.join(";", sortedAdditionalHeaderNames));
         params.put(OSS_SIGNATURE, signature);
         params.putAll(requestMessage.getParameters());
 
         String queryString = HttpUtil.paramToQueryString(params, DEFAULT_CHARSET_NAME);
 
-        /* Compse HTTP request uri. */
+        /* Compose HTTP request uri. */
         String url = requestMessage.getEndpoint().toString();
         if (!url.endsWith("/")) {
             url += "/";
@@ -269,7 +266,7 @@ public class SignV2Utils {
     public static String buildSignature(String secretAccessKey, String httpMethod, String resourcePath, RequestMessage request) {
         String canonicalString = buildCanonicalString(httpMethod, resourcePath, request,
                 buildRawAdditionalHeaderNames(request.getOriginalRequest().getHeaders().keySet(), request.getOriginalRequest().getAdditionalHeaderNames()));
-        return new HmacSignature(HmacSignature.SHA256).computeSignature(secretAccessKey, canonicalString);
+        return new HmacSHA256Signature().computeSignature(secretAccessKey, canonicalString);
     }
 
 }

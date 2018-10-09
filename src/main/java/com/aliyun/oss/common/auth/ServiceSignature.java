@@ -19,6 +19,11 @@
 
 package com.aliyun.oss.common.auth;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
 /**
  * The interface to compute the signature of the data.
  */
@@ -52,12 +57,41 @@ public abstract class ServiceSignature {
     /**
      *
      * Creates the default <code>ServiceSignature</code> instance which is
-     * {@link HmacSignature}.
+     * {@link HmacSHA1Signature}.
      * 
      * @return The default <code>ServiceSignature</code> instance
      */
     public static ServiceSignature create() {
-        return new HmacSignature();
+        return new HmacSHA1Signature();
+    }
+
+    protected byte[] sign(byte[] key, byte[] data, Mac macInstance, Object lock, String algorithm) {
+        try {
+            // Because Mac.getInstance(String) calls a synchronized method, it
+            // could block on
+            // invoked concurrently, so use prototype pattern to improve perf.
+            if (macInstance == null) {
+                synchronized (lock) {
+                    if (macInstance == null) {
+                        macInstance = Mac.getInstance(algorithm);
+                    }
+                }
+            }
+
+            Mac mac;
+            try {
+                mac = (Mac) macInstance.clone();
+            } catch (CloneNotSupportedException e) {
+                // If it is not clonable, create a new one.
+                mac = Mac.getInstance(algorithm);
+            }
+            mac.init(new SecretKeySpec(key, algorithm));
+            return mac.doFinal(data);
+        } catch (NoSuchAlgorithmException ex) {
+            throw new RuntimeException("Unsupported algorithm: " + algorithm, ex);
+        } catch (InvalidKeyException ex) {
+            throw new RuntimeException("Invalid key: " + key, ex);
+        }
     }
 
 }

@@ -53,6 +53,14 @@ public interface OSS {
     public void switchCredentials(Credentials creds);
 
     /**
+     * Switches to another signature version
+     *
+     * @param signatureVersion
+     *            the signature version to switch to。
+     */
+    public void switchSignatureVersion(String signatureVersion);
+
+    /**
      * Shuts down the OSS instance (release all resources) The OSS instance is
      * not usable after its shutdown() is called.
      */

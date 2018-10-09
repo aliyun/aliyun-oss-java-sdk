@@ -300,6 +300,15 @@ public class OSSClient implements OSS {
         this.credsProvider.setCredentials(creds);
     }
 
+    @Override
+    public void switchSignatureVersion(String signatureVersion) {
+        if (signatureVersion != SignParameters.AUTH_V1 && signatureVersion != SignParameters.AUTH_V2) {
+            throw new IllegalArgumentException("unsupported signature version" + signatureVersion);
+        }
+
+        this.getClientConfiguration().setSignatureVersion(signatureVersion);
+    }
+
     public CredentialsProvider getCredentialsProvider() {
         return this.credsProvider;
     }
