@@ -381,6 +381,14 @@ public final class RequestMarshallers {
                         xmlBody.append("<MirrorDstVpcId>" + redirect.getMirrorDstVpcId()
                             + "</MirrorDstVpcId>");
                     }
+                    if (redirect.isMirrorUsingRole() != null) {
+                        xmlBody.append("<MirrorUsingRole>" + redirect.isMirrorUsingRole()
+                            + "</MirrorUsingRole>");
+                    }
+                    if (redirect.getMirrorRole() != null) {
+                        xmlBody.append("<MirrorRole>" + redirect.getMirrorRole()
+                            + "</MirrorRole>");
+                    }
                     if (redirect.getMirrorHeaders() != null) {
                         xmlBody.append("<MirrorHeaders>");
                         RoutingRule.MirrorHeaders mirrorHeaders = redirect.getMirrorHeaders();

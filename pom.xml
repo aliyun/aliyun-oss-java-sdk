@@ -9,7 +9,7 @@
   </parent>  
   <groupId>com.aliyun.oss</groupId>  
   <artifactId>console-java-sdk</artifactId>  
-  <version>1.0.5</version>
+  <version>1.0.6-SNAPSHOT</version>  
   <packaging>jar</packaging>  
   <name>Aliyun OSS SDK for Console</name>  
   <description>The Aliyun OSS SDK for Console used for accessing Aliyun Object Storage Service</description>  
@@ -172,5 +172,5 @@
       </plugin> 
     </plugins> 
   </build>  
-  <contributors><contributor><properties><provider>haibing.whb@alibaba-inc.com</provider><codeName>null</codeName><codeUrl>https://github.com/aliyun/aliyun-oss-java-sdk.git commit:e3d22f2</codeUrl><description>contributors added by SCM Plugin, please don't modify it!</description></properties></contributor></contributors>
+  <contributors><contributor><properties><provider>xiandeng.wxd@alibaba-inc.com</provider><codeName>null</codeName><codeUrl>git@github.com:aliyun/aliyun-oss-java-sdk.git commit:1cddf8d</codeUrl><description>contributors added by SCM Plugin, please don't modify it!</description></properties></contributor></contributors>
 </project>
