@@ -29,6 +29,7 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.zip.CheckedInputStream;
 
+import com.aliyun.oss.common.utils.StringUtils;
 import com.aliyun.oss.model.*;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -1019,6 +1020,10 @@ public final class ResponseParsers {
 
                 ossObjectSummary.setKey(elem.getChildText("Key"));
                 ossObjectSummary.setETag(trimQuotes(elem.getChildText("ETag")));
+                String type = trimQuotes(elem.getChildText("Type"));
+                if (!StringUtils.isNullOrEmpty(type)) {
+                    ossObjectSummary.setType(ObjectTypeList.parse(type));
+                }
                 ossObjectSummary.setLastModified(DateUtil.parseIso8601Date(elem.getChildText("LastModified")));
                 ossObjectSummary.setSize(Long.valueOf(elem.getChildText("Size")));
                 ossObjectSummary.setStorageClass(elem.getChildText("StorageClass"));
