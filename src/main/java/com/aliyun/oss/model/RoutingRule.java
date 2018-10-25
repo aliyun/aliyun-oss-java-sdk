@@ -428,6 +428,22 @@ public class RoutingRule {
             this.mirrorHeaders = mirrorHeaders;
         }
 
+        public String getMirrorRole() {
+            return mirrorRole;
+        }
+
+        public void setMirrorRole(String mirrorRole) {
+            this.mirrorRole = mirrorRole;
+        }
+
+        public Boolean isMirrorUsingRole() {
+            return mirrorUsingRole;
+        }
+
+        public void setMirrorUsingRole(Boolean mirrorUsingRole) {
+            this.mirrorUsingRole = mirrorUsingRole;
+        }
+
         /**
          * A Redirect element must contain at least one of the following sibling
          * elements.
@@ -564,8 +580,17 @@ public class RoutingRule {
          */
         private String mirrorDstVpcId;
 
-        private MirrorHeaders mirrorHeaders;
+        /**
+         * The role name of the back to private bucket
+         */
+        private String mirrorRole;
 
+        /**
+         * Flags of backing  to private bucket
+         */
+        private Boolean mirrorUsingRole;
+
+        private MirrorHeaders mirrorHeaders;
     }
 
     public Integer getNumber() {
