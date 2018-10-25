@@ -25,7 +25,8 @@ public class CnameConfiguration {
     public static enum CnameStatus {
         Unknown, // initial state.
         Enabled, // Enable the CName
-        Disabled // Disable the CName
+        Disabled, // Disable the CName
+        Blocked // Block the CName
     };
 
     public CnameConfiguration() {

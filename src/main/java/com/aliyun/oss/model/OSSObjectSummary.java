@@ -34,6 +34,8 @@ public class OSSObjectSummary {
 
     private String eTag;
 
+    private ObjectTypeList type;
+
     private long size;
 
     private Date lastModified;
@@ -104,6 +106,26 @@ public class OSSObjectSummary {
      */
     public void setETag(String eTag) {
         this.eTag = eTag;
+    }
+
+    /**
+     * Gets the object Type. Type is Multipart、FileGroup、Symlink、ObjectLink、Appendable、Normal
+     * hex.
+     *
+     * @return Type value.
+     */
+    public ObjectTypeList getType() {
+        return type;
+    }
+
+    /**
+     * Sets the object Type.
+     *
+     * @param type
+     *            Type value.
+     */
+    public void setType(ObjectTypeList type) {
+        this.type = type;
     }
 
     /**
