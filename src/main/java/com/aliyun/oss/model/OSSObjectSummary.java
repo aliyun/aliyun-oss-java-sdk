@@ -19,8 +19,6 @@
 
 package com.aliyun.oss.model;
 
-import com.sun.org.apache.xerces.internal.xs.datatypes.ObjectList;
-
 import java.util.Date;
 
 /**
