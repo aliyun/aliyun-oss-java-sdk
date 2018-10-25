@@ -19,6 +19,8 @@
 
 package com.aliyun.oss.model;
 
+import com.sun.org.apache.xerces.internal.xs.datatypes.ObjectList;
+
 import java.util.Date;
 
 /**
@@ -33,6 +35,8 @@ public class OSSObjectSummary {
     private String key;
 
     private String eTag;
+
+    private ObjectTypeList type;
 
     private long size;
 
@@ -104,6 +108,26 @@ public class OSSObjectSummary {
      */
     public void setETag(String eTag) {
         this.eTag = eTag;
+    }
+
+    /**
+     * Gets the object Type. Type is Multipart、FileGroup、Symlink、ObjectLink、Appendable、Normal
+     * hex.
+     *
+     * @return Type value.
+     */
+    public ObjectTypeList getType() {
+        return type;
+    }
+
+    /**
+     * Sets the object Type.
+     *
+     * @param type
+     *            Type value.
+     */
+    public void setType(ObjectTypeList type) {
+        this.type = type;
     }
 
     /**
