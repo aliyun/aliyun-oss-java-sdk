@@ -72,6 +72,10 @@ public class ObjectMetadata {
         }
     }
 
+    public Map<String, Object> getMetadata() {
+        return metadata;
+    }
+
     /**
      * Sets the http header (SDK internal usage only).
      * 
