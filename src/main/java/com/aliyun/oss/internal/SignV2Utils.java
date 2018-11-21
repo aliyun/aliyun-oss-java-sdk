@@ -1,6 +1,7 @@
 package com.aliyun.oss.internal;
 
 import com.aliyun.oss.ClientConfiguration;
+import com.aliyun.oss.ClientException;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.HmacSHA256Signature;
@@ -9,6 +10,7 @@ import com.aliyun.oss.common.utils.HttpHeaders;
 import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.*;
 
@@ -229,7 +231,7 @@ public class SignV2Utils {
                 builder.append(separator);
                 builder.append(uriEncoding(paramName));
                 String paramValue = parameters.get(paramName);
-                if (paramValue != null) {
+                if (paramValue != null && !paramValue.isEmpty()) {
                     builder.append("=").append(uriEncoding(paramValue));
                 }
 
@@ -243,23 +245,31 @@ public class SignV2Utils {
     public static String uriEncoding(String uri) {
         String result = "";
 
-        for (char c : uri.toCharArray()) {
-            if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')
-                || (c >= '0' && c <= '9') || c == '_' || c == '-'
-                || c == '~' || c == '.') {
-                result += c;
-            } else if (c == '/') {
-                result += "%2F";
-            } else {
-                String temp = Integer.toHexString((int)c);
+        try {
+            for (char c : uri.toCharArray()) {
+                if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')
+                        || (c >= '0' && c <= '9') || c == '_' || c == '-'
+                        || c == '~' || c == '.') {
+                    result += c;
+                } else if (c == '/') {
+                    result += "%2F";
+                } else {
+                    byte[] b;
+                    b = Character.toString(c).getBytes("utf-8");
 
-                if (temp.length() < 2) {
-                    temp = "0" + temp;
+                    for (int i = 0; i < b.length; i++) {
+                        int k = b[i];
+
+                        if (k < 0) {
+                            k += 256;
+                        }
+                        result += "%" + Integer.toHexString(k).toUpperCase();
+                    }
                 }
-                result += "%" + temp.toUpperCase();
             }
+        } catch (UnsupportedEncodingException e) {
+            throw new ClientException(e);
         }
-
         return result;
     }
 
