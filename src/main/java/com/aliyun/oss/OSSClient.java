@@ -302,7 +302,7 @@ public class OSSClient implements OSS {
 
     @Override
     public void switchSignatureVersion(String signatureVersion) {
-        if (signatureVersion != SignParameters.AUTH_V1 && signatureVersion != SignParameters.AUTH_V2) {
+        if (!SignParameters.AUTH_V1.equals(signatureVersion) && !SignParameters.AUTH_V2.equals(signatureVersion)) {
             throw new IllegalArgumentException("unsupported signature version" + signatureVersion);
         }
 

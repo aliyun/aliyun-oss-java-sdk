@@ -30,10 +30,10 @@ public class SignV2Utils {
         Set<String> ts = buildSortedAdditionalHeaderNames(request.getOriginalRequest().getHeaders().keySet(),
                 request.getOriginalRequest().getAdditionalHeaderNames());
 
-        sb.append(AUTHORIZATION_PREFIX_V2 + AUTHORIZATION_ACCESS_KEY_ID + ":" + accessKeyId + ", ");
+        sb.append(AUTHORIZATION_PREFIX_V2 + AUTHORIZATION_ACCESS_KEY_ID).append(":").append(accessKeyId).append(", ");
 
         if (ts != null && !ts.isEmpty()) {
-            sb.append(AUTHORIZATION_ADDITIONAL_HEADERS + ":");
+            sb.append(AUTHORIZATION_ADDITIONAL_HEADERS).append(":");
 
             String separator = "";
 
@@ -77,7 +77,7 @@ public class SignV2Utils {
 
     public static String buildCanonicalString(String method, String resourcePath, RequestMessage request, Set<String> additionalHeaderNames) {
         StringBuilder canonicalString = new StringBuilder();
-        canonicalString.append(method + SignParameters.NEW_LINE);
+        canonicalString.append(method).append(SignParameters.NEW_LINE);
         Map<String, String> headers = request.getHeaders();
         TreeMap<String, String> fixedHeadersToSign = new TreeMap<String, String>();
         TreeMap<String, String> canonicalizedOssHeadersToSign = new TreeMap<String, String>();

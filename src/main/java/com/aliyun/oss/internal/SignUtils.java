@@ -52,7 +52,7 @@ public class SignUtils {
             String expires) {
 
         StringBuilder canonicalString = new StringBuilder();
-        canonicalString.append(method + SignParameters.NEW_LINE);
+        canonicalString.append(method).append(SignParameters.NEW_LINE);
 
         Map<String, String> headers = request.getHeaders();
         TreeMap<String, String> headersToSign = new TreeMap<String, String>();

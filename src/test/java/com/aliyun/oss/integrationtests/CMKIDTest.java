@@ -276,9 +276,9 @@ public class CMKIDTest extends TestBase {
             BufferedReader reader = new BufferedReader(new InputStreamReader(o.getObjectContent()));
             StringBuilder sb = new StringBuilder();
 
-            while (true) {
-                String line = reader.readLine();
-                if (line == null) break;
+            String line;
+
+            while ((line = reader.readLine()) != null) {
                 sb.append(line);
             }
 

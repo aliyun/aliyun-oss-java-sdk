@@ -83,6 +83,10 @@ public class SignTest {
                     .append(key).append("?x-oss-");
 
             Assert.assertTrue(url.toString().startsWith(expectedUrlPrefix.toString()));
+            Assert.assertTrue(url.toString().contains("x-oss-signature"));
+            Assert.assertTrue(url.toString().contains("x-oss-signature-version"));
+            Assert.assertTrue(url.toString().contains("x-oss-expires"));
+            Assert.assertTrue(url.toString().contains("x-oss-access-key-id"));
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -110,5 +114,20 @@ public class SignTest {
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
+    }
+
+    @Test
+    public void testSwitchUnsupportedSignatureVersion() {
+        String unsupportedSignatureVersion = "unsupported";
+        ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
+        conf.setSignatureVersion(SignParameters.AUTH_V2);
+        OSS ossClient = new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT, TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET, conf);
+        try {
+            ossClient.switchSignatureVersion(unsupportedSignatureVersion);
+            Assert.fail("switch unsupported signature version should not be successful");
+        } catch (Exception ex) {
+            Assert.assertTrue(ex.getMessage().startsWith("unsupported signature version"));
+        }
+
     }
 }
