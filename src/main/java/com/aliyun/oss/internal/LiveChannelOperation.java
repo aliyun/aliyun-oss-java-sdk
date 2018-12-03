@@ -319,7 +319,6 @@ public class LiveChannelOperation extends OSSOperation {
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(liveChannelName).setParameters(parameters)
-                .setInputStream(new ByteArrayInputStream(new byte[0])).setInputSize(0)
                 .setOriginalRequest(getVodPlaylistRequest).build();
 
         return doOperation(request, new GetObjectResponseParser(bucketName, liveChannelName), bucketName, liveChannelName, true);
