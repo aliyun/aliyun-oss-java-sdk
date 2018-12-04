@@ -494,5 +494,25 @@ public class PutObjectTest extends TestBase {
             }
         }
     }
-    
+
+    @Test
+    public void testPutCSVTypeFile() throws Exception {
+        final String key = "1.csv";
+        final int instreamLength = 128 * 1024;
+
+        InputStream instream = null;
+        try {
+            instream = genFixedLengthInputStream(instreamLength);
+            ossClient.putObject(bucketName, key, instream);
+
+            OSSObject o = ossClient.getObject(bucketName, key);
+            Assert.assertEquals(o.getObjectMetadata().getContentType(), "text/csv");
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+
+            if (instream != null) {
+                instream.close();
+            }
+        }
+    }
 }

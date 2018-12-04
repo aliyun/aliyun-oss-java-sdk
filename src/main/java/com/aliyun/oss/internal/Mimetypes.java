@@ -90,6 +90,8 @@ public class Mimetypes {
                 }
             }
         }
+
+        extensionToMimetypeMap.put("csv", "text/csv");
     }
 
     public String getMimetype(String fileName) {
