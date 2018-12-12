@@ -31,8 +31,6 @@ import static com.aliyun.oss.common.utils.LogUtils.logException;
 import static com.aliyun.oss.event.ProgressPublisher.publishProgress;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_BUFFER_SIZE;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
-import static com.aliyun.oss.internal.OSSHeaders.OSS_SELECT_CSV_ROWS;
-import static com.aliyun.oss.internal.OSSHeaders.OSS_SELECT_CSV_SPLITS;
 import static com.aliyun.oss.internal.OSSHeaders.OSS_SELECT_OUTPUT_RAW;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.addDateHeader;
@@ -224,8 +222,16 @@ public class OSSObjectOperation extends OSSOperation {
             OSSObject ossObject = doOperation(request, new GetObjectResponseParser(bucketName, key), bucketName, key, true);
             publishProgress(selectProgressListener, ProgressEventType.SELECT_STARTED_EVENT);
             SelectObjectMetadata selectObjectMetadata = new SelectObjectMetadata(ossObject.getObjectMetadata());
+            SelectObjectMetadata.SelectContentMetadataBase selectContentMetadataBase;
+            if (createSelectObjectMetadataRequest.getInputSerialization().getSelectContentFormat() == SelectContentFormat.CSV) {
+                selectObjectMetadata.setCsvObjectMetadata(new SelectObjectMetadata.CSVObjectMetadata());
+                selectContentMetadataBase = selectObjectMetadata.getCsvObjectMetadata();
+            } else {
+                selectObjectMetadata.setJsonObjectMetadata(new SelectObjectMetadata.JsonObjectMetadata());
+                selectContentMetadataBase = selectObjectMetadata.getJsonObjectMetadata();
+            }
             InputStream in = ossObject.getObjectContent();
-            CreateSelectMetaInputStream warppedStream = new CreateSelectMetaInputStream(in, selectObjectMetadata, selectProgressListener);
+            CreateSelectMetaInputStream warppedStream = new CreateSelectMetaInputStream(in, selectContentMetadataBase, selectProgressListener);
             while (warppedStream.read() != -1) {
                 //read until eof
             }

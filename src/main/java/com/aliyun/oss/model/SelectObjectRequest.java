@@ -6,6 +6,7 @@ import com.aliyun.oss.event.ProgressListener;
 import java.security.InvalidParameterException;
 
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_CSV_SELECT;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_JSON_SELECT;
 
 /**
  * This is the request class that is used to select an object from OSS. It
@@ -22,6 +23,7 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     private String expression;
     private boolean skipPartialDataRecord = false;
+    private long maxSkippedRecordsAllowed = 0;
     private ExpressionType expressionType = ExpressionType.SQL;
     private InputSerialization inputSerialization = new InputSerialization();
     private OutputSerialization outputSerialization = new OutputSerialization();
@@ -189,6 +191,19 @@ public class SelectObjectRequest extends GetObjectRequest {
         return this;
     }
 
+    public long getMaxSkippedRecordsAllowed() {
+        return maxSkippedRecordsAllowed;
+    }
+
+    public void setMaxSkippedRecordsAllowed(long maxSkippedRecordsAllowed) {
+        this.maxSkippedRecordsAllowed = maxSkippedRecordsAllowed;
+    }
+
+    public SelectObjectRequest withMaxSkippedRecordsAllowed(long maxSkippedRecordsAllowed) {
+        setMaxSkippedRecordsAllowed(maxSkippedRecordsAllowed);
+        return this;
+    }
+
     /**
      * Get the expression type, we only support SQL now.
      * @return
@@ -210,6 +225,11 @@ public class SelectObjectRequest extends GetObjectRequest {
      * @param inputSerialization
      */
     public void setInputSerialization(InputSerialization inputSerialization) {
+        if (inputSerialization.getSelectContentFormat() == SelectContentFormat.CSV) {
+            setProcess(SUBRESOURCE_CSV_SELECT);
+        } else {
+            setProcess(SUBRESOURCE_JSON_SELECT);
+        }
         this.inputSerialization = inputSerialization;
     }
 

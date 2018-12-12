@@ -8,6 +8,7 @@ package com.aliyun.oss.model;
 public class SelectObjectMetadata extends ObjectMetadata {
 
     private CSVObjectMetadata csvObjectMetadata;
+    private JsonObjectMetadata jsonObjectMetadata;
 
     public SelectObjectMetadata() {}
 
@@ -24,12 +25,15 @@ public class SelectObjectMetadata extends ObjectMetadata {
         this.csvObjectMetadata = csvObjectMetadata;
     }
 
-    public SelectObjectMetadata withCsvObjectMetadata(CSVObjectMetadata csvObjectMetadata) {
-        setCsvObjectMetadata(csvObjectMetadata);
-        return this;
+    public JsonObjectMetadata getJsonObjectMetadata() {
+        return jsonObjectMetadata;
     }
 
-    public static class CSVObjectMetadata {
+    public void setJsonObjectMetadata(JsonObjectMetadata jsonObjectMetadata) {
+        this.jsonObjectMetadata = jsonObjectMetadata;
+    }
+
+    public static class SelectContentMetadataBase {
         private long totalLines;
         private int splits;
 
@@ -41,7 +45,7 @@ public class SelectObjectMetadata extends ObjectMetadata {
             this.totalLines = totalLines;
         }
 
-        public CSVObjectMetadata withTotalLines(long totalLines) {
+        public SelectContentMetadataBase withTotalLines(long totalLines) {
             setTotalLines(totalLines);
             return this;
         }
@@ -54,9 +58,15 @@ public class SelectObjectMetadata extends ObjectMetadata {
             this.splits = splits;
         }
 
-        public CSVObjectMetadata withSplits(int splits) {
+        public SelectContentMetadataBase withSplits(int splits) {
             setSplits(splits);
             return this;
         }
+    }
+
+    public static class CSVObjectMetadata extends SelectContentMetadataBase {
+    }
+
+    public static class JsonObjectMetadata extends SelectContentMetadataBase {
     }
 }

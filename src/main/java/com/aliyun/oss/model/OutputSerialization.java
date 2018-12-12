@@ -7,6 +7,8 @@ import java.io.Serializable;
  */
 public class OutputSerialization implements Serializable {
     private CSVFormat csvOutputFormat = new CSVFormat();
+    private JsonFormat jsonOutputFormat = new JsonFormat();
+    // used by csv files
     private boolean keepAllColumns = false;
     private boolean payloadCrcEnabled = false;
     private boolean outputRawData = false;
@@ -22,6 +24,19 @@ public class OutputSerialization implements Serializable {
 
     public OutputSerialization withCsvOutputFormat(CSVFormat csvFormat) {
         setCsvOutputFormat(csvFormat);
+        return this;
+    }
+
+    public JsonFormat getJsonOutputFormat() {
+        return jsonOutputFormat;
+    }
+
+    public void setJsonOutputFormat(JsonFormat jsonOutputFormat) {
+        this.jsonOutputFormat = jsonOutputFormat;
+    }
+
+    public OutputSerialization withJsonOutputFormat(JsonFormat jsonOutputFormat) {
+        setJsonOutputFormat(jsonOutputFormat);
         return this;
     }
 

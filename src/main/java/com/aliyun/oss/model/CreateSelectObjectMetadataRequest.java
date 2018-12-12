@@ -2,7 +2,7 @@ package com.aliyun.oss.model;
 
 import com.aliyun.oss.event.ProgressListener;
 
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_CSV_META;
+import static com.aliyun.oss.internal.RequestParameters.*;
 
 public class CreateSelectObjectMetadataRequest extends HeadObjectRequest {
     private String process;
@@ -34,6 +34,11 @@ public class CreateSelectObjectMetadataRequest extends HeadObjectRequest {
     }
 
     public void setInputSerialization(InputSerialization inputSerialization) {
+        if (inputSerialization.getSelectContentFormat() == SelectContentFormat.CSV) {
+            setProcess(SUBRESOURCE_CSV_META);
+        } else {
+            setProcess(SUBRESOURCE_JSON_META);
+        }
         this.inputSerialization = inputSerialization;
     }
 

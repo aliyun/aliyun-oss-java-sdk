@@ -2,6 +2,7 @@ package com.aliyun.oss.model;
 
 import com.aliyun.oss.event.ProgressEventType;
 import com.aliyun.oss.event.ProgressListener;
+import com.aliyun.oss.model.SelectObjectMetadata.SelectContentMetadataBase;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -20,13 +21,22 @@ public class CreateSelectMetaInputStream extends FilterInputStream {
     private static final int CONTINUOUS_FRAME_MAGIC = 8388612;
 
     /**
-     * Format of end frame
+     * Format of csv end frame
      * |--frame type(4 bytes)--|--payload length(4 bytes)--|--header checksum(4 bytes)--|
      * |--scanned data bytes(8 bytes)--|--total scan size(8 bytes)--|
      * |--status code(4 bytes)--|--total splits count(4 bytes)--|
      * |--total lines(8 bytes)--|--columns count(4 bytes)--|--error message(optional)--|--payload checksum(4 bytes)--|
      */
-    private static final int END_FRAME_MAGIC = 8388614;
+    private static final int CSV_END_FRAME_MAGIC = 8388614;
+
+    /**
+     * Format of json end frame
+     * |--frame type(4 bytes)--|--payload length(4 bytes)--|--header checksum(4 bytes)--|
+     * |--scanned data bytes(8 bytes)--|--total scan size(8 bytes)--|
+     * |--status code(4 bytes)--|--total splits count(4 bytes)--|
+     * |--total lines(8 bytes)--|--columns count(4 bytes)--|--error message(optional)--|--payload checksum(4 bytes)--|
+     */
+    private static final int JSON_END_FRAME_MAGIC = 8388615;
     private static final int SELECT_VERSION = 1;
     private static final long DEFAULT_NOTIFICATION_THRESHOLD = 50 * 1024 * 1024;//notify every scanned 50MB
 
@@ -41,14 +51,14 @@ public class CreateSelectMetaInputStream extends FilterInputStream {
     private ProgressListener selectProgressListener;
     private long nextNotificationScannedSize;
     private CRC32 crc32;
-    private SelectObjectMetadata selectObjectMetadata;
+    private SelectContentMetadataBase selectContentMetadataBase;
     /**
      * payload checksum is the last 4 bytes in one frame, we use this flag to indicate whether we
      * need read the 4 bytes before we advance to next frame.
      */
     private boolean firstReadFrame;
 
-    public CreateSelectMetaInputStream(InputStream in, SelectObjectMetadata selectObjectMetadata, ProgressListener selectProgressListener) {
+    public CreateSelectMetaInputStream(InputStream in, SelectContentMetadataBase selectContentMetadataBase, ProgressListener selectProgressListener) {
         super(in);
         currentFrameOffset = 0;
         currentFramePayloadLength = 0;
@@ -59,7 +69,7 @@ public class CreateSelectMetaInputStream extends FilterInputStream {
         currentFramePayloadChecksumBytes = new byte[4];
         finished = false;
         firstReadFrame = true;
-        this.selectObjectMetadata = selectObjectMetadata;
+        this.selectContentMetadataBase = selectContentMetadataBase;
         this.selectProgressListener = selectProgressListener;
         this.nextNotificationScannedSize = DEFAULT_NOTIFICATION_THRESHOLD;
         this.crc32 = new CRC32();
@@ -110,7 +120,8 @@ public class CreateSelectMetaInputStream extends FilterInputStream {
                 case CONTINUOUS_FRAME_MAGIC:
                     //just break, continue
                     break;
-                case END_FRAME_MAGIC:
+                case CSV_END_FRAME_MAGIC:
+                case JSON_END_FRAME_MAGIC:
                     currentFramePayloadLength = ByteBuffer.wrap(currentFramePayloadLengthBytes).getInt() - 8;
                     byte[] totalScannedDataSizeBytes = new byte[8];
                     internalRead(totalScannedDataSizeBytes, 0, 8);
@@ -121,13 +132,17 @@ public class CreateSelectMetaInputStream extends FilterInputStream {
                     byte[] totalLineBytes = new byte[8];
                     internalRead(totalLineBytes, 0, 8);
                     byte[] columnBytes = new byte[4];
-                    internalRead(columnBytes, 0, 4);
+                    if (type == CSV_END_FRAME_MAGIC) {
+                        internalRead(columnBytes, 0, 4);
+                    }
 
                     crc32.update(totalScannedDataSizeBytes);
                     crc32.update(statusBytes);
                     crc32.update(splitBytes);
                     crc32.update(totalLineBytes);
-                    crc32.update(columnBytes);
+                    if (type == CSV_END_FRAME_MAGIC) {
+                        crc32.update(columnBytes);
+                    }
                     int status = ByteBuffer.wrap(statusBytes).getInt();
                     int errorMessageSize = (int)(currentFramePayloadLength - 28);
                     String error = "";
@@ -147,10 +162,8 @@ public class CreateSelectMetaInputStream extends FilterInputStream {
                         throw new IOException("Oss Select create meta encounter error code: " + status + ", message: " + error);
                     }
 
-                    selectObjectMetadata.withCsvObjectMetadata(
-                            new SelectObjectMetadata.CSVObjectMetadata()
-                                    .withSplits(ByteBuffer.wrap(splitBytes).getInt())
-                                    .withTotalLines(ByteBuffer.wrap(totalLineBytes).getLong()));
+                    selectContentMetadataBase.withSplits(ByteBuffer.wrap(splitBytes).getInt())
+                            .withTotalLines(ByteBuffer.wrap(totalLineBytes).getLong());
                     break;
                 default:
                     throw new IOException("unsupported frame type found: " + type);

@@ -28,6 +28,7 @@ import com.aliyun.oss.OSSClientBuilder;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 
 /**
  * Examples of create select object metadata and select object.
@@ -38,10 +39,15 @@ public class SelectObjectSample {
     private static String accessKeyId = "<accessKeyId>";
     private static String accessKeySecret = "<accessKeySecret>";
     private static String bucketName = "<bucketName>";
-    private static String key = "<objectKey>";
 
     public static void main(String[] args) throws Exception {
         OSS client = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+        selectCsvSample("test.csv", client);
+        selectJsonSample("test.json", client);
+        client.shutdown();
+    }
+
+    private static void selectCsvSample(String key, OSS client) throws Exception {
         String content = "name,school,company,age\r\n" +
                 "Lora Francis,School A,Staples Inc,27\r\n" +
                 "Eleanor Little,School B,\"Conectiv, Inc\",43\r\n" +
@@ -67,10 +73,50 @@ public class SelectObjectSample {
         selectObjectRequest.setExpression("select * from ossobject where _4 > 40");
         OSSObject ossObject = client.selectObject(selectObjectRequest);
         // read object content from ossObject
-        BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream("result.data"));
+        writeToFile(ossObject.getObjectContent(), "result.csv");
+    }
+
+    private static void selectJsonSample(String key, OSS client) throws Exception {
+        final String content = "{\n" +
+                "\t\"name\": \"Lora Francis\",\n" +
+                "\t\"age\": 27,\n" +
+                "\t\"company\": \"Staples Inc\"\n" +
+                "}\n" +
+                "{\n" +
+                "\t\"name\": \"Eleanor Little\",\n" +
+                "\t\"age\": 43,\n" +
+                "\t\"company\": \"Conectiv, Inc\"\n" +
+                "}\n" +
+                "{\n" +
+                "\t\"name\": \"Rosie Hughes\",\n" +
+                "\t\"age\": 44,\n" +
+                "\t\"company\": \"Western Gas Resources Inc\"\n" +
+                "}\n" +
+                "{\n" +
+                "\t\"name\": \"Lawrence Ross\",\n" +
+                "\t\"age\": 24,\n" +
+                "\t\"company\": \"MetLife Inc.\"\n" +
+                "}";
+        client.putObject(bucketName, key, new ByteArrayInputStream(content.getBytes()));
+        SelectObjectRequest selectObjectRequest =
+                new SelectObjectRequest(bucketName, key)
+                        .withInputSerialization(new InputSerialization()
+                                .withCompressionType(CompressionType.NONE)
+                                .withJsonInputFormat(new JsonFormat().withJsonType(JsonType.LINES)))
+                        .withOutputSerialization(new OutputSerialization()
+                                .withCrcEnabled(true)
+                                .withJsonOutputFormat(new JsonFormat()))
+                        .withExpression("select * from ossobject as s where s.age > 40");
+
+        OSSObject ossObject = client.selectObject(selectObjectRequest);
+        writeToFile(ossObject.getObjectContent(), "result.json");
+    }
+
+    private static void writeToFile(InputStream in, String file) throws Exception {
+        BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file));
         byte[] buffer = new byte[1024];
         int bytesRead;
-        while ((bytesRead = ossObject.getObjectContent().read(buffer)) != -1) {
+        while ((bytesRead = in.read(buffer)) != -1) {
             outputStream.write(buffer, 0, bytesRead);
         }
         outputStream.close();
