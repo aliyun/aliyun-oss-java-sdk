@@ -2315,13 +2315,16 @@ public final class ResponseParsers {
             bucketInfo.setBucket(bucket);
 
             // encryptionRule
-            String algorithm = bucketElem.getChild("ServerSideEncryptionRule").getChildText("SSEAlgorithm");
-            ServerSideEncryptionRule rule = new ServerSideEncryptionRule();
-            rule.setAlgorithm(SSEAlgorithm.parse(algorithm));
-            if (rule.getAlgorithm() == SSEAlgorithm.KMS) {
-                rule.setkMSMasterKeyID(bucketElem.getChild("ServerSideEncryptionRule").getChildText("KMSMasterKeyID"));
+            Element encryptionElement = bucketElem.getChild("ServerSideEncryptionRule");
+            if (encryptionElement != null) {
+                String algorithm = encryptionElement.getChildText("SSEAlgorithm");
+                ServerSideEncryptionRule rule = new ServerSideEncryptionRule();
+                rule.setAlgorithm(SSEAlgorithm.parse(algorithm));
+                if (rule.getAlgorithm() == SSEAlgorithm.KMS) {
+                    rule.setkMSMasterKeyID(encryptionElement.getChildText("KMSMasterKeyID"));
+                }
+                bucketInfo.setEncryptionRule(rule);
             }
-            bucketInfo.setEncryptionRule(rule);
 
             // acl
             String aclString = bucketElem.getChild("AccessControlList").getChildText("Grant");
