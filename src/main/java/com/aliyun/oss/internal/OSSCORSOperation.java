@@ -43,11 +43,9 @@ import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
 /**
  * CORS operation.
  */
-public class CORSOperation extends OSSOperation {
+public class OSSCORSOperation extends OSSOperation {
 
-    private static final String SUBRESOURCE_CORS = "cors";
-
-    public CORSOperation(ServiceClient client, CredentialsProvider credsProvider) {
+    public OSSCORSOperation(ServiceClient client, CredentialsProvider credsProvider) {
         super(client, credsProvider);
     }
 
@@ -59,7 +57,7 @@ public class CORSOperation extends OSSOperation {
         checkSetBucketCORSRequestValidity(setBucketCORSRequest);
 
         Map<String, String> parameters = new LinkedHashMap<String, String>();
-        parameters.put(SUBRESOURCE_CORS, null);
+        parameters.put(RequestParameters.SUBRESOURCE_CORS, null);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.PUT).setBucket(setBucketCORSRequest.getBucketName()).setParameters(parameters)
@@ -81,7 +79,7 @@ public class CORSOperation extends OSSOperation {
         ensureBucketNameValid(bucketName);
 
         Map<String, String> parameters = new LinkedHashMap<String, String>();
-        parameters.put(SUBRESOURCE_CORS, null);
+        parameters.put(RequestParameters.SUBRESOURCE_CORS, null);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.GET).setParameters(parameters).setBucket(bucketName)
@@ -102,7 +100,7 @@ public class CORSOperation extends OSSOperation {
         ensureBucketNameValid(bucketName);
 
         Map<String, String> parameters = new LinkedHashMap<String, String>();
-        parameters.put(SUBRESOURCE_CORS, null);
+        parameters.put(RequestParameters.SUBRESOURCE_CORS, null);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.DELETE).setParameters(parameters).setBucket(bucketName)
