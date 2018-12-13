@@ -19,14 +19,12 @@
 
 package com.aliyun.oss.common.auth;
 
-import com.aliyun.oss.common.auth.Credentials;
-import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.utils.AuthUtils;
 import com.aliyun.oss.common.utils.LogUtils;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.auth.KeyPairCredentials;
+import com.aliyuncs.auth.sts.GenerateSessionAccessKeyResponse;
 import com.aliyuncs.auth.sts.GetSessionAccessKeyRequest;
-import com.aliyuncs.auth.sts.GetSessionAccessKeyResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.http.ProtocolType;
 import com.aliyuncs.profile.IClientProfile;
@@ -71,7 +69,7 @@ public class STSKeyPairSessionCredentialsProvider implements CredentialsProvider
         request.setDurationSeconds((int) expiredDurationSeconds);
         request.setProtocol(ProtocolType.HTTPS);
 
-        GetSessionAccessKeyResponse response = null;
+        GenerateSessionAccessKeyResponse response = null;
         try {
             response = this.ramClient.getAcsResponse(request);
         } catch (ClientException e) {
@@ -79,8 +77,8 @@ public class STSKeyPairSessionCredentialsProvider implements CredentialsProvider
             return null;
         }
 
-        return new BasicCredentials(response.getSessionAccesskey().getSessionAccessKeyId(),
-                response.getSessionAccesskey().getSessionAccessKeySecert(), null, expiredDurationSeconds)
+        return new BasicCredentials(response.getSessionAccessKey().getSessionAccessKeyId(),
+                response.getSessionAccessKey().getSessionAccessKeySecert(), null, expiredDurationSeconds)
                         .withExpiredFactor(expiredFactor);
     }
 

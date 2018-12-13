@@ -23,12 +23,12 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.utils.AuthUtils;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.http.HttpRequest;
 import com.aliyuncs.http.HttpResponse;
 import com.aliyuncs.http.MethodType;
+import com.aliyuncs.http.clients.CompatibleUrlConnClient;
 
 public abstract class HttpCredentialsFetcher implements CredentialsFetcher {
     
@@ -56,7 +56,12 @@ public abstract class HttpCredentialsFetcher implements CredentialsFetcher {
     
     @Override
     public HttpResponse send(HttpRequest request) throws IOException {
-        HttpResponse response = HttpResponse.getResponse(request);
+        HttpResponse response = null;
+        try {
+            response = CompatibleUrlConnClient.compatibleGetResponse(request);
+        } catch (ClientException e) {
+            throw new IOException(e);
+        }
         if (response.getStatus() != HttpURLConnection.HTTP_OK) {
             throw new IOException("HttpCode=" + response.getStatus());
         }
