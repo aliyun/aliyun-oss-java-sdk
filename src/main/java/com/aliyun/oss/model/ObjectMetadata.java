@@ -19,6 +19,7 @@
 
 package com.aliyun.oss.model;
 
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.Collections;
 import java.util.Date;
@@ -41,6 +42,8 @@ public class ObjectMetadata {
     protected Map<String, Object> metadata = new HashMap<String, Object>();
 
     public static final String AES_256_SERVER_SIDE_ENCRYPTION = "AES256";
+
+    public static final String KMS_SERVER_SIDE_ENCRYPTION = "KMS";
 
     /**
      * <p>
@@ -283,6 +286,25 @@ public class ObjectMetadata {
     }
 
     /**
+     * Gets the object's server side encryption key ID.
+     *
+     * @return The server side encryption key ID. Null means no encryption key ID.
+     */
+    public String getServerSideEncryptionKeyId() {
+        return (String) metadata.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION_KEY_ID);
+    }
+
+    /**
+     * Sets the object's server side encryption key ID.
+     *
+     * @param serverSideEncryptionKeyId
+     *            The server side encryption key ID.
+     */
+    public void setServerSideEncryptionKeyId(String serverSideEncryptionKeyId) {
+        metadata.put(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION_KEY_ID, serverSideEncryptionKeyId);
+    }
+
+    /**
      * Gets the object's storage type, which only supports "normal" and
      * "appendable" for now.
      * 
@@ -320,6 +342,21 @@ public class ObjectMetadata {
      */
     public String getRequestId() {
         return (String) metadata.get(OSSHeaders.OSS_HEADER_REQUEST_ID);
+    }
+
+    /**
+     * Gets the service crc.
+     *
+     * @return service crc.
+     */
+    public Long getServerCRC() {
+        String strSrvCrc = (String) metadata.get(OSSHeaders.OSS_HASH_CRC64_ECMA);
+
+        if (strSrvCrc != null) {
+            BigInteger bi = new BigInteger(strSrvCrc);
+            return bi.longValue();
+        }
+        return null;
     }
 
     /**

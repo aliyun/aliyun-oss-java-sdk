@@ -30,6 +30,8 @@ import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.ImageProcess;
 import com.aliyun.oss.model.SetBucketProcessRequest;
 
+import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
+
 public class BucketProcesTest extends TestBase {
 
     @Test
@@ -49,7 +51,9 @@ public class BucketProcesTest extends TestBase {
             ImageProcess imageProcess = new ImageProcess("Img", true, "jpg,png", "/,-");
             SetBucketProcessRequest request = new SetBucketProcessRequest(bucketName, imageProcess);
             ossClient.setBucketProcess(request);
-            
+
+            waitForCacheExpiration(2);
+
             // get 1
             bucketProcess = ossClient.getBucketProcess(new GenericRequest(bucketName));
             Assert.assertEquals(bucketProcess.getImageProcess().getCompliedHost(), "Img");
@@ -64,7 +68,9 @@ public class BucketProcesTest extends TestBase {
             imageProcess = new ImageProcess("Both", false, "gif", "-");
             request = new SetBucketProcessRequest(bucketName, imageProcess);
             ossClient.setBucketProcess(request);
-            
+
+            waitForCacheExpiration(2);
+
             // get 2
             bucketProcess = ossClient.getBucketProcess(new GenericRequest(bucketName));
             Assert.assertEquals(bucketProcess.getImageProcess().getCompliedHost(), "Both");
@@ -79,7 +85,9 @@ public class BucketProcesTest extends TestBase {
             imageProcess = new ImageProcess("Img", true, "*", "/", true);
             request = new SetBucketProcessRequest(bucketName, imageProcess);
             ossClient.setBucketProcess(request);
-            
+
+            waitForCacheExpiration(2);
+
             // get 3
             bucketProcess = ossClient.getBucketProcess(new GenericRequest(bucketName));
             Assert.assertEquals(bucketProcess.getImageProcess().getCompliedHost(), "Img");

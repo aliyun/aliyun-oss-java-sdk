@@ -26,11 +26,11 @@ public class GenerateVodPlaylistRequest extends LiveChannelGenericRequest {
         this.playlistName = playlistName;
     }
 
-    public GenerateVodPlaylistRequest(String bucketName, String liveChannelName, String playlistName, long stratTime,
+    public GenerateVodPlaylistRequest(String bucketName, String liveChannelName, String playlistName, long startTime,
             long endTime) {
         super(bucketName, liveChannelName);
         this.playlistName = playlistName;
-        this.stratTime = stratTime;
+        this.startTime = startTime;
         this.endTime = endTime;
     }
 
@@ -42,12 +42,12 @@ public class GenerateVodPlaylistRequest extends LiveChannelGenericRequest {
         this.playlistName = playlistName;
     }
 
-    public Long getStratTime() {
-        return stratTime;
+    public Long getStartTime() {
+        return startTime;
     }
 
-    public void setStratTime(long stratTime) {
-        this.stratTime = stratTime;
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
     }
 
     public Long getEndTime() {
@@ -59,6 +59,6 @@ public class GenerateVodPlaylistRequest extends LiveChannelGenericRequest {
     }
 
     private String playlistName;
-    private Long stratTime;
+    private Long startTime;
     private Long endTime;
 }

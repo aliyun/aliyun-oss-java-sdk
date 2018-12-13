@@ -79,9 +79,6 @@ public final class RequestParameters {
     public static final String PART_NUMBER_MARKER = "part-number-marker";
     public static final String RULE_ID = "rule-id";
 
-    public static final String SIGNATURE = "Signature";
-    public static final String OSS_ACCESS_KEY_ID = "OSSAccessKeyId";
-
     public static final String SECURITY_TOKEN = "security-token";
 
     public static final String POSITION = "position";
@@ -98,5 +95,16 @@ public final class RequestParameters {
     public static final String PLAYLIST_NAME = "playlistName";
     public static final String SINCE = "since";
     public static final String TAIL = "tail";
+
+    /*  V1 signature params */
+    public static final String SIGNATURE = "Signature";
+    public static final String OSS_ACCESS_KEY_ID = "OSSAccessKeyId";
+
+    /*  V2 signature params */
+    public static final String OSS_SIGNATURE_VERSION = "x-oss-signature-version";
+    public static final String OSS_EXPIRES = "x-oss-expires";
+    public static final String OSS_ACCESS_KEY_ID_PARAM = "x-oss-access-key-id";
+    public static final String OSS_ADDITIONAL_HEADERS = "x-oss-additional-headers";
+    public static final String OSS_SIGNATURE = "x-oss-signature";
 
 }

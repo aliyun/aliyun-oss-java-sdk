@@ -21,8 +21,6 @@ package com.aliyun.oss.internal;
 
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
 import static com.aliyun.oss.internal.OSSConstants.OBJECT_NAME_MAX_LENGTH;
-import static com.aliyun.oss.internal.OSSConstants.OSS_AUTHORIZATION_PREFIX;
-import static com.aliyun.oss.internal.OSSConstants.OSS_AUTHORIZATION_SEPERATOR;
 import static com.aliyun.oss.internal.OSSConstants.RESOURCE_NAME_COMMON;
 import static com.aliyun.oss.internal.OSSConstants.RESOURCE_NAME_OSS;
 
@@ -391,10 +389,6 @@ public class OSSUtils {
         }
 
         return sb.toString();
-    }
-
-    public static String composeRequestAuthorization(String accessKeyId, String signature) {
-        return OSS_AUTHORIZATION_PREFIX + accessKeyId + OSS_AUTHORIZATION_SEPERATOR + signature;
     }
 
     /**

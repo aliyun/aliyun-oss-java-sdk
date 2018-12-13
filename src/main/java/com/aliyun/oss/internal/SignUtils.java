@@ -21,44 +21,38 @@ package com.aliyun.oss.internal;
 
 import static com.aliyun.oss.common.utils.CodingUtils.assertTrue;
 import static com.aliyun.oss.internal.RequestParameters.*;
-import static com.aliyun.oss.model.ResponseHeaderOverrides.RESPONSE_HEADER_CACHE_CONTROL;
-import static com.aliyun.oss.model.ResponseHeaderOverrides.RESPONSE_HEADER_CONTENT_DISPOSITION;
-import static com.aliyun.oss.model.ResponseHeaderOverrides.RESPONSE_HEADER_CONTENT_ENCODING;
-import static com.aliyun.oss.model.ResponseHeaderOverrides.RESPONSE_HEADER_CONTENT_LANGUAGE;
-import static com.aliyun.oss.model.ResponseHeaderOverrides.RESPONSE_HEADER_CONTENT_TYPE;
-import static com.aliyun.oss.model.ResponseHeaderOverrides.RESPONSE_HEADER_EXPIRES;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
+import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
+import static com.aliyun.oss.internal.OSSUtils.populateResponseHeaderParameters;
+import static com.aliyun.oss.internal.RequestParameters.SIGNATURE;
+import static com.aliyun.oss.internal.SignParameters.AUTHORIZATION_PREFIX;
 
+import java.net.URI;
+import java.util.*;
+import java.util.Map.Entry;
+
+import com.aliyun.oss.ClientConfiguration;
+import com.aliyun.oss.HttpMethod;
+import com.aliyun.oss.common.auth.Credentials;
+import com.aliyun.oss.common.auth.ServiceSignature;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.utils.HttpHeaders;
+import com.aliyun.oss.common.utils.HttpUtil;
+import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 
 public class SignUtils {
 
-    private static final String NEW_LINE = "\n";
-
-    private static final List<String> SIGNED_PARAMTERS = Arrays.asList(new String[] { SUBRESOURCE_ACL,
-            SUBRESOURCE_UPLOADS, SUBRESOURCE_LOCATION, SUBRESOURCE_CORS, SUBRESOURCE_LOGGING, SUBRESOURCE_WEBSITE,
-            SUBRESOURCE_REFERER, SUBRESOURCE_LIFECYCLE, SUBRESOURCE_DELETE, SUBRESOURCE_APPEND, SUBRESOURCE_TAGGING,
-            SUBRESOURCE_OBJECTMETA, UPLOAD_ID, PART_NUMBER, SECURITY_TOKEN, POSITION, RESPONSE_HEADER_CACHE_CONTROL,
-            RESPONSE_HEADER_CONTENT_DISPOSITION, RESPONSE_HEADER_CONTENT_ENCODING, RESPONSE_HEADER_CONTENT_LANGUAGE,
-            RESPONSE_HEADER_CONTENT_TYPE, RESPONSE_HEADER_EXPIRES, SUBRESOURCE_IMG, SUBRESOURCE_STYLE, STYLE_NAME,
-            SUBRESOURCE_REPLICATION, SUBRESOURCE_REPLICATION_PROGRESS, SUBRESOURCE_REPLICATION_LOCATION,
-            SUBRESOURCE_CNAME, SUBRESOURCE_BUCKET_INFO, SUBRESOURCE_COMP, SUBRESOURCE_QOS, SUBRESOURCE_LIVE,
-            SUBRESOURCE_STATUS, SUBRESOURCE_VOD, SUBRESOURCE_START_TIME, SUBRESOURCE_END_TIME, SUBRESOURCE_PROCESS,
-            SUBRESOURCE_PROCESS_CONF, SUBRESOURCE_SYMLINK, SUBRESOURCE_STAT, SUBRESOURCE_UDF, SUBRESOURCE_UDF_NAME,
-            SUBRESOURCE_UDF_IMAGE, SUBRESOURCE_UDF_IMAGE_DESC, SUBRESOURCE_UDF_APPLICATION, SUBRESOURCE_UDF_LOG,
-            SUBRESOURCE_RESTORE, SUBRESOURCE_CSV_SELECT, SUBRESOURCE_CSV_META, SUBRESOURCE_SQL});
+    public static String composeRequestAuthorization(String accessKeyId, String signature) {
+        return AUTHORIZATION_PREFIX + accessKeyId + ":" + signature;
+    }
 
     public static String buildCanonicalString(String method, String resourcePath, RequestMessage request,
             String expires) {
 
         StringBuilder canonicalString = new StringBuilder();
-        canonicalString.append(method + NEW_LINE);
+        canonicalString.append(method).append(SignParameters.NEW_LINE);
 
         Map<String, String> headers = request.getHeaders();
         TreeMap<String, String> headersToSign = new TreeMap<String, String>();
@@ -97,7 +91,7 @@ public class SignUtils {
                 canonicalString.append(value);
             }
 
-            canonicalString.append(NEW_LINE);
+            canonicalString.append(SignParameters.NEW_LINE);
         }
 
         // Append canonical resource to canonical string
@@ -112,14 +106,14 @@ public class SignUtils {
         StringBuilder canonicalString = new StringBuilder();
 
         // Append expires
-        canonicalString.append(expires + NEW_LINE);
+        canonicalString.append(expires + SignParameters.NEW_LINE);
 
         // Append canonicalized parameters
         for (Map.Entry<String, String> entry : request.getParameters().entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
             canonicalString.append(key).append(':').append(value);
-            canonicalString.append(NEW_LINE);
+            canonicalString.append(SignParameters.NEW_LINE);
         }
 
         // Append canonicalized resource
@@ -128,8 +122,77 @@ public class SignUtils {
         return canonicalString.toString();
     }
 
-    private static String buildCanonicalizedResource(String resourcePath, Map<String, String> parameters) {
+    public static String buildSignedURL(GeneratePresignedUrlRequest request, Credentials currentCreds, ClientConfiguration config, URI endpoint) {
+        String bucketName = request.getBucketName();
+        String accessId = currentCreds.getAccessKeyId();
+        String accessKey = currentCreds.getSecretAccessKey();
+        boolean useSecurityToken = currentCreds.useSecurityToken();
+        HttpMethod method = request.getMethod() != null ? request.getMethod() : HttpMethod.GET;
 
+        String expires = String.valueOf(request.getExpiration().getTime() / 1000L);
+        String key = request.getKey();
+        String resourcePath = OSSUtils.determineResourcePath(bucketName, key, config.isSLDEnabled());
+
+        RequestMessage requestMessage = new RequestMessage(bucketName, key);
+        requestMessage.setEndpoint(OSSUtils.determineFinalEndpoint(endpoint, bucketName, config));
+        requestMessage.setMethod(method);
+        requestMessage.setResourcePath(resourcePath);
+        requestMessage.setHeaders(request.getHeaders());
+
+        requestMessage.addHeader(HttpHeaders.DATE, expires);
+        if (request.getContentType() != null && !request.getContentType().trim().equals("")) {
+            requestMessage.addHeader(HttpHeaders.CONTENT_TYPE, request.getContentType());
+        }
+        if (request.getContentMD5() != null && !request.getContentMD5().trim().equals("")) {
+            requestMessage.addHeader(HttpHeaders.CONTENT_MD5, request.getContentMD5());
+        }
+        for (Map.Entry<String, String> h : request.getUserMetadata().entrySet()) {
+            requestMessage.addHeader(OSSHeaders.OSS_USER_METADATA_PREFIX + h.getKey(), h.getValue());
+        }
+
+        Map<String, String> responseHeaderParams = new HashMap<String, String>();
+        populateResponseHeaderParameters(responseHeaderParams, request.getResponseHeaders());
+        if (responseHeaderParams.size() > 0) {
+            requestMessage.setParameters(responseHeaderParams);
+        }
+
+        if (request.getQueryParameter() != null && request.getQueryParameter().size() > 0) {
+            for (Map.Entry<String, String> entry : request.getQueryParameter().entrySet()) {
+                requestMessage.addParameter(entry.getKey(), entry.getValue());
+            }
+        }
+
+        if (request.getProcess() != null && !request.getProcess().trim().equals("")) {
+            requestMessage.addParameter(RequestParameters.SUBRESOURCE_PROCESS, request.getProcess());
+        }
+
+        if (useSecurityToken) {
+            requestMessage.addParameter(SECURITY_TOKEN, currentCreds.getSecurityToken());
+        }
+
+        String canonicalResource = "/" + ((bucketName != null) ? bucketName : "") + ((key != null ? "/" + key : ""));
+        String canonicalString = buildCanonicalString(method.toString(), canonicalResource, requestMessage,
+                expires);
+        String signature = ServiceSignature.create().computeSignature(accessKey, canonicalString);
+
+        Map<String, String> params = new LinkedHashMap<String, String>();
+        params.put(HttpHeaders.EXPIRES, expires);
+        params.put(OSS_ACCESS_KEY_ID, accessId);
+        params.put(SIGNATURE, signature);
+        params.putAll(requestMessage.getParameters());
+
+        String queryString = HttpUtil.paramToQueryString(params, DEFAULT_CHARSET_NAME);
+
+        /* Compse HTTP request uri. */
+        String url = requestMessage.getEndpoint().toString();
+        if (!url.endsWith("/")) {
+            url += "/";
+        }
+        url += resourcePath + "?" + queryString;
+        return url;
+    }
+
+    public static String buildCanonicalizedResource(String resourcePath, Map<String, String> parameters) {
         assertTrue(resourcePath.startsWith("/"), "Resource path should start with slash character");
 
         StringBuilder builder = new StringBuilder();
@@ -139,23 +202,28 @@ public class SignUtils {
             String[] parameterNames = parameters.keySet().toArray(new String[parameters.size()]);
             Arrays.sort(parameterNames);
 
-            char separater = '?';
+            char separator = '?';
             for (String paramName : parameterNames) {
-                if (!SIGNED_PARAMTERS.contains(paramName)) {
+                if (!SignParameters.SIGNED_PARAMTERS.contains(paramName)) {
                     continue;
                 }
 
-                builder.append(separater);
+                builder.append(separator);
                 builder.append(paramName);
                 String paramValue = parameters.get(paramName);
                 if (paramValue != null) {
                     builder.append("=").append(paramValue);
                 }
 
-                separater = '&';
+                separator = '&';
             }
         }
 
         return builder.toString();
+    }
+
+    public static String buildSignature(String secretAccessKey, String httpMethod, String resourcePath, RequestMessage request) {
+        String canonicalString = buildCanonicalString(httpMethod, resourcePath, request, null);
+        return ServiceSignature.create().computeSignature(secretAccessKey, canonicalString);
     }
 }

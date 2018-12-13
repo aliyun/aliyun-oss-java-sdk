@@ -45,4 +45,6 @@ public final class TestConfig {
     public static String PROXY_USER = null;
     public static String PROXY_PASSWORD = null;
 
+    // OSS cmk id configuration
+    public static String CMK_ID = null;
 }

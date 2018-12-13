@@ -48,6 +48,8 @@ import com.aliyun.oss.model.PartETag;
 import com.aliyun.oss.model.PutObjectResult;
 import com.aliyun.oss.model.UploadPartRequest;
 import com.aliyun.oss.model.UploadPartResult;
+import com.aliyun.oss.model.UploadFileRequest;
+import com.aliyun.oss.model.UploadFileResult;
 
 
 public class CRCChecksumTest extends TestBase {
@@ -186,7 +188,26 @@ public class CRCChecksumTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-    
+
+    @Test
+    public void testUploadFileCRC() {
+        final String key = "upload-file-crc";
+
+        try {
+            File file = createSampleFile(key, 1024 * 500);
+
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
+            uploadFileRequest.setUploadFile(file.getAbsolutePath());
+            uploadFileRequest.setTaskNum(10);
+            uploadFileRequest.setEnableCheckpoint(true);
+
+            UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getClientCRC(), uploadRes.getMultipartUploadResult().getServerCRC());
+        } catch (Throwable e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
     @Test
     public void testGetObjectCRC() {
         String key = "get-object-crc";

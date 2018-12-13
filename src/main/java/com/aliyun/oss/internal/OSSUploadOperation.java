@@ -43,6 +43,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import com.aliyun.oss.InconsistentException;
+import com.aliyun.oss.common.utils.CRC64;
 import com.aliyun.oss.event.ProgressEventType;
 import com.aliyun.oss.event.ProgressListener;
 import com.aliyun.oss.event.ProgressPublisher;
@@ -203,6 +205,7 @@ public class OSSUploadOperation {
             result = prime * result + number;
             result = prime * result + (int) (offset ^ (offset >>> 32));
             result = prime * result + (int) (size ^ (size >>> 32));
+            result = prime * result + (int) (crc ^ (crc >>> 32));
             return result;
         }
 
@@ -210,6 +213,7 @@ public class OSSUploadOperation {
         public long offset; // the offset in the file
         public long size; // part size
         public boolean isCompleted; // upload completeness flag.
+        public long crc; //part crc
     }
 
     static class PartResult {
@@ -218,6 +222,13 @@ public class OSSUploadOperation {
             this.number = number;
             this.offset = offset;
             this.length = length;
+        }
+
+        public PartResult(int number, long offset, long length, long partCRC) {
+            this.number = number;
+            this.offset = offset;
+            this.length = length;
+            this.partCRC = partCRC;
         }
 
         public int getNumber() {
@@ -260,11 +271,20 @@ public class OSSUploadOperation {
             this.exception = exception;
         }
 
+        public Long getPartCRC() {
+            return partCRC;
+        }
+
+        public void setPartCRC(Long partCRC) {
+            this.partCRC = partCRC;
+        }
+
         private int number; // part number
         private long offset; // offset in the file
         private long length; // part size
         private boolean failed; // part upload failure flag
         private Exception exception; // part upload exception
+        private Long partCRC;
     }
 
     public OSSUploadOperation(OSSMultipartOperation multipartOperation) {
@@ -340,12 +360,36 @@ public class OSSUploadOperation {
         CompleteMultipartUploadResult multipartUploadResult = complete(uploadCheckPoint, uploadFileRequest);
         uploadFileResult.setMultipartUploadResult(multipartUploadResult);
 
+        // check crc64
+        if (multipartOperation.getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
+            Long clientCRC = calcObjectCRCFromParts(partResults);
+            multipartUploadResult.setClientCRC(clientCRC);
+            try {
+                OSSUtils.checkChecksum(clientCRC, multipartUploadResult.getServerCRC(), multipartUploadResult.getRequestId());
+            } catch (Exception e) {
+                ProgressPublisher.publishProgress(listener, ProgressEventType.TRANSFER_FAILED_EVENT);
+                throw new InconsistentException(clientCRC, multipartUploadResult.getServerCRC(), multipartUploadResult.getRequestId());
+            }
+        }
+
         // The checkpoint is enabled and upload the checkpoint file.
         if (uploadFileRequest.isEnableCheckpoint()) {
             remove(uploadFileRequest.getCheckpointFile());
         }
 
         return uploadFileResult;
+    }
+
+    private static Long calcObjectCRCFromParts(List<PartResult> partResults) {
+        long crc = 0;
+
+        for (PartResult partResult : partResults) {
+            if (partResult.getPartCRC() == null || partResult.getLength() <= 0) {
+                return null;
+            }
+            crc = CRC64.combine(crc, partResult.getPartCRC(), partResult.getLength());
+        }
+        return new Long(crc);
     }
 
     private void prepare(UploadCheckPoint uploadCheckPoint, UploadFileRequest uploadFileRequest) {
@@ -397,7 +441,7 @@ public class OSSUploadOperation {
                         multipartOperation, listener)));
             } else {
                 taskResults.add(new PartResult(i + 1, uploadCheckPoint.uploadParts.get(i).offset,
-                        uploadCheckPoint.uploadParts.get(i).size));
+                        uploadCheckPoint.uploadParts.get(i).size, uploadCheckPoint.uploadParts.get(i).crc));
             }
         }
         service.shutdown();
@@ -462,6 +506,12 @@ public class OSSUploadOperation {
 
                 UploadPartResult uploadPartResult = multipartOperation.uploadPart(uploadPartRequest);
 
+                if(multipartOperation.getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
+                    OSSUtils.checkChecksum(uploadPartResult.getClientCRC(), uploadPartResult.getServerCRC(), uploadPartResult.getRequestId());
+                    tr.setPartCRC(uploadPartResult.getClientCRC());
+                    tr.setLength(uploadPartResult.getPartSize());
+                    uploadPart.crc = uploadPartResult.getClientCRC();
+                }
                 PartETag partETag = new PartETag(uploadPartResult.getPartNumber(), uploadPartResult.getETag());
                 uploadCheckPoint.update(partIndex, partETag, true);
                 if (uploadFileRequest.isEnableCheckpoint()) {

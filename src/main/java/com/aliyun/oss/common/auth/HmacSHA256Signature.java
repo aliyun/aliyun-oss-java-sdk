@@ -25,15 +25,15 @@ import javax.crypto.Mac;
 import com.aliyun.oss.common.utils.BinaryUtil;
 
 /**
- * Used for computing Hmac-SHA1 signature.
+ * Used for computing Hmac-SHA256 signature.
  */
-public class HmacSHA1Signature extends ServiceSignature {
+public class HmacSHA256Signature extends ServiceSignature {
 
     /* The default encoding. */
     private static final String DEFAULT_ENCODING = "UTF-8";
 
     /* Signature method. */
-    private static final String ALGORITHM = "HmacSHA1";
+    private static final String ALGORITHM = "HmacSHA256";
 
     /* Signature version. */
     private static final String VERSION = "1";
@@ -60,5 +60,4 @@ public class HmacSHA1Signature extends ServiceSignature {
             throw new RuntimeException("Unsupported algorithm: " + DEFAULT_ENCODING, ex);
         }
     }
-
 }

@@ -153,6 +153,7 @@ public class PolicyConditions {
     public final static String COND_SUCCESS_ACTION_REDIRECT = "success_action_redirect";
     public final static String COND_SUCCESS_ACTION_STATUS = "success_action_status";
     public final static String COND_X_OSS_META_PREFIX = "x-oss-meta-";
+    public final static String COND_X_OSS_SERVER_SIDE_PREFIX = "x-oss-server-side-";
 
     private static Map<String, List<MatchMode>> _supportedMatchRules = new HashMap<String, List<MatchMode>>();
     private List<ConditionItem> _conds = new ArrayList<ConditionItem>();
@@ -176,6 +177,7 @@ public class PolicyConditions {
         _supportedMatchRules.put(COND_SUCCESS_ACTION_REDIRECT, ordinaryMatchModes);
         _supportedMatchRules.put(COND_SUCCESS_ACTION_STATUS, ordinaryMatchModes);
         _supportedMatchRules.put(COND_X_OSS_META_PREFIX, ordinaryMatchModes);
+        _supportedMatchRules.put(COND_X_OSS_SERVER_SIDE_PREFIX, ordinaryMatchModes);
     }
 
     /**

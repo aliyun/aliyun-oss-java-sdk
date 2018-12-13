@@ -19,9 +19,7 @@
 
 package com.aliyun.oss.model;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import com.aliyun.oss.HttpMethod;
 
@@ -70,9 +68,11 @@ public class GeneratePresignedUrlRequest {
 
     private Map<String, String> headers = new HashMap<String, String>();
 
+    private Set<String> additionalHeaderNames = new HashSet<String>();
+
     /**
      * Constructor with GET as the httpMethod
-     * 
+     *
      * @param bucketName
      *            Bucket name.
      * @param key
@@ -84,7 +84,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Constructor.
-     * 
+     *
      * @param bucketName
      *            Bucket name.
      * @param key
@@ -100,7 +100,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Gets Http method.
-     * 
+     *
      * @return HTTP method.
      */
     public HttpMethod getMethod() {
@@ -109,7 +109,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Sets Http method.
-     * 
+     *
      * @param method
      *            HTTP method.
      */
@@ -122,7 +122,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Gets {@link Bucket} name
-     * 
+     *
      * @return Bucket name
      */
     public String getBucketName() {
@@ -131,7 +131,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Sets the {@link Bucket} name.
-     * 
+     *
      * @param bucketName
      *            {@link Bucket} name.
      */
@@ -141,7 +141,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Gets the {@link OSSObject} key.
-     * 
+     *
      * @return Object key.
      */
     public String getKey() {
@@ -150,7 +150,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Sets {@link OSSObject} key.
-     * 
+     *
      * @param key
      *            {@link OSSObject} key.
      */
@@ -160,7 +160,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Gets the expiration time of the Url
-     * 
+     *
      * @return The expiration time of the Url.
      */
     public Date getExpiration() {
@@ -169,7 +169,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Sets the expiration time of the Url
-     * 
+     *
      * @param expiration
      *            The expiration time of the Url.
      */
@@ -179,7 +179,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Sets the content-type header which indicates the file's type.
-     * 
+     *
      * @param contentType
      *            The file's content type.
      */
@@ -189,7 +189,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Gets the content type header.
-     * 
+     *
      * @return Content-Type Header
      */
     public String getContentType() {
@@ -198,7 +198,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Sets the file's MD5 value.
-     * 
+     *
      * @param contentMD5
      *            The target file's MD5 value.
      */
@@ -208,7 +208,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Gets the file's MD5 value.
-     * 
+     *
      * @return Content-MD5
      */
     public String getContentMD5() {
@@ -217,7 +217,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Sets the response headers to override.
-     * 
+     *
      * @param responseHeaders
      *            The response headers to override.
      */
@@ -227,7 +227,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Gets the response headers to override.
-     * 
+     *
      * @return The response headers to override.
      */
     public ResponseHeaderOverrides getResponseHeaders() {
@@ -246,7 +246,7 @@ public class GeneratePresignedUrlRequest {
      * when it's returned from OSS. For example, if the key is MyUserMeta，the
      * key returned by this method will be myusermeta.
      * </p>
-     * 
+     *
      * @return A {@link Map} instance that contains the user's customized
      *         metadata.
      */
@@ -257,7 +257,7 @@ public class GeneratePresignedUrlRequest {
     /**
      * Gets user's customized metadata. They will be represented in x-oss-meta*
      * headers.
-     * 
+     *
      * @param userMetadata
      *            User's metadata
      */
@@ -270,7 +270,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Add a user's customized metadata.
-     * 
+     *
      * @param key
      *            The metadata key. Note: this key should not have prefix of
      *            'x-oss-meta-'.
@@ -283,7 +283,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Gets the query parameters.
-     * 
+     *
      * @return Query parameters.
      */
     public Map<String, String> getQueryParameter() {
@@ -292,7 +292,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Sets the query parameters.
-     * 
+     *
      * @param queryParam
      *            Query parameters.
      */
@@ -313,7 +313,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Gets the process header.
-     * 
+     *
      * @return The process header.
      */
     public String getProcess() {
@@ -322,7 +322,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Sets the process header.
-     * 
+     *
      * @param process
      *            The process header.
      */
@@ -332,7 +332,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Gets HTTP Headers
-     * 
+     *
      * @return HTTP Headers
      */
     public Map<String, String> getHeaders() {
@@ -341,7 +341,7 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Sets Http headers.
-     * 
+     *
      * @param headers
      *            HTTP Headers。
      */
@@ -360,4 +360,26 @@ public class GeneratePresignedUrlRequest {
         this.headers.put(key, value);
     }
 
+    /**
+     * Gets additional HTTP header names.
+     *
+     * @return Additional HTTP header names.
+     */
+    public Set<String> getAdditionalHeaderNames() {
+        return additionalHeaderNames;
+    }
+
+    /**
+     * Sets additional HTTP header names
+     *
+     * @param additionalHeaderNames
+     *              additional http header names.
+     */
+    public void setAdditionalHeaderNames(Set<String> additionalHeaderNames) {
+        this.additionalHeaderNames = additionalHeaderNames;
+    }
+
+    public void addAdditionalHeaderName(String name) {
+        this.additionalHeaderNames.add(name);
+    }
 }
