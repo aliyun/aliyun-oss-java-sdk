@@ -14,10 +14,6 @@ import static com.aliyun.oss.model.ResponseHeaderOverrides.RESPONSE_HEADER_EXPIR
 
 public class SignParameters {
 
-    public static final String AUTH_V1 = "auth-v1";
-
-    public static final String AUTH_V2 = "auth-v2";
-
     public static final String AUTHORIZATION_PREFIX = "OSS ";
 
     public static final String AUTHORIZATION_PREFIX_V2 = "OSS2 ";

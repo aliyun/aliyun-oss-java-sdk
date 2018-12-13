@@ -27,30 +27,34 @@ public class SignV2Utils {
 
     public static String composeRequestAuthorization(String accessKeyId, String signature, RequestMessage request) {
         StringBuilder sb = new StringBuilder();
-        Set<String> ts = buildSortedAdditionalHeaderNames(request.getOriginalRequest().getHeaders().keySet(),
-                request.getOriginalRequest().getAdditionalHeaderNames());
-
         sb.append(AUTHORIZATION_PREFIX_V2 + AUTHORIZATION_ACCESS_KEY_ID).append(":").append(accessKeyId).append(", ");
 
-        if (ts != null && !ts.isEmpty()) {
-            sb.append(AUTHORIZATION_ADDITIONAL_HEADERS).append(":");
+        String additionHeaderNameStr = buildSortedAdditionalHeaderNameStr(request.getOriginalRequest().getHeaders().keySet(),
+                request.getOriginalRequest().getAdditionalHeaderNames());
 
-            String separator = "";
-
-            for (String header : ts) {
-                sb.append(separator);
-                sb.append(header.toLowerCase());
-                separator = ";";
-            }
-            sb.append(", ");
+        if (!additionHeaderNameStr.isEmpty()) {
+            sb.append(AUTHORIZATION_ADDITIONAL_HEADERS).append(":").append(additionHeaderNameStr).append(", ");
         }
         sb.append(AUTHORIZATION_SIGNATURE).append(":").append(signature);
 
         return sb.toString();
     }
 
-    private static TreeSet<String> buildSortedAdditionalHeaderNames(Set<String> headerNames, Set<String> additionalHeaderNames) {
-        TreeSet<String> ts = new TreeSet<String>();
+    private static String buildSortedAdditionalHeaderNameStr(Set<String> headerNames, Set<String> additionalHeaderNames) {
+        Set<String> ts = buildSortedAdditionalHeaderNames(headerNames, additionalHeaderNames);
+        StringBuilder sb = new StringBuilder();
+        String separator = "";
+
+        for (String header : ts) {
+            sb.append(separator);
+            sb.append(header);
+            separator = ";";
+        }
+        return sb.toString();
+    }
+
+    private static Set<String> buildSortedAdditionalHeaderNames(Set<String> headerNames, Set<String> additionalHeaderNames) {
+        Set<String> ts = new TreeSet<String>();
 
         if (headerNames != null && additionalHeaderNames != null) {
             for (String additionalHeaderName : additionalHeaderNames) {
@@ -197,11 +201,21 @@ public class SignV2Utils {
         requestMessage.addParameter(OSS_SIGNATURE_VERSION, SignParameters.AUTHORIZATION_V2);
         requestMessage.addParameter(OSS_EXPIRES, expires);
         requestMessage.addParameter(OSS_ACCESS_KEY_ID_PARAM, accessId);
+        String additionalHeaderNameStr = buildSortedAdditionalHeaderNameStr(requestMessage.getHeaders().keySet(),
+                request.getAdditionalHeaderNames());
+
+        if (!additionalHeaderNameStr.isEmpty()) {
+            requestMessage.addParameter(OSS_ADDITIONAL_HEADERS, additionalHeaderNameStr);
+        }
         Set<String> rawAdditionalHeaderNames = buildRawAdditionalHeaderNames(request.getHeaders().keySet(), request.getAdditionalHeaderNames());
         String canonicalString = buildCanonicalString(method.toString(), canonicalResource, requestMessage, rawAdditionalHeaderNames);
         String signature = new HmacSHA256Signature().computeSignature(accessKey, canonicalString);
 
         Map<String, String> params = new LinkedHashMap<String, String>();
+
+        if (!additionalHeaderNameStr.isEmpty()) {
+            params.put(OSS_ADDITIONAL_HEADERS, additionalHeaderNameStr);
+        }
         params.put(OSS_SIGNATURE, signature);
         params.putAll(requestMessage.getParameters());
 

@@ -47,10 +47,7 @@ import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.ServiceSignature;
-import com.aliyun.oss.common.comm.DefaultServiceClient;
-import com.aliyun.oss.common.comm.ResponseMessage;
-import com.aliyun.oss.common.comm.ServiceClient;
-import com.aliyun.oss.common.comm.TimeoutServiceClient;
+import com.aliyun.oss.common.comm.*;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.internal.*;
@@ -301,9 +298,9 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void switchSignatureVersion(String signatureVersion) {
-        if (!SignParameters.AUTH_V1.equals(signatureVersion) && !SignParameters.AUTH_V2.equals(signatureVersion)) {
-            throw new IllegalArgumentException("unsupported signature version" + signatureVersion);
+    public void switchSignatureVersion(SignVersion signatureVersion) {
+        if (signatureVersion == null) {
+            throw new IllegalArgumentException("signatureVersion should not be null.");
         }
 
         this.getClientConfiguration().setSignatureVersion(signatureVersion);
@@ -700,7 +697,7 @@ public class OSSClient implements OSS {
         }
         String url;
 
-        if (serviceClient.getClientConfiguration().getSignatureVersion() != null && serviceClient.getClientConfiguration().getSignatureVersion().equals(SignParameters.AUTH_V2)) {
+        if (serviceClient.getClientConfiguration().getSignatureVersion() != null && serviceClient.getClientConfiguration().getSignatureVersion() == SignVersion.V2) {
             url = SignV2Utils.buildSignedURL(request, credsProvider.getCredentials(), serviceClient.getClientConfiguration(), endpoint);
         } else {
             url = SignUtils.buildSignedURL(request, credsProvider.getCredentials(), serviceClient.getClientConfiguration(), endpoint);

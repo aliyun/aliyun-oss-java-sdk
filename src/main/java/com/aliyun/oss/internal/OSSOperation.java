@@ -33,18 +33,7 @@ import com.aliyun.oss.ServiceException;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.auth.RequestSigner;
-import com.aliyun.oss.common.comm.ExecutionContext;
-import com.aliyun.oss.common.comm.NoRetryStrategy;
-import com.aliyun.oss.common.comm.RequestChecksumHanlder;
-import com.aliyun.oss.common.comm.RequestHandler;
-import com.aliyun.oss.common.comm.RequestMessage;
-import com.aliyun.oss.common.comm.RequestProgressHanlder;
-import com.aliyun.oss.common.comm.ResponseChecksumHandler;
-import com.aliyun.oss.common.comm.ResponseHandler;
-import com.aliyun.oss.common.comm.ResponseMessage;
-import com.aliyun.oss.common.comm.ResponseProgressHandler;
-import com.aliyun.oss.common.comm.RetryStrategy;
-import com.aliyun.oss.common.comm.ServiceClient;
+import com.aliyun.oss.common.comm.*;
 import com.aliyun.oss.common.parser.ResponseParseException;
 import com.aliyun.oss.common.parser.ResponseParser;
 import com.aliyun.oss.common.utils.ExceptionFactory;
@@ -165,7 +154,7 @@ public abstract class OSSOperation {
         }
     }
 
-    private static RequestSigner createSigner(HttpMethod method, String bucketName, String key, Credentials creds, String signatureVersion) {
+    private static RequestSigner createSigner(HttpMethod method, String bucketName, String key, Credentials creds, SignVersion signatureVersion) {
         String resourcePath = "/" + ((bucketName != null) ? bucketName + "/" : "") + ((key != null ? key : ""));
 
         return new OSSRequestSigner(method.toString(), resourcePath, creds, signatureVersion);

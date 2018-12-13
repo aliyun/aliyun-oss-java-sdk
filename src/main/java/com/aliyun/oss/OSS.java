@@ -28,6 +28,7 @@ import java.util.Map;
 
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.comm.ResponseMessage;
+import com.aliyun.oss.common.comm.SignVersion;
 import com.aliyun.oss.model.*;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
 
@@ -58,7 +59,7 @@ public interface OSS {
      * @param signatureVersion
      *            the signature version to switch to。
      */
-    public void switchSignatureVersion(String signatureVersion);
+    public void switchSignatureVersion(SignVersion signatureVersion);
 
     /**
      * Shuts down the OSS instance (release all resources) The OSS instance is

@@ -31,10 +31,10 @@ import java.util.concurrent.locks.ReentrantLock;
 import com.aliyun.oss.common.auth.RequestSigner;
 import com.aliyun.oss.common.comm.IdleConnectionReaper;
 import com.aliyun.oss.common.comm.Protocol;
+import com.aliyun.oss.common.comm.SignVersion;
 import com.aliyun.oss.common.utils.ResourceManager;
 import com.aliyun.oss.common.utils.VersionInfoUtils;
 import com.aliyun.oss.internal.OSSConstants;
-import com.aliyun.oss.internal.SignParameters;
 
 /**
  * Client configurations for accessing to OSS services.
@@ -60,7 +60,7 @@ public class ClientConfiguration {
 
     public static final String DEFAULT_CNAME_EXCLUDE_LIST = "aliyuncs.com,aliyun-inc.com,aliyun.com";
 
-    public static final String DEFAULT_SIGNATURE_VERSION = SignParameters.AUTH_V1;
+    public static final SignVersion DEFAULT_SIGNATURE_VERSION = SignVersion.V1;
 
     protected String userAgent = DEFAULT_USER_AGENT;
     protected int maxErrorRetry = DEFAULT_MAX_RETRIES;
@@ -97,7 +97,7 @@ public class ClientConfiguration {
 
     protected List<RequestSigner> signerHandlers = new LinkedList<RequestSigner>();
 
-    protected String signatureVersion = DEFAULT_SIGNATURE_VERSION;
+    protected SignVersion signatureVersion = DEFAULT_SIGNATURE_VERSION;
 
     /**
      * Gets the user agent string.
@@ -662,7 +662,7 @@ public class ClientConfiguration {
      *
      * @return signature version
      */
-    public String getSignatureVersion() {
+    public SignVersion getSignatureVersion() {
         return signatureVersion;
     }
 
@@ -671,7 +671,7 @@ public class ClientConfiguration {
      *
      * @param signatureVersion
      */
-    public void setSignatureVersion(String signatureVersion) {
+    public void setSignatureVersion(SignVersion signatureVersion) {
         this.signatureVersion = signatureVersion;
     }
 }

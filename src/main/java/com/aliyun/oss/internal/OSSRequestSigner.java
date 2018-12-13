@@ -23,6 +23,7 @@ import com.aliyun.oss.ClientException;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.RequestSigner;
 import com.aliyun.oss.common.comm.RequestMessage;
+import com.aliyun.oss.common.comm.SignVersion;
 
 public class OSSRequestSigner implements RequestSigner {
 
@@ -33,9 +34,9 @@ public class OSSRequestSigner implements RequestSigner {
 
     private Credentials creds;
 
-    private String signatureVersion;
+    private SignVersion signatureVersion;
 
-    public OSSRequestSigner(String httpMethod, String resourcePath, Credentials creds, String signatureVersion) {
+    public OSSRequestSigner(String httpMethod, String resourcePath, Credentials creds, SignVersion signatureVersion) {
         this.httpMethod = httpMethod;
         this.resourcePath = resourcePath;
         this.creds = creds;
@@ -50,7 +51,7 @@ public class OSSRequestSigner implements RequestSigner {
         if (accessKeyId.length() > 0 && secretAccessKey.length() > 0) {
             String signature;
 
-            if (SignParameters.AUTH_V2.equals(signatureVersion)) {
+            if (signatureVersion == SignVersion.V2) {
                 signature = SignV2Utils.buildSignature(secretAccessKey, httpMethod, resourcePath, request);
                 request.addHeader(OSSHeaders.AUTHORIZATION, SignV2Utils.composeRequestAuthorization(accessKeyId,signature, request));
             } else {
