@@ -8,6 +8,8 @@ public class JsonFormat implements Serializable {
     //Define the delimiter for `output` json records
     private String recordDelimiter = "\n";
 
+    private boolean parseJsonNumberAsString = false;
+
     public JsonType getJsonType() {
         return jsonType;
     }
@@ -27,5 +29,18 @@ public class JsonFormat implements Serializable {
 
     public void setRecordDelimiter(String recordDelimiter) {
         this.recordDelimiter = recordDelimiter;
+    }
+
+    public boolean isParseJsonNumberAsString() {
+        return parseJsonNumberAsString;
+    }
+
+    public void setParseJsonNumberAsString(boolean parseJsonNumberAsString) {
+        this.parseJsonNumberAsString = parseJsonNumberAsString;
+    }
+
+    public JsonFormat withParseJsonNumberAsString(boolean parseJsonNumberAsString) {
+        setParseJsonNumberAsString(parseJsonNumberAsString);
+        return this;
     }
 }

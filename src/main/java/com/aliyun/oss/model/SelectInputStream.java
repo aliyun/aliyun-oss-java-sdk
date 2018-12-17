@@ -79,7 +79,7 @@ public class SelectInputStream extends FilterInputStream {
         while (bytesRead < len) {
             int bytes = in.read(buf, off + bytesRead, len - bytesRead);
             if (bytes < 0) {
-                throw new IOException("invalid input stream end found, need another " + (len - bytesRead) + "bytes");
+                throw new SelectObjectException(500, SelectObjectException.INVALID_INPUT_STREAM, "Invalid input stream end found, need another " + (len - bytesRead) + "bytes");
             }
             bytesRead += bytes;
         }
@@ -89,8 +89,7 @@ public class SelectInputStream extends FilterInputStream {
         if (payloadCrcEnabled) {
             int currentChecksum = ByteBuffer.wrap(checksumBytes).getInt();
             if (crc32.getValue() != ((long)currentChecksum & 0xffffffffL)) {
-                throw new IOException("select frame crc check failed, actual: " + crc32.getValue()
-                        + ", expect: " + currentChecksum);
+                throw new SelectObjectException(500, SelectObjectException.INVALID_CRC, "Oss Select encounter error: frame crc check failed, actual " + crc32.getValue() + ", expect: " + currentChecksum);
             }
             crc32.reset();
         }
@@ -107,7 +106,7 @@ public class SelectInputStream extends FilterInputStream {
             internalRead(currentFrameTypeBytes, 0, 4);
             //first byte is version byte
             if (currentFrameTypeBytes[0] != SELECT_VERSION) {
-                throw new IOException("invalid select version found: " + currentFrameTypeBytes[0] + ", expect: " + SELECT_VERSION);
+                throw new SelectObjectException(500, SelectObjectException.INVALID_SELECT_VERSION, "Oss Select encounter error: invalid select version found " + currentFrameTypeBytes[0] + ", expect: " + SELECT_VERSION);
             }
             internalRead(currentFramePayloadLengthBytes, 0, 4);
             internalRead(currentFrameHeaderChecksumBytes, 0, 4);
@@ -153,11 +152,11 @@ public class SelectInputStream extends FilterInputStream {
 
                     validateCheckSum(currentFramePayloadChecksumBytes, crc32);
                     if (status / 100 != 2) {
-                        throw new IOException("Oss Select encounter error: code: " + status + ", message: " + error);
+                        throw new SelectObjectException(status, error.split(".")[0], "Oss Select encounter error: " + error);
                     }
                     break;
                 default:
-                    throw new IOException("unsupported frame type found: " + type);
+                    throw new SelectObjectException(500, SelectObjectException.INVALID_SELECT_FRAME, "Oss Select encounter error: unsupported frame type " + type + " found!");
             }
             //notify select progress
             ProgressEventType eventType = ProgressEventType.SELECT_SCAN_EVENT;

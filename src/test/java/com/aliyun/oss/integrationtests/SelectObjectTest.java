@@ -224,12 +224,12 @@ public class SelectObjectTest extends TestBase {
                         .withSkipPartialDataRecord(false)
                         .withInputSerialization(new InputSerialization()
                                 .withCompressionType(CompressionType.NONE)
-                                .withJsonInputFormat(new JsonFormat().withJsonType(JsonType.LINES)))
+                                .withJsonInputFormat(new JsonFormat().withParseJsonNumberAsString(true).withJsonType(JsonType.LINES)))
                         .withOutputSerialization(new OutputSerialization()
                                 .withOutputRawData(false)
                                 .withCrcEnabled(true)
                                 .withJsonOutputFormat(new JsonFormat()))
-                        .withExpression("select * from ossobject as s where s.age > 40");
+                        .withExpression("select * from ossobject as s where cast(s.age as int) > 40");
 
         OSSObject ossObject = ossClient.selectObject(selectObjectRequest);
         byte[] buffer = new byte[1024];
