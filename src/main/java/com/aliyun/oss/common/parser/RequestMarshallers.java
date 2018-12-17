@@ -518,7 +518,7 @@ public final class RequestMarshallers {
         }
     }
 
-    private static void populateSelectLineRange(StringBuffer xmlBody, SelectObjectRequest request) {
+    private static void populateSelectRange(StringBuffer xmlBody, SelectObjectRequest request) {
         if (request.getLineRange() != null) {
             xmlBody.append("<Range>" + request.lineRangeToString(request.getLineRange()) + "</Range>");
         }
@@ -535,7 +535,7 @@ public final class RequestMarshallers {
         xmlBody.append("<JSON>");
         xmlBody.append("<Type>" + jsonInputFormat.getJsonType().name() + "</Type>");
         xmlBody.append("<ParseJsonNumberAsString>" + jsonInputFormat.isParseJsonNumberAsString() + "</ParseJsonNumberAsString>");
-        populateSelectLineRange(xmlBody, request);
+        populateSelectRange(xmlBody, request);
         xmlBody.append("</JSON>");
         xmlBody.append("</InputSerialization>");
 
@@ -560,7 +560,7 @@ public final class RequestMarshallers {
         xmlBody.append("<FieldDelimiter>" + BinaryUtil.toBase64String(csvInputFormat.getFieldDelimiter().toString().getBytes()) + "</FieldDelimiter>");
         xmlBody.append("<QuoteCharacter>" + BinaryUtil.toBase64String(csvInputFormat.getQuoteChar().toString().getBytes()) + "</QuoteCharacter>");
         xmlBody.append("<CommentCharacter>" + BinaryUtil.toBase64String(csvInputFormat.getCommentChar().toString().getBytes()) + "</CommentCharacter>");
-        populateSelectLineRange(xmlBody, request);
+        populateSelectRange(xmlBody, request);
         xmlBody.append("</CSV>");
         xmlBody.append("</InputSerialization>");
 
