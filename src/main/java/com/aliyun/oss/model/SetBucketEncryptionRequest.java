@@ -14,6 +14,10 @@ public class SetBucketEncryptionRequest extends GenericRequest {
 	 */
 	private String kMSMasterKeyID;
 
+	public SetBucketEncryptionRequest(String bucketName) {
+		super(bucketName);
+	}
+
 	public SSEAlgorithm getAlgorithm() {
 		return algorithm;
 	}
@@ -22,11 +26,11 @@ public class SetBucketEncryptionRequest extends GenericRequest {
 		this.algorithm = algorithm;
 	}
 
-	public String getkMSMasterKeyID() {
+	public String getKMSMasterKeyID() {
 		return kMSMasterKeyID;
 	}
 
-	public void setkMSMasterKeyID(String kMSMasterKeyID) {
+	public void setKMSMasterKeyID(String kMSMasterKeyID) {
 		this.kMSMasterKeyID = kMSMasterKeyID;
 	}
 }

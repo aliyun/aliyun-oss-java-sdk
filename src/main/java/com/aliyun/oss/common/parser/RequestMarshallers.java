@@ -1038,9 +1038,9 @@ public final class RequestMarshallers {
                 xmlBody.append(request.getAlgorithm().toString());
                 xmlBody.append("</SSEAlgorithm>");
             }
-            if (request.getAlgorithm() == SSEAlgorithm.KMS && request.getkMSMasterKeyID() != null) {
+            if (request.getAlgorithm() == SSEAlgorithm.KMS && request.getKMSMasterKeyID() != null) {
                 xmlBody.append("<KMSMasterKeyID>");
-                xmlBody.append(request.getkMSMasterKeyID());
+                xmlBody.append(request.getKMSMasterKeyID());
                 xmlBody.append("</KMSMasterKeyID>");
             }
             xmlBody.append("</ApplyServerSideEncryptionByDefault>");
