@@ -1220,6 +1220,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public NotificationConfiguration getBucketEventNotification(GenericRequest genericRequest) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketEventNotification(genericRequest);
+    }
+
+    @Override
     public UploadFileResult uploadFile(UploadFileRequest uploadFileRequest) throws Throwable {
         return this.uploadOperation.uploadFile(uploadFileRequest);
     }

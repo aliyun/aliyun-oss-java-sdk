@@ -1906,7 +1906,6 @@ public interface OSS {
      */
     public void extendBucketWorm(ExtendWormConfigurationRequest request) throws OSSException, ClientException;
 
-
     /**
      * Get the worm cofiguration of the bucket.
      * @param request
@@ -1915,6 +1914,15 @@ public interface OSS {
      */
     public WormConfiguration getBucketWorm(GenericRequest request) throws OSSException, ClientException;
 
+    /**
+     * Gets the {@link Bucket}'s event notification
+     * @param   {@link GenericRequest} instance which specifies the bucket name.
+     * @return  {@link NotificationConfiguration} instance
+     * @throws OSSException OSS Service side exception
+     * @throws ClientException OSS Client side exception
+     */
+    public NotificationConfiguration getBucketEventNotification(GenericRequest genericRequest)
+        throws OSSException,ClientException;
 
     /**
      * File upload
