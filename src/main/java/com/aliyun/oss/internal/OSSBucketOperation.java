@@ -1227,4 +1227,28 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, listUserRegionResponseParser, null, null, true);
     }
 
+    /**
+     * Get bucket event notification
+     */
+    public NotificationConfiguration getBucketEventNotification(GenericRequest genericRequest)
+        throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_NOTIFICATION, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
+            .setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.GET)
+            .setBucket(bucketName)
+            .setParameters(params)
+            .setOriginalRequest(genericRequest)
+            .build();
+
+        return doOperation(request, getBucketNotificationResponseParser, bucketName, null, true);
+    }
 }
