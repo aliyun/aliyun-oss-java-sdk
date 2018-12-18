@@ -35,6 +35,7 @@ public class FunctionComputeConfiguration {
   public static class FilterKey {
     private String prefix;
     private String suffix;
+
     public FilterKey(String prefix, String suffix) {
       this.prefix = prefix;
       this.suffix = suffix;
