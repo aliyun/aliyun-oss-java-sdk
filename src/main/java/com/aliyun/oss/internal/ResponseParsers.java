@@ -2766,32 +2766,20 @@ public final class ResponseParsers {
             List<Element> notificationElems = root.getChildren("FunctionComputeConfiguration");
 
             for (Element notificationElem : notificationElems) {
-                String id = null;
-                String event = null;
                 String prefix = null;
                 String suffix = null;
                 String arn = null;
                 String assumeRole = null;
 
-                if (notificationElem.getChild("ID") != null) {
-                    id = notificationElem.getChildText("ID");
-                }
+                String id = notificationElem.getChildText("ID");
+                String event = notificationElem.getChildText("Event");
 
-                if (notificationElem.getChild("Event") != null) {
-                    event = notificationElem.getChildText("Event");
-                }
-
-                if (notificationElem.getChild("Filter") != null && notificationElem.getChild("Filter").getChild("Key") != null &&
-                    notificationElem.getChild("Filter").getChild("Key").getChild("Prefix") != null) {
+                if (notificationElem.getChild("Filter") != null && notificationElem.getChild("Filter").getChild("Key") != null) {
                     prefix = notificationElem.getChild("Filter").getChild("Key").getChildText("Prefix");
-                }
-
-                if (notificationElem.getChild("Filter") != null && notificationElem.getChild("Filter").getChild("Key") != null &&
-                    notificationElem.getChild("Filter").getChild("Key").getChild("Suffix") != null) {
                     suffix = notificationElem.getChild("Filter").getChild("Key").getChildText("Suffix");
                 }
 
-                if (notificationElem.getChild("Function") != null && notificationElem.getChild("Function").getChild("Arn") != null) {
+                if (notificationElem.getChild("Function") != null) {
                     arn = notificationElem.getChild("Function").getChildText("Arn");
                     assumeRole = notificationElem.getChild("Function").getChildText("AssumeRole");
                 }

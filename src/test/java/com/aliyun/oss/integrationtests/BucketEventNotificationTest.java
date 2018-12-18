@@ -43,8 +43,6 @@ public class BucketEventNotificationTest extends TestBase {
       Assert.assertEquals(functionComputeConfiguration.getFilter().getKey().getSuffix(), TEST_SUFFIX);
     } catch (Exception e) {
       junit.framework.Assert.fail(e.getMessage());
-    } finally {
-      ossClient.deleteBucket(bucketName);
     }
   }
 
@@ -60,8 +58,6 @@ public class BucketEventNotificationTest extends TestBase {
       com.aliyun.oss.OSSException ossClientError = (com.aliyun.oss.OSSException)e;
       String errorCode = ossClientError.getErrorCode();
       Assert.assertTrue(OSSErrorCode.NO_SUCH_NOTIFICATION_CONFIGURATION.equals(errorCode));
-    } finally {
-
     }
   }
 
