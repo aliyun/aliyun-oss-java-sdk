@@ -256,4 +256,9 @@ public interface OSSErrorCode {
      * the bucket worm configuration does not exist.
      */
     static final String NO_SUCH_WORM_CONFIGURATION = "NoSuchWORMConfiguration";
+
+    /**
+     * The specified bucket does not have a notification configuration.
+     */
+    static final String NO_SUCH_NOTIFICATION_CONFIGURATION = "NoSuchNotificationConfiguration";
 }
