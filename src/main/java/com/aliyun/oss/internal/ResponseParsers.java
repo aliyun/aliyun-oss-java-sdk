@@ -47,6 +47,8 @@ import com.aliyun.oss.model.LiveChannelStat.VideoStat;
 import com.aliyun.oss.model.LifecycleRule.RuleStatus;
 import com.aliyun.oss.model.LifecycleRule.StorageTransition;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
+import com.aliyun.oss.model.NotificationConfiguration;
+import com.aliyun.oss.model.FunctionComputeConfiguration;
 
 /*
  * A collection of parsers that parse HTTP reponses into corresponding human-readable results.
@@ -78,6 +80,7 @@ public final class ResponseParsers {
     public static final GetBucketRequestPaymentResponseParser getBucketRequestPaymentResponseParser = new GetBucketRequestPaymentResponseParser();
     public static final InitiateWormConfigurationResponseParser initiateWormConfigurationResponseParser = new InitiateWormConfigurationResponseParser();
     public static final GetWormConfigurationResponseParser getWormConfigurationResponseParser = new GetWormConfigurationResponseParser();
+    public static final GetBucketNotificationResponseParser getBucketNotificationResponseParser = new GetBucketNotificationResponseParser();
 
     public static final ListObjectsReponseParser listObjectsReponseParser = new ListObjectsReponseParser();
     public static final PutObjectReponseParser putObjectReponseParser = new PutObjectReponseParser();
@@ -496,6 +499,19 @@ public final class ResponseParsers {
             }
         }
 
+    }
+
+    public static final class GetBucketNotificationResponseParser implements ResponseParser<NotificationConfiguration> {
+
+        @Override
+        public NotificationConfiguration parse(ResponseMessage response)
+            throws ResponseParseException {
+            try {
+                return parseNotificationConfiguration(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
     }
 
     public static final class ListObjectsReponseParser implements ResponseParser<ObjectListing> {
@@ -2739,4 +2755,54 @@ public final class ResponseParsers {
         }
     }
 
+    /**
+     * Unmashall get bucket notification response body to corresponding result
+     */
+    public static NotificationConfiguration parseNotificationConfiguration(InputStream responseBody) throws ResponseParseException {
+        try {
+            Element root = getXmlRootElement(responseBody);
+            List<FunctionComputeConfiguration> functionComputeConfigurations = new ArrayList<FunctionComputeConfiguration>();
+
+            List<Element> notificationElems = root.getChildren("FunctionComputeConfiguration");
+
+            for (Element notificationElem : notificationElems) {
+                String id = null;
+                String event = null;
+                String prefix = null;
+                String suffix = null;
+                String arn = null;
+                String assumeRole = null;
+
+                if (notificationElem.getChild("ID") != null) {
+                    id = notificationElem.getChildText("ID");
+                }
+
+                if (notificationElem.getChild("Event") != null) {
+                    event = notificationElem.getChildText("Event");
+                }
+
+                if (notificationElem.getChild("Filter") != null && notificationElem.getChild("Filter").getChild("Key") != null &&
+                    notificationElem.getChild("Filter").getChild("Key").getChild("Prefix") != null) {
+                    prefix = notificationElem.getChild("Filter").getChild("Key").getChildText("Prefix");
+                }
+
+                if (notificationElem.getChild("Filter") != null && notificationElem.getChild("Filter").getChild("Key") != null &&
+                    notificationElem.getChild("Filter").getChild("Key").getChild("Suffix") != null) {
+                    suffix = notificationElem.getChild("Filter").getChild("Key").getChildText("Suffix");
+                }
+
+                if (notificationElem.getChild("Function") != null && notificationElem.getChild("Function").getChild("Arn") != null) {
+                    arn = notificationElem.getChild("Function").getChildText("Arn");
+                    assumeRole = notificationElem.getChild("Function").getChildText("AssumeRole");
+                }
+
+                functionComputeConfigurations.add(new FunctionComputeConfiguration(id, event, prefix, suffix, arn, assumeRole));
+            }
+            return new NotificationConfiguration(functionComputeConfigurations);
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
 }
