@@ -55,13 +55,15 @@ public class BucketEncryptionTest extends TestBase {
             // Override existing bucket encryption
             SetBucketEncryptionRequest request2 = new SetBucketEncryptionRequest(bucketName);
 
-            request2.setAlgorithm(SSEAlgorithm.Default);
+            request2.setAlgorithm(SSEAlgorithm.KMS);
+
+            request2.setKMSMasterKeyID("shasdjahsdjajhdhjasdaxxxxtest");
 
             ossClient.setBucketEncryption(request2);
             
             ServerSideEncryptionRule testRule2 = ossClient.getBucketEncryption(new GenericRequest(bucketName));
 
-            Assert.assertEquals(SSEAlgorithm.Default.toString(), testRule2.getAlgorithm().toString());
+            Assert.assertEquals(SSEAlgorithm.KMS.toString(), testRule2.getAlgorithm().toString());
 
             BucketInfo bucketInfo2 = ossClient.getBucketInfo(bucketName);
 
