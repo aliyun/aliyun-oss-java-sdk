@@ -5,8 +5,6 @@ package com.aliyun.oss.model;
  */
 public enum SSEAlgorithm {
 
-	Default("None"),
-
 	AES256("AES256"),
 
 	KMS("KMS");
