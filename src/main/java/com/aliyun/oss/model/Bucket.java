@@ -64,6 +64,8 @@ public class Bucket extends GenericResult {
     // The type of availabilityZone. 0 means normal cluster, 1 means 2AZ cluster, 2 means 3AZ cluster.
     private DataRedundancyType dataRedundancyType;
 
+    private TagSet tagSet;
+
     /**
      * Default constructor.
      */
@@ -246,5 +248,21 @@ public class Bucket extends GenericResult {
      */
     public void setDataRedundancyType(DataRedundancyType dataRedundancyType) {
         this.dataRedundancyType = dataRedundancyType;
+    }
+
+    /**
+     * Gets the tagSet
+     * @return Bucket tagSet
+     */
+    public TagSet getTagSet() {
+        return tagSet;
+    }
+
+    /**
+     * Sets the tagSet
+     * @param tagSet
+     */
+    public void setTagSet(TagSet tagSet) {
+        this.tagSet = tagSet;
     }
 }

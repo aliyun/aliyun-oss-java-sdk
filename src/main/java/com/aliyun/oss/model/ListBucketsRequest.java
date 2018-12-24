@@ -40,6 +40,8 @@ public class ListBucketsRequest extends WebServiceRequest {
     // The OSS's Bid is 26842.
     private String bid;
 
+    private String tagging;
+
     private boolean isRegionList = false;
 
     /**
@@ -184,6 +186,14 @@ public class ListBucketsRequest extends WebServiceRequest {
      */
     public String getBid() {
         return bid;
+    }
+
+    public String getTagging() {
+        return tagging;
+    }
+
+    public void setTagging(String tagging) {
+        this.tagging = tagging;
     }
 
     public boolean isRegionList() {
