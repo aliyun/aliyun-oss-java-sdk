@@ -132,6 +132,9 @@ public class OSSBucketOperation extends OSSOperation {
         if (listBucketRequest.getBid() != null) {
             params.put(BID, listBucketRequest.getBid());
         }
+        if (listBucketRequest.getTagging() != null) {
+            params.put(TAGGING, listBucketRequest.getTagging());
+        }
         if (listBucketRequest.isRegionList()) {
             params.put(SUBRESOURCE_REGION_LIST, null);
         }
