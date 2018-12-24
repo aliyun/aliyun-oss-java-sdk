@@ -76,6 +76,7 @@ public final class RequestParameters {
     public static final String MARKER = "marker";
     public static final String MAX_KEYS = "max-keys";
     public static final String BID = "bid";
+    public static final String TAGGING = "tagging";
     public static final String ENCODING_TYPE = "encoding-type";
 
     public static final String UPLOAD_ID = "uploadId";

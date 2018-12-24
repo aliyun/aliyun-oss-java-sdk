@@ -1269,6 +1269,30 @@ public final class ResponseParsers {
                     bucket.setExtranetEndpoint(e.getChildText("ExtranetEndpoint"));
                     bucket.setIntranetEndpoint(e.getChildText("IntranetEndpoint"));
 
+                    Element tagSetElement = root.getChild("TagSet");
+
+                    if (tagSetElement != null) {
+                        TagSet tagSet = new TagSet();
+                        List<Element> tagElems = tagSetElement.getChildren("Tag");
+
+                        for (Element tagElem : tagElems) {
+                            String key = null;
+                            String value = null;
+
+                            if (tagElem.getChild("Key") != null) {
+                                key = tagElem.getChildText("Key");
+                            }
+
+                            if (tagElem.getChild("Value") != null) {
+                                value = tagElem.getChildText("Value");
+                            }
+
+                            tagSet.setTag(key, value);
+                        }
+
+                        bucket.setTagSet(tagSet);
+                    }
+
                     buckets.add(bucket);
                 }
             }
