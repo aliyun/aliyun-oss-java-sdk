@@ -76,7 +76,9 @@ public class SignUtils {
                         || lowerKey.equals(HttpHeaders.CONTENT_MD5.toLowerCase())
                         || lowerKey.equals(HttpHeaders.DATE.toLowerCase())
                         || lowerKey.startsWith(OSSHeaders.OSS_PREFIX)) {
-                    headersToSign.put(lowerKey, header.getValue().trim());
+                    if (header.getValue() != null) {
+                        headersToSign.put(lowerKey, header.getValue().trim());
+                    }
                 }
             }
         }
