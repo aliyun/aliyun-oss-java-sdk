@@ -52,6 +52,7 @@ public class CreateSelectMetaInputStream extends FilterInputStream {
     private long nextNotificationScannedSize;
     private CRC32 crc32;
     private SelectContentMetadataBase selectContentMetadataBase;
+    private String requestId;
     /**
      * payload checksum is the last 4 bytes in one frame, we use this flag to indicate whether we
      * need read the 4 bytes before we advance to next frame.
@@ -81,7 +82,7 @@ public class CreateSelectMetaInputStream extends FilterInputStream {
         while (bytesRead < len) {
             int bytes = in.read(buf, off + bytesRead, len - bytesRead);
             if (bytes < 0) {
-                throw new SelectObjectException(500, SelectObjectException.INVALID_INPUT_STREAM, "Invalid input stream end found, need another " + (len - bytesRead) + "bytes");
+                throw new SelectObjectException(SelectObjectException.INVALID_INPUT_STREAM, "Invalid input stream end found, need another " + (len - bytesRead) + " bytes", requestId);
             }
             bytesRead += bytes;
         }
@@ -90,7 +91,7 @@ public class CreateSelectMetaInputStream extends FilterInputStream {
     private void validateCheckSum(byte[] checksumBytes, CRC32 crc32) throws IOException {
         int currentChecksum = ByteBuffer.wrap(checksumBytes).getInt();
         if (crc32.getValue() != ((long)currentChecksum & 0xffffffffL)) {
-            throw new SelectObjectException(500, SelectObjectException.INVALID_CRC, "Oss Select create meta encounter error: frame crc check failed, actual " + crc32.getValue() + ", expect: " + currentChecksum);
+            throw new SelectObjectException(SelectObjectException.INVALID_CRC, "Frame crc check failed, actual " + crc32.getValue() + ", expect: " + currentChecksum, requestId);
         }
         crc32.reset();
     }
@@ -106,7 +107,7 @@ public class CreateSelectMetaInputStream extends FilterInputStream {
             internalRead(currentFrameTypeBytes, 0, 4);
             //first byte is version byte
             if (currentFrameTypeBytes[0] != SELECT_VERSION) {
-                throw new SelectObjectException(500, SelectObjectException.INVALID_SELECT_VERSION, "Oss Select create meta encounter error: invalid select version found " + currentFrameTypeBytes[0] + ", expect: " + SELECT_VERSION);
+                throw new SelectObjectException(SelectObjectException.INVALID_SELECT_VERSION, "Invalid select version found " + currentFrameTypeBytes[0] + ", expect: " + SELECT_VERSION, requestId);
             }
             internalRead(currentFramePayloadLengthBytes, 0, 4);
             internalRead(currentFrameHeaderChecksumBytes, 0, 4);
@@ -164,14 +165,19 @@ public class CreateSelectMetaInputStream extends FilterInputStream {
 
                     validateCheckSum(currentFramePayloadChecksumBytes, crc32);
                     if (status / 100 != 2) {
-                        throw new SelectObjectException(status, error.split(".")[0], "Oss Select create meta encounter error: " + error);
+                        if (error.contains(".")) {
+                            throw new SelectObjectException(error.split("\\.")[0], error.substring(error.indexOf(".") + 1), requestId);
+                        } else {
+                            // forward compatbility consideration
+                            throw new SelectObjectException(error, error, requestId);
+                        }
                     }
 
                     selectContentMetadataBase.withSplits(ByteBuffer.wrap(splitBytes).getInt())
                             .withTotalLines(ByteBuffer.wrap(totalLineBytes).getLong());
                     break;
                 default:
-                    throw new SelectObjectException(500, SelectObjectException.INVALID_SELECT_FRAME, "Oss Select create meta encounter error: unsupported frame type " + type + " found!");
+                    throw new SelectObjectException(SelectObjectException.INVALID_SELECT_FRAME, "Unsupported frame type " + type + " found", requestId);
             }
             //notify create select meta progress
             ProgressEventType eventType = ProgressEventType.SELECT_SCAN_EVENT;
@@ -205,6 +211,10 @@ public class CreateSelectMetaInputStream extends FilterInputStream {
 
     @Override
     public int available() throws IOException {
-        throw new IOException("create select meta input stream does not support available() operation");
+        throw new IOException("Create select meta input stream does not support available() operation");
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 }

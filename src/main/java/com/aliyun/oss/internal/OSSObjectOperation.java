@@ -232,6 +232,7 @@ public class OSSObjectOperation extends OSSOperation {
             }
             InputStream in = ossObject.getObjectContent();
             CreateSelectMetaInputStream warppedStream = new CreateSelectMetaInputStream(in, selectContentMetadataBase, selectProgressListener);
+            warppedStream.setRequestId(ossObject.getRequestId());
             while (warppedStream.read() != -1) {
                 //read until eof
             }
@@ -291,8 +292,10 @@ public class OSSObjectOperation extends OSSOperation {
             publishProgress(selectProgressListener, ProgressEventType.SELECT_STARTED_EVENT);
             InputStream inputStream = ossObject.getObjectContent();
             if (!Boolean.parseBoolean(ossObject.getObjectMetadata().getRawMetadata().get(OSS_SELECT_OUTPUT_RAW).toString())) {
-                ossObject.setObjectContent(new SelectInputStream(inputStream, selectProgressListener,
-                        selectObjectRequest.getOutputSerialization().isPayloadCrcEnabled()));
+                SelectInputStream selectInputStream = new SelectInputStream(inputStream, selectProgressListener,
+                        selectObjectRequest.getOutputSerialization().isPayloadCrcEnabled());
+                selectInputStream.setRequestId(ossObject.getRequestId());
+                ossObject.setObjectContent(selectInputStream);
             }
             return ossObject;
         } catch (RuntimeException e) {

@@ -482,7 +482,7 @@ public final class RequestMarshallers {
 
         @Override
         public byte[] marshall(CreateSelectObjectMetadataRequest request) {
-            StringBuffer xmlBody = new StringBuffer();
+            StringBuilder xmlBody = new StringBuilder();
             InputSerialization inputSerialization = request.getInputSerialization();
             CSVFormat csvFormat = inputSerialization.getCsvInputFormat();
             JsonFormat jsonFormat = inputSerialization.getJsonInputFormat();
@@ -518,7 +518,7 @@ public final class RequestMarshallers {
         }
     }
 
-    private static void populateSelectRange(StringBuffer xmlBody, SelectObjectRequest request) {
+    private static void populateSelectRange(StringBuilder xmlBody, SelectObjectRequest request) {
         if (request.getLineRange() != null) {
             xmlBody.append("<Range>" + request.lineRangeToString(request.getLineRange()) + "</Range>");
         }
@@ -527,7 +527,7 @@ public final class RequestMarshallers {
         }
     }
 
-    private static void populateSelectJsonObjectRequest(StringBuffer xmlBody, SelectObjectRequest request) {
+    private static void populateSelectJsonObjectRequest(StringBuilder xmlBody, SelectObjectRequest request) {
         InputSerialization inputSerialization = request.getInputSerialization();
         JsonFormat jsonInputFormat = inputSerialization.getJsonInputFormat();
         xmlBody.append("<InputSerialization>");
@@ -549,7 +549,7 @@ public final class RequestMarshallers {
         xmlBody.append("</OutputSerialization>");
     }
 
-    private static void populateSelectCsvObjectRequest(StringBuffer xmlBody, SelectObjectRequest request) {
+    private static void populateSelectCsvObjectRequest(StringBuilder xmlBody, SelectObjectRequest request) {
         InputSerialization inputSerialization = request.getInputSerialization();
         CSVFormat csvInputFormat = inputSerialization.getCsvInputFormat();
         xmlBody.append("<InputSerialization>");
@@ -583,7 +583,7 @@ public final class RequestMarshallers {
 
         @Override
         public byte[] marshall(SelectObjectRequest request) {
-            StringBuffer xmlBody = new StringBuffer();
+            StringBuilder xmlBody = new StringBuilder();
             xmlBody.append("<SelectRequest>");
 
             xmlBody.append("<Expression>" + BinaryUtil.toBase64String(request.getExpression().getBytes()) + "</Expression>");

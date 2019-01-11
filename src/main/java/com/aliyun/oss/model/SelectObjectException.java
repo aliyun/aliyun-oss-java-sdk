@@ -8,20 +8,24 @@ public class SelectObjectException extends IOException {
     public static final String INVALID_SELECT_VERSION = "InvalidSelectVersion";
     public static final String INVALID_SELECT_FRAME = "InvalidSelectFrame";
 
-    private int status;
     private String errorCode;
-
-    public SelectObjectException(int status, String errorCode, String message) {
-        super("status: " + status + ", message: " + message);
-        this.status = status;
+    private String requestId;
+    public SelectObjectException(String errorCode, String message, String requestId) {
+        super(message);
         this.errorCode = errorCode;
-    }
-
-    public int getStatus() {
-        return status;
+        this.requestId = requestId;
     }
 
     public String getErrorCode() {
         return errorCode;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    @Override
+    public String toString() {
+        return "[Message]: " + getMessage() + "\n[ErrorCode]: " + getErrorCode() + "\n[RequestId]: " + getRequestId();
     }
 }
