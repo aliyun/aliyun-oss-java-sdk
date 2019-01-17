@@ -62,6 +62,7 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_WORM_EXTEND = "wormExtend";
     public static final String SUBRESOURCE_USER_REGION = "userRegion";
     public static final String SUBRESOURCE_REGION_LIST = "regionList";
+    public static final String SUBRESOURCE_ENCRYPTION = "encryption";
 
     public static final String SUBRESOURCE_UDF = "udf";
     public static final String SUBRESOURCE_UDF_NAME = "udfName";

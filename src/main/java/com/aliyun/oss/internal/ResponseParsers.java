@@ -78,6 +78,7 @@ public final class ResponseParsers {
     public static final GetBucketStatResponseParser getBucketStatResponseParser = new GetBucketStatResponseParser();
     public static final GetBucketQosResponseParser getBucketQosResponseParser = new GetBucketQosResponseParser();
     public static final GetBucketRequestPaymentResponseParser getBucketRequestPaymentResponseParser = new GetBucketRequestPaymentResponseParser();
+    public static final GetBucketEncryptionResponseParser getBucketEncryptionResponseParser = new GetBucketEncryptionResponseParser();
     public static final InitiateWormConfigurationResponseParser initiateWormConfigurationResponseParser = new InitiateWormConfigurationResponseParser();
     public static final GetWormConfigurationResponseParser getWormConfigurationResponseParser = new GetWormConfigurationResponseParser();
     public static final GetBucketNotificationResponseParser getBucketNotificationResponseParser = new GetBucketNotificationResponseParser();
@@ -351,6 +352,21 @@ public final class ResponseParsers {
         public UserQos parse(ResponseMessage response) throws ResponseParseException {
             try {
                 UserQos result = parseGetUserQos(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
+
+    public static final class GetBucketEncryptionResponseParser implements ResponseParser<ServerSideEncryptionRule> {
+
+        @Override
+        public ServerSideEncryptionRule parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                ServerSideEncryptionRule result = parseGetBucketEncryption(response.getContent());
                 result.setRequestId(response.getRequestId());
                 return result;
             } finally {
@@ -2338,6 +2354,18 @@ public final class ResponseParsers {
             }
             bucketInfo.setBucket(bucket);
 
+            // encryptionRule
+            Element encryptionElement = bucketElem.getChild("ServerSideEncryptionRule");
+            if (encryptionElement != null) {
+                String algorithm = encryptionElement.getChildText("SSEAlgorithm");
+                ServerSideEncryptionRule rule = new ServerSideEncryptionRule();
+                rule.setAlgorithm(SSEAlgorithm.parse(algorithm));
+                if (rule.getAlgorithm() == SSEAlgorithm.KMS) {
+                    rule.setkMSMasterKeyID(encryptionElement.getChildText("KMSMasterKeyID"));
+                }
+                bucketInfo.setEncryptionRule(rule);
+            }
+
             // acl
             String aclString = bucketElem.getChild("AccessControlList").getChildText("Grant");
             CannedAccessControlList acl = CannedAccessControlList.parse(aclString);
@@ -2372,6 +2400,30 @@ public final class ResponseParsers {
             Long multipartUploadCount = Long.parseLong(root.getChildText("MultipartUploadCount"));
             BucketStat bucketStat = new BucketStat(storage, objectCount, multipartUploadCount);
             return bucketStat;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Unmarshall get bucket info response body to bucket stat.
+     */
+    public static ServerSideEncryptionRule parseGetBucketEncryption(InputStream responseBody) throws ResponseParseException {
+        try {
+            Element root = getXmlRootElement(responseBody);
+
+            String algorithm = root.getChild("ApplyServerSideEncryptionByDefault").getChildText("SSEAlgorithm");
+
+            ServerSideEncryptionRule encryptionRule = new ServerSideEncryptionRule();
+            encryptionRule.setAlgorithm(SSEAlgorithm.parse(algorithm));
+            if (encryptionRule.getAlgorithm() == SSEAlgorithm.KMS) {
+                String kMSMasterKeyID = root.getChild("ApplyServerSideEncryptionByDefault").getChildText("KMSMasterKeyID");
+                encryptionRule.setkMSMasterKeyID(kMSMasterKeyID);
+            }
+
+            return encryptionRule;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {

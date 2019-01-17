@@ -84,11 +84,12 @@ public class OSSClient implements OSS {
     private OSSBucketOperation bucketOperation;
     private OSSObjectOperation objectOperation;
     private OSSMultipartOperation multipartOperation;
-    private CORSOperation corsOperation;
+    private OSSCORSOperation corsOperation;
     private OSSUploadOperation uploadOperation;
     private OSSDownloadOperation downloadOperation;
     private LiveChannelOperation liveChannelOperation;
     private OSSUdfOperation udfOperation;
+    private OSSEncryptionOperation encryptionOperation;
 
     /**
      * Uses the default OSS Endpoint(http://oss-cn-hangzhou.aliyuncs.com) and
@@ -219,41 +220,10 @@ public class OSSClient implements OSS {
     }
 
     /**
-     * Gets OSS services Endpoint.
-     * 
-     * @return OSS services Endpoint.
-     */
-    public synchronized URI getEndpoint() {
-        return URI.create(endpoint.toString());
-    }
-
-    /**
-     * Sets OSS services endpoint.
-     * 
-     * @param endpoint
-     *            OSS services endpoint.
-     */
-    public synchronized void setEndpoint(String endpoint) {
-        URI uri = toURI(endpoint);
-        this.endpoint = uri;
-
-        if (isIpOrLocalhost(uri)) {
-            serviceClient.getClientConfiguration().setSLDEnabled(true);
-        }
-
-        this.bucketOperation.setEndpoint(uri);
-        this.objectOperation.setEndpoint(uri);
-        this.multipartOperation.setEndpoint(uri);
-        this.corsOperation.setEndpoint(uri);
-        this.liveChannelOperation.setEndpoint(uri);
-        this.udfOperation.setEndpoint(uri);
-    }
-
-    /**
      * Checks if the uri is an IP or domain. If it's IP or local host, then it
      * will use secondary domain of Alibaba cloud. Otherwise, it will use domain
      * directly to access the OSS.
-     * 
+     *
      * @param uri
      *            URI。
      */
@@ -293,11 +263,45 @@ public class OSSClient implements OSS {
         this.bucketOperation = new OSSBucketOperation(this.serviceClient, this.credsProvider);
         this.objectOperation = new OSSObjectOperation(this.serviceClient, this.credsProvider);
         this.multipartOperation = new OSSMultipartOperation(this.serviceClient, this.credsProvider);
-        this.corsOperation = new CORSOperation(this.serviceClient, this.credsProvider);
+        this.corsOperation = new OSSCORSOperation(this.serviceClient, this.credsProvider);
         this.uploadOperation = new OSSUploadOperation(this.multipartOperation);
         this.downloadOperation = new OSSDownloadOperation(objectOperation);
         this.liveChannelOperation = new LiveChannelOperation(this.serviceClient, this.credsProvider);
         this.udfOperation = new OSSUdfOperation(this.serviceClient, this.credsProvider);
+        this.encryptionOperation = new OSSEncryptionOperation(this.serviceClient, this.credsProvider);
+    }
+
+    /**
+     * Gets OSS services Endpoint.
+     * 
+     * @return OSS services Endpoint.
+     */
+    @Override
+    public synchronized URI getEndpoint() {
+        return URI.create(endpoint.toString());
+    }
+
+    /**
+     * Sets OSS services endpoint.
+     * 
+     * @param endpoint
+     *            OSS services endpoint.
+     */
+    @Override
+    public synchronized void setEndpoint(String endpoint) {
+        URI uri = toURI(endpoint);
+        this.endpoint = uri;
+
+        if (isIpOrLocalhost(uri)) {
+            serviceClient.getClientConfiguration().setSLDEnabled(true);
+        }
+
+        this.bucketOperation.setEndpoint(uri);
+        this.objectOperation.setEndpoint(uri);
+        this.multipartOperation.setEndpoint(uri);
+        this.corsOperation.setEndpoint(uri);
+        this.liveChannelOperation.setEndpoint(uri);
+        this.udfOperation.setEndpoint(uri);
     }
 
     @Override
@@ -309,10 +313,12 @@ public class OSSClient implements OSS {
         this.credsProvider.setCredentials(creds);
     }
 
+    @Deprecated
     public CredentialsProvider getCredentialsProvider() {
         return this.credsProvider;
     }
 
+    @Override
     public ClientConfiguration getClientConfiguration() {
         return serviceClient.getClientConfiguration();
     }
@@ -1426,6 +1432,21 @@ public class OSSClient implements OSS {
     public UdfApplicationLog getUdfApplicationLog(GetUdfApplicationLogRequest getUdfApplicationLogRequest)
             throws OSSException, ClientException {
         return this.udfOperation.getUdfApplicationLog(getUdfApplicationLogRequest);
+    }
+
+    @Override
+    public void setBucketEncryption(SetBucketEncryptionRequest setBucketEncryptionRequest) throws OSSException, ClientException {
+        this.encryptionOperation.setBucketEncryption(setBucketEncryptionRequest);
+    }
+
+    @Override
+    public void deleteBucketEncryption(GenericRequest genericRequest) throws OSSException, ClientException {
+        this.encryptionOperation.deleteBucketEncryption(genericRequest);
+    }
+
+    @Override
+    public ServerSideEncryptionRule getBucketEncryption(GenericRequest genericRequest) throws OSSException, ClientException {
+        return this.encryptionOperation.getBucketEncryption(genericRequest);
     }
 
     @Override
