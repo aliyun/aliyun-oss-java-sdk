@@ -37,7 +37,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.aliyun.oss.ClientConfiguration;
+import com.aliyun.oss.ClientException;
 import com.aliyun.oss.InconsistentException;
+import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.CodingUtils;
@@ -70,7 +72,7 @@ public class OSSUtils {
 
     public static void ensureBucketNameValid(String bucketName) {
         if (!validateBucketName(bucketName)) {
-            throw new IllegalArgumentException(
+            throw new OSSException(
                     OSS_RESOURCE_MANAGER.getFormattedString("BucketNameInvalid", bucketName));
         }
     }
@@ -103,13 +105,13 @@ public class OSSUtils {
 
     public static void ensureObjectKeyValid(String key) {
         if (!validateObjectKey(key)) {
-            throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getFormattedString("ObjectKeyInvalid", key));
+            throw new OSSException(OSS_RESOURCE_MANAGER.getFormattedString("ObjectKeyInvalid", key));
         }
     }
 
     public static void ensureLiveChannelNameValid(String liveChannelName) {
         if (!validateObjectKey(liveChannelName)) {
-            throw new IllegalArgumentException(
+            throw new OSSException(
                     OSS_RESOURCE_MANAGER.getFormattedString("LiveChannelNameInvalid", liveChannelName));
         }
     }
@@ -128,7 +130,7 @@ public class OSSUtils {
             conbinedEndpoint.append(endpoint.getPath());
             return new URI(conbinedEndpoint.toString());
         } catch (URISyntaxException ex) {
-            throw new IllegalArgumentException(ex.getMessage(), ex);
+            throw new ClientException(ex.getMessage(), ex);
         }
     }
 
