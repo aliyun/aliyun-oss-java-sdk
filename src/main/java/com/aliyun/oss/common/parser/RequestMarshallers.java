@@ -77,6 +77,7 @@ public final class RequestMarshallers {
     public static final ExtendWormConfigurationRequestMarshaller extendWormConfigurationRequestMarshaller = new ExtendWormConfigurationRequestMarshaller();
     public static final CreateSelectObjectMetadataRequestMarshaller createSelectObjectMetadataRequestMarshaller = new CreateSelectObjectMetadataRequestMarshaller();
     public static final SelectObjectRequestMarshaller selectObjectRequestMarshaller = new SelectObjectRequestMarshaller();
+    public static final PutBucketEncryptionRequestMarshaller setBucketEncryptionRequestMarshaller = new PutBucketEncryptionRequestMarshaller();
 
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
 
@@ -1022,6 +1023,32 @@ public final class RequestMarshallers {
             }
             return rawData;
         }
+    }
+
+    public static final class PutBucketEncryptionRequestMarshaller implements RequestMarshaller<SetBucketEncryptionRequest> {
+
+        @Override
+        public FixedLengthInputStream marshall(SetBucketEncryptionRequest request) {
+            StringBuilder xmlBody = new StringBuilder();
+
+            xmlBody.append("<ServerSideEncryptionRule>");
+            xmlBody.append("<ApplyServerSideEncryptionByDefault>");
+            if (request.getAlgorithm() != null) {
+                xmlBody.append("<SSEAlgorithm>");
+                xmlBody.append(request.getAlgorithm().toString());
+                xmlBody.append("</SSEAlgorithm>");
+            }
+            if (request.getAlgorithm() == SSEAlgorithm.KMS && request.getKMSMasterKeyID() != null) {
+                xmlBody.append("<KMSMasterKeyID>");
+                xmlBody.append(request.getKMSMasterKeyID());
+                xmlBody.append("</KMSMasterKeyID>");
+            }
+            xmlBody.append("</ApplyServerSideEncryptionByDefault>");
+            xmlBody.append("</ServerSideEncryptionRule>");
+
+            return stringMarshaller.marshall(xmlBody.toString());
+        }
+
     }
 
     private static enum EscapedChar {
