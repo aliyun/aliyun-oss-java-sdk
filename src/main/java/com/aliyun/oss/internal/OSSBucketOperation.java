@@ -166,6 +166,24 @@ public class OSSBucketOperation extends OSSOperation {
         doOperation(request, emptyResponseParser, bucketName, null);
     }
 
+    public void setBucketComment(SetBucketCommentRequest setBucketCommentRequest) throws OSSException, ClientException {
+        assertParameterNotNull(setBucketCommentRequest, "setBucketCommentRequest");
+
+        String bucketName = setBucketCommentRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_COMMENT, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params)
+                .setInputStreamWithLength(setBucketCommentRequestMarshller.marshall(setBucketCommentRequest))
+                .setOriginalRequest(setBucketCommentRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
     /**
      * Get bucket's ACL.
      */

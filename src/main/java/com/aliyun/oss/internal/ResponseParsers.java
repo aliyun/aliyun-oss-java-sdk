@@ -1264,6 +1264,7 @@ public final class ResponseParsers {
                     bucket.setOwner(owner);
                     bucket.setName(e.getChildText("Name"));
                     bucket.setLocation(e.getChildText("Location"));
+                    bucket.setComment(e.getChildText("Comment"));
                     bucket.setCreationDate(DateUtil.parseIso8601Date(e.getChildText("CreationDate")));
                     if (e.getChild("StorageClass") != null) {
                         bucket.setStorageClass(StorageClass.parse(e.getChildText("StorageClass")));
@@ -2327,6 +2328,9 @@ public final class ResponseParsers {
             }
             if (bucketElem.getChildText("DataRedundancyType") != null) {
                 bucket.setDataRedundancyType(DataRedundancyType.parse(bucketElem.getChildText("DataRedundancyType")));
+            }
+            if (bucketElem.getChildText("Comment") != null) {
+                bucket.setComment(bucketElem.getChildText("Comment"));
             }
             bucketInfo.setBucket(bucket);
 

@@ -71,6 +71,8 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_UDF_APPLICATION = "udfApplication";
     public static final String SUBRESOURCE_UDF_LOG = "udfApplicationLog";
 
+    public static final String SUBRESOURCE_COMMENT = "comment";
+
     public static final String PREFIX = "prefix";
     public static final String DELIMITER = "delimiter";
     public static final String MARKER = "marker";
