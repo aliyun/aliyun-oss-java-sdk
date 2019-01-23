@@ -30,11 +30,8 @@ public class BucketEncryptionTest extends TestBase {
 
     @Test
     public void testNormalSetBucketEncryption() {
-        final String bucketName = "normal-set-bucket-encryption";
 
         try {
-            ossClient.createBucket(bucketName);
-            
             // Set bucket encryption
             SetBucketEncryptionRequest request = new SetBucketEncryptionRequest(bucketName);
 
@@ -51,16 +48,16 @@ public class BucketEncryptionTest extends TestBase {
             BucketInfo bucketInfo1 = ossClient.getBucketInfo(bucketName);
 
             Assert.assertEquals(SSEAlgorithm.AES256.toString(), bucketInfo1.getEncryptionRule().getAlgorithm().toString());
-            
+
             // Override existing bucket encryption
             SetBucketEncryptionRequest request2 = new SetBucketEncryptionRequest(bucketName);
 
             request2.setAlgorithm(SSEAlgorithm.KMS);
 
-            request2.setKMSMasterKeyID("shasdjahsdjajhdhjasdaxxxxtest");
+            request2.setKMSMasterKeyID("4716705c-99bd-4774-824e-1559e3503592");
 
             ossClient.setBucketEncryption(request2);
-            
+
             ServerSideEncryptionRule testRule2 = ossClient.getBucketEncryption(new GenericRequest(bucketName));
 
             Assert.assertEquals(SSEAlgorithm.KMS.toString(), testRule2.getAlgorithm().toString());
@@ -73,8 +70,6 @@ public class BucketEncryptionTest extends TestBase {
             ossClient.deleteBucketEncryption(new GenericRequest(bucketName));
         } catch (Exception e) {
             Assert.fail(e.getMessage());
-        } finally {
-            ossClient.deleteBucket(bucketName);
         }
     }
 
