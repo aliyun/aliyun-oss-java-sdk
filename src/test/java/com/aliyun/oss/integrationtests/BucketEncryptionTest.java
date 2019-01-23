@@ -54,7 +54,7 @@ public class BucketEncryptionTest extends TestBase {
 
             request2.setAlgorithm(SSEAlgorithm.KMS);
 
-            request2.setKMSMasterKeyID("4716705c-99bd-4774-824e-1559e3503592");
+            request2.setKMSMasterKeyID("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx");
 
             ossClient.setBucketEncryption(request2);
 
