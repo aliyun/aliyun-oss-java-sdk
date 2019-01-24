@@ -7,7 +7,9 @@ public enum SSEAlgorithm {
 
 	AES256("AES256"),
 
-	KMS("KMS");
+	KMS("KMS"),
+
+	NONE("None");
 
 	private String algorithmString;
 
@@ -27,6 +29,6 @@ public enum SSEAlgorithm {
 			}
 		}
 
-		throw new IllegalArgumentException("Unable to parse the provided acl " + algorithm);
+		throw new IllegalArgumentException("Unable to parse the provided encryption " + algorithm);
 	}
 }

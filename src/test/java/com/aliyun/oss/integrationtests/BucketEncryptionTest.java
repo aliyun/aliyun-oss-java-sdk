@@ -30,18 +30,15 @@ public class BucketEncryptionTest extends TestBase {
 
     @Test
     public void testNormalSetBucketEncryption() {
-        final String bucketName = "normal-set-bucket-encryption";
 
         try {
-            ossClient.createBucket(bucketName);
-            
             // Set bucket encryption
             SetBucketEncryptionRequest request = new SetBucketEncryptionRequest(bucketName);
 
             request.setAlgorithm(SSEAlgorithm.AES256);
-            
+
             ossClient.setBucketEncryption(request);
-            
+
             // Get bucket encryption
             ServerSideEncryptionRule testRule1 = ossClient.getBucketEncryption(new GenericRequest(bucketName));
 
@@ -51,30 +48,32 @@ public class BucketEncryptionTest extends TestBase {
             BucketInfo bucketInfo1 = ossClient.getBucketInfo(bucketName);
 
             Assert.assertEquals(SSEAlgorithm.AES256.toString(), bucketInfo1.getEncryptionRule().getAlgorithm().toString());
-            
+
             // Override existing bucket encryption
             SetBucketEncryptionRequest request2 = new SetBucketEncryptionRequest(bucketName);
 
             request2.setAlgorithm(SSEAlgorithm.KMS);
 
-            request2.setKMSMasterKeyID("shasdjahsdjajhdhjasdaxxxxtest");
+            request2.setKMSMasterKeyID("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx");
 
             ossClient.setBucketEncryption(request2);
-            
+
             ServerSideEncryptionRule testRule2 = ossClient.getBucketEncryption(new GenericRequest(bucketName));
 
             Assert.assertEquals(SSEAlgorithm.KMS.toString(), testRule2.getAlgorithm().toString());
 
             BucketInfo bucketInfo2 = ossClient.getBucketInfo(bucketName);
 
-            Assert.assertEquals(SSEAlgorithm.AES256.toString(), bucketInfo2.getEncryptionRule().getAlgorithm().toString());
+            Assert.assertEquals(SSEAlgorithm.KMS.toString(), bucketInfo2.getEncryptionRule().getAlgorithm().toString());
 
             // Delete bucket encryption
             ossClient.deleteBucketEncryption(new GenericRequest(bucketName));
+
+            BucketInfo bucketInfo3 = ossClient.getBucketInfo(bucketName);
+
+            Assert.assertEquals(SSEAlgorithm.NONE.toString(), bucketInfo3.getEncryptionRule().getAlgorithm().toString());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
-        } finally {
-            ossClient.deleteBucket(bucketName);
         }
     }
 
