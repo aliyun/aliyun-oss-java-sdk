@@ -1264,10 +1264,12 @@ public final class ResponseParsers {
                     bucket.setOwner(owner);
                     bucket.setName(e.getChildText("Name"));
                     bucket.setLocation(e.getChildText("Location"));
-                    bucket.setComment(e.getChildText("Comment"));
                     bucket.setCreationDate(DateUtil.parseIso8601Date(e.getChildText("CreationDate")));
                     if (e.getChild("StorageClass") != null) {
                         bucket.setStorageClass(StorageClass.parse(e.getChildText("StorageClass")));
+                    }
+                    if (e.getChild("Comment") != null) {
+                        bucket.setComment(e.getChildText("Comment"));
                     }
                     bucket.setExtranetEndpoint(e.getChildText("ExtranetEndpoint"));
                     bucket.setIntranetEndpoint(e.getChildText("IntranetEndpoint"));
