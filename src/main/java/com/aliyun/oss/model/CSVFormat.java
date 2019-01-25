@@ -23,9 +23,6 @@ public class CSVFormat implements Serializable {
     //Define the quote char, this is a single char, so getter will return the first char
     private String quoteChar = "\"";
 
-    //Allow record delimiter in quota or not
-    private boolean allowQuotedRecordDelimiter = true;
-
     public String getHeaderInfo() {
         return headerInfo.name();
     }
@@ -88,19 +85,6 @@ public class CSVFormat implements Serializable {
 
     public CSVFormat withQuoteChar(String quoteChar) {
         setQuoteChar(quoteChar);
-        return this;
-    }
-
-    public boolean isAllowQuotedRecordDelimiter() {
-        return allowQuotedRecordDelimiter;
-    }
-
-    public void setAllowQuotedRecordDelimiter(boolean allowQuotedRecordDelimiter) {
-        this.allowQuotedRecordDelimiter = allowQuotedRecordDelimiter;
-    }
-
-    public CSVFormat withAllowQuotedRecordDelimiter(boolean allowQuotedRecordDelimiter) {
-        setAllowQuotedRecordDelimiter(allowQuotedRecordDelimiter);
         return this;
     }
 }

@@ -555,7 +555,6 @@ public final class RequestMarshallers {
         xmlBody.append("<InputSerialization>");
         xmlBody.append("<CompressionType>" + inputSerialization.getCompressionType() + "</CompressionType>");
         xmlBody.append("<CSV>");
-        xmlBody.append("<AllowQuotedRecordDelimiter>" + csvInputFormat.isAllowQuotedRecordDelimiter() + "</AllowQuotedRecordDelimiter>");
         xmlBody.append("<FileHeaderInfo>" + csvInputFormat.getHeaderInfo() + "</FileHeaderInfo>");
         xmlBody.append("<RecordDelimiter>" + BinaryUtil.toBase64String(csvInputFormat.getRecordDelimiter().getBytes()) + "</RecordDelimiter>");
         xmlBody.append("<FieldDelimiter>" + BinaryUtil.toBase64String(csvInputFormat.getFieldDelimiter().toString().getBytes()) + "</FieldDelimiter>");
