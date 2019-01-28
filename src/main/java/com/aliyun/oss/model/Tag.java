@@ -19,7 +19,13 @@
 
 package com.aliyun.oss.model;
 
+import com.aliyun.oss.ClientException;
+import com.aliyun.oss.OSSErrorCode;
+
 import java.io.Serializable;
+import java.security.InvalidParameterException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Represents a tag on a resource.
@@ -27,6 +33,9 @@ import java.io.Serializable;
 public class Tag implements Serializable {
   private String key;
   private String value;
+
+  private final String KEY_REGEX = "^(?=^.{1,128}$)[a-zA-Z0-9+=\\-._: /]{1,128}";
+  private final String VALUE_REGEX = "^(?=^.{0,256}$)[a-zA-Z0-9+=\\-._: /]{0,256}";
 
   /**
    * Constructs an instance of this object.
@@ -37,8 +46,8 @@ public class Tag implements Serializable {
    *            The tag value.
    */
   public Tag(String key, String value) {
-    this.key = key;
-    this.value = value;
+    setKey(key);
+    setValue(value);
   }
 
   /**
@@ -54,8 +63,15 @@ public class Tag implements Serializable {
    * @param key
    *            The tag key.
    */
-  public void setKey(String key) {
-    this.key = key;
+  public void setKey(String key) throws ClientException {
+    Pattern pattern = Pattern.compile(KEY_REGEX);
+    Matcher matcher = pattern.matcher(key);
+
+    if (matcher.matches()) {
+      this.key = key;
+    } else {
+      throw new ClientException("your key is invalid", OSSErrorCode.INVALID_ARGUMENT, null);
+    }
   }
 
   /**
@@ -71,8 +87,15 @@ public class Tag implements Serializable {
    * @param value
    *            The tag value.
    */
-  public void setValue(String value) {
-    this.value = value;
+  public void setValue(String value) throws ClientException {
+    Pattern pattern = Pattern.compile(VALUE_REGEX);
+    Matcher matcher = pattern.matcher(value);
+
+    if (matcher.matches()) {
+      this.value = value;
+    } else {
+      throw new ClientException("your value is invalid", OSSErrorCode.INVALID_ARGUMENT, null);
+    }
   }
 
   @Override
