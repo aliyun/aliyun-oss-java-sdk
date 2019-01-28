@@ -2875,9 +2875,11 @@ public final class ResponseParsers {
 
             if (root.getChild("TagSet") != null) {
                 List<Element> tagElems = root.getChild("TagSet").getChildren("Tag");
-                for (Element e : tagElems) {
-                    Tag tag = new Tag(e.getChildText("Key"), e.getChildText("Value"));
-                    tagSet.add(tag);
+                if (tagElems != null) {
+                    for (Element e : tagElems) {
+                        Tag tag = new Tag(e.getChildText("Key"), e.getChildText("Value"));
+                        tagSet.add(tag);
+                    }
                 }
             }
 
