@@ -38,7 +38,6 @@ public class ObjectTagging extends GenericResult implements Serializable {
     this.tagSet = tagSet;
   }
 
-
   /**
    * @return The tag set.
    */
