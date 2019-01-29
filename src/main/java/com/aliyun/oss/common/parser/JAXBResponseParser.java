@@ -42,7 +42,7 @@ import com.aliyun.oss.common.comm.ResponseMessage;
  */
 public class JAXBResponseParser implements ResponseParser<Object> {
 
-    private static final SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+    private static final SAXParserFactory saxParserFactory = SAXParserFactory.newInstance("com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",null);
 
     // It allows to specify the class type, if the class type is specified,
     // the contextPath will be ignored.

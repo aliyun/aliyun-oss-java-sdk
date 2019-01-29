@@ -19,11 +19,11 @@
 
 package com.aliyun.oss.common.auth;
 
-import com.aliyun.oss.common.auth.Credentials;
-import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.utils.AuthUtils;
 import com.aliyun.oss.common.utils.LogUtils;
 import com.aliyuncs.exceptions.ClientException;
+
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Credentials provider implementation that loads credentials from the Ali Cloud
@@ -52,23 +52,33 @@ public class InstanceProfileCredentialsProvider implements CredentialsProvider {
 
     @Override
     public InstanceProfileCredentials getCredentials() {
-        if (credentials == null || credentials.isExpired()) {
-            try {
-                credentials = (InstanceProfileCredentials) fetcher.fetch(maxRetryTimes);
-            } catch (ClientException e) {
-                LogUtils.logException("EcsInstanceCredentialsFetcher.fetch Exception:", e);
-                return null;
+        try {
+            if (credentials == null || credentials.isExpired()) {
+                lock.lock();
+                if (credentials == null || credentials.isExpired()) {
+                    try {
+                        credentials = (InstanceProfileCredentials) fetcher.fetch(maxRetryTimes);
+                    } catch (ClientException e) {
+                        LogUtils.logException("EcsInstanceCredentialsFetcher.fetch Exception:", e);
+                        return null;
+                    }
+                }
+            } else if (credentials.willSoonExpire() && credentials.shouldRefresh()) {
+                lock.lock();
+                if (credentials.willSoonExpire() && credentials.shouldRefresh()) {
+                    try {
+                        credentials = (InstanceProfileCredentials) fetcher.fetch();
+                    } catch (ClientException e) {
+                        // Use the current expiring session token and wait for next round
+                        credentials.setLastFailedRefreshTime();
+                        LogUtils.logException("EcsInstanceCredentialsFetcher.fetch Exception:", e);
+                    }
+                }
             }
-        } else if (credentials.willSoonExpire() && credentials.shouldRefresh()) {
-            try {
-                credentials = (InstanceProfileCredentials) fetcher.fetch();
-            } catch (ClientException e) {
-                // Use the current expiring session token and wait for next round
-                credentials.setLastFailedRefreshTime();
-                LogUtils.logException("EcsInstanceCredentialsFetcher.fetch Exception:", e);
-            }
+            return credentials;
+        } finally {
+            lock.unlock();
         }
-        return credentials;
     }
 
     private final String roleName;
@@ -76,5 +86,6 @@ public class InstanceProfileCredentialsProvider implements CredentialsProvider {
     private InstanceProfileCredentialsFetcher fetcher;
 
     private int maxRetryTimes = AuthUtils.MAX_ECS_METADATA_FETCH_RETRY_TIMES;
+    private ReentrantLock lock = new ReentrantLock();
 
 }
