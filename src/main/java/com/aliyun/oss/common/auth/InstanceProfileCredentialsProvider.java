@@ -52,8 +52,8 @@ public class InstanceProfileCredentialsProvider implements CredentialsProvider {
 
     @Override
     public InstanceProfileCredentials getCredentials() {
-        try {
-            if (credentials == null || credentials.isExpired()) {
+        if (credentials == null || credentials.isExpired()) {
+            try {
                 lock.lock();
                 if (credentials == null || credentials.isExpired()) {
                     try {
@@ -63,7 +63,11 @@ public class InstanceProfileCredentialsProvider implements CredentialsProvider {
                         return null;
                     }
                 }
-            } else if (credentials.willSoonExpire() && credentials.shouldRefresh()) {
+            } finally {
+                lock.unlock();
+            }
+        } else if (credentials.willSoonExpire() && credentials.shouldRefresh()) {
+            try {
                 lock.lock();
                 if (credentials.willSoonExpire() && credentials.shouldRefresh()) {
                     try {
@@ -74,11 +78,12 @@ public class InstanceProfileCredentialsProvider implements CredentialsProvider {
                         LogUtils.logException("EcsInstanceCredentialsFetcher.fetch Exception:", e);
                     }
                 }
+            } finally {
+                lock.unlock();
             }
-            return credentials;
-        } finally {
-            lock.unlock();
         }
+
+        return credentials;
     }
 
     private final String roleName;
