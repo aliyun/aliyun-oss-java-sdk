@@ -129,7 +129,12 @@ public class ObjectMetadata {
      *             The value is not in the Rfc822 format.
      */
     public Date getExpirationTime() throws ParseException {
-        return DateUtil.parseRfc822Date((String) metadata.get(OSSHeaders.EXPIRES));
+        String expires = (String) metadata.get(OSSHeaders.EXPIRES);
+
+        if (expires != null)
+            return DateUtil.parseRfc822Date((String) metadata.get(OSSHeaders.EXPIRES));
+
+        return null;
     }
 
     /**
