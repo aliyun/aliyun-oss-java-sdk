@@ -302,6 +302,7 @@ public class OSSClient implements OSS {
         this.corsOperation.setEndpoint(uri);
         this.liveChannelOperation.setEndpoint(uri);
         this.udfOperation.setEndpoint(uri);
+        this.encryptionOperation.setEndpoint(uri);
     }
 
     @Override
