@@ -19,9 +19,23 @@
 
 package com.aliyun.oss.internal;
 
-import static com.aliyun.oss.common.utils.CodingUtils.isNullOrEmpty;
-import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
-import static com.aliyun.oss.internal.OSSUtils.trimQuotes;
+import com.aliyun.oss.common.comm.ResponseMessage;
+import com.aliyun.oss.common.parser.ResponseParseException;
+import com.aliyun.oss.common.parser.ResponseParser;
+import com.aliyun.oss.common.utils.DateUtil;
+import com.aliyun.oss.common.utils.HttpUtil;
+import com.aliyun.oss.common.utils.StringUtils;
+import com.aliyun.oss.model.*;
+import com.aliyun.oss.model.AddBucketReplicationRequest.ReplicationAction;
+import com.aliyun.oss.model.LifecycleRule.RuleStatus;
+import com.aliyun.oss.model.LifecycleRule.StorageTransition;
+import com.aliyun.oss.model.LiveChannelStat.AudioStat;
+import com.aliyun.oss.model.LiveChannelStat.VideoStat;
+import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.input.JDOMParseException;
+import org.jdom.input.SAXBuilder;
 
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -29,26 +43,9 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.zip.CheckedInputStream;
 
-import com.aliyun.oss.common.utils.StringUtils;
-import com.aliyun.oss.model.*;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.input.JDOMParseException;
-import org.jdom.input.SAXBuilder;
-
-import com.aliyun.oss.common.comm.ResponseMessage;
-import com.aliyun.oss.common.parser.ResponseParseException;
-import com.aliyun.oss.common.parser.ResponseParser;
-import com.aliyun.oss.common.utils.DateUtil;
-import com.aliyun.oss.common.utils.HttpUtil;
-import com.aliyun.oss.model.AddBucketReplicationRequest.ReplicationAction;
-import com.aliyun.oss.model.LiveChannelStat.AudioStat;
-import com.aliyun.oss.model.LiveChannelStat.VideoStat;
-import com.aliyun.oss.model.LifecycleRule.RuleStatus;
-import com.aliyun.oss.model.LifecycleRule.StorageTransition;
-import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
-import com.aliyun.oss.model.NotificationConfiguration;
-import com.aliyun.oss.model.FunctionComputeConfiguration;
+import static com.aliyun.oss.common.utils.CodingUtils.isNullOrEmpty;
+import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
+import static com.aliyun.oss.internal.OSSUtils.trimQuotes;
 
 /*
  * A collection of parsers that parse HTTP reponses into corresponding human-readable results.
@@ -114,6 +111,7 @@ public final class ResponseParsers {
     public static final GetUdfImageInfoResponseParser getUdfImageInfoResponseParser = new GetUdfImageInfoResponseParser();
     public static final GetUdfApplicationInfoResponseParser getUdfApplicationInfoResponseParser = new GetUdfApplicationInfoResponseParser();
     public static final ListUdfApplicationInfoResponseParser listUdfApplicationInfoResponseParser = new ListUdfApplicationInfoResponseParser();
+    public static final GetObjectTaggingResponseParser getObjectTaggingResponseParser = new GetObjectTaggingResponseParser();
 
     public static final class EmptyResponseParser implements ResponseParser<ResponseMessage> {
 
@@ -2839,6 +2837,50 @@ public final class ResponseParsers {
                 functionComputeConfigurations.add(new FunctionComputeConfiguration(id, event, prefix, suffix, arn, assumeRole));
             }
             return new NotificationConfiguration(functionComputeConfigurations);
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+
+    public static final class GetObjectTaggingResponseParser implements ResponseParser<ObjectTagging> {
+
+        @Override
+        public ObjectTagging parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                ObjectTagging result = parseObjectTagging(response.getContent());
+                result.setRequestId(response.getRequestId());
+
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+    }
+
+    public static ObjectTagging parseObjectTagging(InputStream inputStream) throws ResponseParseException {
+        List<Tag> tagSet = new ArrayList<Tag>();
+        if (inputStream == null) {
+            return new ObjectTagging(tagSet);
+        }
+
+        try {
+            Element root = getXmlRootElement(inputStream);
+
+            if (root.getChild("TagSet") != null) {
+                List<Element> tagElems = root.getChild("TagSet").getChildren("Tag");
+                if (tagElems != null) {
+                    for (Element e : tagElems) {
+                        Tag tag = new Tag(e.getChildText("Key"), e.getChildText("Value"));
+                        tagSet.add(tag);
+                    }
+                }
+            }
+
+            ObjectTagging objectTagging = new ObjectTagging(tagSet);
+
+            return objectTagging;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
