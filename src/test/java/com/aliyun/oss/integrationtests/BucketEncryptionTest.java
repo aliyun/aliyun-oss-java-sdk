@@ -36,9 +36,9 @@ public class BucketEncryptionTest extends TestBase {
             SetBucketEncryptionRequest request = new SetBucketEncryptionRequest(bucketName);
 
             request.setAlgorithm(SSEAlgorithm.AES256);
-            
+
             ossClient.setBucketEncryption(request);
-            
+
             // Get bucket encryption
             ServerSideEncryptionRule testRule1 = ossClient.getBucketEncryption(new GenericRequest(bucketName));
 
@@ -64,10 +64,14 @@ public class BucketEncryptionTest extends TestBase {
 
             BucketInfo bucketInfo2 = ossClient.getBucketInfo(bucketName);
 
-            Assert.assertEquals(SSEAlgorithm.AES256.toString(), bucketInfo2.getEncryptionRule().getAlgorithm().toString());
+            Assert.assertEquals(SSEAlgorithm.KMS.toString(), bucketInfo2.getEncryptionRule().getAlgorithm().toString());
 
             // Delete bucket encryption
             ossClient.deleteBucketEncryption(new GenericRequest(bucketName));
+
+            BucketInfo bucketInfo3 = ossClient.getBucketInfo(bucketName);
+
+            Assert.assertEquals(SSEAlgorithm.NONE.toString(), bucketInfo3.getEncryptionRule().getAlgorithm().toString());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }

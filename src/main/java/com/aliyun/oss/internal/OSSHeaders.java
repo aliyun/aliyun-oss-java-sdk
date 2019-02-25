@@ -88,4 +88,6 @@ public interface OSSHeaders extends HttpHeaders {
     static final String OSS_SELECT_INPUT_LINE_RANGE = OSS_SELECT_PREFIX + "-line-range";
     static final String OSS_SELECT_INPUT_SPLIT_RANGE = OSS_SELECT_PREFIX + "-split-range";
 
+    static final String OSS_HEADER_OBJECT_TAGGING = "x-oss-tagging";
+
 }
