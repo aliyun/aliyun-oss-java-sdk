@@ -243,6 +243,12 @@ public interface OSSErrorCode {
     static final String NO_SUCH_LIVE_CHANNEL = "NoSuchLiveChannel";
 
     /**
+     * Invalid Live Channel Name
+     */
+    static final String INVALID_LIVA_CHANNEL_NAME = "InvalidChannelName";
+
+
+    /**
      * symlink target file does not exist.
      */
     static final String NO_SUCH_SYM_LINK_TARGET = "SymlinkTargetNotExist";
