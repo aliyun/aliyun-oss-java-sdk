@@ -705,6 +705,71 @@ public class OSSObjectOperation extends OSSOperation {
         }
     }
 
+    public ObjectTagging getObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        String key = genericRequest.getKey();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        assertParameterNotNull(key, "key");
+        ensureObjectKeyValid(key);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_TAGGING, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(key).setParameters(params).setOriginalRequest(genericRequest).build();
+
+        return doOperation(request, getObjectTaggingResponseParser, bucketName, key, true);
+    }
+
+    public void setObjectTagging(SetObjectTaggingRequest setObjectTaggingRequest) throws OSSException, ClientException {
+        assertParameterNotNull(setObjectTaggingRequest, "setObjectTaggingRequest");
+
+        String bucketName = setObjectTaggingRequest.getBucketName();
+        String key = setObjectTaggingRequest.getKey();
+        ObjectTagging objectTagging = setObjectTaggingRequest.getTagging();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        assertParameterNotNull(key, "key");
+        ensureObjectKeyValid(key);
+        assertParameterNotNull(objectTagging, "objectTagging");
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_TAGGING, null);
+
+        byte[] content = setObjectTaggingMarshaller.marshall(setObjectTaggingRequest);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.PUT).setInputSize(content.length).setInputStream(new ByteArrayInputStream(content)).setBucket(bucketName).setKey(key).setParameters(params)
+            .setOriginalRequest(setObjectTaggingRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, key);
+    }
+
+    public void deleteObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        String key = genericRequest.getKey();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        assertParameterNotNull(key, "key");
+        ensureObjectKeyValid(key);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_TAGGING, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(key).setParameters(params).setOriginalRequest(genericRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, key);
+    }
+
     private static enum MetadataDirective {
 
         /* Copy metadata from source object */
