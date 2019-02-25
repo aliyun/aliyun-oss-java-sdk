@@ -21,6 +21,8 @@ package com.aliyun.oss.model;
 
 import com.aliyun.oss.internal.OSSUtils;
 
+import java.util.Map;
+
 public class ListBucketsRequest extends WebServiceRequest {
 
     public static final int MAX_RETURNED_KEYS = 1000;
@@ -40,9 +42,9 @@ public class ListBucketsRequest extends WebServiceRequest {
     // The OSS's Bid is 26842.
     private String bid;
 
-    private String tagging;
-
     private boolean isRegionList = false;
+
+    private TagSet tagSet;
 
     /**
      * Constructor.
@@ -188,19 +190,19 @@ public class ListBucketsRequest extends WebServiceRequest {
         return bid;
     }
 
-    public String getTagging() {
-        return tagging;
-    }
-
-    public void setTagging(String tagging) {
-        this.tagging = tagging;
-    }
-
     public boolean isRegionList() {
         return isRegionList;
     }
 
     public void setIsRegionList(boolean isRegionList) {
         this.isRegionList = isRegionList;
+    }
+
+    public TagSet getTagSet() {
+        return tagSet;
+    }
+
+    public void setTagSet(TagSet tagSet) {
+        this.tagSet = tagSet;
     }
 }
