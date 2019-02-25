@@ -36,10 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.aliyun.oss.ClientConfiguration;
-import com.aliyun.oss.ClientException;
-import com.aliyun.oss.InconsistentException;
-import com.aliyun.oss.OSSException;
+import com.aliyun.oss.*;
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.CodingUtils;
@@ -73,7 +70,7 @@ public class OSSUtils {
     public static void ensureBucketNameValid(String bucketName) {
         if (!validateBucketName(bucketName)) {
             throw new OSSException(
-                    OSS_RESOURCE_MANAGER.getFormattedString("BucketNameInvalid", bucketName));
+                    OSS_RESOURCE_MANAGER.getFormattedString("BucketNameInvalid", bucketName), OSSErrorCode.INVALID_BUCKET_NAME);
         }
     }
 
@@ -105,14 +102,14 @@ public class OSSUtils {
 
     public static void ensureObjectKeyValid(String key) {
         if (!validateObjectKey(key)) {
-            throw new OSSException(OSS_RESOURCE_MANAGER.getFormattedString("ObjectKeyInvalid", key));
+            throw new OSSException(OSS_RESOURCE_MANAGER.getFormattedString("ObjectKeyInvalid", key), OSSErrorCode.INVALID_OBJECT_NAME);
         }
     }
 
     public static void ensureLiveChannelNameValid(String liveChannelName) {
         if (!validateObjectKey(liveChannelName)) {
             throw new OSSException(
-                    OSS_RESOURCE_MANAGER.getFormattedString("LiveChannelNameInvalid", liveChannelName));
+                    OSS_RESOURCE_MANAGER.getFormattedString("LiveChannelNameInvalid", liveChannelName), OSSErrorCode.INVALID_LIVA_CHANNEL_NAME);
         }
     }
 

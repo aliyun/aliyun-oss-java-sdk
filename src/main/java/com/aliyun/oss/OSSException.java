@@ -42,6 +42,10 @@ public class OSSException extends ServiceException {
         super(errorMessage, cause);
     }
 
+    public OSSException(String errorMessage, String errorCode) {
+        super(errorMessage, errorCode);
+    }
+
     public OSSException(String errorMessage, String errorCode, String requestId, String hostId, String header,
             String resourceType, String method) {
         this(errorMessage, errorCode, requestId, hostId, header, resourceType, method, null, null);
