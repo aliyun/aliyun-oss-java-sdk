@@ -1269,28 +1269,18 @@ public final class ResponseParsers {
                     bucket.setExtranetEndpoint(e.getChildText("ExtranetEndpoint"));
                     bucket.setIntranetEndpoint(e.getChildText("IntranetEndpoint"));
 
-                    Element tagSetElement = root.getChild("TagSet");
+                    Element taggingElement = e.getChild("Tagging");
 
-                    if (tagSetElement != null) {
-                        TagSet tagSet = new TagSet();
-                        List<Element> tagElems = tagSetElement.getChildren("Tag");
+                    if (taggingElement != null) {
+                        Element tagSetElement = taggingElement.getChild("TagSet");
+                        if (tagSetElement != null) {
+                            TagSet tagSet = new TagSet();
+                            List<Element> tagElems = tagSetElement.getChildren("Tag");
 
-                        for (Element tagElem : tagElems) {
-                            String key = null;
-                            String value = null;
+                            processTaggingElem(tagSet, tagElems);
 
-                            if (tagElem.getChild("Key") != null) {
-                                key = tagElem.getChildText("Key");
-                            }
-
-                            if (tagElem.getChild("Value") != null) {
-                                value = tagElem.getChildText("Value");
-                            }
-
-                            tagSet.setTag(key, value);
+                            bucket.setTagSet(tagSet);
                         }
-
-                        bucket.setTagSet(tagSet);
                     }
 
                     buckets.add(bucket);
@@ -1305,6 +1295,23 @@ public final class ResponseParsers {
             throw new ResponseParseException(e.getMessage(), e);
         }
 
+    }
+
+    private static void processTaggingElem(TagSet tagSet, List<Element> tagElems) {
+        for (Element tagElem : tagElems) {
+            String key = null;
+            String value = null;
+
+            if (tagElem.getChild("Key") != null) {
+                key = tagElem.getChildText("Key");
+            }
+
+            if (tagElem.getChild("Value") != null) {
+                value = tagElem.getChildText("Value");
+            }
+
+            tagSet.setTag(key, value);
+        }
     }
 
     /**
@@ -2169,20 +2176,7 @@ public final class ResponseParsers {
             TagSet tagSet = new TagSet();
             List<Element> tagElems = root.getChild("TagSet").getChildren("Tag");
 
-            for (Element tagElem : tagElems) {
-                String key = null;
-                String value = null;
-
-                if (tagElem.getChild("Key") != null) {
-                    key = tagElem.getChildText("Key");
-                }
-
-                if (tagElem.getChild("Value") != null) {
-                    value = tagElem.getChildText("Value");
-                }
-
-                tagSet.setTag(key, value);
-            }
+            processTaggingElem(tagSet, tagElems);
 
             return tagSet;
         } catch (JDOMParseException e) {

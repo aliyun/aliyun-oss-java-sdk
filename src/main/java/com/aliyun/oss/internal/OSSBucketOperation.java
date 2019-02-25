@@ -34,6 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSSErrorCode;
@@ -47,6 +48,7 @@ import com.aliyun.oss.common.comm.ServiceClient;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.ExceptionFactory;
 import com.aliyun.oss.common.utils.HttpHeaders;
+import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.model.*;
 import org.apache.http.HttpStatus;
 
@@ -132,8 +134,15 @@ public class OSSBucketOperation extends OSSOperation {
         if (listBucketRequest.getBid() != null) {
             params.put(BID, listBucketRequest.getBid());
         }
-        if (listBucketRequest.getTagging() != null) {
-            params.put(TAGGING, listBucketRequest.getTagging());
+        if (listBucketRequest.getTagSet() != null) {
+            String tagging = "";
+            TagSet tagSet = listBucketRequest.getTagSet();
+            if (tagSet.getAllTags().size() > 0) {
+                tagging = JSON.toJSONString(tagSet.getAllTags());
+                int length = tagging.length();
+                tagging = tagging.substring(1, length - 1);
+            }
+            params.put(TAGGING, tagging);
         }
         if (listBucketRequest.isRegionList()) {
             params.put(SUBRESOURCE_REGION_LIST, null);
