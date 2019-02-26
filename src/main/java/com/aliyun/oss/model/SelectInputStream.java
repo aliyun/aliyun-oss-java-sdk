@@ -48,6 +48,7 @@ public class SelectInputStream extends FilterInputStream {
     private long nextNotificationScannedSize;
     private boolean payloadCrcEnabled;
     private CRC32 crc32;
+    private String requestId;
     /**
      * payload checksum is the last 4 bytes in one frame, we use this flag to indicate whether we
      * need read the 4 bytes before we advance to next frame.
@@ -79,7 +80,7 @@ public class SelectInputStream extends FilterInputStream {
         while (bytesRead < len) {
             int bytes = in.read(buf, off + bytesRead, len - bytesRead);
             if (bytes < 0) {
-                throw new IOException("invalid input stream end found, need another " + (len - bytesRead) + "bytes");
+                throw new SelectObjectException(SelectObjectException.INVALID_INPUT_STREAM, "Invalid input stream end found, need another " + (len - bytesRead) + " bytes", requestId);
             }
             bytesRead += bytes;
         }
@@ -89,8 +90,7 @@ public class SelectInputStream extends FilterInputStream {
         if (payloadCrcEnabled) {
             int currentChecksum = ByteBuffer.wrap(checksumBytes).getInt();
             if (crc32.getValue() != ((long)currentChecksum & 0xffffffffL)) {
-                throw new IOException("select frame crc check failed, actual: " + crc32.getValue()
-                        + ", expect: " + currentChecksum);
+                throw new SelectObjectException(SelectObjectException.INVALID_CRC, "Frame crc check failed, actual " + crc32.getValue() + ", expect: " + currentChecksum, requestId);
             }
             crc32.reset();
         }
@@ -107,7 +107,7 @@ public class SelectInputStream extends FilterInputStream {
             internalRead(currentFrameTypeBytes, 0, 4);
             //first byte is version byte
             if (currentFrameTypeBytes[0] != SELECT_VERSION) {
-                throw new IOException("invalid select version found: " + currentFrameTypeBytes[0] + ", expect: " + SELECT_VERSION);
+                throw new SelectObjectException(SelectObjectException.INVALID_SELECT_VERSION, "Invalid select version found " + currentFrameTypeBytes[0] + ", expect: " + SELECT_VERSION, requestId);
             }
             internalRead(currentFramePayloadLengthBytes, 0, 4);
             internalRead(currentFrameHeaderChecksumBytes, 0, 4);
@@ -153,11 +153,16 @@ public class SelectInputStream extends FilterInputStream {
 
                     validateCheckSum(currentFramePayloadChecksumBytes, crc32);
                     if (status / 100 != 2) {
-                        throw new IOException("Oss Select encounter error: code: " + status + ", message: " + error);
+                        if (error.contains(".")) {
+                            throw new SelectObjectException(error.split("\\.")[0], error.substring(error.indexOf(".") + 1), requestId);
+                        } else {
+                            // forward compatbility consideration
+                            throw new SelectObjectException(error, error, requestId);
+                        }
                     }
                     break;
                 default:
-                    throw new IOException("unsupported frame type found: " + type);
+                    throw new SelectObjectException(SelectObjectException.INVALID_SELECT_FRAME, "Unsupported frame type " + type + " found", requestId);
             }
             //notify select progress
             ProgressEventType eventType = ProgressEventType.SELECT_SCAN_EVENT;
@@ -209,6 +214,10 @@ public class SelectInputStream extends FilterInputStream {
 
     @Override
     public int available() throws IOException {
-        throw new IOException("select object input stream does not support available() operation");
+        throw new IOException("Select object input stream does not support available() operation");
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 }

@@ -482,20 +482,33 @@ public final class RequestMarshallers {
 
         @Override
         public byte[] marshall(CreateSelectObjectMetadataRequest request) {
-            StringBuffer xmlBody = new StringBuffer();
+            StringBuilder xmlBody = new StringBuilder();
             InputSerialization inputSerialization = request.getInputSerialization();
             CSVFormat csvFormat = inputSerialization.getCsvInputFormat();
-            xmlBody.append("<CsvMetaRequest>");
-            xmlBody.append("<InputSerialization>");
-            xmlBody.append("<CompressionType>" + inputSerialization.getCompressionType() + "</CompressionType>");
-            xmlBody.append("<CSV>");
-            xmlBody.append("<RecordDelimiter>" + BinaryUtil.toBase64String(csvFormat.getRecordDelimiter().getBytes()) + "</RecordDelimiter>");
-            xmlBody.append("<FieldDelimiter>" + BinaryUtil.toBase64String(csvFormat.getFieldDelimiter().toString().getBytes()) + "</FieldDelimiter>");
-            xmlBody.append("<QuoteCharacter>" + BinaryUtil.toBase64String(csvFormat.getQuoteChar().toString().getBytes()) + "</QuoteCharacter>");
-            xmlBody.append("</CSV>");
-            xmlBody.append("</InputSerialization>");
-            xmlBody.append("<OverwriteIfExists>" + request.isOverwrite() + "</OverwriteIfExists>");
-            xmlBody.append("</CsvMetaRequest>");
+            JsonFormat jsonFormat = inputSerialization.getJsonInputFormat();
+            if (inputSerialization.getSelectContentFormat() == SelectContentFormat.CSV) {
+                xmlBody.append("<CsvMetaRequest>");
+                xmlBody.append("<InputSerialization>");
+                xmlBody.append("<CompressionType>" + inputSerialization.getCompressionType() + "</CompressionType>");
+                xmlBody.append("<CSV>");
+                xmlBody.append("<RecordDelimiter>" + BinaryUtil.toBase64String(csvFormat.getRecordDelimiter().getBytes()) + "</RecordDelimiter>");
+                xmlBody.append("<FieldDelimiter>" + BinaryUtil.toBase64String(csvFormat.getFieldDelimiter().toString().getBytes()) + "</FieldDelimiter>");
+                xmlBody.append("<QuoteCharacter>" + BinaryUtil.toBase64String(csvFormat.getQuoteChar().toString().getBytes()) + "</QuoteCharacter>");
+                xmlBody.append("</CSV>");
+                xmlBody.append("</InputSerialization>");
+                xmlBody.append("<OverwriteIfExists>" + request.isOverwrite() + "</OverwriteIfExists>");
+                xmlBody.append("</CsvMetaRequest>");
+            } else {
+                xmlBody.append("<JsonMetaRequest>");
+                xmlBody.append("<InputSerialization>");
+                xmlBody.append("<CompressionType>" + inputSerialization.getCompressionType() + "</CompressionType>");
+                xmlBody.append("<JSON>");
+                xmlBody.append("<Type>" + jsonFormat.getJsonType().name() + "</Type>");
+                xmlBody.append("</JSON>");
+                xmlBody.append("</InputSerialization>");
+                xmlBody.append("<OverwriteIfExists>" + request.isOverwrite() + "</OverwriteIfExists>");
+                xmlBody.append("</JsonMetaRequest>");
+            }
 
             try {
                 return xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
@@ -505,49 +518,89 @@ public final class RequestMarshallers {
         }
     }
 
+    private static void populateSelectRange(StringBuilder xmlBody, SelectObjectRequest request) {
+        if (request.getLineRange() != null) {
+            xmlBody.append("<Range>" + request.lineRangeToString(request.getLineRange()) + "</Range>");
+        }
+        if (request.getSplitRange() != null) {
+            xmlBody.append("<Range>" + request.splitRangeToString(request.getSplitRange()) + "</Range>");
+        }
+    }
+
+    private static void populateSelectJsonObjectRequest(StringBuilder xmlBody, SelectObjectRequest request) {
+        InputSerialization inputSerialization = request.getInputSerialization();
+        JsonFormat jsonInputFormat = inputSerialization.getJsonInputFormat();
+        xmlBody.append("<InputSerialization>");
+        xmlBody.append("<CompressionType>" + inputSerialization.getCompressionType() + "</CompressionType>");
+        xmlBody.append("<JSON>");
+        xmlBody.append("<Type>" + jsonInputFormat.getJsonType().name() + "</Type>");
+        xmlBody.append("<ParseJsonNumberAsString>" + jsonInputFormat.isParseJsonNumberAsString() + "</ParseJsonNumberAsString>");
+        populateSelectRange(xmlBody, request);
+        xmlBody.append("</JSON>");
+        xmlBody.append("</InputSerialization>");
+
+        OutputSerialization outputSerialization = request.getOutputSerialization();
+        xmlBody.append("<OutputSerialization>");
+        xmlBody.append("<JSON>");
+        xmlBody.append("<RecordDelimiter>" + BinaryUtil.toBase64String(outputSerialization.getJsonOutputFormat().getRecordDelimiter().getBytes()) + "</RecordDelimiter>");
+        xmlBody.append("</JSON>");
+        xmlBody.append("<OutputRawData>" + outputSerialization.isOutputRawData() + "</OutputRawData>");
+        xmlBody.append("<EnablePayloadCrc>" + outputSerialization.isPayloadCrcEnabled() + "</EnablePayloadCrc>");
+        xmlBody.append("</OutputSerialization>");
+    }
+
+    private static void populateSelectCsvObjectRequest(StringBuilder xmlBody, SelectObjectRequest request) {
+        InputSerialization inputSerialization = request.getInputSerialization();
+        CSVFormat csvInputFormat = inputSerialization.getCsvInputFormat();
+        xmlBody.append("<InputSerialization>");
+        xmlBody.append("<CompressionType>" + inputSerialization.getCompressionType() + "</CompressionType>");
+        xmlBody.append("<CSV>");
+        xmlBody.append("<FileHeaderInfo>" + csvInputFormat.getHeaderInfo() + "</FileHeaderInfo>");
+        xmlBody.append("<RecordDelimiter>" + BinaryUtil.toBase64String(csvInputFormat.getRecordDelimiter().getBytes()) + "</RecordDelimiter>");
+        xmlBody.append("<FieldDelimiter>" + BinaryUtil.toBase64String(csvInputFormat.getFieldDelimiter().toString().getBytes()) + "</FieldDelimiter>");
+        xmlBody.append("<QuoteCharacter>" + BinaryUtil.toBase64String(csvInputFormat.getQuoteChar().toString().getBytes()) + "</QuoteCharacter>");
+        xmlBody.append("<CommentCharacter>" + BinaryUtil.toBase64String(csvInputFormat.getCommentChar().toString().getBytes()) + "</CommentCharacter>");
+        populateSelectRange(xmlBody, request);
+        xmlBody.append("</CSV>");
+        xmlBody.append("</InputSerialization>");
+
+        OutputSerialization outputSerialization = request.getOutputSerialization();
+        xmlBody.append("<OutputSerialization>");
+        xmlBody.append("<CSV>");
+        xmlBody.append("<RecordDelimiter>" + BinaryUtil.toBase64String(outputSerialization.getCsvOutputFormat().getRecordDelimiter().getBytes()) + "</RecordDelimiter>");
+        xmlBody.append("<FieldDelimiter>" + BinaryUtil.toBase64String(outputSerialization.getCsvOutputFormat().getFieldDelimiter().toString().getBytes()) + "</FieldDelimiter>");
+        xmlBody.append("<QuoteCharacter>" + BinaryUtil.toBase64String(outputSerialization.getCsvOutputFormat().getQuoteChar().toString().getBytes()) + "</QuoteCharacter>");
+        xmlBody.append("</CSV>");
+        xmlBody.append("<KeepAllColumns>" + outputSerialization.isKeepAllColumns() + "</KeepAllColumns>");
+        xmlBody.append("<OutputHeader>" + outputSerialization.isOutputHeader() + "</OutputHeader>");
+        xmlBody.append("<OutputRawData>" + outputSerialization.isOutputRawData() + "</OutputRawData>");
+        xmlBody.append("<EnablePayloadCrc>" + outputSerialization.isPayloadCrcEnabled() + "</EnablePayloadCrc>");
+        xmlBody.append("</OutputSerialization>");
+    }
+
     public static final class SelectObjectRequestMarshaller implements RequestMarshaller2<SelectObjectRequest> {
 
         @Override
         public byte[] marshall(SelectObjectRequest request) {
-            StringBuffer xmlBody = new StringBuffer();
+            StringBuilder xmlBody = new StringBuilder();
             xmlBody.append("<SelectRequest>");
 
             xmlBody.append("<Expression>" + BinaryUtil.toBase64String(request.getExpression().getBytes()) + "</Expression>");
             xmlBody.append("<Options>");
             xmlBody.append("<SkipPartialDataRecord>" + request.isSkipPartialDataRecord() + "</SkipPartialDataRecord>");
+            if (request.getMaxSkippedRecordsAllowed() > 0) {
+                xmlBody.append("<MaxSkippedRecordsAllowed>" + request.getMaxSkippedRecordsAllowed() + "</MaxSkippedRecordsAllowed>");
+            }
             xmlBody.append("</Options>");
             InputSerialization inputSerialization = request.getInputSerialization();
-            CSVFormat csvInputFormat = inputSerialization.getCsvInputFormat();
-            xmlBody.append("<InputSerialization>");
-            xmlBody.append("<CompressionType>" + inputSerialization.getCompressionType() + "</CompressionType>");
-            xmlBody.append("<CSV>");
-            xmlBody.append("<FileHeaderInfo>" + csvInputFormat.getHeaderInfo() + "</FileHeaderInfo>");
-            xmlBody.append("<RecordDelimiter>" + BinaryUtil.toBase64String(csvInputFormat.getRecordDelimiter().getBytes()) + "</RecordDelimiter>");
-            xmlBody.append("<FieldDelimiter>" + BinaryUtil.toBase64String(csvInputFormat.getFieldDelimiter().toString().getBytes()) + "</FieldDelimiter>");
-            xmlBody.append("<QuoteCharacter>" + BinaryUtil.toBase64String(csvInputFormat.getQuoteChar().toString().getBytes()) + "</QuoteCharacter>");
-            xmlBody.append("<CommentCharacter>" + BinaryUtil.toBase64String(csvInputFormat.getCommentChar().toString().getBytes()) + "</CommentCharacter>");
+            SelectContentFormat selectContentFormat = inputSerialization.getSelectContentFormat();
 
-            if (request.getLineRange() != null) {
-                xmlBody.append("<Range>" + request.lineRangeToString(request.getLineRange()) + "</Range>");
+            if (selectContentFormat == SelectContentFormat.JSON) {
+                populateSelectJsonObjectRequest(xmlBody, request);
+            } else {
+                populateSelectCsvObjectRequest(xmlBody, request);
             }
-            if (request.getSplitRange() != null) {
-                xmlBody.append("<Range>" + request.splitRangeToString(request.getSplitRange()) + "</Range>");
-            }
-            xmlBody.append("</CSV>");
-            xmlBody.append("</InputSerialization>");
-            OutputSerialization outputSerialization = request.getOutputSerialization();
-            CSVFormat csvOutputFormat = outputSerialization.getCsvOutputFormat();
-            xmlBody.append("<OutputSerialization>");
-            xmlBody.append("<CSV>");
-            xmlBody.append("<RecordDelimiter>" + BinaryUtil.toBase64String(csvOutputFormat.getRecordDelimiter().getBytes()) + "</RecordDelimiter>");
-            xmlBody.append("<FieldDelimiter>" + BinaryUtil.toBase64String(csvOutputFormat.getFieldDelimiter().toString().getBytes()) + "</FieldDelimiter>");
-            xmlBody.append("<QuoteCharacter>" + BinaryUtil.toBase64String(csvOutputFormat.getQuoteChar().toString().getBytes()) + "</QuoteCharacter>");
-            xmlBody.append("</CSV>");
-            xmlBody.append("<KeepAllColumns>" + outputSerialization.isKeepAllColumns() + "</KeepAllColumns>");
-            xmlBody.append("<OutputRawData>" + outputSerialization.isOutputRawData() + "</OutputRawData>");
-            xmlBody.append("<OutputHeader>" + outputSerialization.isOutputHeader() + "</OutputHeader>");
-            xmlBody.append("<EnablePayloadCrc>" + outputSerialization.isPayloadCrcEnabled() + "</EnablePayloadCrc>");
-            xmlBody.append("</OutputSerialization>");
+
             xmlBody.append("</SelectRequest>");
 
             try {
