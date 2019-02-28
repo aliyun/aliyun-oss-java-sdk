@@ -32,6 +32,7 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_CORS = "cors";
     public static final String SUBRESOURCE_APPEND = "append";
     public static final String SUBRESOURCE_TAGGING = "tagging";
+    public static final String SUBRESOURCE_VERSIONING = "versioning";
     public static final String SUBRESOURCE_NOTIFICATION = "eventNotification";
     public static final String SUBRESOURCE_IMG = "img";
     public static final String SUBRESOURCE_STYLE = "style";

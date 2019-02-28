@@ -1466,6 +1466,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public String getBucketVersioning(GenericRequest genericRequest) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketVersioning(genericRequest);
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();
