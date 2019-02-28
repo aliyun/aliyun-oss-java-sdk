@@ -79,6 +79,7 @@ public final class ResponseParsers {
     public static final InitiateWormConfigurationResponseParser initiateWormConfigurationResponseParser = new InitiateWormConfigurationResponseParser();
     public static final GetWormConfigurationResponseParser getWormConfigurationResponseParser = new GetWormConfigurationResponseParser();
     public static final GetBucketNotificationResponseParser getBucketNotificationResponseParser = new GetBucketNotificationResponseParser();
+    public static final GetBucketVersioningResponseParser getBucketVersioningResponseParser = new GetBucketVersioningResponseParser();
 
     public static final ListObjectsReponseParser listObjectsReponseParser = new ListObjectsReponseParser();
     public static final PutObjectReponseParser putObjectReponseParser = new PutObjectReponseParser();
@@ -2881,6 +2882,44 @@ public final class ResponseParsers {
             ObjectTagging objectTagging = new ObjectTagging(tagSet);
 
             return objectTagging;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+
+    public static final class GetBucketVersioningResponseParser implements ResponseParser<BucketVersion> {
+
+        @Override
+        public BucketVersion parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                BucketVersion result = parseBucketVersioning(response.getContent());
+                result.setRequestId(response.getRequestId());
+
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+    }
+
+    public static BucketVersion parseBucketVersioning(InputStream inputStream) throws ResponseParseException {
+       String bucketVersionStatus = "Disabled";
+        if (inputStream == null) {
+            return new BucketVersion(bucketVersionStatus);
+        }
+
+        try {
+            Element root = getXmlRootElement(inputStream);
+
+            if (root.getChildText("Status") != null) {
+                bucketVersionStatus = root.getChildText("Status");
+            }
+
+            BucketVersion bucketVersion = new BucketVersion(bucketVersionStatus);
+
+            return bucketVersion;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {

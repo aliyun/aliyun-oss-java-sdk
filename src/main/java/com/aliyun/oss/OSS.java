@@ -2454,4 +2454,17 @@ public interface OSS {
      * @throws ClientException
      */
     public void deleteObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException;
+
+
+    /**
+     * Returns the versioning for the specified bucket.
+     *
+     * @param genericRequest
+     *            The request object containing all the options on how to
+     *            get the bucket versioning.
+     * @return The versioning status for the bucket.
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public String getBucketVersioning(GenericRequest genericRequest) throws OSSException, ClientException;
 }

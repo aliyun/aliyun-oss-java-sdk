@@ -34,11 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.aliyun.oss.ClientException;
-import com.aliyun.oss.HttpMethod;
-import com.aliyun.oss.OSSErrorCode;
-import com.aliyun.oss.OSSException;
-import com.aliyun.oss.ServiceException;
+import com.aliyun.oss.*;
 import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.comm.ResponseHandler;
@@ -1253,5 +1249,33 @@ public class OSSBucketOperation extends OSSOperation {
             .build();
 
         return doOperation(request, getBucketNotificationResponseParser, bucketName, null, true);
+    }
+
+    /**
+     * Get bucket versioning status
+     */
+
+    public String getBucketVersioning(GenericRequest genericRequest) throws OSSException,ClientException  {
+        assertParameterNotNull(genericRequest, "genericRequest");
+        String bucketName = genericRequest.getBucketName();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_VERSIONING, null);
+
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET)
+                .setBucket(bucketName)
+                .setParameters(params)
+                .setOriginalRequest(genericRequest)
+                .build();
+
+        BucketVersion version = doOperation(request, getBucketVersioningResponseParser, bucketName, null, true);
+
+        return version.getBucketVersion();
     }
 }
