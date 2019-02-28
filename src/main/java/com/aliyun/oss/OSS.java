@@ -2475,4 +2475,20 @@ public interface OSS {
      * @throws ClientException
      */
     public void putBucketVersioning(PutBucketVersioningRequest putBucketVersioningRequest) throws OSSException,ClientException;
+
+    /**
+     * Lists all objects under the specified {@link Bucket} in the parameter of
+     * {@link ListObjectVersionsRequest}
+     *
+     * @param listObjectVersionsRequest
+     *            The {@link ListObjectVersionsRequest} instance that defines the
+     *            bucket name as well as the criteria such as prefix, marker,
+     *            maxKeys, delimiter, etc.
+     * @return A {@link ObjectVersionsListing} instance that has the objects meet the
+     *         criteria
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public ObjectVersionsListing listObjectVersions(ListObjectVersionsRequest listObjectVersionsRequest ) throws OSSException, ClientException;
+
 }
