@@ -1476,6 +1476,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public ObjectVersionsListing listObjectVersions(ListObjectVersionsRequest listObjectVersionsRequest) throws OSSException, ClientException {
+        return this.bucketOperation.listObjectVersions(listObjectVersionsRequest);
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();

@@ -1062,6 +1062,35 @@ public class OSSBucketOperation extends OSSOperation {
         }
     }
 
+    private static void populateListObjectVersionsRequestParameters(ListObjectVersionsRequest listObjectVersionsRequest,
+                                                             Map<String, String> params) {
+
+        if (listObjectVersionsRequest.getPrefix() != null) {
+            params.put(PREFIX, listObjectVersionsRequest.getPrefix());
+        }
+
+        if (listObjectVersionsRequest.getKeyMarker() != null) {
+            params.put(MARKER, listObjectVersionsRequest.getKeyMarker());
+        }
+
+        if (listObjectVersionsRequest.getVersionIdMarker() != null) {
+            params.put(MARKER, listObjectVersionsRequest.getVersionIdMarker());
+        }
+
+        if (listObjectVersionsRequest.getDelimiter() != null) {
+            params.put(DELIMITER, listObjectVersionsRequest.getDelimiter());
+        }
+
+        if (listObjectVersionsRequest.getMaxKeys() != null) {
+            params.put(MAX_KEYS, Integer.toString(listObjectVersionsRequest.getMaxKeys()));
+        }
+
+        if (listObjectVersionsRequest.getEncodingType() != null) {
+            params.put(ENCODING_TYPE, listObjectVersionsRequest.getEncodingType());
+        }
+    }
+
+
     private static void addOptionalACLHeader(Map<String, String> headers, CannedAccessControlList cannedAcl) {
         if (cannedAcl != null) {
             headers.put(OSSHeaders.OSS_CANNED_ACL, cannedAcl.toString());
@@ -1305,5 +1334,30 @@ public class OSSBucketOperation extends OSSOperation {
                 .setOriginalRequest(putBucketVersioningRequest).build();
 
         doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    /**
+     * getBucketVersions || listObjectVersions
+     * @param listObjectVersionsRequest
+     * @return
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public ObjectVersionsListing listObjectVersions(ListObjectVersionsRequest listObjectVersionsRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(listObjectVersionsRequest, "listObjectVersionsRequest");
+
+        String bucketName = listObjectVersionsRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new LinkedHashMap<String, String>();
+        populateListObjectVersionsRequestParameters(listObjectVersionsRequest, params);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(listObjectVersionsRequest).build();
+
+        return doOperation(request, listObjectVersionsReponseParser, bucketName, null, true);
     }
 }

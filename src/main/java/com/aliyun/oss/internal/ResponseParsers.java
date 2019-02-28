@@ -82,6 +82,7 @@ public final class ResponseParsers {
     public static final GetBucketVersioningResponseParser getBucketVersioningResponseParser = new GetBucketVersioningResponseParser();
 
     public static final ListObjectsReponseParser listObjectsReponseParser = new ListObjectsReponseParser();
+    public static final ListObjectVersionsReponseParser listObjectVersionsReponseParser = new ListObjectVersionsReponseParser();
     public static final PutObjectReponseParser putObjectReponseParser = new PutObjectReponseParser();
     public static final PutObjectProcessReponseParser putObjectProcessReponseParser = new PutObjectProcessReponseParser();
     public static final AppendObjectResponseParser appendObjectResponseParser = new AppendObjectResponseParser();
@@ -535,6 +536,21 @@ public final class ResponseParsers {
         public ObjectListing parse(ResponseMessage response) throws ResponseParseException {
             try {
                 ObjectListing result = parseListObjects(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
+
+    public static final class ListObjectVersionsReponseParser implements ResponseParser<ObjectVersionsListing> {
+
+        @Override
+        public ObjectVersionsListing parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                ObjectVersionsListing result = parseListObjectVersions(response.getContent());
                 result.setRequestId(response.getRequestId());
                 return result;
             } finally {
@@ -1084,6 +1100,124 @@ public final class ResponseParsers {
 
     }
 
+    public static ObjectVersionsListing parseListObjectVersions(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+
+            ObjectVersionsListing objectListing = new ObjectVersionsListing();
+            objectListing.setBucketName(root.getChildText("Name"));
+            objectListing.setMaxKeys(Integer.valueOf(root.getChildText("MaxKeys")));
+            objectListing.setTruncated(Boolean.valueOf(root.getChildText("IsTruncated")));
+
+            if (root.getChild("Prefix") != null) {
+                String prefix = root.getChildText("Prefix");
+                objectListing.setPrefix(isNullOrEmpty(prefix) ? null : prefix);
+            }
+
+            if (root.getChild("KeyMarker") != null) {
+                String keyMarker = root.getChildText("KeyMarker");
+                objectListing.setKeyMarker(isNullOrEmpty(keyMarker) ? null : keyMarker);
+            }
+
+            if (root.getChild("VersionIdMarker") != null) {
+                String versionIdMarker = root.getChildText("VersionIdMarker");
+                objectListing.setVersionIdMarker(isNullOrEmpty(versionIdMarker) ? null : versionIdMarker);
+            }
+
+            if (root.getChild("Delimiter") != null) {
+                String delimiter = root.getChildText("Delimiter");
+                objectListing.setDelimiter(isNullOrEmpty(delimiter) ? null : delimiter);
+            }
+
+            if (root.getChild("NextKeyMarker") != null) {
+                String nextKeyMarker = root.getChildText("NextKeyMarker");
+                objectListing.setNextMarker(isNullOrEmpty(nextKeyMarker) ? null : nextKeyMarker);
+            }
+
+            if (root.getChild("NextVersionIdMarker") != null) {
+                String nextVersionIdMarker = root.getChildText("NextVersionIdMarker");
+                objectListing.setNextMarker(isNullOrEmpty(nextVersionIdMarker) ? null : nextVersionIdMarker);
+            }
+
+            if (root.getChild("EncodingType") != null) {
+                String encodingType = root.getChildText("EncodingType");
+                objectListing.setEncodingType(isNullOrEmpty(encodingType) ? null : encodingType);
+            }
+
+            List<Element> objectSummaryElems = root.getChildren("Version");
+
+            for (Element elem : objectSummaryElems) {
+                OSSObjectVersionSummary ossObjectSummary = new OSSObjectVersionSummary();
+
+                // Version下面的deleteMarker都是false
+                ossObjectSummary.setDeleteMarker(false);
+                ossObjectSummary.setKey(elem.getChildText("Key"));
+                ossObjectSummary.setVersionId(elem.getChildText("VersionId"));
+                ossObjectSummary.setIsLatest(elem.getChildText("IsLatest"));
+                ossObjectSummary.setETag(trimQuotes(elem.getChildText("ETag")));
+                String type = trimQuotes(elem.getChildText("Type"));
+                if (!StringUtils.isNullOrEmpty(type)) {
+                    ossObjectSummary.setType(ObjectTypeList.parse(type));
+                }
+                ossObjectSummary.setLastModified(DateUtil.parseIso8601Date(elem.getChildText("LastModified")));
+                ossObjectSummary.setSize(Long.valueOf(elem.getChildText("Size")));
+                ossObjectSummary.setStorageClass(elem.getChildText("StorageClass"));
+                ossObjectSummary.setBucketName(objectListing.getBucketName());
+
+                String id = elem.getChild("Owner").getChildText("ID");
+                String displayName = elem.getChild("Owner").getChildText("DisplayName");
+                ossObjectSummary.setOwner(new Owner(id, displayName));
+
+                objectListing.addObjectSummary(ossObjectSummary);
+            }
+
+            // 获取deleteMarker
+            List<Element> objectDeleteMarkerElems = root.getChildren("DeleteMarker");
+
+            if (objectDeleteMarkerElems!= null ) {
+                for(Element elem: objectDeleteMarkerElems) {
+                    OSSObjectVersionSummary ossObjectSummary = new OSSObjectVersionSummary();
+
+                    // Version下面的deleteMarker都是false
+                    ossObjectSummary.setDeleteMarker(true);
+                    ossObjectSummary.setKey(elem.getChildText("Key"));
+                    ossObjectSummary.setVersionId(elem.getChildText("VersionId"));
+                    ossObjectSummary.setIsLatest(elem.getChildText("IsLatest"));
+                    ossObjectSummary.setETag(trimQuotes(elem.getChildText("ETag")));
+                    String type = trimQuotes(elem.getChildText("Type"));
+                    if (!StringUtils.isNullOrEmpty(type)) {
+                        ossObjectSummary.setType(ObjectTypeList.parse(type));
+                    }
+                    ossObjectSummary.setLastModified(DateUtil.parseIso8601Date(elem.getChildText("LastModified")));
+                    ossObjectSummary.setSize(Long.valueOf(elem.getChildText("Size")));
+                    ossObjectSummary.setStorageClass(elem.getChildText("StorageClass"));
+                    ossObjectSummary.setBucketName(objectListing.getBucketName());
+
+                    String id = elem.getChild("Owner").getChildText("ID");
+                    String displayName = elem.getChild("Owner").getChildText("DisplayName");
+                    ossObjectSummary.setOwner(new Owner(id, displayName));
+
+                    objectListing.addObjectSummary(ossObjectSummary);
+                }
+            }
+
+            List<Element> commonPrefixesElems = root.getChildren("CommonPrefixes");
+            for (Element elem : commonPrefixesElems) {
+                String prefix = elem.getChildText("Prefix");
+                if (!isNullOrEmpty(prefix)) {
+                    objectListing.addCommonPrefix(prefix);
+                }
+            }
+
+            return objectListing;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
+    }
     /**
      * Unmarshall get bucket acl response body to ACL.
      */
