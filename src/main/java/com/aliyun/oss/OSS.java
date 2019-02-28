@@ -2428,4 +2428,39 @@ public interface OSS {
      */
     ServerSideEncryptionRule getBucketEncryption(GenericRequest genericRequest) throws OSSException, ClientException;
 
+    /**
+     * Returns the tags for the specified object.
+     *
+     * @param genericRequest
+     *            The request object containing all the options on how to
+     *            retrieve the OSS object tags.
+     * @return The tags for the specified object.
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public ObjectTagging getObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException;
+
+    /**
+     * Set the tags for the specified object.
+     *
+     * @param setObjectTaggingRequest
+     *            The request object containing all the options for setting the
+     *            tags for the specified object.
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public void setObjectTagging(SetObjectTaggingRequest setObjectTaggingRequest) throws OSSException, ClientException;
+
+    /**
+     * Remove the tags for the specified object.
+     *
+     * @param genericRequest
+     *            The request object containing all the options for deleting
+     *            the tags for the specified object.
+     *
+     * information returned by OSS for the the tag deletion.
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public void deleteObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException;
 }

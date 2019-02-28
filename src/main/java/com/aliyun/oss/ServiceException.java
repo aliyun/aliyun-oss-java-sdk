@@ -79,6 +79,20 @@ public class ServiceException extends RuntimeException {
     }
 
     /**
+     * Creates an instance with the error message.
+     *
+     * @param errorMessage
+     *            Error message.
+     * @param errorCode
+     *            Error code.
+     */
+    public ServiceException(String errorMessage, String errorCode) {
+        super((String) null);
+        this.errorMessage = errorMessage;
+        this.errorCode = errorCode;
+    }
+
+    /**
      * Creates an instance with a {@link Throwable} instance.
      * 
      * @param cause

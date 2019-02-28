@@ -79,6 +79,7 @@ public final class RequestMarshallers {
     public static final CreateSelectObjectMetadataRequestMarshaller createSelectObjectMetadataRequestMarshaller = new CreateSelectObjectMetadataRequestMarshaller();
     public static final SelectObjectRequestMarshaller selectObjectRequestMarshaller = new SelectObjectRequestMarshaller();
     public static final PutBucketEncryptionRequestMarshaller setBucketEncryptionRequestMarshaller = new PutBucketEncryptionRequestMarshaller();
+    public static final SetObjectTaggingMarshaller setObjectTaggingMarshaller = new SetObjectTaggingMarshaller();
 
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
 
@@ -1068,6 +1069,29 @@ public final class RequestMarshallers {
             return stringMarshaller.marshall(xmlBody.toString());
         }
 
+    }
+
+    public static final class SetObjectTaggingMarshaller
+        implements RequestMarshaller2<SetObjectTaggingRequest> {
+
+        @Override
+        public byte[] marshall(SetObjectTaggingRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<Tagging><TagSet>");
+            if (request.getTagging() != null && request.getTagging().getTagSet() != null) {
+                for (Tag tag: request.getTagging().getTagSet()) {
+                    xmlBody.append("<Tag><Key>" + tag.getKey() + "</Key><Value>" + tag.getValue() + "</Value></Tag>");
+                }
+            }
+            xmlBody.append("</TagSet></Tagging>");
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
     }
 
     private static enum EscapedChar {

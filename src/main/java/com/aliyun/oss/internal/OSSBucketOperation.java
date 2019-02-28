@@ -316,6 +316,9 @@ public class OSSBucketOperation extends OSSOperation {
         try {
             getBucketAcl(new GenericRequest(bucketName));
         } catch (OSSException oe) {
+            if (oe.getErrorCode().equals(OSSErrorCode.INTERNAL_ERROR)) {
+                throw oe;
+            }
             if (oe.getErrorCode().equals(OSSErrorCode.NO_SUCH_BUCKET)) {
                 return false;
             }

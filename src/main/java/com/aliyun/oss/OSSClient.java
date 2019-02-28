@@ -1456,6 +1456,21 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public ObjectTagging getObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException {
+        return this.objectOperation.getObjectTagging(genericRequest);
+    }
+
+    @Override
+    public void setObjectTagging(SetObjectTaggingRequest setObjectTaggingRequest) throws OSSException, ClientException {
+        this.objectOperation.setObjectTagging(setObjectTaggingRequest);
+    }
+
+    @Override
+    public void deleteObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException {
+        this.objectOperation.deleteObjectTagging(genericRequest);
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();
