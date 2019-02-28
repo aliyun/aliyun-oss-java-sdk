@@ -1255,7 +1255,7 @@ public class OSSBucketOperation extends OSSOperation {
      * Get bucket versioning status
      */
 
-    public String getBucketVersioning(GenericRequest genericRequest) throws OSSException,ClientException  {
+    public String getBucketVersioning(GenericRequest genericRequest) throws OSSException, ClientException  {
         assertParameterNotNull(genericRequest, "genericRequest");
         String bucketName = genericRequest.getBucketName();
 
@@ -1277,5 +1277,33 @@ public class OSSBucketOperation extends OSSOperation {
         BucketVersion version = doOperation(request, getBucketVersioningResponseParser, bucketName, null, true);
 
         return version.getBucketVersion();
+    }
+
+    /**
+     * Put bucket versioning
+     */
+
+    public void putBucketVersioning(PutBucketVersioningRequest putBucketVersioningRequest) throws OSSException, ClientException {
+        assertParameterNotNull(putBucketVersioningRequest, "putBucketVersioningRequest");
+        assertParameterNotNull(putBucketVersioningRequest.getBucketVersion(), "putBucketVersioningRequest");
+
+        String bucketName = putBucketVersioningRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_VERSIONING, null);
+
+        byte[] rawContent = putBucketVersioningMarshaller.marshall(putBucketVersioningRequest);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        addRequestRequiredHeaders(headers, rawContent);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params).setHeaders(headers)
+                .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+                .setOriginalRequest(putBucketVersioningRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
     }
 }

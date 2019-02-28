@@ -2467,4 +2467,12 @@ public interface OSS {
      * @throws ClientException
      */
     public String getBucketVersioning(GenericRequest genericRequest) throws OSSException, ClientException;
+
+    /**
+     * set bucket Version
+     * @param putBucketVersioningRequest
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public void putBucketVersioning(PutBucketVersioningRequest putBucketVersioningRequest) throws OSSException,ClientException;
 }

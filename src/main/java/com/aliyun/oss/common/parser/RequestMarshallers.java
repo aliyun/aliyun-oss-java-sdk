@@ -72,6 +72,7 @@ public final class RequestMarshallers {
     public static final ResizeUdfApplicationRequestMarshaller resizeUdfApplicationRequestMarshaller = new ResizeUdfApplicationRequestMarshaller();
     public static final ProcessObjectRequestMarshaller processObjectRequestMarshaller = new ProcessObjectRequestMarshaller();
     public static final PutBucketRequestPaymentMarshaller putBucketRequestPaymentMarshaller = new PutBucketRequestPaymentMarshaller();
+    public static final PutBucketVersioningMarshaller putBucketVersioningMarshaller = new PutBucketVersioningMarshaller();
 
     public static final InitiateWormConfigurationRequestMarshaller initiateWormConfigurationRequestMarshaller = new InitiateWormConfigurationRequestMarshaller();
     public static final ExtendWormConfigurationRequestMarshaller extendWormConfigurationRequestMarshaller = new ExtendWormConfigurationRequestMarshaller();
@@ -974,6 +975,28 @@ public final class RequestMarshallers {
             xmlBody.append("<RequestPaymentConfiguration>");
             xmlBody.append("<Payer>" + request.getPayer().toString() + "</Payer>");
             xmlBody.append("</RequestPaymentConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+
+    }
+
+    // 设置bucket versioning
+    public static final class PutBucketVersioningMarshaller
+            implements RequestMarshaller2<PutBucketVersioningRequest> {
+
+        @Override
+        public byte[] marshall(PutBucketVersioningRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<VersioningConfiguration>");
+            xmlBody.append("<Status>" + request.getBucketVersion().toString() + "</Status>");
+            xmlBody.append("</VersioningConfiguration>");
 
             byte[] rawData = null;
             try {
