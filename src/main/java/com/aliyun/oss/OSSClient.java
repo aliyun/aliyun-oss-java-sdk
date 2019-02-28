@@ -1471,6 +1471,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public void putBucketVersioning(PutBucketVersioningRequest putBucketVersioningRequest) throws OSSException, ClientException {
+        this.bucketOperation.putBucketVersioning(putBucketVersioningRequest);
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();
