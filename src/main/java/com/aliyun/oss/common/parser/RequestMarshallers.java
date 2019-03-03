@@ -458,6 +458,11 @@ public final class RequestMarshallers {
                             "<Expiration><CreatedBeforeDate>" + formatDate + "</CreatedBeforeDate></Expiration>");
                 }
 
+                // 设置多版本 NoncurrentVersionExpiration
+                if (rule.getExpirationDays() != 0) {
+                    xmlBody.append("<NoncurrentVersionExpiration><NoncurrentDays>" + rule.getExpirationDays() + "</NoncurrentDays></NoncurrentVersionExpiration>");
+                }
+
                 if (rule.hasAbortMultipartUpload()) {
                     AbortMultipartUpload abortMultipartUpload = rule.getAbortMultipartUpload();
                     if (abortMultipartUpload.getExpirationDays() != 0) {
@@ -481,6 +486,18 @@ public final class RequestMarshallers {
                         }
                         xmlBody.append("<StorageClass>" + storageTransition.getStorageClass() + "</StorageClass>");
                         xmlBody.append("</Transition>");
+                    }
+                }
+
+                // 设置多版本历史转换生命周期当前版本和历史版本
+                if (rule.hasNoncurrentVersionTransitions()) {
+                    for (LifecycleRule.NoncurrentVersionTransition storageTransition : rule.getNoncurrentVersionTransitions()) {
+                        xmlBody.append("<NonCurrentVersionTransition>");
+                        if (storageTransition.hasExpirationDays()) {
+                            xmlBody.append("<Days>" + storageTransition.getExpirationDays() + "</Days>");
+                        }
+                        xmlBody.append("<StorageClass>" + storageTransition.getStorageClass() + "</StorageClass>");
+                        xmlBody.append("</NonCurrentVersionTransition>");
                     }
                 }
 
