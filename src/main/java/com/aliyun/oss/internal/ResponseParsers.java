@@ -2490,6 +2490,12 @@ public final class ResponseParsers {
                 break;
             }
 
+            // bucket versioninig
+            Element bucketVersionInfoElement = bucketElem.getChild("Versioning");
+            if (bucketVersionInfoElement != null) {
+                bucketInfo.setBucketVersion(bucketVersionInfoElement.getChildText("Versioning"));
+            }
+            
             return bucketInfo;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
