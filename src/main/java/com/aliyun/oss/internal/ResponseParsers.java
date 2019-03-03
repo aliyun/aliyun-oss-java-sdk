@@ -2817,6 +2817,13 @@ public final class ResponseParsers {
                     }
                 }
 
+                // 解析历史版本过期规则
+                if (ruleElem.getChild("NoncurrentVersionExpiration") != null ) {
+                    if (ruleElem.getChild("NoncurrentVersionExpiration").getChild("NoncurrentDays") != null) {
+                        rule.setNoncurrentVersionExpirationInDays(Integer.parseInt(ruleElem.getChild("NoncurrentVersionExpiration").getChildText("NoncurrentDays")));
+                    }
+                }
+
                 if (ruleElem.getChild("AbortMultipartUpload") != null) {
                     LifecycleRule.AbortMultipartUpload abortMultipartUpload = new LifecycleRule.AbortMultipartUpload();
                     if (ruleElem.getChild("AbortMultipartUpload").getChild("Days") != null) {
@@ -2846,6 +2853,24 @@ public final class ResponseParsers {
                                 .setStorageClass(StorageClass.parse(transitionElem.getChildText("StorageClass")));
                     }
                     storageTransitions.add(storageTransition);
+                }
+                rule.setStorageTransition(storageTransitions);
+
+
+                // 解析历史版本存储
+                List<Element> versionTransitionElements = ruleElem.getChildren("NonCurrentVersionTransition");
+                List<LifecycleRule.NoncurrentVersionTransition> versionStorageTransitions = new ArrayList<LifecycleRule.NoncurrentVersionTransition>();
+                for (Element transitionElem : versionTransitionElements) {
+                    LifecycleRule.NoncurrentVersionTransition storageTransition = new LifecycleRule.NoncurrentVersionTransition();
+                    if (transitionElem.getChild("Days") != null) {
+                        storageTransition.setExpirationDays(Integer.parseInt(transitionElem.getChildText("Days")));
+                    }
+
+                    if (transitionElem.getChild("StorageClass") != null) {
+                        storageTransition
+                                .setStorageClass(StorageClass.parse(transitionElem.getChildText("StorageClass")));
+                    }
+                    versionStorageTransitions.add(storageTransition);
                 }
                 rule.setStorageTransition(storageTransitions);
 

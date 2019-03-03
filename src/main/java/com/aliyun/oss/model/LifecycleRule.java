@@ -149,12 +149,63 @@ public class LifecycleRule {
         }
     }
 
+    public static class NoncurrentVersionTransition {
+        private Integer expirationDays;
+        private StorageClass storageClass;
+
+        public NoncurrentVersionTransition() {
+        }
+
+        public NoncurrentVersionTransition(Integer expirationDays, StorageClass storageClass) {
+            this.expirationDays = expirationDays;
+            this.storageClass = storageClass;
+        }
+
+        public Integer getExpirationDays() {
+            return expirationDays;
+        }
+
+        public void setExpirationDays(Integer expirationDays) {
+            this.expirationDays = expirationDays;
+        }
+
+        public NoncurrentVersionTransition withExpirationDays(Integer expirationDays) {
+            setExpirationDays(expirationDays);
+            return this;
+        }
+
+        public boolean hasExpirationDays() {
+            return this.expirationDays != null;
+        }
+
+        public StorageClass getStorageClass() {
+            return storageClass;
+        }
+
+        public void setStorageClass(StorageClass storageClass) {
+            this.storageClass = storageClass;
+        }
+
+        public NoncurrentVersionTransition withStrorageClass(StorageClass storageClass) {
+            setStorageClass(storageClass);
+            return this;
+        }
+    }
+
     private String id;
     private String prefix;
     private RuleStatus status;
     private int expirationDays;
     private Date expirationTime;
     private Date createdBeforeDate;
+
+    // deletemarker
+    private boolean expiredObjectDeleteMarker = false;
+
+    // 历史版本设置过期天数
+    private int noncurrentVersionExpirationInDays;
+
+    private List<NoncurrentVersionTransition> noncurrentVersionTransitions = new ArrayList<NoncurrentVersionTransition>();
 
     private AbortMultipartUpload abortMultipartUpload;
     private List<StorageTransition> storageTransitions = new ArrayList<StorageTransition>();
@@ -321,6 +372,18 @@ public class LifecycleRule {
         return this.abortMultipartUpload != null;
     }
 
+    public List<NoncurrentVersionTransition> getNoncurrentVersionTransitions() {
+        return this.noncurrentVersionTransitions;
+    }
+
+    public void setNoncurrentVersionTransitions(List<NoncurrentVersionTransition> noncurrentVersionTransitions) {
+        this.noncurrentVersionTransitions = noncurrentVersionTransitions;
+    }
+
+    public boolean hasNoncurrentVersionTransitions() {
+        return this.noncurrentVersionTransitions != null && !noncurrentVersionTransitions.isEmpty();
+    }
+
     public List<StorageTransition> getStorageTransition() {
         return this.storageTransitions;
     }
@@ -331,5 +394,32 @@ public class LifecycleRule {
 
     public boolean hasStorageTransition() {
         return this.storageTransitions != null && !storageTransitions.isEmpty();
+    }
+
+    public boolean isExpiredObjectDeleteMarker() {
+        return expiredObjectDeleteMarker;
+    }
+
+
+    public void setExpiredObjectDeleteMarker(boolean expiredObjectDeleteMarker) {
+        this.expiredObjectDeleteMarker = expiredObjectDeleteMarker;
+    }
+
+    public LifecycleRule withExpiredObjectDeleteMarker(boolean expiredObjectDeleteMarker) {
+        this.expiredObjectDeleteMarker = expiredObjectDeleteMarker;
+        return this;
+    }
+
+    public void setNoncurrentVersionExpirationInDays(int value) {
+        this.noncurrentVersionExpirationInDays = value;
+    }
+
+    public int getNoncurrentVersionExpirationInDays() {
+        return noncurrentVersionExpirationInDays;
+    }
+
+    public LifecycleRule withNoncurrentVersionExpirationInDays(int value) {
+        setNoncurrentVersionExpirationInDays(value);
+        return this;
     }
 }
