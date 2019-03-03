@@ -67,4 +67,17 @@ public class BucketInfo extends GenericResult {
     private Set<Grant> grants = new HashSet<Grant>();
     private CannedAccessControlList cannedACL;
     private ServerSideEncryptionRule encryptionRule;
+
+    /*
+     * 给bucket info添加状态
+     */
+    private String bucketVersion = "disabled";
+
+    public String getBucketVersion() {
+        return bucketVersion;
+    }
+
+    public void setBucketVersion(String bucketVersion) {
+        this.bucketVersion = bucketVersion;
+    }
 }

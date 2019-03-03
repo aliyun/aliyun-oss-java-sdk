@@ -90,4 +90,6 @@ public interface OSSHeaders extends HttpHeaders {
 
     static final String OSS_HEADER_OBJECT_TAGGING = "x-oss-tagging";
 
+    static final String OSS_HEADER_OBJECT_VERSIONID = "x-oss-versionId";
+
 }
