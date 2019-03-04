@@ -107,4 +107,6 @@ public final class RequestParameters {
     public static final String PLAYLIST_NAME = "playlistName";
     public static final String SINCE = "since";
     public static final String TAIL = "tail";
+
+    public static final String VERSION_ID = "versionId";
 }

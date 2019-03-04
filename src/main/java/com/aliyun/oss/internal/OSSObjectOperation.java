@@ -511,6 +511,9 @@ public class OSSObjectOperation extends OSSOperation {
         String key = setObjectAclRequest.getKey();
         CannedAccessControlList cannedAcl = setObjectAclRequest.getCannedACL();
 
+        //获取versionid
+        String versionId = setObjectAclRequest.getVersionId();
+
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         assertParameterNotNull(key, "key");
@@ -523,6 +526,10 @@ public class OSSObjectOperation extends OSSOperation {
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_ACL, null);
 
+        if (versionId != null) {
+            params.put("versionId", versionId);
+        }
+
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.PUT).setBucket(bucketName).setKey(key).setParameters(params).setHeaders(headers)
                 .setOriginalRequest(setObjectAclRequest).build();
@@ -530,12 +537,14 @@ public class OSSObjectOperation extends OSSOperation {
         doOperation(request, emptyResponseParser, bucketName, key);
     }
 
-    public ObjectAcl getObjectAcl(GenericRequest genericRequest) throws OSSException, ClientException {
+    public ObjectAcl getObjectAcl(GetObjectAclRequest getObjectAclRequest) throws OSSException, ClientException {
 
-        assertParameterNotNull(genericRequest, "genericRequest");
+        assertParameterNotNull(getObjectAclRequest, "getObjectAclRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        String key = genericRequest.getKey();
+        String bucketName = getObjectAclRequest.getBucketName();
+        String key = getObjectAclRequest.getKey();
+
+        String versionid = getObjectAclRequest.getVersionId();
 
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
@@ -545,9 +554,13 @@ public class OSSObjectOperation extends OSSOperation {
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_ACL, null);
 
+        if (versionid != null ) {
+            params.put(VERSION_ID, versionid);
+        }
+
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(key).setParameters(params)
-                .setOriginalRequest(genericRequest).build();
+                .setOriginalRequest(getObjectAclRequest).build();
 
         return doOperation(request, getObjectAclResponseParser, bucketName, key, true);
     }

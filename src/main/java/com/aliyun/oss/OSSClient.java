@@ -649,18 +649,28 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public void setObjectAcl(String bucketName, String key, String versionId, CannedAccessControlList cannedAcl) throws OSSException, ClientException {
+        this.setObjectAcl(new SetObjectAclRequest(bucketName, key, versionId, cannedAcl));
+    }
+
+    @Override
     public void setObjectAcl(SetObjectAclRequest setObjectAclRequest) throws OSSException, ClientException {
         objectOperation.setObjectAcl(setObjectAclRequest);
     }
 
     @Override
     public ObjectAcl getObjectAcl(String bucketName, String key) throws OSSException, ClientException {
-        return this.getObjectAcl(new GenericRequest(bucketName, key));
+        return this.getObjectAcl(new GetObjectAclRequest(bucketName, key));
     }
 
     @Override
-    public ObjectAcl getObjectAcl(GenericRequest genericRequest) throws OSSException, ClientException {
-        return objectOperation.getObjectAcl(genericRequest);
+    public ObjectAcl getObjectAcl(String bucketName, String key, String versionId) throws OSSException, ClientException {
+        return this.getObjectAcl(new GetObjectAclRequest(bucketName, key,versionId));
+    }
+
+    @Override
+    public ObjectAcl getObjectAcl(GetObjectAclRequest getObjectAclRequest) throws OSSException, ClientException {
+        return objectOperation.getObjectAcl(getObjectAclRequest);
     }
 
     @Override
