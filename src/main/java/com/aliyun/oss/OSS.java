@@ -838,6 +838,20 @@ public interface OSS {
 
     /**
      * Sets the Access Control List (ACL) on a {@link OSSObject} instance.
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param key
+     *            Object Key.
+     * @param cannedAcl
+     *            One of the three values: Private, PublicRead or
+     *            PublicReadWrite.
+     */
+    public void setObjectAcl(String bucketName, String key, String versionId, CannedAccessControlList cannedAcl)
+            throws OSSException, ClientException;
+
+    /**
+     * Sets the Access Control List (ACL) on a {@link OSSObject} instance.
      * 
      * @param setObjectAclRequest
      *            A {@link SetObjectAclRequest} instance which specifies the
@@ -855,15 +869,27 @@ public interface OSS {
      * @return The {@link ObjectAcl} instance of the object.
      */
     public ObjectAcl getObjectAcl(String bucketName, String key) throws OSSException, ClientException;
+    /**
+     * Gets the Access Control List (ACL) of the OSS object.
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param key
+     *            Object Key.
+     * @param versionId
+     *            versionId
+     * @return The {@link ObjectAcl} instance of the object.
+     */
+    public ObjectAcl getObjectAcl(String bucketName, String key, String versionId) throws OSSException, ClientException;
 
     /**
      * Gets the Access Control List (ACL) of the OSS object.
      * 
-     * @param genericRequest
+     * @param getObjectAclRequest
      *            A {@link GenericRequest} instance which specifies the bucket
      *            name and object key.
      */
-    public ObjectAcl getObjectAcl(GenericRequest genericRequest) throws OSSException, ClientException;
+    public ObjectAcl getObjectAcl(GetObjectAclRequest getObjectAclRequest) throws OSSException, ClientException;
 
     /**
      * Restores the object of archive storage. The function is not applicable to

@@ -23,13 +23,23 @@ public class SetObjectAclRequest extends GenericRequest {
 
     private CannedAccessControlList cannedACL;
 
+    private String versionId;
+
     public SetObjectAclRequest(String bucketName, String key) {
         this(bucketName, key, null);
+        this.versionId = null;
     }
 
     public SetObjectAclRequest(String bucketName, String key, CannedAccessControlList cannedACL) {
         super(bucketName, key);
         this.cannedACL = cannedACL;
+        this.versionId = null;
+    }
+
+    public SetObjectAclRequest(String bucketName, String key, String versionId, CannedAccessControlList cannedACL) {
+        super(bucketName, key);
+        this.cannedACL = cannedACL;
+        this.versionId = versionId;
     }
 
     public CannedAccessControlList getCannedACL() {
@@ -43,5 +53,13 @@ public class SetObjectAclRequest extends GenericRequest {
     public SetObjectAclRequest withCannedACL(CannedAccessControlList cannedACL) {
         setCannedACL(cannedACL);
         return this;
+    }
+
+    public void setVersionId(String versionId) {
+        this.versionId = versionId;
+    }
+
+    public String getVersionId() {
+        return versionId;
     }
 }
