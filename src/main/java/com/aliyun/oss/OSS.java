@@ -108,6 +108,15 @@ public interface OSS {
     public void deleteBucket(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
+     * Set Comment to a existed Bucket instance
+     *
+     * @param putBucketCommentRequest
+     * instance of {@link PutBucketCommentRequest}, which at least has
+     *      *            bucket name information.
+     */
+    public void putBucketComment(PutBucketCommentRequest putBucketCommentRequest) throws OSSException, ClientException;
+
+    /**
      * List user regions about buckets
      */
     public ListUserRegionsResult listUserRegions() throws OSSException, ClientException;

@@ -377,6 +377,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public void putBucketComment(PutBucketCommentRequest putBucketCommentRequest) throws OSSException, ClientException {
+        bucketOperation.putBucketComment(putBucketCommentRequest);
+    }
+
+    @Override
     public AccessControlList getBucketAcl(String bucketName) throws OSSException, ClientException {
         return this.getBucketAcl(new GenericRequest(bucketName));
     }
@@ -1473,5 +1478,4 @@ public class OSSClient implements OSS {
             logException("shutdown throw exception: ", e);
         }
     }
-
 }

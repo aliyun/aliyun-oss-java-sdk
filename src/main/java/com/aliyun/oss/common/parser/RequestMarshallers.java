@@ -51,6 +51,7 @@ public final class RequestMarshallers {
 
     public static final CreateBucketRequestMarshaller createBucketRequestMarshaller = new CreateBucketRequestMarshaller();
     public static final BucketRefererMarshaller bucketRefererMarshaller = new BucketRefererMarshaller();
+    public static final PutBucketCommentRequestMarshaller putBucketCommentRequestMarshaller = new PutBucketCommentRequestMarshaller();
     public static final SetBucketLoggingRequestMarshaller setBucketLoggingRequestMarshaller = new SetBucketLoggingRequestMarshaller();
     public static final SetBucketWebsiteRequestMarshaller setBucketWebsiteRequestMarshaller = new SetBucketWebsiteRequestMarshaller();
     public static final SetBucketLifecycleRequestMarshaller setBucketLifecycleRequestMarshaller = new SetBucketLifecycleRequestMarshaller();
@@ -212,6 +213,20 @@ public final class RequestMarshallers {
             return stringMarshaller.marshall(xmlBody.toString());
         }
 
+    }
+
+    public static final class PutBucketCommentRequestMarshaller implements RequestMarshaller<PutBucketCommentRequest> {
+
+        @Override
+        public FixedLengthInputStream marshall(PutBucketCommentRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+
+            xmlBody.append("<CommentConfiguration>");
+            xmlBody.append("<Comment>" + request.getComment() + "</Comment>");
+            xmlBody.append("</CommentConfiguration>");
+
+            return stringMarshaller.marshall(xmlBody.toString());
+        }
     }
 
     public static final class BucketRefererMarshaller implements RequestMarshaller<BucketReferer> {

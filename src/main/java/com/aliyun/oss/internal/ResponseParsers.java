@@ -1266,6 +1266,9 @@ public final class ResponseParsers {
                     if (e.getChild("StorageClass") != null) {
                         bucket.setStorageClass(StorageClass.parse(e.getChildText("StorageClass")));
                     }
+                    if (e.getChild("Comment") != null) {
+                        bucket.setComment(e.getChildText("Comment"));
+                    }
                     bucket.setExtranetEndpoint(e.getChildText("ExtranetEndpoint"));
                     bucket.setIntranetEndpoint(e.getChildText("IntranetEndpoint"));
 
@@ -2325,6 +2328,9 @@ public final class ResponseParsers {
             }
             if (bucketElem.getChildText("DataRedundancyType") != null) {
                 bucket.setDataRedundancyType(DataRedundancyType.parse(bucketElem.getChildText("DataRedundancyType")));
+            }
+            if (bucketElem.getChildText("Comment") != null) {
+                bucket.setComment(bucketElem.getChildText("Comment"));
             }
             bucketInfo.setBucket(bucket);
 
