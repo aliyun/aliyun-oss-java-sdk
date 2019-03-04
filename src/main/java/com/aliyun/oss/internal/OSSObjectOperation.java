@@ -370,12 +370,12 @@ public class OSSObjectOperation extends OSSOperation {
     /**
      * Get object matadata.
      */
-    public ObjectMetadata getObjectMetadata(GenericRequest genericRequest) throws OSSException, ClientException {
+    public ObjectMetadata getObjectMetadata(GetObjectMetaRequest getObjectMetaRequest) throws OSSException, ClientException {
 
-        assertParameterNotNull(genericRequest, "genericRequest");
+        assertParameterNotNull(getObjectMetaRequest, "getObjectMetaRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        String key = genericRequest.getKey();
+        String bucketName = getObjectMetaRequest.getBucketName();
+        String key = getObjectMetaRequest.getKey();
 
         assertParameterNotNull(bucketName, "bucketName");
         assertParameterNotNull(key, "key");
@@ -383,7 +383,7 @@ public class OSSObjectOperation extends OSSOperation {
         ensureObjectKeyValid(key);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.HEAD).setBucket(bucketName).setKey(key).setOriginalRequest(genericRequest)
+                .setMethod(HttpMethod.HEAD).setBucket(bucketName).setKey(key).setOriginalRequest(getObjectMetaRequest)
                 .build();
 
         List<ResponseHandler> reponseHandlers = new ArrayList<ResponseHandler>();
@@ -511,7 +511,7 @@ public class OSSObjectOperation extends OSSOperation {
         String key = setObjectAclRequest.getKey();
         CannedAccessControlList cannedAcl = setObjectAclRequest.getCannedACL();
 
-        //获取versionid
+//        获取versionId
         String versionId = setObjectAclRequest.getVersionId();
 
         assertParameterNotNull(bucketName, "bucketName");
@@ -544,7 +544,7 @@ public class OSSObjectOperation extends OSSOperation {
         String bucketName = getObjectAclRequest.getBucketName();
         String key = getObjectAclRequest.getKey();
 
-        String versionid = getObjectAclRequest.getVersionId();
+        String versionId = getObjectAclRequest.getVersionId();
 
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
@@ -554,8 +554,8 @@ public class OSSObjectOperation extends OSSOperation {
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_ACL, null);
 
-        if (versionid != null ) {
-            params.put(VERSION_ID, versionid);
+        if (versionId != null ) {
+            params.put(VERSION_ID, versionId);
         }
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())

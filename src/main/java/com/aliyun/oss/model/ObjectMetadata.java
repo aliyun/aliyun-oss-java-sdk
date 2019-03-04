@@ -364,4 +364,9 @@ public class ObjectMetadata {
         }
         return true;
     }
+
+    // 获取服务端返回的VersionId
+    public String getVersionId() {
+        return (String) metadata.get(OSSHeaders.OSS_VERSION_ID);
+    }
 }

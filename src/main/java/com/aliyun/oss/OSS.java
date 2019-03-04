@@ -701,15 +701,28 @@ public interface OSS {
 
     /**
      * Gets all the metadata of {@link OSSObject}.
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param key
+     *            Object key.
+     * @param versionId
+     *            object versionId
+     * @return The {@link ObjectMetadata} instance.
+     */
+    public ObjectMetadata getObjectMetadata(String bucketName, String key, String versionId) throws OSSException, ClientException;
+
+    /**
+     * Gets all the metadata of {@link OSSObject}.
      * 
-     * @param genericRequest
+     * @param getObjectMetaRequest
      *            Generic request which specifies the bucket name and object
      *            key.
      *
      * @return The {@link ObjectMetadata} instance.
      *
      */
-    public ObjectMetadata getObjectMetadata(GenericRequest genericRequest) throws OSSException, ClientException;
+    public ObjectMetadata getObjectMetadata(GetObjectMetaRequest getObjectMetaRequest) throws OSSException, ClientException;
 
     /**
      * Create select object metadata(create metadata if not exists or overwrite flag set in {@link CreateSelectObjectMetadataRequest})
