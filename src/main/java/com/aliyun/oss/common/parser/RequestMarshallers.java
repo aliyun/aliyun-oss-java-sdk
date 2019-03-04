@@ -659,14 +659,17 @@ public final class RequestMarshallers {
         public byte[] marshall(DeleteObjectsRequest request) {
             StringBuffer xmlBody = new StringBuffer();
             boolean quiet = request.isQuiet();
-            List<String> keysToDelete = request.getKeys();
+            List<DeleteObjectsRequest.KeyVersion> keysToDelete = request.getKeys();
 
             xmlBody.append("<Delete>");
             xmlBody.append("<Quiet>" + quiet + "</Quiet>");
             for (int i = 0; i < keysToDelete.size(); i++) {
-                String key = keysToDelete.get(i);
+                DeleteObjectsRequest.KeyVersion key = keysToDelete.get(i);
                 xmlBody.append("<Object>");
-                xmlBody.append("<Key>" + escapeKey(key) + "</Key>");
+                xmlBody.append("<Key>" + escapeKey(key.getKey()) + "</Key>");
+                if (key.getVersion() != null) {
+                    xmlBody.append("<VersionId>" + escapeKey(key.getVersion()) + "</VersionId>");
+                }
                 xmlBody.append("</Object>");
             }
             xmlBody.append("</Delete>");

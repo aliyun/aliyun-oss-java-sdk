@@ -21,6 +21,8 @@ package com.aliyun.oss.model;
 
 import static com.aliyun.oss.internal.OSSUtils.validateObjectKey;
 
+import java.io.Serializable;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +34,7 @@ public class DeleteObjectsRequest extends GenericRequest {
     public static final int DELETE_OBJECTS_ONETIME_LIMIT = 1000;
 
     /* List of keys to delete */
-    private final List<String> keys = new ArrayList<String>();
+    private final List<KeyVersion> keys = new ArrayList<KeyVersion>();
 
     /* Whether to enable quiet mode for response, default is false */
     private boolean quiet;
@@ -60,11 +62,11 @@ public class DeleteObjectsRequest extends GenericRequest {
         this.quiet = quiet;
     }
 
-    public List<String> getKeys() {
+    public List<KeyVersion> getKeys() {
         return keys;
     }
 
-    public void setKeys(List<String> keys) {
+    public void setKeys(List<KeyVersion> keys) {
         if (keys == null || keys.size() == 0) {
             throw new IllegalArgumentException("Keys to delete must be specified");
         }
@@ -74,8 +76,8 @@ public class DeleteObjectsRequest extends GenericRequest {
                     "The count of keys to delete exceed max limit " + DELETE_OBJECTS_ONETIME_LIMIT);
         }
 
-        for (String key : keys) {
-            if (key == null || key.equals("") || !validateObjectKey(key)) {
+        for (KeyVersion key : keys) {
+            if (key == null || key.equals("") || !validateObjectKey(key.getKey())) {
                 throw new IllegalArgumentException("Illegal object key " + key);
             }
         }
@@ -84,7 +86,7 @@ public class DeleteObjectsRequest extends GenericRequest {
         this.keys.addAll(keys);
     }
 
-    public DeleteObjectsRequest withKeys(List<String> keys) {
+    public DeleteObjectsRequest withKeys(List<KeyVersion> keys) {
         setKeys(keys);
         return this;
     }
@@ -101,4 +103,37 @@ public class DeleteObjectsRequest extends GenericRequest {
         setEncodingType(encodingType);
         return this;
     }
+
+    /**
+     * A key to delete, with an optional version attribute.
+     */
+    public static class KeyVersion implements Serializable {
+
+        private final String key;
+        private final String version;
+
+        /**
+         * Constructs a key without a version.
+         */
+        public KeyVersion(String key) {
+            this(key, null);
+        }
+
+        /**
+         * Constructs a key-version pair.
+         */
+        public KeyVersion(String key, String version) {
+            this.key = key;
+            this.version = version;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public String getVersion() {
+            return version;
+        }
+    }
+
 }
