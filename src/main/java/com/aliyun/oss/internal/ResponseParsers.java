@@ -2202,12 +2202,25 @@ public final class ResponseParsers {
                 deleteObjectsResult.setEncodingType(isNullOrEmpty(encodingType) ? null : encodingType);
             }
 
-            List<String> deletedObjects = new ArrayList<String>();
+            List<DeleteObjectsResult.DeletedObject> deletedObjects = new ArrayList<DeleteObjectsResult.DeletedObject>();
             List<Element> deletedElements = root.getChildren("Deleted");
             for (Element elem : deletedElements) {
-                deletedObjects.add(elem.getChildText("Key"));
+                DeleteObjectsResult.DeletedObject deletedObject = new DeleteObjectsResult.DeletedObject();
+                deletedObject.setKey(elem.getChildText("Key"));
+                if(elem.getChildText("VersionId") != null) {
+                    deletedObject.setKey(elem.getChildText("VersionId"));
+                }
+
+                if (elem.getChildText("DeleteMarker") != null) {
+                    deletedObject.setKey(elem.getChildText("DeleteMarker"));
+                }
+                if (elem.getChildText("DeleteMarkerVersionId") != null ) {
+                    deletedObject.setKey(elem.getChildText("DeleteMarkerVersionId"));
+                }
+                deletedObjects.add(deletedObject);
             }
             deleteObjectsResult.setDeletedObjects(deletedObjects);
+
 
             return deleteObjectsResult;
         } catch (JDOMParseException e) {
