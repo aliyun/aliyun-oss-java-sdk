@@ -50,15 +50,15 @@ import com.aliyun.oss.model.StorageClass;
 
 @SuppressWarnings("deprecation")
 public class CreateBucketTest extends TestBase {
-    
+
     private static final int MAX_BUCKETS_ALLOWED = 10;
-    
+
     @Test
     public void testPutWithDefaultLocation() {
         final String bucketName = "bucket-with-default-location";
 
         try {
-        	Bucket bucket = ossClient.createBucket(bucketName);
+            Bucket bucket = ossClient.createBucket(bucketName);
             String loc = ossClient.getBucketLocation(bucketName);
             Assert.assertEquals(OSS_TEST_REGION, loc);
             Assert.assertEquals(bucket.getRequestId().length(), REQUEST_ID_LEN);
@@ -457,5 +457,5 @@ public class CreateBucketTest extends TestBase {
             ossClient.deleteBucket(bucketName);
         }
     }
-    
+
 }
