@@ -779,6 +779,16 @@ public interface OSS {
     public void deleteObject(String bucketName, String key) throws OSSException, ClientException;
 
     /**
+     * Deletes the specified {@link OSSObject} by bucket name and object key.
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param key
+     *            Object key.
+     */
+    public void deleteObject(String bucketName, String key, String versionId) throws OSSException, ClientException;
+
+    /**
      * Deletes the specified {@link OSSObject} by the {@link GenericRequest}
      * instance.
      * 
