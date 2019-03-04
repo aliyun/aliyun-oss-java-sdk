@@ -436,7 +436,7 @@ public class CreateBucketTest extends TestBase {
         }
     }
 
-    @Test
+    @Ignore
     public void testPutWithComment() {
         final String bucketName = "bucket-with-comment";
         final String comment = "A test comment of create bucket with comment";
@@ -444,7 +444,6 @@ public class CreateBucketTest extends TestBase {
         CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
         createBucketRequest.setLocationConstraint(OSS_TEST_REGION);
         createBucketRequest.setStorageClass(StorageClass.Standard);
-        createBucketRequest.setComment(comment);
 
         try {
             ossClient.createBucket(createBucketRequest);
