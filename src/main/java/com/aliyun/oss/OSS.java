@@ -2482,14 +2482,14 @@ public interface OSS {
     /**
      * Returns the tags for the specified object.
      *
-     * @param genericRequest
+     * @param getObjectTaggingRequest
      *            The request object containing all the options on how to
      *            retrieve the OSS object tags.
      * @return The tags for the specified object.
      * @throws OSSException
      * @throws ClientException
      */
-    public ObjectTagging getObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException;
+    public ObjectTagging getObjectTagging(GetObjectTaggingRequest getObjectTaggingRequest) throws OSSException, ClientException;
 
     /**
      * Set the tags for the specified object.
@@ -2505,7 +2505,7 @@ public interface OSS {
     /**
      * Remove the tags for the specified object.
      *
-     * @param genericRequest
+     * @param deleteObjectTaggingRequest
      *            The request object containing all the options for deleting
      *            the tags for the specified object.
      *
@@ -2513,7 +2513,7 @@ public interface OSS {
      * @throws OSSException
      * @throws ClientException
      */
-    public void deleteObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException;
+    public void deleteObjectTagging(DeleteObjectTaggingRequest deleteObjectTaggingRequest) throws OSSException, ClientException;
 
 
     /**
