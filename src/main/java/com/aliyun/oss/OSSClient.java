@@ -617,6 +617,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public void deleteObject(String bucketName, String key, String versionId) throws OSSException, ClientException {
+        this.deleteObject(new GenericRequest(bucketName, key, versionId));
+    }
+
+    @Override
     public void deleteObject(GenericRequest genericRequest) throws OSSException, ClientException {
         objectOperation.deleteObject(genericRequest);
     }

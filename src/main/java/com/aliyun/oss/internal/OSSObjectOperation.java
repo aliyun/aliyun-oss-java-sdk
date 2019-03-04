@@ -437,6 +437,12 @@ public class OSSObjectOperation extends OSSOperation {
         ensureBucketNameValid(bucketName);
         assertParameterNotNull(key, "key");
 
+        Map<String, String> params = new HashMap<String, String>();
+
+        if (genericRequest.getVersionId() != null) {
+            params.put(VERSION_ID, genericRequest.getVersionId());
+        }
+        
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(key).setOriginalRequest(genericRequest)
                 .build();
