@@ -941,7 +941,14 @@ public class OSSObjectOperation extends OSSOperation {
 
         String copySourceHeader = "/" + copyObjectRequest.getSourceBucketName() + "/"
                 + HttpUtil.urlEncode(copyObjectRequest.getSourceKey(), DEFAULT_CHARSET_NAME);
-        headers.put(OSSHeaders.COPY_OBJECT_SOURCE, copySourceHeader);
+
+        String sourceVersionId = copyObjectRequest.getSourceVersionId();
+
+        if(sourceVersionId == null){
+            headers.put(OSSHeaders.COPY_OBJECT_SOURCE, copySourceHeader);
+        } else {
+            headers.put(OSSHeaders.COPY_OBJECT_SOURCE, copySourceHeader+"?"+VERSION_ID+"="+sourceVersionId);
+        }
 
         addDateHeader(headers, OSSHeaders.COPY_OBJECT_SOURCE_IF_MODIFIED_SINCE,
                 copyObjectRequest.getModifiedSinceConstraint());

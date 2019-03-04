@@ -538,6 +538,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public CopyObjectResult copyObject(String sourceBucketName, String sourceKey, String versionId, String destinationBucketName, String destinationKey) throws OSSException, ClientException {
+        return copyObject(new CopyObjectRequest(sourceBucketName, sourceKey, versionId, destinationBucketName, destinationKey));
+    }
+
+    @Override
     public CopyObjectResult copyObject(CopyObjectRequest copyObjectRequest) throws OSSException, ClientException {
         return objectOperation.copyObject(copyObjectRequest);
     }
