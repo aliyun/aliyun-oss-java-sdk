@@ -166,10 +166,10 @@ public class OSSBucketOperation extends OSSOperation {
         doOperation(request, emptyResponseParser, bucketName, null);
     }
 
-    public void setBucketComment(SetBucketCommentRequest setBucketCommentRequest) throws OSSException, ClientException {
-        assertParameterNotNull(setBucketCommentRequest, "setBucketCommentRequest");
+    public void putBucketComment(PutBucketCommentRequest putBucketCommentRequest) throws OSSException, ClientException {
+        assertParameterNotNull(putBucketCommentRequest, "putBucketCommentRequest");
 
-        String bucketName = setBucketCommentRequest.getBucketName();
+        String bucketName = putBucketCommentRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
 
@@ -178,8 +178,8 @@ public class OSSBucketOperation extends OSSOperation {
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params)
-                .setInputStreamWithLength(setBucketCommentRequestMarshller.marshall(setBucketCommentRequest))
-                .setOriginalRequest(setBucketCommentRequest).build();
+                .setInputStreamWithLength(putBucketCommentRequestMarshaller.marshall(putBucketCommentRequest))
+                .setOriginalRequest(putBucketCommentRequest).build();
 
         doOperation(request, emptyResponseParser, bucketName, null);
     }

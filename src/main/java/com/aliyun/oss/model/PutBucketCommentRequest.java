@@ -1,14 +1,14 @@
 package com.aliyun.oss.model;
 
-public class SetBucketCommentRequest extends GenericRequest{
+public class PutBucketCommentRequest extends GenericRequest{
   private String comment;
 
-  public SetBucketCommentRequest(String bucketName, String comment) {
+  public PutBucketCommentRequest(String bucketName, String comment) {
     super(bucketName);
     this.comment = comment;
   }
 
-  public SetBucketCommentRequest(String bucketName) {
+  public PutBucketCommentRequest(String bucketName) {
     this(bucketName, null);
   }
 

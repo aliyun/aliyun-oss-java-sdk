@@ -51,7 +51,7 @@ public final class RequestMarshallers {
 
     public static final CreateBucketRequestMarshaller createBucketRequestMarshaller = new CreateBucketRequestMarshaller();
     public static final BucketRefererMarshaller bucketRefererMarshaller = new BucketRefererMarshaller();
-    public static final SetBucketCommentRequestMarshller setBucketCommentRequestMarshller = new SetBucketCommentRequestMarshller();
+    public static final PutBucketCommentRequestMarshaller putBucketCommentRequestMarshaller = new PutBucketCommentRequestMarshaller();
     public static final SetBucketLoggingRequestMarshaller setBucketLoggingRequestMarshaller = new SetBucketLoggingRequestMarshaller();
     public static final SetBucketWebsiteRequestMarshaller setBucketWebsiteRequestMarshaller = new SetBucketWebsiteRequestMarshaller();
     public static final SetBucketLifecycleRequestMarshaller setBucketLifecycleRequestMarshaller = new SetBucketLifecycleRequestMarshaller();
@@ -197,8 +197,7 @@ public final class RequestMarshallers {
             StringBuffer xmlBody = new StringBuffer();
             if (request.getLocationConstraint() != null
                 || request.getStorageClass() != null
-                || request.getDataRedundancyType() != null
-                || request.getComment() != null) {
+                || request.getDataRedundancyType() != null) {
                 xmlBody.append("<CreateBucketConfiguration>");
                 if (request.getLocationConstraint() != null) {
                     xmlBody.append("<LocationConstraint>" + request.getLocationConstraint() + "</LocationConstraint>");
@@ -209,9 +208,6 @@ public final class RequestMarshallers {
                 if (request.getDataRedundancyType() != null) {
                     xmlBody.append("<DataRedundancyType>" + request.getDataRedundancyType().toString() + "</DataRedundancyType>");
                 }
-                if (request.getComment() != null) {
-                    xmlBody.append("<Comment>" + request.getComment() + "</Comment>");
-                }
                 xmlBody.append("</CreateBucketConfiguration>");
             }
             return stringMarshaller.marshall(xmlBody.toString());
@@ -219,10 +215,10 @@ public final class RequestMarshallers {
 
     }
 
-    public static final class SetBucketCommentRequestMarshller implements RequestMarshaller<SetBucketCommentRequest> {
+    public static final class PutBucketCommentRequestMarshaller implements RequestMarshaller<PutBucketCommentRequest> {
 
         @Override
-        public FixedLengthInputStream marshall(SetBucketCommentRequest request) {
+        public FixedLengthInputStream marshall(PutBucketCommentRequest request) {
             StringBuffer xmlBody = new StringBuffer();
 
             xmlBody.append("<CommentConfiguration>");

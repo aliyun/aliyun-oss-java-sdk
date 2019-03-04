@@ -377,8 +377,8 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void putBucketComment(SetBucketCommentRequest setBucketCommentRequest) throws OSSException, ClientException {
-        bucketOperation.setBucketComment(setBucketCommentRequest);
+    public void putBucketComment(PutBucketCommentRequest putBucketCommentRequest) throws OSSException, ClientException {
+        bucketOperation.putBucketComment(putBucketCommentRequest);
     }
 
     @Override

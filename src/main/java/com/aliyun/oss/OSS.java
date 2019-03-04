@@ -110,11 +110,11 @@ public interface OSS {
     /**
      * Set Comment to a existed Bucket instance
      *
-     * @param setBucketCommentRequest
-     * instance of {@link SetBucketCommentRequest}, which at least has
+     * @param putBucketCommentRequest
+     * instance of {@link PutBucketCommentRequest}, which at least has
      *      *            bucket name information.
      */
-    public void putBucketComment(SetBucketCommentRequest setBucketCommentRequest) throws OSSException, ClientException;
+    public void putBucketComment(PutBucketCommentRequest putBucketCommentRequest) throws OSSException, ClientException;
 
     /**
      * List user regions about buckets

@@ -12,7 +12,7 @@ import static com.aliyun.oss.integrationtests.TestConfig.OSS_TEST_REGION;
 public class BucketCommentTest extends TestBase {
 
   @Test
-  public void normalSetBucketCommentTest() {
+  public void normalPutBucketCommentTest() {
     final String testBucketName = "test-comment-bucket";
     final String testComment = "this is a test comment";
     try {
@@ -22,10 +22,10 @@ public class BucketCommentTest extends TestBase {
       createBucketRequest.setStorageClass(StorageClass.Standard);
       ossClient.createBucket(createBucketRequest);
 
-      SetBucketCommentRequest setBucketCommentRequest = new SetBucketCommentRequest(testBucketName);
-      setBucketCommentRequest.setComment(testComment);
+      PutBucketCommentRequest putBucketCommentRequest = new PutBucketCommentRequest(testBucketName);
+      putBucketCommentRequest.setComment(testComment);
 
-      ossClient.putBucketComment(setBucketCommentRequest);
+      ossClient.putBucketComment(putBucketCommentRequest);
 
       BucketList bucketList = ossClient.listBuckets(testBucketName, "", 100);
 
@@ -52,7 +52,6 @@ public class BucketCommentTest extends TestBase {
       CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
       createBucketRequest.setLocationConstraint(OSS_TEST_REGION);
       createBucketRequest.setStorageClass(StorageClass.Standard);
-      createBucketRequest.setComment(oriComment);
       ossClient.createBucket(createBucketRequest);
 
       BucketList bucketList = ossClient.listBuckets(bucketName, "", 100);
@@ -60,10 +59,10 @@ public class BucketCommentTest extends TestBase {
       Assert.assertEquals(1, buckets.size());
       Assert.assertEquals(oriComment, buckets.get(0).getComment());
 
-      SetBucketCommentRequest setBucketCommentRequest = new SetBucketCommentRequest(bucketName);
-      setBucketCommentRequest.setComment(newComment);
+      PutBucketCommentRequest putBucketCommentRequest = new PutBucketCommentRequest(bucketName);
+      putBucketCommentRequest.setComment(newComment);
 
-      ossClient.putBucketComment(setBucketCommentRequest);
+      ossClient.putBucketComment(putBucketCommentRequest);
       BucketList newBucketList = ossClient.listBuckets(bucketName, "", 100);
 
       List<Bucket> newBuckets = newBucketList.getBucketList();

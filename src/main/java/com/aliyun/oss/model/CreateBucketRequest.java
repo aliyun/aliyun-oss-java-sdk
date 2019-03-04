@@ -25,8 +25,6 @@ public class CreateBucketRequest extends GenericRequest {
     private CannedAccessControlList cannedACL;
     private StorageClass storageClass;
     private DataRedundancyType dataRedundancyType;
-    // the comment of the bucket
-    private String comment;
 
     public CreateBucketRequest(String bucketName) {
         super(bucketName);
@@ -101,13 +99,5 @@ public class CreateBucketRequest extends GenericRequest {
     public CreateBucketRequest withAvailabilityZoneType(DataRedundancyType type) {
         setDataRedundancyType(type);
         return this;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
     }
 }
