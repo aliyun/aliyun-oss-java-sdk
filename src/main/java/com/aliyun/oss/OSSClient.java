@@ -1471,8 +1471,8 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public ObjectTagging getObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException {
-        return this.objectOperation.getObjectTagging(genericRequest);
+    public ObjectTagging getObjectTagging(GetObjectTaggingRequest getObjectTaggingRequest) throws OSSException, ClientException {
+        return this.objectOperation.getObjectTagging(getObjectTaggingRequest);
     }
 
     @Override
@@ -1481,8 +1481,8 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException {
-        this.objectOperation.deleteObjectTagging(genericRequest);
+    public void deleteObjectTagging(DeleteObjectTaggingRequest deleteObjectTaggingRequest) throws OSSException, ClientException {
+        this.objectOperation.deleteObjectTagging(deleteObjectTaggingRequest);
     }
 
     @Override
