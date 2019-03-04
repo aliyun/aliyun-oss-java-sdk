@@ -32,6 +32,9 @@ public class CopyObjectResult extends GenericResult {
     // Target object's last modified time.
     private Date lastModified;
 
+    // versionId
+    private String versionId;
+
     /**
      * Constructor
      */
@@ -76,4 +79,11 @@ public class CopyObjectResult extends GenericResult {
         this.lastModified = lastModified;
     }
 
+    public String getVersionId() {
+        return versionId;
+    }
+
+    public void setVersionId(String versionId) {
+        this.versionId = versionId;
+    }
 }

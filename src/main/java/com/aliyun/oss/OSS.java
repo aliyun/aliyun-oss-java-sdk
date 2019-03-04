@@ -581,6 +581,27 @@ public interface OSS {
     /**
      * Copies an existing file in OSS from source bucket to the target bucket.
      * If target file exists, it would be overwritten by the source file.
+     *
+     * @param sourceBucketName
+     *            Source object's bucket name.
+     * @param sourceKey
+     *            Source object's key.
+     * @param versionId
+     *            Object versionId
+     * @param destinationBucketName
+     *            Target object's bucket name.
+     * @param destinationKey
+     *            Target object's key.
+     * @return A {@link CopyObjectResult} instance.
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public CopyObjectResult copyObject(String sourceBucketName, String sourceKey, String versionId, String destinationBucketName,
+                                       String destinationKey) throws OSSException, ClientException;
+
+    /**
+     * Copies an existing file in OSS from source bucket to the target bucket.
+     * If target file exists, it would be overwritten by the source file.
      * 
      * @param copyObjectRequest
      *            A {@link CopyObjectRequest} instance that specifies source
