@@ -19,8 +19,10 @@
 
 package com.aliyun.oss.internal;
 
+import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.common.utils.LogUtils.logException;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
+import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
 
 import java.net.URI;
@@ -49,6 +51,7 @@ import com.aliyun.oss.common.parser.ResponseParseException;
 import com.aliyun.oss.common.parser.ResponseParser;
 import com.aliyun.oss.common.utils.ExceptionFactory;
 import com.aliyun.oss.internal.ResponseParsers.EmptyResponseParser;
+import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.WebServiceRequest;
 
 /**
@@ -189,6 +192,13 @@ public abstract class OSSOperation {
 
     protected ExecutionContext createDefaultContext(HttpMethod method) {
         return this.createDefaultContext(method, null, null);
+    }
+
+    protected String bucketNameCheck(GenericRequest request) throws OSSException, ClientException {
+        String bucketName = request.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        return bucketName;
     }
 
 }
