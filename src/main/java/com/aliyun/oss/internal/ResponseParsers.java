@@ -2887,7 +2887,7 @@ public final class ResponseParsers {
                     }
                     versionStorageTransitions.add(storageTransition);
                 }
-                rule.setStorageTransition(storageTransitions);
+                rule.setNoncurrentVersionTransitions(versionStorageTransitions);
 
                 lifecycleRules.add(rule);
             }
