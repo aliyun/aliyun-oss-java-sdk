@@ -1015,10 +1015,10 @@ public final class RequestMarshallers {
         public byte[] marshall(PutBucketVersioningRequest request) {
             StringBuffer xmlBody = new StringBuffer();
             xmlBody.append("<VersioningConfiguration>");
-            xmlBody.append("<Status>" + request.getBucketVersion().toString() + "</Status>");
+            xmlBody.append("<Status>" + request.getBucketVersion() + "</Status>");
             xmlBody.append("</VersioningConfiguration>");
 
-            byte[] rawData = null;
+            byte[] rawData;
             try {
                 rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
             } catch (UnsupportedEncodingException e) {
