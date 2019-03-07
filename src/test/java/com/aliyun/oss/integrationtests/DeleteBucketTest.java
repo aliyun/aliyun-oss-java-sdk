@@ -25,11 +25,13 @@ import static com.aliyun.oss.integrationtests.TestConstants.BUCKET_NOT_EMPTY_ERR
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aliyun.oss.model.DeleteObjectsRequest;
 import junit.framework.Assert;
 
 import org.junit.Test;
 
 import static com.aliyun.oss.integrationtests.TestUtils.batchPutObject;
+import static com.aliyun.oss.integrationtests.TestUtils.batchPutObjectDelete;
 
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
@@ -69,9 +71,9 @@ public class DeleteBucketTest extends TestBase {
         try {
             ossClient.createBucket(bucketName);
             
-            List<String> keys = new ArrayList<String>();
-            keys.add(key);
-            if (!batchPutObject(ossClient, bucketName, keys)) {
+            List<DeleteObjectsRequest.KeyVersion> keys = new ArrayList<DeleteObjectsRequest.KeyVersion>();
+            keys.add(new DeleteObjectsRequest.KeyVersion(key));
+            if (!batchPutObjectDelete(ossClient, bucketName, keys)) {
                 Assert.fail("batch put object failed");
             }
             

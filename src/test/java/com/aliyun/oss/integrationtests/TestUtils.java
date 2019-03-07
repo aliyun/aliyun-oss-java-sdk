@@ -42,6 +42,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import com.aliyun.oss.model.DeleteObjectsRequest;
 import junit.framework.Assert;
 
 import org.apache.http.HttpResponse;
@@ -195,11 +196,27 @@ public class TestUtils {
         }
     }
     
-    public static boolean batchPutObject(OSSClient client, String bucketName, List<String> objects) {
+    public static boolean batchPutObjectDelete(OSSClient client, String bucketName, List<DeleteObjectsRequest.KeyVersion> objects) {
         byte[] buf = new byte[1024];
         for (int i = 0; i < buf.length; i++)
             buf[i] = 'a';
         
+        for (DeleteObjectsRequest.KeyVersion o : objects) {
+            try {
+                client.putObject(bucketName, o.getKey(), new ByteArrayInputStream(buf), null);
+            } catch (Exception e) {
+                // Ignore the exception and return directly.
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean batchPutObject(OSSClient client, String bucketName, List<String> objects) {
+        byte[] buf = new byte[1024];
+        for (int i = 0; i < buf.length; i++)
+            buf[i] = 'a';
+
         for (String o : objects) {
             try {
                 client.putObject(bucketName, o, new ByteArrayInputStream(buf), null);
@@ -210,7 +227,9 @@ public class TestUtils {
         }
         return true;
     }
-    
+
+
+
     public static InputStream genFixedLengthInputStream(long fixedLength) {
         byte[] buf = new byte[(int)fixedLength];
         for (int i = 0; i < buf.length; i++)
