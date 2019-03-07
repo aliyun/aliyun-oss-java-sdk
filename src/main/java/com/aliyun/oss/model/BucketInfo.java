@@ -71,7 +71,7 @@ public class BucketInfo extends GenericResult {
     /*
      * 给bucket info添加状态
      */
-    private String bucketVersion = "disabled";
+    private String bucketVersion;
 
     public String getBucketVersion() {
         return bucketVersion;

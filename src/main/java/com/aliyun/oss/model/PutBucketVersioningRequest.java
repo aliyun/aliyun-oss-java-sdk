@@ -2,17 +2,17 @@ package com.aliyun.oss.model;
 
 public class PutBucketVersioningRequest extends  GenericRequest {
 
-    private BucketVersion bucketVersion;
+    private String bucketVersion;
 
     public PutBucketVersioningRequest(String bucketName) {
         super(bucketName);
     }
 
-    public BucketVersion getBucketVersion() {
+    public String getBucketVersion() {
         return bucketVersion;
     }
 
-    public void setBucketVersion(BucketVersion BucketVersion) {
-        this.bucketVersion = BucketVersion;
+    public void setBucketVersion(String bucketVersion) {
+        this.bucketVersion = bucketVersion;
     }
 }

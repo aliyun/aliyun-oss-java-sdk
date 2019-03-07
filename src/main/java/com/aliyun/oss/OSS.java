@@ -735,7 +735,7 @@ public interface OSS {
 
     /**
      * Gets all the metadata of {@link OSSObject}.
-     * 
+     *
      * @param getObjectMetaRequest
      *            Generic request which specifies the bucket name and object
      *            key.
@@ -758,7 +758,7 @@ public interface OSS {
     /**
      * Append the data to the appendable object specified in
      * {@link AppendObjectRequest}. It's not applicable to normal OSS object.
-     * 
+     *
      * @param appendObjectRequest
      *            A {@link AppendObjectRequest} instance which specifies the
      *            bucket name, appendable object key, the file or the
@@ -770,7 +770,7 @@ public interface OSS {
 
     /**
      * Deletes the specified {@link OSSObject} by bucket name and object key.
-     * 
+     *
      * @param bucketName
      *            Bucket name.
      * @param key
@@ -791,7 +791,7 @@ public interface OSS {
     /**
      * Deletes the specified {@link OSSObject} by the {@link GenericRequest}
      * instance.
-     * 
+     *
      * @param genericRequest
      *            The {@link GenericRequest} instance that specfies the bucket
      *            name and object key.
@@ -801,7 +801,7 @@ public interface OSS {
     /**
      * Batch deletes the specified files under a specific bucket. If the files
      * are non-exist, the operation will still return successful.
-     * 
+     *
      * @param deleteObjectsRequest
      *            A {@link DeleteObjectsRequest} instance which specifies the
      *            bucket and file keys to delete.
@@ -829,7 +829,7 @@ public interface OSS {
      * Checks if a specific {@link OSSObject} exists under the specific
      * {@link Bucket}. 302 Redirect or OSS mirroring will not impact the result
      * of this function.
-     * 
+     *
      * @param genericRequest
      *            A {@link GenericRequest} instance which specifies the bucket
      *            and object key.
@@ -841,7 +841,7 @@ public interface OSS {
      * Checks if a specific {@link OSSObject} exists under the specific
      * {@link Bucket}. 302 Redirect or OSS mirroring will impact the result of
      * this function if isOnlyInOSS is true.
-     * 
+     *
      * @param bucketName
      *            Bucket name.
      * @param key
@@ -857,7 +857,7 @@ public interface OSS {
 
     /**
      * Checks if a specific {@link OSSObject} exists.
-     * 
+     *
      * @param headObjectRequest
      *            A {@link HeadObjectRequest} instance which specifies the
      *            bucket name and object key. Constraint information is ignored.
@@ -868,7 +868,7 @@ public interface OSS {
 
     /**
      * Sets the Access Control List (ACL) on a {@link OSSObject} instance.
-     * 
+     *
      * @param bucketName
      *            Bucket name.
      * @param key
@@ -896,7 +896,7 @@ public interface OSS {
 
     /**
      * Sets the Access Control List (ACL) on a {@link OSSObject} instance.
-     * 
+     *
      * @param setObjectAclRequest
      *            A {@link SetObjectAclRequest} instance which specifies the
      *            object's bucket name and key as well as the ACL information.
@@ -905,7 +905,7 @@ public interface OSS {
 
     /**
      * Gets the Access Control List (ACL) of the OSS object.
-     * 
+     *
      * @param bucketName
      *            Bucket name.
      * @param key
@@ -928,7 +928,7 @@ public interface OSS {
 
     /**
      * Gets the Access Control List (ACL) of the OSS object.
-     * 
+     *
      * @param getObjectAclRequest
      *            A {@link GenericRequest} instance which specifies the bucket
      *            name and object key.
@@ -939,7 +939,7 @@ public interface OSS {
      * Restores the object of archive storage. The function is not applicable to
      * LRS or IA storage. The restoreObject() needs to be called prior to
      * calling getObject() on an archive object.
-     * 
+     *
      * @param bucketName
      *            Bucket name.
      * @param key
@@ -952,7 +952,7 @@ public interface OSS {
      * Restores the object of archive storage. The function is not applicable to
      * LRS or IA storage. The restoreObject() needs to be called prior to
      * calling getObject() on an archive object.
-     * 
+     *
      * @param genericRequest
      *            A {@link GenericRequest} instance that specifies the bucket
      *            name and object key.
@@ -963,7 +963,7 @@ public interface OSS {
     /**
      * Generates a signed url for accessing the {@link OSSObject} with HTTP GET
      * method.
-     * 
+     *
      * @param bucketName
      *            Bucket name.
      * @param key
@@ -979,7 +979,7 @@ public interface OSS {
     /**
      * Generates a signed url for accessing the {@link OSSObject} with a
      * specific HTTP method.
-     * 
+     *
      * @param bucketName
      *            Bucket name.
      * @param key
@@ -999,7 +999,7 @@ public interface OSS {
     /**
      * Generates a signed url for accessing the {@link OSSObject} with a
      * specific HTTP method.
-     * 
+     *
      * @param request
      *            A {@link GeneratePresignedUrlRequest} instance which specifies
      *            the bucket name, file key, expiration time, HTTP method, and
@@ -1012,7 +1012,7 @@ public interface OSS {
 
     /**
      * Sets image processing attributes on the specific {@link Bucket}
-     * 
+     *
      * @param request
      *            A {@link PutBucketImageRequest} instances which specifies some
      *            attributes of image processing.
@@ -1023,7 +1023,7 @@ public interface OSS {
 
     /**
      * Gets the image processing attributes on the specific {@link Bucket}.
-     * 
+     *
      * @param bucketName
      *            The bucket name
      * @return A {@link GetBucketImageResult} instance which has attributes of
@@ -2537,6 +2537,19 @@ public interface OSS {
      * @throws ClientException
      */
     public String getBucketVersioning(GenericRequest genericRequest) throws OSSException, ClientException;
+
+
+    /**
+     * Returns the versioning for the specified bucket.
+     *
+     * @param bucketName
+     *            The request object containing all the options on how to
+     *            get the bucket versioning.
+     * @return The versioning status for the bucket.
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public String getBucketVersioning(String bucketName) throws OSSException, ClientException;
 
     /**
      * set bucket Version
