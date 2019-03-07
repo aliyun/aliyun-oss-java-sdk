@@ -1070,11 +1070,11 @@ public class OSSBucketOperation extends OSSOperation {
         }
 
         if (listObjectVersionsRequest.getKeyMarker() != null) {
-            params.put(MARKER, listObjectVersionsRequest.getKeyMarker());
+            params.put(KEY_MARKER, listObjectVersionsRequest.getKeyMarker());
         }
 
         if (listObjectVersionsRequest.getVersionIdMarker() != null) {
-            params.put(MARKER, listObjectVersionsRequest.getVersionIdMarker());
+            params.put(VERSION_ID_MARKER, listObjectVersionsRequest.getVersionIdMarker());
         }
 
         if (listObjectVersionsRequest.getDelimiter() != null) {
@@ -1352,6 +1352,7 @@ public class OSSBucketOperation extends OSSOperation {
         ensureBucketNameValid(bucketName);
 
         Map<String, String> params = new LinkedHashMap<String, String>();
+        params.put(SUBRESOURCE_VERSIONS, null);
         populateListObjectVersionsRequestParameters(listObjectVersionsRequest, params);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
