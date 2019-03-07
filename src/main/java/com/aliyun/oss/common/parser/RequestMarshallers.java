@@ -461,8 +461,8 @@ public final class RequestMarshallers {
                 }
 
                 // 设置多版本 NoncurrentVersionExpiration
-                if (rule.getExpirationDays() != 0) {
-                    xmlBody.append("<NoncurrentVersionExpiration><NoncurrentDays>" + rule.getExpirationDays() + "</NoncurrentDays></NoncurrentVersionExpiration>");
+                if (rule.getNoncurrentVersionExpirationInDays() != 0) {
+                    xmlBody.append("<NoncurrentVersionExpiration><NoncurrentDays>" + rule.getNoncurrentVersionExpirationInDays() + "</NoncurrentDays></NoncurrentVersionExpiration>");
                 }
 
                 if (rule.hasAbortMultipartUpload()) {

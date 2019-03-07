@@ -400,6 +400,9 @@ public class LifecycleRule {
         return expiredObjectDeleteMarker;
     }
 
+    public boolean hasExpiredObjectDeleteMarker() {
+        return this.expiredObjectDeleteMarker == true;
+    }
 
     public void setExpiredObjectDeleteMarker(boolean expiredObjectDeleteMarker) {
         this.expiredObjectDeleteMarker = expiredObjectDeleteMarker;
