@@ -200,7 +200,7 @@ public class LifecycleRule {
     private Date createdBeforeDate;
 
     // deletemarker
-    private boolean expiredObjectDeleteMarker = false;
+    private boolean expiredObjectDeleteMarker;
 
     // 历史版本设置过期天数
     private int noncurrentVersionExpirationInDays;

@@ -2823,6 +2823,8 @@ public final class ResponseParsers {
                         rule.setExpirationTime(expirationDate);
                     } else if (ruleElem.getChild("Expiration").getChild("Days") != null) {
                         rule.setExpirationDays(Integer.parseInt(ruleElem.getChild("Expiration").getChildText("Days")));
+                    } else if(ruleElem.getChild("Expiration").getChild("ExpiredObjectDeleteMarker") != null){
+                        rule.setExpiredObjectDeleteMarker(Boolean.valueOf(ruleElem.getChild("Expiration").getChildText("ExpiredObjectDeleteMarker")));
                     } else {
                         Date createdBeforeDate = DateUtil
                                 .parseIso8601Date(ruleElem.getChild("Expiration").getChildText("CreatedBeforeDate"));

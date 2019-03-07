@@ -452,6 +452,8 @@ public final class RequestMarshallers {
                     xmlBody.append("<Expiration><Date>" + formatDate + "</Date></Expiration>");
                 } else if (rule.getExpirationDays() != 0) {
                     xmlBody.append("<Expiration><Days>" + rule.getExpirationDays() + "</Days></Expiration>");
+                } else if (rule.isExpiredObjectDeleteMarker()){
+                    xmlBody.append("<Expiration><ExpiredObjectDeleteMarker>" + rule.isExpiredObjectDeleteMarker() + "</ExpiredObjectDeleteMarker></Expiration>");
                 } else if (rule.getCreatedBeforeDate() != null) {
                     String formatDate = DateUtil.formatIso8601Date(rule.getCreatedBeforeDate());
                     xmlBody.append(
