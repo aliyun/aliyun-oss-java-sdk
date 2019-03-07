@@ -120,7 +120,7 @@ public class TestBase {
         }
 
         // delete objects
-        List<String> allObjects = listAllObjects(client, bucketName);
+        List<DeleteObjectsRequest.KeyVersion> allObjects = listAllObjects(client, bucketName);
         int total = allObjects.size();
         if (total > 0) {
             int opLoops = total / DELETE_OBJECTS_ONETIME_LIMIT;
@@ -128,7 +128,7 @@ public class TestBase {
                 opLoops++;
             }
             
-            List<String> objectsToDel = null;
+            List<DeleteObjectsRequest.KeyVersion> objectsToDel = null;
             for (int i = 0; i < opLoops; i++) {
                 int fromIndex = i * DELETE_OBJECTS_ONETIME_LIMIT;
                 int len = 0;
@@ -184,8 +184,8 @@ public class TestBase {
         } while (multipartUploadListing != null && multipartUploadListing.isTruncated());
     }
     
-    protected static List<String> listAllObjects(OSSClient client, String bucketName) {
-        List<String> objs = new ArrayList<String>();
+    protected static List<DeleteObjectsRequest.KeyVersion> listAllObjects(OSSClient client, String bucketName) {
+        List<DeleteObjectsRequest.KeyVersion> objs = new ArrayList<DeleteObjectsRequest.KeyVersion>();
         ObjectListing objectListing = null;
         String nextMarker = null;
         
@@ -203,9 +203,11 @@ public class TestBase {
             List<OSSObjectSummary> sums = objectListing.getObjectSummaries();
             for (OSSObjectSummary s : sums) {
                 if (DEFAULT_ENCODING_TYPE.equals(objectListing.getEncodingType())) {
-                    objs.add(HttpUtil.urlDecode(s.getKey(), "UTF-8"));
+                    DeleteObjectsRequest.KeyVersion keyVersion = new DeleteObjectsRequest.KeyVersion(HttpUtil.urlDecode(s.getKey(), "UTF-8"));
+                    objs.add(keyVersion);
                 } else {
-                    objs.add(s.getKey());
+                    DeleteObjectsRequest.KeyVersion keyVersion = new DeleteObjectsRequest.KeyVersion(s.getKey());
+                    objs.add(keyVersion);
                 }
             }
         } while (objectListing.isTruncated());
