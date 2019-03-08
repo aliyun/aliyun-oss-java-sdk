@@ -257,7 +257,7 @@ public class OSSClient implements OSS {
             return false;
         }
 
-        if (ia.getHostName().equals(ia.getHostAddress())) {
+        if (uri.getHost().equals(ia.getHostAddress())) {
             return true;
         }
 
