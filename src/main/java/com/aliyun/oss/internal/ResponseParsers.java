@@ -1190,7 +1190,9 @@ public final class ResponseParsers {
                         ossObjectSummary.setType(ObjectTypeList.parse(type));
                     }
                     ossObjectSummary.setLastModified(DateUtil.parseIso8601Date(elem.getChildText("LastModified")));
-                    ossObjectSummary.setSize(Long.valueOf(elem.getChildText("Size")));
+                    if (elem.getChildText("Size") != null) {
+                        ossObjectSummary.setSize(Long.valueOf(elem.getChildText("Size")));
+                    }
                     ossObjectSummary.setStorageClass(elem.getChildText("StorageClass"));
                     ossObjectSummary.setBucketName(objectListing.getBucketName());
 
@@ -2506,7 +2508,7 @@ public final class ResponseParsers {
             // bucket versioninig
             Element bucketVersionInfoElement = bucketElem.getChild("Versioning");
             if (bucketVersionInfoElement != null) {
-                bucketInfo.setBucketVersion(bucketVersionInfoElement.getChildText("Versioning"));
+                bucketInfo.setBucketVersion(bucketElem.getChildText("Versioning"));
             }
             
             return bucketInfo;
