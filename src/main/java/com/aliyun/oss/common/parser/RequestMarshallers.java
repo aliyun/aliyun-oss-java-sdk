@@ -494,12 +494,12 @@ public final class RequestMarshallers {
                 // 设置多版本历史转换生命周期当前版本和历史版本
                 if (rule.hasNoncurrentVersionTransitions()) {
                     for (LifecycleRule.NoncurrentVersionTransition storageTransition : rule.getNoncurrentVersionTransitions()) {
-                        xmlBody.append("<NonCurrentVersionTransition>");
+                        xmlBody.append("<NoncurrentVersionTransition>");
                         if (storageTransition.hasExpirationDays()) {
-                            xmlBody.append("<Days>" + storageTransition.getExpirationDays() + "</Days>");
+                            xmlBody.append("<NoncurrentDays>" + storageTransition.getExpirationDays() + "</NoncurrentDays>");
                         }
                         xmlBody.append("<StorageClass>" + storageTransition.getStorageClass() + "</StorageClass>");
-                        xmlBody.append("</NonCurrentVersionTransition>");
+                        xmlBody.append("</NoncurrentVersionTransition>");
                     }
                 }
 

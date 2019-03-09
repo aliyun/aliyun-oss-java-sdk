@@ -2876,12 +2876,12 @@ public final class ResponseParsers {
 
 
                 // 解析历史版本存储
-                List<Element> versionTransitionElements = ruleElem.getChildren("NonCurrentVersionTransition");
+                List<Element> versionTransitionElements = ruleElem.getChildren("NoncurrentVersionTransition");
                 List<LifecycleRule.NoncurrentVersionTransition> versionStorageTransitions = new ArrayList<LifecycleRule.NoncurrentVersionTransition>();
                 for (Element transitionElem : versionTransitionElements) {
                     LifecycleRule.NoncurrentVersionTransition storageTransition = new LifecycleRule.NoncurrentVersionTransition();
-                    if (transitionElem.getChild("Days") != null) {
-                        storageTransition.setExpirationDays(Integer.parseInt(transitionElem.getChildText("Days")));
+                    if (transitionElem.getChild("NoncurrentDays") != null) {
+                        storageTransition.setExpirationDays(Integer.parseInt(transitionElem.getChildText("NoncurrentDays")));
                     }
 
                     if (transitionElem.getChild("StorageClass") != null) {
