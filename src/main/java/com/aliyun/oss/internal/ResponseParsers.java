@@ -703,6 +703,7 @@ public final class ResponseParsers {
             try {
                 RestoreObjectResult result = new RestoreObjectResult(response.getStatusCode());
                 result.setRequestId(response.getRequestId());
+                result.setVersionId(response.getVersionId());
                 return result;
             } finally {
                 safeCloseResponse(response);

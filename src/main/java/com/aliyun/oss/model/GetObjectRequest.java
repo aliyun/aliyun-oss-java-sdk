@@ -41,6 +41,8 @@ public class GetObjectRequest extends GenericRequest {
 
     private ResponseHeaderOverrides responseHeaders;
 
+    private String versionId;
+
     /**
      * Fields releated with getobject operation by using url signature.
      */
@@ -57,6 +59,18 @@ public class GetObjectRequest extends GenericRequest {
      */
     public GetObjectRequest(String bucketName, String key) {
         super(bucketName, key);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param key
+     *            Object Key.
+     */
+    public GetObjectRequest(String bucketName, String key, String versionId) {
+        super(bucketName, key, versionId);
     }
 
     /**
@@ -300,4 +314,11 @@ public class GetObjectRequest extends GenericRequest {
         this.process = process;
     }
 
+    public void setVersionId(String versionId) {
+        this.versionId = versionId;
+    }
+
+    public String getVersionId() {
+        return versionId;
+    }
 }

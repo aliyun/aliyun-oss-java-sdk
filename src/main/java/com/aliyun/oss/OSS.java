@@ -625,6 +625,18 @@ public interface OSS {
     public OSSObject getObject(String bucketName, String key) throws OSSException, ClientException;
 
     /**
+     * Gets a {@link OSSObject} from {@link Bucket}.
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param key
+     *            Object Key.
+     * @return A {@link OSSObject} instance. The caller is responsible to close
+     *         the connection after usage.
+     */
+    public OSSObject getObject(String bucketName, String key, String versionId) throws OSSException, ClientException;
+
+    /**
      * Downloads the file from a file specified by the {@link GetObjectRequest}
      * parameter.
      * 
@@ -946,8 +958,20 @@ public interface OSS {
      *            Object Key.
      * @return A {@link RestoreObjectResult} instance.
      */
-    public RestoreObjectResult restoreObject(String bucketName, String key) throws OSSException, ClientException;
+    public RestoreObjectResult restoreObject(String bucketName, String key, String versionId) throws OSSException, ClientException;
 
+    /**
+     * Restores the object of archive storage. The function is not applicable to
+     * LRS or IA storage. The restoreObject() needs to be called prior to
+     * calling getObject() on an archive object.
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param key
+     *            Object Key.
+     * @return A {@link RestoreObjectResult} instance.
+     */
+    public RestoreObjectResult restoreObject(String bucketName, String key) throws OSSException, ClientException;
     /**
      * Restores the object of archive storage. The function is not applicable to
      * LRS or IA storage. The restoreObject() needs to be called prior to
