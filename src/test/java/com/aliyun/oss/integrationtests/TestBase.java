@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import com.aliyun.oss.model.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -43,18 +44,6 @@ import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.common.utils.HttpUtil;
-import com.aliyun.oss.model.AbortMultipartUploadRequest;
-import com.aliyun.oss.model.Bucket;
-import com.aliyun.oss.model.BucketList;
-import com.aliyun.oss.model.DeleteObjectsRequest;
-import com.aliyun.oss.model.ListBucketsRequest;
-import com.aliyun.oss.model.ListMultipartUploadsRequest;
-import com.aliyun.oss.model.ListObjectsRequest;
-import com.aliyun.oss.model.LiveChannel;
-import com.aliyun.oss.model.MultipartUpload;
-import com.aliyun.oss.model.MultipartUploadListing;
-import com.aliyun.oss.model.OSSObjectSummary;
-import com.aliyun.oss.model.ObjectListing;
 
 public class TestBase {
     
@@ -155,6 +144,49 @@ public class TestBase {
         // delete bucket
         client.deleteBucket(bucketName);
     }
+
+
+    protected static void deleteBucketWithObjectVersions(OSSClient client, String bucketName) {
+        if (!client.doesBucketExist(bucketName)) {
+            return;
+        }
+
+        // delete objects
+        List<DeleteObjectsRequest.KeyVersion> allObjects = listAllObjectsWithVersions(client, bucketName);
+        int total = allObjects.size();
+        if (total > 0) {
+            int opLoops = total / DELETE_OBJECTS_ONETIME_LIMIT;
+            if (total % DELETE_OBJECTS_ONETIME_LIMIT != 0) {
+                opLoops++;
+            }
+
+            List<DeleteObjectsRequest.KeyVersion> objectsToDel = null;
+            for (int i = 0; i < opLoops; i++) {
+                int fromIndex = i * DELETE_OBJECTS_ONETIME_LIMIT;
+                int len = 0;
+                if (total <= DELETE_OBJECTS_ONETIME_LIMIT) {
+                    len = total;
+                } else {
+                    len = (i + 1 == opLoops) ? (total - fromIndex) : DELETE_OBJECTS_ONETIME_LIMIT;
+                }
+                objectsToDel = allObjects.subList(fromIndex, fromIndex + len);
+
+                DeleteObjectsRequest deleteObjectsRequest = new DeleteObjectsRequest(bucketName);
+                deleteObjectsRequest.setEncodingType(DEFAULT_ENCODING_TYPE);
+                deleteObjectsRequest.setKeys(objectsToDel);
+                client.deleteObjects(deleteObjectsRequest);
+            }
+        }
+
+        // delete live channels
+        List<LiveChannel> channels = ossClient.listLiveChannels(bucketName);
+        for (LiveChannel channel : channels) {
+            ossClient.deleteLiveChannel(bucketName, channel.getName());
+        }
+
+        // delete bucket
+        client.deleteBucket(bucketName);
+    }
     
     protected static void abortAllMultipartUploads(OSSClient client, String bucketName) {        
         if (!client.doesBucketExist(bucketName)) {
@@ -214,6 +246,37 @@ public class TestBase {
         
         return objs;
     }
+
+    protected static List<DeleteObjectsRequest.KeyVersion> listAllObjectsWithVersions(OSSClient client, String bucketName) {
+        List<DeleteObjectsRequest.KeyVersion> objs = new ArrayList<DeleteObjectsRequest.KeyVersion>();
+        ObjectVersionsListing objectListing = null;
+        String nextMarker = null;
+
+        do {
+            ListObjectVersionsRequest listObjectVersionsRequest = new ListObjectVersionsRequest(bucketName, null, nextMarker, null, null,
+                    DELETE_OBJECTS_ONETIME_LIMIT);
+            listObjectVersionsRequest.setEncodingType(DEFAULT_ENCODING_TYPE);
+            objectListing = client.listObjectVersions(listObjectVersionsRequest);
+            if (DEFAULT_ENCODING_TYPE.equals(objectListing.getEncodingType())) {
+                nextMarker = HttpUtil.urlDecode(objectListing.getNextMarker(), "UTF-8");
+            } else {
+                nextMarker = objectListing.getNextMarker();
+            }
+
+            List<OSSObjectVersionSummary> sums = objectListing.getObjectSummaries();
+            for (OSSObjectVersionSummary s : sums) {
+                if (DEFAULT_ENCODING_TYPE.equals(objectListing.getEncodingType())) {
+                    DeleteObjectsRequest.KeyVersion keyVersion = new DeleteObjectsRequest.KeyVersion(HttpUtil.urlDecode(s.getKey(), "UTF-8"),s.getVersionId());
+                    objs.add(keyVersion);
+                } else {
+                    DeleteObjectsRequest.KeyVersion keyVersion = new DeleteObjectsRequest.KeyVersion(s.getKey());
+                    objs.add(keyVersion);
+                }
+            }
+        } while (objectListing.isTruncated());
+
+        return objs;
+    }
     
     protected static List<String> listAllBuckets(OSSClient client, String bucketPrefix) {
         List<String> bkts = new ArrayList<String>();
@@ -240,7 +303,17 @@ public class TestBase {
             deleteBucketWithObjects(client, b);
         }
     }
-    
+
+    protected static void cleanUpAllBucketsWithVersion(OSSClient client, String bucketPrefix) {
+        List<String> bkts = listAllBuckets(client, bucketPrefix);
+        for (String b : bkts) {
+            abortAllMultipartUploads(client, b);
+            deleteBucketWithObjectVersions(client, b);
+        }
+    }
+
+
+
     public static void cleanUp() {
         if (ossClient != null) {
             ossClient.shutdown();
