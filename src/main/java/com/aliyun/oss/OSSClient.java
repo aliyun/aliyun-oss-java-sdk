@@ -1516,6 +1516,16 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public ObjectVersionsListing listObjectVersions(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.listObjectVersions(new ListObjectVersionsRequest(bucketName, null, null, null, null, null));
+    }
+
+    @Override
+    public ObjectVersionsListing listObjectVersions(String bucketName, String prefix) throws OSSException, ClientException {
+        return this.bucketOperation.listObjectVersions(new ListObjectVersionsRequest(bucketName, prefix, null, null, null,null));
+    }
+
+    @Override
     public ObjectVersionsListing listObjectVersions(ListObjectVersionsRequest listObjectVersionsRequest) throws OSSException, ClientException {
         return this.bucketOperation.listObjectVersions(listObjectVersionsRequest);
     }

@@ -2583,6 +2583,27 @@ public interface OSS {
      */
     public void putBucketVersioning(PutBucketVersioningRequest putBucketVersioningRequest) throws OSSException,ClientException;
 
+
+    /**
+     * listObjectVersions
+     * @param bucketName
+     * @return
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public ObjectVersionsListing listObjectVersions(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * listObjectsVersions
+     * @param bucketName
+     * @param prefix
+     * @return
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public ObjectVersionsListing listObjectVersions(String bucketName, String prefix) throws OSSException, ClientException;
+
+
     /**
      * Lists all objects under the specified {@link Bucket} in the parameter of
      * {@link ListObjectVersionsRequest}
