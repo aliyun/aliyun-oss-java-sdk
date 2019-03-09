@@ -553,6 +553,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public OSSObject getObject(String bucketName, String key, String versionId) throws OSSException, ClientException {
+        return this.getObject(new GetObjectRequest(bucketName, key, versionId));
+    }
+
+    @Override
     public ObjectMetadata getObject(GetObjectRequest getObjectRequest, File file) throws OSSException, ClientException {
         return objectOperation.getObject(getObjectRequest, file);
     }
@@ -691,6 +696,11 @@ public class OSSClient implements OSS {
     @Override
     public RestoreObjectResult restoreObject(String bucketName, String key) throws OSSException, ClientException {
         return this.restoreObject(new GenericRequest(bucketName, key));
+    }
+
+    @Override
+    public RestoreObjectResult restoreObject(String bucketName, String key, String versionId) throws OSSException, ClientException {
+        return this.restoreObject(new GenericRequest(bucketName, key, versionId));
     }
 
     @Override
