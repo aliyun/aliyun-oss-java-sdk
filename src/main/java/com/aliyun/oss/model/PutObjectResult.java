@@ -32,6 +32,9 @@ public class PutObjectResult extends GenericResult implements CallbackResult {
     // The callback response body. Caller needs to close it.
     private InputStream callbackResponseBody;
 
+    // versionId
+    private String versionId;
+
     /**
      * Gets the target {@link OSSObject}'s ETag.
      * 
@@ -74,4 +77,19 @@ public class PutObjectResult extends GenericResult implements CallbackResult {
         this.callbackResponseBody = callbackResponseBody;
     }
 
+    /**
+     * set versionId
+      * @param versionId
+     */
+    public void setVersionId(String versionId) {
+        this.versionId = versionId;
+    }
+
+    /**
+     * getVersionId
+     * @return
+     */
+    public String getVersionId() {
+        return versionId;
+    }
 }
