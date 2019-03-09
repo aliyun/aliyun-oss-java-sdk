@@ -568,6 +568,7 @@ public final class ResponseParsers {
             try {
                 result.setETag(trimQuotes(response.getHeaders().get(OSSHeaders.ETAG)));
                 result.setRequestId(response.getRequestId());
+                result.setVersionId(response.getVersionId());
                 setCRC(result, response);
                 return result;
             } finally {
