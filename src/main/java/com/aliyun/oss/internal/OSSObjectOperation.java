@@ -520,9 +520,6 @@ public class OSSObjectOperation extends OSSOperation {
         String key = setObjectAclRequest.getKey();
         CannedAccessControlList cannedAcl = setObjectAclRequest.getCannedACL();
 
-//        获取versionId
-        String versionId = setObjectAclRequest.getVersionId();
-
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         assertParameterNotNull(key, "key");
@@ -535,8 +532,8 @@ public class OSSObjectOperation extends OSSOperation {
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_ACL, null);
 
-        if (versionId != null) {
-            params.put("versionId", versionId);
+        if (setObjectAclRequest.getVersionId() != null) {
+            params.put(VERSION_ID, setObjectAclRequest.getVersionId());
         }
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
@@ -553,8 +550,6 @@ public class OSSObjectOperation extends OSSOperation {
         String bucketName = getObjectAclRequest.getBucketName();
         String key = getObjectAclRequest.getKey();
 
-        String versionId = getObjectAclRequest.getVersionId();
-
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
         assertParameterNotNull(key, "key");
@@ -563,8 +558,8 @@ public class OSSObjectOperation extends OSSOperation {
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_ACL, null);
 
-        if (versionId != null ) {
-            params.put(VERSION_ID, versionId);
+        if (getObjectAclRequest.getVersionId() != null ) {
+            params.put(VERSION_ID, getObjectAclRequest.getVersionId());
         }
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
@@ -588,6 +583,10 @@ public class OSSObjectOperation extends OSSOperation {
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(RequestParameters.SUBRESOURCE_RESTORE, null);
+
+        if (genericRequest.getVersionId() != null) {
+            params.put(VERSION_ID, genericRequest.getVersionId());
+        }
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.POST).setBucket(bucketName).setKey(key).setParameters(params)
