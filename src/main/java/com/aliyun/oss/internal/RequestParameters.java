@@ -110,5 +110,5 @@ public final class RequestParameters {
     public static final String SINCE = "since";
     public static final String TAIL = "tail";
 
-    public static final String VERSION_ID = "versionId";
+    public static final String VERSION_ID = "versionid";
 }
