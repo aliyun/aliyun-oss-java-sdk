@@ -41,7 +41,6 @@ public class SetObjectTaggingRequest extends GenericRequest {
     this.setBucketName(bucketName);
     this.setKey(key);
     this.tagging = tagging;
-    setVersionId(null);
   }
 
   public SetObjectTaggingRequest(String bucketName, String key, ObjectTagging tagging, String versionId) {
