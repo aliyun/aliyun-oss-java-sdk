@@ -344,9 +344,19 @@ public final class RequestMarshallers {
                     if (redirect.getHttpRedirectCode() != null) {
                         xmlBody.append("<HttpRedirectCode>" + redirect.getHttpRedirectCode() + "</HttpRedirectCode>");
                     }
+
                     if (redirect.getMirrorURL() != null) {
                         xmlBody.append("<MirrorURL>" + redirect.getMirrorURL() + "</MirrorURL>");
                     }
+
+                    if (redirect.getMirrorURLs() != null && redirect.getMirrorURLs().size() > 0) {
+                        xmlBody.append("<MirrorMultiAlternates>");
+                        for (int i = 0; i < redirect.getMirrorURLs().size(); i++) {
+                            xmlBody.append("<MirrorMultiAlternate><MirrorMultiAlternateNumber>" + redirect.getMirrorURLs().get(i).get("number") + "</MirrorMultiAlternateNumber><MirrorMultiAlternateURL>" + redirect.getMirrorURLs().get(i).get("url") + "</MirrorMultiAlternateURL></MirrorMultiAlternate>");
+                        }
+                        xmlBody.append("</MirrorMultiAlternates>");
+                    }
+
                     if (redirect.getMirrorSecondaryURL() != null) {
                         xmlBody.append("<MirrorURLSlave>" + redirect.getMirrorSecondaryURL() + "</MirrorURLSlave>");
                     }
