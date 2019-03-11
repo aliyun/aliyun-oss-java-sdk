@@ -439,12 +439,9 @@ public class OSSObjectOperation extends OSSOperation {
 
         Map<String, String> params = new HashMap<String, String>();
 
-        // 备注之前的逻辑有判空操作，实际上传入null应该支持删除versionId为Null的版本
-//        if (genericRequest.getVersionId() != null) {
-//            params.put(VERSION_ID, genericRequest.getVersionId());
-//        }
-
-        params.put(VERSION_ID, genericRequest.getVersionId());
+        if (genericRequest.getVersionId() != null) {
+            params.put(VERSION_ID, genericRequest.getVersionId());
+        }
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(key).setParameters(params).setOriginalRequest(genericRequest)
