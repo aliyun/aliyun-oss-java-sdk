@@ -1984,6 +1984,21 @@ public final class ResponseParsers {
                             redirectElem.getChildText("MirrorDstVpcId"));
                     }
 
+                    Element mirrorURLsElem = redirectElem.getChild("MirrorMultiAlternates");
+                    if (mirrorURLsElem != null) {
+                        List<Element> mirrorURLElementList = mirrorURLsElem.getChildren("MirrorMultiAlternate");
+                        if (mirrorURLElementList != null && mirrorURLElementList.size() > 0) {
+                            List<Map<String, String>> mirrorURLsList = new ArrayList<Map<String, String>>();
+                            for (Element setElement : mirrorURLElementList) {
+                                Map<String, String> map = new HashMap<String, String>();
+                                map.put("number", setElement.getChildText("MirrorMultiAlternateNumber"));
+                                map.put("url", setElement.getChildText("MirrorMultiAlternateURL"));
+                                mirrorURLsList.add(map);
+                            }
+                            rule.getRedirect().setMirrorURLs(mirrorURLsList);
+                        }
+                    }
+
                     Element mirrorHeadersElem = redirectElem.getChild("MirrorHeaders");
                     if (mirrorHeadersElem != null) {
                         RoutingRule.MirrorHeaders mirrorHeaders = new RoutingRule.MirrorHeaders();

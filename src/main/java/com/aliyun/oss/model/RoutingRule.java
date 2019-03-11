@@ -340,6 +340,10 @@ public class RoutingRule {
             this.mirrorURL = mirrorURL;
         }
 
+        public List<Map<String, String>> getMirrorURLs() { return mirrorURLs; }
+
+        public void setMirrorURLs(List<Map<String, String>> mirrorURLs) { this.mirrorURLs = mirrorURLs; }
+
         public String getMirrorSecondaryURL() {
             return mirrorSecondaryURL;
         }
@@ -565,6 +569,8 @@ public class RoutingRule {
         private String mirrorDstVpcId;
 
         private MirrorHeaders mirrorHeaders;
+
+        private List<Map<String, String>> mirrorURLs;
 
     }
 
