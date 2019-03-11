@@ -22,6 +22,8 @@ package com.aliyun.oss.integrationtests;
 import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_BUCKET_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_WEBSITE_CONFIGURATION_ERR;
 import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
+
+import com.aliyun.oss.common.utils.LogUtils;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -31,6 +33,11 @@ import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.BucketWebsiteResult;
 import com.aliyun.oss.model.RoutingRule;
 import com.aliyun.oss.model.SetBucketWebsiteRequest;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BucketWebsiteTest extends TestBase {
 
@@ -215,6 +222,71 @@ public class BucketWebsiteTest extends TestBase {
             Assert.assertTrue(rr.getRedirect().isMirrorPassOriginalSlashes());
             Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
             
+            ossClient.deleteBucketWebsite(bucketName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        } finally {
+            ossClient.deleteBucket(bucketName);
+        }
+    }
+
+    @Test
+    public void testNormalSetBucketWebsiteWithMirrorURLs() {
+        final String bucketName = "normal-set-bucket-website-mirror";
+        final String indexDocument = "index.html";
+
+        try {
+            ossClient.createBucket(bucketName);
+
+            // Set index document and mirror
+            SetBucketWebsiteRequest request = new SetBucketWebsiteRequest(bucketName);
+            RoutingRule rule = new RoutingRule();
+            rule.setNumber(1);
+            rule.getCondition().setHttpErrorCodeReturnedEquals(404);
+            rule.getRedirect().setRedirectType(RoutingRule.RedirectType.Mirror);
+            rule.getRedirect().setMirrorURL("http://oss-test.aliyun-inc.com/mirror-test/");
+
+            List<Map<String, String>> mirrorURLs = new ArrayList<Map<String, String>>();
+            Map<String, String> urlInfo1 = new HashMap<String, String>();
+            urlInfo1.put("number", "1");
+            urlInfo1.put("url", "http://1.com/1/");
+
+            Map<String, String> urlInfo2 = new HashMap<String, String>();
+            urlInfo2.put("number", "2");
+            urlInfo2.put("url", "http://2.com/2/");
+
+            Map<String, String> urlInfo3 = new HashMap<String, String>();
+            urlInfo3.put("number", "3");
+            urlInfo3.put("url", "http://3.com/3/");
+
+            mirrorURLs.add(urlInfo1);
+            mirrorURLs.add(urlInfo2);
+            mirrorURLs.add(urlInfo3);
+
+            System.out.println(mirrorURLs.toString());
+
+            rule.getRedirect().setMirrorURLs(mirrorURLs);
+
+            request.setIndexDocument(indexDocument);
+            request.AddRoutingRule(rule);
+            ossClient.setBucketWebsite(request);
+
+            waitForCacheExpiration(5);
+
+            // check
+            BucketWebsiteResult result = ossClient.getBucketWebsite(bucketName);
+            Assert.assertEquals(indexDocument, result.getIndexDocument());
+            Assert.assertEquals(result.getRoutingRules().size(), 1);
+            RoutingRule rr = result.getRoutingRules().get(0);
+            Assert.assertEquals(rr.getNumber().intValue(), 1);
+            Assert.assertEquals(rr.getCondition().getHttpErrorCodeReturnedEquals().intValue(), 404);
+            Assert.assertEquals(rr.getRedirect().getRedirectType(), RoutingRule.RedirectType.Mirror);
+            Assert.assertEquals(rr.getRedirect().getMirrorURLs().size(), 3);
+            Assert.assertEquals(rr.getRedirect().getMirrorURLs().get(0).get("url"), "http://1.com/1/");
+            Assert.assertEquals(rr.getRedirect().getMirrorURLs().get(0).get("number"), "1");
+            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
+
             ossClient.deleteBucketWebsite(bucketName);
         } catch (Exception e) {
             e.printStackTrace();
