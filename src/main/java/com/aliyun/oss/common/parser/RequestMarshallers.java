@@ -503,6 +503,16 @@ public final class RequestMarshallers {
                     }
                 }
 
+                // 设置Tag生命周期
+                if (rule.hasTagKeyValue()) {
+                    for(LifecycleRule.TagKeyValue tagKeyValue: rule.getTagKeyValues()) {
+                        xmlBody.append("<Tag>");
+                        xmlBody.append("<Key>" + tagKeyValue.getKey() + "</Key>");
+                        xmlBody.append("<Value>" + tagKeyValue.getValue() + "</Value>");
+                        xmlBody.append("</Tag");
+                    }
+                }
+
                 xmlBody.append("</Rule>");
             }
             xmlBody.append("</LifecycleConfiguration>");

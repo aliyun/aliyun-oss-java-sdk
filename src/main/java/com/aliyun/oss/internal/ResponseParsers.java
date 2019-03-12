@@ -2893,6 +2893,24 @@ public final class ResponseParsers {
                 }
                 rule.setNoncurrentVersionTransitions(versionStorageTransitions);
 
+                // 解析Tag标签生命周期
+                List<Element> tagElements = ruleElem.getChildren("Tag");
+                List<LifecycleRule.TagKeyValue> tagKeyValues  = new ArrayList<LifecycleRule.TagKeyValue>();
+                for (Element tagElement : tagElements) {
+                    LifecycleRule.TagKeyValue  tagKeyValue = new LifecycleRule.TagKeyValue();
+
+                    if (tagElement.getChild("Key") != null) {
+                        tagKeyValue.setKey(tagElement.getChildText("Key"));
+                    }
+
+                    if (tagElement.getChild("Value") != null) {
+                        tagKeyValue.setValue(tagElement.getChildText("Value"));
+                    }
+
+                    tagKeyValues.add(tagKeyValue);
+                }
+                rule.setTagKeyValues(tagKeyValues);
+
                 lifecycleRules.add(rule);
             }
 
