@@ -1134,12 +1134,12 @@ public final class ResponseParsers {
 
             if (root.getChild("NextKeyMarker") != null) {
                 String nextKeyMarker = root.getChildText("NextKeyMarker");
-                objectListing.setNextMarker(isNullOrEmpty(nextKeyMarker) ? null : nextKeyMarker);
+                objectListing.setNextKeyMarker(isNullOrEmpty(nextKeyMarker) ? null : nextKeyMarker);
             }
 
             if (root.getChild("NextVersionIdMarker") != null) {
                 String nextVersionIdMarker = root.getChildText("NextVersionIdMarker");
-                objectListing.setNextMarker(isNullOrEmpty(nextVersionIdMarker) ? null : nextVersionIdMarker);
+                objectListing.setNextVersionIdMarker(isNullOrEmpty(nextVersionIdMarker) ? null : nextVersionIdMarker);
             }
 
             if (root.getChild("EncodingType") != null) {
@@ -1147,42 +1147,10 @@ public final class ResponseParsers {
                 objectListing.setEncodingType(isNullOrEmpty(encodingType) ? null : encodingType);
             }
 
-            List<Element> objectSummaryElems = root.getChildren("Version");
-
-            for (Element elem : objectSummaryElems) {
-                OSSObjectVersionSummary ossObjectSummary = new OSSObjectVersionSummary();
-
-                // Version下面的deleteMarker都是false
-                ossObjectSummary.setDeleteMarker(false);
-                ossObjectSummary.setKey(elem.getChildText("Key"));
-                ossObjectSummary.setVersionId(elem.getChildText("VersionId"));
-                ossObjectSummary.setIsLatest(elem.getChildText("IsLatest"));
-                ossObjectSummary.setETag(trimQuotes(elem.getChildText("ETag")));
-                String type = trimQuotes(elem.getChildText("Type"));
-                if (!StringUtils.isNullOrEmpty(type)) {
-                    ossObjectSummary.setType(ObjectTypeList.parse(type));
-                }
-                ossObjectSummary.setLastModified(DateUtil.parseIso8601Date(elem.getChildText("LastModified")));
-                ossObjectSummary.setSize(Long.valueOf(elem.getChildText("Size")));
-                ossObjectSummary.setStorageClass(elem.getChildText("StorageClass"));
-                ossObjectSummary.setBucketName(objectListing.getBucketName());
-
-                String id = elem.getChild("Owner").getChildText("ID");
-                String displayName = elem.getChild("Owner").getChildText("DisplayName");
-                ossObjectSummary.setOwner(new Owner(id, displayName));
-
-                objectListing.addObjectSummary(ossObjectSummary);
-            }
-
-            // 获取deleteMarker
-            List<Element> objectDeleteMarkerElems = root.getChildren("DeleteMarker");
-
-            if (objectDeleteMarkerElems!= null ) {
-                for(Element elem: objectDeleteMarkerElems) {
+            List<Element> versionElems = root.getChildren();
+            for (Element elem: versionElems) {
+                if (elem.getName().equals("Version") || elem.getName().equals("DeleteMarker")) {
                     OSSObjectVersionSummary ossObjectSummary = new OSSObjectVersionSummary();
-
-                    // Version下面的deleteMarker都是false
-                    ossObjectSummary.setDeleteMarker(true);
                     ossObjectSummary.setKey(elem.getChildText("Key"));
                     ossObjectSummary.setVersionId(elem.getChildText("VersionId"));
                     ossObjectSummary.setIsLatest(elem.getChildText("IsLatest"));
@@ -1202,6 +1170,13 @@ public final class ResponseParsers {
                     String displayName = elem.getChild("Owner").getChildText("DisplayName");
                     ossObjectSummary.setOwner(new Owner(id, displayName));
 
+                    if (elem.getName().equals("Version")) {
+                        ossObjectSummary.setDeleteMarker(false);
+                    }
+
+                    if (elem.getName().equals("DeleteMarker")) {
+                        ossObjectSummary.setDeleteMarker(true);
+                    }
                     objectListing.addObjectSummary(ossObjectSummary);
                 }
             }
