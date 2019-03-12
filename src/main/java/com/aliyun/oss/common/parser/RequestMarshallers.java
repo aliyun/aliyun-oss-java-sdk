@@ -509,7 +509,7 @@ public final class RequestMarshallers {
                         xmlBody.append("<Tag>");
                         xmlBody.append("<Key>" + tagKeyValue.getKey() + "</Key>");
                         xmlBody.append("<Value>" + tagKeyValue.getValue() + "</Value>");
-                        xmlBody.append("</Tag");
+                        xmlBody.append("</Tag>");
                     }
                 }
 
