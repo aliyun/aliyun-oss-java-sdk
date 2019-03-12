@@ -192,6 +192,36 @@ public class LifecycleRule {
         }
     }
 
+    public static class TagKeyValue {
+        private String key;
+        private String value;
+
+        public TagKeyValue() {
+
+        }
+
+        public TagKeyValue(String key , String value ) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
+
     private String id;
     private String prefix;
     private RuleStatus status;
@@ -206,6 +236,8 @@ public class LifecycleRule {
     private int noncurrentVersionExpirationInDays;
 
     private List<NoncurrentVersionTransition> noncurrentVersionTransitions = new ArrayList<NoncurrentVersionTransition>();
+
+    private List<TagKeyValue> tagKeyValues = new ArrayList<TagKeyValue>();
 
     private AbortMultipartUpload abortMultipartUpload;
     private List<StorageTransition> storageTransitions = new ArrayList<StorageTransition>();
@@ -382,6 +414,18 @@ public class LifecycleRule {
 
     public boolean hasNoncurrentVersionTransitions() {
         return this.noncurrentVersionTransitions != null && !noncurrentVersionTransitions.isEmpty();
+    }
+
+    public List<TagKeyValue> getTagKeyValues() {
+        return this.tagKeyValues;
+    }
+
+    public void setTagKeyValues(List<TagKeyValue> tagKeyValues) {
+        this.tagKeyValues = tagKeyValues;
+    }
+
+    public boolean hasTagKeyValue() {
+        return this.tagKeyValues != null && !tagKeyValues.isEmpty();
     }
 
     public List<StorageTransition> getStorageTransition() {
