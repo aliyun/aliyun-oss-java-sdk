@@ -34,6 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSSErrorCode;
@@ -66,9 +67,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(createBucketRequest, "createBucketRequest");
 
-        String bucketName = createBucketRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(createBucketRequest);
 
         Map<String, String> headers = new HashMap<String, String>();
         addOptionalACLHeader(headers, createBucketRequest.getCannedACL());
@@ -89,9 +88,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setOriginalRequest(genericRequest).build();
@@ -132,6 +129,16 @@ public class OSSBucketOperation extends OSSOperation {
         if (listBucketRequest.getBid() != null) {
             params.put(BID, listBucketRequest.getBid());
         }
+        if (listBucketRequest.getTagSet() != null) {
+            String tagging = "";
+            TagSet tagSet = listBucketRequest.getTagSet();
+            if (tagSet.getAllTags().size() > 0) {
+                tagging = JSON.toJSONString(tagSet.getAllTags());
+                int length = tagging.length();
+                tagging = tagging.substring(1, length - 1);
+            }
+            params.put(TAGGING, tagging);
+        }
         if (listBucketRequest.isRegionList()) {
             params.put(SUBRESOURCE_REGION_LIST, null);
         }
@@ -149,9 +156,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(setBucketAclRequest, "setBucketAclRequest");
 
-        String bucketName = setBucketAclRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(setBucketAclRequest);
 
         Map<String, String> headers = new HashMap<String, String>();
         addOptionalACLHeader(headers, setBucketAclRequest.getCannedACL());
@@ -173,9 +178,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_ACL, null);
@@ -191,9 +194,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.HEAD).setBucket(bucketName).setOriginalRequest(genericRequest).build();
@@ -222,9 +223,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(setBucketRefererRequest, "setBucketRefererRequest");
 
-        String bucketName = setBucketRefererRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(setBucketRefererRequest);
 
         BucketReferer referer = setBucketRefererRequest.getReferer();
         if (referer == null) {
@@ -249,9 +248,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_REFERER, null);
@@ -270,9 +267,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_LOCATION, null);
@@ -291,9 +286,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         try {
             getBucketAcl(new GenericRequest(bucketName));
@@ -315,9 +308,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(listObjectsRequest, "listObjectsRequest");
 
-        String bucketName = listObjectsRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(listObjectsRequest);
 
         Map<String, String> params = new LinkedHashMap<String, String>();
         populateListObjectsRequestParameters(listObjectsRequest, params);
@@ -336,9 +327,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(setBucketLoggingRequest, "setBucketLoggingRequest");
 
-        String bucketName = setBucketLoggingRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(setBucketLoggingRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_LOGGING, null);
@@ -356,9 +345,7 @@ public class OSSBucketOperation extends OSSOperation {
      */
     public void putBucketImage(PutBucketImageRequest putBucketImageRequest) {
         assertParameterNotNull(putBucketImageRequest, "putBucketImageRequest");
-        String bucketName = putBucketImageRequest.GetBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(putBucketImageRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_IMG, null);
@@ -484,9 +471,7 @@ public class OSSBucketOperation extends OSSOperation {
         ImageProcess imageProcessConf = setBucketProcessRequest.getImageProcess();
         assertParameterNotNull(imageProcessConf, "imageProcessConf");
 
-        String bucketName = setBucketProcessRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(setBucketProcessRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_PROCESS_CONF, null);
@@ -503,9 +488,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_PROCESS_CONF, null);
@@ -524,9 +507,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_LOGGING, null);
@@ -545,9 +526,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_LOGGING, null);
@@ -566,9 +545,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(setBucketWebSiteRequest, "setBucketWebSiteRequest");
 
-        String bucketName = setBucketWebSiteRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(setBucketWebSiteRequest);
 
         if (setBucketWebSiteRequest.getIndexDocument() == null && setBucketWebSiteRequest.getErrorDocument() == null
                 && setBucketWebSiteRequest.getRoutingRules().size() == 0) {
@@ -593,9 +570,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_WEBSITE, null);
@@ -614,9 +589,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_WEBSITE, null);
@@ -636,9 +609,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(setBucketLifecycleRequest, "setBucketLifecycleRequest");
 
-        String bucketName = setBucketLifecycleRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(setBucketLifecycleRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_LIFECYCLE, null);
@@ -658,9 +629,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_LIFECYCLE, null);
@@ -679,9 +648,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_LIFECYCLE, null);
@@ -700,9 +667,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(setBucketTaggingRequest, "setBucketTaggingRequest");
 
-        String bucketName = setBucketTaggingRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(setBucketTaggingRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_TAGGING, null);
@@ -722,9 +687,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_TAGGING, null);
@@ -743,9 +706,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_TAGGING, null);
@@ -767,9 +728,7 @@ public class OSSBucketOperation extends OSSOperation {
         assertParameterNotNull(addBucketReplicationRequest.getTargetBucketName(), "targetBucketName");
         assertParameterNotNull(addBucketReplicationRequest.getTargetBucketLocation(), "targetBucketLocation");
 
-        String bucketName = addBucketReplicationRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(addBucketReplicationRequest);
 
         Map<String, String> params = new LinkedHashMap<String, String>();
         params.put(RequestParameters.SUBRESOURCE_REPLICATION, null);
@@ -791,9 +750,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(RequestParameters.SUBRESOURCE_REPLICATION, null);
@@ -852,9 +809,7 @@ public class OSSBucketOperation extends OSSOperation {
         assertParameterNotNull(getBucketReplicationProgressRequest, "getBucketReplicationProgressRequest");
         assertParameterNotNull(getBucketReplicationProgressRequest.getReplicationRuleID(), "replicationRuleID");
 
-        String bucketName = getBucketReplicationProgressRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(getBucketReplicationProgressRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(RequestParameters.SUBRESOURCE_REPLICATION_PROGRESS, null);
@@ -875,9 +830,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(RequestParameters.SUBRESOURCE_REPLICATION_LOCATION, null);
@@ -894,9 +847,7 @@ public class OSSBucketOperation extends OSSOperation {
         assertParameterNotNull(addBucketCnameRequest, "addBucketCnameRequest");
         assertParameterNotNull(addBucketCnameRequest.getDomain(), "addBucketCnameRequest.domain");
 
-        String bucketName = addBucketCnameRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(addBucketCnameRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(RequestParameters.SUBRESOURCE_CNAME, null);
@@ -918,9 +869,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(RequestParameters.SUBRESOURCE_CNAME, null);
@@ -938,9 +887,7 @@ public class OSSBucketOperation extends OSSOperation {
         assertParameterNotNull(deleteBucketCnameRequest, "deleteBucketCnameRequest");
         assertParameterNotNull(deleteBucketCnameRequest.getDomain(), "deleteBucketCnameRequest.domain");
 
-        String bucketName = deleteBucketCnameRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(deleteBucketCnameRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(RequestParameters.SUBRESOURCE_CNAME, null);
@@ -962,9 +909,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(RequestParameters.SUBRESOURCE_BUCKET_INFO, null);
@@ -980,9 +925,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(RequestParameters.SUBRESOURCE_STAT, null);
@@ -1000,9 +943,7 @@ public class OSSBucketOperation extends OSSOperation {
         assertParameterNotNull(setBucketStorageCapacityRequest, "setBucketStorageCapacityRequest");
         assertParameterNotNull(setBucketStorageCapacityRequest.getUserQos(), "setBucketStorageCapacityRequest.userQos");
 
-        String bucketName = setBucketStorageCapacityRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(setBucketStorageCapacityRequest);
 
         UserQos userQos = setBucketStorageCapacityRequest.getUserQos();
         assertParameterNotNull(userQos.getStorageCapacity(), "StorageCapacity");
@@ -1027,9 +968,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(RequestParameters.SUBRESOURCE_QOS, null);
@@ -1076,9 +1015,7 @@ public class OSSBucketOperation extends OSSOperation {
         assertParameterNotNull(requestPaymentRequest, "requestPaymentRequest");
         assertParameterNotNull(requestPaymentRequest.getPayer(), "requestPaymentRequestPayer");
 
-        String bucketName = requestPaymentRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(requestPaymentRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_REQUEST_PAYMENT, null);
@@ -1100,9 +1037,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_REQUEST_PAYMENT, null);
@@ -1118,9 +1053,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(initiateWormConfigurationRequest, "initiateWormConfigurationRequest");
 
-        String bucketName = initiateWormConfigurationRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(initiateWormConfigurationRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_WORM, null);
@@ -1141,9 +1074,7 @@ public class OSSBucketOperation extends OSSOperation {
     public void abortBucketWorm(GenericRequest abortWormRequest) throws OSSException, ClientException {
         assertParameterNotNull(abortWormRequest, "abortWormRequest");
 
-        String bucketName = abortWormRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(abortWormRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_WORM, null);
@@ -1158,9 +1089,7 @@ public class OSSBucketOperation extends OSSOperation {
     public void completeBucketWorm(CompleteWormConfigurationRequest completeWormConfigurationRequest) throws OSSException, ClientException {
         assertParameterNotNull(completeWormConfigurationRequest, "completeWormConfigurationRequest");
 
-        String bucketName = completeWormConfigurationRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(completeWormConfigurationRequest);
 
         String wormId = completeWormConfigurationRequest.getWormId();
         assertParameterNotNull(wormId, "wormId");
@@ -1180,9 +1109,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         assertParameterNotNull(extendWormConfigurationRequest, "extendWormConfigurationRequest");
 
-        String bucketName = extendWormConfigurationRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(extendWormConfigurationRequest);
 
         String wormId = extendWormConfigurationRequest.getWormId();
         assertParameterNotNull(wormId, "wormId");
@@ -1207,9 +1134,7 @@ public class OSSBucketOperation extends OSSOperation {
     public WormConfiguration getBucketWorm(GenericRequest getBucketWormRequest) throws OSSException, ClientException {
         assertParameterNotNull(getBucketWormRequest, "getBucketWormRequest");
 
-        String bucketName = getBucketWormRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(getBucketWormRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_WORM, null);
@@ -1237,9 +1162,7 @@ public class OSSBucketOperation extends OSSOperation {
         throws OSSException, ClientException {
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        String bucketName = bucketNameCheck(genericRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_NOTIFICATION, null);
@@ -1253,5 +1176,56 @@ public class OSSBucketOperation extends OSSOperation {
             .build();
 
         return doOperation(request, getBucketNotificationResponseParser, bucketName, null, true);
+    }
+
+    public void putBucketVpcId(PutBucketVpcIdRequest putBucketVpcIdRequest) throws OSSException, ClientException {
+        assertParameterNotNull(putBucketVpcIdRequest, "putBucketVpcIdRequest");
+
+        String bucketName = bucketNameCheck(putBucketVpcIdRequest);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_VPC_ID, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params)
+                .setInputStreamWithLength(putBucketVpcIdRequestMarshaller.marshall(putBucketVpcIdRequest))
+                .setOriginalRequest(putBucketVpcIdRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    public void deleteBucketVpcId(DeleteBucketVpcIdRequest deleteBucketVpcIdRequest) throws OSSException, ClientException {
+        assertParameterNotNull(deleteBucketVpcIdRequest, "deleteBucketVpcIdRequest");
+
+        String bucketName = bucketNameCheck(deleteBucketVpcIdRequest);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_VPC_ID, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
+                .setInputStreamWithLength(deleteBucketVpcIdRequestMarshaller.marshall(deleteBucketVpcIdRequest))
+                .setOriginalRequest(deleteBucketVpcIdRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    public BucketVpcIdList listBucketVpcId(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = bucketNameCheck(genericRequest);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_VPC_ID, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET)
+                .setBucket(bucketName)
+                .setParameters(params)
+                .setOriginalRequest(genericRequest)
+                .build();
+
+        return doOperation(request, listBucketVpcIdResponseParser, bucketName, null, true);
     }
 }

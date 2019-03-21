@@ -55,6 +55,7 @@ public final class ResponseParsers {
     public static final ListUserRegionResponseParser listUserRegionResponseParser = new ListUserRegionResponseParser();
     public static final ListBucketResponseParser listBucketResponseParser = new ListBucketResponseParser();
     public static final ListImageStyleResponseParser listImageStyleResponseParser = new ListImageStyleResponseParser();
+    public static final ListBucketVpcIdResponseParser listBucketVpcIdResponseParser = new ListBucketVpcIdResponseParser();
     public static final GetBucketRefererResponseParser getBucketRefererResponseParser = new GetBucketRefererResponseParser();
     public static final GetBucketAclResponseParser getBucketAclResponseParser = new GetBucketAclResponseParser();
     public static final GetBucketMetadataResponseParser getBucketMetadataResponseParser = new GetBucketMetadataResponseParser();
@@ -163,6 +164,21 @@ public final class ResponseParsers {
                 safeCloseResponse(response);
             }
         }
+    }
+
+    public static final class ListBucketVpcIdResponseParser implements ResponseParser<BucketVpcIdList> {
+
+        @Override
+        public BucketVpcIdList parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                BucketVpcIdList result = parseListBucketVpcId(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
     }
 
     public static final class GetBucketRefererResponseParser implements ResponseParser<BucketReferer> {
@@ -1269,6 +1285,20 @@ public final class ResponseParsers {
                     bucket.setExtranetEndpoint(e.getChildText("ExtranetEndpoint"));
                     bucket.setIntranetEndpoint(e.getChildText("IntranetEndpoint"));
 
+                    Element taggingElement = e.getChild("Tagging");
+
+                    if (taggingElement != null) {
+                        Element tagSetElement = taggingElement.getChild("TagSet");
+                        if (tagSetElement != null) {
+                            TagSet tagSet = new TagSet();
+                            List<Element> tagElems = tagSetElement.getChildren("Tag");
+
+                            processTaggingElem(tagSet, tagElems);
+
+                            bucket.setTagSet(tagSet);
+                        }
+                    }
+
                     buckets.add(bucket);
                 }
             }
@@ -1281,6 +1311,23 @@ public final class ResponseParsers {
             throw new ResponseParseException(e.getMessage(), e);
         }
 
+    }
+
+    private static void processTaggingElem(TagSet tagSet, List<Element> tagElems) {
+        for (Element tagElem : tagElems) {
+            String key = null;
+            String value = null;
+
+            if (tagElem.getChild("Key") != null) {
+                key = tagElem.getChildText("Key");
+            }
+
+            if (tagElem.getChild("Value") != null) {
+                value = tagElem.getChildText("Value");
+            }
+
+            tagSet.setTag(key, value);
+        }
     }
 
     /**
@@ -1303,6 +1350,45 @@ public final class ResponseParsers {
                 styleList.add(style);
             }
             return styleList;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * Unmarshall list bucket response body to bucket list.
+     */
+    @SuppressWarnings("unchecked")
+    public static BucketVpcIdList parseListBucketVpcId(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+
+            BucketVpcIdList bucketVpcIdList = new BucketVpcIdList();
+            List<BucketVpcIdList.VpcInfo> vpcInfos = new ArrayList<BucketVpcIdList.VpcInfo>();
+            List<Element> vpcInfoElems = root.getChildren("VpcInfo");
+            for (Element e : vpcInfoElems) {
+                BucketVpcIdList.VpcInfo vpcInfo = new BucketVpcIdList.VpcInfo();
+                if (e.getChildren("VpcRegion") != null) {
+                    vpcInfo.setVpcRegion(e.getChildText("VpcRegion"));
+                }
+                if (e.getChildren("TunnelId") != null) {
+                    vpcInfo.setTunnelId(e.getChildText("TunnelId"));
+                }
+                if (e.getChildren("VpcId") != null) {
+                    vpcInfo.setVpcId(e.getChildText("VpcId"));
+                }
+                if (e.getChildren("VpcTag") != null) {
+                    vpcInfo.setVpcTag(e.getChildText("VpcTag"));
+                }
+                vpcInfos.add(vpcInfo);
+            }
+
+            bucketVpcIdList.setList(vpcInfos);
+            return bucketVpcIdList;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
@@ -2145,20 +2231,7 @@ public final class ResponseParsers {
             TagSet tagSet = new TagSet();
             List<Element> tagElems = root.getChild("TagSet").getChildren("Tag");
 
-            for (Element tagElem : tagElems) {
-                String key = null;
-                String value = null;
-
-                if (tagElem.getChild("Key") != null) {
-                    key = tagElem.getChildText("Key");
-                }
-
-                if (tagElem.getChild("Value") != null) {
-                    value = tagElem.getChildText("Value");
-                }
-
-                tagSet.setTag(key, value);
-            }
+            processTaggingElem(tagSet, tagElems);
 
             return tagSet;
         } catch (JDOMParseException e) {
