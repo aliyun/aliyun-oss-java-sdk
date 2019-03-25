@@ -76,6 +76,7 @@ public class BucketTaggingTest extends TestBase {
 
 			ossClient.deleteBucket(bucketName);
 		} catch (Exception e) {
+			ossClient.deleteBucket(bucketName);
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
