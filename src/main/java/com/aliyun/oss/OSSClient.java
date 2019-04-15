@@ -1486,6 +1486,21 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public void putBucketVpcId(PutBucketVpcIdRequest putBucketVpcIdRequest) throws OSSException, ClientException {
+        this.bucketOperation.putBucketVpcId(putBucketVpcIdRequest);
+    }
+
+    @Override
+    public void deleteBucketVpcId(DeleteBucketVpcIdRequest deleteBucketVpcIdRequest) throws OSSException, ClientException {
+        this.bucketOperation.deleteBucketVpcId(deleteBucketVpcIdRequest);
+    }
+
+    @Override
+    public BucketVpcIdList listBucketVpcId(GenericRequest genericRequest) throws OSSException, ClientException {
+        return this.bucketOperation.listBucketVpcId(genericRequest);
+    }
+
+    @Override
     public ObjectTagging getObjectTagging(GetObjectTaggingRequest getObjectTaggingRequest) throws OSSException, ClientException {
         return this.objectOperation.getObjectTagging(getObjectTaggingRequest);
     }

@@ -2514,6 +2514,35 @@ public interface OSS {
     ServerSideEncryptionRule getBucketEncryption(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
+     * Put Bucket VpcId
+     * @param putBucketVpcIdRequest
+     *                  A {@link PutBucketVpcIdRequest}
+     * @throws OSSException
+     * @throws ClientException
+     */
+    void putBucketVpcId(PutBucketVpcIdRequest putBucketVpcIdRequest) throws OSSException, ClientException;
+
+    /**
+     * Delete Bucket VpcId
+     * @param deleteBucketVpcIdRequest
+     *                  A {@link DeleteBucketVpcIdRequest}
+     * @throws OSSException
+     * @throws ClientException
+     */
+    void deleteBucketVpcId(DeleteBucketVpcIdRequest deleteBucketVpcIdRequest) throws OSSException, ClientException;
+
+    /**
+     * List Bucket VpcId
+     * @param genericRequest
+     *                  A {@link GenericRequest}
+     *
+     * @return A {@link BucketVpcIdList}
+     * @throws OSSException
+     * @throws ClientException
+     */
+    BucketVpcIdList listBucketVpcId(GenericRequest genericRequest) throws OSSException, ClientException;
+
+    /**
      * Returns the tags for the specified object.
      *
      * @param getObjectTaggingRequest
