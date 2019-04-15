@@ -65,6 +65,7 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_USER_REGION = "userRegion";
     public static final String SUBRESOURCE_REGION_LIST = "regionList";
     public static final String SUBRESOURCE_ENCRYPTION = "encryption";
+    public static final String SUBRESOURCE_VPC_ID = "vpcid";
 
     public static final String SUBRESOURCE_UDF = "udf";
     public static final String SUBRESOURCE_UDF_NAME = "udfName";
@@ -78,6 +79,7 @@ public final class RequestParameters {
     public static final String MARKER = "marker";
     public static final String MAX_KEYS = "max-keys";
     public static final String BID = "bid";
+    public static final String TAGGING = "tagging";
     public static final String ENCODING_TYPE = "encoding-type";
 
     public static final String UPLOAD_ID = "uploadId";

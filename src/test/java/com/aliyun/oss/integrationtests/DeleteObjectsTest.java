@@ -28,7 +28,6 @@ import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sun.xml.internal.ws.api.ha.StickyFeature;
 import junit.framework.Assert;
 
 import org.junit.Ignore;

@@ -79,6 +79,8 @@ public final class RequestMarshallers {
     public static final CreateSelectObjectMetadataRequestMarshaller createSelectObjectMetadataRequestMarshaller = new CreateSelectObjectMetadataRequestMarshaller();
     public static final SelectObjectRequestMarshaller selectObjectRequestMarshaller = new SelectObjectRequestMarshaller();
     public static final PutBucketEncryptionRequestMarshaller setBucketEncryptionRequestMarshaller = new PutBucketEncryptionRequestMarshaller();
+    public static final PutBucketVpcIdRequestMarshaller putBucketVpcIdRequestMarshaller = new PutBucketVpcIdRequestMarshaller();
+    public static final DeleteBucketVpcIdRequestMarshaller deleteBucketVpcIdRequestMarshaller = new DeleteBucketVpcIdRequestMarshaller();
     public static final SetObjectTaggingMarshaller setObjectTaggingMarshaller = new SetObjectTaggingMarshaller();
 
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
@@ -1101,6 +1103,59 @@ public final class RequestMarshallers {
             }
             xmlBody.append("</ApplyServerSideEncryptionByDefault>");
             xmlBody.append("</ServerSideEncryptionRule>");
+
+            return stringMarshaller.marshall(xmlBody.toString());
+        }
+
+    }
+
+    public static final class PutBucketVpcIdRequestMarshaller implements RequestMarshaller<PutBucketVpcIdRequest> {
+
+        @Override
+        public FixedLengthInputStream marshall(PutBucketVpcIdRequest request) {
+            StringBuilder xmlBody = new StringBuilder();
+
+            xmlBody.append("<VpcBindConfiguration>");
+            if (request.getVpcId() != null) {
+                xmlBody.append("<VpcId>");
+                xmlBody.append(request.getVpcId());
+                xmlBody.append("</VpcId>");
+            }
+            if (request.getVpcRegion() != null) {
+                xmlBody.append("<VpcRegion>");
+                xmlBody.append(request.getVpcRegion());
+                xmlBody.append("</VpcRegion>");
+            }
+            if (request.getVpcTag() != null) {
+                xmlBody.append("<VpcTag>");
+                xmlBody.append(request.getVpcTag());
+                xmlBody.append("</VpcTag>");
+            }
+            xmlBody.append("</VpcBindConfiguration>");
+
+            return stringMarshaller.marshall(xmlBody.toString());
+        }
+
+    }
+
+    public static final class DeleteBucketVpcIdRequestMarshaller implements RequestMarshaller<DeleteBucketVpcIdRequest> {
+
+        @Override
+        public FixedLengthInputStream marshall(DeleteBucketVpcIdRequest request) {
+            StringBuilder xmlBody = new StringBuilder();
+
+            xmlBody.append("<VpcBindConfiguration>");
+            if (request.getVpcId() != null) {
+                xmlBody.append("<VpcId>");
+                xmlBody.append(request.getVpcId());
+                xmlBody.append("</VpcId>");
+            }
+            if (request.getVpcRegion() != null) {
+                xmlBody.append("<VpcRegion>");
+                xmlBody.append(request.getVpcRegion());
+                xmlBody.append("</VpcRegion>");
+            }
+            xmlBody.append("</VpcBindConfiguration>");
 
             return stringMarshaller.marshall(xmlBody.toString());
         }
