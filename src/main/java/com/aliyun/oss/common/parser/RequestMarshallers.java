@@ -349,10 +349,10 @@ public final class RequestMarshallers {
                         xmlBody.append("<MirrorURL>" + redirect.getMirrorURL() + "</MirrorURL>");
                     }
 
-                    if (redirect.getMirrorURLs() != null && redirect.getMirrorURLs().size() > 0) {
+                    if (redirect.getMirrorMultiAlternates() != null && redirect.getMirrorMultiAlternates().size() > 0) {
                         xmlBody.append("<MirrorMultiAlternates>");
-                        for (int i = 0; i < redirect.getMirrorURLs().size(); i++) {
-                            xmlBody.append("<MirrorMultiAlternate><MirrorMultiAlternateNumber>" + redirect.getMirrorURLs().get(i).get("number") + "</MirrorMultiAlternateNumber><MirrorMultiAlternateURL>" + redirect.getMirrorURLs().get(i).get("url") + "</MirrorMultiAlternateURL></MirrorMultiAlternate>");
+                        for (int i = 0; i < redirect.getMirrorMultiAlternates().size(); i++) {
+                            xmlBody.append("<MirrorMultiAlternate><MirrorMultiAlternateNumber>" + redirect.getMirrorMultiAlternates().get(i).get("number") + "</MirrorMultiAlternateNumber><MirrorMultiAlternateURL>" + redirect.getMirrorMultiAlternates().get(i).get("url") + "</MirrorMultiAlternateURL></MirrorMultiAlternate>");
                         }
                         xmlBody.append("</MirrorMultiAlternates>");
                     }

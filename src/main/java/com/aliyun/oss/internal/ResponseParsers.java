@@ -2081,7 +2081,7 @@ public final class ResponseParsers {
                                 map.put("url", setElement.getChildText("MirrorMultiAlternateURL"));
                                 mirrorURLsList.add(map);
                             }
-                            rule.getRedirect().setMirrorURLs(mirrorURLsList);
+                            rule.getRedirect().setMirrorMultiAlternates(mirrorURLsList);
                         }
                     }
 
