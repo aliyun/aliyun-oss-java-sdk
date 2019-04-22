@@ -19,6 +19,9 @@
 
 package com.aliyun.oss.model;
 
+import com.aliyun.oss.ClientException;
+import com.aliyun.oss.OSSErrorCode;
+
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
@@ -275,6 +278,29 @@ public class RoutingRule {
      *
      */
     public static class Redirect {
+        public static class MirrorMultiAlternate {
+            private Integer prior;
+            private String url;
+
+            public Integer getPrior() {
+                return prior;
+            }
+
+            public void setPrior(Integer prior) throws ClientException {
+                if (prior < 1 || prior > 10000) {
+                    throw new ClientException("The specified prior is not valid", OSSErrorCode.INVALID_ARGUMENT, null);
+                }
+                this.prior = prior;
+            }
+
+            public String getUrl() {
+                return url;
+            }
+
+            public void setUrl(String url) {
+                this.url = url;
+            }
+        }
         public RedirectType getRedirectType() {
             return redirectType;
         }
@@ -340,11 +366,11 @@ public class RoutingRule {
             this.mirrorURL = mirrorURL;
         }
 
-        public List<Map<String, String>> getMirrorMultiAlternates() {
+        public List<MirrorMultiAlternate> getMirrorMultiAlternates() {
             return mirrorMultiAlternates;
         }
 
-        public void setMirrorMultiAlternates(List<Map<String, String>> mirrorMultiAlternates) {
+        public void setMirrorMultiAlternates(List<MirrorMultiAlternate> mirrorMultiAlternates) {
             this.mirrorMultiAlternates = mirrorMultiAlternates;
         }
 
@@ -574,7 +600,7 @@ public class RoutingRule {
 
         private MirrorHeaders mirrorHeaders;
 
-        private List<Map<String, String>> mirrorMultiAlternates;
+        private List<MirrorMultiAlternate> mirrorMultiAlternates;
 
     }
 
