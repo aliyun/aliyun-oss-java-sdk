@@ -2074,12 +2074,12 @@ public final class ResponseParsers {
                     if (mirrorURLsElem != null) {
                         List<Element> mirrorURLElementList = mirrorURLsElem.getChildren("MirrorMultiAlternate");
                         if (mirrorURLElementList != null && mirrorURLElementList.size() > 0) {
-                            List<Map<String, String>> mirrorURLsList = new ArrayList<Map<String, String>>();
+                            List<RoutingRule.Redirect.MirrorMultiAlternate> mirrorURLsList = new ArrayList<RoutingRule.Redirect.MirrorMultiAlternate>();
                             for (Element setElement : mirrorURLElementList) {
-                                Map<String, String> map = new HashMap<String, String>();
-                                map.put("number", setElement.getChildText("MirrorMultiAlternateNumber"));
-                                map.put("url", setElement.getChildText("MirrorMultiAlternateURL"));
-                                mirrorURLsList.add(map);
+                                RoutingRule.Redirect.MirrorMultiAlternate mirrorMultiAlternate = new RoutingRule.Redirect.MirrorMultiAlternate();
+                                mirrorMultiAlternate.setPrior(Integer.parseInt(setElement.getChildText("MirrorMultiAlternateNumber")));
+                                mirrorMultiAlternate.setUrl(setElement.getChildText("MirrorMultiAlternateURL"));
+                                mirrorURLsList.add(mirrorMultiAlternate);
                             }
                             rule.getRedirect().setMirrorMultiAlternates(mirrorURLsList);
                         }

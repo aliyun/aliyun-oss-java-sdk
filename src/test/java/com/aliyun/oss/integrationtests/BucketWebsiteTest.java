@@ -23,6 +23,7 @@ import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_BUCKET_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_WEBSITE_CONFIGURATION_ERR;
 import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 
+import com.aliyun.oss.ClientException;
 import com.aliyun.oss.common.utils.LogUtils;
 import junit.framework.Assert;
 
@@ -242,29 +243,33 @@ public class BucketWebsiteTest extends TestBase {
             // Set index document and mirror
             SetBucketWebsiteRequest request = new SetBucketWebsiteRequest(bucketName);
             RoutingRule rule = new RoutingRule();
-            rule.setNumber(1);
+            rule.setNumber(3);
             rule.getCondition().setHttpErrorCodeReturnedEquals(404);
             rule.getRedirect().setRedirectType(RoutingRule.RedirectType.Mirror);
             rule.getRedirect().setMirrorURL("http://oss-test.aliyun-inc.com/mirror-test/");
 
-            List<Map<String, String>> mirrorURLs = new ArrayList<Map<String, String>>();
-            Map<String, String> urlInfo1 = new HashMap<String, String>();
-            urlInfo1.put("number", "1");
-            urlInfo1.put("url", "http://1.com/1/");
+            List<RoutingRule.Redirect.MirrorMultiAlternate> mirrorURLs = new ArrayList<RoutingRule.Redirect.MirrorMultiAlternate>();
 
-            Map<String, String> urlInfo2 = new HashMap<String, String>();
-            urlInfo2.put("number", "2");
-            urlInfo2.put("url", "http://2.com/2/");
+            RoutingRule.Redirect.MirrorMultiAlternate mirrorMultiAlternate1 = new RoutingRule.Redirect.MirrorMultiAlternate();
+            mirrorMultiAlternate1.setPrior(2);
+            mirrorMultiAlternate1.setUrl("http://2.com/2/");
 
-            Map<String, String> urlInfo3 = new HashMap<String, String>();
-            urlInfo3.put("number", "3");
-            urlInfo3.put("url", "http://3.com/3/");
+            RoutingRule.Redirect.MirrorMultiAlternate mirrorMultiAlternate2 = new RoutingRule.Redirect.MirrorMultiAlternate();
+            mirrorMultiAlternate2.setPrior(3);
+            mirrorMultiAlternate2.setUrl("http://3.com/3/");
 
-            mirrorURLs.add(urlInfo1);
-            mirrorURLs.add(urlInfo2);
-            mirrorURLs.add(urlInfo3);
+            RoutingRule.Redirect.MirrorMultiAlternate mirrorMultiAlternate3 = new RoutingRule.Redirect.MirrorMultiAlternate();
+            mirrorMultiAlternate3.setPrior(4);
+            mirrorMultiAlternate3.setUrl("http://4.com/4/");
 
-            System.out.println(mirrorURLs.toString());
+            RoutingRule.Redirect.MirrorMultiAlternate mirrorMultiAlternate4 = new RoutingRule.Redirect.MirrorMultiAlternate();
+            mirrorMultiAlternate4.setPrior(5);
+            mirrorMultiAlternate4.setUrl("http://5.com/5/");
+
+            mirrorURLs.add(mirrorMultiAlternate1);
+            mirrorURLs.add(mirrorMultiAlternate2);
+            mirrorURLs.add(mirrorMultiAlternate3);
+            mirrorURLs.add(mirrorMultiAlternate4);
 
             rule.getRedirect().setMirrorMultiAlternates(mirrorURLs);
 
@@ -279,12 +284,12 @@ public class BucketWebsiteTest extends TestBase {
             Assert.assertEquals(indexDocument, result.getIndexDocument());
             Assert.assertEquals(result.getRoutingRules().size(), 1);
             RoutingRule rr = result.getRoutingRules().get(0);
-            Assert.assertEquals(rr.getNumber().intValue(), 1);
+            Assert.assertEquals(rr.getNumber().intValue(), 3);
             Assert.assertEquals(rr.getCondition().getHttpErrorCodeReturnedEquals().intValue(), 404);
             Assert.assertEquals(rr.getRedirect().getRedirectType(), RoutingRule.RedirectType.Mirror);
-            Assert.assertEquals(rr.getRedirect().getMirrorMultiAlternates().size(), 3);
-            Assert.assertEquals(rr.getRedirect().getMirrorMultiAlternates().get(0).get("url"), "http://1.com/1/");
-            Assert.assertEquals(rr.getRedirect().getMirrorMultiAlternates().get(0).get("number"), "1");
+            Assert.assertEquals(rr.getRedirect().getMirrorMultiAlternates().size(), 4);
+            Assert.assertTrue(rr.getRedirect().getMirrorMultiAlternates().get(0).getPrior() == 2);
+            Assert.assertEquals(rr.getRedirect().getMirrorMultiAlternates().get(0).getUrl(), "http://2.com/2/");
             Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
 
             ossClient.deleteBucketWebsite(bucketName);
@@ -750,6 +755,22 @@ public class BucketWebsiteTest extends TestBase {
             Assert.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketWithoutWebsiteConfiguration);
+        }
+    }
+
+    @Test
+    public void testInvalidPriorForMirrorMultiAlternate() {
+        RoutingRule.Redirect.MirrorMultiAlternate mirrorMultiAlternate = new RoutingRule.Redirect.MirrorMultiAlternate();
+        try {
+            mirrorMultiAlternate.setPrior(0);
+        } catch (ClientException e) {
+            Assert.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
+        }
+
+        try {
+            mirrorMultiAlternate.setPrior(10001);
+        } catch (ClientException e) {
+            Assert.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
         }
     }
 }
