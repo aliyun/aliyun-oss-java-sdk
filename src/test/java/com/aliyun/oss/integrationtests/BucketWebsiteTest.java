@@ -266,7 +266,7 @@ public class BucketWebsiteTest extends TestBase {
 
             System.out.println(mirrorURLs.toString());
 
-            rule.getRedirect().setMirrorURLs(mirrorURLs);
+            rule.getRedirect().setMirrorMultiAlternates(mirrorURLs);
 
             request.setIndexDocument(indexDocument);
             request.AddRoutingRule(rule);
@@ -282,9 +282,9 @@ public class BucketWebsiteTest extends TestBase {
             Assert.assertEquals(rr.getNumber().intValue(), 1);
             Assert.assertEquals(rr.getCondition().getHttpErrorCodeReturnedEquals().intValue(), 404);
             Assert.assertEquals(rr.getRedirect().getRedirectType(), RoutingRule.RedirectType.Mirror);
-            Assert.assertEquals(rr.getRedirect().getMirrorURLs().size(), 3);
-            Assert.assertEquals(rr.getRedirect().getMirrorURLs().get(0).get("url"), "http://1.com/1/");
-            Assert.assertEquals(rr.getRedirect().getMirrorURLs().get(0).get("number"), "1");
+            Assert.assertEquals(rr.getRedirect().getMirrorMultiAlternates().size(), 3);
+            Assert.assertEquals(rr.getRedirect().getMirrorMultiAlternates().get(0).get("url"), "http://1.com/1/");
+            Assert.assertEquals(rr.getRedirect().getMirrorMultiAlternates().get(0).get("number"), "1");
             Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
 
             ossClient.deleteBucketWebsite(bucketName);

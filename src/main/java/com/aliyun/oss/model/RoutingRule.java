@@ -340,9 +340,13 @@ public class RoutingRule {
             this.mirrorURL = mirrorURL;
         }
 
-        public List<Map<String, String>> getMirrorURLs() { return mirrorURLs; }
+        public List<Map<String, String>> getMirrorMultiAlternates() {
+            return mirrorMultiAlternates;
+        }
 
-        public void setMirrorURLs(List<Map<String, String>> mirrorURLs) { this.mirrorURLs = mirrorURLs; }
+        public void setMirrorMultiAlternates(List<Map<String, String>> mirrorMultiAlternates) {
+            this.mirrorMultiAlternates = mirrorMultiAlternates;
+        }
 
         public String getMirrorSecondaryURL() {
             return mirrorSecondaryURL;
@@ -570,7 +574,7 @@ public class RoutingRule {
 
         private MirrorHeaders mirrorHeaders;
 
-        private List<Map<String, String>> mirrorURLs;
+        private List<Map<String, String>> mirrorMultiAlternates;
 
     }
 
