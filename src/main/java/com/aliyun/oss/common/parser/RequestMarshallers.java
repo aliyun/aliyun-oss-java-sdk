@@ -353,20 +353,19 @@ public final class RequestMarshallers {
                         xmlBody.append("<MirrorMultiAlternates>");
 
                         for (int i = 0; i < redirect.getMirrorMultiAlternates().size(); i++) {
-                            if (redirect.getMirrorMultiAlternates().get(i) != null) {
-                                RoutingRule.Redirect.MirrorMultiAlternate mirrorMultiAlternate = redirect.getMirrorMultiAlternates().get(i);
-                                if (mirrorMultiAlternate.getUrl() != null) {
-                                    xmlBody.append("<MirrorMultiAlternate>");
-                                    xmlBody.append("<MirrorMultiAlternateNumber>");
-                                    xmlBody.append(mirrorMultiAlternate.getPrior());
-                                    xmlBody.append("</MirrorMultiAlternateNumber>");
-                                    xmlBody.append("<MirrorMultiAlternateURL>");
-                                    xmlBody.append(mirrorMultiAlternate.getUrl());
-                                    xmlBody.append("</MirrorMultiAlternateURL>");
-                                    xmlBody.append("</MirrorMultiAlternate>");
-                                }
+                            RoutingRule.Redirect.MirrorMultiAlternate mirrorMultiAlternate = redirect.getMirrorMultiAlternates().get(i);
+                            if (mirrorMultiAlternate != null && mirrorMultiAlternate.getUrl() != null) {
+                                xmlBody.append("<MirrorMultiAlternate>");
+                                xmlBody.append("<MirrorMultiAlternateNumber>");
+                                xmlBody.append(mirrorMultiAlternate.getPrior());
+                                xmlBody.append("</MirrorMultiAlternateNumber>");
+                                xmlBody.append("<MirrorMultiAlternateURL>");
+                                xmlBody.append(mirrorMultiAlternate.getUrl());
+                                xmlBody.append("</MirrorMultiAlternateURL>");
+                                xmlBody.append("</MirrorMultiAlternate>");
                             }
                         }
+                        
                         xmlBody.append("</MirrorMultiAlternates>");
                     }
 
