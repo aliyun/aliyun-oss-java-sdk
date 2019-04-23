@@ -345,9 +345,33 @@ public final class RequestMarshallers {
                     if (redirect.getHttpRedirectCode() != null) {
                         xmlBody.append("<HttpRedirectCode>" + redirect.getHttpRedirectCode() + "</HttpRedirectCode>");
                     }
+
                     if (redirect.getMirrorURL() != null) {
                         xmlBody.append("<MirrorURL>" + redirect.getMirrorURL() + "</MirrorURL>");
                     }
+
+                    if (redirect.getMirrorMultiAlternates() != null && redirect.getMirrorMultiAlternates().size() > 0) {
+                        xmlBody.append("<MirrorMultiAlternates>");
+
+                        for (int i = 0; i < redirect.getMirrorMultiAlternates().size(); i++) {
+                            if (redirect.getMirrorMultiAlternates().get(i) != null) {
+                                Integer alternateNumber = redirect.getMirrorMultiAlternates().get(i).getPrior();
+                                String alternateURL = redirect.getMirrorMultiAlternates().get(i).getUrl();
+                                if (alternateURL != null) {
+                                    xmlBody.append("<MirrorMultiAlternate>");
+                                    xmlBody.append("<MirrorMultiAlternateNumber>");
+                                    xmlBody.append(alternateNumber);
+                                    xmlBody.append("</MirrorMultiAlternateNumber>");
+                                    xmlBody.append("<MirrorMultiAlternateURL>");
+                                    xmlBody.append(alternateURL);
+                                    xmlBody.append("</MirrorMultiAlternateURL>");
+                                    xmlBody.append("</MirrorMultiAlternate>");
+                                }
+                            }
+                        }
+                        xmlBody.append("</MirrorMultiAlternates>");
+                    }
+
                     if (redirect.getMirrorSecondaryURL() != null) {
                         xmlBody.append("<MirrorURLSlave>" + redirect.getMirrorSecondaryURL() + "</MirrorURLSlave>");
                     }

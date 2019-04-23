@@ -22,6 +22,9 @@ package com.aliyun.oss.integrationtests;
 import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_BUCKET_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_WEBSITE_CONFIGURATION_ERR;
 import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
+
+import com.aliyun.oss.ClientException;
+import com.aliyun.oss.common.utils.LogUtils;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -31,6 +34,11 @@ import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.BucketWebsiteResult;
 import com.aliyun.oss.model.RoutingRule;
 import com.aliyun.oss.model.SetBucketWebsiteRequest;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BucketWebsiteTest extends TestBase {
 
@@ -215,6 +223,75 @@ public class BucketWebsiteTest extends TestBase {
             Assert.assertTrue(rr.getRedirect().isMirrorPassOriginalSlashes());
             Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
             
+            ossClient.deleteBucketWebsite(bucketName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        } finally {
+            ossClient.deleteBucket(bucketName);
+        }
+    }
+
+    @Test
+    public void testNormalSetBucketWebsiteWithMirrorURLs() {
+        final String bucketName = "normal-set-bucket-website-mirror";
+        final String indexDocument = "index.html";
+
+        try {
+            ossClient.createBucket(bucketName);
+
+            // Set index document and mirror
+            SetBucketWebsiteRequest request = new SetBucketWebsiteRequest(bucketName);
+            RoutingRule rule = new RoutingRule();
+            rule.setNumber(3);
+            rule.getCondition().setHttpErrorCodeReturnedEquals(404);
+            rule.getRedirect().setRedirectType(RoutingRule.RedirectType.Mirror);
+            rule.getRedirect().setMirrorURL("http://oss-test.aliyun-inc.com/mirror-test/");
+
+            List<RoutingRule.Redirect.MirrorMultiAlternate> mirrorURLs = new ArrayList<RoutingRule.Redirect.MirrorMultiAlternate>();
+
+            RoutingRule.Redirect.MirrorMultiAlternate mirrorMultiAlternate1 = new RoutingRule.Redirect.MirrorMultiAlternate();
+            mirrorMultiAlternate1.setPrior(2);
+            mirrorMultiAlternate1.setUrl("http://2.com/2/");
+
+            RoutingRule.Redirect.MirrorMultiAlternate mirrorMultiAlternate2 = new RoutingRule.Redirect.MirrorMultiAlternate();
+            mirrorMultiAlternate2.setPrior(3);
+            mirrorMultiAlternate2.setUrl("http://3.com/3/");
+
+            RoutingRule.Redirect.MirrorMultiAlternate mirrorMultiAlternate3 = new RoutingRule.Redirect.MirrorMultiAlternate();
+            mirrorMultiAlternate3.setPrior(4);
+            mirrorMultiAlternate3.setUrl("http://4.com/4/");
+
+            RoutingRule.Redirect.MirrorMultiAlternate mirrorMultiAlternate4 = new RoutingRule.Redirect.MirrorMultiAlternate();
+            mirrorMultiAlternate4.setPrior(5);
+            mirrorMultiAlternate4.setUrl("http://5.com/5/");
+
+            mirrorURLs.add(mirrorMultiAlternate1);
+            mirrorURLs.add(mirrorMultiAlternate2);
+            mirrorURLs.add(mirrorMultiAlternate3);
+            mirrorURLs.add(mirrorMultiAlternate4);
+
+            rule.getRedirect().setMirrorMultiAlternates(mirrorURLs);
+
+            request.setIndexDocument(indexDocument);
+            request.AddRoutingRule(rule);
+            ossClient.setBucketWebsite(request);
+
+            waitForCacheExpiration(5);
+
+            // check
+            BucketWebsiteResult result = ossClient.getBucketWebsite(bucketName);
+            Assert.assertEquals(indexDocument, result.getIndexDocument());
+            Assert.assertEquals(result.getRoutingRules().size(), 1);
+            RoutingRule rr = result.getRoutingRules().get(0);
+            Assert.assertEquals(rr.getNumber().intValue(), 3);
+            Assert.assertEquals(rr.getCondition().getHttpErrorCodeReturnedEquals().intValue(), 404);
+            Assert.assertEquals(rr.getRedirect().getRedirectType(), RoutingRule.RedirectType.Mirror);
+            Assert.assertEquals(rr.getRedirect().getMirrorMultiAlternates().size(), 4);
+            Assert.assertTrue(rr.getRedirect().getMirrorMultiAlternates().get(0).getPrior() == 2);
+            Assert.assertEquals(rr.getRedirect().getMirrorMultiAlternates().get(0).getUrl(), "http://2.com/2/");
+            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
+
             ossClient.deleteBucketWebsite(bucketName);
         } catch (Exception e) {
             e.printStackTrace();
@@ -678,6 +755,22 @@ public class BucketWebsiteTest extends TestBase {
             Assert.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketWithoutWebsiteConfiguration);
+        }
+    }
+
+    @Test
+    public void testInvalidPriorForMirrorMultiAlternate() {
+        RoutingRule.Redirect.MirrorMultiAlternate mirrorMultiAlternate = new RoutingRule.Redirect.MirrorMultiAlternate();
+        try {
+            mirrorMultiAlternate.setPrior(0);
+        } catch (ClientException e) {
+            Assert.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
+        }
+
+        try {
+            mirrorMultiAlternate.setPrior(10001);
+        } catch (ClientException e) {
+            Assert.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
         }
     }
 }
