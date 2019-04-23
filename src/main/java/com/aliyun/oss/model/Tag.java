@@ -23,7 +23,6 @@ import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSSErrorCode;
 
 import java.io.Serializable;
-import java.security.InvalidParameterException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
