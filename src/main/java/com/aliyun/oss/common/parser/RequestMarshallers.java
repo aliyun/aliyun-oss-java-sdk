@@ -354,15 +354,14 @@ public final class RequestMarshallers {
 
                         for (int i = 0; i < redirect.getMirrorMultiAlternates().size(); i++) {
                             if (redirect.getMirrorMultiAlternates().get(i) != null) {
-                                Integer alternateNumber = redirect.getMirrorMultiAlternates().get(i).getPrior();
-                                String alternateURL = redirect.getMirrorMultiAlternates().get(i).getUrl();
-                                if (alternateURL != null) {
+                                RoutingRule.Redirect.MirrorMultiAlternate mirrorMultiAlternate = redirect.getMirrorMultiAlternates().get(i);
+                                if (mirrorMultiAlternate.getUrl() != null) {
                                     xmlBody.append("<MirrorMultiAlternate>");
                                     xmlBody.append("<MirrorMultiAlternateNumber>");
-                                    xmlBody.append(alternateNumber);
+                                    xmlBody.append(mirrorMultiAlternate.getPrior());
                                     xmlBody.append("</MirrorMultiAlternateNumber>");
                                     xmlBody.append("<MirrorMultiAlternateURL>");
-                                    xmlBody.append(alternateURL);
+                                    xmlBody.append(mirrorMultiAlternate.getUrl());
                                     xmlBody.append("</MirrorMultiAlternateURL>");
                                     xmlBody.append("</MirrorMultiAlternate>");
                                 }
