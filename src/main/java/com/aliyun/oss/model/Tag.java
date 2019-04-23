@@ -99,14 +99,20 @@ public class Tag implements Serializable {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
 
     Tag tag = (Tag) o;
 
-    if (key != null ? !key.equals(tag.key) : tag.key != null) return false;
-    return value != null ? value.equals(tag.value) : tag.value == null;
+    if (key != null ? !key.equals(tag.key) : tag.key != null) {
+      return false;
+    }
 
+    return value != null ? value.equals(tag.value) : tag.value == null;
   }
 
   @Override
