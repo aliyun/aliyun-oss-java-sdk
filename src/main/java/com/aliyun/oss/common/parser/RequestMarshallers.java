@@ -365,7 +365,7 @@ public final class RequestMarshallers {
                                 xmlBody.append("</MirrorMultiAlternate>");
                             }
                         }
-                        
+
                         xmlBody.append("</MirrorMultiAlternates>");
                     }
 
@@ -504,6 +504,22 @@ public final class RequestMarshallers {
                         }
                         xmlBody.append("<StorageClass>" + storageTransition.getStorageClass() + "</StorageClass>");
                         xmlBody.append("</Transition>");
+                    }
+                }
+
+                List<Tag> objectTags = rule.getObjectTags();
+                if (objectTags != null && !objectTags.isEmpty()) {
+                    for (Tag objectTag : objectTags) {
+                        if (objectTag != null) {
+                            xmlBody.append("<Tag>");
+                            xmlBody.append("<Key>");
+                            xmlBody.append(objectTag.getKey());
+                            xmlBody.append("</Key>");
+                            xmlBody.append("<Value>");
+                            xmlBody.append(objectTag.getValue());
+                            xmlBody.append("</Value>");
+                            xmlBody.append("</Tag>");
+                        }
                     }
                 }
 
