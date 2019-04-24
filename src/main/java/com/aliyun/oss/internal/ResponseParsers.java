@@ -2794,7 +2794,21 @@ public final class ResponseParsers {
                     }
                     storageTransitions.add(storageTransition);
                 }
+
                 rule.setStorageTransition(storageTransitions);
+
+                List<Element> tagElements = ruleElem.getChildren("Tag");
+                List<Tag> objectTags = new ArrayList<Tag>();
+                for (Element tagElement : tagElements) {
+                    final String tagKey = tagElement.getChildText("Key");
+                    final String tagValue = tagElement.getChildText("Value");
+                    if (tagKey != null || tagValue != null) {
+                        Tag objectTag = new Tag(tagKey, tagValue);
+                        objectTags.add(objectTag);
+                    }
+                }
+
+                rule.setObjectTags(objectTags);
 
                 lifecycleRules.add(rule);
             }
