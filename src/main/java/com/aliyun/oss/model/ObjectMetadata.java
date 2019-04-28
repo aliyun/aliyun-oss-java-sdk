@@ -20,10 +20,7 @@
 package com.aliyun.oss.model;
 
 import java.text.ParseException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.internal.OSSHeaders;
@@ -41,6 +38,8 @@ public class ObjectMetadata {
     protected Map<String, Object> metadata = new HashMap<String, Object>();
 
     public static final String AES_256_SERVER_SIDE_ENCRYPTION = "AES256";
+
+    private List<Tag> objectTags = new ArrayList<Tag>();
 
     /**
      * <p>
@@ -363,5 +362,27 @@ public class ObjectMetadata {
             return false;
         }
         return true;
+    }
+
+    public int getCountOfTags() {
+        String taggingCountString = (String) metadata.get(OSSHeaders.OSS_HEADER_OBJECT_TAGGING_COUNT);
+
+        if (taggingCountString != null) {
+            return Integer.valueOf(taggingCountString);
+        }
+
+        return 0;
+    }
+
+    public List<Tag> getObjectTags() {
+        return objectTags;
+    }
+
+    public void setObjectTags(List<Tag> objectTags) {
+        if (objectTags != null) {
+            this.objectTags.addAll(objectTags);
+        } else {
+            this.objectTags.clear();
+        }
     }
 }
