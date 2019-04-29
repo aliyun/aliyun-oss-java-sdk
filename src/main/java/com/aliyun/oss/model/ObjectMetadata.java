@@ -365,13 +365,8 @@ public class ObjectMetadata {
     }
 
     public int getCountOfTags() {
-        String taggingCountString = (String) metadata.get(OSSHeaders.OSS_HEADER_OBJECT_TAGGING_COUNT);
-
-        if (taggingCountString != null) {
-            return Integer.valueOf(taggingCountString);
-        }
-
-        return 0;
+        Integer taggingCount = (Integer) metadata.get(OSSHeaders.OSS_HEADER_OBJECT_TAGGING_COUNT);
+        return taggingCount == null ? 0 : taggingCount.intValue();
     }
 
     public List<Tag> getObjectTags() {
