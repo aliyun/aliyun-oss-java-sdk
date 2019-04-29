@@ -1668,6 +1668,9 @@ public final class ResponseParsers {
                     objectMetadata.setHeader(key, value);
                 } else if (key.equals(OSSHeaders.ETAG)) {
                     objectMetadata.setHeader(key, trimQuotes(headers.get(key)));
+                } else if (key.equals(OSSHeaders.OSS_HEADER_OBJECT_TAGGING_COUNT)) {
+                    Integer value = Integer.valueOf(headers.get(key));
+                    objectMetadata.setHeader(key, value);
                 } else {
                     objectMetadata.setHeader(key, headers.get(key));
                 }
