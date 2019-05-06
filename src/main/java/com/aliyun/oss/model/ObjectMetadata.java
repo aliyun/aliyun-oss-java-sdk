@@ -374,10 +374,10 @@ public class ObjectMetadata {
     }
 
     public void setObjectTags(List<Tag> objectTags) {
+        this.objectTags.clear();
+
         if (objectTags != null) {
             this.objectTags.addAll(objectTags);
-        } else {
-            this.objectTags.clear();
         }
     }
 }
