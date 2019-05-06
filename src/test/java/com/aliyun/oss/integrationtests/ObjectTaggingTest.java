@@ -38,7 +38,7 @@ public class ObjectTaggingTest extends TestBase {
     SetObjectTaggingRequest setObjectTaggingRequest = new SetObjectTaggingRequest(this.bucketName, TEST_OBJECT_KEY, objectTagging);
     this.ossClient.setObjectTagging(setObjectTaggingRequest);
 
-    GetObjectTaggingRequest getObjectTaggingRequest = new GetObjectTaggingRequest(this.bucketName, TEST_OBJECT_KEY);
+    GenericRequest getObjectTaggingRequest = new GenericRequest(this.bucketName, TEST_OBJECT_KEY);
     ObjectTagging objectTagging1 = this.ossClient.getObjectTagging(getObjectTaggingRequest);
 
     Assert.assertNotNull(objectTagging1);

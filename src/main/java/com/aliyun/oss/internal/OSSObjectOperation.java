@@ -724,7 +724,7 @@ public class OSSObjectOperation extends OSSOperation {
         }
     }
 
-    public ObjectTagging getObjectTagging(GetObjectTaggingRequest getObjectTaggingRequest) throws OSSException, ClientException {
+    public ObjectTagging getObjectTagging(GenericRequest getObjectTaggingRequest) throws OSSException, ClientException {
         assertParameterNotNull(getObjectTaggingRequest, "getObjectTaggingRequest");
 
         String bucketName = getObjectTaggingRequest.getBucketName();

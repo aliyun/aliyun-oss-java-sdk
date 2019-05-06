@@ -2552,7 +2552,7 @@ public interface OSS {
      * @throws OSSException
      * @throws ClientException
      */
-    public ObjectTagging getObjectTagging(GetObjectTaggingRequest getObjectTaggingRequest) throws OSSException, ClientException;
+    public ObjectTagging getObjectTagging(GenericRequest getObjectTaggingRequest) throws OSSException, ClientException;
 
     /**
      * Set the tags for the specified object.

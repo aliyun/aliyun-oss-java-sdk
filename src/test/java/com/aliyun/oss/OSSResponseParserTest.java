@@ -24,10 +24,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.InputStream;
 import java.util.List;
 
-import com.aliyun.oss.common.comm.ResponseMessage;
-import com.aliyun.oss.common.parser.ResponseParser;
 import com.aliyun.oss.model.*;
-import jdk.internal.util.xml.impl.Input;
 import org.junit.Assert;
 import org.junit.Test;
 
