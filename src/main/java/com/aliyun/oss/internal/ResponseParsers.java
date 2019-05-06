@@ -1668,6 +1668,9 @@ public final class ResponseParsers {
                     objectMetadata.setHeader(key, value);
                 } else if (key.equals(OSSHeaders.ETAG)) {
                     objectMetadata.setHeader(key, trimQuotes(headers.get(key)));
+                } else if (key.equals(OSSHeaders.OSS_HEADER_OBJECT_TAGGING_COUNT)) {
+                    Integer value = Integer.valueOf(headers.get(key));
+                    objectMetadata.setHeader(key, value);
                 } else {
                     objectMetadata.setHeader(key, headers.get(key));
                 }
@@ -2794,7 +2797,21 @@ public final class ResponseParsers {
                     }
                     storageTransitions.add(storageTransition);
                 }
+
                 rule.setStorageTransition(storageTransitions);
+
+                List<Element> tagElements = ruleElem.getChildren("Tag");
+                List<Tag> objectTags = new ArrayList<Tag>();
+                for (Element tagElement : tagElements) {
+                    final String tagKey = tagElement.getChildText("Key");
+                    final String tagValue = tagElement.getChildText("Value");
+                    if (tagKey != null || tagValue != null) {
+                        Tag objectTag = new Tag(tagKey, tagValue);
+                        objectTags.add(objectTag);
+                    }
+                }
+
+                rule.setObjectTags(objectTags);
 
                 lifecycleRules.add(rule);
             }

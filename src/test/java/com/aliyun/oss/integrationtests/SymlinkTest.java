@@ -22,18 +22,17 @@ package com.aliyun.oss.integrationtests;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 
 import org.junit.Test;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
-import com.aliyun.oss.model.CreateSymlinkRequest;
-import com.aliyun.oss.model.OSSObject;
-import com.aliyun.oss.model.OSSSymlink;
-import com.aliyun.oss.model.ObjectMetadata;
 
 /**
  * Test symlink Link
@@ -205,5 +204,39 @@ public class SymlinkTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-    
+
+    @Test
+    public void testNormalCreateSymlinkWithTagging() {
+        final String symLink = "normal-create-sym-link-tagging";
+
+        try {
+            ossClient.putObject(bucketName, targetObject,
+                    new ByteArrayInputStream(content.getBytes()));
+
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType("text/plain");
+            metadata.addUserMetadata("property", "property-value");
+            List<Tag> objectTags = new ArrayList<Tag>();
+            objectTags.add(new Tag("key0", "value0"));
+            metadata.setObjectTags(objectTags);
+
+            CreateSymlinkRequest createSymlinkRequest = new CreateSymlinkRequest(bucketName, symLink, targetObject);
+            createSymlinkRequest.setMetadata(metadata);
+            ossClient.createSymlink(createSymlinkRequest);
+
+            OSSSymlink symbolicLink = ossClient.getSymlink(bucketName, symLink);
+            Assert.assertEquals(symbolicLink.getSymlink(), symLink);
+            Assert.assertEquals(symbolicLink.getTarget(), targetObject);
+            Assert.assertEquals(symbolicLink.getMetadata().getContentType(), "text/plain");
+            Assert.assertEquals(symbolicLink.getMetadata().getUserMetadata().get("property"), "property-value");
+            Assert.assertEquals(symbolicLink.getRequestId().length(), REQUEST_ID_LEN);
+            Assert.assertEquals(symbolicLink.getMetadata().getCountOfTags(), 1);
+
+            ossClient.deleteObject(bucketName, symLink);
+            ossClient.deleteObject(bucketName, targetObject);
+        } catch (Exception e) {
+            System.out.print(e.toString() + e.getMessage());
+            Assert.fail(e.getMessage());
+        }
+    }
 }

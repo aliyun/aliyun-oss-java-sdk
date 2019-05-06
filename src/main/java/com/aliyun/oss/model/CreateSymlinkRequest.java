@@ -19,6 +19,8 @@
 
 package com.aliyun.oss.model;
 
+import java.util.List;
+
 /**
  * The request class that is used to create symlink on an object.
  * 
@@ -76,9 +78,19 @@ public class CreateSymlinkRequest extends GenericRequest {
         this.metadata = metadata;
     }
 
+    public List<Tag> getObjectTags() {
+        return objectTags;
+    }
+
+    public void setObjectTags(List<Tag> objectTags) {
+        this.objectTags = objectTags;
+    }
+
     // Target file.
     private String target;
 
     // symlink file's metadata.
     private ObjectMetadata metadata;
+
+    private List<Tag> objectTags;
 }

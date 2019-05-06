@@ -632,6 +632,7 @@ public class OSSObjectOperation extends OSSOperation {
 
         Map<String, String> headers = new HashMap<String, String>();
         populateRequestMetadata(headers, metadata);
+        populateRequestTagging(headers, metadata.getObjectTags());
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_SYMLINK, null);
@@ -887,6 +888,7 @@ public class OSSObjectOperation extends OSSOperation {
         Map<String, String> headers = new HashMap<String, String>();
         populateRequestMetadata(headers, metadata);
         populateRequestCallback(headers, originalRequest.getCallback());
+        populateRequestTagging(headers, metadata.getObjectTags());
         Map<String, String> params = new LinkedHashMap<String, String>();
         populateWriteObjectParams(mode, originalRequest, params);
 
@@ -946,6 +948,11 @@ public class OSSObjectOperation extends OSSOperation {
         if (newObjectMetadata != null) {
             headers.put(OSSHeaders.COPY_OBJECT_METADATA_DIRECTIVE, MetadataDirective.REPLACE.toString());
             populateRequestMetadata(headers, newObjectMetadata);
+        }
+
+        populateRequestTagging(headers, copyObjectRequest.getObjectTags());
+        if (headers.get(OSSHeaders.OSS_HEADER_OBJECT_TAGGING) != null) {
+            headers.put(OSSHeaders.COPY_OBJECT_TAGGING_DIRECTIVE, TaggingDirective.Replace.toString());
         }
 
         // The header of Content-Length should not be specified on copying an
