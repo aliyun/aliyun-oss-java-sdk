@@ -2288,14 +2288,14 @@ public final class ResponseParsers {
                 DeleteObjectsResult.DeletedObject deletedObject = new DeleteObjectsResult.DeletedObject();
                 deletedObject.setKey(elem.getChildText("Key"));
                 if(elem.getChildText("VersionId") != null) {
-                    deletedObject.setKey(elem.getChildText("VersionId"));
+                    deletedObject.setVersionId(elem.getChildText("VersionId"));
                 }
 
                 if (elem.getChildText("DeleteMarker") != null) {
-                    deletedObject.setKey(elem.getChildText("DeleteMarker"));
+                    deletedObject.setDeleteMarker(Boolean.valueOf(elem.getChildText("DeleteMarker")));
                 }
                 if (elem.getChildText("DeleteMarkerVersionId") != null ) {
-                    deletedObject.setKey(elem.getChildText("DeleteMarkerVersionId"));
+                    deletedObject.setDeleteMarkerVersionId(elem.getChildText("DeleteMarkerVersionId"));
                 }
                 deletedObjects.add(deletedObject);
             }
@@ -2573,7 +2573,11 @@ public final class ResponseParsers {
             // bucket versioninig
             Element bucketVersionInfoElement = bucketElem.getChild("Versioning");
             if (bucketVersionInfoElement != null) {
+                // old preserve
                 bucketInfo.setBucketVersion(bucketElem.getChildText("Versioning"));
+
+                // new set bucket version on bucket
+                bucket.setBucketVersion(bucketElem.getChildText("Versioning"));
             }
             
             return bucketInfo;
