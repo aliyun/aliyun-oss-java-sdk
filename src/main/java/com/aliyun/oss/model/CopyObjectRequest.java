@@ -72,6 +72,8 @@ public class CopyObjectRequest extends WebServiceRequest {
     // Otherwise return 412. It's optional.
     private Date modifiedSinceConstraint;
 
+    private List<Tag> objectTags;
+
     /**
      * Constructor
      * 
@@ -335,5 +337,12 @@ public class CopyObjectRequest extends WebServiceRequest {
     public CopyObjectRequest withSourceVersionId(String sourceVersionId) {
         setSourceVersionId(sourceVersionId);
         return this;
+    }
+    public List<Tag> getObjectTags() {
+        return objectTags;
+    }
+
+    public void setObjectTags(List<Tag> objectTags) {
+        this.objectTags = objectTags;
     }
 }

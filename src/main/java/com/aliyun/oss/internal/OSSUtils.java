@@ -43,9 +43,7 @@ import com.aliyun.oss.common.utils.CodingUtils;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.common.utils.ResourceManager;
-import com.aliyun.oss.model.Callback;
-import com.aliyun.oss.model.ObjectMetadata;
-import com.aliyun.oss.model.ResponseHeaderOverrides;
+import com.aliyun.oss.model.*;
 import com.aliyun.oss.model.Callback.CalbackBodyType;
 
 public class OSSUtils {
@@ -244,6 +242,28 @@ public class OSSUtils {
                         value = value.trim();
                     headers.put(OSSHeaders.OSS_USER_METADATA_PREFIX + key, value);
                 }
+            }
+        }
+    }
+
+    public static void populateRequestTagging(Map<String, String> headers, List<Tag> objectTags) {
+        if (objectTags != null && !objectTags.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            boolean isFirstTag = true;
+            for (Tag objectTag : objectTags) {
+                if (objectTag != null && objectTag.getKey() != null) {
+                    if (!isFirstTag) {
+                        sb.append("&");
+                    }
+                    sb.append(objectTag.getKey());
+                    sb.append("=");
+                    sb.append(objectTag.getValue());
+                    isFirstTag = false;
+                }
+            }
+
+            if (sb.length() != 0) {
+                headers.put(OSSHeaders.OSS_HEADER_OBJECT_TAGGING, sb.toString());
             }
         }
     }

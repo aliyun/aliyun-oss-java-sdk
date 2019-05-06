@@ -1782,6 +1782,9 @@ public final class ResponseParsers {
                     objectMetadata.setHeader(key, value);
                 } else if (key.equals(OSSHeaders.ETAG)) {
                     objectMetadata.setHeader(key, trimQuotes(headers.get(key)));
+                } else if (key.equals(OSSHeaders.OSS_HEADER_OBJECT_TAGGING_COUNT)) {
+                    Integer value = Integer.valueOf(headers.get(key));
+                    objectMetadata.setHeader(key, value);
                 } else {
                     objectMetadata.setHeader(key, headers.get(key));
                 }
@@ -2940,8 +2943,8 @@ public final class ResponseParsers {
                     }
                     storageTransitions.add(storageTransition);
                 }
-                rule.setStorageTransition(storageTransitions);
 
+                rule.setStorageTransition(storageTransitions);
 
                 // 解析历史版本存储
                 List<Element> versionTransitionElements = ruleElem.getChildren("NoncurrentVersionTransition");
@@ -2962,21 +2965,17 @@ public final class ResponseParsers {
 
                 // 解析Tag标签生命周期
                 List<Element> tagElements = ruleElem.getChildren("Tag");
-                List<LifecycleRule.TagKeyValue> tagKeyValues  = new ArrayList<LifecycleRule.TagKeyValue>();
+                List<Tag> objectTags = new ArrayList<Tag>();
                 for (Element tagElement : tagElements) {
-                    LifecycleRule.TagKeyValue  tagKeyValue = new LifecycleRule.TagKeyValue();
-
-                    if (tagElement.getChild("Key") != null) {
-                        tagKeyValue.setKey(tagElement.getChildText("Key"));
+                    final String tagKey = tagElement.getChildText("Key");
+                    final String tagValue = tagElement.getChildText("Value");
+                    if (tagKey != null || tagValue != null) {
+                        Tag objectTag = new Tag(tagKey, tagValue);
+                        objectTags.add(objectTag);
                     }
-
-                    if (tagElement.getChild("Value") != null) {
-                        tagKeyValue.setValue(tagElement.getChildText("Value"));
-                    }
-
-                    tagKeyValues.add(tagKeyValue);
                 }
-                rule.setTagKeyValues(tagKeyValues);
+
+                rule.setObjectTags(objectTags);
 
                 lifecycleRules.add(rule);
             }
