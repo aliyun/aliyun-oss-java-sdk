@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 
 import org.junit.Ignore;
@@ -38,11 +39,6 @@ import org.junit.Test;
 
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
-import com.aliyun.oss.model.CopyObjectRequest;
-import com.aliyun.oss.model.CopyObjectResult;
-import com.aliyun.oss.model.OSSObject;
-import com.aliyun.oss.model.ObjectMetadata;
-import com.aliyun.oss.model.PutObjectResult;
 
 public class CopyObjectTest extends TestBase {
     
@@ -391,6 +387,68 @@ public class CopyObjectTest extends TestBase {
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
+            deleteBucketWithObjects(ossClient, sourceBucket);
+            deleteBucketWithObjects(ossClient, targetBucket);
+        }
+    }
+
+    @Test
+    public void testCopyObjectWithTagging() {
+        final String sourceBucket = "copy-object-source-bucket-tagging";
+        final String targetBucket = "copy-object-target-bucket-tagging";
+        final String sourceKey = "copy-object-source-object-tagging";
+        final String targetKey = "copy-object-target-object-tagging";
+        final String targetKey1 = "copy-object-target-object-tagging1";
+
+        final String objectTagKey0 = "key0";
+        final String objectTagValue0 = "value0";
+        final String objectTagKey1 = "key1";
+        final String objectTagValue1 = "value1";
+
+        try {
+            ossClient.createBucket(sourceBucket);
+            ossClient.createBucket(targetBucket);
+
+            // Set source object different with target object and copy source bucket orignal metadata(default behavior).
+            byte[] content = { 'A', 'l', 'i', 'y', 'u', 'n' };
+
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            List<Tag> objectTags = new ArrayList<Tag>();
+            Tag tag1 = new Tag(objectTagKey0, objectTagValue0);
+            objectTags.add(tag1);
+            objectMetadata.setObjectTags(objectTags);
+
+            ossClient.putObject(sourceBucket, sourceKey,
+                    new ByteArrayInputStream(content), objectMetadata);
+            ossClient.copyObject(sourceBucket, sourceKey,
+                    targetBucket, targetKey);
+
+            ObjectMetadata objectMetadata1 = ossClient.getObjectMetadata(targetBucket, targetKey);
+            Assert.assertEquals(objectMetadata.getObjectTags().size(), objectMetadata1.getCountOfTags());
+
+            CopyObjectRequest copyObjectRequest = new CopyObjectRequest(sourceBucket, sourceKey, targetBucket, targetKey1);
+            objectTags = new ArrayList<Tag>();
+            tag1 = new Tag(objectTagKey1, objectTagValue1);
+            objectTags.add(tag1);
+            copyObjectRequest.setObjectTags(objectTags);
+
+            ossClient.copyObject(copyObjectRequest);
+
+            ObjectTagging objectTagging = ossClient.getObjectTagging(new GenericRequest(targetBucket, targetKey));
+            ObjectTagging objectTagging1 = ossClient.getObjectTagging(new GenericRequest(targetBucket, targetKey1));
+
+            Assert.assertEquals(objectTagging.getTagSet().size(), 1);
+            Assert.assertEquals(objectTagging.getTagSet().get(0).getKey(), objectTagKey0);
+            Assert.assertEquals(objectTagging.getTagSet().get(0).getValue(), objectTagValue0);
+
+            Assert.assertEquals(objectTagging1.getTagSet().size(), 1);
+            Assert.assertEquals(objectTagging1.getTagSet().get(0).getKey(), objectTagKey1);
+            Assert.assertEquals(objectTagging1.getTagSet().get(0).getValue(), objectTagValue1);
+
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        } finally {
+            waitForCacheExpiration(5);
             deleteBucketWithObjects(ossClient, sourceBucket);
             deleteBucketWithObjects(ossClient, targetBucket);
         }
