@@ -354,21 +354,19 @@ public final class RequestMarshallers {
                         xmlBody.append("<MirrorMultiAlternates>");
 
                         for (int i = 0; i < redirect.getMirrorMultiAlternates().size(); i++) {
-                            if (redirect.getMirrorMultiAlternates().get(i) != null) {
-                                Integer alternateNumber = redirect.getMirrorMultiAlternates().get(i).getPrior();
-                                String alternateURL = redirect.getMirrorMultiAlternates().get(i).getUrl();
-                                if (alternateURL != null) {
-                                    xmlBody.append("<MirrorMultiAlternate>");
-                                    xmlBody.append("<MirrorMultiAlternateNumber>");
-                                    xmlBody.append(alternateNumber);
-                                    xmlBody.append("</MirrorMultiAlternateNumber>");
-                                    xmlBody.append("<MirrorMultiAlternateURL>");
-                                    xmlBody.append(alternateURL);
-                                    xmlBody.append("</MirrorMultiAlternateURL>");
-                                    xmlBody.append("</MirrorMultiAlternate>");
-                                }
+                            RoutingRule.Redirect.MirrorMultiAlternate mirrorMultiAlternate = redirect.getMirrorMultiAlternates().get(i);
+                            if (mirrorMultiAlternate != null && mirrorMultiAlternate.getUrl() != null) {
+                                xmlBody.append("<MirrorMultiAlternate>");
+                                xmlBody.append("<MirrorMultiAlternateNumber>");
+                                xmlBody.append(mirrorMultiAlternate.getPrior());
+                                xmlBody.append("</MirrorMultiAlternateNumber>");
+                                xmlBody.append("<MirrorMultiAlternateURL>");
+                                xmlBody.append(mirrorMultiAlternate.getUrl());
+                                xmlBody.append("</MirrorMultiAlternateURL>");
+                                xmlBody.append("</MirrorMultiAlternate>");
                             }
                         }
+
                         xmlBody.append("</MirrorMultiAlternates>");
                     }
 
@@ -529,13 +527,19 @@ public final class RequestMarshallers {
                     }
                 }
 
-                // 设置Tag生命周期
-                if (rule.hasTagKeyValue()) {
-                    for(LifecycleRule.TagKeyValue tagKeyValue: rule.getTagKeyValues()) {
-                        xmlBody.append("<Tag>");
-                        xmlBody.append("<Key>" + tagKeyValue.getKey() + "</Key>");
-                        xmlBody.append("<Value>" + tagKeyValue.getValue() + "</Value>");
-                        xmlBody.append("</Tag>");
+                List<Tag> objectTags = rule.getObjectTags();
+                if (objectTags != null && !objectTags.isEmpty()) {
+                    for (Tag objectTag : objectTags) {
+                        if (objectTag != null) {
+                            xmlBody.append("<Tag>");
+                            xmlBody.append("<Key>");
+                            xmlBody.append(objectTag.getKey());
+                            xmlBody.append("</Key>");
+                            xmlBody.append("<Value>");
+                            xmlBody.append(objectTag.getValue());
+                            xmlBody.append("</Value>");
+                            xmlBody.append("</Tag>");
+                        }
                     }
                 }
 

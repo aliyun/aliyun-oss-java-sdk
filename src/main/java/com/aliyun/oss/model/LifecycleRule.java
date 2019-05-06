@@ -31,7 +31,7 @@ public class LifecycleRule {
     public static enum RuleStatus {
         Unknown, Enabled, // The Rule is enabled.
         Disabled // The rule is disabled.
-    };
+    }
 
     public static class AbortMultipartUpload {
         private int expirationDays;
@@ -228,6 +228,15 @@ public class LifecycleRule {
     private int expirationDays;
     private Date expirationTime;
     private Date createdBeforeDate;
+    private List<Tag> objectTags;
+
+    public List<Tag> getObjectTags() {
+        return objectTags;
+    }
+
+    public void setObjectTags(List<Tag> objectTags) {
+        this.objectTags = objectTags;
+    }
 
     // deletemarker
     private boolean expiredObjectDeleteMarker;
