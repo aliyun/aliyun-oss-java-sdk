@@ -1,0 +1,17 @@
+<BucketInfo>
+    <Bucket>
+        <CreationDate>2013-07-31T10:56:21.000Z</CreationDate>
+        <ExtranetEndpoint>oss-cn-hangzhou.aliyuncs.com</ExtranetEndpoint>
+        <IntranetEndpoint>oss-cn-hangzhou-internal.aliyuncs.com</IntranetEndpoint>
+        <Location>oss-cn-hangzhou</Location>
+        <Name>oss-example</Name>
+        <Versioning>enabled</Versioning>
+        <Owner>
+            <DisplayName>username</DisplayName>
+            <ID>234234</ID>
+        </Owner>
+        <AccessControlList>
+            <Grant>private</Grant>
+        </AccessControlList>
+    </Bucket>
+</BucketInfo>
