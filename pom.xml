@@ -9,7 +9,7 @@
   <!--</parent>  -->
   <groupId>com.aliyun.oss</groupId>  
   <artifactId>console-java-sdk</artifactId>  
-  <version>1.1.10</version>
+  <version>1.2.0</version>
   <packaging>jar</packaging>  
   <name>Aliyun OSS SDK for Console</name>  
   <description>The Aliyun OSS SDK for Console used for accessing Aliyun Object Storage Service</description>  
