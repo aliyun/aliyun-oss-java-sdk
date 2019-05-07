@@ -72,7 +72,8 @@ public class SetBucketLifecycleRequest extends GenericRequest {
         int expirationTimeFlag = lifecycleRule.hasExpirationTime() ? 1 : 0;
         int expirationDaysFlag = lifecycleRule.hasExpirationDays() ? 1 : 0;
         int createdBeforeDateFlag = lifecycleRule.hasCreatedBeforeDate() ? 1 : 0;
-        int flagSum = expirationTimeFlag + expirationDaysFlag + createdBeforeDateFlag;
+        int expiredObjectDeleteMarker = lifecycleRule.hasExpiredObjectDeleteMarker()? 1: 0;
+        int flagSum = expirationTimeFlag + expirationDaysFlag + createdBeforeDateFlag + expiredObjectDeleteMarker;
         if (flagSum > 1 || (flagSum == 0 && !lifecycleRule.hasAbortMultipartUpload()
                 && !lifecycleRule.hasStorageTransition())) {
             throw new IllegalArgumentException("Only one expiration property should be specified.");

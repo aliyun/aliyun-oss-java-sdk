@@ -364,6 +364,10 @@ public class ObjectMetadata {
         return true;
     }
 
+    public String getVersionId() {
+        return (String) metadata.get(OSSHeaders.OSS_VERSION_ID);
+    }
+
     public int getCountOfTags() {
         Integer taggingCount = (Integer) metadata.get(OSSHeaders.OSS_HEADER_OBJECT_TAGGING_COUNT);
         return taggingCount == null ? 0 : taggingCount.intValue();

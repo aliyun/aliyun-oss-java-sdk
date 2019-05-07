@@ -1,0 +1,21 @@
+<LifecycleConfiguration>
+    <Rule>
+        <ID>Rule 1</ID>
+        <Prefix>logs/</Prefix>
+        <Status>Enabled</Status>
+        <Expiration>
+            <ExpiredObjectDeleteMarker>true</ExpiredObjectDeleteMarker>
+        </Expiration>
+        <NoncurrentVersionExpiration>
+            <NoncurrentDays>30</NoncurrentDays>
+        </NoncurrentVersionExpiration>
+        <Transition>
+            <Days>30</Days>
+            <StorageClass>IA</StorageClass>
+        </Transition>
+        <NoncurrentVersionTransition>
+            <NoncurrentDays>30</NoncurrentDays>
+            <StorageClass>IA</StorageClass>
+        </NoncurrentVersionTransition>
+    </Rule>
+</LifecycleConfiguration>

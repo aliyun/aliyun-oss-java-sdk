@@ -62,6 +62,10 @@ public class ResponseMessage extends HttpMesssage {
         return getHeaders().get(OSSHeaders.OSS_HEADER_REQUEST_ID);
     }
 
+    public String getVersionId() {
+        return  getHeaders().get(OSSHeaders.OSS_VERSION_ID);
+    }
+
     public ServiceClient.Request getRequest() {
         return request;
     }

@@ -1005,6 +1005,35 @@ public class OSSBucketOperation extends OSSOperation {
         }
     }
 
+    private static void populateListObjectVersionsRequestParameters(ListObjectVersionsRequest listObjectVersionsRequest,
+                                                             Map<String, String> params) {
+
+        if (listObjectVersionsRequest.getPrefix() != null) {
+            params.put(PREFIX, listObjectVersionsRequest.getPrefix());
+        }
+
+        if (listObjectVersionsRequest.getKeyMarker() != null) {
+            params.put(KEY_MARKER, listObjectVersionsRequest.getKeyMarker());
+        }
+
+        if (listObjectVersionsRequest.getVersionIdMarker() != null) {
+            params.put(VERSION_ID_MARKER, listObjectVersionsRequest.getVersionIdMarker());
+        }
+
+        if (listObjectVersionsRequest.getDelimiter() != null) {
+            params.put(DELIMITER, listObjectVersionsRequest.getDelimiter());
+        }
+
+        if (listObjectVersionsRequest.getMaxKeys() != null) {
+            params.put(MAX_KEYS, Integer.toString(listObjectVersionsRequest.getMaxKeys()));
+        }
+
+        if (listObjectVersionsRequest.getEncodingType() != null) {
+            params.put(ENCODING_TYPE, listObjectVersionsRequest.getEncodingType());
+        }
+    }
+
+
     private static void addOptionalACLHeader(Map<String, String> headers, CannedAccessControlList cannedAcl) {
         if (cannedAcl != null) {
             headers.put(OSSHeaders.OSS_CANNED_ACL, cannedAcl.toString());
@@ -1178,6 +1207,87 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, getBucketNotificationResponseParser, bucketName, null, true);
     }
 
+    /**
+     * Get bucket versioning status
+     */
+
+    public String getBucketVersioning(GenericRequest genericRequest) throws OSSException, ClientException  {
+        assertParameterNotNull(genericRequest, "genericRequest");
+        String bucketName = genericRequest.getBucketName();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_VERSIONING, null);
+
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
+                .setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET)
+                .setBucket(bucketName)
+                .setParameters(params)
+                .setOriginalRequest(genericRequest)
+                .build();
+
+        BucketVersion version = doOperation(request, getBucketVersioningResponseParser, bucketName, null, true);
+
+        return version.getBucketVersion();
+    }
+
+    /**
+     * Put bucket versioning
+     */
+
+    public void putBucketVersioning(PutBucketVersioningRequest putBucketVersioningRequest) throws OSSException, ClientException {
+        assertParameterNotNull(putBucketVersioningRequest, "putBucketVersioningRequest");
+        assertParameterNotNull(putBucketVersioningRequest.getBucketVersion(), "putBucketVersioningRequest");
+
+        String bucketName = putBucketVersioningRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_VERSIONING, null);
+
+        byte[] rawContent = putBucketVersioningMarshaller.marshall(putBucketVersioningRequest);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        addRequestRequiredHeaders(headers, rawContent);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params).setHeaders(headers)
+                .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+                .setOriginalRequest(putBucketVersioningRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    /**
+     * getBucketVersions || listObjectVersions
+     * @param listObjectVersionsRequest
+     * @return
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public ObjectVersionsListing listObjectVersions(ListObjectVersionsRequest listObjectVersionsRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(listObjectVersionsRequest, "listObjectVersionsRequest");
+
+        String bucketName = listObjectVersionsRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new LinkedHashMap<String, String>();
+        params.put(SUBRESOURCE_VERSIONS, null);
+        populateListObjectVersionsRequestParameters(listObjectVersionsRequest, params);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(listObjectVersionsRequest).build();
+
+        return doOperation(request, listObjectVersionsReponseParser, bucketName, null, true);
+    }
     public void putBucketVpcId(PutBucketVpcIdRequest putBucketVpcIdRequest) throws OSSException, ClientException {
         assertParameterNotNull(putBucketVpcIdRequest, "putBucketVpcIdRequest");
 
@@ -1193,23 +1303,6 @@ public class OSSBucketOperation extends OSSOperation {
 
         doOperation(request, emptyResponseParser, bucketName, null);
     }
-
-    public void deleteBucketVpcId(DeleteBucketVpcIdRequest deleteBucketVpcIdRequest) throws OSSException, ClientException {
-        assertParameterNotNull(deleteBucketVpcIdRequest, "deleteBucketVpcIdRequest");
-
-        String bucketName = bucketNameCheck(deleteBucketVpcIdRequest);
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put(SUBRESOURCE_VPC_ID, null);
-
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
-                .setInputStreamWithLength(deleteBucketVpcIdRequestMarshaller.marshall(deleteBucketVpcIdRequest))
-                .setOriginalRequest(deleteBucketVpcIdRequest).build();
-
-        doOperation(request, emptyResponseParser, bucketName, null);
-    }
-
     public BucketVpcIdList listBucketVpcId(GenericRequest genericRequest) throws OSSException, ClientException {
         assertParameterNotNull(genericRequest, "genericRequest");
 
@@ -1219,13 +1312,27 @@ public class OSSBucketOperation extends OSSOperation {
         params.put(SUBRESOURCE_VPC_ID, null);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient())
-                .setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.GET)
-                .setBucket(bucketName)
-                .setParameters(params)
-                .setOriginalRequest(genericRequest)
-                .build();
+            .setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.GET)
+            .setBucket(bucketName)
+            .setParameters(params)
+            .setOriginalRequest(genericRequest)
+            .build();
 
         return doOperation(request, listBucketVpcIdResponseParser, bucketName, null, true);
+    }
+    public void deleteBucketVpcId(DeleteBucketVpcIdRequest deleteBucketVpcIdRequest) throws OSSException, ClientException {
+        assertParameterNotNull(deleteBucketVpcIdRequest, "deleteBucketVpcIdRequest");
+
+        String bucketName = bucketNameCheck(deleteBucketVpcIdRequest);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_VPC_ID, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
+            .setInputStreamWithLength(deleteBucketVpcIdRequestMarshaller.marshall(deleteBucketVpcIdRequest))
+            .setOriginalRequest(deleteBucketVpcIdRequest).build();
+        doOperation(request, emptyResponseParser, bucketName, null);
     }
 }

@@ -80,8 +80,10 @@ public final class ResponseParsers {
     public static final InitiateWormConfigurationResponseParser initiateWormConfigurationResponseParser = new InitiateWormConfigurationResponseParser();
     public static final GetWormConfigurationResponseParser getWormConfigurationResponseParser = new GetWormConfigurationResponseParser();
     public static final GetBucketNotificationResponseParser getBucketNotificationResponseParser = new GetBucketNotificationResponseParser();
+    public static final GetBucketVersioningResponseParser getBucketVersioningResponseParser = new GetBucketVersioningResponseParser();
 
     public static final ListObjectsReponseParser listObjectsReponseParser = new ListObjectsReponseParser();
+    public static final ListObjectVersionsReponseParser listObjectVersionsReponseParser = new ListObjectVersionsReponseParser();
     public static final PutObjectReponseParser putObjectReponseParser = new PutObjectReponseParser();
     public static final PutObjectProcessReponseParser putObjectProcessReponseParser = new PutObjectProcessReponseParser();
     public static final AppendObjectResponseParser appendObjectResponseParser = new AppendObjectResponseParser();
@@ -559,6 +561,21 @@ public final class ResponseParsers {
 
     }
 
+    public static final class ListObjectVersionsReponseParser implements ResponseParser<ObjectVersionsListing> {
+
+        @Override
+        public ObjectVersionsListing parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                ObjectVersionsListing result = parseListObjectVersions(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
+
     public static final class PutObjectReponseParser implements ResponseParser<PutObjectResult> {
 
         @Override
@@ -567,6 +584,7 @@ public final class ResponseParsers {
             try {
                 result.setETag(trimQuotes(response.getHeaders().get(OSSHeaders.ETAG)));
                 result.setRequestId(response.getRequestId());
+                result.setVersionId(response.getVersionId());
                 setCRC(result, response);
                 return result;
             } finally {
@@ -701,6 +719,7 @@ public final class ResponseParsers {
             try {
                 RestoreObjectResult result = new RestoreObjectResult(response.getStatusCode());
                 result.setRequestId(response.getRequestId());
+                result.setVersionId(response.getVersionId());
                 return result;
             } finally {
                 safeCloseResponse(response);
@@ -1099,6 +1118,101 @@ public final class ResponseParsers {
 
     }
 
+    public static ObjectVersionsListing parseListObjectVersions(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+
+            ObjectVersionsListing objectListing = new ObjectVersionsListing();
+            objectListing.setBucketName(root.getChildText("Name"));
+            objectListing.setMaxKeys(Integer.valueOf(root.getChildText("MaxKeys")));
+            objectListing.setTruncated(Boolean.valueOf(root.getChildText("IsTruncated")));
+
+            if (root.getChild("Prefix") != null) {
+                String prefix = root.getChildText("Prefix");
+                objectListing.setPrefix(isNullOrEmpty(prefix) ? null : prefix);
+            }
+
+            if (root.getChild("KeyMarker") != null) {
+                String keyMarker = root.getChildText("KeyMarker");
+                objectListing.setKeyMarker(isNullOrEmpty(keyMarker) ? null : keyMarker);
+            }
+
+            if (root.getChild("VersionIdMarker") != null) {
+                String versionIdMarker = root.getChildText("VersionIdMarker");
+                objectListing.setVersionIdMarker(isNullOrEmpty(versionIdMarker) ? null : versionIdMarker);
+            }
+
+            if (root.getChild("Delimiter") != null) {
+                String delimiter = root.getChildText("Delimiter");
+                objectListing.setDelimiter(isNullOrEmpty(delimiter) ? null : delimiter);
+            }
+
+            if (root.getChild("NextKeyMarker") != null) {
+                String nextKeyMarker = root.getChildText("NextKeyMarker");
+                objectListing.setNextKeyMarker(isNullOrEmpty(nextKeyMarker) ? null : nextKeyMarker);
+            }
+
+            if (root.getChild("NextVersionIdMarker") != null) {
+                String nextVersionIdMarker = root.getChildText("NextVersionIdMarker");
+                objectListing.setNextVersionIdMarker(isNullOrEmpty(nextVersionIdMarker) ? null : nextVersionIdMarker);
+            }
+
+            if (root.getChild("EncodingType") != null) {
+                String encodingType = root.getChildText("EncodingType");
+                objectListing.setEncodingType(isNullOrEmpty(encodingType) ? null : encodingType);
+            }
+
+            List<Element> versionElems = root.getChildren();
+            for (Element elem: versionElems) {
+                if (elem.getName().equals("Version") || elem.getName().equals("DeleteMarker")) {
+                    OSSObjectVersionSummary ossObjectSummary = new OSSObjectVersionSummary();
+                    ossObjectSummary.setKey(elem.getChildText("Key"));
+                    ossObjectSummary.setVersionId(elem.getChildText("VersionId"));
+                    ossObjectSummary.setIsLatest(elem.getChildText("IsLatest"));
+                    ossObjectSummary.setETag(trimQuotes(elem.getChildText("ETag")));
+                    String type = trimQuotes(elem.getChildText("Type"));
+                    if (!StringUtils.isNullOrEmpty(type)) {
+                        ossObjectSummary.setType(ObjectTypeList.parse(type));
+                    }
+                    ossObjectSummary.setLastModified(DateUtil.parseIso8601Date(elem.getChildText("LastModified")));
+                    if (elem.getChildText("Size") != null) {
+                        ossObjectSummary.setSize(Long.valueOf(elem.getChildText("Size")));
+                    }
+                    ossObjectSummary.setStorageClass(elem.getChildText("StorageClass"));
+                    ossObjectSummary.setBucketName(objectListing.getBucketName());
+
+                    String id = elem.getChild("Owner").getChildText("ID");
+                    String displayName = elem.getChild("Owner").getChildText("DisplayName");
+                    ossObjectSummary.setOwner(new Owner(id, displayName));
+
+                    if (elem.getName().equals("Version")) {
+                        ossObjectSummary.setDeleteMarker(false);
+                    }
+
+                    if (elem.getName().equals("DeleteMarker")) {
+                        ossObjectSummary.setDeleteMarker(true);
+                    }
+                    objectListing.addObjectSummary(ossObjectSummary);
+                }
+            }
+
+            List<Element> commonPrefixesElems = root.getChildren("CommonPrefixes");
+            for (Element elem : commonPrefixesElems) {
+                String prefix = elem.getChildText("Prefix");
+                if (!isNullOrEmpty(prefix)) {
+                    objectListing.addCommonPrefix(prefix);
+                }
+            }
+
+            return objectListing;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
+    }
     /**
      * Unmarshall get bucket acl response body to ACL.
      */
@@ -2171,12 +2285,25 @@ public final class ResponseParsers {
                 deleteObjectsResult.setEncodingType(isNullOrEmpty(encodingType) ? null : encodingType);
             }
 
-            List<String> deletedObjects = new ArrayList<String>();
+            List<DeleteObjectsResult.DeletedObject> deletedObjects = new ArrayList<DeleteObjectsResult.DeletedObject>();
             List<Element> deletedElements = root.getChildren("Deleted");
             for (Element elem : deletedElements) {
-                deletedObjects.add(elem.getChildText("Key"));
+                DeleteObjectsResult.DeletedObject deletedObject = new DeleteObjectsResult.DeletedObject();
+                deletedObject.setKey(elem.getChildText("Key"));
+                if(elem.getChildText("VersionId") != null) {
+                    deletedObject.setVersionId(elem.getChildText("VersionId"));
+                }
+
+                if (elem.getChildText("DeleteMarker") != null) {
+                    deletedObject.setDeleteMarker(Boolean.valueOf(elem.getChildText("DeleteMarker")));
+                }
+                if (elem.getChildText("DeleteMarkerVersionId") != null ) {
+                    deletedObject.setDeleteMarkerVersionId(elem.getChildText("DeleteMarkerVersionId"));
+                }
+                deletedObjects.add(deletedObject);
             }
             deleteObjectsResult.setDeletedObjects(deletedObjects);
+
 
             return deleteObjectsResult;
         } catch (JDOMParseException e) {
@@ -2446,6 +2573,16 @@ public final class ResponseParsers {
                 break;
             }
 
+            // bucket versioninig
+            Element bucketVersionInfoElement = bucketElem.getChild("Versioning");
+            if (bucketVersionInfoElement != null) {
+                // old preserve
+                bucketInfo.setBucketVersion(bucketElem.getChildText("Versioning"));
+
+                // new set bucket version on bucket
+                bucket.setBucketVersion(bucketElem.getChildText("Versioning"));
+            }
+            
             return bucketInfo;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
@@ -2760,10 +2897,19 @@ public final class ResponseParsers {
                         rule.setExpirationTime(expirationDate);
                     } else if (ruleElem.getChild("Expiration").getChild("Days") != null) {
                         rule.setExpirationDays(Integer.parseInt(ruleElem.getChild("Expiration").getChildText("Days")));
+                    } else if(ruleElem.getChild("Expiration").getChild("ExpiredObjectDeleteMarker") != null){
+                        rule.setExpiredObjectDeleteMarker(Boolean.valueOf(ruleElem.getChild("Expiration").getChildText("ExpiredObjectDeleteMarker")));
                     } else {
                         Date createdBeforeDate = DateUtil
                                 .parseIso8601Date(ruleElem.getChild("Expiration").getChildText("CreatedBeforeDate"));
                         rule.setCreatedBeforeDate(createdBeforeDate);
+                    }
+                }
+
+                // 解析历史版本过期规则
+                if (ruleElem.getChild("NoncurrentVersionExpiration") != null ) {
+                    if (ruleElem.getChild("NoncurrentVersionExpiration").getChild("NoncurrentDays") != null) {
+                        rule.setNoncurrentVersionExpirationInDays(Integer.parseInt(ruleElem.getChild("NoncurrentVersionExpiration").getChildText("NoncurrentDays")));
                     }
                 }
 
@@ -2800,6 +2946,24 @@ public final class ResponseParsers {
 
                 rule.setStorageTransition(storageTransitions);
 
+                // 解析历史版本存储
+                List<Element> versionTransitionElements = ruleElem.getChildren("NoncurrentVersionTransition");
+                List<LifecycleRule.NoncurrentVersionTransition> versionStorageTransitions = new ArrayList<LifecycleRule.NoncurrentVersionTransition>();
+                for (Element transitionElem : versionTransitionElements) {
+                    LifecycleRule.NoncurrentVersionTransition storageTransition = new LifecycleRule.NoncurrentVersionTransition();
+                    if (transitionElem.getChild("NoncurrentDays") != null) {
+                        storageTransition.setExpirationDays(Integer.parseInt(transitionElem.getChildText("NoncurrentDays")));
+                    }
+
+                    if (transitionElem.getChild("StorageClass") != null) {
+                        storageTransition
+                                .setStorageClass(StorageClass.parse(transitionElem.getChildText("StorageClass")));
+                    }
+                    versionStorageTransitions.add(storageTransition);
+                }
+                rule.setNoncurrentVersionTransitions(versionStorageTransitions);
+
+                // 解析Tag标签生命周期
                 List<Element> tagElements = ruleElem.getChildren("Tag");
                 List<Tag> objectTags = new ArrayList<Tag>();
                 for (Element tagElement : tagElements) {
@@ -2986,6 +3150,44 @@ public final class ResponseParsers {
             ObjectTagging objectTagging = new ObjectTagging(tagSet);
 
             return objectTagging;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+
+    public static final class GetBucketVersioningResponseParser implements ResponseParser<BucketVersion> {
+
+        @Override
+        public BucketVersion parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                BucketVersion result = parseBucketVersioning(response.getContent());
+                result.setRequestId(response.getRequestId());
+
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+    }
+
+    public static BucketVersion parseBucketVersioning(InputStream inputStream) throws ResponseParseException {
+       String bucketVersionStatus = "Disabled";
+        if (inputStream == null) {
+            return new BucketVersion(bucketVersionStatus);
+        }
+
+        try {
+            Element root = getXmlRootElement(inputStream);
+
+            if (root.getChildText("Status") != null) {
+                bucketVersionStatus = root.getChildText("Status");
+            }
+
+            BucketVersion bucketVersion = new BucketVersion(bucketVersionStatus);
+
+            return bucketVersion;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {

@@ -38,4 +38,14 @@ public class RestoreObjectResult extends GenericResult {
     }
 
     private int statusCode;
+
+    private String versionId;
+
+    public void setVersionId(String String) {
+        this.versionId = versionId;
+    }
+
+    public String getVersionId() {
+        return versionId;
+    }
 }

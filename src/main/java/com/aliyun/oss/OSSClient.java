@@ -538,6 +538,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public CopyObjectResult copyObject(String sourceBucketName, String sourceKey, String versionId, String destinationBucketName, String destinationKey) throws OSSException, ClientException {
+        return copyObject(new CopyObjectRequest(sourceBucketName, sourceKey, versionId, destinationBucketName, destinationKey));
+    }
+
+    @Override
     public CopyObjectResult copyObject(CopyObjectRequest copyObjectRequest) throws OSSException, ClientException {
         return objectOperation.copyObject(copyObjectRequest);
     }
@@ -545,6 +550,11 @@ public class OSSClient implements OSS {
     @Override
     public OSSObject getObject(String bucketName, String key) throws OSSException, ClientException {
         return this.getObject(new GetObjectRequest(bucketName, key));
+    }
+
+    @Override
+    public OSSObject getObject(String bucketName, String key, String versionId) throws OSSException, ClientException {
+        return this.getObject(new GetObjectRequest(bucketName, key, versionId));
     }
 
     @Override
@@ -582,7 +592,12 @@ public class OSSClient implements OSS {
 
     @Override
     public ObjectMetadata getObjectMetadata(String bucketName, String key) throws OSSException, ClientException {
-        return this.getObjectMetadata(new GenericRequest(bucketName, key));
+        return this.getObjectMetadata(new GetObjectMetaRequest(bucketName, key));
+    }
+
+    @Override
+    public ObjectMetadata getObjectMetadata(String bucketName, String key, String versionId) throws OSSException, ClientException {
+        return this.getObjectMetadata(new GetObjectMetaRequest(bucketName, key, versionId));
     }
 
     @Override
@@ -591,8 +606,8 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public ObjectMetadata getObjectMetadata(GenericRequest genericRequest) throws OSSException, ClientException {
-        return objectOperation.getObjectMetadata(genericRequest);
+    public ObjectMetadata getObjectMetadata(GetObjectMetaRequest getObjectMetaRequest) throws OSSException, ClientException {
+        return objectOperation.getObjectMetadata(getObjectMetaRequest);
     }
 
     @Override
@@ -604,6 +619,11 @@ public class OSSClient implements OSS {
     @Override
     public void deleteObject(String bucketName, String key) throws OSSException, ClientException {
         this.deleteObject(new GenericRequest(bucketName, key));
+    }
+
+    @Override
+    public void deleteObject(String bucketName, String key, String versionId) throws OSSException, ClientException {
+        this.deleteObject(new GenericRequest(bucketName, key, versionId));
     }
 
     @Override
@@ -649,23 +669,38 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public void setObjectAcl(String bucketName, String key, String versionId, CannedAccessControlList cannedAcl) throws OSSException, ClientException {
+        this.setObjectAcl(new SetObjectAclRequest(bucketName, key, versionId, cannedAcl));
+    }
+
+    @Override
     public void setObjectAcl(SetObjectAclRequest setObjectAclRequest) throws OSSException, ClientException {
         objectOperation.setObjectAcl(setObjectAclRequest);
     }
 
     @Override
     public ObjectAcl getObjectAcl(String bucketName, String key) throws OSSException, ClientException {
-        return this.getObjectAcl(new GenericRequest(bucketName, key));
+        return this.getObjectAcl(new GetObjectAclRequest(bucketName, key));
     }
 
     @Override
-    public ObjectAcl getObjectAcl(GenericRequest genericRequest) throws OSSException, ClientException {
-        return objectOperation.getObjectAcl(genericRequest);
+    public ObjectAcl getObjectAcl(String bucketName, String key, String versionId) throws OSSException, ClientException {
+        return this.getObjectAcl(new GetObjectAclRequest(bucketName, key,versionId));
+    }
+
+    @Override
+    public ObjectAcl getObjectAcl(GetObjectAclRequest getObjectAclRequest) throws OSSException, ClientException {
+        return objectOperation.getObjectAcl(getObjectAclRequest);
     }
 
     @Override
     public RestoreObjectResult restoreObject(String bucketName, String key) throws OSSException, ClientException {
         return this.restoreObject(new GenericRequest(bucketName, key));
+    }
+
+    @Override
+    public RestoreObjectResult restoreObject(String bucketName, String key, String versionId) throws OSSException, ClientException {
+        return this.restoreObject(new GenericRequest(bucketName, key, versionId));
     }
 
     @Override
@@ -1476,8 +1511,38 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException {
-        this.objectOperation.deleteObjectTagging(genericRequest);
+    public void deleteObjectTagging(DeleteObjectTaggingRequest deleteObjectTaggingRequest) throws OSSException, ClientException {
+        this.objectOperation.deleteObjectTagging(deleteObjectTaggingRequest);
+    }
+
+    @Override
+    public String getBucketVersioning(GenericRequest genericRequest) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketVersioning(genericRequest);
+    }
+
+    @Override
+    public String getBucketVersioning(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketVersioning(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public void putBucketVersioning(PutBucketVersioningRequest putBucketVersioningRequest) throws OSSException, ClientException {
+        this.bucketOperation.putBucketVersioning(putBucketVersioningRequest);
+    }
+
+    @Override
+    public ObjectVersionsListing listObjectVersions(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.listObjectVersions(new ListObjectVersionsRequest(bucketName, null, null, null, null, null));
+    }
+
+    @Override
+    public ObjectVersionsListing listObjectVersions(String bucketName, String prefix) throws OSSException, ClientException {
+        return this.bucketOperation.listObjectVersions(new ListObjectVersionsRequest(bucketName, prefix, null, null, null,null));
+    }
+
+    @Override
+    public ObjectVersionsListing listObjectVersions(ListObjectVersionsRequest listObjectVersionsRequest) throws OSSException, ClientException {
+        return this.bucketOperation.listObjectVersions(listObjectVersionsRequest);
     }
 
     @Override

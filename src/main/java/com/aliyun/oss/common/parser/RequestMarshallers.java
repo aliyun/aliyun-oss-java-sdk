@@ -72,6 +72,7 @@ public final class RequestMarshallers {
     public static final ResizeUdfApplicationRequestMarshaller resizeUdfApplicationRequestMarshaller = new ResizeUdfApplicationRequestMarshaller();
     public static final ProcessObjectRequestMarshaller processObjectRequestMarshaller = new ProcessObjectRequestMarshaller();
     public static final PutBucketRequestPaymentMarshaller putBucketRequestPaymentMarshaller = new PutBucketRequestPaymentMarshaller();
+    public static final PutBucketVersioningMarshaller putBucketVersioningMarshaller = new PutBucketVersioningMarshaller();
 
     public static final InitiateWormConfigurationRequestMarshaller initiateWormConfigurationRequestMarshaller = new InitiateWormConfigurationRequestMarshaller();
     public static final ExtendWormConfigurationRequestMarshaller extendWormConfigurationRequestMarshaller = new ExtendWormConfigurationRequestMarshaller();
@@ -475,10 +476,17 @@ public final class RequestMarshallers {
                     xmlBody.append("<Expiration><Date>" + formatDate + "</Date></Expiration>");
                 } else if (rule.getExpirationDays() != 0) {
                     xmlBody.append("<Expiration><Days>" + rule.getExpirationDays() + "</Days></Expiration>");
+                } else if (rule.isExpiredObjectDeleteMarker()){
+                    xmlBody.append("<Expiration><ExpiredObjectDeleteMarker>" + rule.isExpiredObjectDeleteMarker() + "</ExpiredObjectDeleteMarker></Expiration>");
                 } else if (rule.getCreatedBeforeDate() != null) {
                     String formatDate = DateUtil.formatIso8601Date(rule.getCreatedBeforeDate());
                     xmlBody.append(
                             "<Expiration><CreatedBeforeDate>" + formatDate + "</CreatedBeforeDate></Expiration>");
+                }
+
+                // 设置多版本 NoncurrentVersionExpiration
+                if (rule.getNoncurrentVersionExpirationInDays() != 0) {
+                    xmlBody.append("<NoncurrentVersionExpiration><NoncurrentDays>" + rule.getNoncurrentVersionExpirationInDays() + "</NoncurrentDays></NoncurrentVersionExpiration>");
                 }
 
                 if (rule.hasAbortMultipartUpload()) {
@@ -504,6 +512,18 @@ public final class RequestMarshallers {
                         }
                         xmlBody.append("<StorageClass>" + storageTransition.getStorageClass() + "</StorageClass>");
                         xmlBody.append("</Transition>");
+                    }
+                }
+
+                // 设置多版本历史转换生命周期当前版本和历史版本
+                if (rule.hasNoncurrentVersionTransitions()) {
+                    for (LifecycleRule.NoncurrentVersionTransition storageTransition : rule.getNoncurrentVersionTransitions()) {
+                        xmlBody.append("<NoncurrentVersionTransition>");
+                        if (storageTransition.hasExpirationDays()) {
+                            xmlBody.append("<NoncurrentDays>" + storageTransition.getExpirationDays() + "</NoncurrentDays>");
+                        }
+                        xmlBody.append("<StorageClass>" + storageTransition.getStorageClass() + "</StorageClass>");
+                        xmlBody.append("</NoncurrentVersionTransition>");
                     }
                 }
 
@@ -681,14 +701,17 @@ public final class RequestMarshallers {
         public byte[] marshall(DeleteObjectsRequest request) {
             StringBuffer xmlBody = new StringBuffer();
             boolean quiet = request.isQuiet();
-            List<String> keysToDelete = request.getKeys();
+            List<DeleteObjectsRequest.KeyVersion> keysToDelete = request.getKeys();
 
             xmlBody.append("<Delete>");
             xmlBody.append("<Quiet>" + quiet + "</Quiet>");
             for (int i = 0; i < keysToDelete.size(); i++) {
-                String key = keysToDelete.get(i);
+                DeleteObjectsRequest.KeyVersion key = keysToDelete.get(i);
                 xmlBody.append("<Object>");
-                xmlBody.append("<Key>" + escapeKey(key) + "</Key>");
+                xmlBody.append("<Key>" + escapeKey(key.getKey()) + "</Key>");
+                if (key.getVersion() != null) {
+                    xmlBody.append("<VersionId>" + escapeKey(key.getVersion()) + "</VersionId>");
+                }
                 xmlBody.append("</Object>");
             }
             xmlBody.append("</Delete>");
@@ -1016,6 +1039,28 @@ public final class RequestMarshallers {
             xmlBody.append("</RequestPaymentConfiguration>");
 
             byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+
+    }
+
+    // 设置bucket versioning
+    public static final class PutBucketVersioningMarshaller
+            implements RequestMarshaller2<PutBucketVersioningRequest> {
+
+        @Override
+        public byte[] marshall(PutBucketVersioningRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<VersioningConfiguration>");
+            xmlBody.append("<Status>" + request.getBucketVersion() + "</Status>");
+            xmlBody.append("</VersioningConfiguration>");
+
+            byte[] rawData;
             try {
                 rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
             } catch (UnsupportedEncodingException e) {

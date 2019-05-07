@@ -35,6 +35,8 @@ public class CopyObjectRequest extends WebServiceRequest {
     // Source object key.
     private String sourceKey;
 
+    private String sourceVersionId;
+
     // Target bucket name.
     private String destinationBucketName;
 
@@ -88,6 +90,30 @@ public class CopyObjectRequest extends WebServiceRequest {
             String destinationKey) {
         setSourceBucketName(sourceBucketName);
         setSourceKey(sourceKey);
+        setSourceVersionId(null);
+        setDestinationBucketName(destinationBucketName);
+        setDestinationKey(destinationKey);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param sourceBucketName
+     *            Source bucket name.
+     * @param sourceKey
+     *            Source key.
+     * @param versionId
+     *            Object versionId
+     * @param destinationBucketName
+     *            Target bucket name.
+     * @param destinationKey
+     *            Target key.
+     */
+    public CopyObjectRequest(String sourceBucketName, String sourceKey, String versionId, String destinationBucketName,
+                             String destinationKey) {
+        setSourceBucketName(sourceBucketName);
+        setSourceKey(sourceKey);
+        setSourceVersionId(versionId);
         setDestinationBucketName(destinationBucketName);
         setDestinationKey(destinationKey);
     }
@@ -300,6 +326,18 @@ public class CopyObjectRequest extends WebServiceRequest {
         this.serverSideEncryption = serverSideEncryption;
     }
 
+    public String getSourceVersionId() {
+        return sourceVersionId;
+    }
+
+    public void setSourceVersionId(String sourceVersionId) {
+        this.sourceVersionId = sourceVersionId;
+    }
+
+    public CopyObjectRequest withSourceVersionId(String sourceVersionId) {
+        setSourceVersionId(sourceVersionId);
+        return this;
+    }
     public List<Tag> getObjectTags() {
         return objectTags;
     }

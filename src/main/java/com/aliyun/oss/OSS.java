@@ -581,6 +581,27 @@ public interface OSS {
     /**
      * Copies an existing file in OSS from source bucket to the target bucket.
      * If target file exists, it would be overwritten by the source file.
+     *
+     * @param sourceBucketName
+     *            Source object's bucket name.
+     * @param sourceKey
+     *            Source object's key.
+     * @param versionId
+     *            Object versionId
+     * @param destinationBucketName
+     *            Target object's bucket name.
+     * @param destinationKey
+     *            Target object's key.
+     * @return A {@link CopyObjectResult} instance.
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public CopyObjectResult copyObject(String sourceBucketName, String sourceKey, String versionId, String destinationBucketName,
+                                       String destinationKey) throws OSSException, ClientException;
+
+    /**
+     * Copies an existing file in OSS from source bucket to the target bucket.
+     * If target file exists, it would be overwritten by the source file.
      * 
      * @param copyObjectRequest
      *            A {@link CopyObjectRequest} instance that specifies source
@@ -602,6 +623,18 @@ public interface OSS {
      *         the connection after usage.
      */
     public OSSObject getObject(String bucketName, String key) throws OSSException, ClientException;
+
+    /**
+     * Gets a {@link OSSObject} from {@link Bucket}.
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param key
+     *            Object Key.
+     * @return A {@link OSSObject} instance. The caller is responsible to close
+     *         the connection after usage.
+     */
+    public OSSObject getObject(String bucketName, String key, String versionId) throws OSSException, ClientException;
 
     /**
      * Downloads the file from a file specified by the {@link GetObjectRequest}
@@ -701,15 +734,28 @@ public interface OSS {
 
     /**
      * Gets all the metadata of {@link OSSObject}.
-     * 
-     * @param genericRequest
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param key
+     *            Object key.
+     * @param versionId
+     *            object versionId
+     * @return The {@link ObjectMetadata} instance.
+     */
+    public ObjectMetadata getObjectMetadata(String bucketName, String key, String versionId) throws OSSException, ClientException;
+
+    /**
+     * Gets all the metadata of {@link OSSObject}.
+     *
+     * @param getObjectMetaRequest
      *            Generic request which specifies the bucket name and object
      *            key.
      *
      * @return The {@link ObjectMetadata} instance.
      *
      */
-    public ObjectMetadata getObjectMetadata(GenericRequest genericRequest) throws OSSException, ClientException;
+    public ObjectMetadata getObjectMetadata(GetObjectMetaRequest getObjectMetaRequest) throws OSSException, ClientException;
 
     /**
      * Create select object metadata(create metadata if not exists or overwrite flag set in {@link CreateSelectObjectMetadataRequest})
@@ -724,7 +770,7 @@ public interface OSS {
     /**
      * Append the data to the appendable object specified in
      * {@link AppendObjectRequest}. It's not applicable to normal OSS object.
-     * 
+     *
      * @param appendObjectRequest
      *            A {@link AppendObjectRequest} instance which specifies the
      *            bucket name, appendable object key, the file or the
@@ -736,7 +782,7 @@ public interface OSS {
 
     /**
      * Deletes the specified {@link OSSObject} by bucket name and object key.
-     * 
+     *
      * @param bucketName
      *            Bucket name.
      * @param key
@@ -745,9 +791,19 @@ public interface OSS {
     public void deleteObject(String bucketName, String key) throws OSSException, ClientException;
 
     /**
+     * Deletes the specified {@link OSSObject} by bucket name and object key.
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param key
+     *            Object key.
+     */
+    public void deleteObject(String bucketName, String key, String versionId) throws OSSException, ClientException;
+
+    /**
      * Deletes the specified {@link OSSObject} by the {@link GenericRequest}
      * instance.
-     * 
+     *
      * @param genericRequest
      *            The {@link GenericRequest} instance that specfies the bucket
      *            name and object key.
@@ -757,7 +813,7 @@ public interface OSS {
     /**
      * Batch deletes the specified files under a specific bucket. If the files
      * are non-exist, the operation will still return successful.
-     * 
+     *
      * @param deleteObjectsRequest
      *            A {@link DeleteObjectsRequest} instance which specifies the
      *            bucket and file keys to delete.
@@ -785,7 +841,7 @@ public interface OSS {
      * Checks if a specific {@link OSSObject} exists under the specific
      * {@link Bucket}. 302 Redirect or OSS mirroring will not impact the result
      * of this function.
-     * 
+     *
      * @param genericRequest
      *            A {@link GenericRequest} instance which specifies the bucket
      *            and object key.
@@ -797,7 +853,7 @@ public interface OSS {
      * Checks if a specific {@link OSSObject} exists under the specific
      * {@link Bucket}. 302 Redirect or OSS mirroring will impact the result of
      * this function if isOnlyInOSS is true.
-     * 
+     *
      * @param bucketName
      *            Bucket name.
      * @param key
@@ -813,7 +869,7 @@ public interface OSS {
 
     /**
      * Checks if a specific {@link OSSObject} exists.
-     * 
+     *
      * @param headObjectRequest
      *            A {@link HeadObjectRequest} instance which specifies the
      *            bucket name and object key. Constraint information is ignored.
@@ -824,7 +880,7 @@ public interface OSS {
 
     /**
      * Sets the Access Control List (ACL) on a {@link OSSObject} instance.
-     * 
+     *
      * @param bucketName
      *            Bucket name.
      * @param key
@@ -838,7 +894,21 @@ public interface OSS {
 
     /**
      * Sets the Access Control List (ACL) on a {@link OSSObject} instance.
-     * 
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param key
+     *            Object Key.
+     * @param cannedAcl
+     *            One of the three values: Private, PublicRead or
+     *            PublicReadWrite.
+     */
+    public void setObjectAcl(String bucketName, String key, String versionId, CannedAccessControlList cannedAcl)
+            throws OSSException, ClientException;
+
+    /**
+     * Sets the Access Control List (ACL) on a {@link OSSObject} instance.
+     *
      * @param setObjectAclRequest
      *            A {@link SetObjectAclRequest} instance which specifies the
      *            object's bucket name and key as well as the ACL information.
@@ -847,7 +917,7 @@ public interface OSS {
 
     /**
      * Gets the Access Control List (ACL) of the OSS object.
-     * 
+     *
      * @param bucketName
      *            Bucket name.
      * @param key
@@ -855,21 +925,46 @@ public interface OSS {
      * @return The {@link ObjectAcl} instance of the object.
      */
     public ObjectAcl getObjectAcl(String bucketName, String key) throws OSSException, ClientException;
+    /**
+     * Gets the Access Control List (ACL) of the OSS object.
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param key
+     *            Object Key.
+     * @param versionId
+     *            versionId
+     * @return The {@link ObjectAcl} instance of the object.
+     */
+    public ObjectAcl getObjectAcl(String bucketName, String key, String versionId) throws OSSException, ClientException;
 
     /**
      * Gets the Access Control List (ACL) of the OSS object.
-     * 
-     * @param genericRequest
+     *
+     * @param getObjectAclRequest
      *            A {@link GenericRequest} instance which specifies the bucket
      *            name and object key.
      */
-    public ObjectAcl getObjectAcl(GenericRequest genericRequest) throws OSSException, ClientException;
+    public ObjectAcl getObjectAcl(GetObjectAclRequest getObjectAclRequest) throws OSSException, ClientException;
 
     /**
      * Restores the object of archive storage. The function is not applicable to
      * LRS or IA storage. The restoreObject() needs to be called prior to
      * calling getObject() on an archive object.
-     * 
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param key
+     *            Object Key.
+     * @return A {@link RestoreObjectResult} instance.
+     */
+    public RestoreObjectResult restoreObject(String bucketName, String key, String versionId) throws OSSException, ClientException;
+
+    /**
+     * Restores the object of archive storage. The function is not applicable to
+     * LRS or IA storage. The restoreObject() needs to be called prior to
+     * calling getObject() on an archive object.
+     *
      * @param bucketName
      *            Bucket name.
      * @param key
@@ -877,12 +972,11 @@ public interface OSS {
      * @return A {@link RestoreObjectResult} instance.
      */
     public RestoreObjectResult restoreObject(String bucketName, String key) throws OSSException, ClientException;
-
     /**
      * Restores the object of archive storage. The function is not applicable to
      * LRS or IA storage. The restoreObject() needs to be called prior to
      * calling getObject() on an archive object.
-     * 
+     *
      * @param genericRequest
      *            A {@link GenericRequest} instance that specifies the bucket
      *            name and object key.
@@ -893,7 +987,7 @@ public interface OSS {
     /**
      * Generates a signed url for accessing the {@link OSSObject} with HTTP GET
      * method.
-     * 
+     *
      * @param bucketName
      *            Bucket name.
      * @param key
@@ -909,7 +1003,7 @@ public interface OSS {
     /**
      * Generates a signed url for accessing the {@link OSSObject} with a
      * specific HTTP method.
-     * 
+     *
      * @param bucketName
      *            Bucket name.
      * @param key
@@ -929,7 +1023,7 @@ public interface OSS {
     /**
      * Generates a signed url for accessing the {@link OSSObject} with a
      * specific HTTP method.
-     * 
+     *
      * @param request
      *            A {@link GeneratePresignedUrlRequest} instance which specifies
      *            the bucket name, file key, expiration time, HTTP method, and
@@ -942,7 +1036,7 @@ public interface OSS {
 
     /**
      * Sets image processing attributes on the specific {@link Bucket}
-     * 
+     *
      * @param request
      *            A {@link PutBucketImageRequest} instances which specifies some
      *            attributes of image processing.
@@ -953,7 +1047,7 @@ public interface OSS {
 
     /**
      * Gets the image processing attributes on the specific {@link Bucket}.
-     * 
+     *
      * @param bucketName
      *            The bucket name
      * @return A {@link GetBucketImageResult} instance which has attributes of
@@ -2451,14 +2545,14 @@ public interface OSS {
     /**
      * Returns the tags for the specified object.
      *
-     * @param genericRequest
+     * @param getObjectTaggingRequest
      *            The request object containing all the options on how to
      *            retrieve the OSS object tags.
      * @return The tags for the specified object.
      * @throws OSSException
      * @throws ClientException
      */
-    public ObjectTagging getObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException;
+    public ObjectTagging getObjectTagging(GenericRequest getObjectTaggingRequest) throws OSSException, ClientException;
 
     /**
      * Set the tags for the specified object.
@@ -2474,7 +2568,7 @@ public interface OSS {
     /**
      * Remove the tags for the specified object.
      *
-     * @param genericRequest
+     * @param deleteObjectTaggingRequest
      *            The request object containing all the options for deleting
      *            the tags for the specified object.
      *
@@ -2482,5 +2576,76 @@ public interface OSS {
      * @throws OSSException
      * @throws ClientException
      */
-    public void deleteObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException;
+    public void deleteObjectTagging(DeleteObjectTaggingRequest deleteObjectTaggingRequest) throws OSSException, ClientException;
+
+
+    /**
+     * Returns the versioning for the specified bucket.
+     *
+     * @param genericRequest
+     *            The request object containing all the options on how to
+     *            get the bucket versioning.
+     * @return The versioning status for the bucket.
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public String getBucketVersioning(GenericRequest genericRequest) throws OSSException, ClientException;
+
+
+    /**
+     * Returns the versioning for the specified bucket.
+     *
+     * @param bucketName
+     *            The request object containing all the options on how to
+     *            get the bucket versioning.
+     * @return The versioning status for the bucket.
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public String getBucketVersioning(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * set bucket Version
+     * @param putBucketVersioningRequest
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public void putBucketVersioning(PutBucketVersioningRequest putBucketVersioningRequest) throws OSSException,ClientException;
+
+
+    /**
+     * listObjectVersions
+     * @param bucketName
+     * @return
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public ObjectVersionsListing listObjectVersions(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * listObjectsVersions
+     * @param bucketName
+     * @param prefix
+     * @return
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public ObjectVersionsListing listObjectVersions(String bucketName, String prefix) throws OSSException, ClientException;
+
+
+    /**
+     * Lists all objects under the specified {@link Bucket} in the parameter of
+     * {@link ListObjectVersionsRequest}
+     *
+     * @param listObjectVersionsRequest
+     *            The {@link ListObjectVersionsRequest} instance that defines the
+     *            bucket name as well as the criteria such as prefix, marker,
+     *            maxKeys, delimiter, etc.
+     * @return A {@link ObjectVersionsListing} instance that has the objects meet the
+     *         criteria
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public ObjectVersionsListing listObjectVersions(ListObjectVersionsRequest listObjectVersionsRequest ) throws OSSException, ClientException;
+
 }

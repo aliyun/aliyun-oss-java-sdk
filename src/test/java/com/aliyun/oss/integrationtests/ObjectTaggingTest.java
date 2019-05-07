@@ -38,16 +38,18 @@ public class ObjectTaggingTest extends TestBase {
     SetObjectTaggingRequest setObjectTaggingRequest = new SetObjectTaggingRequest(this.bucketName, TEST_OBJECT_KEY, objectTagging);
     this.ossClient.setObjectTagging(setObjectTaggingRequest);
 
-    GenericRequest genericRequest = new GenericRequest(this.bucketName, TEST_OBJECT_KEY);
-    ObjectTagging objectTagging1 = this.ossClient.getObjectTagging(genericRequest);
+    GenericRequest getObjectTaggingRequest = new GenericRequest(this.bucketName, TEST_OBJECT_KEY);
+    ObjectTagging objectTagging1 = this.ossClient.getObjectTagging(getObjectTaggingRequest);
 
     Assert.assertNotNull(objectTagging1);
     Assert.assertNotNull(objectTagging1.getTagSet());
     Assert.assertTrue(objectTagging1.getTagSet().size() == 3);
 
-    this.ossClient.deleteObjectTagging(genericRequest);
+    DeleteObjectTaggingRequest deleteObjectTaggingRequest = new DeleteObjectTaggingRequest(this.bucketName, TEST_OBJECT_KEY);
 
-    ObjectTagging objectTagging2 = this.ossClient.getObjectTagging(genericRequest);
+    this.ossClient.deleteObjectTagging(deleteObjectTaggingRequest);
+
+    ObjectTagging objectTagging2 = this.ossClient.getObjectTagging(getObjectTaggingRequest);
 
     Assert.assertNotNull(objectTagging2);
     Assert.assertNotNull(objectTagging2.getTagSet());

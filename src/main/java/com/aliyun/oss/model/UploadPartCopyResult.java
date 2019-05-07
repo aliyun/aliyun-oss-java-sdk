@@ -25,6 +25,8 @@ public class UploadPartCopyResult extends GenericResult {
 
     private String eTag;
 
+    private String versionId;
+
     /**
      * Gets the part number.
      * 
@@ -82,5 +84,13 @@ public class UploadPartCopyResult extends GenericResult {
      */
     public PartETag getPartETag() {
         return new PartETag(partNumber, eTag);
+    }
+
+    public String getVersionId() {
+        return versionId;
+    }
+
+    public void setVersionId(String versionId) {
+        this.versionId = versionId;
     }
 }

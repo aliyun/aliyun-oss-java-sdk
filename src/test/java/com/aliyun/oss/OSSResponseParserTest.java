@@ -24,24 +24,12 @@ import static org.junit.Assert.assertEquals;
 import java.io.InputStream;
 import java.util.List;
 
+import com.aliyun.oss.model.*;
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.internal.ResponseParsers;
-import com.aliyun.oss.model.AccessControlList;
-import com.aliyun.oss.model.Bucket;
-import com.aliyun.oss.model.BucketList;
-import com.aliyun.oss.model.CompleteMultipartUploadResult;
-import com.aliyun.oss.model.CopyObjectResult;
-import com.aliyun.oss.model.Grant;
-import com.aliyun.oss.model.InitiateMultipartUploadResult;
-import com.aliyun.oss.model.MultipartUploadListing;
-import com.aliyun.oss.model.OSSObjectSummary;
-import com.aliyun.oss.model.ObjectListing;
-import com.aliyun.oss.model.PartListing;
-import com.aliyun.oss.model.PartSummary;
-import com.aliyun.oss.model.Permission;
 import com.aliyun.oss.utils.ResourceUtils;
 
 /**
@@ -292,6 +280,150 @@ public class OSSResponseParserTest {
                 completeMultipartUploadResult.getETag());
 
         in.close();
+    }
+
+    @Test
+    public void testGetBucketVersioning() throws Exception {
+        String filename = "getBucketVersioning.xml";
+        InputStream in = getInputStream(filename);
+        BucketVersion bucketVersion = ResponseParsers.parseBucketVersioning(in);
+        Assert.assertEquals("Suspended", bucketVersion.getBucketVersion());
+
+        in.close();
+    }
+
+    @Test
+    public void testGetBucketVersions() throws Exception {
+        String filename = "listVersionsResult.xml";
+        InputStream in = getInputStream(filename);
+        ObjectVersionsListing objectVersionsListing = ResponseParsers.parseListObjectVersions(in);
+
+        Assert.assertEquals("oss-example", objectVersionsListing.getBucketName());
+        Assert.assertEquals(null, objectVersionsListing.getPrefix());
+        Assert.assertEquals("fun1", objectVersionsListing.getKeyMarker());
+        Assert.assertEquals("2", objectVersionsListing.getVersionIdMarker());
+        Assert.assertEquals("fun3", objectVersionsListing.getNextKeyMarker());
+        Assert.assertEquals("20", objectVersionsListing.getNextVersionIdMarker());
+        Assert.assertEquals(100, objectVersionsListing.getMaxKeys());
+        Assert.assertEquals(null,objectVersionsListing.getDelimiter());
+        Assert.assertEquals(true, objectVersionsListing.isTruncated());
+
+        // get version list
+        List<OSSObjectVersionSummary> ossObjectVersionSummaries = objectVersionsListing.getObjectSummaries();
+        OSSObjectVersionSummary ossObjectVersionSummary1 = ossObjectVersionSummaries.get(0);
+        OSSObjectVersionSummary ossObjectVersionSummary2 = ossObjectVersionSummaries.get(1);
+        OSSObjectVersionSummary ossObjectVersionSummary3 = ossObjectVersionSummaries.get(2);
+
+        // Assert Array[0]
+        Assert.assertEquals("fun1", ossObjectVersionSummary1.getKey());
+        Assert.assertEquals("2", ossObjectVersionSummary1.getVersionId());
+        Assert.assertEquals("true" ,ossObjectVersionSummary1.getIsLatest());
+        Assert.assertEquals("Fri Feb 24 16:43:07 CST 2012", ossObjectVersionSummary1.getLastModified().toString());
+        Assert.assertEquals("5B3C1A2E053D763E1B002CC607C5A0FE", ossObjectVersionSummary1.getETag());
+        Assert.assertEquals(344606, ossObjectVersionSummary1.getSize());
+        Assert.assertEquals("Standard", ossObjectVersionSummary1.getStorageClass());
+        Assert.assertEquals("11222", ossObjectVersionSummary1.getOwner().getId());
+        Assert.assertEquals("user-example", ossObjectVersionSummary1.getOwner().getDisplayName());
+        Assert.assertEquals(false, ossObjectVersionSummary1.getDeleteMarker());
+
+
+        // Assert Array[1]
+        Assert.assertEquals("fun1", ossObjectVersionSummary2.getKey());
+        Assert.assertEquals("3", ossObjectVersionSummary2.getVersionId());
+        Assert.assertEquals("false" ,ossObjectVersionSummary2.getIsLatest());
+        Assert.assertEquals("Fri Feb 24 16:43:07 CST 2012", ossObjectVersionSummary2.getLastModified().toString());
+        Assert.assertEquals("5B3C1A2E053D763E1B002CC607C5A0FE", ossObjectVersionSummary2.getETag());
+        Assert.assertEquals("Standard", ossObjectVersionSummary2.getStorageClass());
+        Assert.assertEquals("2345", ossObjectVersionSummary2.getOwner().getId());
+        Assert.assertEquals("user-example", ossObjectVersionSummary2.getOwner().getDisplayName());
+        Assert.assertEquals(false, ossObjectVersionSummary2.getDeleteMarker());
+
+
+        // Assert Array[2]
+        Assert.assertEquals("fun3", ossObjectVersionSummary3.getKey());
+        Assert.assertEquals("19", ossObjectVersionSummary3.getVersionId());
+        Assert.assertEquals("false" ,ossObjectVersionSummary3.getIsLatest());
+        Assert.assertEquals("Fri Feb 24 16:43:07 CST 2012", ossObjectVersionSummary3.getLastModified().toString());
+        Assert.assertEquals(null, ossObjectVersionSummary3.getETag());
+        Assert.assertEquals("2345", ossObjectVersionSummary3.getOwner().getId());
+        Assert.assertEquals("user-example", ossObjectVersionSummary3.getOwner().getDisplayName());
+        Assert.assertEquals(true, ossObjectVersionSummary3.getDeleteMarker());
+
+        in.close();
+    }
+
+    @Test
+    public void testGetBucketInfo() throws Exception {
+        String filename = "getBucketInfo.xml";
+        InputStream in = getInputStream(filename);
+
+        BucketInfo bucketInfo = ResponseParsers.parseGetBucketInfo(in);
+
+        Assert.assertEquals("Wed Jul 31 18:56:21 CST 2013", bucketInfo.getBucket().getCreationDate().toString());
+        Assert.assertEquals("oss-cn-hangzhou.aliyuncs.com", bucketInfo.getBucket().getExtranetEndpoint());
+        Assert.assertEquals("oss-cn-hangzhou-internal.aliyuncs.com", bucketInfo.getBucket().getIntranetEndpoint());
+
+        Assert.assertEquals("oss-cn-hangzhou", bucketInfo.getBucket().getLocation());
+        Assert.assertEquals("oss-example", bucketInfo.getBucket().getName());
+
+        // new
+        Assert.assertEquals("enabled", bucketInfo.getBucket().getBucketVersion());
+
+        // old
+        Assert.assertEquals("enabled", bucketInfo.getBucket().getBucketVersion());
+
+        Assert.assertEquals("username", bucketInfo.getBucket().getOwner().getDisplayName());
+        Assert.assertEquals("234234", bucketInfo.getBucket().getOwner().getId());
+    }
+
+    @Test
+    public void testGetBucketLifeCycle() throws Exception {
+        String filename = "getBucketLifeCycle.xml";
+        InputStream in = getInputStream(filename);
+
+       List<LifecycleRule> lifecycleRules =  ResponseParsers.parseGetBucketLifecycle(in);
+
+       LifecycleRule lifecycleRule0 = lifecycleRules.get(0);
+
+       Assert.assertEquals("Rule 1", lifecycleRule0.getId());
+       Assert.assertEquals("logs/", lifecycleRule0.getPrefix());
+       Assert.assertEquals("Enabled", lifecycleRule0.getStatus().toString());
+       Assert.assertEquals( true, lifecycleRule0.hasExpiredObjectDeleteMarker());
+       Assert.assertEquals(30 ,lifecycleRule0.getNoncurrentVersionExpirationInDays());
+       Assert.assertEquals( "IA" ,lifecycleRule0.getStorageTransition().get(0).getStorageClass().toString());
+       Assert.assertEquals("30", lifecycleRule0.getStorageTransition().get(0).getExpirationDays().toString());
+       Assert.assertEquals("30", lifecycleRule0.getNoncurrentVersionTransitions().get(0).getExpirationDays().toString());
+       Assert.assertEquals("IA" , lifecycleRule0.getNoncurrentVersionTransitions().get(0).getStorageClass().toString());
+
+       in.close();
+    }
+
+    @Test
+    public void testDeleteMultipuleObjects() throws Exception {
+        String filename = "deleteMultipuleObjects.xml";
+        InputStream in = getInputStream(filename);
+
+        DeleteObjectsResult deleteObjectsResult = ResponseParsers.parseDeleteObjectsResult(in);
+        List<DeleteObjectsResult.DeletedObject> deletedObjects =  deleteObjectsResult.getDeletedObjects();
+
+        DeleteObjectsResult.DeletedObject deletedObject01 = deletedObjects.get(0);
+        DeleteObjectsResult.DeletedObject deletedObject02 = deletedObjects.get(1);
+        DeleteObjectsResult.DeletedObject deletedObject03 = deletedObjects.get(2);
+
+        // assert array[0]
+        Assert.assertEquals("multipart.data", deletedObject01.getKey());
+        Assert.assertEquals("XXXXXX", deletedObject01.getVersionId());
+
+        // assert array[1]
+        Assert.assertEquals("test.jpg", deletedObject02.getKey());
+        Assert.assertEquals(true, deletedObject02.isDeleteMarker());
+        Assert.assertEquals("XXX", deletedObject02.getDeleteMarkerVersionId());
+
+        // assert array[2]
+        Assert.assertEquals("demo.jpg", deletedObject03.getKey());
+        Assert.assertEquals("XXX", deletedObject03.getVersionId());
+        Assert.assertEquals(true, deletedObject03.isDeleteMarker());
+        Assert.assertEquals("XXX", deletedObject03.getDeleteMarkerVersionId());
     }
 }
 

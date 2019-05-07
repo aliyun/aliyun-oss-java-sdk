@@ -51,6 +51,8 @@ public class UploadPartCopyRequest extends WebServiceRequest {
 
     private Date modifiedSinceConstraint;
 
+    private String versionId;
+
     public UploadPartCopyRequest() {
     }
 
@@ -274,5 +276,13 @@ public class UploadPartCopyRequest extends WebServiceRequest {
 
     public void setModifiedSinceConstraint(Date modifiedSinceConstraint) {
         this.modifiedSinceConstraint = modifiedSinceConstraint;
+    }
+
+    public void setVersionId(String versionId) {
+        this.versionId = versionId;
+    }
+
+    public String getVersionId() {
+        return versionId;
     }
 }

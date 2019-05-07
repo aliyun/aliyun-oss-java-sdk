@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DeleteResult>
+    <Deleted>
+        <Key>multipart.data</Key>
+        <VersionId>XXXXXX</VersionId>
+    </Deleted>
+    <Deleted>
+        <Key>test.jpg</Key>
+        <DeleteMarker>true</DeleteMarker>
+        <DeleteMarkerVersionId>XXX</DeleteMarkerVersionId>
+    </Deleted>
+    <Deleted>
+        <Key>demo.jpg</Key>
+        <VersionId>XXX</VersionId>
+        <DeleteMarker>true</DeleteMarker>
+        <DeleteMarkerVersionId>XXX</DeleteMarkerVersionId>
+    </Deleted>
+</DeleteResult>

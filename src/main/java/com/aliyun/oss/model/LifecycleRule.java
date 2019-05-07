@@ -149,6 +149,79 @@ public class LifecycleRule {
         }
     }
 
+    public static class NoncurrentVersionTransition {
+        private Integer expirationDays;
+        private StorageClass storageClass;
+
+        public NoncurrentVersionTransition() {
+        }
+
+        public NoncurrentVersionTransition(Integer expirationDays, StorageClass storageClass) {
+            this.expirationDays = expirationDays;
+            this.storageClass = storageClass;
+        }
+
+        public Integer getExpirationDays() {
+            return expirationDays;
+        }
+
+        public void setExpirationDays(Integer expirationDays) {
+            this.expirationDays = expirationDays;
+        }
+
+        public NoncurrentVersionTransition withExpirationDays(Integer expirationDays) {
+            setExpirationDays(expirationDays);
+            return this;
+        }
+
+        public boolean hasExpirationDays() {
+            return this.expirationDays != null;
+        }
+
+        public StorageClass getStorageClass() {
+            return storageClass;
+        }
+
+        public void setStorageClass(StorageClass storageClass) {
+            this.storageClass = storageClass;
+        }
+
+        public NoncurrentVersionTransition withStrorageClass(StorageClass storageClass) {
+            setStorageClass(storageClass);
+            return this;
+        }
+    }
+
+    public static class TagKeyValue {
+        private String key;
+        private String value;
+
+        public TagKeyValue() {
+
+        }
+
+        public TagKeyValue(String key , String value ) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
+
     private String id;
     private String prefix;
     private RuleStatus status;
@@ -164,6 +237,16 @@ public class LifecycleRule {
     public void setObjectTags(List<Tag> objectTags) {
         this.objectTags = objectTags;
     }
+
+    // deletemarker
+    private boolean expiredObjectDeleteMarker;
+
+    // 历史版本设置过期天数
+    private int noncurrentVersionExpirationInDays;
+
+    private List<NoncurrentVersionTransition> noncurrentVersionTransitions = new ArrayList<NoncurrentVersionTransition>();
+
+    private List<TagKeyValue> tagKeyValues = new ArrayList<TagKeyValue>();
 
     private AbortMultipartUpload abortMultipartUpload;
     private List<StorageTransition> storageTransitions = new ArrayList<StorageTransition>();
@@ -330,6 +413,30 @@ public class LifecycleRule {
         return this.abortMultipartUpload != null;
     }
 
+    public List<NoncurrentVersionTransition> getNoncurrentVersionTransitions() {
+        return this.noncurrentVersionTransitions;
+    }
+
+    public void setNoncurrentVersionTransitions(List<NoncurrentVersionTransition> noncurrentVersionTransitions) {
+        this.noncurrentVersionTransitions = noncurrentVersionTransitions;
+    }
+
+    public boolean hasNoncurrentVersionTransitions() {
+        return this.noncurrentVersionTransitions != null && !noncurrentVersionTransitions.isEmpty();
+    }
+
+    public List<TagKeyValue> getTagKeyValues() {
+        return this.tagKeyValues;
+    }
+
+    public void setTagKeyValues(List<TagKeyValue> tagKeyValues) {
+        this.tagKeyValues = tagKeyValues;
+    }
+
+    public boolean hasTagKeyValue() {
+        return this.tagKeyValues != null && !tagKeyValues.isEmpty();
+    }
+
     public List<StorageTransition> getStorageTransition() {
         return this.storageTransitions;
     }
@@ -340,5 +447,35 @@ public class LifecycleRule {
 
     public boolean hasStorageTransition() {
         return this.storageTransitions != null && !storageTransitions.isEmpty();
+    }
+
+    public boolean isExpiredObjectDeleteMarker() {
+        return expiredObjectDeleteMarker;
+    }
+
+    public boolean hasExpiredObjectDeleteMarker() {
+        return this.expiredObjectDeleteMarker == true;
+    }
+
+    public void setExpiredObjectDeleteMarker(boolean expiredObjectDeleteMarker) {
+        this.expiredObjectDeleteMarker = expiredObjectDeleteMarker;
+    }
+
+    public LifecycleRule withExpiredObjectDeleteMarker(boolean expiredObjectDeleteMarker) {
+        this.expiredObjectDeleteMarker = expiredObjectDeleteMarker;
+        return this;
+    }
+
+    public void setNoncurrentVersionExpirationInDays(int value) {
+        this.noncurrentVersionExpirationInDays = value;
+    }
+
+    public int getNoncurrentVersionExpirationInDays() {
+        return noncurrentVersionExpirationInDays;
+    }
+
+    public LifecycleRule withNoncurrentVersionExpirationInDays(int value) {
+        setNoncurrentVersionExpirationInDays(value);
+        return this;
     }
 }

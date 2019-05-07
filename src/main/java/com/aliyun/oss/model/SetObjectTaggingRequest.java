@@ -25,6 +25,8 @@ package com.aliyun.oss.model;
 public class SetObjectTaggingRequest extends GenericRequest {
   private ObjectTagging tagging;
 
+  private String versionId;
+
   /**
    * Constructs an instance of this object.
    *
@@ -41,6 +43,13 @@ public class SetObjectTaggingRequest extends GenericRequest {
     this.tagging = tagging;
   }
 
+  public SetObjectTaggingRequest(String bucketName, String key, ObjectTagging tagging, String versionId) {
+    this.setBucketName(bucketName);
+    this.setKey(key);
+    this.tagging = tagging;
+    setVersionId(versionId);
+  }
+
   /**
    * @return The set of tags to set for the specified object.
    */
@@ -55,5 +64,13 @@ public class SetObjectTaggingRequest extends GenericRequest {
    */
   public void setTagging(ObjectTagging tagging) {
     this.tagging = tagging;
+  }
+
+  public String getVersionId() {
+    return versionId;
+  }
+
+  public void setVersionId(String versionId) {
+    this.versionId = versionId;
   }
 }

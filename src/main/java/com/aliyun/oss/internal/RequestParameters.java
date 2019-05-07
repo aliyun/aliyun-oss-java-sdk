@@ -32,6 +32,8 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_CORS = "cors";
     public static final String SUBRESOURCE_APPEND = "append";
     public static final String SUBRESOURCE_TAGGING = "tagging";
+    public static final String SUBRESOURCE_VERSIONING = "versioning";
+    public static final String SUBRESOURCE_VERSIONS = "versions";
     public static final String SUBRESOURCE_NOTIFICATION = "eventNotification";
     public static final String SUBRESOURCE_IMG = "img";
     public static final String SUBRESOURCE_STYLE = "style";
@@ -85,6 +87,7 @@ public final class RequestParameters {
     public static final String MAX_UPLOADS = "max-uploads";
     public static final String UPLOAD_ID_MARKER = "upload-id-marker";
     public static final String KEY_MARKER = "key-marker";
+    public static final String VERSION_ID_MARKER = "version-id-marker";
     public static final String MAX_PARTS = "max-parts";
     public static final String PART_NUMBER_MARKER = "part-number-marker";
     public static final String RULE_ID = "rule-id";
@@ -108,4 +111,6 @@ public final class RequestParameters {
     public static final String PLAYLIST_NAME = "playlistName";
     public static final String SINCE = "since";
     public static final String TAIL = "tail";
+
+    public static final String VERSION_ID = "versionId";
 }

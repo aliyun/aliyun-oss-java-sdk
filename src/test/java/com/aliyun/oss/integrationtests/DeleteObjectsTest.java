@@ -20,9 +20,11 @@
 package com.aliyun.oss.integrationtests;
 
 import static com.aliyun.oss.integrationtests.TestUtils.batchPutObject;
+import static com.aliyun.oss.integrationtests.TestUtils.batchPutObjectDelete;
 import static com.aliyun.oss.model.DeleteObjectsRequest.DELETE_OBJECTS_ONETIME_LIMIT;
 
 import java.net.URLDecoder;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,14 +43,15 @@ public class DeleteObjectsTest extends TestBase {
     
     @Test
     public void testDeleleExistingObjects() {
-        List<String> existingKeys = new ArrayList<String>();
+        List<DeleteObjectsRequest.KeyVersion> existingKeys = new ArrayList<DeleteObjectsRequest.KeyVersion>();
         final int keyCount = 100;
         final String keyPrefix = "delete-existing-objects";
         for (int i = 0; i < keyCount; i++) {
-            existingKeys.add(keyPrefix + i);
+            DeleteObjectsRequest.KeyVersion keyVersion = new DeleteObjectsRequest.KeyVersion(keyPrefix + i);
+            existingKeys.add(keyVersion);
         }
         
-        if (!batchPutObject(ossClient, bucketName, existingKeys)) {
+        if (!batchPutObjectDelete(ossClient, bucketName, existingKeys)) {
             Assert.fail("batch put object failed");
         }
         
@@ -56,7 +59,7 @@ public class DeleteObjectsTest extends TestBase {
         request.setKeys(existingKeys);
         try {
             DeleteObjectsResult result = ossClient.deleteObjects(request);
-            List<String> deletedObjects = result.getDeletedObjects();
+            List<DeleteObjectsResult.DeletedObject> deletedObjects = result.getDeletedObjects();
             Assert.assertEquals(keyCount, deletedObjects.size());
             Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
@@ -66,18 +69,19 @@ public class DeleteObjectsTest extends TestBase {
     
     @Test
     public void testDeleleNonexistentObjects() {
-        List<String> nonexistentKeys = new ArrayList<String>();
+        List<DeleteObjectsRequest.KeyVersion> nonexistentKeys = new ArrayList<DeleteObjectsRequest.KeyVersion>();
         final int keyCount = 100;
         final String keyPrefix = "delete-nonexistent-objects";
         for (int i = 0; i < keyCount; i++) {
-            nonexistentKeys.add(keyPrefix + i);
+            DeleteObjectsRequest.KeyVersion keyVersion = new DeleteObjectsRequest.KeyVersion(keyPrefix + i);
+            nonexistentKeys.add(keyVersion);
         }
         
         DeleteObjectsRequest request = new DeleteObjectsRequest(bucketName);
         request.setKeys(nonexistentKeys);
         try {
             DeleteObjectsResult result = ossClient.deleteObjects(request);
-            List<String> deletedObjects = result.getDeletedObjects();
+            List<DeleteObjectsResult.DeletedObject> deletedObjects = result.getDeletedObjects();
             Assert.assertEquals(keyCount, deletedObjects.size());
             Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
@@ -87,7 +91,7 @@ public class DeleteObjectsTest extends TestBase {
     
     @Test
     public void testDeleleNullOrEmptyObjects() {
-        List<String> emptyKeys = new ArrayList<String>();
+        List<DeleteObjectsRequest.KeyVersion> emptyKeys = new ArrayList<DeleteObjectsRequest.KeyVersion>();
         
         DeleteObjectsRequest request = new DeleteObjectsRequest(bucketName);
         try {
@@ -98,8 +102,9 @@ public class DeleteObjectsTest extends TestBase {
             Assert.assertTrue(e instanceof IllegalArgumentException);
         }
         
-        List<String> withNullKeys = new ArrayList<String>();
-        withNullKeys.add("dummykey");
+        List<DeleteObjectsRequest.KeyVersion> withNullKeys = new ArrayList<DeleteObjectsRequest.KeyVersion>();
+        DeleteObjectsRequest.KeyVersion keyVersion = new DeleteObjectsRequest.KeyVersion("dummykey");
+        withNullKeys.add(keyVersion);
         withNullKeys.add(null);
         try {
             request.setKeys(withNullKeys);
@@ -112,11 +117,12 @@ public class DeleteObjectsTest extends TestBase {
     
     @Test
     public void testDeleleObjectsExceedLimit() {
-        List<String> existingKeys = new ArrayList<String>();
+        List<DeleteObjectsRequest.KeyVersion> existingKeys = new ArrayList<DeleteObjectsRequest.KeyVersion>();
         final int keyCount = DELETE_OBJECTS_ONETIME_LIMIT + 1;
         final String keyPrefix = "delete-objects-exceed-limit";
         for (int i = 0; i < keyCount; i++) {
-            existingKeys.add(keyPrefix + i);
+            DeleteObjectsRequest.KeyVersion keyVersion = new DeleteObjectsRequest.KeyVersion(keyPrefix + i);
+            existingKeys.add(keyVersion);
         }
         
         DeleteObjectsRequest request = new DeleteObjectsRequest(bucketName);
@@ -131,14 +137,15 @@ public class DeleteObjectsTest extends TestBase {
     
     @Test
     public void testDeleleObjectsQuietly() {
-        List<String> existingKeys = new ArrayList<String>();
+        List<DeleteObjectsRequest.KeyVersion> existingKeys = new ArrayList<DeleteObjectsRequest.KeyVersion>();
         final int keyCount = 100;
         final String keyPrefix = "delete-objects-quietly";
         for (int i = 0; i < keyCount; i++) {
-            existingKeys.add(keyPrefix + i);
+            DeleteObjectsRequest.KeyVersion keyVersion = new DeleteObjectsRequest.KeyVersion(keyPrefix + i);
+            existingKeys.add(keyVersion);
         }
         
-        if (!batchPutObject(ossClient, bucketName, existingKeys)) {
+        if (!batchPutObjectDelete(ossClient, bucketName, existingKeys)) {
             Assert.fail("batch put object failed");
         }
         
@@ -147,7 +154,7 @@ public class DeleteObjectsTest extends TestBase {
         request.setKeys(existingKeys);
         try {
             DeleteObjectsResult result = ossClient.deleteObjects(request);
-            List<String> deletedObjects = result.getDeletedObjects();
+            List<DeleteObjectsResult.DeletedObject> deletedObjects = result.getDeletedObjects();
             Assert.assertEquals(0, deletedObjects.size());
             Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
@@ -161,11 +168,11 @@ public class DeleteObjectsTest extends TestBase {
         
         try {
             // Add several objects with special characters into bucket
-            List<String> existingKeys = new ArrayList<String>();
-            existingKeys.add(objectPrefix + "\001\007");
-            existingKeys.add(objectPrefix + "\002\007");
+            List<DeleteObjectsRequest.KeyVersion> existingKeys = new ArrayList<DeleteObjectsRequest.KeyVersion>();
+            existingKeys.add(new DeleteObjectsRequest.KeyVersion(objectPrefix + "\001\007"));
+            existingKeys.add(new DeleteObjectsRequest.KeyVersion(objectPrefix + "\002\007"));
             
-            if (!batchPutObject(ossClient, bucketName, existingKeys)) {
+            if (!batchPutObjectDelete(ossClient, bucketName, existingKeys)) {
                 Assert.fail("batch put object failed");
             }
             
@@ -173,10 +180,11 @@ public class DeleteObjectsTest extends TestBase {
             ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucketName);
             listObjectsRequest.setEncodingType(DEFAULT_ENCODING_TYPE);
             ObjectListing objectListing = ossClient.listObjects(listObjectsRequest);
-            List<String> returnedKeys = new ArrayList<String>();
+            List<DeleteObjectsRequest.KeyVersion> returnedKeys = new ArrayList<DeleteObjectsRequest.KeyVersion>();
             for (OSSObjectSummary s : objectListing.getObjectSummaries()) {
                 String decodedKey = URLDecoder.decode(s.getKey(), "UTF-8");
-                returnedKeys.add(decodedKey);
+                DeleteObjectsRequest.KeyVersion  keyVersion = new DeleteObjectsRequest.KeyVersion(decodedKey);
+                returnedKeys.add(keyVersion);
                 Assert.assertTrue(existingKeys.contains(decodedKey));
             }
             Assert.assertEquals(existingKeys.size(), objectListing.getObjectSummaries().size());
@@ -189,8 +197,8 @@ public class DeleteObjectsTest extends TestBase {
             DeleteObjectsResult deleteObjectsResult = ossClient.deleteObjects(deleteObjectsRequest);
             Assert.assertEquals(DEFAULT_ENCODING_TYPE, deleteObjectsResult.getEncodingType());
             Assert.assertEquals(existingKeys.size(), deleteObjectsResult.getDeletedObjects().size());
-            for (String o : deleteObjectsResult.getDeletedObjects()) {
-                String decodedKey = URLDecoder.decode(o, "UTF-8");
+            for (DeleteObjectsResult.DeletedObject o : deleteObjectsResult.getDeletedObjects()) {
+                String decodedKey = URLDecoder.decode(o.getKey(), "UTF-8");
                 Assert.assertTrue(existingKeys.contains(decodedKey));
             }
             

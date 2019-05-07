@@ -52,7 +52,7 @@ import com.aliyun.oss.model.StorageClass;
 public class CreateBucketTest extends TestBase {
     
     private static final int MAX_BUCKETS_ALLOWED = 10;
-    
+
     @Test
     public void testPutWithDefaultLocation() {
         final String bucketName = "bucket-with-default-location";

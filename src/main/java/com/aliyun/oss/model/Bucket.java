@@ -66,6 +66,9 @@ public class Bucket extends GenericResult {
 
     private TagSet tagSet;
 
+    // bucket version
+    private String bucketVersion;
+
     /**
      * Default constructor.
      */
@@ -264,5 +267,22 @@ public class Bucket extends GenericResult {
      */
     public void setTagSet(TagSet tagSet) {
         this.tagSet = tagSet;
+    }
+
+
+    /**
+     * Gets bucket veriosn
+     * @return Bucket version
+     */
+    public String getBucketVersion() {
+        return bucketVersion;
+    }
+
+    /**
+     * Sets the bucket version
+     * @param bucketVersion
+     */
+    public void setBucketVersion(String bucketVersion) {
+        this.bucketVersion = bucketVersion;
     }
 }
