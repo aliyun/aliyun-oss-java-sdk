@@ -66,7 +66,7 @@ public class ListObjectVersionsRequest extends GenericRequest {
     public ListObjectVersionsRequest(String bucketName, String prefix, String keyMarker, String versionIdMarker, String delimiter, Integer maxKeys) {
         super(bucketName);
         setPrefix(prefix);
-        setMarker(keyMarker);
+        setKeyMarker(keyMarker);
         setVersionIdMarker(versionIdMarker);
         setDelimiter(delimiter);
         if (maxKeys != null) {
