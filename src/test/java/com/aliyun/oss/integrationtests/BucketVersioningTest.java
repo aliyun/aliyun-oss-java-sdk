@@ -1,15 +1,13 @@
 package com.aliyun.oss.integrationtests;
 
-import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
-import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
+
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -24,63 +22,126 @@ import static com.aliyun.oss.model.SetBucketLifecycleRequest.MAX_RULE_ID_LENGTH;
 
 public class BucketVersioningTest extends TestBase {
 
-    static final String bucketName = "bucket-with-versioning-test";
-    static final String pure_bucketName = "pure-bucket-with-test";
-    private static final String TEST_OBJECT_KEY = "test-bucket-versioning";
-    private static final String TEST_PUT_OBJECT_KEY = "test-put-object-key";
-
-    @BeforeClass
-    public static void beforeClass() {
-        System.out.println("Test Starting...............");
-        Boolean isBucketExist = ossClient.doesBucketExist(bucketName);
-        if (!isBucketExist) {
-            ossClient.createBucket(bucketName);
-        }
-    }
-    /*
-     * 一开始创建 bucket后获取bucket的多版本状态应该是"Disabled"
+    static final String bucketNamePrefix = "bucket-version";
+    /**
+     * description: test get and set bucket version
+     * case:
+     *    Action:
+     *    1. 创建 bucket, 默认状态"Disabled"
+     *    2. 设置 "Enabled状态"，断言 "Enabled"
+     *    3. 设置 "Suspended状态",断言 "Suspended"
+     *    4. 设置 "其他任意的数值",断言报错 MalformedXML ErrorCode
      */
     @Test
     public void setAndGetBucketVersioningTest() {
-        String version = ossClient.getBucketVersioning(bucketName);
-        Assert.assertEquals(version,"Disabled");
+        String bucketName = "bucket-version-set-and-get";
+        try {
+            ossClient.createBucket(bucketName);
+            String version = ossClient.getBucketVersioning(bucketName);
+            Assert.assertEquals(version,"Disabled");
 
-        PutBucketVersioningRequest putBucketVersioningRequest = new PutBucketVersioningRequest(bucketName);
-        putBucketVersioningRequest.setBucketVersion("Suspended");
-        ossClient.putBucketVersioning(putBucketVersioningRequest);
+            // 状态设置为"Enabled"开启状态,验证"Enabled"
+            PutBucketVersioningRequest putBucketVersioningRequest = new PutBucketVersioningRequest(bucketName);
+            putBucketVersioningRequest.setBucketVersion("Enabled");
+            ossClient.putBucketVersioning(putBucketVersioningRequest);
+            Assert.assertEquals(ossClient.getBucketVersioning(bucketName), "Enabled");
 
-        // 状态设置为"Suspended" 验证 Suspended;
-        String bucketVersion = ossClient.getBucketVersioning(bucketName);
-        Assert.assertEquals(bucketVersion, "Suspended");
+            // 状态设置为"Suspended" 验证 "Suspended"
+            putBucketVersioningRequest.setBucketVersion("Suspended");
+            ossClient.putBucketVersioning(putBucketVersioningRequest);
+            Assert.assertEquals(ossClient.getBucketVersioning(bucketName), "Suspended");
 
-        putBucketVersioningRequest.setBucketVersion("Enabled");
-        ossClient.putBucketVersioning(putBucketVersioningRequest);
-
-        Assert.assertEquals(ossClient.getBucketVersioning(bucketName), "Enabled");
+            try {
+                putBucketVersioningRequest.setBucketVersion("invalid");
+                ossClient.putBucketVersioning(putBucketVersioningRequest);
+            } catch(OSSException e) {
+                Assert.assertEquals(e.getErrorCode(), "MalformedXML");
+            }
+        } catch(Exception e) {
+            Assert.fail(e.getMessage());
+        }finally {
+            ossClient.deleteBucket(bucketName);
+        }
     }
 
+    /***
+     * 多版本批量删除接口压力测试
+     * 场景：大量创建不同的object,然后为不同的object创建大量历史版本，然后调用批量删除接口完成操作
+     */
     @Test
-    public void getBucketVersions() {
-        System.out.println(ossClient.getBucketVersioning(bucketName));
-        Assert.assertEquals(ossClient.getBucketVersioning(bucketName), "Enabled");
-        InputStream inputStream = TestUtils.genFixedLengthInputStream(1024);
-        PutObjectRequest putObjectRequest = new PutObjectRequest(this.bucketName, TEST_OBJECT_KEY, inputStream);
+    public void testPressueVersions() {
 
-        PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
+    }
+    /**
+     * descripiton: test listObjectVersions （场景主要针对2个object，针对2个生成大量的历史版本，然后通过接口去获取）
+     * case
+     *     Action:
+     *     1 . 创建bucket
+     *     2 . 生成2个不同的object
+     *     3 . 开启多版本
+     *     4 . 针对同名object上传覆盖操作,生成大量的历史版本
+     *     5 . 调接口 测试getBucketVersions 查询参数中的多个参数
+     *     ....
+     *     清空bucket不相互干扰
+     *     场景1：创建101个，测试truncated，测试默认值 100 条件过滤测试
+     *
+     */
+    @Test
+    public void testGetObjectVersions() {
+        String bucketName = "bucket-version-listing";
+        String keyObjectName  = "object-version-listing";
 
-        ObjectAcl m = ossClient.getObjectAcl(bucketName,TEST_OBJECT_KEY);
-        ossClient.deleteObject(bucketName,TEST_OBJECT_KEY);
-        // getBucketVersions
-        ListObjectVersionsRequest listObjectVersionsRequest = new ListObjectVersionsRequest(bucketName);
-        ObjectVersionsListing n = ossClient.listObjectVersions(listObjectVersionsRequest);
+        try {
+            ossClient.createBucket(bucketName);
+            PutBucketVersioningRequest putBucketVersioningRequest = new PutBucketVersioningRequest(bucketName);
+            // case 1
+            for (int i = 0 ;i < 90;i++) {
+                System.out.println(i);
+                putBucketVersioningRequest.setBucketVersion("Enabled");
+                ossClient.putBucketVersioning(putBucketVersioningRequest);
+                InputStream inputStream = TestUtils.genFixedLengthInputStream(1024);
+                PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, keyObjectName, inputStream);
+                PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
+                String versionId = putObjectResult.getVersionId();
+                Assert.assertNotNull(versionId);
+            }
 
-        for (OSSObjectVersionSummary t : n.getObjectSummaries()) {
-            System.out.println(t.getBucketName());
-            System.out.println(t.getIsLatest());
-            System.out.println(t.getETag());
-            System.out.println(t.getVersionId());
+            ListObjectVersionsRequest listObjectVersionsRequest = new ListObjectVersionsRequest(bucketName);
+            ObjectVersionsListing objectVersionsListing = ossClient.listObjectVersions(listObjectVersionsRequest);
+
+            Assert.assertEquals(90,objectVersionsListing.getObjectSummaries().size());
+            Assert.assertEquals(false, objectVersionsListing.isTruncated());
+            Assert.assertEquals(null, objectVersionsListing.getNextKeyMarker());
+            Assert.assertEquals(null,objectVersionsListing.getNextVersionIdMarker());
+
+            for (OSSObjectVersionSummary t : objectVersionsListing.getObjectSummaries()) {
+                System.out.println("bucketName: "+ t.getBucketName()+"\n");
+                System.out.println("objectKey : "+ t.getKey() +  "\n");
+                System.out.println("是否最新版本: "+ t.getIsLatest() + "\n");
+                System.out.println("是否删除标记: "+ t.getDeleteMarker() + "\n");
+                System.out.println("versionId: "+ t.getVersionId());
+            }
+
+            // setMaxKeys 10
+            ListObjectVersionsRequest listObjectVersionsRequest1 = new ListObjectVersionsRequest(bucketName);
+            listObjectVersionsRequest1.setMaxKeys(10);
+            ObjectVersionsListing objectVersionsListing1= ossClient.listObjectVersions(listObjectVersionsRequest1);
+            Assert.assertEquals(10,objectVersionsListing1.getObjectSummaries().size());
+            Assert.assertEquals(true, objectVersionsListing1.isTruncated());
+            Assert.assertNotNull(objectVersionsListing1.getNextKeyMarker());
+            Assert.assertNotNull(objectVersionsListing1.getNextVersionIdMarker());
+
+        } catch(Exception e) {
+            Assert.fail(e.getMessage());
         }
-        System.out.println(m.getRequestId());
+    }
+
+    /**
+     * description: test bucketVersions
+     * 场景：主要用于问题定位，脱离干净环境,单独测试
+     */
+    @Test
+    public void testServer502() {
     }
 
     /**
@@ -91,8 +152,10 @@ public class BucketVersioningTest extends TestBase {
      */
     @Test
     public void testGetBucketInfo() {
-
+        String bucketName = "bucket-version-bucketinfo";
         try {
+            ossClient.createBucket(bucketName);
+            Assert.assertEquals("Disabled", ossClient.getBucketVersioning(bucketName));
             // case 1
             PutBucketVersioningRequest putBucketVersioningRequest = new PutBucketVersioningRequest(bucketName);
             putBucketVersioningRequest.setBucketVersion("Enabled");
@@ -102,13 +165,10 @@ public class BucketVersioningTest extends TestBase {
             putBucketVersioningRequest.setBucketVersion("Suspended");
             ossClient.putBucketVersioning(putBucketVersioningRequest);
             Assert.assertEquals("Suspended", ossClient.getBucketInfo(bucketName).getBucketVersion());
-
-            ossClient.createBucket(pure_bucketName);
-            Assert.assertEquals("Disabled", ossClient.getBucketVersioning(pure_bucketName));
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
-            cleanUpAllBuckets(ossClient, pure_bucketName);
+            ossClient.deleteBucket(bucketName);
         }
     }
 
@@ -120,38 +180,44 @@ public class BucketVersioningTest extends TestBase {
      */
     @Test
     public void testPutObject() {
+        String bucketName     = "bucket-version-put-object";
+        String keyObjectName  = "ojbect-version-001";
+
         try {
-            // case 1
+            ossClient.createBucket(bucketName);
             PutBucketVersioningRequest putBucketVersioningRequest = new PutBucketVersioningRequest(bucketName);
-            putBucketVersioningRequest.setBucketVersion("Enabled");
-            ossClient.putBucketVersioning(putBucketVersioningRequest);
-            InputStream inputStream = TestUtils.genFixedLengthInputStream(1024);
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, "TEST_PUT_OBJECT_KEY", inputStream);
-            PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
-            String versionId = putObjectResult.getVersionId();
-            Assert.assertNotNull(versionId);
+            // case 1
+            for (int i = 0 ;i < 5;i++) {
+                putBucketVersioningRequest.setBucketVersion("Enabled");
+                ossClient.putBucketVersioning(putBucketVersioningRequest);
+                InputStream inputStream = TestUtils.genFixedLengthInputStream(1024);
+                PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, keyObjectName, inputStream);
+                PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
+                String versionId = putObjectResult.getVersionId();
+                Assert.assertNotNull(versionId);
+            }
 
             // case 2
             putBucketVersioningRequest.setBucketVersion("Suspended");
             ossClient.putBucketVersioning(putBucketVersioningRequest);
+            InputStream inputStream = TestUtils.genFixedLengthInputStream(1024);
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, keyObjectName, inputStream);
             PutObjectResult newputObjectResult = ossClient.putObject(putObjectRequest);
             Assert.assertNull(newputObjectResult.getVersionId());
 
             // case 3
-            ossClient.createBucket(pure_bucketName);
-            PutObjectRequest putObjectRequest1 = new PutObjectRequest(pure_bucketName, "TEST_PUT_OBJECT_KEY", inputStream);
+            ossClient.createBucket("bucket-version-pure-bucket");
+            PutObjectRequest putObjectRequest1 = new PutObjectRequest("bucket-version-pure-bucket", "xxxxx", inputStream);
             PutObjectResult putObjectResult1 = ossClient.putObject(putObjectRequest1);
             Assert.assertNull(putObjectResult1.getVersionId());
         } catch(Exception e) {
             Assert.fail(e.getMessage());
-        } finally {
-            cleanUpAllBuckets(ossClient, pure_bucketName);
         }
     }
 
     /**
      * description: 测试生命周期
-     * case 1 : 设置过期标记的deltermarker, 设置历史版本的转变规则
+     * case 1 : 设置过期标记的deletermarker, 设置历史版本的转变规则
      * case 2 : 设置历史版本的过期天数，设置历史版本的转变规则
      * case 3 : 更新已经有的生命周期规则
      * case 4 : 设置生命周期的时候，历史版本的过期天数必须小于转变类型中的过期天数，如果大于的话，要抛出错误
@@ -159,19 +225,25 @@ public class BucketVersioningTest extends TestBase {
      *
      * more:
      *
-     * 结论: 测试发现后端历史版本的过期天数可以设置，过期标记可以设置，但是历史版本transitions不能设置，需要同后端同学确认（emrgence）,
+     * 1. 试发现后端历史版本的过期天数可以设置，过期标记可以设置，但是历史版本transitions不能设置，需要同后端同学确认（emrgence）,
      * 经过排查后端文档XML大小写问题,已修复。
-     */
+     * 2. Only one expiration property should be specified. Expriation中days和过期标记只能设置一个
+     * 3. 设置taggging生命周期的时候不能设置过期标记
+     * 4. Could not specify a tag-based filter with AbortMultipartUpload or DeleteBucket or ExpiredObjectDeleteMarker in lifecycle rul
+     * */
     @Test
-    public void testBucketLifyCycle() {
+    public void testNormalBucketLifyCycle() {
         final String bucketName = "normal-set-bucket-lifecycle";
         final String ruleId0 = "delete temporary files(0)";
         final String matchPrefix0 = "temporary0/";
         final String ruleId1 = "delete temporary files(1)";
         final String matchPrefix1 = "temporary1/";
+        final String ruleId2 = "delete temporary files(2)";
+        final String matchPrefix2 = "temporary2/";
 
         try {
             ossClient.createBucket(bucketName);
+
             SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(bucketName);
 
             // case 1
@@ -184,9 +256,8 @@ public class BucketVersioningTest extends TestBase {
             rule.setNoncurrentVersionTransitions(noncurrentVersionTransitions);
             rule.setExpiredObjectDeleteMarker(true);
 
-            /* emergence 同后端确认
-             * NonCurrentDays in the NoncurrentVersionExpiration action must be later than the NoncurrentVersionTransition
-             * action for StorageClass Archive 到底是大还是小，这里的逻辑很重要,每一个异常情况都要写个单独的测试 case
+            /* NonCurrentDays in the NoncurrentVersionExpiration action must be later than the NoncurrentVersionTransition
+             * action for StorageClass Archive
              */
             rule.setNoncurrentVersionExpirationInDays(50);
             request.AddLifecycleRule(rule);
@@ -206,6 +277,19 @@ public class BucketVersioningTest extends TestBase {
 
             rule.setNoncurrentVersionTransitions(noncurrentVersionTransitions1);
             rule.setNoncurrentVersionExpirationInDays(60);
+            rule.setExpirationDays(30);
+            request.AddLifecycleRule(rule);
+
+
+            // case 3
+            rule = new LifecycleRule(ruleId2, matchPrefix2, LifecycleRule.RuleStatus.Enabled);
+            List<LifecycleRule.NoncurrentVersionTransition> noncurrentVersionTransitions2 = new ArrayList<LifecycleRule.NoncurrentVersionTransition>();
+            LifecycleRule.NoncurrentVersionTransition noncurrentVersionTransition2 = new LifecycleRule.NoncurrentVersionTransition();
+            noncurrentVersionTransition2.setExpirationDays(40);
+            noncurrentVersionTransition2.setStorageClass(StorageClass.Archive);
+            noncurrentVersionTransitions2.add(noncurrentVersionTransition2);
+            rule.setNoncurrentVersionTransitions(noncurrentVersionTransitions2);
+            rule.setNoncurrentVersionExpirationInDays(50);
             rule.setExpirationDays(30);
             request.AddLifecycleRule(rule);
 
@@ -232,6 +316,15 @@ public class BucketVersioningTest extends TestBase {
             Assert.assertFalse(r1.hasExpiredObjectDeleteMarker());
             Assert.assertEquals(r1.getNoncurrentVersionExpirationInDays(), 60);
 
+            // case 3 assert
+            LifecycleRule r2 = rules.get(2);
+            Assert.assertEquals(r2.getId(),ruleId2);
+            Assert.assertEquals(r2.getPrefix(), matchPrefix2);
+            Assert.assertEquals(r2.getStatus(), LifecycleRule.RuleStatus.Enabled);
+            Assert.assertTrue(r2.hasNoncurrentVersionTransitions());
+            Assert.assertFalse(r2.hasAbortMultipartUpload());
+            Assert.assertFalse(r2.hasExpiredObjectDeleteMarker());
+            Assert.assertEquals(r2.getNoncurrentVersionExpirationInDays(), 50);
             // case 3
             final String nullRuleId = null;
             request.clearLifecycles();
@@ -264,8 +357,9 @@ public class BucketVersioningTest extends TestBase {
     }
 
     /**
-     * descriptiont: 测试设置多版本生命周期异常的地方，主要是设置不合法的参数场景
-     * case 1 :  设置生命周期的时候，历史版本的过期天数必须小于转变类型中的过期天数，如果大于的话，要抛出错误
+     * Description: test testUnormalSetBucketLifecycle
+     * Case 1 :
+     *   设置生命周期的时候，历史版本的过期天数必须小于转变类型中的过期天数，如果大于的话，要抛出错误
      */
     @Test
     public void testUnormalSetBucketLifecycle() throws ParseException {
@@ -426,19 +520,89 @@ public class BucketVersioningTest extends TestBase {
      *     9. 清空all bucket;
      */
     @Test
-    public void testObjectTagging(){
+    public void testObjectTagging() {
         final String bucketName = "bucket-version-tagging";
-        final String objeceKeyName = "object-key-tagging";
+        final String objectKeyName = "object-version-tagging";
+        String versionId;
 
         try {
+            ossClient.createBucket(bucketName);
+            InputStream inputStream = TestUtils.genFixedLengthInputStream(1024);
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectKeyName, inputStream);
+            PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
+
+            // 3. 开启多版本
+            PutBucketVersioningRequest putBucketVersioningRequest = new PutBucketVersioningRequest(bucketName);
+            putBucketVersioningRequest.setBucketVersion("Enabled");
+            ossClient.putBucketVersioning(putBucketVersioningRequest);
+            Assert.assertEquals("Enabled",ossClient.getBucketVersioning(bucketName));
+
+            Tag tag1 = new Tag("tag1", "value1");
+            Tag tag2 = new Tag("tag2", "value2");
+            Tag tag3 = new Tag("tag3", "value3");
+
+            List<Tag> tagSet = new ArrayList<Tag>();
+            tagSet.add(tag1);
+            tagSet.add(tag2);
+            tagSet.add(tag3);
+
+            ObjectTagging objectTagging = new ObjectTagging(tagSet);
+            SetObjectTaggingRequest setObjectTaggingRequest = new SetObjectTaggingRequest(bucketName, objectKeyName, objectTagging);
+            ossClient.setObjectTagging(setObjectTaggingRequest);
+
+            GenericRequest getObjectTaggingRequest = new GenericRequest(bucketName, objectKeyName);
+            ObjectTagging objectTagging1 = ossClient.getObjectTagging(getObjectTaggingRequest);
+
+            org.junit.Assert.assertNotNull(objectTagging1);
+            org.junit.Assert.assertNotNull(objectTagging1.getTagSet());
+            org.junit.Assert.assertTrue(objectTagging1.getTagSet().size() == 3);
+
+            // 创建历史版本
+            PutObjectResult putObjectResult1 = ossClient.putObject(putObjectRequest);
+            versionId = putObjectResult1.getVersionId();
+
+            Tag tag4 = new Tag("tag4", "value4");
+            Tag tag5 = new Tag("tag5", "value5");
+            List<Tag> tagSet2 = new ArrayList<Tag>();
+            tagSet2.add(tag4);
+            tagSet2.add(tag5);
+
+            ObjectTagging objectTaggingX = new ObjectTagging(tagSet2);
+            SetObjectTaggingRequest setObjectTaggingRequest1 = new SetObjectTaggingRequest(bucketName, objectKeyName, objectTaggingX, versionId);
+            ossClient.setObjectTagging(setObjectTaggingRequest1);
+
+            GenericRequest getObjectTaggingRequestY = new GenericRequest(bucketName, objectKeyName, versionId);
+            ObjectTagging objectTaggingY = ossClient.getObjectTagging(getObjectTaggingRequestY);
+
+            org.junit.Assert.assertNotNull(objectTaggingY);
+            org.junit.Assert.assertNotNull(objectTaggingY.getTagSet());
+            org.junit.Assert.assertTrue(objectTaggingY.getTagSet().size() == 2);
+
+            DeleteObjectTaggingRequest deleteObjectTaggingRequest = new DeleteObjectTaggingRequest(bucketName, objectKeyName);
+
+            ossClient.deleteObjectTagging(deleteObjectTaggingRequest);
+
+            ObjectTagging objectTagging2 = ossClient.getObjectTagging(getObjectTaggingRequest);
+
+            org.junit.Assert.assertNotNull(objectTagging2);
+            org.junit.Assert.assertNotNull(objectTagging2.getTagSet());
+            org.junit.Assert.assertTrue(objectTagging2.getTagSet().size() == 0);
+
+            DeleteObjectTaggingRequest deleteObjectTaggingRequest1 = new DeleteObjectTaggingRequest(bucketName, objectKeyName, versionId);
+            ossClient.deleteObjectTagging(deleteObjectTaggingRequest1);
+
+            GenericRequest getObjectTaggingRequest1 = new GenericRequest(bucketName,objectKeyName, versionId);
+            ObjectTagging objectTagging3 = ossClient.getObjectTagging(getObjectTaggingRequest1);
+            org.junit.Assert.assertNotNull(objectTagging3);
+            org.junit.Assert.assertNotNull(objectTagging3.getTagSet());
+            org.junit.Assert.assertTrue(objectTagging3.getTagSet().size() == 0);
 
         }catch (Exception e) {
-
+            Assert.fail(e.getMessage());
         } finally {
 
         }
     }
-
 
     /**
      * description: test deleteObject
@@ -463,11 +627,39 @@ public class BucketVersioningTest extends TestBase {
         final String objectKeyName  = "object-version-delete";
 
         try {
+            ossClient.createBucket(bucketName);
+            InputStream inputStream = TestUtils.genFixedLengthInputStream(1024);
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectKeyName, inputStream);
+            PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
 
-        } catch(Exception e) {
+            // 开启多版本
+            PutBucketVersioningRequest putBucketVersioningRequest = new PutBucketVersioningRequest(bucketName);
+            putBucketVersioningRequest.setBucketVersion("Enabled");
+            ossClient.putBucketVersioning(putBucketVersioningRequest);
+            Assert.assertEquals("Enabled",ossClient.getBucketVersioning(bucketName));
 
-        } finally {
+            // putObject again
+            PutObjectResult putObjectResult1 = ossClient.putObject(putObjectRequest);
+            String versionId = putObjectResult1.getVersionId();
 
+            ListObjectVersionsRequest listObjectVersionsRequest = new ListObjectVersionsRequest(bucketName);
+            ObjectVersionsListing objectVersionsListing = ossClient.listObjectVersions(listObjectVersionsRequest);
+
+            Assert.assertEquals(2, objectVersionsListing.getObjectSummaries().size());
+
+            // delete with no versionid should size + 1
+            ossClient.deleteObject(bucketName, objectKeyName);
+            ListObjectVersionsRequest listObjectVersionsRequest1 = new ListObjectVersionsRequest(bucketName);
+            ObjectVersionsListing objectVersionsListing1 = ossClient.listObjectVersions(listObjectVersionsRequest1);
+            Assert.assertEquals(3, objectVersionsListing1.getObjectSummaries().size());
+
+            // delete with  versionid should size -1
+            ossClient.deleteObject(bucketName, objectKeyName, versionId);
+            ListObjectVersionsRequest listObjectVersionsRequest2 = new ListObjectVersionsRequest(bucketName);
+            ObjectVersionsListing objectVersionsListing2 = ossClient.listObjectVersions(listObjectVersionsRequest2);
+            Assert.assertEquals(2, objectVersionsListing2.getObjectSummaries().size());
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
         }
     }
 
@@ -483,15 +675,54 @@ public class BucketVersioningTest extends TestBase {
      */
     @Test
     public void testObjectACL() {
-        final String bucketName = "bucket-version-acl";
-        final String objeceKeyName = "object-key-acl";
+        final String bucketName = "bucket-version-acl-test04";
+        final String objectKeyName = "object-version-acl-test04";
+
+        final CannedAccessControlList[] ACLS = {
+            CannedAccessControlList.Default,
+            CannedAccessControlList.Private,
+            CannedAccessControlList.PublicRead,
+            CannedAccessControlList.PublicReadWrite
+        };
 
         try {
+            // 1 创建bucket
+            ossClient.createBucket(bucketName);
+
+            // 2 putObject
+            InputStream inputStream = TestUtils.genFixedLengthInputStream(1024);
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectKeyName, inputStream);
+            PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
+
+            // 3 getObjectACL默认：default
+            ObjectAcl objectAcl = ossClient.getObjectAcl(bucketName, objectKeyName);
+            Assert.assertEquals(ObjectPermission.Default, objectAcl.getPermission());
+            ossClient.setObjectAcl(bucketName, objectKeyName, CannedAccessControlList.Private);
+            ObjectAcl objectAcl1 = ossClient.getObjectAcl(bucketName,objectKeyName);
+            Assert.assertEquals(ObjectPermission.Private, objectAcl1.getPermission());
+
+            // 4 开启多版本
+            PutBucketVersioningRequest putBucketVersioningRequest = new PutBucketVersioningRequest(bucketName);
+            putBucketVersioningRequest.setBucketVersion("Enabled");
+            ossClient.putBucketVersioning(putBucketVersioningRequest);
+            Assert.assertEquals("Enabled", ossClient.getBucketVersioning(bucketName));
+
+            // 5 再put一个object
+            PutObjectResult putObjectResult1 = ossClient.putObject(putObjectRequest);
+            String versionId = putObjectResult1.getVersionId();
+
+            ObjectAcl objectAcl2 = ossClient.getObjectAcl(bucketName, objectKeyName, versionId);
+            Assert.assertEquals(ObjectPermission.Default, objectAcl2.getPermission());
+
+            ossClient.setObjectAcl(bucketName, objectKeyName,versionId, CannedAccessControlList.PublicReadWrite);
+            ObjectAcl objectAcl3 = ossClient.getObjectAcl(bucketName, objectKeyName, versionId);
+            Assert.assertEquals(ObjectPermission.PublicReadWrite, objectAcl3.getPermission());
+
+            ObjectAcl objectAcl4 = ossClient.getObjectAcl(bucketName, objectKeyName, "null");
+            Assert.assertEquals(ObjectPermission.Private, objectAcl4.getPermission());
 
         }catch (Exception e) {
-
-        } finally {
-
+            Assert.fail(e.getMessage());
         }
     }
 
@@ -513,25 +744,134 @@ public class BucketVersioningTest extends TestBase {
     @Test
     public void testRestoreObject() {
         final String bucketName = "bucket-version-restore";
-        final String objeceKeyName = "object-key-restore";
+        final String objectKeyName = "object-key-restore";
 
         try {
+            // 1. create bucket
+            CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
+            createBucketRequest.setStorageClass(StorageClass.Archive);
+            ossClient.createBucket(createBucketRequest);
 
-        }catch (Exception e) {
+            // 2. putObject
+            InputStream inputStream = TestUtils.genFixedLengthInputStream(1024);
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectKeyName, inputStream);
+            PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
 
-        } finally {
+            try {
+                ossClient.getObject(bucketName, objectKeyName);
+                Assert.fail("Restore object should not be successful");
+            } catch (OSSException e) {
+                Assert.assertEquals(OSSErrorCode.INVALID_OBJECT_STATE, e.getErrorCode());
+            } finally {
+                // 开启多版本
+                PutBucketVersioningRequest putBucketVersioningRequest = new PutBucketVersioningRequest(bucketName);
+                putBucketVersioningRequest.setBucketVersion("Enabled");
+                ossClient.putBucketVersioning(putBucketVersioningRequest);
 
+                // putObject
+                PutObjectResult putObjectResult1 = ossClient.putObject(putObjectRequest);
+                String versionId = putObjectResult1.getVersionId();
+
+                // restore 当前版本
+                ObjectMetadata objectMetadata = ossClient.getObjectMetadata(bucketName, objectKeyName);
+                // check whether the object is archive class
+                StorageClass storageClass = objectMetadata.getObjectStorageClass();
+                if (storageClass == StorageClass.Archive) {
+                    // restore object
+                    ossClient.restoreObject(bucketName, objectKeyName);
+                    // wait for restore completed
+                    do {
+                        Thread.sleep(1000);
+                        objectMetadata = ossClient.getObjectMetadata(bucketName, objectKeyName);
+                        System.out.println("x-oss-restore:" + objectMetadata.getObjectRawRestore());
+                    } while (!objectMetadata.isRestoreCompleted());
+                }
+
+                // get restored object
+                OSSObject ossObject = ossClient.getObject(bucketName, objectKeyName);
+                ossObject.getObjectContent().close();
+
+                // restore versionid 版本
+                ObjectMetadata objectMetadata1 = ossClient.getObjectMetadata(bucketName, objectKeyName, versionId);
+                // check whether the object is archive class
+                Assert.assertEquals(objectMetadata1.getObjectStorageClass(), StorageClass.Archive);
+                // restore object
+                ossClient.restoreObject(bucketName, objectKeyName, versionId);
+                // wait for restore completed
+                do {
+                    Thread.sleep(1000);
+                    objectMetadata1 = ossClient.getObjectMetadata(bucketName, objectKeyName, versionId);
+                    System.out.println("x-oss-restore:" + objectMetadata1.getObjectRawRestore());
+                } while (!objectMetadata1.isRestoreCompleted());
+                // get restored object
+                OSSObject ossObject1 = ossClient.getObject(bucketName, objectKeyName);
+                ossObject1.getObjectContent().close();
+            }
+
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
         }
+    }
+
+    @Test
+    public void testGetObjectMeta() {
+        String bucketName = "bucket-version-metadata";
+        String objectKeyName = "object-version-metadata";
+        try {
+            ossClient.createBucket(bucketName);
+
+            InputStream inputStream = TestUtils.genFixedLengthInputStream(1024);
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectKeyName, inputStream);
+            ossClient.putObject(putObjectRequest);
+
+            // 开启多版本
+            PutBucketVersioningRequest putBucketVersioningRequest = new PutBucketVersioningRequest(bucketName);
+            putBucketVersioningRequest.setBucketVersion("Enabled");
+            ossClient.putBucketVersioning(putBucketVersioningRequest);
+
+            PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
+            String versionId = putObjectResult.getVersionId();
+            ObjectMetadata objectMetadata = ossClient.getObjectMetadata(bucketName, objectKeyName, versionId);
+            Assert.assertNotNull(objectMetadata.getVersionId(), versionId);
+        } catch(Exception e){
+            Assert.fail(e.getMessage());
+        } finally {
+            ObjectVersionsListing objectVersionsListing = ossClient.listObjectVersions(bucketName);
+            if (objectVersionsListing.getObjectSummaries().size() != 0) {
+                for (OSSObjectVersionSummary t: objectVersionsListing.getObjectSummaries()) {
+                    System.out.println("versionId: " + t.getVersionId());
+                    ossClient.deleteObject(bucketName, objectKeyName, t.getVersionId());
+                }
+            }
+            ossClient.deleteBucket(bucketName);
+        }
+    }
+
+    /**
+     * description versionId 同后端确认
+     * todo
+     */
+    @Test
+    public void testBucketVersionBuildUrl() {
     }
 
     @AfterClass
-    public static void afterClass() {
-        System.out.println("Test Ending...............");
-        try {
-            cleanUpAllBucketsWithVersion(ossClient, bucketName);
-        } catch (Exception e) {
+    public static void afterProcess() {
+        // before
+        System.out.println("Clean before =============");
+        List<Bucket> buckets = getOSSClient().listBuckets();
 
+        for (Bucket b: buckets) {
+            System.out.print(b.getName()+"\n");
+        }
+
+        cleanUpAllBucketsWithVersion(getOSSClient(),bucketNamePrefix);
+
+        System.out.println("Clean After =============");
+        List<Bucket> buckets1 = getOSSClient().listBuckets();
+
+        for (Bucket b: buckets1) {
+            System.out.print(b.getName()+"\n");
         }
     }
-
 }

@@ -174,6 +174,7 @@ public class TestBase {
                 DeleteObjectsRequest deleteObjectsRequest = new DeleteObjectsRequest(bucketName);
                 deleteObjectsRequest.setEncodingType(DEFAULT_ENCODING_TYPE);
                 deleteObjectsRequest.setKeys(objectsToDel);
+
                 client.deleteObjects(deleteObjectsRequest);
             }
         }
@@ -250,17 +251,21 @@ public class TestBase {
     protected static List<DeleteObjectsRequest.KeyVersion> listAllObjectsWithVersions(OSSClient client, String bucketName) {
         List<DeleteObjectsRequest.KeyVersion> objs = new ArrayList<DeleteObjectsRequest.KeyVersion>();
         ObjectVersionsListing objectListing = null;
-        String nextMarker = null;
+        String keyMarker = null;
+        String versionIdMarker = null;
 
         do {
-            ListObjectVersionsRequest listObjectVersionsRequest = new ListObjectVersionsRequest(bucketName, null, nextMarker, null, null,
+            ListObjectVersionsRequest listObjectVersionsRequest = new ListObjectVersionsRequest(bucketName, null, keyMarker, versionIdMarker, null,
                     DELETE_OBJECTS_ONETIME_LIMIT);
             listObjectVersionsRequest.setEncodingType(DEFAULT_ENCODING_TYPE);
             objectListing = client.listObjectVersions(listObjectVersionsRequest);
             if (DEFAULT_ENCODING_TYPE.equals(objectListing.getEncodingType())) {
-                nextMarker = HttpUtil.urlDecode(objectListing.getNextMarker(), "UTF-8");
+                keyMarker = HttpUtil.urlDecode(objectListing.getNextKeyMarker(), "UTF-8");
+                versionIdMarker = HttpUtil.urlDecode(objectListing.getNextVersionIdMarker(), "UTF-8");
+
             } else {
-                nextMarker = objectListing.getNextMarker();
+                keyMarker = objectListing.getNextKeyMarker();
+                versionIdMarker = objectListing.getNextVersionIdMarker();
             }
 
             List<OSSObjectVersionSummary> sums = objectListing.getObjectSummaries();
