@@ -77,7 +77,7 @@ public class TestBase {
    
     @BeforeClass
     public static void oneTimeSetUp() {
-        cleanUpAllBuckets(getOSSClient(), BUCKET_NAME_PREFIX);
+        // cleanUpAllBuckets(getOSSClient(), BUCKET_NAME_PREFIX);
     }
     
     @Before
@@ -198,7 +198,7 @@ public class TestBase {
                 nextMarker = HttpUtil.urlDecode(objectListing.getNextMarker(), "UTF-8");
             } else {
                 nextMarker = objectListing.getNextMarker();
-            }
+            }/BucketCommentTest
             
             List<OSSObjectSummary> sums = objectListing.getObjectSummaries();
             for (OSSObjectSummary s : sums) {
