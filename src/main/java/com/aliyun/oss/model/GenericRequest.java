@@ -30,7 +30,7 @@ public class GenericRequest extends WebServiceRequest {
 
     public GenericRequest() {
     }
-,
+    
     public GenericRequest(String bucketName) {
         this(bucketName, null);
     }
