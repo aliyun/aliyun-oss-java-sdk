@@ -65,7 +65,7 @@ public class BucketTaggingTest extends TestBase {
 				Assert.assertEquals("tv2", allTags.get("tk2"));
 			}
 
-			ossClient.deleteBucketTagging(new GenericRequest(bucketName));
+			ossClient.deleteBucketTagging(new DeleteBucketTaggingRequest(bucketName));
 
 			waitForCacheExpiration(2);
 

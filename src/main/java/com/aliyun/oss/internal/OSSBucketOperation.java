@@ -702,18 +702,19 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Delete bucket tagging.
      */
-    public void deleteBucketTagging(GenericRequest genericRequest) throws OSSException, ClientException {
+    public void deleteBucketTagging(DeleteBucketTaggingRequest deleteBucketTaggingRequest) throws OSSException, ClientException {
 
-        assertParameterNotNull(genericRequest, "genericRequest");
+        assertParameterNotNull(deleteBucketTaggingRequest, "genericRequest");
 
-        String bucketName = bucketNameCheck(genericRequest);
+        String bucketName = bucketNameCheck(deleteBucketTaggingRequest);
 
         Map<String, String> params = new HashMap<String, String>();
-        params.put(SUBRESOURCE_TAGGING, null);
+        String keys = deleteBucketTaggingRequest.getTags();
+        params.put(SUBRESOURCE_TAGGING, keys);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
-                .setOriginalRequest(genericRequest).build();
+                .setOriginalRequest(deleteBucketTaggingRequest).build();
 
         doOperation(request, emptyResponseParser, bucketName, null);
     }
