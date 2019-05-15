@@ -337,14 +337,16 @@ public interface OSS {
      *            Bucket name
      */
     public void deleteBucketTagging(String bucketName) throws OSSException, ClientException;
+    
+    public void deleteBucketTagging(String bucketName, String tags) throws OSSException, ClientException;
 
     /**
      * Clears all the tags of the {@link Bucket} instance.
      * 
-     * @param genericRequest
+     * @param deleteBucketTaggingRequest
      *            {@link GenericRequest} instance that has the bucket name
      */
-    public void deleteBucketTagging(GenericRequest genericRequest) throws OSSException, ClientException;
+    public void deleteBucketTagging(DeleteBucketTaggingRequest deleteBucketTaggingRequest) throws OSSException, ClientException;
 
     /**
      * Checks the {@link Bucket} exists .

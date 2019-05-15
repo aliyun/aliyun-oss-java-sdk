@@ -21,7 +21,7 @@ package com.aliyun.oss.model;
 
 /**
  * A generic request that contains some basic request options, such as bucket
- * name, object key, costom headers, progress listener and so on.
+ * name, object key, custom headers, progress listener and so on.
  */
 public class GenericRequest extends WebServiceRequest {
 
@@ -31,7 +31,7 @@ public class GenericRequest extends WebServiceRequest {
 
     public GenericRequest() {
     }
-
+    
     public GenericRequest(String bucketName) {
         this(bucketName, null);
     }

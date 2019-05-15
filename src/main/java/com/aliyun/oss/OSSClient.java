@@ -1088,12 +1088,17 @@ public class OSSClient implements OSS {
 
     @Override
     public void deleteBucketTagging(String bucketName) throws OSSException, ClientException {
-        this.deleteBucketTagging(new GenericRequest(bucketName));
+        this.deleteBucketTagging(new DeleteBucketTaggingRequest(bucketName));
+    }
+    
+    @Override
+    public void deleteBucketTagging(String bucketName, String tags) throws OSSException, ClientException {
+        this.deleteBucketTagging(new DeleteBucketTaggingRequest(bucketName, tags));
     }
 
     @Override
-    public void deleteBucketTagging(GenericRequest genericRequest) throws OSSException, ClientException {
-        this.bucketOperation.deleteBucketTagging(genericRequest);
+    public void deleteBucketTagging(DeleteBucketTaggingRequest deleteBucketTaggingRequest) throws OSSException, ClientException {
+        this.bucketOperation.deleteBucketTagging(deleteBucketTaggingRequest);
     }
 
     @Override
