@@ -2576,9 +2576,6 @@ public final class ResponseParsers {
             // bucket versioninig
             Element bucketVersionInfoElement = bucketElem.getChild("Versioning");
             if (bucketVersionInfoElement != null) {
-                // old preserve
-                bucketInfo.setBucketVersion(bucketElem.getChildText("Versioning"));
-
                 // new set bucket version on bucket
                 bucket.setBucketVersion(bucketElem.getChildText("Versioning"));
             }

@@ -152,11 +152,11 @@ public class BucketVersioningTest extends TestBase {
             PutBucketVersioningRequest putBucketVersioningRequest = new PutBucketVersioningRequest(bucketName);
             putBucketVersioningRequest.setBucketVersion("Enabled");
             ossClient.putBucketVersioning(putBucketVersioningRequest);
-            Assert.assertEquals("Enabled", ossClient.getBucketInfo(bucketName).getBucketVersion());
+            Assert.assertEquals("Enabled", ossClient.getBucketInfo(bucketName).getBucket().getBucketVersion());
 
             putBucketVersioningRequest.setBucketVersion("Suspended");
             ossClient.putBucketVersioning(putBucketVersioningRequest);
-            Assert.assertEquals("Suspended", ossClient.getBucketInfo(bucketName).getBucketVersion());
+            Assert.assertEquals("Suspended", ossClient.getBucketInfo(bucketName).getBucket().getBucketVersion());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
