@@ -137,14 +137,6 @@ public class BucketVersioningTest extends TestBase {
     }
 
     /**
-     * description: test bucketVersions
-     * 场景：主要用于问题定位，脱离干净环境,单独测试
-     */
-    @Test
-    public void testServer502() {
-    }
-
-    /**
      * Description: buckeInfo接口测试
      * case 1 : 开启多版本后, 获取到bucketInfo信息中的多版本状态"Enabled"
      * case 2 : 暂停多版本后，能够获取到多版本信息中的版本状态:"Suspended"
