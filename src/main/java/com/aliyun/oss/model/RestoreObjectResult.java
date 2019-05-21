@@ -41,7 +41,7 @@ public class RestoreObjectResult extends GenericResult {
 
     private String versionId;
 
-    public void setVersionId(String String) {
+    public void setVersionId(String versionId) {
         this.versionId = versionId;
     }
 
