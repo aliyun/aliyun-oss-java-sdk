@@ -750,14 +750,14 @@ public interface OSS {
     /**
      * Gets all the metadata of {@link OSSObject}.
      *
-     * @param getObjectMetaRequest
+     * @param genericRequest
      *            Generic request which specifies the bucket name and object
      *            key.
      *
      * @return The {@link ObjectMetadata} instance.
      *
      */
-    public ObjectMetadata getObjectMetadata(GetObjectMetaRequest getObjectMetaRequest) throws OSSException, ClientException;
+    public ObjectMetadata getObjectMetadata(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
      * Create select object metadata(create metadata if not exists or overwrite flag set in {@link CreateSelectObjectMetadataRequest})

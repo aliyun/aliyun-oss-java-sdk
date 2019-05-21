@@ -370,12 +370,12 @@ public class OSSObjectOperation extends OSSOperation {
     /**
      * Get object matadata.
      */
-    public ObjectMetadata getObjectMetadata(GetObjectMetaRequest getObjectMetaRequest) throws OSSException, ClientException {
+    public ObjectMetadata getObjectMetadata(GenericRequest genericRequest) throws OSSException, ClientException {
 
-        assertParameterNotNull(getObjectMetaRequest, "getObjectMetaRequest");
+        assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = getObjectMetaRequest.getBucketName();
-        String key = getObjectMetaRequest.getKey();
+        String bucketName = genericRequest.getBucketName();
+        String key = genericRequest.getKey();
 
         assertParameterNotNull(bucketName, "bucketName");
         assertParameterNotNull(key, "key");
@@ -383,7 +383,7 @@ public class OSSObjectOperation extends OSSOperation {
         ensureObjectKeyValid(key);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.HEAD).setBucket(bucketName).setKey(key).setOriginalRequest(getObjectMetaRequest)
+                .setMethod(HttpMethod.HEAD).setBucket(bucketName).setKey(key).setOriginalRequest(genericRequest)
                 .build();
 
         List<ResponseHandler> reponseHandlers = new ArrayList<ResponseHandler>();

@@ -592,12 +592,12 @@ public class OSSClient implements OSS {
 
     @Override
     public ObjectMetadata getObjectMetadata(String bucketName, String key) throws OSSException, ClientException {
-        return this.getObjectMetadata(new GetObjectMetaRequest(bucketName, key));
+        return this.getObjectMetadata(new GenericRequest(bucketName, key));
     }
 
     @Override
     public ObjectMetadata getObjectMetadata(String bucketName, String key, String versionId) throws OSSException, ClientException {
-        return this.getObjectMetadata(new GetObjectMetaRequest(bucketName, key, versionId));
+        return this.getObjectMetadata(new GenericRequest(bucketName, key, versionId));
     }
 
     @Override
@@ -606,8 +606,8 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public ObjectMetadata getObjectMetadata(GetObjectMetaRequest getObjectMetaRequest) throws OSSException, ClientException {
-        return objectOperation.getObjectMetadata(getObjectMetaRequest);
+    public ObjectMetadata getObjectMetadata(GenericRequest genericRequest) throws OSSException, ClientException {
+        return objectOperation.getObjectMetadata(genericRequest);
     }
 
     @Override
