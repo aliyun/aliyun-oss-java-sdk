@@ -125,16 +125,6 @@ public class SelectObjectRequest extends GetObjectRequest {
         return this;
     }
 
-    @Override
-    public long[] getRange() {
-        return null;
-    }
-
-    @Override
-    public void setRange(long start, long end) throws InvalidParameterException {
-        throw new InvalidParameterException("Select object does not support byte range now.");
-    }
-
     public String lineRangeToString(long[] range) {
         return rangeToString(LINE_RANGE_PREFIX, range);
     }

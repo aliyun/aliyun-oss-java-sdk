@@ -23,6 +23,21 @@ public class CSVFormat implements Serializable {
     //Define the quote char, this is a single char, so getter will return the first char
     private String quoteChar = "\"";
 
+    private boolean allowQuotedRecordDelimiter = true;
+
+    public boolean isAllowQuotedRecordDelimiter() {
+        return allowQuotedRecordDelimiter;
+    }
+
+    public void setAllowQuotedRecordDelimiter(boolean allowQuotedRecordDelimiter) {
+        this.allowQuotedRecordDelimiter = allowQuotedRecordDelimiter;
+    }
+
+    public CSVFormat withAllowQuotedRecordDelimiter(boolean allowQuotedRecordDelimiter) {
+        setAllowQuotedRecordDelimiter(allowQuotedRecordDelimiter);
+        return this;
+    }
+
     public String getHeaderInfo() {
         return headerInfo.name();
     }
