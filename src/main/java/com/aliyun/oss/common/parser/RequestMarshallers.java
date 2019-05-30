@@ -71,7 +71,8 @@ public final class RequestMarshallers {
     public static final UpgradeUdfApplicationRequestMarshaller upgradeUdfApplicationRequestMarshaller = new UpgradeUdfApplicationRequestMarshaller();
     public static final ResizeUdfApplicationRequestMarshaller resizeUdfApplicationRequestMarshaller = new ResizeUdfApplicationRequestMarshaller();
     public static final ProcessObjectRequestMarshaller processObjectRequestMarshaller = new ProcessObjectRequestMarshaller();
-
+    public static final SetBucketEncryptionRequestMarshaller setBucketEncryptionRequestMarshaller = new SetBucketEncryptionRequestMarshaller();
+    
     public static final CreateSelectObjectMetadataRequestMarshaller createSelectObjectMetadataRequestMarshaller = new CreateSelectObjectMetadataRequestMarshaller();
     public static final SelectObjectRequestMarshaller selectObjectRequestMarshaller = new SelectObjectRequestMarshaller();
 
@@ -802,6 +803,40 @@ public final class RequestMarshallers {
 
     }
 
+    public static final class SetBucketEncryptionRequestMarshaller
+    implements RequestMarshaller2<SetBucketEncryptionRequest> {
+
+    	@Override
+    	public byte[] marshall(SetBucketEncryptionRequest setBucketEncryptionRequest) {
+    		StringBuffer xmlBody = new StringBuffer();
+    		ServerSideEncryptionConfiguration sseConfig =
+    				setBucketEncryptionRequest.getServerSideEncryptionConfiguration();
+    		ServerSideEncryptionByDefault sseByDefault = sseConfig.getApplyServerSideEncryptionByDefault();
+
+    		xmlBody.append("<ServerSideEncryptionRule>");
+    		xmlBody.append("<ApplyServerSideEncryptionByDefault>");
+
+    		xmlBody.append("<SSEAlgorithm>" + sseByDefault.getSSEAlgorithm() + "</SSEAlgorithm>");
+    		if (sseByDefault.getKMSMasterKeyID() != null) {
+    			xmlBody.append("<KMSMasterKeyID>" + sseByDefault.getKMSMasterKeyID() + "</KMSMasterKeyID>");
+    		} else {
+    			xmlBody.append("<KMSMasterKeyID></KMSMasterKeyID>");
+    		}
+
+    		xmlBody.append("</ApplyServerSideEncryptionByDefault>");
+    		xmlBody.append("</ServerSideEncryptionRule>");
+
+    		byte[] rawData = null;
+    		try {
+    			rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+    		} catch (UnsupportedEncodingException e) {
+    			throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+    		}
+    		return rawData;
+    	}
+
+    }
+    
     public static final class CreateLiveChannelRequestMarshaller
             implements RequestMarshaller2<CreateLiveChannelRequest> {
 

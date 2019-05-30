@@ -85,6 +85,8 @@ import com.aliyun.oss.model.LifecycleRule;
 import com.aliyun.oss.model.ReplicationStatus;
 import com.aliyun.oss.model.RestoreObjectResult;
 import com.aliyun.oss.model.RoutingRule;
+import com.aliyun.oss.model.ServerSideEncryptionByDefault;
+import com.aliyun.oss.model.ServerSideEncryptionConfiguration;
 import com.aliyun.oss.model.StorageClass;
 import com.aliyun.oss.model.LifecycleRule.RuleStatus;
 import com.aliyun.oss.model.LifecycleRule.StorageTransition;
@@ -139,6 +141,7 @@ public final class ResponseParsers {
     public static final GetBucketInfoResponseParser getBucketInfoResponseParser = new GetBucketInfoResponseParser();
     public static final GetBucketStatResponseParser getBucketStatResponseParser = new GetBucketStatResponseParser();
     public static final GetBucketQosResponseParser getBucketQosResponseParser = new GetBucketQosResponseParser();
+    public static final GetBucketEncryptionResponseParser getBucketEncryptionResponseParser = new GetBucketEncryptionResponseParser();
 
     public static final ListObjectsReponseParser listObjectsReponseParser = new ListObjectsReponseParser();
     public static final PutObjectReponseParser putObjectReponseParser = new PutObjectReponseParser();
@@ -401,6 +404,21 @@ public final class ResponseParsers {
                 safeCloseResponse(response);
             }
         }
+
+    }
+    
+    public static final class GetBucketEncryptionResponseParser
+    implements ResponseParser<ServerSideEncryptionConfiguration> {
+    	
+    	@Override
+    	public ServerSideEncryptionConfiguration parse(ResponseMessage response) throws ResponseParseException {
+    		try {
+    			ServerSideEncryptionConfiguration result = parseGetBucketEncryption(response.getContent());
+    			return result;
+    		} finally {
+    			safeCloseResponse(response);
+    		}
+    	}
 
     }
 
@@ -2221,6 +2239,23 @@ public final class ResponseParsers {
             default:
                 break;
             }
+            
+            // sse
+            Element sseElem = bucketElem.getChild("ServerSideEncryptionRule");
+            if (sseElem != null) {
+                ServerSideEncryptionConfiguration serverSideEncryptionConfiguration =
+                    new ServerSideEncryptionConfiguration();
+                ServerSideEncryptionByDefault applyServerSideEncryptionByDefault = new ServerSideEncryptionByDefault();
+
+                applyServerSideEncryptionByDefault.setSSEAlgorithm(sseElem.getChildText("SSEAlgorithm"));
+                if (sseElem.getChild("KMSMasterKeyID") != null) {
+                    applyServerSideEncryptionByDefault.setKMSMasterKeyID(sseElem.getChildText("KMSMasterKeyID"));
+                }
+                serverSideEncryptionConfiguration
+                    .setApplyServerSideEncryptionByDefault(applyServerSideEncryptionByDefault);
+
+                bucketInfo.setServerSideEncryptionConfiguration(serverSideEncryptionConfiguration);
+            }
 
             return bucketInfo;
         } catch (JDOMParseException e) {
@@ -2478,6 +2513,31 @@ public final class ResponseParsers {
 
     }
 
+    /**
+     * Unmarshall get bucket encryption response body to encryption configuration.
+     */
+    public static ServerSideEncryptionConfiguration parseGetBucketEncryption(InputStream responseBody)
+        throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+            ServerSideEncryptionConfiguration configuration = new ServerSideEncryptionConfiguration();
+            ServerSideEncryptionByDefault sseByDefault = new ServerSideEncryptionByDefault();
+
+            Element sseElem = root.getChild("ApplyServerSideEncryptionByDefault");
+            sseByDefault.setSSEAlgorithm(sseElem.getChildText("SSEAlgorithm"));
+            sseByDefault.setKMSMasterKeyID(sseElem.getChildText("KMSMasterKeyID"));
+            configuration.setApplyServerSideEncryptionByDefault(sseByDefault);
+
+            return configuration;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
+    }
+    
     /**
      * Unmarshall get bucket lifecycle response body to lifecycle rules.
      */

@@ -1948,6 +1948,79 @@ public interface OSS {
     public UserQos getBucketStorageCapacity(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
+     * Creates a new server-side encryption configuration (or replaces an existing one, if present).
+     *
+     * @param setBucketEncryptionRequest The request object for setting the bucket encryption configuration.
+     *
+     * @return A {@link SetBucketEncryptionRequest}.
+     * 
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public void setBucketEncryption(SetBucketEncryptionRequest setBucketEncryptionRequest) 
+    		throws OSSException, ClientException;
+    
+    /**
+     * Returns the server-side encryption configuration of a bucket.
+     *
+     * @param bucketName Name of the bucket to retrieve encryption configuration for.
+     * 
+     * @return A {@link ServerSideEncryptionConfiguration}.
+     * 
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public ServerSideEncryptionConfiguration getBucketEncryption(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Returns the server-side encryption configuration of a bucket.
+     *
+     * @param genericRequest
+     *            The {@link GenericRequest} instance which specifies the bucket
+     *            name.
+     *            
+     * @return A {@link ServerSideEncryptionConfiguration}.
+     * 
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public ServerSideEncryptionConfiguration getBucketEncryption(GenericRequest genericRequest) 
+    		throws OSSException, ClientException;
+    
+    /**
+     * Deletes the server-side encryption configuration from the bucket.
+     *
+     * @param bucketName
+     *            The bucket name.
+     * 
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public void deleteBucketEncryption(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Deletes the server-side encryption configuration from the bucket.
+     *
+     * @param genericRequest
+     *            The {@link GenericRequest} instance which specifies the bucket
+     *            name.
+     *            
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public void deleteBucketEncryption(GenericRequest genericRequest) throws OSSException, ClientException;
+    
+    /**
      * File upload
      * 
      * This method will automatically split files into parts and upload them in
