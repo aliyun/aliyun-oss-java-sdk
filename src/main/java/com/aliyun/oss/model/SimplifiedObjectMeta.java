@@ -30,6 +30,7 @@ public class SimplifiedObjectMeta extends GenericResult {
     private String eTag;
     private long size;
     private Date lastModified;
+    private String versionId;
 
     public String getETag() {
         return eTag;
@@ -53,6 +54,14 @@ public class SimplifiedObjectMeta extends GenericResult {
 
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
+    }
+    
+    public String getVersionId() {
+        return versionId;
+    }
+
+    public void setVersionId(String versionId) {
+        this.versionId = versionId;
     }
 
     @Override

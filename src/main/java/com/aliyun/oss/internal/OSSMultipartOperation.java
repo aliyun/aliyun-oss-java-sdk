@@ -471,6 +471,9 @@ public class OSSMultipartOperation extends OSSOperation {
 
         String copySource = "/" + uploadPartCopyRequest.getSourceBucketName() + "/"
                 + HttpUtil.urlEncode(uploadPartCopyRequest.getSourceKey(), DEFAULT_CHARSET_NAME);
+        if (uploadPartCopyRequest.getSourceVersionId() != null) {
+            copySource += "?versionId=" + uploadPartCopyRequest.getSourceVersionId();
+        }
         headers.put(OSSHeaders.COPY_OBJECT_SOURCE, copySource);
 
         if (uploadPartCopyRequest.getBeginIndex() != null && uploadPartCopyRequest.getPartSize() != null) {

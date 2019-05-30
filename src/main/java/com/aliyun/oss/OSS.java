@@ -341,6 +341,171 @@ public interface OSS {
     public void deleteBucketTagging(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
+     * <p>
+     * Returns the versioning configuration for the specified bucket.
+     * </p>
+     * <p>
+     * A bucket's versioning configuration can be in one of three possible
+     * states:
+     *  <ul>
+     *      <li>{@link BucketVersioningConfiguration#OFF}
+     *      <li>{@link BucketVersioningConfiguration#ENABLED}
+     *      <li>{@link BucketVersioningConfiguration#SUSPENDED}
+     *  </ul>
+     * </p>
+     * <p>
+     * By default, new buckets are in the
+     * {@link BucketVersioningConfiguration#OFF off} state. Once versioning is
+     * enabled for a bucket the status can never be reverted to
+     * {@link BucketVersioningConfiguration#OFF off}.
+     * </p>
+     * <p>
+     * The versioning configuration of a bucket has different implications for
+     * each operation performed on that bucket or for objects within that
+     * bucket. For example, when versioning is enabled a <code>PutObject</code>
+     * operation creates a unique object version-id for the object being uploaded. The
+     * The <code>PutObject</code> API guarantees that, if versioning is enabled for a bucket at
+     * the time of the request, the new object can only be permanently deleted
+     * using a <code>DeleteVersion</code> operation. It can never be overwritten.
+     * Additionally, the <code>PutObject</code> API guarantees that,
+     * if versioning is enabled for a bucket the request,
+     * no other object will be overwritten by that request.
+     * </p>
+     * <p>
+     * OSS is eventually consistent. It can take time for the versioning status
+     * of a bucket to be propagated throughout the system.
+     * </p>
+     *
+     * @param bucketName
+     *            The bucket whose versioning configuration will be retrieved.
+     *
+     * @return The bucket versioning configuration for the specified bucket.
+     *
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     *
+     * @see OSS#setBucketVersioning(SetBucketVersioningRequest)
+     * @see OSS#getBucketVersioning(GenericRequest)
+     */
+    public BucketVersioningConfiguration getBucketVersioning(String bucketName) throws OSSException, ClientException;
+    
+    /**
+     * <p>
+     * Returns the versioning configuration for the specified bucket.
+     * </p>
+     * <p>
+     * A bucket's versioning configuration can be in one of three possible
+     * states:
+     *  <ul>
+     *      <li>{@link BucketVersioningConfiguration#OFF}
+     *      <li>{@link BucketVersioningConfiguration#ENABLED}
+     *      <li>{@link BucketVersioningConfiguration#SUSPENDED}
+     *  </ul>
+     * </p>
+     * <p>
+     * By default, new buckets are in the
+     * {@link BucketVersioningConfiguration#OFF off} state. Once versioning is
+     * enabled for a bucket the status can never be reverted to
+     * {@link BucketVersioningConfiguration#OFF off}.
+     * </p>
+     * <p>
+     * The versioning configuration of a bucket has different implications for
+     * each operation performed on that bucket or for objects within that
+     * bucket. For example, when versioning is enabled a <code>PutObject</code>
+     * operation creates a unique object version-id for the object being uploaded. The
+     * The <code>PutObject</code> API guarantees that, if versioning is enabled for a bucket at
+     * the time of the request, the new object can only be permanently deleted
+     * using a <code>DeleteVersion</code> operation. It can never be overwritten.
+     * Additionally, the <code>PutObject</code> API guarantees that,
+     * if versioning is enabled for a bucket the request,
+     * no other object will be overwritten by that request.
+     * </p>
+     * <p>
+     * OSS is eventually consistent. It can take time for the versioning status
+     * of a bucket to be propagated throughout the system.
+     * </p>
+     *
+     * @param genericRequest
+     *            {@link GenericRequest} instance that has the bucket name.
+     *
+     * @return The bucket versioning configuration for the specified bucket.
+     *
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     *
+     * @see OSS#setBucketVersioning(SetBucketVersioningRequest)
+     * @see OSS#getBucketVersioning(String)
+     */
+    public BucketVersioningConfiguration getBucketVersioning(GenericRequest genericRequest)
+            throws OSSException, ClientException;
+
+    /**
+     * <p>
+     * Sets the versioning configuration for the specified bucket.
+     * </p>
+     * <p>
+     * A bucket's versioning configuration can be in one of three possible
+     * states:
+     *  <ul>
+     *      <li>{@link BucketVersioningConfiguration#OFF}
+     *      <li>{@link BucketVersioningConfiguration#ENABLED}
+     *      <li>{@link BucketVersioningConfiguration#SUSPENDED}
+     *  </ul>
+     * </p>
+     * <p>
+     * By default, new buckets are in the
+     * {@link BucketVersioningConfiguration#OFF off} state. Once versioning is
+     * enabled for a bucket the status can never be reverted to
+     * {@link BucketVersioningConfiguration#OFF off}.
+     * </p>
+     * <p>
+     * Objects created before versioning was enabled or when versioning is
+     * suspended will be given the default <code>null</code> version ID (see
+     * {@link com.aliyun.oss.internal.OSSConstants#NULL_VERSION_ID}). Note that the
+     * <code>null</code> version ID is a valid version ID and is not the
+     * same as not having a version ID.
+     * </p>
+     * <p>
+     * The versioning configuration of a bucket has different implications for
+     * each operation performed on that bucket or for objects within that
+     * bucket. For example, when versioning is enabled a <code>PutObject</code>
+     * operation creates a unique object version-id for the object being uploaded. The
+     * The <code>PutObject</code> API guarantees that, if versioning is enabled for a bucket at
+     * the time of the request, the new object can only be permanently deleted
+     * using a <code>DeleteVersion</code> operation. It can never be overwritten.
+     * Additionally, the <code>PutObject</code> API guarantees that,
+     * if versioning is enabled for a bucket the request,
+     * no other object will be overwritten by that request.
+     * Refer to the documentation sections for each API for information on how
+     * versioning status affects the semantics of that particular API.
+     * </p>
+     * <p>
+     * OSS is eventually consistent. It can take time for the versioning status
+     * of a bucket to be propagated throughout the system.
+     * </p>
+     *
+     * @param setBucketVersioningRequest
+     *            The request object containing all options for setting the
+     *            bucket versioning configuration.
+     *
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     *
+     * @see OSS#getBucketVersioning(String)
+     */
+    public void setBucketVersioning(SetBucketVersioningRequest setBucketVersioningRequest)
+        throws OSSException, ClientException;
+    
+    /**
      * Checks the {@link Bucket} exists .
      * 
      * @param bucketName
@@ -395,7 +560,271 @@ public interface OSS {
      * @throws ClientException
      */
     public ObjectListing listObjects(ListObjectsRequest listObjectsRequest) throws OSSException, ClientException;
-
+    
+    /**
+     * <p>
+     * Returns a list of summary information about the versions in the specified
+     * bucket.
+     * </p>
+     * <p>
+     * The returned version summaries are ordered first by key and then by
+     * version. Keys are sorted lexicographically (alphabetically)
+     * while versions are sorted from most recent to least recent.
+     * Both versions with data and delete markers are included in the results.
+     * </p>
+     * <p>
+     * Because buckets can contain a virtually unlimited number of versions, the
+     * complete results of a list query can be extremely large. To manage large
+     * result sets, OSS uses pagination to split them into multiple
+     * responses. Always check the
+     * {@link VersionListing#isTruncated()} method to determine if the
+     * returned listing is complete or if additional calls are needed to get
+     * more results. 
+     * </p>
+     * <p>
+     * For more information about enabling versioning for a bucket, see
+     * {@link #setBucketVersioning(SetBucketVersioningRequest)}.
+     * </p>
+     *
+     * @param bucketName
+     *            The name of the OSS bucket whose versions are to be
+     *            listed.
+     * @param prefix
+     *            An optional parameter restricting the response to keys
+     *            beginning with the specified prefix. Use prefixes to
+     *            separate a bucket into different sets of keys,
+     *            similar to how a file system organizes files
+     * 		      into directories.
+     *
+     * @return A listing of the versions in the specified bucket, along with any
+     *         other associated information and original request parameters.
+     *
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the
+     *             request.
+     *
+     * @see OSSClient#listVersions(ListVersionsRequest)
+     * @see OSSClient#listVersions(String, String, String, String, String, Integer)
+     */
+    public VersionListing listVersions(String bucketName, String prefix)
+            throws OSSException, ClientException;
+    
+    /**
+     * <p>
+     * Returns a list of summary information about the versions in the specified
+     * bucket.
+     * </p>
+     * <p>
+     * The returned version summaries are ordered first by key and then by
+     * version. Keys are sorted lexicographically (alphabetically)
+     * and versions are sorted from most recent to least recent.
+     * Versions
+     * with data and delete markers are included in the results.
+     * </p>
+     * <p>
+     * Because buckets can contain a virtually unlimited number of versions, the
+     * complete results of a list query can be extremely large. To manage large
+     * result sets, OSS uses pagination to split them into multiple
+     * responses. Always check the
+     * {@link VersionListing#isTruncated()} method to determine if the
+     * returned listing is complete or if additional calls are needed
+     * to get more results.
+     * </p>
+     * <p>
+     * The <code>keyMarker</code> and <code>versionIdMarker</code> parameters allow
+     * callers to specify where to start the version listing.
+     * </p>
+     * <p>
+     * The <code>delimiter</code> parameter allows groups of keys that share a
+     * delimiter-terminated prefix to be included
+     * in the returned listing. This allows applications to organize and browse
+     * their keys hierarchically, much like how a file system organizes
+     * files into directories. These common prefixes can be retrieved
+     * by calling the {@link VersionListing#getCommonPrefixes()} method.
+     * </p>
+     * <p>
+     * For example, consider a bucket that contains the following keys:
+     * <ul>
+     * 	<li>"foo/bar/baz"</li>
+     * 	<li>"foo/bar/bash"</li>
+     * 	<li>"foo/bar/bang"</li>
+     * 	<li>"foo/boo"</li>
+     * </ul>
+     * If calling <code>listVersions</code> with
+     * a <code>prefix</code> value of "foo/" and a <code>delimiter</code> value of "/"
+     * on this bucket, a <code>VersionListing</code> is returned that contains:
+     * 	<ul>
+     * 		<li>all the versions for one key ("foo/boo")</li>
+     * 		<li>one entry in the common prefixes list ("foo/bar/")</li>
+     * 	</ul>
+     * </p>
+     * <p>
+     * To see deeper into the virtual hierarchy, make
+     * another call to <code>listVersions</code> setting the prefix parameter to any
+     * interesting common prefix to list the individual versions under that
+     * prefix.
+     * </p>
+     * <p>
+     * For more information about enabling versioning for a bucket, see
+     * {@link #setBucketVersioning(SetBucketVersioningRequest)}.
+     * </p>
+     *
+     * @param bucketName
+     *            The name of the OSS bucket whose versions are to be listed.
+     * @param prefix
+     *            An optional parameter restricting the response to keys that
+     *            begin with the specified prefix. Use prefixes to
+     *            separate a bucket into different sets of keys,
+     *            similar to how a file system organizes files
+     * 		      into directories.
+     * @param keyMarker
+     *            Optional parameter indicating where in the sorted list of all
+     *            versions in the specified bucket to begin returning results.
+     *            Results are always ordered first lexicographically (i.e.
+     *            alphabetically) and then from most recent version to least
+     *            recent version. If a keyMarker is used without a
+     *            versionIdMarker, results begin immediately after that key's
+     *            last version. When a keyMarker is used with a versionIdMarker,
+     *            results begin immediately after the version with the specified
+     *            key and version ID.
+     *            <p>
+     *            This enables pagination; to get the next page of results use
+     *            the next key marker and next version ID marker (from
+     *            {@link VersionListing#getNextKeyMarker()} and
+     *            {@link VersionListing#getNextVersionIdMarker()}) as the
+     *            markers for the next request to list versions.
+     * @param versionIdMarker
+     *            Optional parameter indicating where in the sorted list of all
+     *            versions in the specified bucket to begin returning results.
+     *            Results are always ordered first lexicographically (i.e.
+     *            alphabetically) and then from most recent version to least
+     *            recent version. A keyMarker must be specified when specifying
+     *            a versionIdMarker. Results begin immediately after the version
+     *            with the specified key and version ID.
+     *            <p>
+     *            This enables pagination; to get the next page of results use
+     *            the next key marker and next version ID marker (from
+     *            {@link VersionListing#getNextKeyMarker()} and
+     *            {@link VersionListing#getNextVersionIdMarker()}) as the
+     *            markers for the next request to list versions.
+     * @param delimiter
+     *            Optional parameter that causes keys that contain the same
+     *            string between the prefix and the first occurrence of the
+     *            delimiter to be rolled up into a single result element in the
+     *            {@link VersionListing#getCommonPrefixes()} list. These
+     *            rolled-up keys are not returned elsewhere in the response. The
+     *            most commonly used delimiter is "/", which simulates a
+     *            hierarchical organization similar to a file system directory
+     *            structure.
+     * @param maxResults
+     *            Optional parameter indicating the maximum number of results to
+     *            include in the response. OSS might return fewer than
+     *            this, but will not return more. Even if maxResults is not
+     *            specified, OSS will limit the number of results in the
+     *            response.
+     *
+     * @return A listing of the versions in the specified bucket, along with any
+     *         other associated information such as common prefixes (if a
+     *         delimiter was specified), the original request parameters, etc.
+     *
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the
+     *             request.
+     *
+     * @see OSSClient#listVersions(String, String)
+     * @see OSSClient#listVersions(ListVersionsRequest)
+     */
+    public VersionListing listVersions(String bucketName, String prefix,
+            String keyMarker, String versionIdMarker, String delimiter, Integer maxResults)
+            throws OSSException, ClientException;
+    
+    /**
+     * <p>
+     * Returns a list of summary information about the versions in the specified
+     * bucket.
+     * </p>
+     * <p>
+     * The returned version summaries are ordered first by key and then by
+     * version. Keys are sorted lexicographically (alphabetically)
+     * and versions are sorted from most recent to least recent.
+     * Versions
+     * with data and delete markers are included in the results.
+     * </p>
+     * <p>
+     * Because buckets can contain a virtually unlimited number of versions, the
+     * complete results of a list query can be extremely large. To manage large
+     * result sets, OSS uses pagination to split them into multiple
+     * responses. Always check the
+     * {@link VersionListing#isTruncated()} method to determine if the
+     * returned listing is complete or if additional calls are needed
+     * to get more results.
+     * </p>
+     * <p>
+     * The <code>keyMarker</code> and <code>versionIdMarker</code> parameters allow
+     * callers to specify where to start the version listing.
+     * </p>
+     * <p>
+     * The <code>delimiter</code> parameter allows groups of keys that share a
+     * delimiter-terminated prefix to be included
+     * in the returned listing. This allows applications to organize and browse
+     * their keys hierarchically, much like how a file system organizes
+     * files into directories. These common prefixes can be retrieved
+     * by calling the {@link VersionListing#getCommonPrefixes()} method.
+     * </p>
+     * <p>
+     * For example, consider a bucket that contains the following keys:
+     * <ul>
+     *  <li>"foo/bar/baz"</li>
+     *  <li>"foo/bar/bash"</li>
+     *  <li>"foo/bar/bang"</li>
+     *  <li>"foo/boo"</li>
+     * </ul>
+     * If calling <code>listVersions</code> with
+     * a <code>prefix</code> value of "foo/" and a <code>delimiter</code> value of "/"
+     * on this bucket, a <code>VersionListing</code> is returned that contains:
+     *  <ul>
+     *      <li>all the versions for one key ("foo/boo")</li>
+     *      <li>one entry in the common prefixes list ("foo/bar/")</li>
+     *  </ul>
+     * </p>
+     * <p>
+     * To see deeper into the virtual hierarchy, make
+     * another call to <code>listVersions</code> setting the prefix parameter to any
+     * interesting common prefix to list the individual versions under that
+     * prefix.
+     * </p>
+     * <p>
+     * For more information about enabling versioning for a bucket, see
+     * {@link #setBucketVersioning(SetBucketVersioningRequest)}.
+     * </p>
+     * 
+     * @param listVersionsRequest
+     *            The request object containing all options for listing the
+     *            versions in a specified bucket.
+     *
+     * @return A listing of the versions in the specified bucket, along with any
+     *         other associated information such as common prefixes (if a
+     *         delimiter was specified), the original request parameters, etc.
+     *
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the
+     *             request.
+     *
+     * @see OSSClient#listVersions(String, String)
+     * @see OSSClient#listVersions(String, String, String, String, String, Integer)
+     */
+    public VersionListing listVersions(ListVersionsRequest listVersionsRequest)
+    		throws OSSException, ClientException;
+    
     /**
      * Uploads the file to the {@link Bucket} from the {@link InputStream}
      * instance. It overwrites the existing one and the bucket must exist.
@@ -680,7 +1109,7 @@ public interface OSS {
      */
     public SimplifiedObjectMeta getSimplifiedObjectMeta(GenericRequest genericRequest)
             throws OSSException, ClientException;
-
+    
     /**
      * Gets all the metadata of {@link OSSObject}.
      * 
@@ -704,7 +1133,7 @@ public interface OSS {
      *
      */
     public ObjectMetadata getObjectMetadata(GenericRequest genericRequest) throws OSSException, ClientException;
-
+    
     /**
      * Create select object metadata(create metadata if not exists or overwrite flag set in {@link CreateSelectObjectMetadataRequest})
      *
@@ -783,7 +1212,96 @@ public interface OSS {
      */
     public DeleteObjectsResult deleteObjects(DeleteObjectsRequest deleteObjectsRequest)
             throws OSSException, ClientException;
+    
+    /**
+     * <p>
+     * Deletes a specific version of the specified object in the specified
+     * bucket. Once deleted, there is no method to restore or undelete an object
+     * version. This is the only way to permanently delete object versions that
+     * are protected by versioning.
+     * </p>
+     * <p>
+     * Deleting an object version is permanent and irreversible.
+     * It is a
+     * privileged operation that only the owner of the bucket containing the
+     * version can perform.
+     * </p>
+     * <p>
+     * Users can only delete a version of an object if versioning is enabled
+     * for the bucket.
+     * For more information about enabling versioning for a bucket, see
+     * {@link #setBucketVersioning(SetBucketVersioningRequest)}.
+     * </p>
+     * <p>
+     * If attempting to delete an object that does not exist,
+     * OSS will return a success message instead of an error message.
+     * </p>
+     *
+     * @param bucketName
+     *            The name of the OSS bucket containing the object to delete.
+     * @param key
+     *            The key of the object to delete.
+     * @param versionId
+     *            The version of the object to delete.
+     *
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public void deleteVersion(String bucketName, String key, String versionId) throws OSSException, ClientException;
 
+    /**
+     * <p>
+     * Deletes a specific version of an object in the specified bucket. Once
+     * deleted, there is no method to restore or undelete an object version.
+     * This is the only way to permanently delete object versions that are
+     * protected by versioning.
+     * </p>
+     * <p>
+     * Deleting an object version is permanent and irreversible.
+     * It is a
+     * privileged operation that only the owner of the bucket containing the
+     * version can perform.
+     * </p>
+     * <p>
+     * Users can only delete a version of an object if versioning is enabled
+     * for the bucket.
+     * For more information about enabling versioning for a bucket, see
+     * {@link #setBucketVersioning(SetBucketVersioningRequest)}.
+     * </p>
+     * <p>
+     * If attempting to delete an object that does not exist,
+     * OSS will return a success message instead of an error message.
+     * </p>
+     *
+     * @param deleteVersionRequest
+     *            The request object containing all options for deleting a
+     *            specific version of an OSS object.
+     *
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public void deleteVersion(DeleteVersionRequest deleteVersionRequest) throws OSSException, ClientException;
+    
+    /**
+     * Batch deletes the specified object versions under a specific bucket. If the versions
+     * are non-exist, the operation will still return successful.
+     * 
+     * @param deleteVersionsRequest
+     *            A {@link DeleteVersionsRequest} instance which specifies the
+     *            bucket and file keys to delete.
+     * @return A {@link DeleteVersionsResult} instance which specifies each
+     *         file's result in normal mode or only failed deletions in quite
+     *         mode. By default it's normal mode.
+     */
+    public DeleteVersionsResult deleteVersions(DeleteVersionsRequest deleteVersionsRequest)
+            throws OSSException, ClientException;
+    
     /**
      * Checks if a specific {@link OSSObject} exists under the specific
      * {@link Bucket}. 302 Redirect or OSS mirroring will not impact the result
@@ -1924,7 +2442,7 @@ public interface OSS {
      * Gets the {@link Bucket}'s capacity
      * 
      * @param bucketName
-     *            The bucket name。
+     *            The bucket name.
      * @return A {@link UserQos} instance which has the capacity information.
      * @throws OSSException
      *             OSS Server side exception.

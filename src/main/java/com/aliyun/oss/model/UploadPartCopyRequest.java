@@ -50,6 +50,13 @@ public class UploadPartCopyRequest extends WebServiceRequest {
     private Date unmodifiedSinceConstraint;
 
     private Date modifiedSinceConstraint;
+    
+    /**
+     * Optional version Id specifying which version of the source object to
+     * copy. If not specified, the most recent version of the source object will
+     * be copied.
+     */
+    private String sourceVersionId;
 
     public UploadPartCopyRequest() {
     }
@@ -220,6 +227,60 @@ public class UploadPartCopyRequest extends WebServiceRequest {
 
     public void setSourceKey(String sourceKey) {
         this.sourceKey = sourceKey;
+    }
+    
+    /**
+     * <p>
+     * Gets the version ID specifying which version of the source object to
+     * copy. If not specified, the most recent version of the source object will
+     * be copied.
+     * </p>
+     * <p>
+     * Objects created before enabling versioning or when versioning is
+     * suspended are given the default <code>null</code> version ID (see
+     * {@link com.aliyun.oss.internal.OSSConstants#NULL_VERSION_ID}). Note that the <code>null</code>
+     * version ID is a valid version ID and is not the same as not having a
+     * version ID.
+     * </p>
+     * <p>
+     * For more information about enabling versioning for a bucket, see
+     * {@link com.aliyun.oss.OSS#setBucketVersioning(SetBucketVersioningRequest)}.
+     * </p>
+     *
+     * @return The version ID specifying which version of the source object to
+     *         copy.
+     *
+     * @see com.aliyun.oss.internal.OSSConstants#NULL_VERSION_ID
+     * @see CopyObjectRequest#setSourceVersionId(String sourceVersionId)
+     */
+    public String getSourceVersionId() {
+        return sourceVersionId;
+    }
+
+    /**
+     * <p>
+     * Sets the optional version ID specifying which version of the source
+     * object to copy. If not specified, the most recent version of the source
+     * object will be copied.
+     * </p>
+     * <p>
+     * Objects created before enabling versioning or when versioning is
+     * suspended are given the default <code>null</code> version ID (see
+     * {@link com.aliyun.oss.internal.OSSConstants#NULL_VERSION_ID}). Note that the <code>null</code>
+     * version ID is a valid version ID and is not the same as not having a
+     * version ID.
+     * </p>
+     * <p>
+     * For more information about enabling versioning for a bucket, see
+     * {@link com.aliyun.oss.OSS#setBucketVersioning(SetBucketVersioningRequest)}.
+     * </p>
+     *
+     * @param sourceVersionId
+     *            The optional version ID specifying which version of the source
+     *            object to copy.
+     */
+    public void setSourceVersionId(String sourceVersionId) {
+        this.sourceVersionId = sourceVersionId;
     }
 
     public Long getBeginIndex() {

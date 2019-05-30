@@ -30,8 +30,9 @@ public class ObjectAcl extends GenericResult implements Serializable {
 
     private Owner owner;
     private ObjectPermission permission;
+    private String versionId;
 
-    /**
+	/**
      * Gets the {@link Owner}.
      * 
      * @return The {@link Owner}。
@@ -67,6 +68,14 @@ public class ObjectAcl extends GenericResult implements Serializable {
      */
     public void setPermission(ObjectPermission permission) {
         this.permission = permission;
+    }
+    
+    public String getVersionId() {
+        return versionId;
+    }
+
+    public void setVersionId(String versionId) {
+        this.versionId = versionId;
     }
 
     /**

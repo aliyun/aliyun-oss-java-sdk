@@ -34,6 +34,11 @@ public class CopyObjectRequest extends WebServiceRequest {
 
     // Source object key.
     private String sourceKey;
+    
+    // Optional version Id specifying which version of the source object to
+    // copy. If not specified, the most recent version of the source object will
+    // be copied.
+    private String sourceVersionId;
 
     // Target bucket name.
     private String destinationBucketName;
@@ -92,6 +97,37 @@ public class CopyObjectRequest extends WebServiceRequest {
         setDestinationBucketName(destinationBucketName);
         setDestinationKey(destinationKey);
     }
+    
+    /**
+     * <p>
+     * Constructs a new {@link CopyObjectRequest} with basic options, providing
+     * an OSS version ID identifying the specific version of the source object
+     * to copy.
+     * </p>
+     *
+     * @param sourceBucketName
+     *            The name of the OSS bucket containing the object to copy.
+     * @param sourceKey
+     *            The key in the source bucket under which the object to copy is
+     *            stored.
+     * @param sourceVersionId
+     *            The OSS version ID which uniquely identifies a specific version
+     *            of the source object to copy.
+     * @param destinationBucketName
+     *            The name of the OSS bucket in which the new object will be
+     *            copied.
+     * @param destinationKey
+     *            The key in the destination bucket under which the new object
+     *            will be copied.
+     */
+    public CopyObjectRequest(String sourceBucketName, String sourceKey, String sourceVersionId,
+        String destinationBucketName, String destinationKey) {
+        setSourceBucketName(sourceBucketName);
+        setSourceKey(sourceKey);
+        setSourceVersionId(sourceVersionId);
+        setDestinationBucketName(destinationBucketName);
+        setDestinationKey(destinationKey);
+    }
 
     /**
      * Gets the source bucket name.
@@ -129,6 +165,52 @@ public class CopyObjectRequest extends WebServiceRequest {
      */
     public void setSourceKey(String sourceKey) {
         this.sourceKey = sourceKey;
+    }
+    
+    /**
+     * <p>
+     * Gets the version ID specifying which version of the source
+     * object to copy. If not specified, the most recent version of the source
+     * object will be copied.
+     * </p>
+     * <p>
+     * Objects created before enabling versioning or when versioning is
+     * suspended are given the default <code>null</code> version ID (see
+     * {@link OSSConstants#NULL_VERSION_ID}). Note that the
+     * <code>null</code> version ID is a valid version ID and is not the
+     * same as not having a version ID.
+     * </p>
+     *
+     * @return The version ID specifying which version of the source
+     *         object to copy.
+     *
+     * @see OSSConstants#NULL_VERSION_ID
+     * @see CopyObjectRequest#setSourceVersionId(String sourceVersionId)
+     */
+    public String getSourceVersionId() {
+        return sourceVersionId;
+    }
+
+    /**
+     * <p>
+     * Sets the optional version ID specifying which version of the source
+     * object to copy. If not specified, the most recent version of the source
+     * object will be copied.
+     * </p>
+     * <p>
+     * Objects created before enabling versioning or when versioning is
+     * suspended are given the default <code>null</code> version ID (see
+     * {@link OSSConstants#NULL_VERSION_ID}). Note that the
+     * <code>null</code> version ID is a valid version ID and is not the
+     * same as not having a version ID.
+     * </p>
+     *
+     * @param sourceVersionId
+     *            The optional version ID specifying which version of the
+     *            source object to copy.
+     */
+    public void setSourceVersionId(String sourceVersionId) {
+        this.sourceVersionId = sourceVersionId;
     }
 
     /**

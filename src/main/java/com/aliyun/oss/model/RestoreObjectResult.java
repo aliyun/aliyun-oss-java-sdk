@@ -35,7 +35,16 @@ public class RestoreObjectResult extends GenericResult {
 
     public void setStatusCode(int statusCode) {
         this.statusCode = statusCode;
+    }	
+    
+    public String getVersionId() {
+        return versionId;
     }
 
+    public void setVersionId(String versionId) {
+        this.versionId = versionId;
+    }
+	
     private int statusCode;
+    private String versionId;
 }

@@ -442,6 +442,29 @@ public class OSSClient implements OSS {
     public ObjectListing listObjects(ListObjectsRequest listObjectsRequest) throws OSSException, ClientException {
         return bucketOperation.listObjects(listObjectsRequest);
     }
+    
+	@Override
+	public VersionListing listVersions(String bucketName, String prefix) throws OSSException, ClientException {
+        return listVersions(new ListVersionsRequest(bucketName, prefix, null, null, null, null));
+	}
+
+    @Override
+    public VersionListing listVersions(String bucketName, String prefix, String keyMarker, String versionIdMarker,
+        String delimiter, Integer maxResults) throws OSSException, ClientException {
+        ListVersionsRequest request = new ListVersionsRequest()
+            .withBucketName(bucketName)
+            .withPrefix(prefix)
+            .withDelimiter(delimiter)
+            .withKeyMarker(keyMarker)
+            .withVersionIdMarker(versionIdMarker)
+            .withMaxResults(maxResults);
+        return listVersions(request);
+    }
+
+    @Override
+    public VersionListing listVersions(ListVersionsRequest listVersionsRequest) throws OSSException, ClientException {
+        return bucketOperation.listVersions(listVersionsRequest);
+    }
 
     @Override
     public PutObjectResult putObject(String bucketName, String key, InputStream input)
@@ -573,7 +596,7 @@ public class OSSClient implements OSS {
     public SelectObjectMetadata createSelectObjectMetadata(CreateSelectObjectMetadataRequest createSelectObjectMetadataRequest) throws OSSException, ClientException {
         return objectOperation.createSelectObjectMetadata(createSelectObjectMetadataRequest);
     }
-
+    
     @Override
     public ObjectMetadata getObjectMetadata(GenericRequest genericRequest) throws OSSException, ClientException {
         return objectOperation.getObjectMetadata(genericRequest);
@@ -604,11 +627,27 @@ public class OSSClient implements OSS {
     public void deleteObject(GenericRequest genericRequest) throws OSSException, ClientException {
         objectOperation.deleteObject(genericRequest);
     }
+    
+    @Override
+    public void deleteVersion(String bucketName, String key, String versionId) throws OSSException, ClientException {
+        deleteVersion(new DeleteVersionRequest(bucketName, key, versionId));
+    }
+
+    @Override
+    public void deleteVersion(DeleteVersionRequest deleteVersionRequest) throws OSSException, ClientException {
+        objectOperation.deleteVersion(deleteVersionRequest);
+    }
 
     @Override
     public DeleteObjectsResult deleteObjects(DeleteObjectsRequest deleteObjectsRequest)
             throws OSSException, ClientException {
         return objectOperation.deleteObjects(deleteObjectsRequest);
+    }
+    
+    @Override
+    public DeleteVersionsResult deleteVersions(DeleteVersionsRequest deleteVersionsRequest)
+        throws OSSException, ClientException {
+        return objectOperation.deleteVersions(deleteVersionsRequest);
     }
 
     @Override
@@ -942,6 +981,23 @@ public class OSSClient implements OSS {
     @Override
     public void deleteBucketWebsite(GenericRequest genericRequest) throws OSSException, ClientException {
         bucketOperation.deleteBucketWebsite(genericRequest);
+    }
+    
+    @Override
+    public BucketVersioningConfiguration getBucketVersioning(String bucketName) throws OSSException, ClientException {
+        return getBucketVersioning(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public BucketVersioningConfiguration getBucketVersioning(GenericRequest genericRequest)
+        throws OSSException, ClientException {
+        return bucketOperation.getBucketVersioning(genericRequest);
+    }
+
+    @Override
+    public void setBucketVersioning(SetBucketVersioningRequest setBucketVersioningRequest)
+        throws OSSException, ClientException {
+        bucketOperation.setBucketVersioning(setBucketVersioningRequest);
     }
 
     @Override
