@@ -59,7 +59,7 @@ import static com.aliyun.oss.internal.ResponseParsers.getBucketLifecycleResponse
 import static com.aliyun.oss.internal.ResponseParsers.getBucketLocationResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketLoggingResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketRefererResponseParser;
-import static com.aliyun.oss.internal.ResponseParsers.getBucketTaggingResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getTaggingResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketWebsiteResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketReplicationResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketReplicationProgressResponseParser;
@@ -815,7 +815,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
                 .setOriginalRequest(genericRequest).build();
 
-        return doOperation(request, getBucketTaggingResponseParser, bucketName, null, true);
+        return doOperation(request, getTaggingResponseParser, bucketName, null, true);
     }
 
     /**

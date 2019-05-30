@@ -21,7 +21,9 @@ package com.aliyun.oss.model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Life cycle rule class.
@@ -159,6 +161,8 @@ public class LifecycleRule {
     private AbortMultipartUpload abortMultipartUpload;
     private List<StorageTransition> storageTransitions = new ArrayList<StorageTransition>();
 
+    private Map<String, String> tags = new HashMap<String, String>();
+    
     public LifecycleRule() {
         status = RuleStatus.Unknown;
     }
@@ -331,5 +335,21 @@ public class LifecycleRule {
 
     public boolean hasStorageTransition() {
         return this.storageTransitions != null && !storageTransitions.isEmpty();
+    }
+    
+    public Map<String, String> getTags() {
+        return tags;
+    }
+
+    public void setTags(Map<String, String> tags) {
+        this.tags = tags;
+    }
+    
+    public void addTag(String key, String value) {
+        this.tags.put(key, value);
+    }
+
+    public boolean hasTags() {
+        return this.tags != null && !tags.isEmpty();
     }
 }

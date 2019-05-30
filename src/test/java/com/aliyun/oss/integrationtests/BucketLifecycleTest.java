@@ -28,7 +28,9 @@ import static com.aliyun.oss.model.SetBucketLifecycleRequest.MAX_RULE_ID_LENGTH;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -191,6 +193,152 @@ public class BucketLifecycleTest extends TestBase {
                 Assert.assertEquals(OSSErrorCode.NO_SUCH_LIFECYCLE, e.getErrorCode());
                 Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_LIFECYCLE_ERR));
             }
+        } catch (OSSException e) {
+            Assert.fail(e.getMessage());
+        } finally {
+            ossClient.deleteBucket(bucketName);
+        }
+    }
+    
+    @Test
+    public void testNormalSetBucketLifecyclWithTagging() throws ParseException {
+        final String bucketName = "normal-set-bucket-lifecycle-tagging";
+        final String ruleId0 = "delete obsoleted files";
+        final String matchPrefix0 = "obsoleted0/";
+        final String ruleId1 = "delete temporary files";
+        final String matchPrefix1 = "temporary0/";
+        final String ruleId2 = "delete obsoleted multipart files";
+        final String matchPrefix2 = "obsoleted1/";
+        final String ruleId3 = "delete temporary multipart files";
+        final String matchPrefix3 = "temporary1/";
+        final String ruleId4 = "delete temporary files(2)";
+        final String matchPrefix4 = "temporary2/";
+        final String ruleId5 = "delete temporary files(3)";
+        final String matchPrefix5 = "temporary3/";
+        
+        try {
+            ossClient.createBucket(bucketName);
+            
+            SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(bucketName);
+            
+            Map<String, String> tags = new HashMap<String, String>(1);
+            tags.put("tag1", "balabala");
+            tags.put("tag2", "haha");
+            
+            // ruleId0
+            LifecycleRule rule = new LifecycleRule(ruleId0, matchPrefix0, RuleStatus.Enabled, 3);
+            rule.setTags(tags);
+            request.AddLifecycleRule(rule);
+            
+            // ruleId1, unsupported tag
+            rule = new LifecycleRule(ruleId1, matchPrefix1, RuleStatus.Enabled, 
+                    DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z"));
+            request.AddLifecycleRule(rule);
+            
+            // ruleId2, unsupported tag
+            rule = new LifecycleRule(ruleId2, matchPrefix2, RuleStatus.Enabled, 3);
+            LifecycleRule.AbortMultipartUpload abortMultipartUpload = new LifecycleRule.AbortMultipartUpload();
+            abortMultipartUpload.setExpirationDays(3);
+            rule.setAbortMultipartUpload(abortMultipartUpload);
+            request.AddLifecycleRule(rule);
+            
+            // ruleId3, unsupported tagging
+            rule = new LifecycleRule(ruleId3, matchPrefix3, RuleStatus.Enabled, 30);
+            abortMultipartUpload = new LifecycleRule.AbortMultipartUpload();
+            abortMultipartUpload.setCreatedBeforeDate(DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z"));
+            rule.setAbortMultipartUpload(abortMultipartUpload);
+            List<StorageTransition> storageTransitions = new ArrayList<StorageTransition>();
+            StorageTransition storageTransition = new StorageTransition();
+            storageTransition.setStorageClass(StorageClass.IA);
+            storageTransition.setExpirationDays(10);
+            storageTransitions.add(storageTransition);
+            storageTransition = new LifecycleRule.StorageTransition();
+            storageTransition.setStorageClass(StorageClass.Archive);
+            storageTransition.setExpirationDays(20);
+            storageTransitions.add(storageTransition);
+            rule.setStorageTransition(storageTransitions);
+            request.AddLifecycleRule(rule);
+            
+            // ruleId4
+            rule = new LifecycleRule(ruleId4, matchPrefix4, RuleStatus.Enabled);
+            rule.setCreatedBeforeDate(DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z"));
+            rule.setTags(tags);
+            request.AddLifecycleRule(rule);
+            
+            // ruleId5
+            rule = new LifecycleRule(ruleId5, matchPrefix5, RuleStatus.Enabled);
+            storageTransition = new LifecycleRule.StorageTransition();
+            storageTransition.setStorageClass(StorageClass.Archive);
+            storageTransition.setCreatedBeforeDate(DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z"));
+            storageTransitions = new ArrayList<StorageTransition>();
+            storageTransitions.add(storageTransition);
+            rule.setStorageTransition(storageTransitions);
+            rule.setTags(tags);
+            request.AddLifecycleRule(rule);
+            
+            ossClient.setBucketLifecycle(request);
+            
+            List<LifecycleRule> rules = ossClient.getBucketLifecycle(bucketName);
+            Assert.assertEquals(rules.size(), 6);
+            
+            LifecycleRule r0 = rules.get(0);
+            Assert.assertEquals(r0.getId(), ruleId0);
+            Assert.assertEquals(r0.getPrefix(), matchPrefix0);
+            Assert.assertEquals(r0.getStatus(), RuleStatus.Enabled);
+            Assert.assertEquals(r0.getExpirationDays(), 3);
+            Assert.assertTrue(r0.getAbortMultipartUpload() == null);
+            Assert.assertEquals(r0.getTags().size(), 2);
+            
+            LifecycleRule r1 = rules.get(1);
+            Assert.assertEquals(r1.getId(), ruleId1);
+            Assert.assertEquals(r1.getPrefix(), matchPrefix1);
+            Assert.assertEquals(r1.getStatus(), RuleStatus.Enabled);
+            Assert.assertEquals(DateUtil.formatIso8601Date(r1.getExpirationTime()), "2022-10-12T00:00:00.000Z");
+            Assert.assertTrue(r1.getAbortMultipartUpload() == null);
+            
+            LifecycleRule r2 = rules.get(2);
+            Assert.assertEquals(r2.getId(), ruleId2);
+            Assert.assertEquals(r2.getPrefix(), matchPrefix2);
+            Assert.assertEquals(r2.getStatus(), RuleStatus.Enabled);
+            Assert.assertEquals(r2.getExpirationDays(), 3);
+            Assert.assertNotNull(r2.getAbortMultipartUpload());
+            Assert.assertEquals(r2.getAbortMultipartUpload().getExpirationDays(), 3);
+            
+            LifecycleRule r3 = rules.get(3);
+            Assert.assertEquals(r3.getId(), ruleId3);
+            Assert.assertEquals(r3.getPrefix(), matchPrefix3);
+            Assert.assertEquals(r3.getStatus(), RuleStatus.Enabled);
+            Assert.assertEquals(r3.getExpirationDays(), 30);
+            Assert.assertNotNull(r3.getAbortMultipartUpload());
+            Assert.assertEquals(DateUtil.formatIso8601Date(r3.getAbortMultipartUpload().getCreatedBeforeDate()), 
+                    "2022-10-12T00:00:00.000Z");
+            Assert.assertTrue(r3.hasStorageTransition());
+            Assert.assertTrue(r3.getStorageTransition().get(0).getExpirationDays() == 10);
+            Assert.assertEquals(r3.getStorageTransition().get(0).getStorageClass(), StorageClass.IA);
+            Assert.assertTrue(r3.getStorageTransition().get(1).getExpirationDays() == 20);
+            Assert.assertEquals(r3.getStorageTransition().get(1).getStorageClass(), StorageClass.Archive);
+            
+            LifecycleRule r4 = rules.get(4);
+            Assert.assertEquals(r4.getId(), ruleId4);
+            Assert.assertEquals(r4.getPrefix(), matchPrefix4);
+            Assert.assertEquals(r4.getStatus(), RuleStatus.Enabled);
+            Assert.assertEquals(DateUtil.formatIso8601Date(r4.getCreatedBeforeDate()), "2022-10-12T00:00:00.000Z");
+            Assert.assertTrue(r4.getAbortMultipartUpload() == null);
+            Assert.assertEquals(r4.getTags().size(), 2);
+            
+            LifecycleRule r5 = rules.get(5);
+            Assert.assertEquals(r5.getId(), ruleId5);
+            Assert.assertEquals(r5.getPrefix(), matchPrefix5);
+            Assert.assertEquals(r5.getStatus(), RuleStatus.Enabled);
+            Assert.assertFalse(r5.hasCreatedBeforeDate());
+            Assert.assertFalse(r5.hasExpirationTime());
+            Assert.assertFalse(r5.hasExpirationDays());
+            Assert.assertFalse(r5.hasAbortMultipartUpload());
+            Assert.assertTrue(r5.hasStorageTransition());
+            Assert.assertEquals(DateUtil.formatIso8601Date(r5.getStorageTransition().get(0).getCreatedBeforeDate()), 
+                    "2022-10-12T00:00:00.000Z");
+            Assert.assertEquals(r5.getStorageTransition().get(0).getStorageClass(), StorageClass.Archive);
+            Assert.assertEquals(r5.getTags().size(), 2);
         } catch (OSSException e) {
             Assert.fail(e.getMessage());
         } finally {

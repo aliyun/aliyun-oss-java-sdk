@@ -28,6 +28,8 @@ import java.util.Map;
 
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.internal.OSSHeaders;
+import com.aliyun.oss.internal.SignV2Utils;
+import org.omg.CORBA.portable.ValueBase;
 
 /**
  * OSS Object's metadata. It has the user's custom metadata, as well as some
@@ -402,4 +404,27 @@ public class ObjectMetadata {
         }
         return true;
     }
+    
+    public void setObjectTagging(Map<String, String> tags) {
+        if (tags != null && !tags.isEmpty()) {
+            StringBuilder builder = new StringBuilder();
+            for (Map.Entry<String, String> tag : tags.entrySet()) {
+                String key = tag.getKey();
+                String value = tag.getValue();
+                
+                if (key == null || key.isEmpty() || value == null || value.isEmpty()) {
+                    throw new IllegalArgumentException();
+                }
+                
+                if (builder.length() > 0) {
+                    builder.append("&");
+                }
+                builder.append(SignV2Utils.uriEncoding(key));
+                builder.append("=");
+                builder.append(SignV2Utils.uriEncoding(value));
+            }
+            metadata.put(OSSHeaders.OSS_TAGGING, builder.toString());
+        }
+    }
+    
 }
