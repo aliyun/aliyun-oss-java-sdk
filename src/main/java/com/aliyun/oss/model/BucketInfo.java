@@ -54,8 +54,17 @@ public class BucketInfo extends GenericResult {
     public void setCannedACL(CannedAccessControlList cannedACL) {
         this.cannedACL = cannedACL;
     }
+    
+    public ServerSideEncryptionConfiguration getServerSideEncryptionConfiguration() {
+        return sseConfig;
+    }
+
+    public void setServerSideEncryptionConfiguration(ServerSideEncryptionConfiguration sseConfig) {
+        this.sseConfig = sseConfig;
+    }
 
     private Bucket bucket;
     private Set<Grant> grants = new HashSet<Grant>();
     private CannedAccessControlList cannedACL;
+    private ServerSideEncryptionConfiguration sseConfig;
 }

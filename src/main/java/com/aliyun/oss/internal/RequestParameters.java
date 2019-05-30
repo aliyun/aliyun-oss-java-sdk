@@ -57,6 +57,7 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_SYMLINK = "symlink";
     public static final String SUBRESOURCE_STAT = "stat";
     public static final String SUBRESOURCE_RESTORE = "restore";
+    public static final String SUBRESOURCE_ENCRYPTION = "encryption";
 
     public static final String SUBRESOURCE_UDF = "udf";
     public static final String SUBRESOURCE_UDF_NAME = "udfName";

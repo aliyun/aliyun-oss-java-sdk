@@ -1151,6 +1151,34 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public void setBucketEncryption(SetBucketEncryptionRequest setBucketEncryptionRequest)
+        throws OSSException, ClientException {
+        this.bucketOperation.setBucketEncryption(setBucketEncryptionRequest);
+    }
+
+    @Override
+    public ServerSideEncryptionConfiguration getBucketEncryption(String bucketName)
+        throws OSSException, ClientException {
+        return this.getBucketEncryption(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public ServerSideEncryptionConfiguration getBucketEncryption(GenericRequest genericRequest)
+        throws OSSException, ClientException {
+        return this.bucketOperation.getBucketEncryption(genericRequest);
+    }
+
+    @Override
+    public void deleteBucketEncryption(String bucketName) throws OSSException, ClientException {
+        this.deleteBucketEncryption(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public void deleteBucketEncryption(GenericRequest genericRequest) throws OSSException, ClientException {
+        this.bucketOperation.deleteBucketEncryption(genericRequest);
+    }
+    
+    @Override
     public UploadFileResult uploadFile(UploadFileRequest uploadFileRequest) throws Throwable {
         return this.uploadOperation.uploadFile(uploadFileRequest);
     }
