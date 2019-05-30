@@ -50,6 +50,7 @@ public interface OSSHeaders extends HttpHeaders {
     static final String COPY_OBJECT_SOURCE_IF_UNMODIFIED_SINCE = "x-oss-copy-source-if-unmodified-since";
     static final String COPY_OBJECT_SOURCE_IF_MODIFIED_SINCE = "x-oss-copy-source-if-modified-since";
     static final String COPY_OBJECT_METADATA_DIRECTIVE = "x-oss-metadata-directive";
+    static final String COPY_OBJECT_TAGGING_DIRECTIVE = "x-oss-tagging-directive";
 
     static final String OSS_HEADER_REQUEST_ID = "x-oss-request-id";
 
@@ -88,5 +89,7 @@ public interface OSSHeaders extends HttpHeaders {
     static final String OSS_SELECT_CSV_SPLITS = OSS_SELECT_PREFIX + "-csv-splits";
     static final String OSS_SELECT_INPUT_LINE_RANGE = OSS_SELECT_PREFIX + "-line-range";
     static final String OSS_SELECT_INPUT_SPLIT_RANGE = OSS_SELECT_PREFIX + "-split-range";
-
+    
+    static final String OSS_TAGGING = "x-oss-tagging";
+    
 }

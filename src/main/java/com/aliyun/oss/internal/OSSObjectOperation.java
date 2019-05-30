@@ -51,9 +51,11 @@ import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_ACL;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_DELETE;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_OBJECTMETA;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_SYMLINK;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_TAGGING;
 import static com.aliyun.oss.internal.ResponseParsers.appendObjectResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.copyObjectResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.deleteObjectsResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getTaggingResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getObjectAclResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getObjectMetadataResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.putObjectReponseParser;
@@ -638,6 +640,70 @@ public class OSSObjectOperation extends OSSOperation {
 
         return doOperation(request, ResponseParsers.restoreObjectResponseParser, bucketName, key);
     }
+    
+    public void setObjectTagging(SetObjectTaggingRequest setObjectTaggingRequest) throws OSSException, ClientException {
+        assertParameterNotNull(setObjectTaggingRequest, "setBucketTaggingRequest");
+
+        String bucketName = setObjectTaggingRequest.getBucketName();
+        String key = setObjectTaggingRequest.getKey();
+        
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        assertParameterNotNull(key, "key");
+        ensureObjectKeyValid(key);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_TAGGING, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setKey(key).setParameters(params)
+                .setInputStreamWithLength(setBucketTaggingRequestMarshaller.marshall(setObjectTaggingRequest))
+                .setOriginalRequest(setObjectTaggingRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, key);
+    }
+
+    public TagSet getObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        String key = genericRequest.getKey();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        assertParameterNotNull(key, "key");
+        ensureBucketNameValid(bucketName);
+        ensureObjectKeyValid(key);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_TAGGING, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(key).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
+        
+        return doOperation(request, getTaggingResponseParser, bucketName, key, true);
+    }
+
+    public void deleteObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        String key = genericRequest.getKey();
+        
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        assertParameterNotNull(key, "key");
+        ensureObjectKeyValid(key);
+        
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_TAGGING, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(key).setParameters(params)
+            .setOriginalRequest(genericRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, key);
+    }
 
     public OSSSymlink getSymlink(GenericRequest genericRequest) throws OSSException, ClientException {
         assertParameterNotNull(genericRequest, "genericRequest");
@@ -945,6 +1011,9 @@ public class OSSObjectOperation extends OSSOperation {
         ObjectMetadata newObjectMetadata = copyObjectRequest.getNewObjectMetadata();
         if (newObjectMetadata != null) {
             headers.put(OSSHeaders.COPY_OBJECT_METADATA_DIRECTIVE, MetadataDirective.REPLACE.toString());
+            if (newObjectMetadata.getRawMetadata().get(OSSHeaders.OSS_TAGGING) != null) {
+            	headers.put(OSSHeaders.COPY_OBJECT_TAGGING_DIRECTIVE, MetadataDirective.REPLACE.toString());
+            }
             populateRequestMetadata(headers, newObjectMetadata);
         }
 

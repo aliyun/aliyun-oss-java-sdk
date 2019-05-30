@@ -131,7 +131,7 @@ public final class ResponseParsers {
     public static final GetBucketImageResponseParser getBucketImageResponseParser = new GetBucketImageResponseParser();
     public static final GetImageStyleResponseParser getImageStyleResponseParser = new GetImageStyleResponseParser();
     public static final GetBucketImageProcessConfResponseParser getBucketImageProcessConfResponseParser = new GetBucketImageProcessConfResponseParser();
-    public static final GetBucketTaggingResponseParser getBucketTaggingResponseParser = new GetBucketTaggingResponseParser();
+    public static final GetTaggingResponseParser getTaggingResponseParser = new GetTaggingResponseParser();
     public static final GetBucketReplicationResponseParser getBucketReplicationResponseParser = new GetBucketReplicationResponseParser();
     public static final GetBucketReplicationProgressResponseParser getBucketReplicationProgressResponseParser = new GetBucketReplicationProgressResponseParser();
     public static final GetBucketReplicationLocationResponseParser getBucketReplicationLocationResponseParser = new GetBucketReplicationLocationResponseParser();
@@ -488,7 +488,7 @@ public final class ResponseParsers {
 
     }
 
-    public static final class GetBucketTaggingResponseParser implements ResponseParser<TagSet> {
+    public static final class GetTaggingResponseParser implements ResponseParser<TagSet> {
 
         @Override
         public TagSet parse(ResponseMessage response) throws ResponseParseException {
@@ -2499,6 +2499,23 @@ public final class ResponseParsers {
 
                 if (ruleElem.getChild("Prefix") != null) {
                     rule.setPrefix(ruleElem.getChildText("Prefix"));
+                }
+
+                List<Element> tagElems = ruleElem.getChildren("Tag");
+                if (tagElems != null) {
+                    for (Element tagElem : tagElems) {
+                        String key = null;
+                        String value = null;
+                        
+                        if (tagElem.getChild("Key") != null) {
+                            key = tagElem.getChildText("Key");
+                        }
+                        if (tagElem.getChild("Value") != null) {
+                            value = tagElem.getChildText("Value");
+                        }
+                        
+                        rule.addTag(key, value);
+                    }
                 }
 
                 if (ruleElem.getChild("Status") != null) {

@@ -666,6 +666,42 @@ public class OSSClient implements OSS {
     public RestoreObjectResult restoreObject(GenericRequest genericRequest) throws OSSException, ClientException {
         return objectOperation.restoreObject(genericRequest);
     }
+    
+    @Override
+    public void setObjectTagging(String bucketName, String key, Map<String, String> tags)
+        throws OSSException, ClientException {
+        this.setObjectTagging(new SetObjectTaggingRequest(bucketName, key, tags));
+    }
+
+    @Override
+    public void setObjectTagging(String bucketName, String key, TagSet tagSet) throws OSSException, ClientException {
+        this.setObjectTagging(new SetObjectTaggingRequest(bucketName, key, tagSet));
+    }
+
+    @Override
+    public void setObjectTagging(SetObjectTaggingRequest setObjectTaggingRequest) throws OSSException, ClientException {
+        objectOperation.setObjectTagging(setObjectTaggingRequest);
+    }
+
+    @Override
+    public TagSet getObjectTagging(String bucketName, String key) throws OSSException, ClientException {
+        return this.getObjectTagging(new GenericRequest(bucketName, key));
+    }
+
+    @Override
+    public TagSet getObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException {
+        return objectOperation.getObjectTagging(genericRequest);
+    }
+
+    @Override
+    public void deleteObjectTagging(String bucketName, String key) throws OSSException, ClientException {
+        this.deleteObjectTagging(new GenericRequest(bucketName, key));
+    }
+
+    @Override
+    public void deleteObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException {
+        objectOperation.deleteObjectTagging(genericRequest);
+    }
 
     @Override
     public URL generatePresignedUrl(String bucketName, String key, Date expiration) throws ClientException {
