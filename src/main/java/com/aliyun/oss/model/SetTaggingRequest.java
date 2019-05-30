@@ -21,22 +21,39 @@ package com.aliyun.oss.model;
 
 import java.util.Map;
 
-public class SetBucketTaggingRequest extends SetTaggingRequest {
+public class SetTaggingRequest extends GenericRequest {
 
-    public SetBucketTaggingRequest(String bucketName) {
-        super(bucketName, null);
+    protected TagSet tagSet = null;
+
+    public SetTaggingRequest(String bucketName, String key) {
+        super(bucketName, key);
+        this.tagSet = new TagSet();
     }
 
-    public SetBucketTaggingRequest(String bucketName, Map<String, String> tags) {
-        super(bucketName, null, tags);
+    public SetTaggingRequest(String bucketName, String key, Map<String, String> tags) {
+        super(bucketName, key);
+        this.tagSet = new TagSet(tags);
     }
 
-    public SetBucketTaggingRequest(String bucketName, TagSet tagSet) {
-        super(bucketName, null, tagSet);
+    public SetTaggingRequest(String bucketName, String key, TagSet tagSet) {
+        super(bucketName, key);
+        this.tagSet = tagSet;
     }
 
-    public SetBucketTaggingRequest withTagSet(TagSet tagSet) {
-        setTagSet(tagSet);
-        return this;
+    public void setTag(String key, String value) {
+        this.tagSet.setTag(key, value);
     }
+
+    public String getTag(String key) {
+        return this.tagSet.getTag(key);
+    }
+
+    public TagSet getTagSet() {
+        return tagSet;
+    }
+
+    public void setTagSet(TagSet tagSet) {
+        this.tagSet = tagSet;
+    }
+
 }

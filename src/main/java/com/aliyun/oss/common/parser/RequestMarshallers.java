@@ -362,6 +362,15 @@ public final class RequestMarshallers {
                 } else {
                     xmlBody.append("<Prefix></Prefix>");
                 }
+                
+                if (rule.hasTags()) {
+                    for (Map.Entry<String, String> tag : rule.getTags().entrySet()) {
+                        xmlBody.append("<Tag>");
+                        xmlBody.append("<Key>" + tag.getKey() + "</Key>");
+                        xmlBody.append("<Value>" + tag.getValue() + "</Value>");
+                        xmlBody.append("</Tag>");
+                    }
+                }
 
                 if (rule.getStatus() == RuleStatus.Enabled) {
                     xmlBody.append("<Status>Enabled</Status>");
@@ -640,10 +649,10 @@ public final class RequestMarshallers {
 
     }
 
-    public static final class SetBucketTaggingRequestMarshaller implements RequestMarshaller<SetBucketTaggingRequest> {
+    public static final class SetBucketTaggingRequestMarshaller implements RequestMarshaller<SetTaggingRequest> {
 
         @Override
-        public FixedLengthInputStream marshall(SetBucketTaggingRequest request) {
+        public FixedLengthInputStream marshall(SetTaggingRequest request) {
             StringBuffer xmlBody = new StringBuffer();
             TagSet tagSet = request.getTagSet();
             xmlBody.append("<Tagging><TagSet>");

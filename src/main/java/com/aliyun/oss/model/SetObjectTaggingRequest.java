@@ -21,21 +21,21 @@ package com.aliyun.oss.model;
 
 import java.util.Map;
 
-public class SetBucketTaggingRequest extends SetTaggingRequest {
+public class SetObjectTaggingRequest extends SetTaggingRequest {
 
-    public SetBucketTaggingRequest(String bucketName) {
-        super(bucketName, null);
+    public SetObjectTaggingRequest(String bucketName, String key) {
+        super(bucketName, key);
     }
 
-    public SetBucketTaggingRequest(String bucketName, Map<String, String> tags) {
-        super(bucketName, null, tags);
+    public SetObjectTaggingRequest(String bucketName, String key, Map<String, String> tags) {
+        super(bucketName, key, tags);
     }
 
-    public SetBucketTaggingRequest(String bucketName, TagSet tagSet) {
-        super(bucketName, null, tagSet);
+    public SetObjectTaggingRequest(String bucketName, String key, TagSet tagSet) {
+        super(bucketName, key, tagSet);
     }
 
-    public SetBucketTaggingRequest withTagSet(TagSet tagSet) {
+    public SetObjectTaggingRequest withTagSet(TagSet tagSet) {
         setTagSet(tagSet);
         return this;
     }

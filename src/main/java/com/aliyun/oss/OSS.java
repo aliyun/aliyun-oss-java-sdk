@@ -906,6 +906,83 @@ public interface OSS {
      */
     public RestoreObjectResult restoreObject(GenericRequest genericRequest) throws OSSException, ClientException;
 
+
+    /**
+     * Sets the tags on the OSS object.
+     * 
+     * @param bucketName
+     *            Bucket name.
+     * @param key
+     *            Object name.
+     * @param tags
+     *            The dictionary that contains the tags in the form of &lt;key,
+     *            value&gt; pairs.
+     */
+    public void setObjectTagging(String bucketName, String key, Map<String, String> tags) throws OSSException, ClientException;
+
+    /**
+     * Sets the tags on the OSS object.
+     * 
+     * @param bucketName
+     *            Bucket name.
+     * @param key
+     *            Object name.
+     * @param tagSet
+     *            {@link TagSet} instance that has the tags in the form of &lt;key,
+     *            value&gt; pairs.
+     */
+    public void setObjectTagging(String bucketName, String key, TagSet tagSet) throws OSSException, ClientException;
+
+    /**
+     * Sets the tags on the OSS object.
+     * 
+     * @param setObjectTaggingRequest
+     *            {@link SetObjectTaggingRequest} instance that has object
+     *            information as well as tagging information.
+     */
+    public void setObjectTagging(SetObjectTaggingRequest setObjectTaggingRequest) throws OSSException, ClientException;
+
+    /**
+     * Gets all tags of the OSS object.
+     * 
+     * @param bucketName
+     *            Bucket name.
+     * @param key
+     *            Object name.
+     * @return A {@link TagSet} instance. If there's no tag, the TagSet object
+     *         with empty tag information is returned.
+     */
+    public TagSet getObjectTagging(String bucketName, String key) throws OSSException, ClientException;
+
+    /**
+     * Gets all tags of the OSS object.
+     * 
+     * @param genericRequest
+     *            A {@link GenericRequest} instance that specifies the bucket
+     *            name and object name.
+     * @return A {@link TagSet} instance.
+     */
+    public TagSet getObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException;
+
+    /**
+     * Clears all the tags of the OSS object.
+     * 
+     * @param bucketName
+     *            Bucket name.
+     * @param key
+     *            Object name.
+     */
+    public void deleteObjectTagging(String bucketName, String key) throws OSSException, ClientException;
+
+    /**
+     *  Clears all the tags of the OSS object.
+     * 
+     * @param genericRequest
+     *            A {@link GenericRequest} instance that specifies the bucket
+     *            name and object name.
+     */
+    public void deleteObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException;
+
     /**
      * Generates a signed url for accessing the {@link OSSObject} with HTTP GET
      * method.
