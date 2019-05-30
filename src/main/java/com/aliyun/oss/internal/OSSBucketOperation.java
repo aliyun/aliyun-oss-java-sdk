@@ -33,6 +33,7 @@ import static com.aliyun.oss.common.parser.RequestMarshallers.addBucketCnameRequ
 import static com.aliyun.oss.common.parser.RequestMarshallers.deleteBucketCnameRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketQosRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.bucketImageProcessConfMarshaller;
+import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketVersioningRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketEncryptionRequestMarshaller;
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
@@ -53,8 +54,10 @@ import static com.aliyun.oss.internal.ResponseParsers.getBucketCnameResponsePars
 import static com.aliyun.oss.internal.ResponseParsers.getBucketInfoResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketStatResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketQosResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getBucketVersioningResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.listBucketResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.listObjectsReponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.listVersionsReponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketImageResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getImageStyleResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.listImageStyleResponseParser;
@@ -91,6 +94,7 @@ import com.aliyun.oss.model.BucketProcess;
 import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.BucketReplicationProgress;
 import com.aliyun.oss.model.BucketStat;
+import com.aliyun.oss.model.BucketVersioningConfiguration;
 import com.aliyun.oss.model.BucketWebsiteResult;
 import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.CnameConfiguration;
@@ -108,6 +112,7 @@ import com.aliyun.oss.model.GetImageStyleResult;
 import com.aliyun.oss.model.LifecycleRule;
 import com.aliyun.oss.model.ListBucketsRequest;
 import com.aliyun.oss.model.ListObjectsRequest;
+import com.aliyun.oss.model.ListVersionsRequest;
 import com.aliyun.oss.model.ObjectListing;
 import com.aliyun.oss.model.PutBucketImageRequest;
 import com.aliyun.oss.model.PutImageStyleRequest;
@@ -120,10 +125,12 @@ import com.aliyun.oss.model.SetBucketRefererRequest;
 import com.aliyun.oss.model.AddBucketReplicationRequest;
 import com.aliyun.oss.model.SetBucketStorageCapacityRequest;
 import com.aliyun.oss.model.SetBucketTaggingRequest;
+import com.aliyun.oss.model.SetBucketVersioningRequest;
 import com.aliyun.oss.model.SetBucketWebsiteRequest;
 import com.aliyun.oss.model.TagSet;
 import com.aliyun.oss.model.Style;
 import com.aliyun.oss.model.UserQos;
+import com.aliyun.oss.model.VersionListing;
 import org.apache.http.HttpStatus;
 
 /**
@@ -207,6 +214,11 @@ public class OSSBucketOperation extends OSSOperation {
         }
         if (listBucketRequest.getBid() != null) {
             params.put(BID, listBucketRequest.getBid());
+        }
+
+        if (listBucketRequest.getTagKey() != null && listBucketRequest.getTagValue() != null) {
+            params.put(TAG_KEY, listBucketRequest.getTagKey());
+            params.put(TAG_VALUE, listBucketRequest.getTagValue());
         }
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
@@ -397,6 +409,27 @@ public class OSSBucketOperation extends OSSOperation {
                 .setOriginalRequest(listObjectsRequest).build();
 
         return doOperation(request, listObjectsReponseParser, bucketName, null, true);
+    }
+    
+    /**
+     * List versions under the specified bucket.
+     */
+    public VersionListing listVersions(ListVersionsRequest listVersionsRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(listVersionsRequest, "listVersionsRequest");
+
+        String bucketName = listVersionsRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new LinkedHashMap<String, String>();
+        populateListVersionsRequestParameters(listVersionsRequest, params);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+            .setOriginalRequest(listVersionsRequest).build();
+
+        return doOperation(request, listVersionsReponseParser, bucketName, null, true);
     }
 
     /**
@@ -828,6 +861,55 @@ public class OSSBucketOperation extends OSSOperation {
     }
 
     /**
+     * Get bucket versioning.
+     */
+    public BucketVersioningConfiguration getBucketVersioning(GenericRequest genericRequest)
+        throws OSSException, ClientException {
+
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_VRESIONING, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+            .setOriginalRequest(genericRequest).build();
+
+        return doOperation(request, getBucketVersioningResponseParser, bucketName, null, true);
+    }
+
+    /**
+     * Set bucket versioning.
+     */
+    public void setBucketVersioning(SetBucketVersioningRequest setBucketVersioningRequest)
+        throws OSSException, ClientException {
+        assertParameterNotNull(setBucketVersioningRequest, "setBucketVersioningRequest");
+        assertParameterNotNull(setBucketVersioningRequest.getVersioningConfiguration(), "versioningConfiguration");
+
+        String bucketName = setBucketVersioningRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_VRESIONING, null);
+
+        byte[] rawContent = setBucketVersioningRequestMarshaller.marshall(setBucketVersioningRequest);
+        Map<String, String> headers = new HashMap<String, String>();
+        addRequestRequiredHeaders(headers, rawContent);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params).setHeaders(headers)
+            .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+            .setOriginalRequest(setBucketVersioningRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    /**
      * Add bucket replication.
      */
     public void addBucketReplication(AddBucketReplicationRequest addBucketReplicationRequest)
@@ -1090,7 +1172,6 @@ public class OSSBucketOperation extends OSSOperation {
                 .setOriginalRequest(setBucketStorageCapacityRequest).build();
 
         doOperation(request, emptyResponseParser, bucketName, null);
-
     }
 
     public UserQos getBucketStorageCapacity(GenericRequest genericRequest) throws OSSException, ClientException {
@@ -1203,6 +1284,36 @@ public class OSSBucketOperation extends OSSOperation {
 
         if (listObjectsRequest.getEncodingType() != null) {
             params.put(ENCODING_TYPE, listObjectsRequest.getEncodingType());
+        }
+    }
+    
+    private static void populateListVersionsRequestParameters(ListVersionsRequest listVersionsRequest,
+        Map<String, String> params) {
+
+        params.put(SUBRESOURCE_VRESIONS, null);
+
+        if (listVersionsRequest.getPrefix() != null) {
+            params.put(PREFIX, listVersionsRequest.getPrefix());
+        }
+
+        if (listVersionsRequest.getKeyMarker() != null) {
+            params.put(KEY_MARKER, listVersionsRequest.getKeyMarker());
+        }
+
+        if (listVersionsRequest.getDelimiter() != null) {
+            params.put(DELIMITER, listVersionsRequest.getDelimiter());
+        }
+
+        if (listVersionsRequest.getMaxResults() != null) {
+            params.put(MAX_KEYS, Integer.toString(listVersionsRequest.getMaxResults()));
+        }
+
+        if (listVersionsRequest.getVersionIdMarker() != null) {
+            params.put(VERSION_ID_MARKER, listVersionsRequest.getVersionIdMarker());
+        }
+
+        if (listVersionsRequest.getEncodingType() != null) {
+            params.put(ENCODING_TYPE, listVersionsRequest.getEncodingType());
         }
     }
 

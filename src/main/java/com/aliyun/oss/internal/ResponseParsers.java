@@ -43,8 +43,10 @@ import com.aliyun.oss.common.parser.ResponseParseException;
 import com.aliyun.oss.common.parser.ResponseParser;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.HttpUtil;
+import com.aliyun.oss.common.utils.StringUtils;
 import com.aliyun.oss.model.AccessControlList;
 import com.aliyun.oss.model.AddBucketReplicationRequest.ReplicationAction;
+import com.aliyun.oss.model.DeleteVersionsResult.DeletedVersion;
 import com.aliyun.oss.model.AppendObjectResult;
 import com.aliyun.oss.model.Bucket;
 import com.aliyun.oss.model.BucketInfo;
@@ -55,6 +57,7 @@ import com.aliyun.oss.model.BucketProcess;
 import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.BucketReplicationProgress;
 import com.aliyun.oss.model.BucketStat;
+import com.aliyun.oss.model.BucketVersioningConfiguration;
 import com.aliyun.oss.model.BucketWebsiteResult;
 import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.CannedUdfAcl;
@@ -63,6 +66,7 @@ import com.aliyun.oss.model.CompleteMultipartUploadResult;
 import com.aliyun.oss.model.CopyObjectResult;
 import com.aliyun.oss.model.CreateLiveChannelResult;
 import com.aliyun.oss.model.DeleteObjectsResult;
+import com.aliyun.oss.model.DeleteVersionsResult;
 import com.aliyun.oss.model.GenericResult;
 import com.aliyun.oss.model.GetBucketImageResult;
 import com.aliyun.oss.model.ImageProcess;
@@ -76,6 +80,7 @@ import com.aliyun.oss.model.LiveChannelStat.VideoStat;
 import com.aliyun.oss.model.LiveChannelStatus;
 import com.aliyun.oss.model.LiveChannelTarget;
 import com.aliyun.oss.model.OSSSymlink;
+import com.aliyun.oss.model.OSSVersionSummary;
 import com.aliyun.oss.model.ReplicationRule;
 import com.aliyun.oss.model.GetImageStyleResult;
 import com.aliyun.oss.model.GroupGrantee;
@@ -114,6 +119,7 @@ import com.aliyun.oss.model.UdfImageInfo;
 import com.aliyun.oss.model.UdfInfo;
 import com.aliyun.oss.model.UploadPartCopyResult;
 import com.aliyun.oss.model.UserQos;
+import com.aliyun.oss.model.VersionListing;
 
 /*
  * A collection of parsers that parse HTTP reponses into corresponding human-readable results.
@@ -141,15 +147,18 @@ public final class ResponseParsers {
     public static final GetBucketInfoResponseParser getBucketInfoResponseParser = new GetBucketInfoResponseParser();
     public static final GetBucketStatResponseParser getBucketStatResponseParser = new GetBucketStatResponseParser();
     public static final GetBucketQosResponseParser getBucketQosResponseParser = new GetBucketQosResponseParser();
+    public static final GetBucketVersioningResponseParser getBucketVersioningResponseParser = new GetBucketVersioningResponseParser();
     public static final GetBucketEncryptionResponseParser getBucketEncryptionResponseParser = new GetBucketEncryptionResponseParser();
-
+    
     public static final ListObjectsReponseParser listObjectsReponseParser = new ListObjectsReponseParser();
+    public static final ListVersionsReponseParser listVersionsReponseParser = new ListVersionsReponseParser();
     public static final PutObjectReponseParser putObjectReponseParser = new PutObjectReponseParser();
     public static final PutObjectProcessReponseParser putObjectProcessReponseParser = new PutObjectProcessReponseParser();
     public static final AppendObjectResponseParser appendObjectResponseParser = new AppendObjectResponseParser();
     public static final GetObjectMetadataResponseParser getObjectMetadataResponseParser = new GetObjectMetadataResponseParser();
     public static final CopyObjectResponseParser copyObjectResponseParser = new CopyObjectResponseParser();
     public static final DeleteObjectsResponseParser deleteObjectsResponseParser = new DeleteObjectsResponseParser();
+    public static final DeleteVersionsResponseParser deleteVersionsResponseParser = new DeleteVersionsResponseParser();
     public static final GetObjectAclResponseParser getObjectAclResponseParser = new GetObjectAclResponseParser();
     public static final GetSimplifiedObjectMetaResponseParser getSimplifiedObjectMetaResponseParser = new GetSimplifiedObjectMetaResponseParser();
     public static final RestoreObjectResponseParser restoreObjectResponseParser = new RestoreObjectResponseParser();
@@ -407,6 +416,21 @@ public final class ResponseParsers {
 
     }
     
+    public static final class GetBucketVersioningResponseParser
+        implements ResponseParser<BucketVersioningConfiguration> {
+
+        @Override
+        public BucketVersioningConfiguration parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                BucketVersioningConfiguration result = parseGetBucketVersioning(response.getContent());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
+
     public static final class GetBucketEncryptionResponseParser
     implements ResponseParser<ServerSideEncryptionConfiguration> {
     	
@@ -577,6 +601,21 @@ public final class ResponseParsers {
         }
 
     }
+    
+    public static final class ListVersionsReponseParser implements ResponseParser<VersionListing> {
+
+        @Override
+        public VersionListing parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                VersionListing result = parseListVersions(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
 
     public static final class PutObjectReponseParser implements ResponseParser<PutObjectResult> {
 
@@ -585,6 +624,7 @@ public final class ResponseParsers {
             PutObjectResult result = new PutObjectResult();
             try {
                 result.setETag(trimQuotes(response.getHeaders().get(OSSHeaders.ETAG)));
+                result.setVersionId(response.getHeaders().get(OSSHeaders.OSS_HEADER_VERSION_ID));
                 result.setRequestId(response.getRequestId());
                 setCRC(result, response);
                 return result;
@@ -602,6 +642,7 @@ public final class ResponseParsers {
             PutObjectResult result = new PutObjectResult();
             result.setRequestId(response.getRequestId());
             result.setETag(trimQuotes(response.getHeaders().get(OSSHeaders.ETAG)));
+            result.setVersionId(response.getHeaders().get(OSSHeaders.OSS_HEADER_VERSION_ID));
             result.setCallbackResponseBody(response.getContent());
             result.setResponse(response);
             return result;
@@ -692,6 +733,7 @@ public final class ResponseParsers {
             try {
                 ObjectAcl result = parseGetObjectAcl(response.getContent());
                 result.setRequestId(response.getRequestId());
+                result.setVersionId(response.getHeaders().get(OSSHeaders.OSS_HEADER_VERSION_ID));
                 return result;
             } finally {
                 safeCloseResponse(response);
@@ -720,6 +762,7 @@ public final class ResponseParsers {
             try {
                 RestoreObjectResult result = new RestoreObjectResult(response.getStatusCode());
                 result.setRequestId(response.getRequestId());
+                result.setVersionId(response.getHeaders().get(OSSHeaders.OSS_HEADER_VERSION_ID));
                 return result;
             } finally {
                 safeCloseResponse(response);
@@ -771,6 +814,7 @@ public final class ResponseParsers {
         public CopyObjectResult parse(ResponseMessage response) throws ResponseParseException {
             try {
                 CopyObjectResult result = parseCopyObjectResult(response.getContent());
+                result.setVersionId(response.getHeaders().get(OSSHeaders.OSS_HEADER_VERSION_ID));
                 result.setRequestId(response.getRequestId());
                 return result;
             } finally {
@@ -802,6 +846,29 @@ public final class ResponseParsers {
         }
 
     }
+    
+    public static final class DeleteVersionsResponseParser implements ResponseParser<DeleteVersionsResult> {
+
+        @Override
+        public DeleteVersionsResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                DeleteVersionsResult result = null;
+
+                // Occurs when deleting multiple objects in quiet mode.
+                if (response.getContentLength() == 0) {
+                    result = new DeleteVersionsResult(null);
+                } else {
+                    result = parseDeleteVersionsResult(response.getContent());
+                }
+                result.setRequestId(response.getRequestId());
+
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
 
     public static final class CompleteMultipartUploadResponseParser
             implements ResponseParser<CompleteMultipartUploadResult> {
@@ -810,6 +877,7 @@ public final class ResponseParsers {
         public CompleteMultipartUploadResult parse(ResponseMessage response) throws ResponseParseException {
             try {
                 CompleteMultipartUploadResult result = parseCompleteMultipartUpload(response.getContent());
+                result.setVersionId(response.getHeaders().get(OSSHeaders.OSS_HEADER_VERSION_ID));
                 result.setRequestId(response.getRequestId());
                 setServerCRC(result, response);
                 return result;
@@ -826,6 +894,7 @@ public final class ResponseParsers {
         @Override
         public CompleteMultipartUploadResult parse(ResponseMessage response) throws ResponseParseException {
             CompleteMultipartUploadResult result = new CompleteMultipartUploadResult();
+            result.setVersionId(response.getHeaders().get(OSSHeaders.OSS_HEADER_VERSION_ID));
             result.setRequestId(response.getRequestId());
             result.setCallbackResponseBody(response.getContent());
             result.setResponse(response);
@@ -1087,6 +1156,124 @@ public final class ResponseParsers {
             throw new ResponseParseException(e.getMessage(), e);
         }
 
+    }
+    
+    /**
+     * Unmarshall list objects response body to object listing.
+     */
+    @SuppressWarnings("unchecked")
+    public static VersionListing parseListVersions(InputStream responseBody) throws ResponseParseException {
+        try {
+            Element root = getXmlRootElement(responseBody);
+
+            boolean shouldSDKDecode = false;
+            VersionListing versionListing = new VersionListing();
+            versionListing.setBucketName(root.getChildText("Name"));
+            versionListing.setMaxKeys(Integer.valueOf(root.getChildText("MaxKeys")));
+            versionListing.setTruncated(Boolean.valueOf(root.getChildText("IsTruncated")));
+
+            if (root.getChild("EncodingType") != null) {
+                String encodingType = root.getChildText("EncodingType");
+                if (encodingType.equals(OSSConstants.URL_ENCODING)) {
+                    shouldSDKDecode = true;
+                    versionListing.setEncodingType(null);
+                } else {
+                    versionListing.setEncodingType(isNullOrEmpty(encodingType) ? null : encodingType);
+                }
+            }
+
+            if (root.getChild("Prefix") != null) {
+                String prefix = root.getChildText("Prefix");
+                versionListing.setPrefix(isNullOrEmpty(prefix) ? null : decodeIfSpecified(prefix, shouldSDKDecode));
+            }
+
+            if (root.getChild("KeyMarker") != null) {
+                String marker = root.getChildText("KeyMarker");
+                versionListing.setKeyMarker(isNullOrEmpty(marker) ? null : decodeIfSpecified(marker, shouldSDKDecode));
+            }
+
+            if (root.getChild("VersionIdMarker") != null) {
+                String marker = root.getChildText("VersionIdMarker");
+                versionListing.setVersionIdMarker(isNullOrEmpty(marker) ? null : marker);
+            }
+
+            if (root.getChild("Delimiter") != null) {
+                String delimiter = root.getChildText("Delimiter");
+                versionListing
+                    .setDelimiter(isNullOrEmpty(delimiter) ? null : decodeIfSpecified(delimiter, shouldSDKDecode));
+            }
+
+            if (root.getChild("NextKeyMarker") != null) {
+                String nextMarker = root.getChildText("NextKeyMarker");
+                versionListing.setNextKeyMarker(
+                    isNullOrEmpty(nextMarker) ? null : decodeIfSpecified(nextMarker, shouldSDKDecode));
+            }
+
+            if (root.getChild("NextVersionIdMarker") != null) {
+                String nextMarker = root.getChildText("NextVersionIdMarker");
+                versionListing.setNextVersionIdMarker(isNullOrEmpty(nextMarker) ? null : nextMarker);
+            }
+
+            List<Element> objectSummaryElems = root.getChildren("Version");
+            for (Element elem : objectSummaryElems) {
+                OSSVersionSummary ossVersionSummary = new OSSVersionSummary();
+
+                ossVersionSummary.setKey(decodeIfSpecified(elem.getChildText("Key"), shouldSDKDecode));
+                ossVersionSummary.setVersionId(elem.getChildText("VersionId"));
+                ossVersionSummary.setIsLatest("true".equals(elem.getChildText("IsLatest")));
+                ossVersionSummary.setETag(trimQuotes(elem.getChildText("ETag")));
+                ossVersionSummary.setLastModified(DateUtil.parseIso8601Date(elem.getChildText("LastModified")));
+                ossVersionSummary.setSize(Long.valueOf(elem.getChildText("Size")));
+                ossVersionSummary.setStorageClass(elem.getChildText("StorageClass"));
+                ossVersionSummary.setBucketName(versionListing.getBucketName());
+                ossVersionSummary.setIsDeleteMarker(false);
+
+                String id = elem.getChild("Owner").getChildText("ID");
+                String displayName = elem.getChild("Owner").getChildText("DisplayName");
+                ossVersionSummary.setOwner(new Owner(id, displayName));
+
+                versionListing.getVersionSummaries().add(ossVersionSummary);
+            }
+
+            List<Element> delSummaryElems = root.getChildren("DeleteMarker");
+            for (Element elem : delSummaryElems) {
+                OSSVersionSummary ossVersionSummary = new OSSVersionSummary();
+
+                ossVersionSummary.setKey(decodeIfSpecified(elem.getChildText("Key"), shouldSDKDecode));
+                ossVersionSummary.setVersionId(elem.getChildText("VersionId"));
+                ossVersionSummary.setIsLatest("true".equals(elem.getChildText("IsLatest")));
+                ossVersionSummary.setLastModified(DateUtil.parseIso8601Date(elem.getChildText("LastModified")));
+                ossVersionSummary.setBucketName(versionListing.getBucketName());
+                ossVersionSummary.setIsDeleteMarker(true);
+
+                String id = elem.getChild("Owner").getChildText("ID");
+                String displayName = elem.getChild("Owner").getChildText("DisplayName");
+                ossVersionSummary.setOwner(new Owner(id, displayName));
+
+                versionListing.getVersionSummaries().add(ossVersionSummary);
+            }
+
+            List<Element> commonPrefixesElems = root.getChildren("CommonPrefixes");
+            for (Element elem : commonPrefixesElems) {
+                String prefix = elem.getChildText("Prefix");
+                if (!isNullOrEmpty(prefix)) {
+                    versionListing.getCommonPrefixes().add(decodeIfSpecified(prefix, shouldSDKDecode));
+                }
+            }
+
+            return versionListing;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Perform an url decode on the given value if specified.
+     */
+    private static String decodeIfSpecified(String value, boolean decode) {
+        return decode ? HttpUtil.urlDecode(value, StringUtils.DEFAULT_ENCODING) : value;
     }
 
     /**
@@ -1351,6 +1538,8 @@ public final class ResponseParsers {
                     objectMeta.setETag(trimQuotes(headers.get(key)));
                 } else if (key.equals(OSSHeaders.OSS_HEADER_REQUEST_ID)) {
                     objectMeta.setRequestId(headers.get(key));
+                } else if (key.equals(OSSHeaders.OSS_HEADER_VERSION_ID)) {
+                    objectMeta.setVersionId(headers.get(key));
                 }
             }
 
@@ -1981,6 +2170,56 @@ public final class ResponseParsers {
             throw new ResponseParseException(e.getMessage(), e);
         }
     }
+    
+    /**
+     * Unmarshall delete versions response body to corresponding result.
+     */
+    @SuppressWarnings("unchecked")
+    public static DeleteVersionsResult parseDeleteVersionsResult(InputStream responseBody)
+        throws ResponseParseException {
+        boolean shouldSDKDecodeResponse = false;
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+
+            if (root.getChild("EncodingType") != null) {
+                String encodingType = root.getChildText("EncodingType");
+                shouldSDKDecodeResponse = OSSConstants.URL_ENCODING.equals(encodingType);
+            }
+
+            List<DeletedVersion> deletedVersions = new ArrayList<DeletedVersion>();
+            List<Element> deletedElements = root.getChildren("Deleted");
+            for (Element elem : deletedElements) {
+                DeletedVersion key = new DeletedVersion();
+
+                if (shouldSDKDecodeResponse) {
+                    key.setKey(HttpUtil.urlDecode(elem.getChildText("Key"), StringUtils.DEFAULT_ENCODING));
+                } else {
+                    key.setKey(elem.getChildText("Key"));
+                }
+
+                if (elem.getChild("VersionId") != null) {
+                    key.setVersionId(elem.getChildText("VersionId"));
+                }
+
+                if (elem.getChild("DeleteMarker") != null) {
+                    key.setDeleteMarker(Boolean.parseBoolean(elem.getChildText("DeleteMarker")));
+                }
+
+                if (elem.getChild("DeleteMarkerVersionId") != null) {
+                    key.setDeleteMarkerVersionId(elem.getChildText("DeleteMarkerVersionId"));
+                }
+
+                deletedVersions.add(key);
+            }
+
+            return new DeleteVersionsResult(deletedVersions);
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
 
     /**
      * Unmarshall get bucket cors response body to cors rules.
@@ -2512,6 +2751,27 @@ public final class ResponseParsers {
         }
 
     }
+    
+    /**
+     * Unmarshall get bucket versioning response body to versioning configuration.
+     */
+    public static BucketVersioningConfiguration parseGetBucketVersioning(InputStream responseBody)
+        throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+            BucketVersioningConfiguration configuration = new BucketVersioningConfiguration();
+
+            configuration.setStatus(root.getChildText("Status"));
+
+            return configuration;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
+    }
 
     /**
      * Unmarshall get bucket encryption response body to encryption configuration.
@@ -2537,7 +2797,7 @@ public final class ResponseParsers {
         }
 
     }
-    
+
     /**
      * Unmarshall get bucket lifecycle response body to lifecycle rules.
      */
@@ -2560,7 +2820,7 @@ public final class ResponseParsers {
                 if (ruleElem.getChild("Prefix") != null) {
                     rule.setPrefix(ruleElem.getChildText("Prefix"));
                 }
-
+                
                 List<Element> tagElems = ruleElem.getChildren("Tag");
                 if (tagElems != null) {
                     for (Element tagElem : tagElems) {

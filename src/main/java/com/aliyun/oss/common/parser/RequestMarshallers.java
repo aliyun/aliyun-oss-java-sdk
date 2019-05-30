@@ -31,9 +31,12 @@ import com.aliyun.oss.ClientException;
 import com.aliyun.oss.common.comm.io.FixedLengthInputStream;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.DateUtil;
+import com.aliyun.oss.common.utils.HttpUtil;
+import com.aliyun.oss.common.utils.StringUtils;
 import com.aliyun.oss.internal.RequestParameters;
 import com.aliyun.oss.model.*;
 import com.aliyun.oss.model.AddBucketReplicationRequest.ReplicationAction;
+import com.aliyun.oss.model.DeleteVersionsRequest.KeyVersion;
 import com.aliyun.oss.model.LifecycleRule.AbortMultipartUpload;
 import com.aliyun.oss.model.LifecycleRule.RuleStatus;
 import com.aliyun.oss.model.LifecycleRule.StorageTransition;
@@ -48,6 +51,7 @@ public final class RequestMarshallers {
     public static final StringMarshaller stringMarshaller = new StringMarshaller();
 
     public static final DeleteObjectsRequestMarshaller deleteObjectsRequestMarshaller = new DeleteObjectsRequestMarshaller();
+    public static final DeleteVersionsRequestMarshaller deleteVersionsRequestMarshaller = new DeleteVersionsRequestMarshaller();
 
     public static final CreateBucketRequestMarshaller createBucketRequestMarshaller = new CreateBucketRequestMarshaller();
     public static final BucketRefererMarshaller bucketRefererMarshaller = new BucketRefererMarshaller();
@@ -71,6 +75,7 @@ public final class RequestMarshallers {
     public static final UpgradeUdfApplicationRequestMarshaller upgradeUdfApplicationRequestMarshaller = new UpgradeUdfApplicationRequestMarshaller();
     public static final ResizeUdfApplicationRequestMarshaller resizeUdfApplicationRequestMarshaller = new ResizeUdfApplicationRequestMarshaller();
     public static final ProcessObjectRequestMarshaller processObjectRequestMarshaller = new ProcessObjectRequestMarshaller();
+    public static final SetBucketVersioningRequestMarshaller setBucketVersioningRequestMarshaller = new SetBucketVersioningRequestMarshaller();
     public static final SetBucketEncryptionRequestMarshaller setBucketEncryptionRequestMarshaller = new SetBucketEncryptionRequestMarshaller();
     
     public static final CreateSelectObjectMetadataRequestMarshaller createSelectObjectMetadataRequestMarshaller = new CreateSelectObjectMetadataRequestMarshaller();
@@ -650,6 +655,39 @@ public final class RequestMarshallers {
         }
 
     }
+    
+    public static final class DeleteVersionsRequestMarshaller implements RequestMarshaller2<DeleteVersionsRequest> {
+
+        @Override
+        public byte[] marshall(DeleteVersionsRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            boolean quiet = request.getQuiet();
+            List<KeyVersion> keysToDelete = request.getKeys();
+
+            xmlBody.append("<Delete>");
+            xmlBody.append("<Quiet>" + quiet + "</Quiet>");
+            for (int i = 0; i < keysToDelete.size(); i++) {
+                KeyVersion key = keysToDelete.get(i);
+                xmlBody.append("<Object>");
+                xmlBody.append("<Key>" +
+                    escapeKey(HttpUtil.urlEncode(key.getKey(), StringUtils.DEFAULT_ENCODING)) + "</Key>");
+                if (key.getVersion() != null) {
+                    xmlBody.append("<VersionId>" + key.getVersion() + "</VersionId>");
+                }
+                xmlBody.append("</Object>");
+            }
+            xmlBody.append("</Delete>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+
+    }
 
     public static final class SetBucketTaggingRequestMarshaller implements RequestMarshaller<SetTaggingRequest> {
 
@@ -791,6 +829,28 @@ public final class RequestMarshallers {
                 xmlBody.append("<StorageCapacity>" + userQos.getStorageCapacity() + "</StorageCapacity>");
             }
             xmlBody.append("</BucketUserQos>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+
+    }
+    
+    public static final class SetBucketVersioningRequestMarshaller
+        implements RequestMarshaller2<SetBucketVersioningRequest> {
+
+        @Override
+        public byte[] marshall(SetBucketVersioningRequest setBucketVersioningRequest) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<VersioningConfiguration>");
+            xmlBody
+                .append("<Status>" + setBucketVersioningRequest.getVersioningConfiguration().getStatus() + "</Status>");
+            xmlBody.append("</VersioningConfiguration>");
 
             byte[] rawData = null;
             try {

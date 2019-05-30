@@ -37,6 +37,9 @@ public class CompleteMultipartUploadResult extends GenericResult implements Call
     private String location;
 
     private String eTag;
+    
+    /** Object Version Id. */
+    private String versionId;
 
     /** The callback request's response body */
     private InputStream callbackResponseBody;
@@ -115,6 +118,24 @@ public class CompleteMultipartUploadResult extends GenericResult implements Call
      */
     public void setETag(String etag) {
         this.eTag = etag;
+    }
+    
+    /**
+     * Gets version id.
+     * 
+     * @return version id.
+     */
+    public String getVersionId() {
+        return versionId;
+    }
+
+    /**
+     * Sets version id.
+     * 
+     * @param versionId
+     */
+    public void setVersionId(String versionId) {
+        this.versionId = versionId;
     }
 
     /**

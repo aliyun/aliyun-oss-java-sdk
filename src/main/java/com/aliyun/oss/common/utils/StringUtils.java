@@ -31,7 +31,7 @@ import java.util.Locale;
  */
 public class StringUtils {
 
-    private static final String DEFAULT_ENCODING = "UTF-8";
+    public static final String DEFAULT_ENCODING = "UTF-8";
 
     public static final String COMMA_SEPARATOR = ",";
 

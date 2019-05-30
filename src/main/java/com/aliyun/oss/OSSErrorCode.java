@@ -115,6 +115,11 @@ public interface OSSErrorCode {
     static final String NO_SUCH_KEY = "NoSuchKey";
 
     /**
+     * Version does not exist.
+     */
+    static final String NO_SUCH_VERSION = "NoSuchVersion";
+    
+    /**
      * Not implemented method.
      */
     static final String NOT_IMPLEMENTED = "NotImplemented";

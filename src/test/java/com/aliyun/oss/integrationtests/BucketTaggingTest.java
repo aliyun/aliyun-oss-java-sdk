@@ -23,13 +23,10 @@ import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 
 import java.util.Map;
 
+import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 
 import org.junit.Test;
-
-import com.aliyun.oss.model.GenericRequest;
-import com.aliyun.oss.model.SetBucketTaggingRequest;
-import com.aliyun.oss.model.TagSet;
 
 public class BucketTaggingTest extends TestBase {
 
@@ -60,4 +57,37 @@ public class BucketTaggingTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
+
+    @Test
+    public void testListBucketsWithTag() {
+        String bucketName1 = bucketName + "-1";
+        String bicketName2 = bucketName + "-2";
+
+        try {
+            // Prepare
+            ossClient.createBucket(bucketName1);
+            ossClient.createBucket(bicketName2);
+
+            SetBucketTaggingRequest request = new SetBucketTaggingRequest(bucketName1);
+            request.setTag("tk1", "tv1");
+            request.setTag("tk2", "tv2");
+            ossClient.setBucketTagging(request);
+
+            waitForCacheExpiration(3);
+
+            // List
+            ListBucketsRequest listBucketsRequest = new ListBucketsRequest();
+            listBucketsRequest.setTag("tk1", "tv1");
+
+            BucketList bucketList = ossClient.listBuckets(listBucketsRequest);
+            Assert.assertEquals(1, bucketList.getBucketList().size());
+            Assert.assertEquals(bucketName1, bucketList.getBucketList().get(0).getName());
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        } finally {
+            ossClient.deleteBucket(bucketName1);
+            ossClient.deleteBucket(bicketName2);
+        }
+    }
+
 }

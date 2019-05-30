@@ -2,9 +2,6 @@ package com.aliyun.oss.internal;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
-import static com.aliyun.oss.common.utils.CodingUtils.assertTrue;
 import static com.aliyun.oss.internal.RequestParameters.*;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_RESTORE;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_UDF_LOG;
@@ -39,7 +36,8 @@ public class SignParameters {
             SUBRESOURCE_STATUS, SUBRESOURCE_VOD, SUBRESOURCE_START_TIME, SUBRESOURCE_END_TIME, SUBRESOURCE_PROCESS,
             SUBRESOURCE_PROCESS_CONF, SUBRESOURCE_SYMLINK, SUBRESOURCE_STAT, SUBRESOURCE_UDF, SUBRESOURCE_UDF_NAME,
             SUBRESOURCE_UDF_IMAGE, SUBRESOURCE_UDF_IMAGE_DESC, SUBRESOURCE_UDF_APPLICATION, SUBRESOURCE_UDF_LOG,
-            SUBRESOURCE_RESTORE, SUBRESOURCE_ENCRYPTION});
+            SUBRESOURCE_RESTORE, SUBRESOURCE_VRESIONS, SUBRESOURCE_VRESIONING, SUBRESOURCE_VRESION_ID, 
+            SUBRESOURCE_ENCRYPTION});
 
 
 }

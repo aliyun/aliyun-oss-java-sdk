@@ -47,4 +47,10 @@ public final class OSSConstants {
     public static final String PROTOCOL_HTTP = "http://";
     public static final String PROTOCOL_HTTPS = "https://";
     public static final String PROTOCOL_RTMP = "rtmp://";
+    
+    /** Represents a null OSS version ID */
+    public static final String NULL_VERSION_ID = "null";
+    
+    /** URL encoding for OSS object keys */
+    public static final String URL_ENCODING = "url";
 }

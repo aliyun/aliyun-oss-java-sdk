@@ -40,6 +40,12 @@ public class ListBucketsRequest extends WebServiceRequest {
     // The OSS's Bid is 26842.
     private String bid;
 
+    // The tag key.
+    private String tagKey;
+
+    // The tag value.
+    private String tagValue;
+
     /**
      * Constructor.
      */
@@ -183,4 +189,33 @@ public class ListBucketsRequest extends WebServiceRequest {
     public String getBid() {
         return bid;
     }
+
+    /**
+     * Sets the bucket tag.
+     */
+    public void setTag(String tagKey, String tagValue) {
+        this.tagKey = tagKey;
+        this.tagValue = tagValue;
+    }
+
+    /**
+     * Gets the tag key.
+     *
+     * @return tag key.
+     *
+     */
+    public String getTagKey() {
+        return this.tagKey;
+    }
+
+    /**
+     * Gets the tag value.
+     *
+     * @return tag value.
+     *
+     */
+    public String getTagValue() {
+        return this.tagValue;
+    }
+
 }
