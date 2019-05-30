@@ -63,6 +63,7 @@ import static com.aliyun.oss.internal.ResponseParsers.putObjectProcessReponsePar
 import static com.aliyun.oss.internal.ResponseParsers.getSimplifiedObjectMetaResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getSymbolicLinkResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.headObjectResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.deleteVersionsResponseParser;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -335,6 +336,11 @@ public class OSSObjectOperation extends OSSOperation {
             Map<String, String> params = new HashMap<String, String>();
             populateResponseHeaderParameters(params, getObjectRequest.getResponseHeaders());
 
+            String versionId = getObjectRequest.getVersionId();
+            if (versionId != null) {
+                params.put(RequestParameters.SUBRESOURCE_VRESION_ID, versionId);
+            }
+            
             String process = getObjectRequest.getProcess();
             if (process != null) {
                 params.put(RequestParameters.SUBRESOURCE_PROCESS, process);
@@ -406,7 +412,7 @@ public class OSSObjectOperation extends OSSOperation {
             safeClose(ossObject.getObjectContent());
         }
     }
-
+    
     /**
      * Get simplified object meta.
      */
@@ -424,6 +430,10 @@ public class OSSObjectOperation extends OSSOperation {
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_OBJECTMETA, null);
+        if (genericRequest.getVersionId() != null) {
+            params.put(RequestParameters.SUBRESOURCE_VRESION_ID,
+                genericRequest.getVersionId());
+        }
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(key).setParameters(params)
@@ -435,7 +445,8 @@ public class OSSObjectOperation extends OSSOperation {
     /**
      * Get object matadata.
      */
-    public ObjectMetadata getObjectMetadata(GenericRequest genericRequest) throws OSSException, ClientException {
+    public ObjectMetadata getObjectMetadata(GenericRequest genericRequest) 
+        throws OSSException, ClientException {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
@@ -446,10 +457,15 @@ public class OSSObjectOperation extends OSSOperation {
         assertParameterNotNull(key, "key");
         ensureBucketNameValid(bucketName);
         ensureObjectKeyValid(key);
+        
+        Map<String, String> params = new HashMap<String, String>();
+        if (genericRequest.getVersionId() != null) {
+            params.put(RequestParameters.SUBRESOURCE_VRESION_ID, genericRequest.getVersionId());
+        }
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.HEAD).setBucket(bucketName).setKey(key).setOriginalRequest(genericRequest)
-                .build();
+            .setMethod(HttpMethod.HEAD).setBucket(bucketName).setKey(key).setParameters(params)
+            .setOriginalRequest(genericRequest).build();
 
         List<ResponseHandler> reponseHandlers = new ArrayList<ResponseHandler>();
         reponseHandlers.add(new ResponseHandler() {
@@ -511,6 +527,33 @@ public class OSSObjectOperation extends OSSOperation {
     }
 
     /**
+     * Delete an object version.
+     */
+    public void deleteVersion(DeleteVersionRequest deleteVersionRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(deleteVersionRequest, "deleteVersionRequest");
+
+        String bucketName = deleteVersionRequest.getBucketName();
+        String key = deleteVersionRequest.getKey();
+        String versionId = deleteVersionRequest.getVersionId();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        assertParameterNotNull(key, "key");
+        ensureObjectKeyValid(key);
+        assertParameterNotNull(versionId, "versionId");
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_VRESION_ID, versionId);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(key).setParameters(params)
+            .setOriginalRequest(deleteVersionRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, key);
+    }
+
+    /**
      * Delete multiple objects.
      */
     public DeleteObjectsResult deleteObjects(DeleteObjectsRequest deleteObjectsRequest) {
@@ -535,6 +578,33 @@ public class OSSObjectOperation extends OSSOperation {
                 .setOriginalRequest(deleteObjectsRequest).build();
 
         return doOperation(request, deleteObjectsResponseParser, bucketName, null, true);
+    }
+    
+    /**
+     * Delete multiple versions.
+     */
+    public DeleteVersionsResult deleteVersions(DeleteVersionsRequest deleteVersionsRequest)
+        throws OSSException, ClientException {
+
+        assertParameterNotNull(deleteVersionsRequest, "deleteObjectsRequest");
+
+        String bucketName = deleteVersionsRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_DELETE, null);
+
+        byte[] rawContent = deleteVersionsRequestMarshaller.marshall(deleteVersionsRequest);
+        Map<String, String> headers = new HashMap<String, String>();
+        addDeleteVersionsRequiredHeaders(headers, rawContent);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.POST).setBucket(bucketName).setParameters(params).setHeaders(headers)
+            .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+            .setOriginalRequest(deleteVersionsRequest).build();
+
+        return doOperation(request, deleteVersionsResponseParser, bucketName, null, true);
     }
 
     /**
@@ -588,6 +658,9 @@ public class OSSObjectOperation extends OSSOperation {
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_ACL, null);
+        if (setObjectAclRequest.getVersionId() != null) {
+            params.put(RequestParameters.SUBRESOURCE_VRESION_ID, setObjectAclRequest.getVersionId());
+        }
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.PUT).setBucket(bucketName).setKey(key).setParameters(params).setHeaders(headers)
@@ -624,6 +697,7 @@ public class OSSObjectOperation extends OSSOperation {
 
         String bucketName = genericRequest.getBucketName();
         String key = genericRequest.getKey();
+        String versionId = genericRequest.getVersionId();
 
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
@@ -632,6 +706,9 @@ public class OSSObjectOperation extends OSSOperation {
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(RequestParameters.SUBRESOURCE_RESTORE, null);
+        if (versionId != null) {
+            params.put(RequestParameters.SUBRESOURCE_VRESION_ID, versionId);
+        }
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.POST).setBucket(bucketName).setKey(key).setParameters(params)
@@ -646,6 +723,7 @@ public class OSSObjectOperation extends OSSOperation {
 
         String bucketName = setObjectTaggingRequest.getBucketName();
         String key = setObjectTaggingRequest.getKey();
+        String versionId = setObjectTaggingRequest.getVersionId();
         
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
@@ -654,6 +732,9 @@ public class OSSObjectOperation extends OSSOperation {
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_TAGGING, null);
+        if (versionId != null) {
+            params.put(RequestParameters.SUBRESOURCE_VRESION_ID, versionId);
+        }
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.PUT).setBucket(bucketName).setKey(key).setParameters(params)
@@ -668,6 +749,7 @@ public class OSSObjectOperation extends OSSOperation {
 
         String bucketName = genericRequest.getBucketName();
         String key = genericRequest.getKey();
+        String versionId = genericRequest.getVersionId();
 
         assertParameterNotNull(bucketName, "bucketName");
         assertParameterNotNull(key, "key");
@@ -676,6 +758,9 @@ public class OSSObjectOperation extends OSSOperation {
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_TAGGING, null);
+        if (versionId != null) {
+            params.put(RequestParameters.SUBRESOURCE_VRESION_ID, versionId);
+        }
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(key).setParameters(params)
@@ -689,6 +774,7 @@ public class OSSObjectOperation extends OSSOperation {
 
         String bucketName = genericRequest.getBucketName();
         String key = genericRequest.getKey();
+        String versionId = genericRequest.getVersionId();
         
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
@@ -697,6 +783,9 @@ public class OSSObjectOperation extends OSSOperation {
         
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_TAGGING, null);
+        if (versionId != null) {
+            params.put(RequestParameters.SUBRESOURCE_VRESION_ID, versionId);
+        }
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
             .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(key).setParameters(params)
@@ -993,6 +1082,9 @@ public class OSSObjectOperation extends OSSOperation {
 
         String copySourceHeader = "/" + copyObjectRequest.getSourceBucketName() + "/"
                 + HttpUtil.urlEncode(copyObjectRequest.getSourceKey(), DEFAULT_CHARSET_NAME);
+        if (copyObjectRequest.getSourceVersionId() != null) {
+            copySourceHeader += "?versionId=" + copyObjectRequest.getSourceVersionId();
+        }
         headers.put(OSSHeaders.COPY_OBJECT_SOURCE, copySourceHeader);
 
         addDateHeader(headers, OSSHeaders.COPY_OBJECT_SOURCE_IF_MODIFIED_SINCE,
@@ -1055,6 +1147,11 @@ public class OSSObjectOperation extends OSSOperation {
         byte[] md5 = BinaryUtil.calculateMd5(rawContent);
         String md5Base64 = BinaryUtil.toBase64String(md5);
         headers.put(HttpHeaders.CONTENT_MD5, md5Base64);
+    }
+    
+    private static void addDeleteVersionsRequiredHeaders(Map<String, String> headers, byte[] rawContent) {
+        addDeleteObjectsRequiredHeaders(headers, rawContent);
+        headers.put(ENCODING_TYPE, OSSConstants.URL_ENCODING);
     }
 
     private static void addDeleteObjectsOptionalHeaders(Map<String, String> headers, DeleteObjectsRequest request) {

@@ -53,6 +53,7 @@ public interface OSSHeaders extends HttpHeaders {
     static final String COPY_OBJECT_TAGGING_DIRECTIVE = "x-oss-tagging-directive";
 
     static final String OSS_HEADER_REQUEST_ID = "x-oss-request-id";
+    static final String OSS_HEADER_VERSION_ID = "x-oss-version-id";
 
     static final String ORIGIN = "origin";
     static final String ACCESS_CONTROL_REQUEST_METHOD = "Access-Control-Request-Method";

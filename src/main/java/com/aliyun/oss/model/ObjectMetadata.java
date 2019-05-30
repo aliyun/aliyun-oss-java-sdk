@@ -29,7 +29,6 @@ import java.util.Map;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.internal.OSSHeaders;
 import com.aliyun.oss.internal.SignV2Utils;
-import org.omg.CORBA.portable.ValueBase;
 
 /**
  * OSS Object's metadata. It has the user's custom metadata, as well as some
@@ -349,6 +348,17 @@ public class ObjectMetadata {
      */
     public String getRequestId() {
         return (String) metadata.get(OSSHeaders.OSS_HEADER_REQUEST_ID);
+    }
+    
+    /**
+     * Gets the version ID of the associated OSS object if available.
+     * Version IDs are only assigned to objects when an object is uploaded to an
+     * OSS bucket that has object versioning enabled.
+     *
+     * @return The version ID of the associated OSS object if available.
+     */
+    public String getVersionId() {
+        return (String)metadata.get(OSSHeaders.OSS_HEADER_VERSION_ID);
     }
 
     /**

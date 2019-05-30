@@ -24,11 +24,20 @@ public class SetObjectAclRequest extends GenericRequest {
     private CannedAccessControlList cannedACL;
 
     public SetObjectAclRequest(String bucketName, String key) {
-        this(bucketName, key, null);
+    	super(bucketName, key);
+    }
+    
+    public SetObjectAclRequest(String bucketName, String key, String versionId) {
+    	super(bucketName, key, versionId);
     }
 
     public SetObjectAclRequest(String bucketName, String key, CannedAccessControlList cannedACL) {
         super(bucketName, key);
+        this.cannedACL = cannedACL;
+    }
+    
+    public SetObjectAclRequest(String bucketName, String key, String veresionId, CannedAccessControlList cannedACL) {
+        super(bucketName, key, veresionId);
         this.cannedACL = cannedACL;
     }
 

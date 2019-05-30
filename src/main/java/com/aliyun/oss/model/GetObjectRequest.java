@@ -48,15 +48,33 @@ public class GetObjectRequest extends GenericRequest {
     private boolean useUrlSignature = false;
 
     /**
-     * Constructor
-     * 
+     * Constructs a new {@link GetObjectRequest} with all the required parameters.
+     *
      * @param bucketName
-     *            Bucket name.
+     *            The name of the bucket containing the desired object.
      * @param key
-     *            Object Key.
+     *            The key in the specified bucket under which the object is
+     *            stored.
      */
     public GetObjectRequest(String bucketName, String key) {
         super(bucketName, key);
+    }
+    
+    /**
+     * Constructs a new {@link GetObjectRequest} with all the required parameters.
+     *
+     * @param bucketName
+     *            The name of the bucket containing the desired object.
+     * @param key
+     *            The key in the specified bucket under which the object is
+     *            stored.
+     * @param versionId
+     *            The OSS version ID specifying a specific version of the
+     *            object to download.
+     */
+    public GetObjectRequest(String bucketName, String key, String versionId) {
+        super(bucketName, key);
+        setVersionId(versionId);
     }
 
     /**
@@ -299,5 +317,5 @@ public class GetObjectRequest extends GenericRequest {
     public void setProcess(String process) {
         this.process = process;
     }
-
+    
 }

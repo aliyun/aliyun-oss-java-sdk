@@ -25,9 +25,6 @@ import org.junit.Test;
 
 import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 
-import java.util.Date;
-import java.util.Random;
-
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.BucketInfo;
 import com.aliyun.oss.model.SSEAlgorithm;

@@ -27,9 +27,9 @@ public class GenericRequest extends WebServiceRequest {
 
     private String bucketName;
     private String key;
+    private String versionId;
 
-    public GenericRequest() {
-    }
+    public GenericRequest() {}
 
     public GenericRequest(String bucketName) {
         this(bucketName, null);
@@ -38,6 +38,12 @@ public class GenericRequest extends WebServiceRequest {
     public GenericRequest(String bucketName, String key) {
         this.bucketName = bucketName;
         this.key = key;
+    }
+    
+    public GenericRequest(String bucketName, String key, String versionId) {
+        this.bucketName = bucketName;
+        this.key = key;
+        this.versionId = versionId;
     }
 
     public String getBucketName() {
@@ -65,4 +71,70 @@ public class GenericRequest extends WebServiceRequest {
         setKey(key);
         return this;
     }
+    
+    /**
+     * <p>
+     * Gets the optional version ID specifying which version of the object to
+     * operate. If not specified, the most recent version will be operated.
+     * </p>
+     * <p>
+     * Objects created before versioning was enabled or when versioning is
+     * suspended are given the default <code>null</code> version ID (see
+     * {@link OSSConstants#NULL_VERSION_ID}). Note that the
+     * <code>null</code> version ID is a valid version ID and is not the
+     * same as not having a version ID.
+     * </p>
+     *
+     * @return The optional version ID specifying which version of the object to
+     *         operate. If not specified, the most recent version will be operated.
+     */
+    public String getVersionId() {
+        return versionId;
+    }
+
+    /**
+     * Sets the optional version ID specifying which version of the object to
+     * operate. If not specified, the most recent version will be operated.
+     * <p>
+     * Objects created before versioning was enabled or when versioning is
+     * suspended will be given the default <code>null</code> version ID (see
+     * {@link OSSConstants#NULL_VERSION_ID}). Note that the
+     * <code>null</code> version ID is a valid version ID and is not the
+     * same as not having a version ID.
+     * </p>
+     *
+     * @param versionId
+     *            The optional version ID specifying which version of the object
+     *            to operate.
+     */
+    public void setVersionId(String versionId) {
+        this.versionId = versionId;
+    }
+    
+    /**
+     * <p>
+     * Sets the optional version ID specifying which version of the object to
+     * download and returns this object, enabling additional method calls to be
+     * chained together. If not specified, the most recent version will be
+     * operated.
+     * </p>
+     * <p>
+     * Objects created before versioning was enabled or when versioning is
+     * suspended will be given the default or <code>null</code> version ID (see
+     * {@link OSSConstants#NULL_VERSION_ID}). Note that the
+     * <code>null</code> version ID is a valid version ID and is not the
+     * same as not having a version ID.
+     * </p>
+     *
+     * @param versionId
+     *            The optional version ID specifying which version of the object
+     *            to operate.
+     *
+     * @return The updated request object.
+     */
+    public GenericRequest withVersionId(String versionId) {
+        setVersionId(versionId);
+        return this;
+    }
+    
 }

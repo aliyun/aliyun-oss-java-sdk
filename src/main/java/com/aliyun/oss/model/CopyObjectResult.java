@@ -31,6 +31,11 @@ public class CopyObjectResult extends GenericResult {
 
     // Target object's last modified time.
     private Date lastModified;
+    
+    // The version ID of the new, copied object. This field will only be present
+    // if object versioning has been enabled for the bucket to which the object
+    // was copied.
+    private String versionId;
 
     /**
      * Constructor
@@ -74,6 +79,25 @@ public class CopyObjectResult extends GenericResult {
      */
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
+    }
+    
+    /**
+     * Gets the target object's version id.
+     * 
+     * @return Target object's version id.
+     */
+    public String getVersionId() {
+        return versionId;
+    }
+
+    /**
+     * Sets the target object's version id (used by SDK only).
+     * 
+     * @param versionId
+     *            Target object's version id.
+     */
+    public void setVersionId(String versionId) {
+        this.versionId = versionId;
     }
 
 }

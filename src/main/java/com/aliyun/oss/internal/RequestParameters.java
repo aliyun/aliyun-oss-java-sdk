@@ -58,6 +58,9 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_STAT = "stat";
     public static final String SUBRESOURCE_RESTORE = "restore";
     public static final String SUBRESOURCE_ENCRYPTION = "encryption";
+    public static final String SUBRESOURCE_VRESIONS = "versions";
+    public static final String SUBRESOURCE_VRESIONING = "versioning";
+    public static final String SUBRESOURCE_VRESION_ID = "versionId";
 
     public static final String SUBRESOURCE_UDF = "udf";
     public static final String SUBRESOURCE_UDF_NAME = "udfName";
@@ -72,6 +75,9 @@ public final class RequestParameters {
     public static final String MAX_KEYS = "max-keys";
     public static final String BID = "bid";
     public static final String ENCODING_TYPE = "encoding-type";
+    public static final String VERSION_ID_MARKER = "version-id-marker";
+    public static final String TAG_KEY = "tag-key";
+    public static final String TAG_VALUE = "tag-value";
 
     public static final String UPLOAD_ID = "uploadId";
     public static final String PART_NUMBER = "partNumber";
