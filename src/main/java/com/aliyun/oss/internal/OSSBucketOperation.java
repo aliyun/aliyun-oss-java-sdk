@@ -33,27 +33,12 @@ import static com.aliyun.oss.common.parser.RequestMarshallers.addBucketCnameRequ
 import static com.aliyun.oss.common.parser.RequestMarshallers.deleteBucketCnameRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketQosRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.bucketImageProcessConfMarshaller;
+import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketEncryptionRequestMarshaller;
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
-import static com.aliyun.oss.internal.RequestParameters.DELIMITER;
-import static com.aliyun.oss.internal.RequestParameters.ENCODING_TYPE;
-import static com.aliyun.oss.internal.RequestParameters.MARKER;
-import static com.aliyun.oss.internal.RequestParameters.MAX_KEYS;
-import static com.aliyun.oss.internal.RequestParameters.PREFIX;
-import static com.aliyun.oss.internal.RequestParameters.BID;
-import static com.aliyun.oss.internal.RequestParameters.STYLE_NAME;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_ACL;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_IMG;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_LIFECYCLE;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_LOCATION;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_LOGGING;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_REFERER;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_STYLE;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_TAGGING;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_WEBSITE;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_PROCESS_CONF;
+import static com.aliyun.oss.internal.RequestParameters.*;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketAclResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketLifecycleResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketLocationResponseParser;
@@ -74,6 +59,7 @@ import static com.aliyun.oss.internal.ResponseParsers.getBucketImageResponsePars
 import static com.aliyun.oss.internal.ResponseParsers.getImageStyleResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.listImageStyleResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketImageProcessConfResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getBucketEncryptionResponseParser;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -116,6 +102,8 @@ import com.aliyun.oss.model.GetBucketImageResult;
 import com.aliyun.oss.model.GetBucketReplicationProgressRequest;
 import com.aliyun.oss.model.ImageProcess;
 import com.aliyun.oss.model.ReplicationRule;
+import com.aliyun.oss.model.ServerSideEncryptionConfiguration;
+import com.aliyun.oss.model.SetBucketEncryptionRequest;
 import com.aliyun.oss.model.GetImageStyleResult;
 import com.aliyun.oss.model.LifecycleRule;
 import com.aliyun.oss.model.ListBucketsRequest;
@@ -1122,6 +1110,76 @@ public class OSSBucketOperation extends OSSOperation {
 
         return doOperation(request, getBucketQosResponseParser, bucketName, null, true);
 
+    }
+    
+    /**
+     * Set bucket encryption.
+     */
+    public void setBucketEncryption(SetBucketEncryptionRequest setBucketEncryptionRequest)
+        throws OSSException, ClientException {
+
+        assertParameterNotNull(setBucketEncryptionRequest, "setBucketEncryptionRequest");
+
+        String bucketName = setBucketEncryptionRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_ENCRYPTION, null);
+
+        byte[] rawContent = setBucketEncryptionRequestMarshaller.marshall(setBucketEncryptionRequest);
+        Map<String, String> headers = new HashMap<String, String>();
+        addRequestRequiredHeaders(headers, rawContent);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params)
+            .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+            .setOriginalRequest(setBucketEncryptionRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    /**
+     * get bucket encryption.
+     */
+    public ServerSideEncryptionConfiguration getBucketEncryption(GenericRequest genericRequest)
+        throws OSSException, ClientException {
+
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_ENCRYPTION, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+            .setOriginalRequest(genericRequest).build();
+
+        return doOperation(request, getBucketEncryptionResponseParser, bucketName, null, true);
+    }
+
+    /**
+     * Delete bucket encryption.
+     */
+    public void deleteBucketEncryption(GenericRequest genericRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_ENCRYPTION, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+            .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
+            .setOriginalRequest(genericRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
     }
 
     private static void populateListObjectsRequestParameters(ListObjectsRequest listObjectsRequest,
