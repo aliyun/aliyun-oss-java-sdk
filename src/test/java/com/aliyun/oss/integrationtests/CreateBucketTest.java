@@ -55,7 +55,7 @@ public class CreateBucketTest extends TestBase {
     
     @Test
     public void testPutWithDefaultLocation() {
-        final String bucketName = "bucket-with-default-location";
+        final String bucketName = super.bucketName + "-with-default-location";
         
         try {
         	Bucket bucket = ossClient.createBucket(bucketName);
@@ -77,7 +77,7 @@ public class CreateBucketTest extends TestBase {
     
     @Test
     public void testPutWithUnsupportedLocation() {
-        final String bucketName = "bucket-with-unsupported-location";
+        final String bucketName = super.bucketName + "-with-unsupported-location";
         final String unsupportedLocation = "oss-cn-zhengzhou";
         
         CreateBucketRequest request = new CreateBucketRequest(bucketName);
@@ -93,7 +93,7 @@ public class CreateBucketTest extends TestBase {
     
     @Test
     public void testPutWithInconsistentLocation() {
-        final String bucketName = "bucket-with-inconsistent-location";
+        final String bucketName = super.bucketName + "-with-inconsistent-location";
         
         CreateBucketRequest request = new CreateBucketRequest(bucketName);
         // Make location constraint inconsistent with endpoint 
@@ -109,7 +109,7 @@ public class CreateBucketTest extends TestBase {
     
     @Test
     public void testModifyExistingBucketLocation() {
-        final String bucketName = "modify-existing-bucket-location";
+        final String bucketName = super.bucketName + "-modify-existing-bucket-location";
         
         try {
             ossClient.createBucket(bucketName);
@@ -218,7 +218,7 @@ public class CreateBucketTest extends TestBase {
     
     @Test
     public void testPutWithCannedACL() {
-        final String bucketName = "bucket-with-canned-acl";
+        final String bucketName = super.bucketName + "-with-canned-acl";
         
         CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
         try {
@@ -288,7 +288,7 @@ public class CreateBucketTest extends TestBase {
     
     @Test
     public void testPutWithDefaultStorageType() {
-        final String bucketName = "bucket-with-default-storage-type";
+        final String bucketName = super.bucketName + "-with-default-storage-type";
         
         CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
         try {
@@ -307,7 +307,7 @@ public class CreateBucketTest extends TestBase {
     
     @Ignore
     public void testPutWithStorageType() {
-        final String bucketName = "bucket-with-storage-type";
+        final String bucketName = super.bucketName + "-with-storage-type";
         
         CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
         createBucketRequest.setStorageClass(StorageClass.IA);
@@ -329,7 +329,7 @@ public class CreateBucketTest extends TestBase {
     
     @Ignore
     public void testPutWithStorageTypeFunc() {
-        final String bucketName = "bucket-with-storage-type-func";
+        final String bucketName = super.bucketName + "-with-storage-type-func";
         
         try {
             ossClient.createBucket(new CreateBucketRequest(bucketName).withStorageType(StorageClass.IA));
@@ -349,7 +349,7 @@ public class CreateBucketTest extends TestBase {
     
     @Test
     public void testPutWithStorageTypeAndLocation() {
-        final String bucketName = "bucket-with-storage-and-location";
+        final String bucketName = super.bucketName + "-with-storage-and-location";
         
         CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
         createBucketRequest.setStorageClass(StorageClass.Standard);
@@ -375,7 +375,7 @@ public class CreateBucketTest extends TestBase {
     
     @Ignore
     public void testPutWithStorageTypeModify() {
-        final String bucketName = "bucket-with-storage-type-modify";
+        final String bucketName = super.bucketName + "-with-storage-type-modify";
         
         CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
         try {
@@ -402,7 +402,7 @@ public class CreateBucketTest extends TestBase {
     
     @Test
     public void testPutWithWithStorageTypeUnsupportedLocation() {
-        final String bucketName = "bucket-with-storage-unsupported-location";
+        final String bucketName = super.bucketName + "-with-storage-unsupported-location";
         final String unsupportedLocation = "oss-cn-zhengzhou";
         
         CreateBucketRequest request = new CreateBucketRequest(bucketName);
@@ -419,7 +419,7 @@ public class CreateBucketTest extends TestBase {
     
     @Test
     public void testPutWithStorageTypeCompatibility() {
-        final String bucketName = "bucket-with-storage-type-compatibility";
+        final String bucketName = super.bucketName + "-with-storage-type-compatibility";
         
         CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
         try {

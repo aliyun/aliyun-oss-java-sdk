@@ -61,8 +61,20 @@ import com.aliyun.oss.model.VersionListing;
 import com.aliyun.oss.model.DeleteVersionsRequest.KeyVersion;
 import com.aliyun.oss.model.DeleteVersionsResult;
 import com.aliyun.oss.model.GenericRequest;
+import com.aliyun.oss.model.BucketVersioningConfiguration;
+import com.aliyun.oss.model.SetBucketVersioningRequest;
 
 public class ObjectVersionTest extends TestBase {
+
+    public void setUp() throws Exception {
+        super.setUp();
+
+        // start versioning
+        BucketVersioningConfiguration configuration = new BucketVersioningConfiguration();
+        configuration.setStatus(BucketVersioningConfiguration.ENABLED);
+        SetBucketVersioningRequest request = new SetBucketVersioningRequest(bucketName, configuration);
+        ossClient.setBucketVersioning(request);
+    }
 
     @Test
     public void testPutObject() {

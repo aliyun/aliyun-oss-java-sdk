@@ -42,7 +42,7 @@ public class ListObjectsTest extends TestBase {
     
     @Test
     public void testNormalListObjects() {
-        final String bucketName = "normal-list-objects";
+        final String bucketName = super.bucketName + "-normal-list-objects";
         
         try {
             ossClient.createBucket(bucketName);
@@ -162,13 +162,13 @@ public class ListObjectsTest extends TestBase {
 
     @Test
     public void testUnormalListObjects() {
-        final String bucketName = "unormal-list-objects";
+        final String bucketName = super.bucketName + "-unormal-list-objects";
         
         try {
             ossClient.createBucket(bucketName);
             
             // List objects under non-existent bucket
-            final String nonexistentBucket = "unormal-list-objects-bucket";
+            final String nonexistentBucket = super.bucketName + "-unormal-list-objects-bucket";
             try {
                 ossClient.listObjects(nonexistentBucket);
                 Assert.fail("List objects should not be successful");
