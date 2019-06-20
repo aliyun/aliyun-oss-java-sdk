@@ -36,8 +36,20 @@ import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.ListVersionsRequest;
 import com.aliyun.oss.model.OSSVersionSummary;
 import com.aliyun.oss.model.VersionListing;
+import com.aliyun.oss.model.BucketVersioningConfiguration;
+import com.aliyun.oss.model.SetBucketVersioningRequest;
 
 public class ListVersionsTest extends TestBase {
+
+    public void setUp() throws Exception {
+        super.setUp();
+
+        // start versioning
+        BucketVersioningConfiguration configuration = new BucketVersioningConfiguration();
+        configuration.setStatus(BucketVersioningConfiguration.ENABLED);
+        SetBucketVersioningRequest request = new SetBucketVersioningRequest(bucketName, configuration);
+        ossClient.setBucketVersioning(request);
+    }
 
     @Test
     public void testNormalListVersions() {

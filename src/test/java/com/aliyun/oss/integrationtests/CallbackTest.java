@@ -58,7 +58,7 @@ import com.aliyun.oss.model.UploadPartResult;
 @SuppressWarnings("deprecation")
 public class CallbackTest extends TestBase {
     
-    private static final String callbackUrl = "oss-demo.aliyuncs.com:23450";
+    private static final String callbackUrl = TestConfig.CALLBACK_URL;
 
     private static final int instreamLength = 1024;
     private static final int bufferLength = 1024;

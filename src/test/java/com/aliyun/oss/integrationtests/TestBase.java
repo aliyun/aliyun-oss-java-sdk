@@ -55,6 +55,10 @@ import com.aliyun.oss.model.MultipartUpload;
 import com.aliyun.oss.model.MultipartUploadListing;
 import com.aliyun.oss.model.OSSObjectSummary;
 import com.aliyun.oss.model.ObjectListing;
+import com.aliyun.oss.model.BucketVersioningConfiguration;
+import com.aliyun.oss.model.VersionListing;
+import com.aliyun.oss.model.ListVersionsRequest;
+import com.aliyun.oss.model.OSSVersionSummary;
 
 public class TestBase {
     
@@ -117,6 +121,35 @@ public class TestBase {
     protected static void deleteBucketWithObjects(OSSClient client, String bucketName) {
         if (!client.doesBucketExist(bucketName)) {
             return;
+        }
+
+        //delete objects by version id
+        try {
+            // start versioning
+            BucketVersioningConfiguration versionConfiguration = ossClient.getBucketVersioning(bucketName);
+            if (versionConfiguration.getStatus() != BucketVersioningConfiguration.OFF) {
+                // stop versioning
+                //versionConfiguration.setStatus(BucketVersioningConfiguration.SUSPENDED);
+                //ossClient.setBucketVersioning(new SetBucketVersioningRequest(bucketName, versionConfiguration));
+
+                String nextKeyMarker = null;
+                String nextVersionMarker = null;
+                VersionListing versionListing = null;
+                do {
+                    ListVersionsRequest listVersionsRequest = new ListVersionsRequest()
+                            .withBucketName(bucketName)
+                            .withKeyMarker(nextKeyMarker)
+                            .withVersionIdMarker(nextVersionMarker);
+                    versionListing = ossClient.listVersions(listVersionsRequest);
+
+                    for (OSSVersionSummary ossVersion : versionListing.getVersionSummaries()) {
+                        ossClient.deleteVersion(bucketName, ossVersion.getKey(), ossVersion.getVersionId());
+                    }
+                    nextKeyMarker = versionListing.getNextKeyMarker();
+                    nextVersionMarker = versionListing.getNextVersionIdMarker();
+                } while (versionListing.isTruncated());
+            }
+        } catch (Exception e) {
         }
 
         // delete objects

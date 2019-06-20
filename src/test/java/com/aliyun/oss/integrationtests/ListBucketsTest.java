@@ -41,7 +41,7 @@ public class ListBucketsTest extends TestBase {
     
     @Test
     public void testNormalListBuckets() {
-        final String bucketNamePrefix = BUCKET_NAME_PREFIX + "normal-list-buckets-";
+        final String bucketNamePrefix = super.bucketName + "-normal-list-buckets-";
         
         try {
             List<Bucket> returnedBuckets = ossClient.listBuckets();
