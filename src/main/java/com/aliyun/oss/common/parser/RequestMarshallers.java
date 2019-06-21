@@ -77,7 +77,8 @@ public final class RequestMarshallers {
     public static final ProcessObjectRequestMarshaller processObjectRequestMarshaller = new ProcessObjectRequestMarshaller();
     public static final SetBucketVersioningRequestMarshaller setBucketVersioningRequestMarshaller = new SetBucketVersioningRequestMarshaller();
     public static final SetBucketEncryptionRequestMarshaller setBucketEncryptionRequestMarshaller = new SetBucketEncryptionRequestMarshaller();
-    
+    public static final SetBucketPolicyRequestMarshaller setBucketPolicyRequestMarshaller = new SetBucketPolicyRequestMarshaller();
+
     public static final CreateSelectObjectMetadataRequestMarshaller createSelectObjectMetadataRequestMarshaller = new CreateSelectObjectMetadataRequestMarshaller();
     public static final SelectObjectRequestMarshaller selectObjectRequestMarshaller = new SelectObjectRequestMarshaller();
 
@@ -896,7 +897,24 @@ public final class RequestMarshallers {
     	}
 
     }
-    
+
+    public static final class SetBucketPolicyRequestMarshaller
+            implements RequestMarshaller2<SetBucketPolicyRequest> {
+
+        @Override
+        public byte[] marshall(SetBucketPolicyRequest setBucketPolicyRequest) {
+
+            byte[] rawData = null;
+            try {
+                rawData = setBucketPolicyRequest.getPolicyText().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+
+    }
+
     public static final class CreateLiveChannelRequestMarshaller
             implements RequestMarshaller2<CreateLiveChannelRequest> {
 

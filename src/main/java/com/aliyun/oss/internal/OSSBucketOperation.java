@@ -35,6 +35,7 @@ import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketQosReques
 import static com.aliyun.oss.common.parser.RequestMarshallers.bucketImageProcessConfMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketVersioningRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketEncryptionRequestMarshaller;
+import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketPolicyRequestMarshaller;
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
@@ -63,6 +64,7 @@ import static com.aliyun.oss.internal.ResponseParsers.getImageStyleResponseParse
 import static com.aliyun.oss.internal.ResponseParsers.listImageStyleResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketImageProcessConfResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketEncryptionResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getBucketPolicyResponseParser;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -127,6 +129,8 @@ import com.aliyun.oss.model.SetBucketStorageCapacityRequest;
 import com.aliyun.oss.model.SetBucketTaggingRequest;
 import com.aliyun.oss.model.SetBucketVersioningRequest;
 import com.aliyun.oss.model.SetBucketWebsiteRequest;
+import com.aliyun.oss.model.SetBucketPolicyRequest;
+import com.aliyun.oss.model.GetBucketPolicyResult;
 import com.aliyun.oss.model.TagSet;
 import com.aliyun.oss.model.Style;
 import com.aliyun.oss.model.UserQos;
@@ -570,7 +574,6 @@ public class OSSBucketOperation extends OSSOperation {
         ensureBucketNameValid(bucketName);
 
         Map<String, String> params = new HashMap<String, String>();
-        ;
         params.put(SUBRESOURCE_STYLE, null);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
@@ -1259,6 +1262,60 @@ public class OSSBucketOperation extends OSSOperation {
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
             .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
             .setOriginalRequest(genericRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    public void setBucketPolicy(SetBucketPolicyRequest setBucketPolicyRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(setBucketPolicyRequest, "setBucketPolicyRequest");
+
+        String bucketName = setBucketPolicyRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+     	Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_POLICY, null);
+
+        byte[] rawContent = setBucketPolicyRequestMarshaller.marshall(setBucketPolicyRequest);
+        Map<String, String> headers = new HashMap<String, String>();
+        addRequestRequiredHeaders(headers, rawContent);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params)
+                .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+                .setOriginalRequest(setBucketPolicyRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    public GetBucketPolicyResult getBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException {
+    	assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_POLICY, null);
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
+        return doOperation(request, getBucketPolicyResponseParser, bucketName, null, true);
+    }
+    
+    public void deleteBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_POLICY, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
 
         doOperation(request, emptyResponseParser, bucketName, null);
     }

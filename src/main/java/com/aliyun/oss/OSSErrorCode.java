@@ -256,4 +256,14 @@ public interface OSSErrorCode {
      * The archive file is not restored before usage.
      */
     static final String INVALID_OBJECT_STATE = "InvalidObjectState";
+    
+    /**
+     * The policy text is illegal.
+     */
+    static final String INVALID_POLICY_DOCUMENT = "InvalidPolicyDocument";
+    
+    /**
+     * The exsiting bucket without policy 
+     */
+    static final String NO_SUCH_BUCKET_POLICY = "NoSuchBucketPolicy";
 }

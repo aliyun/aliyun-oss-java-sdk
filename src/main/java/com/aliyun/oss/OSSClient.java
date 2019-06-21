@@ -1235,6 +1235,36 @@ public class OSSClient implements OSS {
     }
     
     @Override
+    public void setBucketPolicy(String bucketName,  String policyText) throws OSSException, ClientException{
+    	this.bucketOperation.setBucketPolicy(new SetBucketPolicyRequest(bucketName, policyText));
+    }
+    
+    @Override
+    public void setBucketPolicy(SetBucketPolicyRequest setBucketPolicyRequest) throws OSSException, ClientException{
+    	this.bucketOperation.setBucketPolicy(setBucketPolicyRequest);
+    }
+    
+    @Override
+    public GetBucketPolicyResult getBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException{
+    	return bucketOperation.getBucketPolicy(genericRequest);
+    }
+    
+    @Override
+    public GetBucketPolicyResult getBucketPolicy(String bucketName) throws OSSException, ClientException{
+    	return bucketOperation.getBucketPolicy(new GenericRequest(bucketName));
+    }
+    
+    @Override
+    public void deleteBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException{
+    	bucketOperation.deleteBucketPolicy(genericRequest);
+    }
+    
+    @Override
+    public void deleteBucketPolicy(String bucketName) throws OSSException, ClientException{
+    	bucketOperation.deleteBucketPolicy(new GenericRequest(bucketName));
+    }
+
+    @Override
     public UploadFileResult uploadFile(UploadFileRequest uploadFileRequest) throws Throwable {
         return this.uploadOperation.uploadFile(uploadFileRequest);
     }
