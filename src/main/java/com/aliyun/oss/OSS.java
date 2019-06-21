@@ -2539,6 +2539,83 @@ public interface OSS {
     public void deleteBucketEncryption(GenericRequest genericRequest) throws OSSException, ClientException;
     
     /**
+     * Sets the policy on the {@link Bucket} instance.
+     * 
+     * @param bucketName
+     *            Bucket name.
+     * @param policyText
+     *            Policy JSON text, please refer to the policy writing rules of Aliyun
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.           
+     */
+    public void setBucketPolicy(String bucketName,  String policyText) throws OSSException, ClientException;
+
+    /**
+     * Sets the policy on the {@link Bucket} instance.
+     * 
+     * @param SetBucketPolicyRequest
+     *            {@link SetBucketPolicyRequest} instance that has bucket
+     *            information as well as policy information.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.        
+     */
+    public void setBucketPolicy(SetBucketPolicyRequest setBucketPolicyRequest) throws OSSException, ClientException;
+    
+    /**
+     * Gets policy text of the {@link Bucket} instance.
+     * 
+     * @param genericRequest
+     *            {@link GenericRequest} instance that has the bucket name.
+     * @return The policy's content in {@link InputStream}. 
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public GetBucketPolicyResult getBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException;
+    
+    /**
+     * Gets policy text of the {@link Bucket} instance.
+     * 
+     * @param bucketName
+     *            Bucket name
+     * @return The policy's content in {@link InputStream}. 
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public GetBucketPolicyResult getBucketPolicy(String bucketName) throws OSSException, ClientException;
+    
+    /**
+     * Delete policy of the {@link Bucket} instance.
+     * 
+     * @param genericRequest
+     *            {@link GenericRequest} instance that has the bucket name.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public void deleteBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException;
+    
+    /**
+     * Delete policy of the {@link Bucket} instance.
+     * 
+     * @param bucketName
+     *            Bucket name
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.           
+     */
+    public void deleteBucketPolicy(String bucketName) throws OSSException, ClientException;
+
+    /**
      * File upload
      * 
      * This method will automatically split files into parts and upload them in

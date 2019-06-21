@@ -24,6 +24,8 @@ import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
 import static com.aliyun.oss.internal.OSSUtils.trimQuotes;
 
 import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -120,6 +122,7 @@ import com.aliyun.oss.model.UdfInfo;
 import com.aliyun.oss.model.UploadPartCopyResult;
 import com.aliyun.oss.model.UserQos;
 import com.aliyun.oss.model.VersionListing;
+import com.aliyun.oss.model.GetBucketPolicyResult;
 
 /*
  * A collection of parsers that parse HTTP reponses into corresponding human-readable results.
@@ -149,6 +152,7 @@ public final class ResponseParsers {
     public static final GetBucketQosResponseParser getBucketQosResponseParser = new GetBucketQosResponseParser();
     public static final GetBucketVersioningResponseParser getBucketVersioningResponseParser = new GetBucketVersioningResponseParser();
     public static final GetBucketEncryptionResponseParser getBucketEncryptionResponseParser = new GetBucketEncryptionResponseParser();
+    public static final GetBucketPolicyResponseParser getBucketPolicyResponseParser = new GetBucketPolicyResponseParser();
     
     public static final ListObjectsReponseParser listObjectsReponseParser = new ListObjectsReponseParser();
     public static final ListVersionsReponseParser listVersionsReponseParser = new ListVersionsReponseParser();
@@ -443,6 +447,21 @@ public final class ResponseParsers {
     			safeCloseResponse(response);
     		}
     	}
+
+    }
+
+    public static final class GetBucketPolicyResponseParser implements ResponseParser<GetBucketPolicyResult> {
+    	
+        @Override
+        public GetBucketPolicyResult parse(ResponseMessage response) throws ResponseParseException {
+        	try {
+        		GetBucketPolicyResult result = parseGetBucketPolicy(response.getContent());
+        		result.setRequestId(response.getRequestId());
+        		return result;
+        	}finally {
+        		safeCloseResponse(response);
+        	}
+        }
 
     }
 
@@ -2797,6 +2816,29 @@ public final class ResponseParsers {
         }
 
     }
+
+    /**
+     * Unmarshall get bucket policy response body .
+     */
+    public static GetBucketPolicyResult parseGetBucketPolicy(InputStream responseBody) throws ResponseParseException {
+
+        try {
+        	GetBucketPolicyResult result = new GetBucketPolicyResult();
+
+    		BufferedReader reader = new BufferedReader(new InputStreamReader(responseBody));
+    		StringBuilder sb = new StringBuilder();
+    		
+    		String s ;
+    		while (( s = reader.readLine()) != null) 
+    			sb.append(s);
+    		
+    		result.setPolicy(sb.toString());
+    		
+            return result;
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }   
 
     /**
      * Unmarshall get bucket lifecycle response body to lifecycle rules.
