@@ -92,5 +92,7 @@ public interface OSSHeaders extends HttpHeaders {
     static final String OSS_SELECT_INPUT_SPLIT_RANGE = OSS_SELECT_PREFIX + "-split-range";
     
     static final String OSS_TAGGING = "x-oss-tagging";
-    
+
+    static final String OSS_REQUEST_PAYER = "x-oss-request-payer";
+
 }

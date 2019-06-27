@@ -58,6 +58,9 @@ public class UploadPartCopyRequest extends WebServiceRequest {
      */
     private String sourceVersionId;
 
+    // The one who pays for the request
+    private Payer payer;
+
     public UploadPartCopyRequest() {
     }
 
@@ -228,7 +231,29 @@ public class UploadPartCopyRequest extends WebServiceRequest {
     public void setSourceKey(String sourceKey) {
         this.sourceKey = sourceKey;
     }
-    
+
+	/**
+     * * <p>
+     * Sets the one who pays for the request
+     * The Third party should set request payer when requesting resources.
+     * </p>
+     * @param payer
+     *            The one who pays for the request
+     * */
+    public void setRequestPayer(Payer payer) {
+        this.payer = payer;
+    }
+
+    /**
+     * * <p>
+     * Gets the one who pays for the request
+     * </p>
+     * @return The one who pays for the request
+     * */
+    public Payer getRequestPayer() {
+        return payer;
+    }
+
     /**
      * <p>
      * Gets the version ID specifying which version of the source object to

@@ -660,7 +660,7 @@ public class OSSClient implements OSS {
         if (isOnlyInOSS) {
             return doesObjectExist(bucketName, key);
         } else {
-            return objectOperation.doesObjectExistWithRedirect(bucketName, key);
+            return objectOperation.doesObjectExistWithRedirect(new GenericRequest(bucketName, key));
         }
     }
 
@@ -673,6 +673,15 @@ public class OSSClient implements OSS {
     @Override
     public boolean doesObjectExist(GenericRequest genericRequest) throws OSSException, ClientException {
         return objectOperation.doesObjectExist(genericRequest);
+    }
+
+    @Override
+    public boolean doesObjectExist(GenericRequest genericRequest, boolean isOnlyInOSS) throws OSSException, ClientException {
+    	if (isOnlyInOSS) {
+    	    return objectOperation.doesObjectExist(genericRequest);	
+    	} else {
+    	    return objectOperation.doesObjectExistWithRedirect(genericRequest);
+    	}
     }
 
     @Override
@@ -1410,6 +1419,26 @@ public class OSSClient implements OSS {
     @Override
     public GenericResult processObject(ProcessObjectRequest processObjectRequest) throws OSSException, ClientException {
         return this.objectOperation.processObject(processObjectRequest);
+    }
+
+    @Override
+    public void setBucketRequestPayment(String bucketName, Payer payer) throws OSSException, ClientException {
+        this.bucketOperation.setBucketRequestPayment(new SetBucketRequestPaymentRequest(bucketName, payer));
+    }
+
+    @Override
+    public void setBucketRequestPayment(SetBucketRequestPaymentRequest setBucketRequestPaymentRequest) throws OSSException, ClientException{
+        this.bucketOperation.setBucketRequestPayment(setBucketRequestPaymentRequest);
+    }
+
+    @Override
+    public GetBucketRequestPaymentResult getBucketRequestPayment(String bucketName) throws OSSException, ClientException{
+        return this.bucketOperation.getBucketRequestPayment(new GenericRequest(bucketName));
+    }
+    
+    @Override
+    public GetBucketRequestPaymentResult getBucketRequestPayment(GenericRequest genericRequest) throws OSSException, ClientException{
+        return this.bucketOperation.getBucketRequestPayment(genericRequest);
     }
 
     @Override

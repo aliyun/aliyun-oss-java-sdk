@@ -1346,6 +1346,23 @@ public interface OSS {
     public boolean doesObjectExist(String bucketName, String key, boolean isOnlyInOSS);
 
     /**
+     * Checks if a specific {@link OSSObject} exists under the specific
+     * {@link Bucket}. 302 Redirect or OSS mirroring will not impact the result
+     * of this function.
+     * 
+     * @param genericRequest
+     *            A {@link GenericRequest} instance which specifies the bucket
+     *            and object key.
+     * @param isOnlyInOSS
+     *            true if ignore 302 redirect or mirroring； false if considering
+     *            302 redirect or mirroring, which could download the object
+     *            from source to OSS when the file exists in source but is not
+     *            in OSS yet.        
+     * @return True if exists; false if not.
+     */
+    public boolean doesObjectExist(GenericRequest genericRequest, boolean isOnlyInOSS) throws OSSException, ClientException;
+
+    /**
      * Checks if a specific {@link OSSObject} exists.
      * 
      * @param headObjectRequest
@@ -3075,6 +3092,57 @@ public interface OSS {
      *             OSS Client side exception.
      */
     public GenericResult processObject(ProcessObjectRequest processObjectRequest) throws OSSException, ClientException;
+
+    /**
+     * Sets the request payment of the {@link Bucket}.
+     * 
+     * @param bucketName
+     *             The bucket name.
+     * @param payer
+     *             The request payer setting
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public void setBucketRequestPayment(String bucketName, Payer payer) throws OSSException, ClientException;
+
+    /**
+     * Sets the request payment of the {@link Bucket}.
+     * 
+     * @param setBucketRequestPaymentRequest
+     *             A {@link SetBucketRequestPaymentRequest} instance  that has 
+     *             the bucket name and payer setting.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public void setBucketRequestPayment(SetBucketRequestPaymentRequest setBucketRequestPaymentRequest) throws OSSException, ClientException;
+
+    /**
+     * Gets the request payment of the {@link Bucket}.
+     * 
+     * @param bucketName
+     *             The bucket name.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public GetBucketRequestPaymentResult getBucketRequestPayment(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Gets the request payment of the {@link Bucket}.
+     * 
+     * @param genericRequest
+     *             {@link GenericRequest} instance that has the bucket name.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public GetBucketRequestPaymentResult getBucketRequestPayment(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
      * Creates UDF

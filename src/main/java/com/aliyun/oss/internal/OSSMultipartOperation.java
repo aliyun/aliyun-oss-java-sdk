@@ -84,6 +84,7 @@ import com.aliyun.oss.model.UploadPartCopyRequest;
 import com.aliyun.oss.model.UploadPartCopyResult;
 import com.aliyun.oss.model.UploadPartRequest;
 import com.aliyun.oss.model.UploadPartResult;
+import com.aliyun.oss.model.Payer;
 
 /**
  * Multipart operation.
@@ -119,8 +120,11 @@ public class OSSMultipartOperation extends OSSOperation {
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(UPLOAD_ID, uploadId);
 
+        Map<String, String> headers = new HashMap<String, String>();
+        populateRequestPayerHeader(headers, abortMultipartUploadRequest.getRequestPayer());
+
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(key).setParameters(parameters)
+                .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(parameters)
                 .setOriginalRequest(abortMultipartUploadRequest).build();
 
         doOperation(request, emptyResponseParser, bucketName, key);
@@ -148,6 +152,8 @@ public class OSSMultipartOperation extends OSSOperation {
         Map<String, String> headers = new HashMap<String, String>();
         populateCompleteMultipartUploadOptionalHeaders(completeMultipartUploadRequest, headers);
         populateRequestCallback(headers, completeMultipartUploadRequest.getCallback());
+        
+        populateRequestPayerHeader(headers, completeMultipartUploadRequest.getRequestPayer());
 
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(UPLOAD_ID, uploadId);
@@ -206,6 +212,8 @@ public class OSSMultipartOperation extends OSSOperation {
         if (initiateMultipartUploadRequest.getObjectMetadata() != null) {
             populateRequestMetadata(headers, initiateMultipartUploadRequest.getObjectMetadata());
         }
+        
+        populateRequestPayerHeader(headers, initiateMultipartUploadRequest.getRequestPayer());
 
         // Be careful that we don't send the object's total size as the content
         // length for the InitiateMultipartUpload request.
@@ -242,8 +250,11 @@ public class OSSMultipartOperation extends OSSOperation {
         Map<String, String> params = new LinkedHashMap<String, String>();
         populateListMultipartUploadsRequestParameters(listMultipartUploadsRequest, params);
 
+        Map<String, String> headers = new HashMap<String, String>();
+        populateRequestPayerHeader(headers, listMultipartUploadsRequest.getRequestPayer());
+
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setHeaders(headers).setParameters(params)
                 .setOriginalRequest(listMultipartUploadsRequest).build();
 
         return doOperation(request, listMultipartUploadsResponseParser, bucketName, null, true);
@@ -270,8 +281,11 @@ public class OSSMultipartOperation extends OSSOperation {
         Map<String, String> params = new LinkedHashMap<String, String>();
         populateListPartsRequestParameters(listPartsRequest, params);
 
+        Map<String, String> headers = new HashMap<String, String>();
+        populateRequestPayerHeader(headers, listPartsRequest.getRequestPayer());
+
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(key).setParameters(params)
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(params)
                 .setOriginalRequest(listPartsRequest).build();
 
         return doOperation(request, listPartsResponseParser, bucketName, key, true);
@@ -313,6 +327,8 @@ public class OSSMultipartOperation extends OSSOperation {
 
         Map<String, String> headers = new HashMap<String, String>();
         populateUploadPartOptionalHeaders(uploadPartRequest, headers);
+        
+        populateRequestPayerHeader(headers, uploadPartRequest.getRequestPayer());
 
         // Use a LinkedHashMap to preserve the insertion order.
         Map<String, String> params = new LinkedHashMap<String, String>();
@@ -482,6 +498,10 @@ public class OSSMultipartOperation extends OSSOperation {
             headers.put(OSSHeaders.COPY_SOURCE_RANGE, range);
         }
 
+        if (uploadPartCopyRequest.getRequestPayer() != null) {
+            headers.put(OSSHeaders.OSS_REQUEST_PAYER, uploadPartCopyRequest.getRequestPayer().toString().toLowerCase());
+        }
+
         addDateHeader(headers, OSSHeaders.COPY_OBJECT_SOURCE_IF_MODIFIED_SINCE,
                 uploadPartCopyRequest.getModifiedSinceConstraint());
         addDateHeader(headers, OSSHeaders.COPY_OBJECT_SOURCE_IF_UNMODIFIED_SINCE,
@@ -516,6 +536,12 @@ public class OSSMultipartOperation extends OSSOperation {
         CannedAccessControlList cannedACL = completeMultipartUploadRequest.getObjectACL();
         if (cannedACL != null) {
             headers.put(OSSHeaders.OSS_OBJECT_ACL, cannedACL.toString());
+        }
+    }
+
+    private static void populateRequestPayerHeader (Map<String, String> headers, Payer payer) {
+        if (payer != null && payer.equals(Payer.Requester)) {
+            headers.put(OSSHeaders.OSS_REQUEST_PAYER, payer.toString().toLowerCase());
         }
     }
 
