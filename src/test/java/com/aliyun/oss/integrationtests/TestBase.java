@@ -369,6 +369,18 @@ public class TestBase {
               TestConfig.OSS_TEST_ACCESS_KEY_SECRET_1 = TestConfig.OSS_TEST_ACCESS_KEY_SECRET;
           }
       }
+      	
+      if (TestConfig.OSS_TEST_PAYER_UID == null) {
+          TestConfig.OSS_TEST_PAYER_UID = System.getenv().get("OSS_TEST_PAYER_UID");
+      }
+      
+      if (TestConfig.OSS_TEST_PAYER_ACCESS_KEY_ID == null) {
+          TestConfig.OSS_TEST_PAYER_ACCESS_KEY_ID = System.getenv().get("OSS_TEST_PAYER_ACCESS_KEY_ID");
+      }
+      
+      if (TestConfig.OSS_TEST_PAYER_ACCESS_KEY_SECRET == null) {
+          TestConfig.OSS_TEST_PAYER_ACCESS_KEY_SECRET = System.getenv().get("OSS_TEST_PAYER_ACCESS_KEY_SECRET");
+      }
       
       // replacation config
       if (TestConfig.OSS_TEST_REPLICATION_ENDPOINT == null) {

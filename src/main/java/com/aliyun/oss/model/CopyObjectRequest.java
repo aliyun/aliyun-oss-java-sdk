@@ -77,6 +77,9 @@ public class CopyObjectRequest extends WebServiceRequest {
     // the file.
     // Otherwise return 412. It's optional.
     private Date modifiedSinceConstraint;
+    
+    // The one who pays for the request
+    private Payer payer;
 
     /**
      * Constructor
@@ -400,5 +403,27 @@ public class CopyObjectRequest extends WebServiceRequest {
      */
     public void setServerSideEncryptionKeyId(String serverSideEncryptionKeyId) {
         this.serverSideEncryptionKeyID = serverSideEncryptionKeyId;
+    }
+
+    /**
+     * * <p>
+     * Sets the one who pays for the request
+     * The Third party should set request payer when requesting resources.
+     * </p>
+     * @param payer
+     *            The one who pays for the request
+     * */
+    public void setRequestPayer(Payer payer) {
+        this.payer = payer;
+    }
+    
+    /**
+     * * <p>
+     * Gets the one who pays for the request
+     * </p>
+     * @return The one who pays for the request
+     * */
+    public Payer getRequestPayer() {
+        return payer;
     }
 }

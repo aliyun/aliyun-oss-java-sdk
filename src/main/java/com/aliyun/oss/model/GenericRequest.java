@@ -29,6 +29,9 @@ public class GenericRequest extends WebServiceRequest {
     private String key;
     private String versionId;
 
+    // The one who pays for the request
+    private Payer payer;
+
     public GenericRequest() {}
 
     public GenericRequest(String bucketName) {
@@ -136,5 +139,41 @@ public class GenericRequest extends WebServiceRequest {
         setVersionId(versionId);
         return this;
     }
+
+    /**
+     * * <p>
+     * Sets the one who pays for the request
+     * The Third party should set request payer when requesting resources.
+     * </p>
+     * @param payer
+     *            The one who pays for the request
+     * */
+    public void setRequestPayer(Payer payer) {
+        this.payer = payer;
+    }
     
+    /**
+     * * <p>
+     * Gets the one who pays for the request
+     * </p>
+     * @return The one who pays for the request
+     * */
+    public Payer getRequestPayer() {
+        return payer;
+    }
+
+    /**
+     * * <p>
+     * Sets the one who pays for the request
+     * The Third party should set request payer when requesting resources.
+     * </p>
+     * @param payer
+     *            The one who pays for the request
+     * @return The updated request object.
+     * */
+    public GenericRequest withRequestPayer(Payer payer) {
+        setRequestPayer(payer);
+        return this;
+    }
+
 }
