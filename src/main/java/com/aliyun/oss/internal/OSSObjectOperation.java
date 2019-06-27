@@ -126,6 +126,8 @@ public class OSSObjectOperation extends OSSOperation {
 
         PutObjectResult result = null;
 
+        populateRequestPayerHeader(putObjectRequest);
+
         if (!isNeedReturnResponse(putObjectRequest)) {
             result = writeObjectInternal(WriteMode.OVERWRITE, putObjectRequest, putObjectReponseParser);
         } else {
@@ -183,6 +185,8 @@ public class OSSObjectOperation extends OSSOperation {
 
         assertParameterNotNull(appendObjectRequest, "appendObjectRequest");
 
+        populateRequestPayerHeader(appendObjectRequest);
+
         AppendObjectResult result = writeObjectInternal(WriteMode.APPEND, appendObjectRequest,
                 appendObjectResponseParser);
 
@@ -205,6 +209,11 @@ public class OSSObjectOperation extends OSSOperation {
         GenericRequest genericRequest = new GenericRequest(
                 createSelectObjectMetadataRequest.getBucketName(), createSelectObjectMetadataRequest.getKey());
         genericRequest.getParameters().put(RequestParameters.SUBRESOURCE_PROCESS, process);
+
+        Payer payer = createSelectObjectMetadataRequest.getRequestPayer();
+        if (payer != null) {
+            genericRequest.addHeader(OSSHeaders.OSS_REQUEST_PAYER, payer.toString().toLowerCase());
+        }
 
         String bucketName = genericRequest.getBucketName();
         String key = genericRequest.getKey();
@@ -263,6 +272,8 @@ public class OSSObjectOperation extends OSSOperation {
         ensureObjectKeyValid(key);
         Map<String, String> headers = new HashMap<String, String>();
         populateGetObjectRequestHeaders(selectObjectRequest, headers);
+        
+        populateRequestPayerHeader(selectObjectRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         populateResponseHeaderParameters(params, selectObjectRequest.getResponseHeaders());
@@ -435,6 +446,8 @@ public class OSSObjectOperation extends OSSOperation {
                 genericRequest.getVersionId());
         }
 
+        populateRequestPayerHeader(genericRequest);
+
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(key).setParameters(params)
                 .setOriginalRequest(genericRequest).build();
@@ -462,6 +475,8 @@ public class OSSObjectOperation extends OSSOperation {
         if (genericRequest.getVersionId() != null) {
             params.put(RequestParameters.SUBRESOURCE_VRESION_ID, genericRequest.getVersionId());
         }
+
+        populateRequestPayerHeader(genericRequest);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
             .setMethod(HttpMethod.HEAD).setBucket(bucketName).setKey(key).setParameters(params)
@@ -519,6 +534,8 @@ public class OSSObjectOperation extends OSSOperation {
         assertParameterNotNull(key, "key");
         ensureObjectKeyValid(key);
 
+        populateRequestPayerHeader(genericRequest);
+
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(key).setOriginalRequest(genericRequest)
                 .build();
@@ -545,6 +562,8 @@ public class OSSObjectOperation extends OSSOperation {
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(RequestParameters.SUBRESOURCE_VRESION_ID, versionId);
+
+        populateRequestPayerHeader(deleteVersionRequest);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
             .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(key).setParameters(params)
@@ -599,6 +618,8 @@ public class OSSObjectOperation extends OSSOperation {
         Map<String, String> headers = new HashMap<String, String>();
         addDeleteVersionsRequiredHeaders(headers, rawContent);
 
+        populateRequestPayerHeader(deleteVersionsRequest);
+
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
             .setMethod(HttpMethod.POST).setBucket(bucketName).setParameters(params).setHeaders(headers)
             .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
@@ -631,6 +652,11 @@ public class OSSObjectOperation extends OSSOperation {
         addStringListHeader(headers, OSSHeaders.HEAD_OBJECT_IF_MATCH, headObjectRequest.getMatchingETagConstraints());
         addStringListHeader(headers, OSSHeaders.HEAD_OBJECT_IF_NONE_MATCH,
                 headObjectRequest.getNonmatchingETagConstraints());
+        
+        Payer payer = headObjectRequest.getRequestPayer();
+        if (payer != null) {
+            headers.put(OSSHeaders.OSS_REQUEST_PAYER, payer.toString().toLowerCase());
+        }
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.HEAD).setBucket(bucketName).setKey(key).setHeaders(headers)
@@ -655,6 +681,8 @@ public class OSSObjectOperation extends OSSOperation {
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put(OSSHeaders.OSS_OBJECT_ACL, cannedAcl.toString());
+
+        populateRequestPayerHeader(setObjectAclRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_ACL, null);
@@ -684,6 +712,8 @@ public class OSSObjectOperation extends OSSOperation {
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_ACL, null);
 
+        populateRequestPayerHeader(genericRequest);
+
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(key).setParameters(params)
                 .setOriginalRequest(genericRequest).build();
@@ -709,6 +739,8 @@ public class OSSObjectOperation extends OSSOperation {
         if (versionId != null) {
             params.put(RequestParameters.SUBRESOURCE_VRESION_ID, versionId);
         }
+        
+        populateRequestPayerHeader(genericRequest);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.POST).setBucket(bucketName).setKey(key).setParameters(params)
@@ -735,6 +767,8 @@ public class OSSObjectOperation extends OSSOperation {
         if (versionId != null) {
             params.put(RequestParameters.SUBRESOURCE_VRESION_ID, versionId);
         }
+        
+        populateRequestPayerHeader(setObjectTaggingRequest);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.PUT).setBucket(bucketName).setKey(key).setParameters(params)
@@ -762,6 +796,8 @@ public class OSSObjectOperation extends OSSOperation {
             params.put(RequestParameters.SUBRESOURCE_VRESION_ID, versionId);
         }
 
+        populateRequestPayerHeader(genericRequest);
+
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(key).setParameters(params)
                 .setOriginalRequest(genericRequest).build();
@@ -786,6 +822,8 @@ public class OSSObjectOperation extends OSSOperation {
         if (versionId != null) {
             params.put(RequestParameters.SUBRESOURCE_VRESION_ID, versionId);
         }
+        
+        populateRequestPayerHeader(genericRequest);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
             .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(key).setParameters(params)
@@ -807,6 +845,8 @@ public class OSSObjectOperation extends OSSOperation {
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_SYMLINK, null);
+
+        populateRequestPayerHeader(genericRequest);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(symlink).setParameters(params)
@@ -851,6 +891,8 @@ public class OSSObjectOperation extends OSSOperation {
 
         Map<String, String> headers = new HashMap<String, String>();
         populateRequestMetadata(headers, metadata);
+        
+        populateRequestPayerHeader(createSymlinkRequest);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_SYMLINK, null);
@@ -879,6 +921,8 @@ public class OSSObjectOperation extends OSSOperation {
         Map<String, String> params = new HashMap<String, String>();
         params.put(RequestParameters.SUBRESOURCE_PROCESS, null);
 
+        populateRequestPayerHeader(processObjectRequest);
+
         byte[] rawContent = processObjectRequestMarshaller.marshall(processObjectRequest);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
@@ -902,10 +946,18 @@ public class OSSObjectOperation extends OSSOperation {
         }
     }
 
-    public boolean doesObjectExistWithRedirect(String bucketName, String key) throws OSSException, ClientException {
+    public boolean doesObjectExistWithRedirect(GenericRequest genericRequest) throws OSSException, ClientException {
         OSSObject ossObject = null;
         try {
+        	String bucketName = genericRequest.getBucketName();
+        	String key = genericRequest.getKey();
+        	Payer payer = genericRequest.getRequestPayer();
+
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
+
+            if (payer != null)
+                getObjectRequest.setRequestPayer(payer);
+
             ossObject = this.getObject(getObjectRequest);
             return true;
         } catch (OSSException e) {
@@ -1085,6 +1137,11 @@ public class OSSObjectOperation extends OSSOperation {
         if (copyObjectRequest.getSourceVersionId() != null) {
             copySourceHeader += "?versionId=" + copyObjectRequest.getSourceVersionId();
         }
+
+        if (copyObjectRequest.getRequestPayer() != null) {
+            headers.put(OSSHeaders.OSS_REQUEST_PAYER, copyObjectRequest.getRequestPayer().toString().toLowerCase());
+        }
+
         headers.put(OSSHeaders.COPY_OBJECT_SOURCE, copySourceHeader);
 
         addDateHeader(headers, OSSHeaders.COPY_OBJECT_SOURCE_IF_MODIFIED_SINCE,
@@ -1139,6 +1196,10 @@ public class OSSObjectOperation extends OSSOperation {
             headers.put(OSSHeaders.GET_OBJECT_IF_NONE_MATCH,
                     joinETags(getObjectRequest.getNonmatchingETagConstraints()));
         }
+
+        if (getObjectRequest.getRequestPayer() != null) {
+            headers.put(OSSHeaders.OSS_REQUEST_PAYER, getObjectRequest.getRequestPayer().toString().toLowerCase());
+        }
     }
 
     private static void addDeleteObjectsRequiredHeaders(Map<String, String> headers, byte[] rawContent) {
@@ -1158,11 +1219,21 @@ public class OSSObjectOperation extends OSSOperation {
         if (request.getEncodingType() != null) {
             headers.put(ENCODING_TYPE, request.getEncodingType());
         }
+        
+        if(request.getRequestPayer() != null) {
+            headers.put(OSSHeaders.OSS_REQUEST_PAYER, request.getRequestPayer().toString().toLowerCase());
+        }
     }
 
     private static void addGetObjectRangeHeader(long[] range, Map<String, String> headers) {
         RangeSpec rangeSpec = RangeSpec.parse(range);
         headers.put(OSSHeaders.RANGE, rangeSpec.toString());
+    }
+    
+    private static void populateRequestPayerHeader(GenericRequest genericRequest) {
+        if (genericRequest.getRequestPayer() != null) {
+            genericRequest.addHeader(OSSHeaders.OSS_REQUEST_PAYER, genericRequest.getRequestPayer().toString().toLowerCase());
+        }
     }
 
     private static void populateWriteObjectParams(WriteMode mode, PutObjectRequest originalRequest,

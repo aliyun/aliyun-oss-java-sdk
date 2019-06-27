@@ -54,6 +54,7 @@ import com.aliyun.oss.model.InitiateMultipartUploadRequest;
 import com.aliyun.oss.model.InitiateMultipartUploadResult;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PartETag;
+import com.aliyun.oss.model.Payer;
 import com.aliyun.oss.model.UploadFileRequest;
 import com.aliyun.oss.model.UploadFileResult;
 import com.aliyun.oss.model.UploadPartRequest;
@@ -339,7 +340,7 @@ public class OSSUploadOperation {
             // The checkpoint is not enabled, re-upload.
             prepare(uploadCheckPoint, uploadFileRequest);
         }
-
+        
         // The progress tracker starts
         ProgressListener listener = uploadFileRequest.getProgressListener();
         ProgressPublisher.publishProgress(listener, ProgressEventType.TRANSFER_STARTED_EVENT);
@@ -412,6 +413,12 @@ public class OSSUploadOperation {
 
         InitiateMultipartUploadRequest initiateUploadRequest = new InitiateMultipartUploadRequest(
                 uploadFileRequest.getBucketName(), uploadFileRequest.getKey(), metadata);
+        
+        Payer payer = uploadFileRequest.getRequestPayer();
+        if(uploadFileRequest.getRequestPayer() != null) {
+            initiateUploadRequest.setRequestPayer(payer);
+        }
+        
         InitiateMultipartUploadResult initiateUploadResult = multipartOperation
                 .initiateMultipartUpload(initiateUploadRequest);
         uploadCheckPoint.uploadID = initiateUploadResult.getUploadId();
@@ -504,6 +511,11 @@ public class OSSUploadOperation {
                 uploadPartRequest.setInputStream(instream);
                 uploadPartRequest.setPartSize(uploadPart.size);
 
+                Payer payer = uploadFileRequest.getRequestPayer();
+                if(payer != null) {
+                    uploadPartRequest.setRequestPayer(payer);
+                }
+
                 UploadPartResult uploadPartResult = multipartOperation.uploadPart(uploadPartRequest);
 
                 if(multipartOperation.getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
@@ -551,6 +563,12 @@ public class OSSUploadOperation {
         CompleteMultipartUploadRequest completeUploadRequest = new CompleteMultipartUploadRequest(
                 uploadFileRequest.getBucketName(), uploadFileRequest.getKey(), uploadCheckPoint.uploadID,
                 uploadCheckPoint.partETags);
+     
+        Payer payer = uploadFileRequest.getRequestPayer();
+        if(payer != null) {
+            completeUploadRequest.setRequestPayer(payer);
+        }
+
         completeUploadRequest.setCallback(uploadFileRequest.getCallback());
         return multipartOperation.completeMultipartUpload(completeUploadRequest);
     }

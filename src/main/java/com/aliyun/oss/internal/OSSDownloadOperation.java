@@ -60,6 +60,7 @@ import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.ObjectMetadata;
+import com.aliyun.oss.model.Payer;
 import com.aliyun.oss.model.SimplifiedObjectMeta;
 import com.aliyun.oss.model.HeadObjectRequest;
 
@@ -176,8 +177,17 @@ public class OSSDownloadOperation {
             return result;
         }
 
-        public static ObjectStat getFileStat(OSSObjectOperation objectOperation, String bucketName, String key) {
+        public static ObjectStat getFileStat(OSSObjectOperation objectOperation, DownloadFileRequest downloadFileRequest) {
+            String bucketName = downloadFileRequest.getBucketName();
+            String key = downloadFileRequest.getKey();
+            
             GenericRequest genericRequest = new GenericRequest(bucketName, key);
+            
+            Payer payer = downloadFileRequest.getRequestPayer();
+            if (payer != null) {
+                genericRequest.setRequestPayer(payer);
+            }
+
             SimplifiedObjectMeta meta = objectOperation.getSimplifiedObjectMeta(genericRequest);
 
             ObjectStat objStat = new ObjectStat();
@@ -430,8 +440,7 @@ public class OSSDownloadOperation {
         downloadCheckPoint.downloadFile = downloadFileRequest.getDownloadFile();
         downloadCheckPoint.bucketName = downloadFileRequest.getBucketName();
         downloadCheckPoint.objectKey = downloadFileRequest.getKey();
-        downloadCheckPoint.objectStat = ObjectStat.getFileStat(objectOperation, downloadCheckPoint.bucketName,
-                downloadCheckPoint.objectKey);
+        downloadCheckPoint.objectStat = ObjectStat.getFileStat(objectOperation, downloadFileRequest);
         downloadCheckPoint.downloadParts = splitFile(downloadCheckPoint.objectStat.size,
                 downloadFileRequest.getPartSize());
 
@@ -565,6 +574,11 @@ public class OSSDownloadOperation {
                 getObjectRequest.setUnmodifiedSinceConstraint(downloadFileRequest.getUnmodifiedSinceConstraint());
                 getObjectRequest.setResponseHeaders(downloadFileRequest.getResponseHeaders());
                 getObjectRequest.setRange(downloadPart.start, downloadPart.end);
+ 
+                Payer payer = downloadFileRequest.getRequestPayer();
+                if(payer != null) {
+                    getObjectRequest.setRequestPayer(payer);
+                }
 
                 OSSObject ossObj = objectOperation.getObject(getObjectRequest);
                 objectMetadata = ossObj.getObjectMetadata();

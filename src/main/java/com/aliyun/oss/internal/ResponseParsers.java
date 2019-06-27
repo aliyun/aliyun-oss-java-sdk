@@ -108,6 +108,7 @@ import com.aliyun.oss.model.ObjectPermission;
 import com.aliyun.oss.model.Owner;
 import com.aliyun.oss.model.PartListing;
 import com.aliyun.oss.model.PartSummary;
+import com.aliyun.oss.model.Payer;
 import com.aliyun.oss.model.Permission;
 import com.aliyun.oss.model.PutObjectResult;
 import com.aliyun.oss.model.PushflowStatus;
@@ -123,6 +124,7 @@ import com.aliyun.oss.model.UploadPartCopyResult;
 import com.aliyun.oss.model.UserQos;
 import com.aliyun.oss.model.VersionListing;
 import com.aliyun.oss.model.GetBucketPolicyResult;
+import com.aliyun.oss.model.GetBucketRequestPaymentResult;
 
 /*
  * A collection of parsers that parse HTTP reponses into corresponding human-readable results.
@@ -153,7 +155,8 @@ public final class ResponseParsers {
     public static final GetBucketVersioningResponseParser getBucketVersioningResponseParser = new GetBucketVersioningResponseParser();
     public static final GetBucketEncryptionResponseParser getBucketEncryptionResponseParser = new GetBucketEncryptionResponseParser();
     public static final GetBucketPolicyResponseParser getBucketPolicyResponseParser = new GetBucketPolicyResponseParser();
-    
+    public static final GetBucketRequestPaymentResponseParser getBucketRequestPaymentResponseParser = new GetBucketRequestPaymentResponseParser();
+
     public static final ListObjectsReponseParser listObjectsReponseParser = new ListObjectsReponseParser();
     public static final ListVersionsReponseParser listVersionsReponseParser = new ListVersionsReponseParser();
     public static final PutObjectReponseParser putObjectReponseParser = new PutObjectReponseParser();
@@ -461,6 +464,21 @@ public final class ResponseParsers {
         	}finally {
         		safeCloseResponse(response);
         	}
+        }
+
+    }
+
+    public static final class GetBucketRequestPaymentResponseParser implements ResponseParser<GetBucketRequestPaymentResult> {
+
+        @Override
+        public GetBucketRequestPaymentResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+            	GetBucketRequestPaymentResult result = parseGetBucketRequestPayment(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
         }
 
     }
@@ -2838,7 +2856,30 @@ public final class ResponseParsers {
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
-    }   
+    }
+    
+    /**
+     * Unmarshall get bucuket request payment response body to GetBucketRequestPaymentResult.
+     */
+    public static GetBucketRequestPaymentResult parseGetBucketRequestPayment(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+            GetBucketRequestPaymentResult paymentResult = new GetBucketRequestPaymentResult();
+
+            if (root.getChild("Payer") != null) {
+            	Payer payer = Payer.parse(root.getChildText("Payer"));
+            	paymentResult.setPayer(payer);
+            }
+
+            return paymentResult;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
+    }
 
     /**
      * Unmarshall get bucket lifecycle response body to lifecycle rules.

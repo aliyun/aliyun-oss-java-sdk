@@ -36,6 +36,7 @@ import static com.aliyun.oss.common.parser.RequestMarshallers.bucketImageProcess
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketVersioningRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketEncryptionRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketPolicyRequestMarshaller;
+import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketRequestPaymentRequestMarshaller;
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
@@ -65,6 +66,7 @@ import static com.aliyun.oss.internal.ResponseParsers.listImageStyleResponsePars
 import static com.aliyun.oss.internal.ResponseParsers.getBucketImageProcessConfResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketEncryptionResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketPolicyResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getBucketRequestPaymentResponseParser;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -106,6 +108,7 @@ import com.aliyun.oss.model.DeleteBucketReplicationRequest;
 import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.GetBucketImageResult;
 import com.aliyun.oss.model.GetBucketReplicationProgressRequest;
+import com.aliyun.oss.model.GetBucketRequestPaymentResult;
 import com.aliyun.oss.model.ImageProcess;
 import com.aliyun.oss.model.ReplicationRule;
 import com.aliyun.oss.model.ServerSideEncryptionConfiguration;
@@ -116,6 +119,7 @@ import com.aliyun.oss.model.ListBucketsRequest;
 import com.aliyun.oss.model.ListObjectsRequest;
 import com.aliyun.oss.model.ListVersionsRequest;
 import com.aliyun.oss.model.ObjectListing;
+import com.aliyun.oss.model.Payer;
 import com.aliyun.oss.model.PutBucketImageRequest;
 import com.aliyun.oss.model.PutImageStyleRequest;
 import com.aliyun.oss.model.SetBucketAclRequest;
@@ -124,6 +128,7 @@ import com.aliyun.oss.model.SetBucketLifecycleRequest;
 import com.aliyun.oss.model.SetBucketLoggingRequest;
 import com.aliyun.oss.model.SetBucketProcessRequest;
 import com.aliyun.oss.model.SetBucketRefererRequest;
+import com.aliyun.oss.model.SetBucketRequestPaymentRequest;
 import com.aliyun.oss.model.AddBucketReplicationRequest;
 import com.aliyun.oss.model.SetBucketStorageCapacityRequest;
 import com.aliyun.oss.model.SetBucketTaggingRequest;
@@ -407,6 +412,11 @@ public class OSSBucketOperation extends OSSOperation {
 
         Map<String, String> params = new LinkedHashMap<String, String>();
         populateListObjectsRequestParameters(listObjectsRequest, params);
+        
+        Payer payer = listObjectsRequest.getRequestPayer();
+        if (payer != null) {
+            listObjectsRequest.addHeader(OSSHeaders.OSS_REQUEST_PAYER, payer.toString().toLowerCase());
+        }
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
@@ -428,6 +438,11 @@ public class OSSBucketOperation extends OSSOperation {
 
         Map<String, String> params = new LinkedHashMap<String, String>();
         populateListVersionsRequestParameters(listVersionsRequest, params);
+        
+        Payer payer = listVersionsRequest.getRequestPayer();
+        if (payer != null) {
+            listVersionsRequest.addHeader(OSSHeaders.OSS_REQUEST_PAYER, payer.toString().toLowerCase());
+        }
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
             .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
@@ -1318,6 +1333,50 @@ public class OSSBucketOperation extends OSSOperation {
                 .setOriginalRequest(genericRequest).build();
 
         doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    public void setBucketRequestPayment(SetBucketRequestPaymentRequest setBucketRequestPaymentRequest)
+            throws OSSException, ClientException {
+
+        assertParameterNotNull(setBucketRequestPaymentRequest, "setBucketRequestPaymentRequest");
+        assertParameterNotNull(setBucketRequestPaymentRequest.getPayer(), "setBucketRequestPaymentRequest.payer");
+
+        String bucketName = setBucketRequestPaymentRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_REQUEST_PAYMENT, null);
+
+        Payer payer = setBucketRequestPaymentRequest.getPayer();
+        byte[] rawContent = setBucketRequestPaymentRequestMarshaller.marshall(payer.toString());
+        Map<String, String> headers = new HashMap<String, String>();
+        addRequestRequiredHeaders(headers, rawContent);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params).setHeaders(headers)
+                .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+                .setOriginalRequest(setBucketRequestPaymentRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    public GetBucketRequestPaymentResult getBucketRequestPayment(GenericRequest genericRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_REQUEST_PAYMENT, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
+
+        return doOperation(request, getBucketRequestPaymentResponseParser, bucketName, null, true);
     }
 
     private static void populateListObjectsRequestParameters(ListObjectsRequest listObjectsRequest,

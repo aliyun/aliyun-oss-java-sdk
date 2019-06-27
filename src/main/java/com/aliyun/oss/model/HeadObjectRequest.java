@@ -35,6 +35,9 @@ public class HeadObjectRequest extends WebServiceRequest {
     private List<String> nonmatchingETagConstraints = new ArrayList<String>();
     private Date unmodifiedSinceConstraint;
     private Date modifiedSinceConstraint;
+    
+    // The one who pays for the request
+    private Payer payer; 
 
     public HeadObjectRequest(String bucketName, String key) {
         this.bucketName = bucketName;
@@ -93,5 +96,27 @@ public class HeadObjectRequest extends WebServiceRequest {
 
     public void setModifiedSinceConstraint(Date modifiedSinceConstraint) {
         this.modifiedSinceConstraint = modifiedSinceConstraint;
+    }
+    
+    /**
+     * * <p>
+     * Sets the one who pays for the request
+     * The Third party should set request payer when requesting resources.
+     * </p>
+     * @param payer
+     *            The one who pays for the request
+     * */
+    public void setRequestPayer(Payer payer) {
+        this.payer = payer;
+    }
+    
+    /**
+     * * <p>
+     * Gets the one who pays for the request
+     * </p>
+     * @return The one who pays for the request
+     * */
+    public Payer getRequestPayer() {
+        return payer;
     }
 }

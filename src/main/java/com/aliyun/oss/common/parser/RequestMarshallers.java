@@ -78,6 +78,7 @@ public final class RequestMarshallers {
     public static final SetBucketVersioningRequestMarshaller setBucketVersioningRequestMarshaller = new SetBucketVersioningRequestMarshaller();
     public static final SetBucketEncryptionRequestMarshaller setBucketEncryptionRequestMarshaller = new SetBucketEncryptionRequestMarshaller();
     public static final SetBucketPolicyRequestMarshaller setBucketPolicyRequestMarshaller = new SetBucketPolicyRequestMarshaller();
+    public static final SetBucketRequestPaymentRequestMarshaller setBucketRequestPaymentRequestMarshaller = new SetBucketRequestPaymentRequestMarshaller();
 
     public static final CreateSelectObjectMetadataRequestMarshaller createSelectObjectMetadataRequestMarshaller = new CreateSelectObjectMetadataRequestMarshaller();
     public static final SelectObjectRequestMarshaller selectObjectRequestMarshaller = new SelectObjectRequestMarshaller();
@@ -933,6 +934,26 @@ public final class RequestMarshallers {
             xmlBody.append("<PlaylistName>" + target.getPlaylistName() + "</PlaylistName>");
             xmlBody.append("</Target>");
             xmlBody.append("</LiveChannelConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+
+    }
+
+    public static final class SetBucketRequestPaymentRequestMarshaller implements RequestMarshaller2<String> {
+
+        @Override
+        public byte[] marshall(String payer) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<RequestPaymentConfiguration>");
+            xmlBody.append("<Payer>" +payer + "</Payer>");
+            xmlBody.append("</RequestPaymentConfiguration>");
 
             byte[] rawData = null;
             try {

@@ -73,6 +73,7 @@ import com.aliyun.oss.model.AbortMultipartUploadRequest;
 import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.CompleteMultipartUploadRequest;
 import com.aliyun.oss.model.CompleteMultipartUploadResult;
+import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.InitiateMultipartUploadRequest;
 import com.aliyun.oss.model.InitiateMultipartUploadResult;
 import com.aliyun.oss.model.ListMultipartUploadsRequest;
@@ -118,6 +119,8 @@ public class OSSMultipartOperation extends OSSOperation {
 
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(UPLOAD_ID, uploadId);
+        
+        populateRequestPayerHeader(abortMultipartUploadRequest);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(key).setParameters(parameters)
@@ -148,6 +151,8 @@ public class OSSMultipartOperation extends OSSOperation {
         Map<String, String> headers = new HashMap<String, String>();
         populateCompleteMultipartUploadOptionalHeaders(completeMultipartUploadRequest, headers);
         populateRequestCallback(headers, completeMultipartUploadRequest.getCallback());
+        
+        populateRequestPayerHeader(completeMultipartUploadRequest);
 
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(UPLOAD_ID, uploadId);
@@ -206,6 +211,8 @@ public class OSSMultipartOperation extends OSSOperation {
         if (initiateMultipartUploadRequest.getObjectMetadata() != null) {
             populateRequestMetadata(headers, initiateMultipartUploadRequest.getObjectMetadata());
         }
+        
+        populateRequestPayerHeader(initiateMultipartUploadRequest);
 
         // Be careful that we don't send the object's total size as the content
         // length for the InitiateMultipartUpload request.
@@ -241,6 +248,8 @@ public class OSSMultipartOperation extends OSSOperation {
         // Use a LinkedHashMap to preserve the insertion order.
         Map<String, String> params = new LinkedHashMap<String, String>();
         populateListMultipartUploadsRequestParameters(listMultipartUploadsRequest, params);
+ 
+        populateRequestPayerHeader(listMultipartUploadsRequest);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
@@ -269,6 +278,8 @@ public class OSSMultipartOperation extends OSSOperation {
         // Use a LinkedHashMap to preserve the insertion order.
         Map<String, String> params = new LinkedHashMap<String, String>();
         populateListPartsRequestParameters(listPartsRequest, params);
+
+        populateRequestPayerHeader(listPartsRequest);
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(key).setParameters(params)
@@ -313,6 +324,8 @@ public class OSSMultipartOperation extends OSSOperation {
 
         Map<String, String> headers = new HashMap<String, String>();
         populateUploadPartOptionalHeaders(uploadPartRequest, headers);
+        
+        populateRequestPayerHeader(uploadPartRequest);
 
         // Use a LinkedHashMap to preserve the insertion order.
         Map<String, String> params = new LinkedHashMap<String, String>();
@@ -482,6 +495,10 @@ public class OSSMultipartOperation extends OSSOperation {
             headers.put(OSSHeaders.COPY_SOURCE_RANGE, range);
         }
 
+        if (uploadPartCopyRequest.getRequestPayer() != null) {
+            headers.put(OSSHeaders.OSS_REQUEST_PAYER, uploadPartCopyRequest.getRequestPayer().toString().toLowerCase());
+        }
+
         addDateHeader(headers, OSSHeaders.COPY_OBJECT_SOURCE_IF_MODIFIED_SINCE,
                 uploadPartCopyRequest.getModifiedSinceConstraint());
         addDateHeader(headers, OSSHeaders.COPY_OBJECT_SOURCE_IF_UNMODIFIED_SINCE,
@@ -516,6 +533,12 @@ public class OSSMultipartOperation extends OSSOperation {
         CannedAccessControlList cannedACL = completeMultipartUploadRequest.getObjectACL();
         if (cannedACL != null) {
             headers.put(OSSHeaders.OSS_OBJECT_ACL, cannedACL.toString());
+        }
+    }
+
+    private static void populateRequestPayerHeader (GenericRequest genericRequest) {
+        if (genericRequest.getRequestPayer() != null) {
+            genericRequest.addHeader(OSSHeaders.OSS_REQUEST_PAYER, genericRequest.getRequestPayer().toString().toLowerCase());
         }
     }
 

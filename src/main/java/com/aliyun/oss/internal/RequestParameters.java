@@ -62,6 +62,7 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_VRESIONING = "versioning";
     public static final String SUBRESOURCE_VRESION_ID = "versionId";
     public static final String SUBRESOURCE_POLICY = "policy";
+    public static final String SUBRESOURCE_REQUEST_PAYMENT = "requestPayment";
 
     public static final String SUBRESOURCE_UDF = "udf";
     public static final String SUBRESOURCE_UDF_NAME = "udfName";
