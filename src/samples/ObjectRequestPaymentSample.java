@@ -51,8 +51,8 @@ import com.aliyun.oss.model.UploadPartResult;
  * Example for operate object by a third party.
  * You must authorise to a third party before run this sample.
  */
-public class ThirdPartyPayRequestSample {
-	
+public class ObjectRequestPaymentSample {
+
     private static String endpoint = "*** Provide OSS endpoint ***";
     private static String accessKeyId = "*** Provide your AccessKeyId ***";
     private static String accessKeySecret = "*** Provide your AccessKeySecret ***";
@@ -60,7 +60,7 @@ public class ThirdPartyPayRequestSample {
     private static String bucketName = "*** Provide bucket name ***";
     private static String objectName = "Provide object name ***";
     private static Payer payer = Payer.Requester;
-	
+
     public static void main(String[] args) throws Throwable {
         // Create oss client
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
@@ -74,19 +74,19 @@ public class ThirdPartyPayRequestSample {
             for (OSSObjectSummary s : sums) {
                 System.out.println("\t" + s.getKey());
             }
-        
+
             // Put object by specifying request payer
             String content1 = "hello";
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectName, new ByteArrayInputStream(content1.getBytes()));
             putObjectRequest.setRequestPayer(payer);
             ossClient.putObject(putObjectRequest);
-        
+
             // Get object by specifying request payer
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, objectName);
             getObjectRequest.setRequestPayer(payer);
             OSSObject ossObject = ossClient.getObject(getObjectRequest);
             ossObject.close();
-            
+
             // Delete object by specifying request payer
             GenericRequest genericRequest = new GenericRequest(bucketName, objectName);
             genericRequest.setRequestPayer(payer);
@@ -96,11 +96,11 @@ public class ThirdPartyPayRequestSample {
             // Initiate multipart upload by specifying request payer
             InitiateMultipartUploadRequest request = new InitiateMultipartUploadRequest(bucketName, objectName);
             request.setRequestPayer(payer);
-        
+
             InitiateMultipartUploadResult result = ossClient.initiateMultipartUpload(request);
             String uploadId = result.getUploadId();    
             List<PartETag> partETags =  new ArrayList<PartETag>();
-        
+
             // Calc partCount
             final long partSize = 1 * 1024 * 1024L;   // 1MB
             final File sampleFile = new File("<yourLocalFileName>");
@@ -109,7 +109,7 @@ public class ThirdPartyPayRequestSample {
             if (fileLength % partSize != 0) {
                 partCount++;
             }
-        
+
             // Upload part
             for (int i = 0; i < partCount; i++) {
                 long startPos = i * partSize;
@@ -128,19 +128,19 @@ public class ThirdPartyPayRequestSample {
                 UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
                 partETags.add(uploadPartResult.getPartETag());
             }
-        
+
             // Sort Etags by partNumber
             Collections.sort(partETags, new Comparator<PartETag>() {
                 public int compare(PartETag p1, PartETag p2) {
                     return p1.getPartNumber() - p2.getPartNumber();
                 }
             });
-        
+
             // Complete multipart upload by specifying request payer 
             CompleteMultipartUploadRequest completeMultipartUploadRequest =
             		new CompleteMultipartUploadRequest(bucketName, objectName, uploadId, partETags);
             completeMultipartUploadRequest.setRequestPayer(payer);
-        
+
             ossClient.completeMultipartUpload(completeMultipartUploadRequest);    
         } catch (OSSException oe) {
             System.out.println("Caught an OSSException, which means your request made it to OSS, "

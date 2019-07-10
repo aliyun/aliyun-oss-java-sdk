@@ -415,7 +415,7 @@ public class OSSUploadOperation {
                 uploadFileRequest.getBucketName(), uploadFileRequest.getKey(), metadata);
         
         Payer payer = uploadFileRequest.getRequestPayer();
-        if(payer != null) {
+        if (payer != null) {
             initiateUploadRequest.setRequestPayer(payer);
         }
         
@@ -512,8 +512,13 @@ public class OSSUploadOperation {
                 uploadPartRequest.setPartSize(uploadPart.size);
 
                 Payer payer = uploadFileRequest.getRequestPayer();
-                if(payer != null) {
+                if (payer != null) {
                     uploadPartRequest.setRequestPayer(payer);
+                }
+                
+                int limit = uploadFileRequest.getTrafficLimit();
+                if (limit > 0) {
+                    uploadPartRequest.setTrafficLimit(limit);
                 }
 
                 UploadPartResult uploadPartResult = multipartOperation.uploadPart(uploadPartRequest);
@@ -565,7 +570,7 @@ public class OSSUploadOperation {
                 uploadCheckPoint.partETags);
      
         Payer payer = uploadFileRequest.getRequestPayer();
-        if(payer != null) {
+        if (payer != null) {
             completeUploadRequest.setRequestPayer(payer);
         }
 

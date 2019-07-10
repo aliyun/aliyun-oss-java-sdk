@@ -44,7 +44,7 @@ public class BucketPolicyTest extends TestBase {
         try {
             SetBucketPolicyRequest setPolicyReq = new SetBucketPolicyRequest(notExsiteBucketName, normalPolicyText);
             ossClient.setBucketPolicy(setPolicyReq);
-        }catch(OSSException  e) {
+        } catch(OSSException e) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         }
@@ -58,7 +58,7 @@ public class BucketPolicyTest extends TestBase {
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
         }
-        
+
         // Set bucket with unnormal plicy text
         final String unnormalPolicyText = "{unnormal-policy-text}";
         try {
@@ -69,31 +69,31 @@ public class BucketPolicyTest extends TestBase {
             Assert.assertEquals(OSSErrorCode.INVALID_POLICY_DOCUMENT, e.getErrorCode());
         }
     }
-    
+
     @Test
     public void testUnnormalGetPolicy() {
         long ticks = new Date().getTime() / 1000 + new Random().nextInt(5000);
         String notExsiteBucketName = BUCKET_NAME_PREFIX + ticks;
-        
+
         // Get non-existent bucket
         try {
             GetBucketPolicyResult result = ossClient.getBucketPolicy(notExsiteBucketName);
-        }catch(OSSException  e) {
+        } catch(OSSException e) {
            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         }
-        
+
         // Get non-exsitent policy
         String newBucketName = notExsiteBucketName;
         try {
             ossClient.createBucket(newBucketName);
             GetBucketPolicyResult result = ossClient.getBucketPolicy(newBucketName);
-        }catch(OSSException e) {
+        } catch(OSSException e) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET_POLICY, e.getErrorCode());
-        }finally {
+        } finally {
             ossClient.deleteBucket(newBucketName);
         }
-        
+
         // Get bucket without ownership
         final String bucketWithoutOwnership = "oss";//AccessDenied
         try {
@@ -103,20 +103,20 @@ public class BucketPolicyTest extends TestBase {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
         }
     }
-    
+
     @Test
     public void testUnnormalDeletePolicy() {
         long ticks = new Date().getTime() / 1000 + new Random().nextInt(5000);
         String notExsiteBucketName = BUCKET_NAME_PREFIX + ticks;
-        
+
         // Delete non-existent bucket
         try {
             ossClient.deleteBucketPolicy(notExsiteBucketName);
-        }catch(OSSException  e) {
+        } catch(OSSException e) {
            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         }
-        
+
         // Delete non-exsitent policy
         final String newBucketName = notExsiteBucketName;
         try {
@@ -124,10 +124,10 @@ public class BucketPolicyTest extends TestBase {
             ossClient.deleteBucketPolicy(newBucketName);
         } catch (Exception e) {
            Assert.fail("deleteBucketPolicy err" + e.getMessage());
-        }finally {
+        } finally {
             ossClient.deleteBucket(newBucketName);
         }
-        
+
         // Delete bucket without ownership
         final String bucketWithoutOwnership = "oss";//AccessDenied
         try {

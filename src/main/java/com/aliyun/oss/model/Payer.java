@@ -5,13 +5,12 @@ public enum Payer {
     /**
      * The bucket owner pays for the rquest
      */
-	BucketOwner("BucketOwner"),
+    BucketOwner("BucketOwner"),
 
     /**
      * The rquester pays for the request
      */
     Requester("Requester");
-
 
     private String payerString;
 

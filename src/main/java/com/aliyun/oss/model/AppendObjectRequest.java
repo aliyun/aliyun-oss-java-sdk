@@ -27,6 +27,9 @@ public class AppendObjectRequest extends PutObjectRequest {
     private Long position;
     private Long initCRC;
 
+    // Traffic limit speed, its uint is bit/s
+    private int trafficLimit;
+
     public AppendObjectRequest(String bucketName, String key, File file) {
         this(bucketName, key, file, null);
     }
@@ -67,6 +70,21 @@ public class AppendObjectRequest extends PutObjectRequest {
     public AppendObjectRequest withInitCRC(Long iniCRC) {
         setInitCRC(iniCRC);
         return this;
+    }
+
+    /**
+     * Sets traffic limit speed, its unit is bit/s
+     */
+    public void setTrafficLimit(int trafficLimit) {
+        this.trafficLimit = trafficLimit;
+    }
+
+    /**
+     * Gets traffic limit speed, its unit is bit/s
+     * @return traffic limit speed
+     */
+    public int getTrafficLimit() {
+        return trafficLimit;
     }
 
 }

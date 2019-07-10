@@ -20,7 +20,7 @@
 package com.aliyun.oss.model;
 
 public class SetBucketRequestPaymentRequest extends GenericRequest{
-	
+
     // The payer for the request
     private Payer payer;
 
@@ -32,9 +32,9 @@ public class SetBucketRequestPaymentRequest extends GenericRequest{
         super(bucketName);
         this.payer = payer;
     }
-    
+
     public void setPayer(Payer payer) {
-	    this.payer = payer;
+        this.payer = payer;
     }
 
     public Payer getPayer() {

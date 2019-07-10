@@ -35,9 +35,18 @@ public class HeadObjectRequest extends WebServiceRequest {
     private List<String> nonmatchingETagConstraints = new ArrayList<String>();
     private Date unmodifiedSinceConstraint;
     private Date modifiedSinceConstraint;
-    
+
+    // The object version id
+    private String versionId;
+
     // The one who pays for the request
     private Payer payer; 
+
+    public HeadObjectRequest(String bucketName, String key, String versionId) {
+        this.bucketName = bucketName;
+        this.key = key;
+        this.versionId = versionId;
+    }
 
     public HeadObjectRequest(String bucketName, String key) {
         this.bucketName = bucketName;
@@ -97,7 +106,25 @@ public class HeadObjectRequest extends WebServiceRequest {
     public void setModifiedSinceConstraint(Date modifiedSinceConstraint) {
         this.modifiedSinceConstraint = modifiedSinceConstraint;
     }
-    
+
+    /**
+     * Gets version id.
+     * 
+     * @return version id.
+     */
+    public String getVersionId() {
+        return versionId;
+    }
+
+    /**
+     * Sets version id.
+     * 
+     * @param versionId
+     */
+    public void setVersionId(String versionId) {
+        this.versionId = versionId;
+    } 
+
     /**
      * * <p>
      * Sets the one who pays for the request

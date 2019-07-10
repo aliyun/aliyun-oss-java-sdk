@@ -75,8 +75,8 @@ public interface OSSHeaders extends HttpHeaders {
 
     static final String OSS_HEADER_CALLBACK = "x-oss-callback";
     static final String OSS_HEADER_CALLBACK_VAR = "x-oss-callback-var";
-
     static final String OSS_HEADER_SYMLINK_TARGET = "x-oss-symlink-target";
+    static final String OSS_HEADER_TRAFFIC_LIMIT = "x-oss-traffic-limit";
 
     static final String OSS_STORAGE_CLASS = "x-oss-storage-class";
     static final String OSS_RESTORE = "x-oss-restore";

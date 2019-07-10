@@ -40,6 +40,9 @@ public class UploadPartRequest extends GenericRequest {
 
     private boolean useChunkEncoding = false;
 
+    // Traffic limit speed, its uint is bit/s
+    private int trafficLimit;
+
     public UploadPartRequest() {
     }
 
@@ -189,5 +192,20 @@ public class UploadPartRequest extends GenericRequest {
 
     public BoundedInputStream buildPartialStream() {
         return new BoundedInputStream(inputStream, (int) partSize);
+    }
+
+    /**
+     * Sets traffic limit speed, its unit is bit/s
+     */
+    public void setTrafficLimit(int trafficLimit) {
+        this.trafficLimit = trafficLimit;
+    }
+
+    /**
+     * Gets traffic limit speed, its unit is bit/s
+     * @return traffic limit speed
+     */
+    public int getTrafficLimit() {
+        return trafficLimit;
     }
 }
