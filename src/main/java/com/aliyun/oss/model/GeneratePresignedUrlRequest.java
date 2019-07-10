@@ -70,6 +70,9 @@ public class GeneratePresignedUrlRequest {
 
     private Set<String> additionalHeaderNames = new HashSet<String>();
 
+    // Traffic limit speed, its uint is bit/s 
+    private int trafficLimit;
+
     /**
      * Constructor with GET as the httpMethod
      *
@@ -381,5 +384,20 @@ public class GeneratePresignedUrlRequest {
 
     public void addAdditionalHeaderName(String name) {
         this.additionalHeaderNames.add(name);
+    }
+
+    /**
+     * Sets traffic limit speed , its unit is bit/s
+     */
+    public void setTrafficLimit(int trafficLimit) {
+        this.trafficLimit = trafficLimit;
+    }
+
+    /**
+     * Gets traffic limit speed , its unit is bit/s
+     * @return traffic limit speed
+     */
+    public int getTrafficLimit() {
+        return trafficLimit;
     }
 }

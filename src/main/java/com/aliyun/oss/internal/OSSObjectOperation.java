@@ -653,8 +653,13 @@ public class OSSObjectOperation extends OSSOperation {
 
         populateRequestPayerHeader(headers, headObjectRequest.getRequestPayer());
 
+        Map<String, String> params = new HashMap<String, String>();
+        if (headObjectRequest.getVersionId() != null) {
+            params.put(RequestParameters.SUBRESOURCE_VRESION_ID, headObjectRequest.getVersionId());
+        }
+
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.HEAD).setBucket(bucketName).setKey(key).setHeaders(headers)
+                .setMethod(HttpMethod.HEAD).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(params)
                 .setOriginalRequest(headObjectRequest).build();
 
         return doOperation(request, headObjectResponseParser, bucketName, key);
@@ -706,6 +711,9 @@ public class OSSObjectOperation extends OSSOperation {
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_ACL, null);
+        if (genericRequest.getVersionId() != null) {
+            params.put(RequestParameters.SUBRESOURCE_VRESION_ID, genericRequest.getVersionId());
+        }
 
         Map<String, String> headers = new HashMap<String, String>();
         populateRequestPayerHeader(headers, genericRequest.getRequestPayer());
@@ -1096,6 +1104,7 @@ public class OSSObjectOperation extends OSSOperation {
         populateRequestMetadata(headers, metadata);
         populateRequestCallback(headers, originalRequest.getCallback());
         populateRequestPayerHeader(headers, originalRequest.getRequestPayer());
+        populateTrafficLimitHeader(headers, originalRequest.getTrafficLimit());
 
         Map<String, String> params = new LinkedHashMap<String, String>();
         populateWriteObjectParams(mode, originalRequest, params);
@@ -1200,6 +1209,7 @@ public class OSSObjectOperation extends OSSOperation {
         }
 
         populateRequestPayerHeader(headers, getObjectRequest.getRequestPayer());
+        populateTrafficLimitHeader(headers, getObjectRequest.getTrafficLimit());
     }
 
     private static void addDeleteObjectsRequiredHeaders(Map<String, String> headers, byte[] rawContent) {
@@ -1227,10 +1237,16 @@ public class OSSObjectOperation extends OSSOperation {
         RangeSpec rangeSpec = RangeSpec.parse(range);
         headers.put(OSSHeaders.RANGE, rangeSpec.toString());
     }
-    
+
     private static void populateRequestPayerHeader(Map<String, String> headers, Payer payer) {
         if (payer != null && payer.equals(Payer.Requester)) {
             headers.put(OSSHeaders.OSS_REQUEST_PAYER, payer.toString().toLowerCase());
+        }
+    }
+
+    private static void populateTrafficLimitHeader(Map<String, String> headers, int limit) {
+        if (limit > 0) {
+            headers.put(OSSHeaders.OSS_HEADER_TRAFFIC_LIMIT, String.valueOf(limit));
         }
     }
 

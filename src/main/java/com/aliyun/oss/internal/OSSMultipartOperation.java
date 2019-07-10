@@ -329,6 +329,7 @@ public class OSSMultipartOperation extends OSSOperation {
         populateUploadPartOptionalHeaders(uploadPartRequest, headers);
         
         populateRequestPayerHeader(headers, uploadPartRequest.getRequestPayer());
+        populateTrafficLimitHeader(headers, uploadPartRequest.getTrafficLimit());
 
         // Use a LinkedHashMap to preserve the insertion order.
         Map<String, String> params = new LinkedHashMap<String, String>();
@@ -542,6 +543,12 @@ public class OSSMultipartOperation extends OSSOperation {
     private static void populateRequestPayerHeader (Map<String, String> headers, Payer payer) {
         if (payer != null && payer.equals(Payer.Requester)) {
             headers.put(OSSHeaders.OSS_REQUEST_PAYER, payer.toString().toLowerCase());
+        }
+    }
+
+    private static void populateTrafficLimitHeader(Map<String, String> headers, int limit) {
+        if (limit > 0) {
+            headers.put(OSSHeaders.OSS_HEADER_TRAFFIC_LIMIT, String.valueOf(limit));
         }
     }
 

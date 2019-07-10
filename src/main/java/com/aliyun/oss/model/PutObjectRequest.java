@@ -32,6 +32,9 @@ public class PutObjectRequest extends GenericRequest {
     private Callback callback;
     private String process;
 
+    // Traffic limit speed, its uint is bit/s
+    private int trafficLimit;
+
     public PutObjectRequest(String bucketName, String key, File file) {
         this(bucketName, key, file, null);
     }
@@ -91,4 +94,20 @@ public class PutObjectRequest extends GenericRequest {
     public void setProcess(String process) {
         this.process = process;
     }
+
+    /**
+     * Sets traffic limit speed, its unit is bit/s
+     */
+    public void setTrafficLimit(int trafficLimit) {
+        this.trafficLimit = trafficLimit;
+    }
+
+    /**
+     * Gets traffic limit speed, its unit is bit/s
+     * @return traffic limit speed
+     */
+    public int getTrafficLimit() {
+        return trafficLimit;
+    }
+
 }

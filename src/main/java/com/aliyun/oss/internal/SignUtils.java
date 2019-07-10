@@ -152,6 +152,7 @@ public class SignUtils {
 
         Map<String, String> responseHeaderParams = new HashMap<String, String>();
         populateResponseHeaderParameters(responseHeaderParams, request.getResponseHeaders());
+        populateTrafficLimitParams(responseHeaderParams, request.getTrafficLimit());
         if (responseHeaderParams.size() > 0) {
             requestMessage.setParameters(responseHeaderParams);
         }
@@ -225,5 +226,11 @@ public class SignUtils {
     public static String buildSignature(String secretAccessKey, String httpMethod, String resourcePath, RequestMessage request) {
         String canonicalString = buildCanonicalString(httpMethod, resourcePath, request, null);
         return ServiceSignature.create().computeSignature(secretAccessKey, canonicalString);
+    }
+
+    private static void populateTrafficLimitParams(Map<String, String> params, int limit) {
+        if (limit > 0) {
+            params.put(OSS_TRAFFIC_LIMIT, String.valueOf(limit));
+        }
     }
 }

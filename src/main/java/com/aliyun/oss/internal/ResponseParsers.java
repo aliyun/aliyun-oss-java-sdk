@@ -461,7 +461,7 @@ public final class ResponseParsers {
         		GetBucketPolicyResult result = parseGetBucketPolicy(response.getContent());
         		result.setRequestId(response.getRequestId());
         		return result;
-        	}finally {
+        	} finally {
         		safeCloseResponse(response);
         	}
         }

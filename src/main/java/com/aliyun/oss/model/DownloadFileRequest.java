@@ -220,6 +220,21 @@ public class DownloadFileRequest extends GenericRequest {
         this.responseHeaders = responseHeaders;
     }
 
+    /**
+     * Sets traffic limit speed, its unit is bit/s
+     */
+    public void setTrafficLimit(int trafficLimit) {
+        this.trafficLimit = trafficLimit;
+    }
+
+    /**
+     * Gets traffic limit speed, its unit is bit/s
+     * @return traffic limit speed
+     */
+    public int getTrafficLimit() {
+        return trafficLimit;
+    }
+
     // Part size in byte, by default it's 100KB.
     private long partSize = 1024 * 100;
     // Thread count for downloading parts, by default it's 1.
@@ -242,4 +257,6 @@ public class DownloadFileRequest extends GenericRequest {
     // The response headers to override.
     private ResponseHeaderOverrides responseHeaders;
 
+    // Traffic limit speed, its uint is bit/s
+    private int trafficLimit;
 }
