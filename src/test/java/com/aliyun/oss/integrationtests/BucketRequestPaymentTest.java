@@ -42,7 +42,7 @@ public class BucketRequestPaymentTest extends TestBase {
             Payer payer = Payer.Requester;
 
             // Get default payer
-            GetBucketRequestPaymentResult result = 	ossClient.getBucketRequestPayment(bucketName);
+            GetBucketRequestPaymentResult result = ossClient.getBucketRequestPayment(bucketName);
             Assert.assertEquals(Payer.BucketOwner, result.getPayer());
 
             // Set payer
@@ -76,10 +76,10 @@ public class BucketRequestPaymentTest extends TestBase {
         try {
     	    ossClient.setBucketRequestPayment(bucketWithoutOwnership, payer);
     	    Assert.fail("Set bucket request payment should not be successful");
-        }catch (OSSException e) {
+        } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
         }
- 
+
     }
 
 
@@ -101,9 +101,10 @@ public class BucketRequestPaymentTest extends TestBase {
         try {
             ossClient.getBucketRequestPayment(bucketWithoutOwnership);
             Assert.fail("Get bucket request payment should not be successful");
-    	}catch (OSSException e) {
+        } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
         }
-    	
+
     }
+
 }

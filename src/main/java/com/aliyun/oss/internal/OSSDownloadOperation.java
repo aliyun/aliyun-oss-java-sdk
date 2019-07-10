@@ -188,6 +188,11 @@ public class OSSDownloadOperation {
                 genericRequest.setRequestPayer(payer);
             }
 
+            String versionId = downloadFileRequest.getVersionId();
+            if (versionId != null) {
+                genericRequest.setVersionId(versionId);
+            }
+
             SimplifiedObjectMeta meta = objectOperation.getSimplifiedObjectMeta(genericRequest);
 
             ObjectStat objStat = new ObjectStat();
@@ -575,9 +580,19 @@ public class OSSDownloadOperation {
                 getObjectRequest.setResponseHeaders(downloadFileRequest.getResponseHeaders());
                 getObjectRequest.setRange(downloadPart.start, downloadPart.end);
  
+                String versionId = downloadFileRequest.getVersionId();
+                if (versionId != null) {
+                    getObjectRequest.setVersionId(versionId);
+                }
+
                 Payer payer = downloadFileRequest.getRequestPayer();
-                if(payer != null) {
+                if (payer != null) {
                     getObjectRequest.setRequestPayer(payer);
+                }
+
+                int limit = downloadFileRequest.getTrafficLimit();
+                if (limit > 0) {
+                    getObjectRequest.setTrafficLimit(limit);
                 }
 
                 OSSObject ossObj = objectOperation.getObject(getObjectRequest);

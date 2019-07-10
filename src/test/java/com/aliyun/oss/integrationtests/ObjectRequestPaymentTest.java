@@ -40,7 +40,6 @@ import com.aliyun.oss.internal.OSSHeaders;
 import com.aliyun.oss.model.*;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
-import com.aliyun.oss.model.DeleteVersionsRequest.KeyVersion;
 import com.aliyun.oss.utils.ResourceUtils;
 
 public class ObjectRequestPaymentTest extends TestBase {
@@ -333,6 +332,7 @@ public class ObjectRequestPaymentTest extends TestBase {
 
         // Append object with out payer setting, should be failed.
         try {
+            instream = genFixedLengthInputStream(inputStreamLength);
             appendObjectRequest = new AppendObjectRequest(bucketName, key, instream);
             appendObjectRequest.setPosition(inputStreamLength);
             ossPayerClient.appendObject(appendObjectRequest);
@@ -344,6 +344,7 @@ public class ObjectRequestPaymentTest extends TestBase {
 
         // Append object with payer setting, should be successful.
         try {
+            instream = genFixedLengthInputStream(inputStreamLength);
             Payer payer = Payer.Requester;
             appendObjectRequest = new AppendObjectRequest(bucketName, key, instream);
             appendObjectRequest.setPosition(inputStreamLength);
@@ -360,7 +361,7 @@ public class ObjectRequestPaymentTest extends TestBase {
     public void testCopyObject() {
         String srcObject = "requestpayment-test-copy-object-src";
         String destObject = "requestpayment-test-copy-object-dest";
-  
+
         prepareObject(srcObject);
 
         // Copy object with out payer setting, should be failed.
@@ -491,7 +492,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         }
 
-         // Put request with payer setting, should be successful.
+        // Put request with payer setting, should be successful.
         try {
             Payer payer = Payer.Requester;
             boolean isOnlyInOSS = false;
@@ -675,7 +676,7 @@ public class ObjectRequestPaymentTest extends TestBase {
 
         // Upload part without payer setting, should be failed.
         try {
-            // Set initiateMultipartUploadRequest with payer setting
+            // Set initiateMultipartUploadRequest without payer setting, should be failed.
             InitiateMultipartUploadRequest initiateMultipartUploadRequest = new InitiateMultipartUploadRequest(bucketName, key);
             ossPayerClient.initiateMultipartUpload(initiateMultipartUploadRequest);
             Assert.fail("no RequestPayer, should not be successful");
@@ -747,7 +748,7 @@ public class ObjectRequestPaymentTest extends TestBase {
 
         // Upload part copy without payer setting, should be failed.
         try {
-            // Set initiateMultipartUploadRequest with payer setting
+            // Set initiateMultipartUploadRequest without payer setting, should be failed.
             InitiateMultipartUploadRequest initiateMultipartUploadRequest = new InitiateMultipartUploadRequest(bucketName, destinationObjectName);
             ossPayerClient.initiateMultipartUpload(initiateMultipartUploadRequest);
             Assert.fail("no RequestPayer, should not be successful");
@@ -971,7 +972,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         }
 
-         // Process object with payer setting, should be failed.
+         // Process object with payer setting, should be successful.
         try {
             Payer payer = Payer.Requester;
             ProcessObjectRequest request = new ProcessObjectRequest(bucketName, originalImage, styleBuilder.toString());

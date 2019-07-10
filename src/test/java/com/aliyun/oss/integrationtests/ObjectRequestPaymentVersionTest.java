@@ -21,13 +21,9 @@ package com.aliyun.oss.integrationtests;
 
 import static com.aliyun.oss.integrationtests.TestConstants.BUCKET_ACCESS_DENIED_ERR;
 import static com.aliyun.oss.integrationtests.TestUtils.genFixedLengthInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import junit.framework.Assert;
 import org.junit.Test;
 import com.aliyun.oss.ClientConfiguration;
@@ -35,13 +31,11 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.DefaultCredentials;
-import com.aliyun.oss.common.utils.BinaryUtil;
-import com.aliyun.oss.internal.OSSHeaders;
 import com.aliyun.oss.model.*;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.DeleteVersionsRequest.KeyVersion;
-import com.aliyun.oss.utils.ResourceUtils;
+
 
 public class ObjectRequestPaymentVersionTest extends TestBase {
 
@@ -161,7 +155,7 @@ public class ObjectRequestPaymentVersionTest extends TestBase {
         try {
             DeleteVersionsRequest delVersionsRequest = new DeleteVersionsRequest(bucketName);
             delVersionsRequest.setKeys(keyVersionsList);
-            DeleteVersionsResult delVersionsResult = ossPayerClient.deleteVersions(delVersionsRequest);
+            ossPayerClient.deleteVersions(delVersionsRequest);
             Assert.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
@@ -211,7 +205,7 @@ public class ObjectRequestPaymentVersionTest extends TestBase {
         // List versions without payer setting, should be failed.
         try {
             ListVersionsRequest listVersionsRequest = new ListVersionsRequest().withBucketName(bucketName);
-            VersionListing versionListing = ossPayerClient.listVersions(listVersionsRequest);
+            ossPayerClient.listVersions(listVersionsRequest);
             Assert.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
@@ -227,7 +221,7 @@ public class ObjectRequestPaymentVersionTest extends TestBase {
             Assert.assertEquals(versionListing.getVersionSummaries().size(), 2);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
-        }finally {
+        } finally {
             List<KeyVersion> keyVersionsList = new ArrayList<KeyVersion>();
             keyVersionsList.add(new KeyVersion(key, version1));
             keyVersionsList.add(new KeyVersion(key, version2));

@@ -47,6 +47,10 @@ public class GetObjectRequest extends GenericRequest {
     private URL absoluteUrl;
     private boolean useUrlSignature = false;
 
+
+    // Traffic limit speed, its uint is bit/s
+    private int trafficLimit;
+
     /**
      * Constructs a new {@link GetObjectRequest} with all the required parameters.
      *
@@ -317,5 +321,20 @@ public class GetObjectRequest extends GenericRequest {
     public void setProcess(String process) {
         this.process = process;
     }
-    
+
+    /**
+     * Sets traffic limit speed, its unit is bit/s
+     */
+    public void setTrafficLimit(int trafficLimit) {
+        this.trafficLimit = trafficLimit;
+    }
+
+    /**
+     * Gets traffic limit speed, its unit is bit/s
+     * @return traffic limit speed
+     */
+    public int getTrafficLimit() {
+        return trafficLimit;
+    }
+
 }

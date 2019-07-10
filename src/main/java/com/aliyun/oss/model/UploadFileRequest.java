@@ -121,6 +121,21 @@ public class UploadFileRequest extends GenericRequest {
         this.callback = callback;
     }
 
+    /**
+     * Sets traffic limit speed, its unit is bit/s
+     */
+    public void setTrafficLimit(int trafficLimit) {
+        this.trafficLimit = trafficLimit;
+    }
+
+    /**
+     * Gets traffic limit speed, its unit is bit/s
+     * @return traffic limit speed
+     */
+    public int getTrafficLimit() {
+        return trafficLimit;
+    }
+
     // Part size, by default it's 100KB.
     private long partSize = 1024 * 100;
     // Concurrent parts upload thread count. By default it's 1.
@@ -135,4 +150,6 @@ public class UploadFileRequest extends GenericRequest {
     private ObjectMetadata objectMetadata;
     // callback entry.
     private Callback callback;
+    // Traffic limit speed, its uint is bit/s
+    private int trafficLimit;
 }

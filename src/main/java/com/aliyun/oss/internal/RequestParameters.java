@@ -117,5 +117,6 @@ public final class RequestParameters {
     public static final String OSS_ACCESS_KEY_ID_PARAM = "x-oss-access-key-id";
     public static final String OSS_ADDITIONAL_HEADERS = "x-oss-additional-headers";
     public static final String OSS_SIGNATURE = "x-oss-signature";
+    public static final String OSS_TRAFFIC_LIMIT = "x-oss-traffic-limit";
 
 }
