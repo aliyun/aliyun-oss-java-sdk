@@ -21,12 +21,18 @@ package com.aliyun.oss.integrationtests;
 
 import static com.aliyun.oss.integrationtests.TestUtils.batchPutObject;
 import static com.aliyun.oss.integrationtests.TestUtils.genFixedLengthInputStream;
+import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aliyun.oss.ClientConfiguration;
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.common.auth.Credentials;
+import com.aliyun.oss.common.auth.DefaultCredentialProvider;
+import com.aliyun.oss.common.auth.DefaultCredentials;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -41,14 +47,37 @@ import com.aliyun.oss.model.SetBucketVersioningRequest;
 
 public class ListVersionsTest extends TestBase {
 
+    private OSSClient ossClient;
+    private String bucketName;
+    private String endpoint;
+
     public void setUp() throws Exception {
         super.setUp();
+
+        bucketName = super.bucketName + "-list-versions";
+        endpoint = "http://oss-ap-south-1.aliyuncs.com";
+
+        //create client
+        ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);
+        Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
+        ossClient = new OSSClient(endpoint, new DefaultCredentialProvider(credentials), conf);
+
+        ossClient.createBucket(bucketName);
+        waitForCacheExpiration(2);
 
         // start versioning
         BucketVersioningConfiguration configuration = new BucketVersioningConfiguration();
         configuration.setStatus(BucketVersioningConfiguration.ENABLED);
         SetBucketVersioningRequest request = new SetBucketVersioningRequest(bucketName, configuration);
         ossClient.setBucketVersioning(request);
+    }
+
+    public void tearDown() throws Exception {
+        if (ossClient != null) {
+            ossClient.shutdown();
+            ossClient = null;
+        }
+        super.tearDown();
     }
 
     @Test

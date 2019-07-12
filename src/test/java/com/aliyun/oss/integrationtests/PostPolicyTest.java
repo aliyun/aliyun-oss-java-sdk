@@ -21,6 +21,7 @@ package com.aliyun.oss.integrationtests;
 
 import java.util.Date;
 
+import com.aliyun.oss.OSSClient;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -30,14 +31,17 @@ import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.model.MatchMode;
 import com.aliyun.oss.model.PolicyConditions;
 
+
 public class PostPolicyTest extends TestBase {
-    
+
     @Test
-    public void testGenPostPolicy() {    
+    public void testGenPostPolicy() {
         final String bucketName = "gen-post-policy";
-        
-        try {            
-            Date expiration = DateUtil.parseIso8601Date("2015-03-19T03:44:06.476Z");
+        OSSClient client = null;
+
+        try {
+            client = new OSSClient(TestConfig.OSS_TEST_ENDPOINT, "AAAAAAAAAAAAAAAA", "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+            Date expiration = DateUtil.parseIso8601Date("2020-03-19T03:44:06.476Z");
             
             PolicyConditions policyConds = new PolicyConditions();
             policyConds.addConditionItem("bucket", bucketName);
@@ -47,28 +51,31 @@ public class PostPolicyTest extends TestBase {
             policyConds.addConditionItem(MatchMode.StartWith, "x-oss-meta-tag", "dummy_etag");
             policyConds.addConditionItem(PolicyConditions.COND_CONTENT_LENGTH_RANGE, 1, 1024);
 
-            String actualPostPolicy = ossClient.generatePostPolicy(expiration, policyConds);
-            String expectedPostPolicy = String.format("{\"expiration\":\"2015-03-19T03:44:06.476Z\",\"conditions\":[{\"bucket\":\"%s\"},"
+            String actualPostPolicy = client.generatePostPolicy(expiration, policyConds);
+            String expectedPostPolicy = String.format("{\"expiration\":\"2020-03-19T03:44:06.476Z\",\"conditions\":[{\"bucket\":\"%s\"},"
                     + "[\"eq\",\"$key\",\"user/eric/\\${filename}\"],[\"starts-with\",\"$key\",\"user/eric\"],[\"starts-with\",\"$x-oss-meta-tag\","
                     + "\"dummy_etag\"],[\"content-length-range\",1,1024]]}", bucketName);
             Assert.assertEquals(expectedPostPolicy, actualPostPolicy);
             
             byte[] binaryData = actualPostPolicy.getBytes("utf-8");
             String actualEncodedPolicy = BinaryUtil.toBase64String(binaryData);
-            String expectedEncodedPolicy = "eyJleHBpcmF0aW9uIjoiMjAxNS0wMy0xOVQwMzo0NDowNi40Nz"
+            String expectedEncodedPolicy = "eyJleHBpcmF0aW9uIjoiMjAyMC0wMy0xOVQwMzo0NDowNi40Nz"
                     + "ZaIiwiY29uZGl0aW9ucyI6W3siYnVja2V0IjoiZ2VuLXBvc3QtcG9saWN5In0sWyJlcSIsIiRrZXkiLC"
                     + "J1c2VyL2VyaWMvXCR7ZmlsZW5hbWV9Il0sWyJzdGFydHMtd2l0aCIsIiRrZXkiLCJ1c2VyL2Vya"
                     + "WMiXSxbInN0YXJ0cy13aXRoIiwiJHgtb3NzLW1ldGEtdGFnIiwiZHVtbXlfZXRhZyJdLFsiY29udG"
                     + "VudC1sZW5ndGgtcmFuZ2UiLDEsMTAyNF1dfQ==";
             Assert.assertEquals(expectedEncodedPolicy, actualEncodedPolicy);
             
-            String actualPostSignature = ossClient.calculatePostSignature(actualPostPolicy);
+            String actualPostSignature = client.calculatePostSignature(actualPostPolicy);
+
             // It has something to do with the local time
-            Assert.assertTrue((actualPostSignature.equals("88kD3wGu1W5isVAdWSG765DRPKY=") || 
-                    actualPostSignature.equals("KbUYorFeyyqxntffsNlrRcV50Ds=") ||
-                    actualPostSignature.equals("oGVOEb+wFKpZMgMqI0NNfSldA6s=")));
+            Assert.assertTrue(actualPostSignature.equals("G1WsE3NWpXjB1OrQdGJXBevhzhI="));
         } catch (Exception e) {
             Assert.fail(e.getMessage());
+        } finally {
+            if (client != null) {
+                client.shutdown();
+            }
         }
     }
 

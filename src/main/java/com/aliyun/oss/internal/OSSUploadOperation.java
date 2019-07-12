@@ -413,12 +413,12 @@ public class OSSUploadOperation {
 
         InitiateMultipartUploadRequest initiateUploadRequest = new InitiateMultipartUploadRequest(
                 uploadFileRequest.getBucketName(), uploadFileRequest.getKey(), metadata);
-        
+
         Payer payer = uploadFileRequest.getRequestPayer();
         if (payer != null) {
             initiateUploadRequest.setRequestPayer(payer);
         }
-        
+
         InitiateMultipartUploadResult initiateUploadResult = multipartOperation
                 .initiateMultipartUpload(initiateUploadRequest);
         uploadCheckPoint.uploadID = initiateUploadResult.getUploadId();

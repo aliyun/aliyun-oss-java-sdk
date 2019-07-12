@@ -38,12 +38,12 @@ public class SetRequestPaymentSample {
 
 
     public static void main(String[] args) throws Throwable {
-	    // Create oss client
-	    OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
-	    try {
-            /* 
+        // Create oss client
+        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+        try {
+            /*
              * Default payer is "BucketOwner"
-            */
+             */
 
             Payer payer = Payer.Requester;
 

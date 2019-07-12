@@ -21,6 +21,8 @@ package com.aliyun.oss.integrationtests;
 
 import static com.aliyun.oss.integrationtests.TestConstants.BUCKET_ACCESS_DENIED_ERR;
 import static com.aliyun.oss.integrationtests.TestUtils.genFixedLengthInputStream;
+import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +42,23 @@ import com.aliyun.oss.model.DeleteVersionsRequest.KeyVersion;
 public class ObjectRequestPaymentVersionTest extends TestBase {
 
     private OSSClient ossPayerClient;
+    private OSSClient ossClient;
+    private String bucketName;
+    private String endpoint;
 
     public void setUp() throws Exception {
         super.setUp();
+
+        bucketName = super.bucketName + "-request-payment-version";
+        endpoint = "http://oss-ap-south-1.aliyuncs.com";
+
+        //create client
+        ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);
+        Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
+        ossClient = new OSSClient(endpoint, new DefaultCredentialProvider(credentials), conf);
+
+        ossClient.createBucket(bucketName);
+        waitForCacheExpiration(2);
 
         // Set bucket policy
         StringBuffer strBuffer = new StringBuffer();
@@ -66,15 +82,19 @@ public class ObjectRequestPaymentVersionTest extends TestBase {
         ossClient.setBucketVersioning(request);
 
         // Create payer client
-        ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);
-        Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_PAYER_ACCESS_KEY_ID, TestConfig.OSS_TEST_PAYER_ACCESS_KEY_SECRET);
-        ossPayerClient = new OSSClient(TestConfig.OSS_TEST_ENDPOINT, new DefaultCredentialProvider(credentials), conf);
+        credentials = new DefaultCredentials(TestConfig.OSS_TEST_PAYER_ACCESS_KEY_ID, TestConfig.OSS_TEST_PAYER_ACCESS_KEY_SECRET);
+        ossPayerClient = new OSSClient(endpoint, new DefaultCredentialProvider(credentials), conf);
     }
 
     public void tearDown() throws Exception {
+        if (ossClient != null) {
+            ossClient.shutdown();
+            ossClient = null;
+        }
 
         if (ossPayerClient != null) {
             ossPayerClient.shutdown();
+            ossPayerClient = null;
         }
         super.tearDown();
     }

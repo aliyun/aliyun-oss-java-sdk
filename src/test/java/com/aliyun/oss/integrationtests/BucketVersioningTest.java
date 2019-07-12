@@ -19,18 +19,37 @@
 
 package com.aliyun.oss.integrationtests;
 
+import com.aliyun.oss.ClientConfiguration;
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.common.auth.Credentials;
+import com.aliyun.oss.common.auth.DefaultCredentialProvider;
+import com.aliyun.oss.common.auth.DefaultCredentials;
 import junit.framework.Assert;
 
 import org.junit.Test;
 import com.aliyun.oss.model.BucketVersioningConfiguration;
 import com.aliyun.oss.model.SetBucketVersioningRequest;
 
+import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
+
 public class BucketVersioningTest extends TestBase {
 
     @Test
     public void testSetBucketVersioning() {
+        OSSClient ossClient = null;
 
         try {
+            final String endpoint = "http://oss-ap-south-1.aliyuncs.com";
+            final String bucketName = super.bucketName + "-bucket-versioning";
+
+            //create client
+            ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);
+            Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
+            ossClient = new OSSClient(endpoint, new DefaultCredentialProvider(credentials), conf);
+
+            ossClient.createBucket(bucketName);
+            waitForCacheExpiration(2);
+
             // start versioning
             BucketVersioningConfiguration configuration = new BucketVersioningConfiguration();
             configuration.setStatus(BucketVersioningConfiguration.ENABLED);
@@ -51,6 +70,11 @@ public class BucketVersioningTest extends TestBase {
             Assert.assertTrue(versionConfiguration.getStatus().equals(BucketVersioningConfiguration.SUSPENDED));
         } catch (Exception e) {
             Assert.fail(e.getMessage());
+        } finally {
+            if (ossClient != null) {
+                ossClient.shutdown();
+                ossClient = null;
+            }
         }
     }
 

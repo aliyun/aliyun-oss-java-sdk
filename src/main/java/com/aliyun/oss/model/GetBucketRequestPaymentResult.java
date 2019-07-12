@@ -20,15 +20,14 @@
 package com.aliyun.oss.model;
 
 public class GetBucketRequestPaymentResult extends GenericResult{
-	
+
     private Payer payer;
 
     public Payer getPayer() {
         return payer;
     }
-	
+
     public void setPayer(Payer payer) {
         this.payer = payer;
     }
-
 }

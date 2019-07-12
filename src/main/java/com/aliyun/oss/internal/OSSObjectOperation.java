@@ -266,7 +266,7 @@ public class OSSObjectOperation extends OSSOperation {
         ensureObjectKeyValid(key);
         Map<String, String> headers = new HashMap<String, String>();
         populateGetObjectRequestHeaders(selectObjectRequest, headers);
-        
+
         populateRequestPayerHeader(headers, selectObjectRequest.getRequestPayer());
 
         Map<String, String> params = new HashMap<String, String>();
@@ -900,7 +900,7 @@ public class OSSObjectOperation extends OSSOperation {
 
         Map<String, String> headers = new HashMap<String, String>();
         populateRequestMetadata(headers, metadata);
-        
+
         populateRequestPayerHeader(headers, createSymlinkRequest.getRequestPayer());
 
         Map<String, String> params = new HashMap<String, String>();
@@ -959,15 +959,14 @@ public class OSSObjectOperation extends OSSOperation {
     public boolean doesObjectExistWithRedirect(GenericRequest genericRequest) throws OSSException, ClientException {
         OSSObject ossObject = null;
         try {
-        	String bucketName = genericRequest.getBucketName();
-        	String key = genericRequest.getKey();
-        	Payer payer = genericRequest.getRequestPayer();
+            String bucketName = genericRequest.getBucketName();
+            String key = genericRequest.getKey();
+            Payer payer = genericRequest.getRequestPayer();
 
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
-
-            if (payer != null)
+            if (payer != null) {
                 getObjectRequest.setRequestPayer(payer);
-
+            }
             ossObject = this.getObject(getObjectRequest);
             return true;
         } catch (OSSException e) {

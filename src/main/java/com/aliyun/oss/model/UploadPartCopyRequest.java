@@ -208,7 +208,7 @@ public class UploadPartCopyRequest extends WebServiceRequest {
 
     /**
      * Sets the part data's MD5 value.
-     * 
+     *
      * @param md5Digest
      *            The part data's MD5 value.
      */
@@ -232,7 +232,7 @@ public class UploadPartCopyRequest extends WebServiceRequest {
         this.sourceKey = sourceKey;
     }
 
-	/**
+    /**
      * * <p>
      * Sets the one who pays for the request
      * The Third party should set request payer when requesting resources.

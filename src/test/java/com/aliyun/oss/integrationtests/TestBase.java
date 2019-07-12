@@ -92,6 +92,7 @@ public class TestBase {
     @After
     public void tearDown() throws Exception {
         deleteBucket(bucketName);
+        cleanUpAllBuckets(getOSSClient(), bucketName);
         cleanUp();
     }
     
@@ -112,12 +113,12 @@ public class TestBase {
         waitForCacheExpiration(2);
         return bucketName;
     }
-    
+
     public static void deleteBucket(String bucketName) {
         abortAllMultipartUploads(getOSSClient(), bucketName);
         deleteBucketWithObjects(getOSSClient(), bucketName);
     }
-    
+
     protected static void deleteBucketWithObjects(OSSClient client, String bucketName) {
         if (!client.doesBucketExist(bucketName)) {
             return;
@@ -126,7 +127,7 @@ public class TestBase {
         //delete objects by version id
         try {
             // start versioning
-            BucketVersioningConfiguration versionConfiguration = ossClient.getBucketVersioning(bucketName);
+            BucketVersioningConfiguration versionConfiguration = client.getBucketVersioning(bucketName);
             if (versionConfiguration.getStatus() != BucketVersioningConfiguration.OFF) {
                 // stop versioning
                 //versionConfiguration.setStatus(BucketVersioningConfiguration.SUSPENDED);
@@ -140,10 +141,10 @@ public class TestBase {
                             .withBucketName(bucketName)
                             .withKeyMarker(nextKeyMarker)
                             .withVersionIdMarker(nextVersionMarker);
-                    versionListing = ossClient.listVersions(listVersionsRequest);
+                    versionListing = client.listVersions(listVersionsRequest);
 
                     for (OSSVersionSummary ossVersion : versionListing.getVersionSummaries()) {
-                        ossClient.deleteVersion(bucketName, ossVersion.getKey(), ossVersion.getVersionId());
+                        client.deleteVersion(bucketName, ossVersion.getKey(), ossVersion.getVersionId());
                     }
                     nextKeyMarker = versionListing.getNextKeyMarker();
                     nextVersionMarker = versionListing.getNextVersionIdMarker();
@@ -180,9 +181,9 @@ public class TestBase {
         }
         
         // delete live channels
-        List<LiveChannel> channels = ossClient.listLiveChannels(bucketName);
+        List<LiveChannel> channels = client.listLiveChannels(bucketName);
         for (LiveChannel channel : channels) {
-            ossClient.deleteLiveChannel(bucketName, channel.getName());
+            client.deleteLiveChannel(bucketName, channel.getName());
         }
         
         // delete bucket
@@ -246,8 +247,8 @@ public class TestBase {
         return objs;
     }
     
-    protected static List<String> listAllBuckets(OSSClient client, String bucketPrefix) {
-        List<String> bkts = new ArrayList<String>();
+    protected static List<Bucket> listAllBuckets(OSSClient client, String bucketPrefix) {
+        List<Bucket> bkts = new ArrayList<Bucket>();
         String nextMarker = null;
         BucketList bucketList = null;
         
@@ -257,7 +258,7 @@ public class TestBase {
             bucketList = client.listBuckets(listBucketsRequest);
             nextMarker = bucketList.getNextMarker();
             for (Bucket b : bucketList.getBucketList()) {
-                bkts.add(b.getName());
+                bkts.add(b);
             }
         } while (bucketList.isTruncated());
         
@@ -265,10 +266,19 @@ public class TestBase {
     }
     
     protected static void cleanUpAllBuckets(OSSClient client, String bucketPrefix) {
-        List<String> bkts = listAllBuckets(client, bucketPrefix);
-        for (String b : bkts) {
-            abortAllMultipartUploads(client, b);
-            deleteBucketWithObjects(client, b);
+        List<Bucket> bkts = listAllBuckets(client, bucketPrefix);
+        for (Bucket b : bkts) {
+            if (!TestConfig.OSS_TEST_ENDPOINT.contains(b.getExtranetEndpoint())) {
+                ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);
+                Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
+                OSSClient client_ = new OSSClient(b.getExtranetEndpoint(), new DefaultCredentialProvider(credentials), conf);
+                abortAllMultipartUploads(client_, b.getName());
+                deleteBucketWithObjects(client_, b.getName());
+                client_.shutdown();
+            }else {
+                abortAllMultipartUploads(client, b.getName());
+                deleteBucketWithObjects(client, b.getName());
+            }
         }
     }
     
@@ -337,97 +347,103 @@ public class TestBase {
 
         return file;
     }
-    
+
     public static void resetTestConfig() {
-      // test config
-      if (TestConfig.OSS_TEST_ENDPOINT == null) {
-          TestConfig.OSS_TEST_ENDPOINT = System.getenv().get("OSS_TEST_ENDPOINT");
-      }
-      
-      if (TestConfig.OSS_TEST_REGION == null) {
-          TestConfig.OSS_TEST_REGION = System.getenv().get("OSS_TEST_REGION");
-      }   
-      
-      if (TestConfig.OSS_TEST_ACCESS_KEY_ID == null) {
-          TestConfig.OSS_TEST_ACCESS_KEY_ID = System.getenv().get("OSS_TEST_ACCESS_KEY_ID");
-      }
-      
-      if (TestConfig.OSS_TEST_ACCESS_KEY_SECRET == null) {
-          TestConfig.OSS_TEST_ACCESS_KEY_SECRET = System.getenv().get("OSS_TEST_ACCESS_KEY_SECRET");
-      }
-      
-      if (TestConfig.OSS_TEST_ACCESS_KEY_ID_1 == null) {
-          TestConfig.OSS_TEST_ACCESS_KEY_ID_1 = System.getenv().get("OSS_TEST_ACCESS_KEY_ID_1");
-          if (TestConfig.OSS_TEST_ACCESS_KEY_ID_1 == null) {
-              TestConfig.OSS_TEST_ACCESS_KEY_ID_1 = TestConfig.OSS_TEST_ACCESS_KEY_ID;
-          }
-      }
-      
-      if (TestConfig.OSS_TEST_ACCESS_KEY_SECRET_1 == null) {
-          TestConfig.OSS_TEST_ACCESS_KEY_SECRET_1 = System.getenv().get("OSS_TEST_ACCESS_KEY_SECRET_1");
-          if (TestConfig.OSS_TEST_ACCESS_KEY_SECRET_1 == null) {
-              TestConfig.OSS_TEST_ACCESS_KEY_SECRET_1 = TestConfig.OSS_TEST_ACCESS_KEY_SECRET;
-          }
-      }
-      	
-      if (TestConfig.OSS_TEST_PAYER_UID == null) {
-          TestConfig.OSS_TEST_PAYER_UID = System.getenv().get("OSS_TEST_PAYER_UID");
-      }
-      
-      if (TestConfig.OSS_TEST_PAYER_ACCESS_KEY_ID == null) {
-          TestConfig.OSS_TEST_PAYER_ACCESS_KEY_ID = System.getenv().get("OSS_TEST_PAYER_ACCESS_KEY_ID");
-      }
-      
-      if (TestConfig.OSS_TEST_PAYER_ACCESS_KEY_SECRET == null) {
-          TestConfig.OSS_TEST_PAYER_ACCESS_KEY_SECRET = System.getenv().get("OSS_TEST_PAYER_ACCESS_KEY_SECRET");
-      }
-      
-      // replacation config
-      if (TestConfig.OSS_TEST_REPLICATION_ENDPOINT == null) {
-          TestConfig.OSS_TEST_REPLICATION_ENDPOINT = System.getenv().get("OSS_TEST_REPLICATION_ENDPOINT");
-      }
-      
-      if (TestConfig.OSS_TEST_REPLICATION_ACCESS_KEY_ID == null) {
-          TestConfig.OSS_TEST_REPLICATION_ACCESS_KEY_ID = System.getenv().get("OSS_TEST_REPLICATION_ACCESS_KEY_ID");
-      }
-      
-      if (TestConfig.OSS_TEST_REPLICATION_ACCESS_KEY_SECRET == null) {
-          TestConfig.OSS_TEST_REPLICATION_ACCESS_KEY_SECRET = System.getenv().get("OSS_TEST_REPLICATION_ACCESS_KEY_SECRET");
-      }
-      
-      // sts test
-      if (TestConfig.STS_TEST_ENDPOINT == null) {
-          TestConfig.STS_TEST_ENDPOINT = System.getenv().get("OSS_TEST_STS_ENDPOINT");
-      }
-      
-      if (TestConfig.STS_TEST_ROLE == null) {
-          TestConfig.STS_TEST_ROLE = System.getenv().get("OSS_TEST_STS_ROLE");
-      }
-      
-      if (TestConfig.STS_TEST_BUCKET == null) {
-          TestConfig.STS_TEST_BUCKET = System.getenv().get("OSS_TEST_STS_BUCKET");
-      }
-      
-      // proxy test
-      if (TestConfig.PROXY_HOST == null) {
-          TestConfig.PROXY_HOST = System.getenv().get("OSS_TEST_PROXY_HOST");
-      }
-      
-      if (TestConfig.PROXY_PORT == -1) {
-         TestConfig.PROXY_PORT = 3128;
-         String portStr = System.getenv().get("OSS_TEST_PROXY_PORT");
-         if (portStr != null) {
-             TestConfig.PROXY_PORT = Integer.parseInt(portStr);
-         } 
-      }
-      
-      if (TestConfig.PROXY_USER == null) {
-          TestConfig.PROXY_USER = System.getenv().get("OSS_TEST_PROXY_USER");
-      }
-      
-      if (TestConfig.PROXY_PASSWORD == null) {
-          TestConfig.PROXY_PASSWORD = System.getenv().get("OSS_TEST_PROXY_PASSWORD");
-      }
+        // test config
+        if (TestConfig.OSS_TEST_ENDPOINT == null) {
+            TestConfig.OSS_TEST_ENDPOINT = System.getenv().get("OSS_TEST_ENDPOINT");
+        }
+
+        if (TestConfig.OSS_TEST_REGION == null) {
+            TestConfig.OSS_TEST_REGION = System.getenv().get("OSS_TEST_REGION");
+        }
+
+        if (TestConfig.OSS_TEST_ACCESS_KEY_ID == null) {
+            TestConfig.OSS_TEST_ACCESS_KEY_ID = System.getenv().get("OSS_TEST_ACCESS_KEY_ID");
+        }
+
+        if (TestConfig.OSS_TEST_ACCESS_KEY_SECRET == null) {
+            TestConfig.OSS_TEST_ACCESS_KEY_SECRET = System.getenv().get("OSS_TEST_ACCESS_KEY_SECRET");
+        }
+
+        if (TestConfig.OSS_TEST_ACCESS_KEY_ID_1 == null) {
+            TestConfig.OSS_TEST_ACCESS_KEY_ID_1 = System.getenv().get("OSS_TEST_ACCESS_KEY_ID_1");
+            if (TestConfig.OSS_TEST_ACCESS_KEY_ID_1 == null) {
+                TestConfig.OSS_TEST_ACCESS_KEY_ID_1 = TestConfig.OSS_TEST_ACCESS_KEY_ID;
+            }
+        }
+
+        if (TestConfig.OSS_TEST_ACCESS_KEY_SECRET_1 == null) {
+            TestConfig.OSS_TEST_ACCESS_KEY_SECRET_1 = System.getenv().get("OSS_TEST_ACCESS_KEY_SECRET_1");
+            if (TestConfig.OSS_TEST_ACCESS_KEY_SECRET_1 == null) {
+                TestConfig.OSS_TEST_ACCESS_KEY_SECRET_1 = TestConfig.OSS_TEST_ACCESS_KEY_SECRET;
+            }
+        }
+
+        // replacation config
+        if (TestConfig.OSS_TEST_REPLICATION_ENDPOINT == null) {
+            TestConfig.OSS_TEST_REPLICATION_ENDPOINT = System.getenv().get("OSS_TEST_REPLICATION_ENDPOINT");
+        }
+
+        if (TestConfig.OSS_TEST_REPLICATION_ACCESS_KEY_ID == null) {
+            TestConfig.OSS_TEST_REPLICATION_ACCESS_KEY_ID = System.getenv().get("OSS_TEST_REPLICATION_ACCESS_KEY_ID");
+        }
+
+        if (TestConfig.OSS_TEST_REPLICATION_ACCESS_KEY_SECRET == null) {
+            TestConfig.OSS_TEST_REPLICATION_ACCESS_KEY_SECRET = System.getenv().get("OSS_TEST_REPLICATION_ACCESS_KEY_SECRET");
+        }
+
+        // sts test
+        if (TestConfig.STS_TEST_ENDPOINT == null) {
+            TestConfig.STS_TEST_ENDPOINT = System.getenv().get("OSS_TEST_STS_ENDPOINT");
+        }
+
+        if (TestConfig.STS_TEST_ROLE == null) {
+            TestConfig.STS_TEST_ROLE = System.getenv().get("OSS_TEST_STS_ROLE");
+        }
+
+        if (TestConfig.STS_TEST_BUCKET == null) {
+            TestConfig.STS_TEST_BUCKET = System.getenv().get("OSS_TEST_STS_BUCKET");
+        }
+
+        // proxy test
+        if (TestConfig.PROXY_HOST == null) {
+            TestConfig.PROXY_HOST = System.getenv().get("OSS_TEST_PROXY_HOST");
+        }
+
+        if (TestConfig.PROXY_PORT == -1) {
+            TestConfig.PROXY_PORT = 3128;
+            String portStr = System.getenv().get("OSS_TEST_PROXY_PORT");
+            if (portStr != null) {
+                TestConfig.PROXY_PORT = Integer.parseInt(portStr);
+            }
+        }
+
+        if (TestConfig.PROXY_USER == null) {
+            TestConfig.PROXY_USER = System.getenv().get("OSS_TEST_PROXY_USER");
+        }
+
+        if (TestConfig.PROXY_PASSWORD == null) {
+            TestConfig.PROXY_PASSWORD = System.getenv().get("OSS_TEST_PROXY_PASSWORD");
+        }
+
+        //callback
+        if (TestConfig.CALLBACK_URL == null) {
+            TestConfig.CALLBACK_URL = System.getenv().get("OSS_TEST_CALLBACK_URL");
+        }
+
+        //request payment
+        if (TestConfig.OSS_TEST_PAYER_UID == null) {
+            TestConfig.OSS_TEST_PAYER_UID = System.getenv().get("OSS_TEST_PAYER_UID");
+        }
+
+        if (TestConfig.OSS_TEST_PAYER_ACCESS_KEY_ID == null) {
+            TestConfig.OSS_TEST_PAYER_ACCESS_KEY_ID = System.getenv().get("OSS_TEST_PAYER_ACCESS_KEY_ID");
+        }
+
+        if (TestConfig.OSS_TEST_PAYER_ACCESS_KEY_SECRET == null) {
+            TestConfig.OSS_TEST_PAYER_ACCESS_KEY_SECRET = System.getenv().get("OSS_TEST_PAYER_ACCESS_KEY_SECRET");
+        }
     }
 
 }
