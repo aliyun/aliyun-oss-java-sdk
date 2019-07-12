@@ -152,7 +152,7 @@ public class OSSMultipartOperation extends OSSOperation {
         Map<String, String> headers = new HashMap<String, String>();
         populateCompleteMultipartUploadOptionalHeaders(completeMultipartUploadRequest, headers);
         populateRequestCallback(headers, completeMultipartUploadRequest.getCallback());
-        
+
         populateRequestPayerHeader(headers, completeMultipartUploadRequest.getRequestPayer());
 
         Map<String, String> parameters = new HashMap<String, String>();
@@ -212,7 +212,7 @@ public class OSSMultipartOperation extends OSSOperation {
         if (initiateMultipartUploadRequest.getObjectMetadata() != null) {
             populateRequestMetadata(headers, initiateMultipartUploadRequest.getObjectMetadata());
         }
-        
+
         populateRequestPayerHeader(headers, initiateMultipartUploadRequest.getRequestPayer());
 
         // Be careful that we don't send the object's total size as the content
@@ -327,7 +327,7 @@ public class OSSMultipartOperation extends OSSOperation {
 
         Map<String, String> headers = new HashMap<String, String>();
         populateUploadPartOptionalHeaders(uploadPartRequest, headers);
-        
+
         populateRequestPayerHeader(headers, uploadPartRequest.getRequestPayer());
         populateTrafficLimitHeader(headers, uploadPartRequest.getTrafficLimit());
 

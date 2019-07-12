@@ -26,13 +26,8 @@ public final class TestConfig {
     public static String OSS_TEST_REGION = null;
     public static String OSS_TEST_ACCESS_KEY_ID = null;
     public static String OSS_TEST_ACCESS_KEY_SECRET = null;
-	public static String OSS_TEST_ACCESS_KEY_ID_1 = null;
+    public static String OSS_TEST_ACCESS_KEY_ID_1 = null;
     public static String OSS_TEST_ACCESS_KEY_SECRET_1 = null;
-    
-    // OSS payer test configuration
-    public static String OSS_TEST_PAYER_UID = null;
-    public static String OSS_TEST_PAYER_ACCESS_KEY_ID = null;
-    public static String OSS_TEST_PAYER_ACCESS_KEY_SECRET = null;
 
     // OSS replication test configuration
     public static String OSS_TEST_REPLICATION_ENDPOINT = null;
@@ -52,7 +47,12 @@ public final class TestConfig {
 
     // OSS cmk id configuration
     public static String CMK_ID = null;
-    
+
     // OSS callback 
     public static String CALLBACK_URL = null;
+
+    // OSS payer test configuration
+    public static String OSS_TEST_PAYER_UID = null;
+    public static String OSS_TEST_PAYER_ACCESS_KEY_ID = null;
+    public static String OSS_TEST_PAYER_ACCESS_KEY_SECRET = null;
 }

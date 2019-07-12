@@ -180,9 +180,9 @@ public class OSSDownloadOperation {
         public static ObjectStat getFileStat(OSSObjectOperation objectOperation, DownloadFileRequest downloadFileRequest) {
             String bucketName = downloadFileRequest.getBucketName();
             String key = downloadFileRequest.getKey();
-            
+
             GenericRequest genericRequest = new GenericRequest(bucketName, key);
-            
+
             Payer payer = downloadFileRequest.getRequestPayer();
             if (payer != null) {
                 genericRequest.setRequestPayer(payer);

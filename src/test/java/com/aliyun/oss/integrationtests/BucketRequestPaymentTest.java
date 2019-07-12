@@ -37,7 +37,7 @@ public class BucketRequestPaymentTest extends TestBase {
 
     @Test
     public void testNormalSetRequestPayment(){
-        
+
         try {
             Payer payer = Payer.Requester;
 
@@ -55,8 +55,8 @@ public class BucketRequestPaymentTest extends TestBase {
             Assert.fail(e.getMessage());
         }
 
-    }  
-    
+    }
+
     @Test
     public void testUnnormalSetRequestPayment(){
         Payer payer = Payer.Requester;
@@ -74,8 +74,8 @@ public class BucketRequestPaymentTest extends TestBase {
         // Set bucket without ownership
         final String bucketWithoutOwnership = "oss";//AccessDenied
         try {
-    	    ossClient.setBucketRequestPayment(bucketWithoutOwnership, payer);
-    	    Assert.fail("Set bucket request payment should not be successful");
+            ossClient.setBucketRequestPayment(bucketWithoutOwnership, payer);
+            Assert.fail("Set bucket request payment should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
         }

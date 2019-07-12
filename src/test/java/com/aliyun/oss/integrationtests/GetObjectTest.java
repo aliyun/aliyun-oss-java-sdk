@@ -600,7 +600,8 @@ public class GetObjectTest extends TestBase {
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
-        
+        Thread.sleep(2000);
+
         // Matching ETag Constraints
         GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
         List<String> matchingETagConstraints = new ArrayList<String>();
@@ -653,7 +654,7 @@ public class GetObjectTest extends TestBase {
         } finally {
             getObjectRequest.setNonmatchingETagConstraints(null);
         }
-        
+
         // Unmodified Since Constraint
         Date unmodifiedSinceConstraint = new Date();
         getObjectRequest.setUnmodifiedSinceConstraint(unmodifiedSinceConstraint);
@@ -665,7 +666,7 @@ public class GetObjectTest extends TestBase {
         } finally {
             getObjectRequest.setUnmodifiedSinceConstraint(null);
         }
-        
+
         unmodifiedSinceConstraint = beforeModifiedTime;
         getObjectRequest.setUnmodifiedSinceConstraint(unmodifiedSinceConstraint);
         try {
@@ -676,7 +677,7 @@ public class GetObjectTest extends TestBase {
         } finally {
             getObjectRequest.setUnmodifiedSinceConstraint(null);
         }
-        
+
         // Modified Since Constraint
         Date modifiedSinceConstraint = beforeModifiedTime;
         getObjectRequest.setModifiedSinceConstraint(modifiedSinceConstraint);

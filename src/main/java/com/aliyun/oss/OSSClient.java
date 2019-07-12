@@ -1435,7 +1435,7 @@ public class OSSClient implements OSS {
     public GetBucketRequestPaymentResult getBucketRequestPayment(String bucketName) throws OSSException, ClientException{
         return this.bucketOperation.getBucketRequestPayment(new GenericRequest(bucketName));
     }
-    
+
     @Override
     public GetBucketRequestPaymentResult getBucketRequestPayment(GenericRequest genericRequest) throws OSSException, ClientException{
         return this.bucketOperation.getBucketRequestPayment(genericRequest);
