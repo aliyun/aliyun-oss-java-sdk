@@ -81,7 +81,7 @@ public class AuthUtils {
     public static final String SECRET_KEY_ENV_VAR = "OSS_ACCESS_KEY_SECRET";
 
     /**
-     * Environment variable name for the AWS session token
+     * Environment variable name for the oss session token
      */
     public static final String SESSION_TOKEN_ENV_VAR = "OSS_SESSION_TOKEN";
 
