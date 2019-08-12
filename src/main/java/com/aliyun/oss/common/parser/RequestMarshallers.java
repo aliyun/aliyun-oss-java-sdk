@@ -79,6 +79,7 @@ public final class RequestMarshallers {
     public static final SetBucketEncryptionRequestMarshaller setBucketEncryptionRequestMarshaller = new SetBucketEncryptionRequestMarshaller();
     public static final SetBucketPolicyRequestMarshaller setBucketPolicyRequestMarshaller = new SetBucketPolicyRequestMarshaller();
     public static final SetBucketRequestPaymentRequestMarshaller setBucketRequestPaymentRequestMarshaller = new SetBucketRequestPaymentRequestMarshaller();
+    public static final SetBucketQosInfoRequestMarshaller setBucketQosInfoRequestMarshaller = new SetBucketQosInfoRequestMarshaller();
 
     public static final CreateSelectObjectMetadataRequestMarshaller createSelectObjectMetadataRequestMarshaller = new CreateSelectObjectMetadataRequestMarshaller();
     public static final SelectObjectRequestMarshaller selectObjectRequestMarshaller = new SelectObjectRequestMarshaller();
@@ -954,6 +955,61 @@ public final class RequestMarshallers {
             xmlBody.append("<RequestPaymentConfiguration>");
             xmlBody.append("<Payer>" +payer + "</Payer>");
             xmlBody.append("</RequestPaymentConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+
+    }
+
+    public static final class SetBucketQosInfoRequestMarshaller implements RequestMarshaller2<BucketQosInfo> {
+
+        @Override
+        public byte[] marshall(BucketQosInfo bucketQosInfo) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<QoSConfiguration>");
+            if (bucketQosInfo.getTotalUploadBw() != null) {
+                xmlBody.append("<TotalUploadBandwidth>" +bucketQosInfo.getTotalUploadBw() + "</TotalUploadBandwidth>");
+            }
+
+            if (bucketQosInfo.getIntranetUploadBw() != null) {
+                xmlBody.append("<IntranetUploadBandwidth>" +bucketQosInfo.getIntranetUploadBw() + "</IntranetUploadBandwidth>");
+            }
+
+            if (bucketQosInfo.getExtranetUploadBw() != null) {
+                xmlBody.append("<ExtranetUploadBandwidth>" +bucketQosInfo.getExtranetUploadBw() + "</ExtranetUploadBandwidth>");
+            }
+
+            if (bucketQosInfo.getTotalDownloadBw() != null) {
+                xmlBody.append("<TotalDownloadBandwidth>" +bucketQosInfo.getTotalDownloadBw() + "</TotalDownloadBandwidth>");
+            }
+
+            if (bucketQosInfo.getIntranetDownloadBw() != null) {
+                xmlBody.append("<IntranetDownloadBandwidth>" +bucketQosInfo.getIntranetDownloadBw() + "</IntranetDownloadBandwidth>");
+            }
+
+            if (bucketQosInfo.getExtranetDownloadBw() != null) {
+                xmlBody.append("<ExtranetDownloadBandwidth>" +bucketQosInfo.getExtranetDownloadBw() + "</ExtranetDownloadBandwidth>");
+            }
+
+            if (bucketQosInfo.getTotalQps() != null) {
+                xmlBody.append("<TotalQps>" +bucketQosInfo.getTotalQps() + "</TotalQps>");
+            }
+
+            if (bucketQosInfo.getIntranetQps() != null) {
+                xmlBody.append("<IntranetQps>" +bucketQosInfo.getIntranetQps() + "</IntranetQps>");
+            }
+
+            if (bucketQosInfo.getExtranetQps() != null) {
+                xmlBody.append("<ExtranetQps>" +bucketQosInfo.getExtranetQps() + "</ExtranetQps>");
+            }
+
+            xmlBody.append("</QoSConfiguration>");
 
             byte[] rawData = null;
             try {
