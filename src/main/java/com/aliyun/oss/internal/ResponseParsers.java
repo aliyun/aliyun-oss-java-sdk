@@ -56,6 +56,7 @@ import com.aliyun.oss.model.BucketList;
 import com.aliyun.oss.model.BucketLoggingResult;
 import com.aliyun.oss.model.BucketMetadata;
 import com.aliyun.oss.model.BucketProcess;
+import com.aliyun.oss.model.BucketQosInfo;
 import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.BucketReplicationProgress;
 import com.aliyun.oss.model.BucketStat;
@@ -122,6 +123,7 @@ import com.aliyun.oss.model.UdfImageInfo;
 import com.aliyun.oss.model.UdfInfo;
 import com.aliyun.oss.model.UploadPartCopyResult;
 import com.aliyun.oss.model.UserQos;
+import com.aliyun.oss.model.UserQosInfo;
 import com.aliyun.oss.model.VersionListing;
 import com.aliyun.oss.model.GetBucketPolicyResult;
 import com.aliyun.oss.model.GetBucketRequestPaymentResult;
@@ -156,6 +158,8 @@ public final class ResponseParsers {
     public static final GetBucketEncryptionResponseParser getBucketEncryptionResponseParser = new GetBucketEncryptionResponseParser();
     public static final GetBucketPolicyResponseParser getBucketPolicyResponseParser = new GetBucketPolicyResponseParser();
     public static final GetBucketRequestPaymentResponseParser getBucketRequestPaymentResponseParser = new GetBucketRequestPaymentResponseParser();
+    public static final GetUSerQosInfoResponseParser getUSerQosInfoResponseParser = new GetUSerQosInfoResponseParser();
+    public static final GetBucketQosInfoResponseParser getBucketQosInfoResponseParser = new GetBucketQosInfoResponseParser();
 
     public static final ListObjectsReponseParser listObjectsReponseParser = new ListObjectsReponseParser();
     public static final ListVersionsReponseParser listVersionsReponseParser = new ListVersionsReponseParser();
@@ -474,6 +478,36 @@ public final class ResponseParsers {
         public GetBucketRequestPaymentResult parse(ResponseMessage response) throws ResponseParseException {
             try {
             	GetBucketRequestPaymentResult result = parseGetBucketRequestPayment(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
+
+    public static final class GetUSerQosInfoResponseParser implements ResponseParser<UserQosInfo> {
+
+        @Override
+        public UserQosInfo parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                UserQosInfo result = parseGetUserQosInfo(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
+
+    public static final class GetBucketQosInfoResponseParser implements ResponseParser<BucketQosInfo> {
+
+        @Override
+        public BucketQosInfo parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                BucketQosInfo result = parseGetBucketQosInfo(response.getContent());
                 result.setRequestId(response.getRequestId());
                 return result;
             } finally {
@@ -2873,6 +2907,62 @@ public final class ResponseParsers {
             }
 
             return paymentResult;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
+    }
+    /**
+     * Unmarshall get user qos info response body to UserQosInfo.
+     */
+    public static UserQosInfo parseGetUserQosInfo(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+            UserQosInfo userQosInfo = new UserQosInfo();
+
+            userQosInfo.setRegion(root.getChildText("Region"));
+            userQosInfo.setTotalUploadBw(Integer.valueOf(root.getChildText("TotalUploadBandwidth")));
+            userQosInfo.setIntranetUploadBw(Integer.valueOf(root.getChildText("IntranetUploadBandwidth")));
+            userQosInfo.setExtranetUploadBw(Integer.valueOf(root.getChildText("ExtranetUploadBandwidth")));
+            userQosInfo.setTotalDownloadBw(Integer.valueOf(root.getChildText("TotalDownloadBandwidth")));
+            userQosInfo.setIntranetDownloadBw(Integer.valueOf(root.getChildText("IntranetDownloadBandwidth")));
+            userQosInfo.setExtranetDownloadBw(Integer.valueOf(root.getChildText("ExtranetDownloadBandwidth")));
+            userQosInfo.setTotalQps(Integer.valueOf(root.getChildText("TotalQps")));
+            userQosInfo.setIntranetQps(Integer.valueOf(root.getChildText("IntranetQps")));
+            userQosInfo.setExtranetQps(Integer.valueOf(root.getChildText("ExtranetQps")));
+
+            return userQosInfo;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * Unmarshall get bucuket qos info response body to BucketQosInfo.
+     */
+    public static BucketQosInfo parseGetBucketQosInfo(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+            BucketQosInfo bucketQosInfo = new BucketQosInfo();
+
+            bucketQosInfo.setTotalUploadBw(Integer.valueOf(root.getChildText("TotalUploadBandwidth")));
+            bucketQosInfo.setIntranetUploadBw(Integer.valueOf(root.getChildText("IntranetUploadBandwidth")));
+            bucketQosInfo.setExtranetUploadBw(Integer.valueOf(root.getChildText("ExtranetUploadBandwidth")));
+            bucketQosInfo.setTotalDownloadBw(Integer.valueOf(root.getChildText("TotalDownloadBandwidth")));
+            bucketQosInfo.setIntranetDownloadBw(Integer.valueOf(root.getChildText("IntranetDownloadBandwidth")));
+            bucketQosInfo.setExtranetDownloadBw(Integer.valueOf(root.getChildText("ExtranetDownloadBandwidth")));
+            bucketQosInfo.setTotalQps(Integer.valueOf(root.getChildText("TotalQps")));
+            bucketQosInfo.setIntranetQps(Integer.valueOf(root.getChildText("IntranetQps")));
+            bucketQosInfo.setExtranetQps(Integer.valueOf(root.getChildText("ExtranetQps")));
+
+            return bucketQosInfo;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {

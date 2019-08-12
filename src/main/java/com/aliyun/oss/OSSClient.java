@@ -1242,34 +1242,34 @@ public class OSSClient implements OSS {
     public void deleteBucketEncryption(GenericRequest genericRequest) throws OSSException, ClientException {
         this.bucketOperation.deleteBucketEncryption(genericRequest);
     }
-    
+
     @Override
-    public void setBucketPolicy(String bucketName,  String policyText) throws OSSException, ClientException{
+    public void setBucketPolicy(String bucketName,  String policyText) throws OSSException, ClientException {
     	this.bucketOperation.setBucketPolicy(new SetBucketPolicyRequest(bucketName, policyText));
     }
-    
+
     @Override
-    public void setBucketPolicy(SetBucketPolicyRequest setBucketPolicyRequest) throws OSSException, ClientException{
+    public void setBucketPolicy(SetBucketPolicyRequest setBucketPolicyRequest) throws OSSException, ClientException {
     	this.bucketOperation.setBucketPolicy(setBucketPolicyRequest);
     }
-    
+
     @Override
-    public GetBucketPolicyResult getBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException{
+    public GetBucketPolicyResult getBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException {
     	return bucketOperation.getBucketPolicy(genericRequest);
     }
-    
+
     @Override
-    public GetBucketPolicyResult getBucketPolicy(String bucketName) throws OSSException, ClientException{
+    public GetBucketPolicyResult getBucketPolicy(String bucketName) throws OSSException, ClientException {
     	return bucketOperation.getBucketPolicy(new GenericRequest(bucketName));
     }
-    
+
     @Override
-    public void deleteBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException{
+    public void deleteBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException {
     	bucketOperation.deleteBucketPolicy(genericRequest);
     }
-    
+
     @Override
-    public void deleteBucketPolicy(String bucketName) throws OSSException, ClientException{
+    public void deleteBucketPolicy(String bucketName) throws OSSException, ClientException {
     	bucketOperation.deleteBucketPolicy(new GenericRequest(bucketName));
     }
 
@@ -1427,18 +1427,53 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void setBucketRequestPayment(SetBucketRequestPaymentRequest setBucketRequestPaymentRequest) throws OSSException, ClientException{
+    public void setBucketRequestPayment(SetBucketRequestPaymentRequest setBucketRequestPaymentRequest) throws OSSException, ClientException {
         this.bucketOperation.setBucketRequestPayment(setBucketRequestPaymentRequest);
     }
 
     @Override
-    public GetBucketRequestPaymentResult getBucketRequestPayment(String bucketName) throws OSSException, ClientException{
+    public GetBucketRequestPaymentResult getBucketRequestPayment(String bucketName) throws OSSException, ClientException {
         return this.bucketOperation.getBucketRequestPayment(new GenericRequest(bucketName));
     }
 
     @Override
-    public GetBucketRequestPaymentResult getBucketRequestPayment(GenericRequest genericRequest) throws OSSException, ClientException{
+    public GetBucketRequestPaymentResult getBucketRequestPayment(GenericRequest genericRequest) throws OSSException, ClientException {
         return this.bucketOperation.getBucketRequestPayment(genericRequest);
+    }
+
+    @Override
+    public void setBucketQosInfo(String bucketName, BucketQosInfo bucketQosInfo) throws OSSException, ClientException {
+        this.bucketOperation.setBucketQosInfo(new SetBucketQosInfoRequest(bucketName, bucketQosInfo));
+    }
+
+    @Override
+    public void setBucketQosInfo(SetBucketQosInfoRequest setBucketQosInfoRequest) throws OSSException, ClientException {
+        this.bucketOperation.setBucketQosInfo(setBucketQosInfoRequest);
+    }
+
+    @Override
+    public BucketQosInfo getBucketQosInfo(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketQosInfo(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public BucketQosInfo getBucketQosInfo(GenericRequest genericRequest) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketQosInfo(genericRequest);
+    }
+
+    @Override
+    public void deleteBucketQosInfo(String bucketName) throws OSSException, ClientException {
+        this.bucketOperation.deleteBucketQosInfo(new GenericRequest(bucketName));
+    }
+ 
+    @Override
+    public void deleteBucketQosInfo(GenericRequest genericRequest) throws OSSException, ClientException {
+        this.bucketOperation.deleteBucketQosInfo(genericRequest);
+    }
+
+    @Override
+    public UserQosInfo getUserQosInfo() throws OSSException, ClientException {
+        return this.bucketOperation.getUserQosInfo();
     }
 
     @Override

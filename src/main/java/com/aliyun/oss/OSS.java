@@ -3145,6 +3145,91 @@ public interface OSS {
     public GetBucketRequestPaymentResult getBucketRequestPayment(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
+     * sets the qos info for the {@link Bucket}.
+     * 
+     * @param bucketName
+     *             The bucket name.
+     * @param bucketQosInfo
+     *             The bucket qos info setting
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public void setBucketQosInfo(String bucketName, BucketQosInfo bucketQosInfo) throws OSSException, ClientException;
+
+    /**
+     * sets the qos info for the {@link Bucket}.
+     * 
+     * @param setBucketQosInfoRequest
+     *             {@link SetBucketQosInfoRequest} instance that has the bucket name and bucket qos info.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public void setBucketQosInfo(SetBucketQosInfoRequest setBucketQosInfoRequest) throws OSSException, ClientException;
+
+    /**
+     * Gets the bucket qos info of the {@link Bucket}.
+     * 
+     * @param bucketName
+     *             The bucket name.
+     * @return  A {@link BucketQosInfo} instance.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public BucketQosInfo getBucketQosInfo(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Gets the bucket qos info of the {@link Bucket}.
+     * 
+     * @param genericRequest
+     *             {@link GenericRequest} instance that has the bucket name.
+     * @return  A {@link BucketQosInfo} instance.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public BucketQosInfo getBucketQosInfo(GenericRequest genericRequest) throws OSSException, ClientException;
+
+    /**
+     * Deletes the bucket qos info
+     * @param bucketName
+     *            The bucket name
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public void deleteBucketQosInfo(String bucketName) throws OSSException, ClientException;
+ 
+    /**
+     * Deletes the bucket qos info
+     * @param genericRequest
+     *            A {@link GenericRequest} instance that has the bucket name
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public void deleteBucketQosInfo(GenericRequest genericRequest) throws OSSException, ClientException;
+
+    /**
+     * Gets the User qos info 
+     * 
+     * @return  A {@link UserQosInfo} instance.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public UserQosInfo getUserQosInfo() throws OSSException, ClientException;
+
+    /**
      * Creates UDF
      * 
      * @param createUdfRequest

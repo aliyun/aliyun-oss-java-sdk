@@ -37,6 +37,7 @@ import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketVersionin
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketEncryptionRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketPolicyRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketRequestPaymentRequestMarshaller;
+import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketQosInfoRequestMarshaller;
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
@@ -67,6 +68,8 @@ import static com.aliyun.oss.internal.ResponseParsers.getBucketImageProcessConfR
 import static com.aliyun.oss.internal.ResponseParsers.getBucketEncryptionResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketPolicyResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketRequestPaymentResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getUSerQosInfoResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getBucketQosInfoResponseParser;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -95,6 +98,7 @@ import com.aliyun.oss.model.BucketList;
 import com.aliyun.oss.model.BucketLoggingResult;
 import com.aliyun.oss.model.BucketMetadata;
 import com.aliyun.oss.model.BucketProcess;
+import com.aliyun.oss.model.BucketQosInfo;
 import com.aliyun.oss.model.BucketReferer;
 import com.aliyun.oss.model.BucketReplicationProgress;
 import com.aliyun.oss.model.BucketStat;
@@ -127,6 +131,7 @@ import com.aliyun.oss.model.AddBucketCnameRequest;
 import com.aliyun.oss.model.SetBucketLifecycleRequest;
 import com.aliyun.oss.model.SetBucketLoggingRequest;
 import com.aliyun.oss.model.SetBucketProcessRequest;
+import com.aliyun.oss.model.SetBucketQosInfoRequest;
 import com.aliyun.oss.model.SetBucketRefererRequest;
 import com.aliyun.oss.model.SetBucketRequestPaymentRequest;
 import com.aliyun.oss.model.AddBucketReplicationRequest;
@@ -139,6 +144,7 @@ import com.aliyun.oss.model.GetBucketPolicyResult;
 import com.aliyun.oss.model.TagSet;
 import com.aliyun.oss.model.Style;
 import com.aliyun.oss.model.UserQos;
+import com.aliyun.oss.model.UserQosInfo;
 import com.aliyun.oss.model.VersionListing;
 import org.apache.http.HttpStatus;
 
@@ -1373,6 +1379,79 @@ public class OSSBucketOperation extends OSSOperation {
                 .setOriginalRequest(genericRequest).build();
 
         return doOperation(request, getBucketRequestPaymentResponseParser, bucketName, null, true);
+    }
+
+    public void setBucketQosInfo(SetBucketQosInfoRequest setBucketQosInfoRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(setBucketQosInfoRequest, "setBucketQosInfoRequest");
+        assertParameterNotNull(setBucketQosInfoRequest.getBucketQosInfo(), "setBucketQosInfoRequest.getBucketQosInfo");
+
+        String bucketName = setBucketQosInfoRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_QOS_INFO, null);
+
+        byte[] rawContent = setBucketQosInfoRequestMarshaller.marshall(setBucketQosInfoRequest.getBucketQosInfo());
+        Map<String, String> headers = new HashMap<String, String>();
+        addRequestRequiredHeaders(headers, rawContent);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params).setHeaders(headers)
+                .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+                .setOriginalRequest(setBucketQosInfoRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    public BucketQosInfo getBucketQosInfo(GenericRequest genericRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_QOS_INFO, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
+
+        return doOperation(request, getBucketQosInfoResponseParser, bucketName, null, true);
+    }
+
+    public void deleteBucketQosInfo(GenericRequest genericRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_QOS_INFO, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    public UserQosInfo getUserQosInfo() throws OSSException, ClientException {
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_QOS_INFO, null);
+
+        GenericRequest gGenericRequest = new GenericRequest();
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setParameters(params).setOriginalRequest(gGenericRequest).build();
+
+        return doOperation(request, getUSerQosInfoResponseParser, null, null, true);
     }
 
     private static void populateListObjectsRequestParameters(ListObjectsRequest listObjectsRequest,
