@@ -34,6 +34,22 @@ public class BucketInfo extends GenericResult {
         this.bucket = bucket;
     }
 
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setDataRedundancyType(DataRedundancyType dataRedundancyType) {
+        this.dataRedundancyType = dataRedundancyType;
+    }
+
+    public DataRedundancyType getDataRedundancyType() {
+        return dataRedundancyType;
+    }
+
     @Deprecated
     public Set<Grant> getGrants() {
         return this.grants;
@@ -64,6 +80,8 @@ public class BucketInfo extends GenericResult {
     }
 
     private Bucket bucket;
+    private String comment;
+    private DataRedundancyType dataRedundancyType;
     private Set<Grant> grants = new HashSet<Grant>();
     private CannedAccessControlList cannedACL;
     private ServerSideEncryptionConfiguration sseConfig;
