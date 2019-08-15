@@ -68,6 +68,7 @@ import com.aliyun.oss.model.CnameConfiguration;
 import com.aliyun.oss.model.CompleteMultipartUploadResult;
 import com.aliyun.oss.model.CopyObjectResult;
 import com.aliyun.oss.model.CreateLiveChannelResult;
+import com.aliyun.oss.model.DataRedundancyType;
 import com.aliyun.oss.model.DeleteObjectsResult;
 import com.aliyun.oss.model.DeleteVersionsResult;
 import com.aliyun.oss.model.GenericResult;
@@ -2535,6 +2536,15 @@ public final class ResponseParsers {
             }
             bucketInfo.setBucket(bucket);
 
+            // comment
+            String comment = bucketElem.getChildText("Comment");
+            bucketInfo.setComment(comment);
+
+            // data redundancy type
+            String dataRedundancyString = bucketElem.getChildText("DataRedundancyType");
+            DataRedundancyType dataRedundancyType = DataRedundancyType.parse(dataRedundancyString);
+            bucketInfo.setDataRedundancyType(dataRedundancyType);
+
             // acl
             String aclString = bucketElem.getChild("AccessControlList").getChildText("Grant");
             CannedAccessControlList acl = CannedAccessControlList.parse(aclString);
@@ -2549,7 +2559,7 @@ public final class ResponseParsers {
             default:
                 break;
             }
-            
+
             // sse
             Element sseElem = bucketElem.getChild("ServerSideEncryptionRule");
             if (sseElem != null) {
