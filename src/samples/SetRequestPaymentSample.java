@@ -57,7 +57,7 @@ public class SetRequestPaymentSample {
         } catch (OSSException oe) {
             System.out.println("Caught an OSSException, which means your request made it to OSS, "
                     + "but was rejected with an error response for some reason.");
-            System.out.println("Error Message: " + oe.getErrorCode());
+            System.out.println("Error Message: " + oe.getErrorMessage());
             System.out.println("Error Code:       " + oe.getErrorCode());
             System.out.println("Request ID:      " + oe.getRequestId());
             System.out.println("Host ID:           " + oe.getHostId());
