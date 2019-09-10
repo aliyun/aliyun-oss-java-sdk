@@ -162,13 +162,14 @@ public abstract class OSSOperation {
 
     protected ExecutionContext createDefaultContext(HttpMethod method, String bucketName, String key) {
         ExecutionContext context = new ExecutionContext();
+		Credentials credentials = credsProvider.getCredentials();
         context.setCharset(DEFAULT_CHARSET_NAME);
-        context.setSigner(createSigner(method, bucketName, key, credsProvider.getCredentials(), client.getClientConfiguration().getSignatureVersion()));
+        context.setSigner(createSigner(method, bucketName, key, credentials, client.getClientConfiguration().getSignatureVersion()));
         context.addResponseHandler(errorResponseHandler);
         if (method == HttpMethod.POST) {
             context.setRetryStrategy(noRetryStrategy);
         }
-        context.setCredentials(credsProvider.getCredentials());
+        context.setCredentials(credentials);
         return context;
     }
 
