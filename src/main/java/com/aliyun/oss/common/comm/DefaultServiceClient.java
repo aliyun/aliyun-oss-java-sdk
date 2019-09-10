@@ -22,6 +22,7 @@ package com.aliyun.oss.common.comm;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
@@ -72,6 +73,7 @@ import com.aliyun.oss.common.utils.IOUtils;
  */
 public class DefaultServiceClient extends ServiceClient {
     protected static HttpRequestFactory httpRequestFactory = new HttpRequestFactory();
+	private static Method setNormalizeUriMethod = null;
 
     protected CloseableHttpClient httpClient;
     protected HttpClientConnectionManager connectionManager;
@@ -106,6 +108,14 @@ public class DefaultServiceClient extends ServiceClient {
 
                 this.authCache = new BasicAuthCache();
                 authCache.put(this.proxyHttpHost, new BasicScheme());
+            }
+        }
+
+        //Compatible with HttpClient 4.5.9 or later
+        if (setNormalizeUriMethod != null) {
+            try {
+                setNormalizeUriMethod.invoke(requestConfigBuilder, false);
+            }catch (Exception e) {
             }
         }
 
@@ -279,5 +289,28 @@ public class DefaultServiceClient extends ServiceClient {
     public void shutdown() {
         IdleConnectionReaper.removeConnectionManager(this.connectionManager);
         this.connectionManager.shutdown();
+    }
+
+    private static Method getClassMethd(Class<?> clazz, String methodName) {
+        try {
+            Method[] method = clazz.getDeclaredMethods();
+            for (Method m : method) {
+                if (!m.getName().equals(methodName)) {
+                    continue;
+                }
+                return m;
+            }
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
+    static {
+        try {
+            setNormalizeUriMethod = getClassMethd(
+                    Class.forName("org.apache.http.client.config.RequestConfig$Builder"),
+                    "setNormalizeUri");
+        } catch (Exception e) {
+        }
     }
 }

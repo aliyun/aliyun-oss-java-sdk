@@ -238,5 +238,16 @@ public class DoesObjectExistTest extends TestBase {
             client.shutdown();
         } 
     }
-    
+
+    @Test
+    public void testSpecialCharDoesObjectExist() {
+        final String nonexistentKey = "nonexistent-bucket-and-key+123";
+        try {
+            boolean exist = ossClient.doesObjectExist(bucketName, nonexistentKey);
+            Assert.assertFalse(exist);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
 }
