@@ -22,9 +22,7 @@ package com.aliyun.oss.common.provider;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.aliyun.oss.common.auth.PublicKey;
 import com.aliyun.oss.common.utils.AuthUtils;
@@ -35,7 +33,11 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
+
 public class TestBase {
+
+    protected static final String BUCKET_NAME_PREFIX = "oss-java-sdk-";
 
     @BeforeClass
     public static void onlyOnceSetUp() {
@@ -65,27 +67,27 @@ public class TestBase {
 
     public static void resetTestConfig() {
         if (TestConfig.RAM_REGION_ID == null) {
-            TestConfig.RAM_REGION_ID = System.getenv().get("RAM_REGION_ID");
+            TestConfig.RAM_REGION_ID = System.getenv().get("OSS_TEST_RAM_REGION");
         }
 
         if (TestConfig.ROOT_ACCESS_KEY_ID == null) {
-            TestConfig.ROOT_ACCESS_KEY_ID = System.getenv().get("ROOT_ACCESS_KEY_ID");
+            TestConfig.ROOT_ACCESS_KEY_ID = System.getenv().get("OSS_TEST_ACCESS_KEY_ID");
         }
 
         if (TestConfig.ROOT_ACCESS_KEY_SECRET == null) {
-            TestConfig.ROOT_ACCESS_KEY_SECRET = System.getenv().get("ROOT_ACCESS_KEY_SECRET");
+            TestConfig.ROOT_ACCESS_KEY_SECRET = System.getenv().get("OSS_TEST_ACCESS_KEY_SECRET");
         }
 
         if (TestConfig.USER_ACCESS_KEY_ID == null) {
-            TestConfig.USER_ACCESS_KEY_ID = System.getenv().get("USER_ACCESS_KEY_ID");
+            TestConfig.USER_ACCESS_KEY_ID = System.getenv().get("OSS_TEST_USER_ACCESS_KEY_ID");
         }
 
         if (TestConfig.USER_ACCESS_KEY_SECRET == null) {
-            TestConfig.USER_ACCESS_KEY_SECRET = System.getenv().get("USER_ACCESS_KEY_SECRET");
+            TestConfig.USER_ACCESS_KEY_SECRET = System.getenv().get("OSS_TEST_USER_ACCESS_KEY_SECRET");
         }
 
         if (TestConfig.RAM_ROLE_ARN == null) {
-            TestConfig.RAM_ROLE_ARN = System.getenv().get("RAM_ROLE_ARN");
+            TestConfig.RAM_ROLE_ARN = System.getenv().get("OSS_TEST_RAM_ROLE_ARN");
         }
 
         if (TestConfig.ECS_ROLE_NAME == null) {
@@ -101,7 +103,7 @@ public class TestBase {
         }
 
         if (TestConfig.OSS_ENDPOINT == null) {
-            TestConfig.OSS_ENDPOINT = System.getenv().get("OSS_ENDPOINT");
+            TestConfig.OSS_ENDPOINT = System.getenv().get("OSS_TEST_ENDPOINT");
         }
 
         if (TestConfig.OSS_BUCKET == null) {
@@ -233,4 +235,15 @@ public class TestBase {
         }
     }
 
+    public static String getRandomBucketName() {
+        long ticks = new Date().getTime() / 1000 + new Random().nextInt(5000);
+        String bucketName = BUCKET_NAME_PREFIX + ticks;
+        return bucketName;
+    }
+
+    public static void waitForCacheExpiration(int durationSeconds) {
+        try {
+            Thread.sleep(durationSeconds * 1000);
+        } catch (InterruptedException e) { }
+    }
 }

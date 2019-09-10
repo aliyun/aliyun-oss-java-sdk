@@ -427,6 +427,11 @@ public class TestBase {
             TestConfig.PROXY_PASSWORD = System.getenv().get("OSS_TEST_PROXY_PASSWORD");
         }
 
+        //kms
+        if (TestConfig.CMK_ID == null) {
+            TestConfig.CMK_ID = System.getenv().get("OSS_TEST_CMK_ID");
+        }
+
         //callback
         if (TestConfig.CALLBACK_URL == null) {
             TestConfig.CALLBACK_URL = System.getenv().get("OSS_TEST_CALLBACK_URL");
