@@ -121,10 +121,14 @@ public class EnvironmentVariableCredentialsProviderTest extends TestBase {
                     .newEnvironmentVariableCredentialsProvider();
             String key = "test.txt";
             String content = "HelloOSS";
+            String bucketName = getRandomBucketName();
 
             // oss put
             OSS ossClient = new OSSClientBuilder().build(TestConfig.OSS_ENDPOINT, credentialsProvider);
-            ossClient.putObject(TestConfig.OSS_BUCKET, key, new ByteArrayInputStream(content.getBytes()));
+            ossClient.createBucket(bucketName);
+            waitForCacheExpiration(2);
+            ossClient.putObject(bucketName, key, new ByteArrayInputStream(content.getBytes()));
+            ossClient.deleteObject(bucketName, key);
             ossClient.shutdown();
         } catch (Exception e) {
             e.printStackTrace();
@@ -159,9 +163,14 @@ public class EnvironmentVariableCredentialsProviderTest extends TestBase {
                     .newEnvironmentVariableCredentialsProvider();
             String key = "test.txt";
             String content = "HelloOSS";
+            String bucketName = getRandomBucketName();
 
             OSS ossClient = new OSSClientBuilder().build(TestConfig.OSS_ENDPOINT, credentialsProvider);
-            ossClient.putObject(TestConfig.OSS_BUCKET, key, new ByteArrayInputStream(content.getBytes()));
+            ossClient.createBucket(bucketName);
+            waitForCacheExpiration(2);
+            ossClient.putObject(bucketName, key, new ByteArrayInputStream(content.getBytes()));
+            ossClient.deleteObject(bucketName, key);
+            ossClient.deleteBucket(bucketName);
             ossClient.shutdown();
         } catch (Exception e) {
             e.printStackTrace();

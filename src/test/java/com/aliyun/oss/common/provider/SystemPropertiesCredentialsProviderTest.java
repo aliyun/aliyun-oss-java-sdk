@@ -38,6 +38,7 @@ public class SystemPropertiesCredentialsProviderTest extends TestBase {
         try {
             System.setProperty(AuthUtils.ACCESS_KEY_SYSTEM_PROPERTY, TestConfig.ROOT_ACCESS_KEY_ID);
             System.setProperty(AuthUtils.SECRET_KEY_SYSTEM_PROPERTY, TestConfig.ROOT_ACCESS_KEY_SECRET);
+            System.clearProperty(AuthUtils.SESSION_TOKEN_SYSTEM_PROPERTY);
 
             SystemPropertiesCredentialsProvider credentialsProvider = new SystemPropertiesCredentialsProvider();
             Credentials credentials = credentialsProvider.getCredentials();
@@ -86,8 +87,14 @@ public class SystemPropertiesCredentialsProviderTest extends TestBase {
 
             String key = "test.txt";
             String content = "HelloOSS";
+            String bucketName = getRandomBucketName();
+
             OSS ossClient = new OSSClientBuilder().build(TestConfig.OSS_ENDPOINT, credentialsProvider);
-            ossClient.putObject(TestConfig.OSS_BUCKET, key, new ByteArrayInputStream(content.getBytes()));
+            ossClient.createBucket(bucketName);
+            waitForCacheExpiration(2);
+            ossClient.putObject(bucketName, key, new ByteArrayInputStream(content.getBytes()));
+            ossClient.deleteObject(bucketName, key);
+            ossClient.deleteBucket(bucketName);
             ossClient.shutdown();
         } catch (Exception e) {
             e.printStackTrace();
@@ -112,8 +119,14 @@ public class SystemPropertiesCredentialsProviderTest extends TestBase {
 
             String key = "test.txt";
             String content = "HelloOSS";
+            String bucketName = getRandomBucketName();
+
             OSS ossClient = new OSSClientBuilder().build(TestConfig.OSS_ENDPOINT, credentialsProvider);
-            ossClient.putObject(TestConfig.OSS_BUCKET, key, new ByteArrayInputStream(content.getBytes()));
+            ossClient.createBucket(bucketName);
+            waitForCacheExpiration(2);
+            ossClient.putObject(bucketName, key, new ByteArrayInputStream(content.getBytes()));
+            ossClient.deleteObject(bucketName, key);
+            ossClient.deleteBucket(bucketName);
             ossClient.shutdown();
         } catch (Exception e) {
             e.printStackTrace();
