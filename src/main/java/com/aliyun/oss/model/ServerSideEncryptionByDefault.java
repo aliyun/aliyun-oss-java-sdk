@@ -101,14 +101,14 @@ public class ServerSideEncryptionByDefault {
     }
 
     /**
-     * @return KMS master key ID to use for the default encryption. This parameter is allowed if SSEAlgorithm is aws:kms.
+     * @return KMS master key ID to use for the default encryption. This parameter is allowed if SSEAlgorithm is kms.
      */
     public String getKMSMasterKeyID() {
         return kmsMasterKeyID;
     }
 
     /**
-     * Sets the KMS master key ID to use for the default encryption. This parameter is allowed if SSEAlgorithm is aws:kms.
+     * Sets the KMS master key ID to use for the default encryption. This parameter is allowed if SSEAlgorithm is kms.
      *
      * @param kmsMasterKeyID KMS key to use.
      */
@@ -117,7 +117,7 @@ public class ServerSideEncryptionByDefault {
     }
 
     /**
-     * Sets the KMS master key ID to use for the default encryption. This parameter is allowed if SSEAlgorithm is aws:kms.
+     * Sets the KMS master key ID to use for the default encryption. This parameter is allowed if SSEAlgorithm is kms.
      *
      * @param kmsMasterKeyID KMS key to use.
      * @return This object for method chaining.

@@ -37,9 +37,6 @@ public class StringUtilsTest {
         Assert.assertEquals("-99", StringUtils.fromByte(new Byte("-99")));
     }
 
-    /**
-     * @see https://github.com/aws/aws-sdk-java/pull/517
-     */
     @Test(timeout = 10 * 1000)
     public void replace_ReplacementStringContainsMatchString_DoesNotCauseInfiniteLoop() {
         Assert.assertEquals("aabc", StringUtils.replace("abc", "a", "aa"));
