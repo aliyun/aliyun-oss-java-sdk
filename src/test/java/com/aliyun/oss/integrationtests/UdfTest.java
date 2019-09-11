@@ -19,38 +19,21 @@
 
 package com.aliyun.oss.integrationtests;
 
+import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
 import com.aliyun.oss.common.utils.DateUtil;
-import com.aliyun.oss.model.CreateUdfApplicationRequest;
-import com.aliyun.oss.model.CreateUdfRequest;
-import com.aliyun.oss.model.GetUdfApplicationLogRequest;
-import com.aliyun.oss.model.ResizeUdfApplicationRequest;
-import com.aliyun.oss.model.UdfApplicationConfiguration;
-import com.aliyun.oss.model.UdfApplicationInfo;
-import com.aliyun.oss.model.UdfApplicationLog;
-import com.aliyun.oss.model.UdfGenericRequest;
-import com.aliyun.oss.model.UdfImageInfo;
-import com.aliyun.oss.model.UdfInfo;
-import com.aliyun.oss.model.UpgradeUdfApplicationRequest;
-import com.aliyun.oss.model.UploadUdfImageRequest;
 
-@Ignore
+
 public class UdfTest extends TestBase {
-    
-    private static final String UDF_IMG_V1 = "D:\\work\\oss\\udf\\udf-go-pingpong.tar.gz";
-    private static final String UDF_IMG_V2 = "D:\\work\\oss\\udf\\udf-go-pingpong-upgrade.tar.gz";
-    
+
     @Test
     public void testUdf() {
         String udf = "udf-go-pingpong-1";
@@ -58,36 +41,86 @@ public class UdfTest extends TestBase {
 
         try {
             // create udf
-            CreateUdfRequest createUdfRequest = new CreateUdfRequest(udf, desc);
+            CreateUdfRequest createUdfRequest = new CreateUdfRequest(udf);
+            createUdfRequest = new CreateUdfRequest(udf, "", desc);
+            Assert.assertEquals(createUdfRequest.getId(),"");
+            createUdfRequest = new CreateUdfRequest(udf, desc);
+            createUdfRequest.setDesc("desc");
+            createUdfRequest.setId("id");
+            Assert.assertEquals(createUdfRequest.getDesc(),"desc");
+            Assert.assertEquals(createUdfRequest.getId(),"id");
             ossClient.createUdf(createUdfRequest);
+            Assert.fail("Udf API is removed.");
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
 
+        try {
+            // get udf
             UdfGenericRequest genericRequest = new UdfGenericRequest(udf);
+            genericRequest = new UdfGenericRequest();
+            genericRequest.setName("name");
+            Assert.assertEquals(genericRequest.getName(), "name");
             UdfInfo ui = ossClient.getUdfInfo(genericRequest);
-            System.out.println(ui);
+            Assert.fail("Udf API is removed.");
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        try {
+            Date date = DateUtil.parseRfc822Date("Wed, 15 Mar 2017 03:23:45 GMT");
+            UdfImageInfo imageInfo = new UdfImageInfo(1, "status", "desc",
+                    "region", date);
+            imageInfo.setVersion(2);
+            imageInfo.setStatus("new status");
+            imageInfo.setDesc("new desc");
+            imageInfo.setCanonicalRegion("new region");
+            imageInfo.setCreationDate(date);
+            Assert.assertEquals(imageInfo.getVersion(), new Integer(2));
+            Assert.assertEquals(imageInfo.getStatus(), "new status");
+            Assert.assertEquals(imageInfo.getDesc(), "new desc");
+            Assert.assertEquals(imageInfo.getCanonicalRegion(), "new region");
+            Assert.assertEquals(imageInfo.getCreationDate(), date);
+            String dump = imageInfo.toString();
 
             // list image info
+            UdfGenericRequest genericRequest = new UdfGenericRequest(udf);
             List<UdfImageInfo> udfImages = ossClient.getUdfImageInfo(genericRequest);
-            for (UdfImageInfo image : udfImages) {
-                System.out.println(image);
-            }
+            Assert.fail("Udf API is removed.");
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
 
+        try {
+            Date date = DateUtil.parseRfc822Date("Wed, 15 Mar 2017 03:23:45 GMT");
+            UdfInfo info = new UdfInfo("name", "owner", "id",
+                    "desc", CannedUdfAcl.Private, date);
+            info.setName("new name");
+            info.setOwner("new owner");
+            info.setId("new id");
+            info.setDesc("new desc");
+            info.setAcl(CannedUdfAcl.parse("public"));
+            info.setCreationDate(date);
+            Assert.assertEquals(info.getName(), "new name");
+            Assert.assertEquals(info.getOwner(), "new owner");
+            Assert.assertEquals(info.getId(), "new id");
+            Assert.assertEquals(info.getDesc(), "new desc");
+            Assert.assertEquals(info.getCreationDate(), date);
+            Assert.assertEquals(info.getAcl(), CannedUdfAcl.Public);
+            String dump = info.toString();
+            // list image info
             List<UdfInfo> udfs = ossClient.listUdfs();
-            for (UdfInfo u : udfs) {
-                System.out.println(u);
-            }
-            
-            // delete udf
+            Assert.fail("Udf API is removed.");
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        try {
+            UdfGenericRequest genericRequest = new UdfGenericRequest(udf);
             ossClient.deleteUdf(genericRequest);
-
-            udfs = ossClient.listUdfs();
-            System.out.println("After delete:");
-            for (UdfInfo u : udfs) {
-                System.out.println(u);
-            }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Assert.fail(ex.getMessage());
+            Assert.fail("Udf API is removed.");
+        } catch (Exception e) {
+            Assert.assertTrue(true);
         }
     }
 
@@ -97,53 +130,29 @@ public class UdfTest extends TestBase {
         String desc = "udf-go-pingpong-1";
 
         try {
-            // create udf
-            CreateUdfRequest createUdfRequest = new CreateUdfRequest(udf, desc);
-            ossClient.createUdf(createUdfRequest);
-
-            UdfGenericRequest genericRequest = new UdfGenericRequest(udf);
-            UdfInfo ui = ossClient.getUdfInfo(genericRequest);
-            System.out.println(ui);
-
             // upload image
-            InputStream in = new FileInputStream(UDF_IMG_V1);
-            UploadUdfImageRequest uploadUdfImageRequest = new UploadUdfImageRequest(udf, desc, in);
+            String content = "Hello OSS";
+            InputStream input = new ByteArrayInputStream(content.getBytes());
+            UploadUdfImageRequest uploadUdfImageRequest = new UploadUdfImageRequest(udf, null);
+            uploadUdfImageRequest = new UploadUdfImageRequest(udf, desc,null);
+            uploadUdfImageRequest = new UploadUdfImageRequest(udf, desc,null);
+            uploadUdfImageRequest.setUdfImage(input);
+            uploadUdfImageRequest.setUdfImageDesc("desc");
+            Assert.assertEquals(uploadUdfImageRequest.getUdfImageDesc(),"desc");
+            Assert.assertEquals(uploadUdfImageRequest.getUdfImage(),input);
             ossClient.uploadUdfImage(uploadUdfImageRequest);
+            Assert.fail("Udf API is removed.");
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
 
-            in = new FileInputStream(UDF_IMG_V2);
-            uploadUdfImageRequest = new UploadUdfImageRequest(udf, desc, in);
-            ossClient.uploadUdfImage(uploadUdfImageRequest);
-
-            List<UdfImageInfo> udfImages = ossClient.getUdfImageInfo(genericRequest);
-            for (UdfImageInfo image : udfImages) {
-                System.out.println(image);
-            }
-
-            // wait build completed
-            for (UdfImageInfo image : udfImages) {
-                if (image.getStatus().equals("building")) {
-                    TestUtils.waitForCacheExpiration(60);
-                    udfImages = ossClient.getUdfImageInfo(genericRequest);
-                    continue;
-                }
-            }
-            
-            // delete udf image
+        try {
+            // upload image
+            UdfGenericRequest genericRequest = new UdfGenericRequest(udf);
             ossClient.deleteUdfImage(genericRequest);
-
-            // wait images deleted
-            udfImages = ossClient.getUdfImageInfo(genericRequest);
-            for (; udfImages.size() > 0;) {
-                TestUtils.waitForCacheExpiration(60);
-                udfImages = ossClient.getUdfImageInfo(genericRequest);
-            }
-
-            // delete image
-            ossClient.deleteUdf(genericRequest);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Assert.fail(ex.getMessage());
+            Assert.fail("Udf API is removed.");
+        } catch (Exception e) {
+            Assert.assertTrue(true);
         }
     }
     
@@ -153,139 +162,130 @@ public class UdfTest extends TestBase {
         String desc = "udf-go-pingpong-1";
 
         try {
-            // create udf
-            CreateUdfRequest createUdfRequest = new CreateUdfRequest(udf, desc);
-            ossClient.createUdf(createUdfRequest);
-
-            UdfGenericRequest genericRequest = new UdfGenericRequest(udf);
-            UdfInfo ui = ossClient.getUdfInfo(genericRequest);
-            System.out.println(ui);
-
-            // upload image
-            InputStream in = new FileInputStream(UDF_IMG_V1);
-            UploadUdfImageRequest uploadUdfImageRequest = new UploadUdfImageRequest(udf, desc, in);
-            ossClient.uploadUdfImage(uploadUdfImageRequest);
-
-            in = new FileInputStream(UDF_IMG_V2);
-            uploadUdfImageRequest = new UploadUdfImageRequest(udf, desc, in);
-            ossClient.uploadUdfImage(uploadUdfImageRequest);
-
-            List<UdfImageInfo> udfImages = ossClient.getUdfImageInfo(genericRequest);
-            for (UdfImageInfo image : udfImages) {
-                System.out.println(image);
-            }
-
-            // wait build completed
-            for (UdfImageInfo image : udfImages) {
-                if (image.getStatus().equals("building")) {
-                    TestUtils.waitForCacheExpiration(60);
-                    udfImages = ossClient.getUdfImageInfo(genericRequest);
-                    continue;
-                }
-            }
-            
-            // list images
-            udfImages = ossClient.getUdfImageInfo(genericRequest);
-            for (UdfImageInfo image : udfImages) {
-                System.out.println(image);
-            }
-
             // list applications
             List<UdfApplicationInfo> appInfos = ossClient.listUdfApplications();
             for (UdfApplicationInfo app : appInfos) {
                 System.out.println(app);
             }
-
-            // create application
-            UdfApplicationConfiguration configuration = new UdfApplicationConfiguration(1, 1);
-            CreateUdfApplicationRequest createUdfApplicationRequest = new CreateUdfApplicationRequest(udf, configuration);
-            ossClient.createUdfApplication(createUdfApplicationRequest);
-            
-            // wait application running
-            UdfApplicationInfo appInfo = ossClient.getUdfApplicationInfo(genericRequest);
-            System.out.println(appInfo);
-            for (; appInfo.getStatus().equals("creating"); ) {
-                TestUtils.waitForCacheExpiration(60);
-                appInfo = ossClient.getUdfApplicationInfo(genericRequest);
-            }
-            System.out.println(appInfo);
-            
-            // upgrade application
-            UpgradeUdfApplicationRequest UpgradeUdfApplicationRequest = new UpgradeUdfApplicationRequest(udf, 2);
-            ossClient.upgradeUdfApplication(UpgradeUdfApplicationRequest);
-           
-            appInfo = ossClient.getUdfApplicationInfo(genericRequest);
-            System.out.println(appInfo);
-            for (; appInfo.getStatus().equals("upgrading"); ) {
-                TestUtils.waitForCacheExpiration(60);
-                appInfo = ossClient.getUdfApplicationInfo(genericRequest);
-            }
-            System.out.println(appInfo);
-            
-            // resize application
-            ResizeUdfApplicationRequest resizeUdfApplicationRequest = new ResizeUdfApplicationRequest(udf, 2);
-            ossClient.resizeUdfApplication(resizeUdfApplicationRequest);
-            
-            appInfo = ossClient.getUdfApplicationInfo(genericRequest);
-            System.out.println(appInfo);
-            for (; appInfo.getStatus().equals("resizing"); ) {
-                TestUtils.waitForCacheExpiration(60);
-                appInfo = ossClient.getUdfApplicationInfo(genericRequest);
-            }
-            System.out.println(appInfo);
-            
-            // get application log
-            GetUdfApplicationLogRequest getUdfApplicationLogRequest = new GetUdfApplicationLogRequest(udf);
-            getUdfApplicationLogRequest.setStartTime(DateUtil.parseRfc822Date("Wed, 15 Mar 2017 03:23:45 GMT"));
-            getUdfApplicationLogRequest.setEndLines(100L);
-            UdfApplicationLog udfApplicationLog = ossClient.getUdfApplicationLog(getUdfApplicationLogRequest);
-            displayTextInputStream(udfApplicationLog.getLogContent());
-            
-//            // delete application
-//            ossClient.deleteUdfApplication(genericRequest);
-//            
-//            // wait application deleted
-//            appInfos = ossClient.listUdfApplications();
-//            for (; appInfos.size() > 0 ; ) {
-//                TestUtils.waitForCacheExpiration(60);
-//                appInfos = ossClient.listUdfApplications();
-//            }
-//            
-//            // delete udf image
-//            ossClient.deleteUdfImage(genericRequest);
-//
-//            // wait images deleted
-//            udfImages = ossClient.getUdfImageInfo(genericRequest);
-//            for (; udfImages.size() > 0;) {
-//                TestUtils.waitForCacheExpiration(60);
-//                udfImages = ossClient.getUdfImageInfo(genericRequest);
-//            }
-//
-//            // delete image
-//            ossClient.deleteUdf(genericRequest);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Assert.fail(ex.getMessage());
+            Assert.fail("Udf API is removed.");
+        } catch (Exception e) {
+            Assert.assertTrue(true);
         }
-    }
-    
-    @Test
-    public void testUdfApplicationLog() {
-        String udf = "udf-go-pingpong-1";
 
         try {
-            GetUdfApplicationLogRequest getUdfApplicationLogRequest = new GetUdfApplicationLogRequest(udf);
-            getUdfApplicationLogRequest.setStartTime(DateUtil.parseRfc822Date("Wed, 15 Mar 2017 03:23:45 GMT"));
-            getUdfApplicationLogRequest.setEndLines(10L);
-            UdfApplicationLog udfApplicationLog = ossClient.getUdfApplicationLog(getUdfApplicationLogRequest);
-            displayTextInputStream(udfApplicationLog.getLogContent());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Assert.fail(ex.getMessage());
+            // create application
+            InstanceFlavor flavor = new InstanceFlavor("ecs.n1.middle");
+            Assert.assertEquals(flavor.getInstanceType(), "ecs.n1.middle");
+            Assert.assertEquals(flavor.toString(), "InstanceFlavor [instanceType=ecs.n1.middle]");
+            UdfApplicationConfiguration configuration = new UdfApplicationConfiguration(1, 1,flavor);
+            configuration = new UdfApplicationConfiguration(1, 1);
+            configuration.setImageVersion(2);
+            configuration.setInstanceNum(2);
+            InstanceFlavor flavor2 = new InstanceFlavor("ecs.n1.big");
+            configuration.setFlavor(flavor2);
+            Assert.assertEquals(configuration.getImageVersion(),new Integer(2));
+            Assert.assertEquals(configuration.getInstanceNum(),new Integer(2));
+            Assert.assertEquals(configuration.getFlavor(),flavor2);
+            CreateUdfApplicationRequest createUdfApplicationRequest = new CreateUdfApplicationRequest(udf, configuration);
+            configuration = createUdfApplicationRequest.getUdfApplicationConfiguration();
+            createUdfApplicationRequest.setUdfApplicationConfiguration(configuration);
+            ossClient.createUdfApplication(createUdfApplicationRequest);
+            Assert.fail("Udf API is removed.");
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        try {
+            //
+            Date startTime = DateUtil.parseRfc822Date("Wed, 15 Mar 2017 03:23:45 GMT");
+            InstanceFlavor flavor = new InstanceFlavor("ecs.n1.middle");
+            UdfApplicationInfo appInfo = new UdfApplicationInfo("name", "id", "region",
+                    "status", 1, 2, startTime, flavor);
+            appInfo.setName("new name");
+            appInfo.setId("new id");
+            appInfo.setRegion("new region");
+            appInfo.setStatus("new status");
+            appInfo.setImageVersion(2);
+            appInfo.setInstanceNum(3);
+            appInfo.setFlavor(flavor);
+            appInfo.setCreationDate(startTime);
+            Assert.assertEquals(appInfo.getName(),"new name");
+            Assert.assertEquals(appInfo.getId(),"new id");
+            Assert.assertEquals(appInfo.getRegion(),"new region");
+            Assert.assertEquals(appInfo.getStatus(),"new status");
+            Assert.assertEquals(appInfo.getImageVersion(),new Integer(2));
+            Assert.assertEquals(appInfo.getInstanceNum(),new Integer(3));
+            Assert.assertEquals(appInfo.getFlavor(),flavor);
+            Assert.assertEquals(appInfo.getCreationDate(),startTime);
+            String dump = appInfo.toString();
+            // get application info
+            UdfGenericRequest genericRequest = new UdfGenericRequest(udf);
+            appInfo = ossClient.getUdfApplicationInfo(genericRequest);
+            Assert.fail("Udf API is removed.");
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        try {
+            // upgrade application
+            UpgradeUdfApplicationRequest upgradeUdfApplicationRequest = new UpgradeUdfApplicationRequest(udf, 2);
+            upgradeUdfApplicationRequest.setImageVersion(3);
+            Assert.assertEquals(upgradeUdfApplicationRequest.getImageVersion(),new Integer(3));
+            ossClient.upgradeUdfApplication(upgradeUdfApplicationRequest);
+            Assert.fail("Udf API is removed.");
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        try {
+            // resize application
+            ResizeUdfApplicationRequest resizeUdfApplicationRequest = new ResizeUdfApplicationRequest(udf, 2);
+            resizeUdfApplicationRequest.setInstanceNum(3);
+            Assert.assertEquals(resizeUdfApplicationRequest.getInstanceNum(),new Integer(3));
+            ossClient.resizeUdfApplication(resizeUdfApplicationRequest);
+            Assert.fail("Udf API is removed.");
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        try {
+            // get application log
+            GetUdfApplicationLogRequest getUdfApplicationLogRequest = new GetUdfApplicationLogRequest(udf,
+                    DateUtil.parseRfc822Date("Wed, 15 Mar 2017 02:23:45 GMT"), 200L);
+            Assert.assertEquals(getUdfApplicationLogRequest.getEndLines(),new Long(200L));
+            getUdfApplicationLogRequest = new GetUdfApplicationLogRequest(udf, 100L);
+            getUdfApplicationLogRequest = new GetUdfApplicationLogRequest(udf);
+            Date startTime = DateUtil.parseRfc822Date("Wed, 15 Mar 2017 03:23:45 GMT");
+            getUdfApplicationLogRequest.setStartTime(startTime);
+            getUdfApplicationLogRequest.setEndLines(100L);
+            Assert.assertEquals(getUdfApplicationLogRequest.getEndLines(),new Long(100L));
+            Assert.assertEquals(getUdfApplicationLogRequest.getStartTime(),startTime);
+
+            UdfApplicationLog udfApplicationLog = new UdfApplicationLog();
+            udfApplicationLog.setUdfName("name");
+            udfApplicationLog.setLogContent(null);
+            Assert.assertEquals(udfApplicationLog.getUdfName(),"name");
+            Assert.assertEquals(udfApplicationLog.getLogContent(), null);
+            udfApplicationLog.close();
+            udfApplicationLog = new UdfApplicationLog("name", new ByteArrayInputStream("".getBytes()));
+            udfApplicationLog.close();
+            udfApplicationLog = new UdfApplicationLog("name");
+            udfApplicationLog = ossClient.getUdfApplicationLog(getUdfApplicationLogRequest);
+            Assert.fail("Udf API is removed.");
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        try {
+            // delete application
+            UdfGenericRequest genericRequest = new UdfGenericRequest(udf);
+            ossClient.deleteUdfApplication(genericRequest);
+            Assert.fail("Udf API is removed.");
+        } catch (Exception e) {
+            Assert.assertTrue(true);
         }
     }
-    
+
     private static void displayTextInputStream(InputStream input) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         int lines = 0;
@@ -300,5 +300,4 @@ public class UdfTest extends TestBase {
         
         reader.close();
     }
-
 }

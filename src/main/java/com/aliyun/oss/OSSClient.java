@@ -76,7 +76,6 @@ public class OSSClient implements OSS {
     private OSSUploadOperation uploadOperation;
     private OSSDownloadOperation downloadOperation;
     private LiveChannelOperation liveChannelOperation;
-    private OSSUdfOperation udfOperation;
 
     /**
      * Uses the default OSS Endpoint(http://oss-cn-hangzhou.aliyuncs.com) and
@@ -234,7 +233,6 @@ public class OSSClient implements OSS {
         this.multipartOperation.setEndpoint(uri);
         this.corsOperation.setEndpoint(uri);
         this.liveChannelOperation.setEndpoint(uri);
-        this.udfOperation.setEndpoint(uri);
     }
 
     /**
@@ -285,7 +283,6 @@ public class OSSClient implements OSS {
         this.uploadOperation = new OSSUploadOperation(this.multipartOperation);
         this.downloadOperation = new OSSDownloadOperation(objectOperation);
         this.liveChannelOperation = new LiveChannelOperation(this.serviceClient, this.credsProvider);
-        this.udfOperation = new OSSUdfOperation(this.serviceClient, this.credsProvider);
     }
 
     @Override
@@ -1478,77 +1475,77 @@ public class OSSClient implements OSS {
 
     @Override
     public void createUdf(CreateUdfRequest createUdfRequest) throws OSSException, ClientException {
-        this.udfOperation.createUdf(createUdfRequest);
+        throw new ClientException("Not supported.");
     }
 
     @Override
     public UdfInfo getUdfInfo(UdfGenericRequest genericRequest) throws OSSException, ClientException {
-        return this.udfOperation.getUdfInfo(genericRequest);
+        throw new ClientException("Not supported.");
     }
 
     @Override
     public List<UdfInfo> listUdfs() throws OSSException, ClientException {
-        return this.udfOperation.listUdfs();
+        throw new ClientException("Not supported.");
     }
 
     @Override
     public void deleteUdf(UdfGenericRequest genericRequest) throws OSSException, ClientException {
-        this.udfOperation.deleteUdf(genericRequest);
+        throw new ClientException("Not supported.");
     }
 
     @Override
     public void uploadUdfImage(UploadUdfImageRequest uploadUdfImageRequest) throws OSSException, ClientException {
-        this.udfOperation.uploadUdfImage(uploadUdfImageRequest);
+        throw new ClientException("Not supported.");
     }
 
     @Override
     public List<UdfImageInfo> getUdfImageInfo(UdfGenericRequest genericRequest) throws OSSException, ClientException {
-        return this.udfOperation.getUdfImageInfo(genericRequest);
+        throw new ClientException("Not supported.");
     }
 
     @Override
     public void deleteUdfImage(UdfGenericRequest genericRequest) throws OSSException, ClientException {
-        this.udfOperation.deleteUdfImage(genericRequest);
+        throw new ClientException("Not supported.");
     }
 
     @Override
     public void createUdfApplication(CreateUdfApplicationRequest createUdfApplicationRequest)
             throws OSSException, ClientException {
-        this.udfOperation.createUdfApplication(createUdfApplicationRequest);
+        throw new ClientException("Not supported.");
     }
 
     @Override
     public UdfApplicationInfo getUdfApplicationInfo(UdfGenericRequest genericRequest)
             throws OSSException, ClientException {
-        return this.udfOperation.getUdfApplicationInfo(genericRequest);
+        throw new ClientException("Not supported.");
     }
 
     @Override
     public List<UdfApplicationInfo> listUdfApplications() throws OSSException, ClientException {
-        return this.udfOperation.listUdfApplication();
+        throw new ClientException("Not supported.");
     }
 
     @Override
     public void deleteUdfApplication(UdfGenericRequest genericRequest) throws OSSException, ClientException {
-        this.udfOperation.deleteUdfApplication(genericRequest);
+        throw new ClientException("Not supported.");
     }
 
     @Override
     public void upgradeUdfApplication(UpgradeUdfApplicationRequest upgradeUdfApplicationRequest)
             throws OSSException, ClientException {
-        this.udfOperation.upgradeUdfApplication(upgradeUdfApplicationRequest);
+        throw new ClientException("Not supported.");
     }
 
     @Override
     public void resizeUdfApplication(ResizeUdfApplicationRequest resizeUdfApplicationRequest)
             throws OSSException, ClientException {
-        this.udfOperation.resizeUdfApplication(resizeUdfApplicationRequest);
+        throw new ClientException("Not supported.");
     }
 
     @Override
     public UdfApplicationLog getUdfApplicationLog(GetUdfApplicationLogRequest getUdfApplicationLogRequest)
             throws OSSException, ClientException {
-        return this.udfOperation.getUdfApplicationLog(getUdfApplicationLogRequest);
+        throw new ClientException("Not supported.");
     }
 
     @Override
