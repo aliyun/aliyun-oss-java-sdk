@@ -191,12 +191,6 @@ public final class ResponseParsers {
 
     public static final GetSymbolicLinkResponseParser getSymbolicLinkResponseParser = new GetSymbolicLinkResponseParser();
 
-    public static final GetUdfInfoResponseParser getUdfInfoResponseParser = new GetUdfInfoResponseParser();
-    public static final ListUdfResponseParser listUdfResponseParser = new ListUdfResponseParser();
-    public static final GetUdfImageInfoResponseParser getUdfImageInfoResponseParser = new GetUdfImageInfoResponseParser();
-    public static final GetUdfApplicationInfoResponseParser getUdfApplicationInfoResponseParser = new GetUdfApplicationInfoResponseParser();
-    public static final ListUdfApplicationInfoResponseParser listUdfApplicationInfoResponseParser = new ListUdfApplicationInfoResponseParser();
-
     public static final class EmptyResponseParser implements ResponseParser<ResponseMessage> {
 
         @Override
@@ -777,27 +771,6 @@ public final class ResponseParsers {
 
     }
 
-    public static final class GetUdfApplicationLogResponseParser implements ResponseParser<UdfApplicationLog> {
-
-        public GetUdfApplicationLogResponseParser(String udfName) {
-            super();
-            this.udfName = udfName;
-        }
-
-        @Override
-        public UdfApplicationLog parse(ResponseMessage response) throws ResponseParseException {
-            UdfApplicationLog appLog = new UdfApplicationLog(udfName);
-            appLog.setLogContent(response.getContent());
-            appLog.setRequestId(response.getRequestId());
-            appLog.setResponse(response);
-            setServerCRC(appLog, response);
-            return appLog;
-        }
-
-        private String udfName;
-
-    }
-
     public static final class GetObjectAclResponseParser implements ResponseParser<ObjectAcl> {
 
         @Override
@@ -1054,75 +1027,6 @@ public final class ResponseParsers {
                 return result;
             } finally {
                 OSSUtils.mandatoryCloseResponse(response);
-            }
-        }
-
-    }
-
-    public static final class GetUdfInfoResponseParser implements ResponseParser<UdfInfo> {
-
-        @Override
-        public UdfInfo parse(ResponseMessage response) throws ResponseParseException {
-            try {
-                UdfInfo result = parseGetUdfInfo(response.getContent());
-                result.setRequestId(response.getRequestId());
-                return result;
-            } finally {
-                OSSUtils.mandatoryCloseResponse(response);
-            }
-        }
-
-    }
-
-    public static final class ListUdfResponseParser implements ResponseParser<List<UdfInfo>> {
-
-        @Override
-        public List<UdfInfo> parse(ResponseMessage response) throws ResponseParseException {
-            try {
-                return parseListUdf(response.getContent());
-            } finally {
-                safeCloseResponse(response);
-            }
-        }
-
-    }
-
-    public static final class GetUdfImageInfoResponseParser implements ResponseParser<List<UdfImageInfo>> {
-
-        @Override
-        public List<UdfImageInfo> parse(ResponseMessage response) throws ResponseParseException {
-            try {
-                return parseGetUdfImageInfo(response.getContent());
-            } finally {
-                safeCloseResponse(response);
-            }
-        }
-
-    }
-
-    public static final class GetUdfApplicationInfoResponseParser implements ResponseParser<UdfApplicationInfo> {
-
-        @Override
-        public UdfApplicationInfo parse(ResponseMessage response) throws ResponseParseException {
-            try {
-                UdfApplicationInfo result = parseGetUdfApplicationInfo(response.getContent());
-                result.setRequestId(response.getRequestId());
-                return result;
-            } finally {
-                safeCloseResponse(response);
-            }
-        }
-
-    }
-
-    public static final class ListUdfApplicationInfoResponseParser implements ResponseParser<List<UdfApplicationInfo>> {
-
-        @Override
-        public List<UdfApplicationInfo> parse(ResponseMessage response) throws ResponseParseException {
-            try {
-                return parseListUdfApplicationInfo(response.getContent());
-            } finally {
-                safeCloseResponse(response);
             }
         }
 
@@ -1638,156 +1542,6 @@ public final class ResponseParsers {
             smyLink.setMetadata(parseObjectMetadata(response.getHeaders()));
 
             return smyLink;
-        } catch (Exception e) {
-            throw new ResponseParseException(e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Unmarshall get udf info response body to udf info.
-     */
-    public static UdfInfo parseGetUdfInfo(InputStream responseBody) throws ResponseParseException {
-        try {
-            Element root = getXmlRootElement(responseBody);
-
-            String name = root.getChildText("Name");
-            String id = root.getChildText("ID");
-            String owner = root.getChildText("Owner");
-            String desc = root.getChildText("Description");
-            Date date = DateUtil.parseIso8601Date(root.getChildText("CreationDate"));
-            CannedUdfAcl acl = CannedUdfAcl.parse(root.getChildText("ACL"));
-
-            return new UdfInfo(name, owner, id, desc, acl, date);
-        } catch (JDOMParseException e) {
-            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
-        } catch (Exception e) {
-            throw new ResponseParseException(e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Unmarshall list udf response body to udf info list.
-     */
-    @SuppressWarnings("unchecked")
-    public static List<UdfInfo> parseListUdf(InputStream responseBody) throws ResponseParseException {
-
-        try {
-            Element root = getXmlRootElement(responseBody);
-            List<UdfInfo> udfs = new ArrayList<UdfInfo>();
-
-            if (root.getChild("UDFInfo") != null) {
-                List<Element> udfElems = root.getChildren("UDFInfo");
-                for (Element elem : udfElems) {
-                    String name = elem.getChildText("Name");
-                    String id = elem.getChildText("ID");
-                    String owner = elem.getChildText("Owner");
-                    String desc = elem.getChildText("Description");
-                    Date date = DateUtil.parseIso8601Date(elem.getChildText("CreationDate"));
-                    CannedUdfAcl acl = CannedUdfAcl.parse(elem.getChildText("ACL"));
-                    udfs.add(new UdfInfo(name, owner, id, desc, acl, date));
-                }
-            }
-
-            return udfs;
-        } catch (JDOMParseException e) {
-            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
-        } catch (Exception e) {
-            throw new ResponseParseException(e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Unmarshall get udf info response body to udf image info list.
-     */
-    @SuppressWarnings("unchecked")
-    public static List<UdfImageInfo> parseGetUdfImageInfo(InputStream responseBody) throws ResponseParseException {
-
-        try {
-            Element root = getXmlRootElement(responseBody);
-            List<UdfImageInfo> udfImages = new ArrayList<UdfImageInfo>();
-
-            if (root.getChild("Item") != null) {
-                List<Element> udfImageElems = root.getChildren("Item");
-                for (Element elem : udfImageElems) {
-                    Integer version = Integer.valueOf(elem.getChildText("Version"));
-                    String status = elem.getChildText("Status");
-                    String region = elem.getChildText("CanonicalRegion");
-                    String desc = elem.getChildText("Description");
-                    Date date = DateUtil.parseIso8601Date(elem.getChildText("CreationDate"));
-                    udfImages.add(new UdfImageInfo(version, status, desc, region, date));
-                }
-            }
-
-            return udfImages;
-        } catch (JDOMParseException e) {
-            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
-        } catch (Exception e) {
-            throw new ResponseParseException(e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Unmarshall get udf info response body to udf application info.
-     */
-    public static UdfApplicationInfo parseGetUdfApplicationInfo(InputStream responseBody)
-            throws ResponseParseException {
-
-        try {
-            Element root = getXmlRootElement(responseBody);
-
-            String id = root.getChildText("ID");
-            String name = root.getChildText("Name");
-            String status = root.getChildText("Status");
-            String region = root.getChildText("Region");
-            Integer imageVersion = Integer.valueOf(root.getChildText("ImageVersion"));
-            Integer instanceNum = Integer.valueOf(root.getChildText("InstanceNum"));
-            Date date = DateUtil.parseIso8601Date(root.getChildText("CreationDate"));
-
-            String instanceType = root.getChild("Flavor").getChildText("InstanceType");
-            InstanceFlavor flavor = new InstanceFlavor(instanceType);
-
-            return new UdfApplicationInfo(name, id, region, status, imageVersion, instanceNum, date, flavor);
-        } catch (JDOMParseException e) {
-            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
-        } catch (Exception e) {
-            throw new ResponseParseException(e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Unmarshall get udf info response body to udf image info list.
-     */
-    @SuppressWarnings("unchecked")
-    public static List<UdfApplicationInfo> parseListUdfApplicationInfo(InputStream responseBody)
-            throws ResponseParseException {
-
-        try {
-            Element root = getXmlRootElement(responseBody);
-            List<UdfApplicationInfo> udfApps = new ArrayList<UdfApplicationInfo>();
-
-            if (root.getChild("UDFApplicationInfo") != null) {
-                List<Element> udfImageElems = root.getChildren("UDFApplicationInfo");
-                for (Element elem : udfImageElems) {
-                    String id = elem.getChildText("ID");
-                    String name = elem.getChildText("Name");
-                    String status = elem.getChildText("Status");
-                    String region = elem.getChildText("Region");
-                    Integer imageVersion = Integer.valueOf(elem.getChildText("ImageVersion"));
-                    Integer instanceNum = Integer.valueOf(elem.getChildText("InstanceNum"));
-                    Date date = DateUtil.parseIso8601Date(elem.getChildText("CreationDate"));
-
-                    String instanceType = elem.getChild("Flavor").getChildText("InstanceType");
-                    InstanceFlavor flavor = new InstanceFlavor(instanceType);
-
-                    UdfApplicationInfo udfApp = new UdfApplicationInfo(name, id, region, status, imageVersion,
-                            instanceNum, date, flavor);
-                    udfApps.add(udfApp);
-                }
-            }
-
-            return udfApps;
-        } catch (JDOMParseException e) {
-            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
