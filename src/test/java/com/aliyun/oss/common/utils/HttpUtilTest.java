@@ -16,40 +16,41 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package com.aliyun.oss.common.utils;
-
-import static org.junit.Assert.assertTrue;
-
-import java.text.ParseException;
-import java.util.Date;
 
 import org.junit.Test;
 
-public class DateUtilTest {
+import java.util.HashMap;
+import java.util.Map;
 
+import static org.junit.Assert.*;
+
+public class HttpUtilTest {
     @Test
-    public void testFormatGMTDate() {
-        String expectedRegex = "\\w{3}, \\d{2} \\w{3} \\d{4} \\d{2}:\\d{2}:\\d{2} GMT";
+    public void testUrlEncodeDecode() {
+        assertEquals("", HttpUtil.urlEncode(null, "utf8"));
 
-        String actual = DateUtil.formatRfc822Date(new Date());
-        assertTrue(actual.matches(expectedRegex));
-    }
-
-    @Test
-    public void testFormatIso8601Date() {
-        String expectedRegex = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z";
-
-        String actual = DateUtil.formatAlternativeIso8601Date(new Date());
-        assertTrue(actual.matches(expectedRegex));
-    }
-
-    @Test
-    public void testParseIso8601Date() {
         try {
-            DateUtil.parseIso8601Date("invalid");
+            HttpUtil.urlEncode("abcdef", "xxx");
             assertTrue(false);
-        } catch (ParseException e) {
+        } catch (Exception e) {
+            assertTrue(true);
+        }
+
+        try {
+            HttpUtil.urlDecode("abcdef", "");
+            assertTrue(false);
+        } catch (Exception e) {
             assertTrue(true);
         }
     }
+
+    @Test
+    public void testParamToQueryString() {
+        Map<String, String> params = new HashMap<String, String>();
+        assertNull(HttpUtil.paramToQueryString(null, "utf8"));
+        assertNull(HttpUtil.paramToQueryString(params, "utf8"));
+    }
+
 }

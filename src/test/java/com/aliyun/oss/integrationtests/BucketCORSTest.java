@@ -35,19 +35,19 @@ import com.aliyun.oss.model.SetBucketCORSRequest;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
 
 public class BucketCORSTest extends TestBase {
-    
+
     private static int MAX_CORS_RULE_LIMIT = 10;
-    
+
     @Test
     public void testNormalSetBucketCORS() {
         final String bucketName = "normal-set-bucket-cors";
 
         try {
             ossClient.createBucket(bucketName);
-            
+
             // Set bucket cors
             SetBucketCORSRequest request = new SetBucketCORSRequest(bucketName);
-            
+
             CORSRule r0 = new CORSRule();
             r0.addAllowdOrigin("http://www.a.com");
             r0.addAllowdOrigin("http://www.b.com");
@@ -57,9 +57,9 @@ public class BucketCORSTest extends TestBase {
             r0.addExposeHeader("x-oss-test1");
             r0.setMaxAgeSeconds(100);
             request.addCorsRule(r0);
-            
+
             ossClient.setBucketCORS(request);
-            
+
             // Get bucket cors
             List<CORSRule> rules = ossClient.getBucketCORSRules(bucketName);
             r0 = rules.get(0);
@@ -69,7 +69,7 @@ public class BucketCORSTest extends TestBase {
             Assert.assertEquals(1, r0.getAllowedHeaders().size());
             Assert.assertEquals(2, r0.getExposeHeaders().size());
             Assert.assertEquals(100, r0.getMaxAgeSeconds().intValue());
-            
+
             // Override existing bucket cors
             CORSRule r1 = new CORSRule();
             r1.addAllowdOrigin("*");
@@ -78,16 +78,16 @@ public class BucketCORSTest extends TestBase {
             r1.addAllowedHeader("Authorization");
             request.clearCorsRules();
             request.addCorsRule(r1);
-            
+
             ossClient.setBucketCORS(request);
-            
+
             rules = ossClient.getBucketCORSRules(bucketName);
             r1 = rules.get(0);
             Assert.assertEquals(1, rules.size());
             Assert.assertEquals(1, r1.getAllowedOrigins().size());
             Assert.assertEquals(2, r1.getAllowedMethods().size());
             Assert.assertEquals(1, r1.getAllowedHeaders().size());
-            
+
             // Delete bucket cors
             ossClient.deleteBucketCORSRules(bucketName);
         } catch (Exception e) {
@@ -96,14 +96,14 @@ public class BucketCORSTest extends TestBase {
             ossClient.deleteBucket(bucketName);
         }
     }
-    
+
     @Test
     public void testUnormalSetBucketCORS() {
         final String bucketName = "unormal-set-bucket-cors";
-        
+
         try {
             ossClient.createBucket(bucketName);
-            
+
             // Set count of cors rules exceed MAX_CORS_RULE_LIMIT
             try {
                 SetBucketCORSRequest request = new SetBucketCORSRequest(bucketName);
@@ -116,7 +116,7 @@ public class BucketCORSTest extends TestBase {
             } catch (Exception e) {
                 Assert.assertTrue(e instanceof IllegalArgumentException);
             }
-            
+
             try {
                 SetBucketCORSRequest request = new SetBucketCORSRequest(bucketName);
                 CORSRule r = new CORSRule();
@@ -130,7 +130,7 @@ public class BucketCORSTest extends TestBase {
             } catch (Exception e) {
                 Assert.assertTrue(e instanceof IllegalArgumentException);
             }
-            
+
             // Miss required field 'AllowedOrigins'
             try {
                 SetBucketCORSRequest request = new SetBucketCORSRequest(bucketName);
@@ -143,7 +143,7 @@ public class BucketCORSTest extends TestBase {
             } catch (Exception e) {
                 Assert.assertTrue(e instanceof IllegalArgumentException);
             }
-            
+
             // Miss required field 'AllowedMethods'
             try {
                 SetBucketCORSRequest request = new SetBucketCORSRequest(bucketName);
@@ -155,7 +155,7 @@ public class BucketCORSTest extends TestBase {
             } catch (Exception e) {
                 Assert.assertTrue(e instanceof IllegalArgumentException);
             }
-            
+
             // Fill more one asterisk wildcards in allowed origins
             try {
                 SetBucketCORSRequest request = new SetBucketCORSRequest(bucketName);
@@ -169,7 +169,7 @@ public class BucketCORSTest extends TestBase {
             } catch (Exception e) {
                 Assert.assertTrue(e instanceof IllegalArgumentException);
             }
-            
+
             // Unsupported method
             try {
                 SetBucketCORSRequest request = new SetBucketCORSRequest(bucketName);
@@ -182,7 +182,7 @@ public class BucketCORSTest extends TestBase {
             } catch (Exception e) {
                 Assert.assertTrue(e instanceof IllegalArgumentException);
             }
-            
+
             // Fill one asterisk wildcard in allowed origins
             try {
                 SetBucketCORSRequest request = new SetBucketCORSRequest(bucketName);
@@ -196,14 +196,14 @@ public class BucketCORSTest extends TestBase {
             } catch (Exception e) {
                 Assert.assertTrue(e instanceof IllegalArgumentException);
             }
-            
+
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
     }
-    
+
     @Test
     public void testUnormalGetBucketCORS() {
         // Get non-existent bucket
@@ -215,7 +215,7 @@ public class BucketCORSTest extends TestBase {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
             Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         }
-        
+
         // Get bucket without ownership
         final String bucketWithoutOwnership = "oss";
         try {
@@ -224,12 +224,12 @@ public class BucketCORSTest extends TestBase {
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
         }
-        
+
         // Get bucket without setting cors rules
         final String bucketWithoutCORSRules = "bucket-without-cors-rules";
         try {
             ossClient.createBucket(bucketWithoutCORSRules);
-            
+
             ossClient.getBucketCORSRules(bucketWithoutCORSRules);
             Assert.fail("Get bucket cors should not be successful");
         } catch (OSSException e) {
@@ -239,7 +239,7 @@ public class BucketCORSTest extends TestBase {
             ossClient.deleteBucket(bucketWithoutCORSRules);
         }
     }
-    
+
     @Test
     public void testUnormalDeleteBucketCORS() {
         // Delete non-existent bucket
@@ -251,7 +251,7 @@ public class BucketCORSTest extends TestBase {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
             Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         }
-        
+
         // Delete bucket without ownership
         final String bucketWithoutOwnership = "oss";
         try {
@@ -261,5 +261,5 @@ public class BucketCORSTest extends TestBase {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
         }
     }
-    
+
 }

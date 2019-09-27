@@ -5,7 +5,7 @@ package com.aliyun.oss.common.parser;
  */
 
 import com.aliyun.oss.common.comm.io.FixedLengthInputStream;
-import com.aliyun.oss.model.AddBucketReplicationRequest;
+import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -13,16 +13,16 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.aliyun.oss.common.parser.RequestMarshallers.addBucketReplicationRequestMarshaller;
+import static com.aliyun.oss.common.parser.RequestMarshallers.*;
 
 public class RequestMarshallersTest {
     @Test
-    public void testAddBucketReplicationRequestMarshallerWithCloudLocation()
-    {
+    public void testAddBucketReplicationRequestMarshallerWithCloudLocation() {
         String bucketName = "alicloud-bucket";
         String targetBucketName = "alicloud-targetBucketName";
         String targetCloud = "testTargetCloud";
@@ -102,8 +102,7 @@ public class RequestMarshallersTest {
     }
 
     @Test
-    public void testAddBucketReplicationRequestMarshallerWithoutCloudLocation()
-    {
+    public void testAddBucketReplicationRequestMarshallerWithoutCloudLocation() {
         String bucketName = "alicloud-bucket";
         String targetBucketName = "alicloud-targetBucketName";
         String targetBucketLocation = "alicloud-targetBucketLocation";
@@ -141,8 +140,7 @@ public class RequestMarshallersTest {
     }
 
     @Test
-    public void testAddBucketReplicationRequestMarshallerWithSyncRole()
-    {
+    public void testAddBucketReplicationRequestMarshallerWithSyncRole() {
         String bucketName = "alicloud-bucket";
         String targetBucketName = "alicloud-targetBucketName";
         String targetCloud = "testTargetCloud";
@@ -182,8 +180,7 @@ public class RequestMarshallersTest {
     }
 
     @Test
-    public void testAddBucketReplicationRequestMarshallerWithoutSyncRole()
-    {
+    public void testAddBucketReplicationRequestMarshallerWithoutSyncRole() {
         String bucketName = "alicloud-bucket";
         String targetBucketName = "alicloud-targetBucketName";
         String targetCloud = "testTargetCloud";
@@ -221,8 +218,7 @@ public class RequestMarshallersTest {
     }
 
     @Test
-    public void testAddBucketReplicationRequestMarshallerWithReplicaKmsKeyID()
-    {
+    public void testAddBucketReplicationRequestMarshallerWithReplicaKmsKeyID() {
         String bucketName = "alicloud-bucket";
         String targetBucketName = "alicloud-targetBucketName";
         String targetCloud = "testTargetCloud";
@@ -262,8 +258,7 @@ public class RequestMarshallersTest {
     }
 
     @Test
-    public void testAddBucketReplicationRequestMarshallerWithoutReplicaKmsKeyID()
-    {
+    public void testAddBucketReplicationRequestMarshallerWithoutReplicaKmsKeyID() {
         String bucketName = "alicloud-bucket";
         String targetBucketName = "alicloud-targetBucketName";
         String targetCloud = "testTargetCloud";
@@ -301,8 +296,7 @@ public class RequestMarshallersTest {
     }
 
     @Test
-    public void testAddBucketReplicationRequestMarshallerWithSSEStatus()
-    {
+    public void testAddBucketReplicationRequestMarshallerWithSSEStatus() {
         String bucketName = "alicloud-bucket";
         String targetBucketName = "alicloud-targetBucketName";
         String targetCloud = "testTargetCloud";
@@ -401,8 +395,7 @@ public class RequestMarshallersTest {
     }
 
     @Test
-    public void testAddBucketReplicationRequestMarshallerWithoutSSEStatus()
-    {
+    public void testAddBucketReplicationRequestMarshallerWithoutSSEStatus() {
         String bucketName = "alicloud-bucket";
         String targetBucketName = "alicloud-targetBucketName";
         String targetCloud = "testTargetCloud";
@@ -437,6 +430,480 @@ public class RequestMarshallersTest {
         Assert.assertEquals(targetCloud, aTargetCloud);
         Assert.assertEquals(targetCloudLocation, aTargetCloudLocation);
         Assert.assertNull(sourceSelectionCriteria);
+    }
+
+    @Test
+    public void testPutImageStyleRequestMarshaller() {
+        String bucketName = "alicloud-bucket";
+        PutImageStyleRequest request = new PutImageStyleRequest();
+        request.SetStyle("style");
+
+        FixedLengthInputStream is = putImageStyleRequestMarshaller.marshall(request);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Element root = doc.getRootElement();
+        String Content = root.getChildText("Content");
+        Assert.assertEquals("style", Content);
+    }
+
+    @Test
+    public void testBucketImageProcessConfMarshaller() {
+        String bucketName = "alicloud-bucket";
+        ImageProcess request = new ImageProcess("compliedHost", true, "sourceFileProtectSuffix",
+                "styleDelimiters");
+        request.setSourceFileProtect(null);
+        request.setSupportAtStyle(null);
+        FixedLengthInputStream is = bucketImageProcessConfMarshaller.marshall(request);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Element root = doc.getRootElement();
+        String SourceFileProtect = root.getChildText("SourceFileProtect");
+        String OssDomainSupportAtProcess = root.getChildText("OssDomainSupportAtProcess");
+        Assert.assertEquals("Disabled", SourceFileProtect);
+        Assert.assertEquals("Disabled", OssDomainSupportAtProcess);
+    }
+
+    @Test
+    public void testPutBucketImageRequestMarshaller() {
+        String bucketName = "alicloud-bucket";
+        PutBucketImageRequest request = new PutBucketImageRequest(bucketName);
+        request.SetIsForbidOrigPicAccess(true);
+        request.SetIsUseStyleOnly(true);
+        request.SetIsAutoSetContentType(true);
+        request.SetIsUseSrcFormat(true);
+        request.SetIsSetAttachName(true);
+        request.SetDefault404Pic("Default404Pic");
+        request.SetStyleDelimiters("StyleDelimiters");
+
+        FixedLengthInputStream is = putBucketImageRequestMarshaller.marshall(request);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Element root = doc.getRootElement();
+        String OrigPicForbidden = root.getChildText("OrigPicForbidden");
+        String UseStyleOnly = root.getChildText("UseStyleOnly");
+        String AutoSetContentType = root.getChildText("AutoSetContentType");
+        String UseSrcFormat = root.getChildText("UseSrcFormat");
+        String SetAttachName = root.getChildText("SetAttachName");
+        String Default404Pic = root.getChildText("Default404Pic");
+        String StyleDelimiters = root.getChildText("StyleDelimiters");
+
+        Assert.assertEquals("true", OrigPicForbidden);
+        Assert.assertEquals("true", UseStyleOnly);
+        Assert.assertEquals("true", AutoSetContentType);
+        Assert.assertEquals("true", UseSrcFormat);
+        Assert.assertEquals("true", SetAttachName);
+        Assert.assertEquals("Default404Pic", Default404Pic);
+        Assert.assertEquals("StyleDelimiters", StyleDelimiters);
+
+        //
+        request.SetIsForbidOrigPicAccess(false);
+        request.SetIsUseStyleOnly(false);
+        request.SetIsAutoSetContentType(false);
+        request.SetIsUseSrcFormat(false);
+        request.SetIsSetAttachName(false);
+        request.SetDefault404Pic("Default404Pic");
+        request.SetStyleDelimiters("StyleDelimiters");
+
+        is = putBucketImageRequestMarshaller.marshall(request);
+
+        builder = new SAXBuilder();
+        doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        root = doc.getRootElement();
+        OrigPicForbidden = root.getChildText("OrigPicForbidden");
+        UseStyleOnly = root.getChildText("UseStyleOnly");
+        AutoSetContentType = root.getChildText("AutoSetContentType");
+        UseSrcFormat = root.getChildText("UseSrcFormat");
+        SetAttachName = root.getChildText("SetAttachName");
+        Default404Pic = root.getChildText("Default404Pic");
+        StyleDelimiters = root.getChildText("StyleDelimiters");
+
+        Assert.assertEquals("false", OrigPicForbidden);
+        Assert.assertEquals("false", UseStyleOnly);
+        Assert.assertEquals("false", AutoSetContentType);
+        Assert.assertEquals("false", UseSrcFormat);
+        Assert.assertEquals("false", SetAttachName);
+        Assert.assertEquals("Default404Pic", Default404Pic);
+        Assert.assertEquals("StyleDelimiters", StyleDelimiters);
+    }
+
+    @Test
+    public void testSetBucketWebsiteRequestMarshaller() {
+        String bucketName = "alicloud-bucket";
+        SetBucketWebsiteRequest request = new SetBucketWebsiteRequest(bucketName);
+        request.setIndexDocument(null);
+        request.setErrorDocument(null);
+
+        RoutingRule rule = new RoutingRule();
+        rule.setNumber(1);
+        RoutingRule.Condition condition = new RoutingRule.Condition();
+        condition.setHttpErrorCodeReturnedEquals(403);
+        rule.setCondition(condition);
+
+        rule.getRedirect().setRedirectType(RoutingRule.RedirectType.AliCDN);
+        rule.getRedirect().setHostName("oss.aliyuncs.com");
+        rule.getRedirect().setProtocol(RoutingRule.Protocol.Https);
+        rule.getRedirect().setReplaceKeyWith("${key}.jpg");
+        rule.getRedirect().setHttpRedirectCode(302);
+
+        request.AddRoutingRule(rule);
+
+        FixedLengthInputStream is = setBucketWebsiteRequestMarshaller.marshall(request);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Element root = doc.getRootElement();
+        Element IndexDocument = root.getChild("IndexDocument");
+        Element RoutingRules = root.getChild("RoutingRules");
+        Element RoutingRule = RoutingRules.getChild("RoutingRule");
+        Element Condition = RoutingRule.getChild("Condition");
+        Element KeyPrefixEquals = Condition.getChild("KeyPrefixEquals");
+
+        Assert.assertNull(IndexDocument);
+        Assert.assertNotNull(RoutingRule);
+        Assert.assertNotNull(Condition);
+        Assert.assertNull(KeyPrefixEquals);
+    }
+
+    @Test
+    public void testDeleteBucketReplicationRequestMarshaller() {
+        String bucketName = "alicloud-bucket";
+        DeleteBucketReplicationRequest request = new DeleteBucketReplicationRequest(bucketName);
+        request.setReplicationRuleID("ID");
+
+        byte[] data = deleteBucketReplicationRequestMarshaller.marshall(request);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Element root = doc.getRootElement();
+        String ID = root.getChildText("ID");
+        Assert.assertEquals("ID", ID);
+    }
+
+    @Test
+    public void testAddBucketCnameRequestMarshaller() {
+        String bucketName = "alicloud-bucket";
+        AddBucketCnameRequest request = new AddBucketCnameRequest(bucketName);
+        request.setDomain("domain");
+
+        byte[] data = addBucketCnameRequestMarshaller.marshall(request);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Element root = doc.getRootElement();
+        Element Cname = root.getChild("Cname");
+        String Domain = Cname.getChildText("Domain");
+        Assert.assertEquals("domain", Domain);
+    }
+
+    @Test
+    public void testDeleteBucketCnameRequestMarshaller() {
+        String bucketName = "alicloud-bucket";
+        DeleteBucketCnameRequest request = new DeleteBucketCnameRequest(bucketName);
+        request.setDomain("domain");
+
+        byte[] data = deleteBucketCnameRequestMarshaller.marshall(request);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Element root = doc.getRootElement();
+        Element Cname = root.getChild("Cname");
+        String Domain = Cname.getChildText("Domain");
+        Assert.assertEquals("domain", Domain);
+    }
+
+    @Test
+    public void testCreateUdfRequestMarshaller() {
+        String bucketName = "alicloud-bucket";
+        CreateUdfRequest request = new CreateUdfRequest(bucketName);
+        request.setName("name");
+        request.setId("id");
+        request.setDesc("desc");
+
+        byte[] data = createUdfRequestMarshaller.marshall(request);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Element root = doc.getRootElement();
+        String Name = root.getChildText("Name");
+        String ID = root.getChildText("ID");
+        String Description = root.getChildText("Description");
+        Assert.assertEquals("name", Name);
+        Assert.assertEquals("id", ID);
+        Assert.assertEquals("desc", Description);
+
+
+        request.setId(null);
+        request.setDesc(null);
+        data = createUdfRequestMarshaller.marshall(request);
+        is = new ByteArrayInputStream(data);
+
+        builder = new SAXBuilder();
+        doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        root = doc.getRootElement();
+        Name = root.getChildText("Name");
+        Element eID = root.getChild("ID");
+        Element eDescription = root.getChild("Description");
+        Assert.assertEquals("name", Name);
+        Assert.assertEquals(null, eID);
+        Assert.assertEquals(null, eDescription);
+    }
+
+    @Test
+    public void testCreateUdfApplicationRequestMarshaller() {
+        String bucketName = "alicloud-bucket";
+        UdfApplicationConfiguration udfApplicationConfiguration = new UdfApplicationConfiguration(1, 2);
+        CreateUdfApplicationRequest request = new CreateUdfApplicationRequest(bucketName, udfApplicationConfiguration);
+
+        byte[] data = createUdfApplicationRequestMarshaller.marshall(request);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Element root = doc.getRootElement();
+        String ImageVersion = root.getChildText("ImageVersion");
+        String InstanceNum = root.getChildText("InstanceNum");
+        Assert.assertEquals("1", ImageVersion);
+        Assert.assertEquals("2", InstanceNum);
+    }
+
+    @Test
+    public void testUpgradeUdfApplicationRequestMarshaller() {
+        String bucketName = "alicloud-bucket";
+        UpgradeUdfApplicationRequest request = new UpgradeUdfApplicationRequest("name", 1);
+
+        byte[] data = upgradeUdfApplicationRequestMarshaller.marshall(request);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Element root = doc.getRootElement();
+        String ImageVersion = root.getChildText("ImageVersion");
+        Assert.assertEquals("1", ImageVersion);
+    }
+
+    @Test
+    public void testResizeUdfApplicationRequestMarshaller() {
+        String bucketName = "alicloud-bucket";
+        ResizeUdfApplicationRequest request = new ResizeUdfApplicationRequest("name", 1);
+
+        byte[] data = resizeUdfApplicationRequestMarshaller.marshall(request);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Element root = doc.getRootElement();
+        String InstanceNum = root.getChildText("InstanceNum");
+        Assert.assertEquals("1", InstanceNum);
+    }
+
+    @Test
+    public void testStringMarshaller() {
+        try {
+            FixedLengthInputStream is = stringMarshaller.marshall(null);
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+    }
+
+    @Test
+    public void testSetBucketTaggingRequestMarshaller() {
+        String bucketName = "alicloud-bucket";
+        SetTaggingRequest request = new SetTaggingRequest(bucketName, "key");
+        FixedLengthInputStream is = setBucketTaggingRequestMarshaller.marshall(request);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Element root = doc.getRootElement();
+        Element TagSet = root.getChild("TagSet");
+        Element Tag = TagSet.getChild("Tag");
+        Assert.assertNotNull(TagSet);
+        Assert.assertNull(Tag);
+    }
+
+    @Test
+    public void testDeleteVersionsRequestMarshaller() {
+        String bucketName = "alicloud-bucket";
+        DeleteVersionsRequest request = new DeleteVersionsRequest(bucketName);
+
+        List<DeleteVersionsRequest.KeyVersion> keys = new ArrayList<DeleteVersionsRequest.KeyVersion>();
+        keys.add(new DeleteVersionsRequest.KeyVersion("key1", "version"));
+        request.setKeys(keys);
+        byte[] data = deleteVersionsRequestMarshaller.marshall(request);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Element root = doc.getRootElement();
+        Element Object = root.getChild("Object");
+        Element VersionId = Object.getChild("VersionId");
+        Assert.assertNotNull(Object);
+        Assert.assertNotNull(VersionId);
+    }
+
+    @Test
+    public void testSelectObjectRequestMarshaller() {
+        String bucketName = "alicloud-bucket";
+        SelectObjectRequest request = new SelectObjectRequest(bucketName, "key");
+        request.setExpression("select * from table;");
+        request.setMaxSkippedRecordsAllowed(10);
+
+        byte[] data = selectObjectRequestMarshaller.marshall(request);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Element root = doc.getRootElement();
+        Element Options = root.getChild("Options");
+        Element allowed = Options.getChild("MaxSkippedRecordsAllowed");
+        Assert.assertNotNull(allowed);
+    }
+
+    @Test
+    public void testSetBucketCORSRequestMarshaller() {
+        String bucketName = "alicloud-bucket";
+        SetBucketCORSRequest request = new SetBucketCORSRequest(bucketName);
+        SetBucketCORSRequest.CORSRule corsRule = new SetBucketCORSRequest.CORSRule();
+        corsRule.addAllowdOrigin("*");
+        corsRule.addAllowedMethod("PUT");
+        corsRule.addAllowedHeader("header1");
+        corsRule.addAllowedHeader("header2");
+        request.addCorsRule(corsRule);
+
+        FixedLengthInputStream is = setBucketCORSRequestMarshaller.marshall(request);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Element root = doc.getRootElement();
+        Element CORSRule = root.getChild("CORSRule");
+        Element AllowedHeader = CORSRule.getChild("AllowedHeader");
+        Assert.assertNotNull(AllowedHeader);
     }
 
 }

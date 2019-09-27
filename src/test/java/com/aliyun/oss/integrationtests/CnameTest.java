@@ -32,8 +32,7 @@ import com.aliyun.oss.ClientBuilderConfiguration;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 
-@Ignore
-public class CnameTest {
+public class CnameTest extends TestBase {
 
     @Test
     @SuppressWarnings("unused")
@@ -45,7 +44,7 @@ public class CnameTest {
         Assert.assertTrue(currentExcludeList.contains("aliyuncs.com"));
         Assert.assertTrue(currentExcludeList.contains("aliyun-inc.com"));
         Assert.assertTrue(currentExcludeList.contains("aliyun.com"));
-        
+
         List<String> cnameExcludeList = new ArrayList<String>();
         String excludeItem = "http://oss-cn-hangzhou.aliyuncs.gd";
         // Add your customized host name here
@@ -57,7 +56,7 @@ public class CnameTest {
         Assert.assertTrue(currentExcludeList.contains("aliyuncs.com"));
         Assert.assertTrue(currentExcludeList.contains("aliyun-inc.com"));
         Assert.assertTrue(currentExcludeList.contains("aliyun.com"));
-        
+
         OSS client = new OSSClientBuilder().build(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET, cc);
         // Do some operations with client here...
     }

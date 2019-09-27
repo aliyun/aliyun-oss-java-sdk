@@ -28,7 +28,7 @@ import org.junit.Test;
 public class ResourceManagerTest {
 
     @Test
-    public void testResourceManager() { 
+    public void testResourceManager() {
         // TODO: User a test-specific resource
         String baseName = "common";
         ResourceManager rm;

@@ -143,6 +143,58 @@ public class CustomSessionCredentialsProviderTest extends TestBase {
             e.printStackTrace();
             Assert.fail(e.getMessage());
         }
+
+        try {
+            CustomSessionCredentialsFetcher credentialsFetcher = new CustomSessionCredentialsFetcherMock(
+                    TestConfig.OSS_AUTH_SERVER_HOST).withResponseCategory(ResponseCategory.ExceptionalWithoutStatus);
+            CustomSessionCredentialsProvider credentialsProvider = new CustomSessionCredentialsProvider(
+                    TestConfig.OSS_AUTH_SERVER_HOST).withCredentialsFetcher(credentialsFetcher);
+
+            Credentials credentials = credentialsProvider.getCredentials();
+            Assert.assertNull(credentials);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        try {
+            CustomSessionCredentialsFetcher credentialsFetcher = new CustomSessionCredentialsFetcherMock(
+                    TestConfig.OSS_AUTH_SERVER_HOST).withResponseCategory(ResponseCategory.ExceptionalFailStatus);
+            CustomSessionCredentialsProvider credentialsProvider = new CustomSessionCredentialsProvider(
+                    TestConfig.OSS_AUTH_SERVER_HOST).withCredentialsFetcher(credentialsFetcher);
+
+            Credentials credentials = credentialsProvider.getCredentials();
+            Assert.assertNull(credentials);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        try {
+            CustomSessionCredentialsFetcher credentialsFetcher = new CustomSessionCredentialsFetcherMock(
+                    TestConfig.OSS_AUTH_SERVER_HOST).withResponseCategory(ResponseCategory.ExceptionalWithoutAK);
+            CustomSessionCredentialsProvider credentialsProvider = new CustomSessionCredentialsProvider(
+                    TestConfig.OSS_AUTH_SERVER_HOST).withCredentialsFetcher(credentialsFetcher);
+
+            Credentials credentials = credentialsProvider.getCredentials();
+            Assert.assertNull(credentials);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        try {
+            CustomSessionCredentialsFetcher credentialsFetcher = new CustomSessionCredentialsFetcherMock(
+                    TestConfig.OSS_AUTH_SERVER_HOST).withResponseCategory(ResponseCategory.ExceptionalWithoutSK);
+            CustomSessionCredentialsProvider credentialsProvider = new CustomSessionCredentialsProvider(
+                    TestConfig.OSS_AUTH_SERVER_HOST).withCredentialsFetcher(credentialsFetcher);
+
+            Credentials credentials = credentialsProvider.getCredentials();
+            Assert.assertNull(credentials);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
     }
 
     @Test
@@ -182,7 +234,6 @@ public class CustomSessionCredentialsProviderTest extends TestBase {
         }
     }
 
-    @Test
     public void testGetCredentialsFromAuthInOss() {
         try {
             CustomSessionCredentialsProvider credentialsProvider = new CustomSessionCredentialsProvider(
@@ -211,7 +262,6 @@ public class CustomSessionCredentialsProviderTest extends TestBase {
         }
     }
 
-    @Test
     public void testGetCredentialsUseInOss() {
         try {
             CustomSessionCredentialsProvider credentialsProvider = CredentialsProviderFactory

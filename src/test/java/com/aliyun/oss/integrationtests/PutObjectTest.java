@@ -434,6 +434,14 @@ public class PutObjectTest extends TestBase {
         } finally {
             removeFile(filePath);
         }
+
+        //with nullpath
+        try {
+            ossClient.putObject(signedUrl, null, requestHeaders);
+            Assert.assertTrue(false);
+        } catch (Exception ex) {
+            Assert.assertTrue(true);
+        }
     }
     
     @Test

@@ -44,7 +44,34 @@ public class BucketTaggingTest extends TestBase {
             Assert.assertEquals(2, tags.size());
             Assert.assertTrue(tags.containsKey("tk1"));
             Assert.assertTrue(tags.containsKey("tk2"));
-            
+            Assert.assertEquals("tv1", tagSet.getTag("tk1"));
+            tagSet.toString();
+            tagSet.clear();
+            //
+            request = new SetBucketTaggingRequest(bucketName,tagSet);
+            tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
+            Assert.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
+            tags = tagSet.getAllTags();
+            Assert.assertEquals(2, tags.size());
+            Assert.assertTrue(tags.containsKey("tk1"));
+            Assert.assertTrue(tags.containsKey("tk2"));
+
+            request = new SetBucketTaggingRequest(bucketName).withTagSet(tagSet);
+            tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
+            Assert.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
+            tags = tagSet.getAllTags();
+            Assert.assertEquals(2, tags.size());
+            Assert.assertTrue(tags.containsKey("tk1"));
+            Assert.assertTrue(tags.containsKey("tk2"));
+
+            request = new SetBucketTaggingRequest(bucketName, tags);
+            tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
+            Assert.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
+            tags = tagSet.getAllTags();
+            Assert.assertEquals(2, tags.size());
+            Assert.assertTrue(tags.containsKey("tk1"));
+            Assert.assertTrue(tags.containsKey("tk2"));
+
             ossClient.deleteBucketTagging(new GenericRequest(bucketName));
           
             waitForCacheExpiration(5);
@@ -68,10 +95,10 @@ public class BucketTaggingTest extends TestBase {
             ossClient.createBucket(bucketName1);
             ossClient.createBucket(bicketName2);
 
-            SetBucketTaggingRequest request = new SetBucketTaggingRequest(bucketName1);
-            request.setTag("tk1", "tv1");
-            request.setTag("tk2", "tv2");
-            ossClient.setBucketTagging(request);
+            TagSet tagSet  = new TagSet();
+            tagSet.setTag("tk1", "tv1");
+            tagSet.setTag("tk2", "tv2");
+            ossClient.setBucketTagging(bucketName1, tagSet);
 
             waitForCacheExpiration(3);
 
@@ -85,6 +112,8 @@ public class BucketTaggingTest extends TestBase {
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
+            ossClient.getBucketTagging(bucketName1);
+            ossClient.deleteBucketTagging(bucketName1);
             ossClient.deleteBucket(bucketName1);
             ossClient.deleteBucket(bicketName2);
         }

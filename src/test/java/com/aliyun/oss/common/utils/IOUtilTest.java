@@ -19,19 +19,18 @@
 
 package com.aliyun.oss.common.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 import org.junit.Test;
-import static org.junit.Assert.assertArrayEquals;;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;;
 
 public class IOUtilTest {
     @Test
     public void testBase64String() {
-        String dataString = "OssService"; 
+        String dataString = "OssService";
         byte[] expectByteData = dataString.getBytes();
         InputStream inStream = new ByteArrayInputStream(expectByteData);
         byte[] byteData = null;
@@ -47,4 +46,29 @@ public class IOUtilTest {
         OutputStream outStream = new ByteArrayOutputStream();
         IOUtils.safeClose(outStream);
     }
+
+    @Test
+    public void testReadStreamAsString() {
+        try {
+            assertEquals("", IOUtils.readStreamAsString(null, "utf8"));
+        } catch (IOException e) {
+            assertTrue(false);
+        }
+    }
+
+    @Test
+    public void testMiscFunctions() {
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+        IOUtils.safeClose(inputStream);
+        IOUtils.safeClose(outputStream);
+
+        File file = null;
+        assertEquals(false, IOUtils.checkFile(file));
+
+        byte[] data = new byte[10];
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+        assertEquals(null, IOUtils.getCRCValue(is));
+    }
+
 }

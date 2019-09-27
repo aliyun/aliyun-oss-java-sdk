@@ -150,6 +150,9 @@ public class ListVersionsTest extends TestBase {
 
             versionListing = ossClient.listVersions(listVersionsRequest);
             Assert.assertEquals(1, versionListing.getCommonPrefixes().size());
+
+            versionListing = ossClient.listVersions(bucketName, prefix, "", "", "/", 5);
+            Assert.assertEquals(1, versionListing.getCommonPrefixes().size());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }

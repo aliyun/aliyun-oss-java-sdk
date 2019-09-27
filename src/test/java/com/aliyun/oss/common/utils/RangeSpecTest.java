@@ -19,26 +19,22 @@
 
 package com.aliyun.oss.common.utils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 
-public class VersionUtilTest {
-    @Test
-    public void testGetDefaultUserAgent() {
-        String userAgent = VersionInfoUtils.getDefaultUserAgent();
-        assertTrue(userAgent.startsWith("aliyun-sdk-java/3.6.0("));
-        assertEquals(userAgent.split("/").length, 4);
-        assertEquals(userAgent.split(";").length, 2);
-        assertEquals(userAgent.split("\\(").length, 2);
-        assertEquals(userAgent.split("\\)").length, 1);
-    }
 
+import static org.junit.Assert.assertEquals;
+
+public class RangeSpecTest {
     @Test
-    public void testGetVersion() {
-        String version = VersionInfoUtils.getVersion();
-        assertEquals("3.6.0", version);
+    public void testRangeSpec() {
+        RangeSpec rangeSpec = new RangeSpec();
+        assertEquals(0, rangeSpec.getStart());
+
+        long[] range = new long[3];
+        range[0] = 0;
+        range[1] = 12;
+        rangeSpec = RangeSpec.parse(range);
+        assertEquals(0, rangeSpec.getStart());
+        assertEquals(12, rangeSpec.getEnd());
     }
 }
-

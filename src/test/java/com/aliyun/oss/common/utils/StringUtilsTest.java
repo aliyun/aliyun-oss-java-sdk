@@ -18,10 +18,15 @@
  */
 package com.aliyun.oss.common.utils;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Random;
 
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Unit tests for the StringUtils class.
@@ -33,66 +38,66 @@ public class StringUtilsTest {
      */
     @Test
     public void testFromByte() {
-        Assert.assertEquals("123", StringUtils.fromByte(new Byte("123")));
-        Assert.assertEquals("-99", StringUtils.fromByte(new Byte("-99")));
+        assertEquals("123", StringUtils.fromByte(new Byte("123")));
+        assertEquals("-99", StringUtils.fromByte(new Byte("-99")));
     }
 
     @Test(timeout = 10 * 1000)
     public void replace_ReplacementStringContainsMatchString_DoesNotCauseInfiniteLoop() {
-        Assert.assertEquals("aabc", StringUtils.replace("abc", "a", "aa"));
+        assertEquals("aabc", StringUtils.replace("abc", "a", "aa"));
     }
 
     @Test
     public void replace_EmptyReplacementString_RemovesAllOccurencesOfMatchString() {
-        Assert.assertEquals("bbb", StringUtils.replace("ababab", "a", ""));
+        assertEquals("bbb", StringUtils.replace("ababab", "a", ""));
     }
 
     @Test
     public void replace_MatchNotFound_ReturnsOriginalString() {
-        Assert.assertEquals("abc", StringUtils.replace("abc", "d", "e"));
+        assertEquals("abc", StringUtils.replace("abc", "d", "e"));
     }
 
     @Test
     public void lowerCase_NonEmptyString() {
         String input = "x-amz-InvocAtion-typE";
         String expected = "x-amz-invocation-type";
-        Assert.assertEquals(expected, StringUtils.lowerCase(input));
+        assertEquals(expected, StringUtils.lowerCase(input));
     }
 
     @Test
     public void lowerCase_NullString() {
-        Assert.assertNull(StringUtils.lowerCase(null));
+        assertNull(StringUtils.lowerCase(null));
     }
 
     @Test
     public void lowerCase_EmptyString() {
-        Assert.assertEquals(StringUtils.lowerCase(""), "");
+        assertEquals(StringUtils.lowerCase(""), "");
     }
 
     @Test
     public void upperCase_NonEmptyString() {
         String input = "dHkdjj139_)(e";
         String expected = "DHKDJJ139_)(E";
-        Assert.assertEquals(expected, StringUtils.upperCase(input));
+        assertEquals(expected, StringUtils.upperCase(input));
     }
 
     @Test
     public void upperCase_NullString() {
-        Assert.assertNull(StringUtils.upperCase((null)));
+        assertNull(StringUtils.upperCase((null)));
     }
 
     @Test
     public void upperCase_EmptyString() {
-        Assert.assertEquals(StringUtils.upperCase(""), "");
+        assertEquals(StringUtils.upperCase(""), "");
     }
 
     @Test
     public void testCompare() {
-        Assert.assertTrue(StringUtils.compare("truck", "Car") > 0);
-        Assert.assertTrue(StringUtils.compare("", "dd") < 0);
-        Assert.assertTrue(StringUtils.compare("dd", "") > 0);
-        Assert.assertEquals(0, StringUtils.compare("", ""));
-        Assert.assertTrue(StringUtils.compare(" ", "") > 0);
+        assertTrue(StringUtils.compare("truck", "Car") > 0);
+        assertTrue(StringUtils.compare("", "dd") < 0);
+        assertTrue(StringUtils.compare("dd", "") > 0);
+        assertEquals(0, StringUtils.compare("", ""));
+        assertTrue(StringUtils.compare(" ", "") > 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -111,7 +116,7 @@ public class StringUtilsTest {
 
     @Test
     public void testAppendAndCompact() {
-        String[] pieces = { " ", "\t", "\n", "\u000b", "\r", "\f", "word", "foo", "bar", "baq" };
+        String[] pieces = {" ", "\t", "\n", "\u000b", "\r", "\f", "word", "foo", "bar", "baq"};
         int ITERATIONS = 10000;
         Random rng = new Random();
 
@@ -125,24 +130,68 @@ public class StringUtilsTest {
             StringBuilder sb = new StringBuilder();
             StringUtils.appendCompactedString(sb, s);
             String compacted = s.replaceAll("\\s+", " ");
-            Assert.assertEquals('[' + compacted + ']', sb.toString(), compacted);
+            assertEquals('[' + compacted + ']', sb.toString(), compacted);
         }
     }
 
     @Test
     public void begins_with_ignore_case() {
-        Assert.assertTrue(StringUtils.beginsWithIgnoreCase("foobar", "FoO"));
+        assertTrue(StringUtils.beginsWithIgnoreCase("foobar", "FoO"));
     }
 
     @Test
     public void begins_with_ignore_case_returns_false_when_seq_doesnot_match() {
-        Assert.assertFalse(StringUtils.beginsWithIgnoreCase("foobar", "baz"));
+        assertFalse(StringUtils.beginsWithIgnoreCase("foobar", "baz"));
     }
 
     @Test
     public void hasValue() {
-        Assert.assertTrue(StringUtils.hasValue("something"));
-        Assert.assertFalse(StringUtils.hasValue(null));
-        Assert.assertFalse(StringUtils.hasValue(""));
+        assertTrue(StringUtils.hasValue("something"));
+        assertFalse(StringUtils.hasValue(null));
+        assertFalse(StringUtils.hasValue(""));
+    }
+
+    @Test
+    public void testToFromValue() {
+        StringBuilder value;
+
+        value = new StringBuilder();
+        value.append(1);
+        assertEquals(new Integer(1), StringUtils.toInteger(value));
+
+        value = new StringBuilder();
+        value.append("hello");
+        assertEquals("hello", StringUtils.toString(value));
+
+        value = new StringBuilder();
+        value.append("false");
+        assertEquals(false, StringUtils.toBoolean(value));
+
+        assertEquals(BigInteger.valueOf(123), StringUtils.toBigInteger("123"));
+
+        assertEquals(BigDecimal.valueOf(123), StringUtils.toBigDecimal("123"));
+
+        assertEquals("123", StringUtils.fromInteger(123));
+        assertEquals("123", StringUtils.fromLong((long) 123));
+        assertEquals("hello", StringUtils.fromString("hello"));
+        assertEquals("false", StringUtils.fromBoolean(false));
+        assertEquals("123", StringUtils.fromBigInteger(BigInteger.valueOf(123)));
+        assertEquals("123", StringUtils.fromBigDecimal(BigDecimal.valueOf(123)));
+        assertEquals("123.1", StringUtils.fromFloat((float) 123.1));
+        assertEquals("123.2", StringUtils.fromDouble((double) 123.2));
+    }
+
+    @Test
+    public void testJoinString() {
+        String part1 = "hello";
+        String part2 = "world";
+        String join = StringUtils.join("-", part1, part2);
+        assertEquals("hello-world", join);
+
+        Collection<String> collection = new ArrayList<String>();
+        collection.add("hello");
+        collection.add("world");
+        join = StringUtils.join("-", collection);
+        assertEquals("hello-world", join);
     }
 }
