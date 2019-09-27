@@ -38,6 +38,7 @@ import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.Grant;
 import com.aliyun.oss.model.GroupGrantee;
 import com.aliyun.oss.model.Permission;
+import com.aliyun.oss.model.SetBucketAclRequest;
 
 @SuppressWarnings("deprecation")
 public class BucketAclTest extends TestBase {
@@ -94,7 +95,10 @@ public class BucketAclTest extends TestBase {
         try {            
             // set non-existent bucket
             try {
-                ossClient.setBucketAcl(nonexistentBucket, CannedAccessControlList.Private);
+                SetBucketAclRequest request = new SetBucketAclRequest(nonexistentBucket)
+                        .withCannedACL(CannedAccessControlList.Default);
+                request.setCannedACL(CannedAccessControlList.Private);
+                ossClient.setBucketAcl(request);
                 //Assert.fail("Set bucket acl should not be successful");
             } catch (OSSException e) {
                 Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());

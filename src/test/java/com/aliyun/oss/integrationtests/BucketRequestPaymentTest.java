@@ -19,6 +19,8 @@
 
 package com.aliyun.oss.integrationtests;
 
+import com.aliyun.oss.model.GenericRequest;
+import com.aliyun.oss.model.SetBucketRequestPaymentRequest;
 import junit.framework.Assert;
 
 import java.util.Date;
@@ -36,7 +38,7 @@ import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_BUCKET_ERR;
 public class BucketRequestPaymentTest extends TestBase {
 
     @Test
-    public void testNormalSetRequestPayment(){
+    public void testNormalSetRequestPayment() {
 
         try {
             Payer payer = Payer.Requester;
@@ -49,7 +51,7 @@ public class BucketRequestPaymentTest extends TestBase {
             ossClient.setBucketRequestPayment(bucketName, payer);
 
             // Get payer
-            result = ossClient.getBucketRequestPayment(bucketName);
+            result = ossClient.getBucketRequestPayment(new GenericRequest(bucketName));
             Assert.assertEquals(payer, result.getPayer());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
@@ -58,7 +60,7 @@ public class BucketRequestPaymentTest extends TestBase {
     }
 
     @Test
-    public void testUnnormalSetRequestPayment(){
+    public void testUnnormalSetRequestPayment() {
         Payer payer = Payer.Requester;
 
         // Set non-existent bucket
@@ -74,7 +76,9 @@ public class BucketRequestPaymentTest extends TestBase {
         // Set bucket without ownership
         final String bucketWithoutOwnership = "oss";//AccessDenied
         try {
-            ossClient.setBucketRequestPayment(bucketWithoutOwnership, payer);
+            SetBucketRequestPaymentRequest request = new SetBucketRequestPaymentRequest(bucketWithoutOwnership);
+            request.setPayer(payer);
+            ossClient.setBucketRequestPayment(request);
             Assert.fail("Set bucket request payment should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
@@ -84,7 +88,7 @@ public class BucketRequestPaymentTest extends TestBase {
 
 
     @Test
-    public void testUnnormalGetRequestPayment(){
+    public void testUnnormalGetRequestPayment() {
 
         // Get non-existent bucket
         long ticks = new Date().getTime() / 1000 + new Random().nextInt(5000);

@@ -918,7 +918,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             StorageClass storageClass = objectMetadata.getObjectStorageClass();
             if (storageClass == StorageClass.Archive) {
                 // Restore object without payer setting
-                ossPayerClient.restoreObject(generirequest);
+                ossPayerClient.restoreObject(bucketName, achiveObject);
             }
             Assert.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {

@@ -151,9 +151,9 @@ public class ObjectVersionTest extends TestBase {
 
             // Complete multipart upload
             CompleteMultipartUploadRequest completeMultipartUploadRequest =
-                new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
+                    new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
-                ossClient.completeMultipartUpload(completeMultipartUploadRequest);
+                    ossClient.completeMultipartUpload(completeMultipartUploadRequest);
             Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
             Assert.assertEquals(key, completeMultipartUploadResult.getKey());
             Assert.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
@@ -202,7 +202,7 @@ public class ObjectVersionTest extends TestBase {
             Assert.assertTrue(putResult.getVersionId() != null);
             Assert.assertTrue(putResult.getVersionId().length() == 64);
 
-            GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
+            GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key, putResult.getVersionId());
             getObjectRequest.setVersionId(putResult.getVersionId());
             OSSObject ossObject = ossClient.getObject(getObjectRequest);
             ossObject.close();
@@ -325,7 +325,7 @@ public class ObjectVersionTest extends TestBase {
             int partNumber = 1;
             List<PartETag> partETags = new ArrayList<PartETag>();
             UploadPartCopyRequest uploadPartCopyRequest =
-                new UploadPartCopyRequest(bucketName, srcKey, bucketName, destKey);
+                    new UploadPartCopyRequest(bucketName, srcKey, bucketName, destKey);
             uploadPartCopyRequest.setSourceVersionId(putObjectResult.getVersionId());
             uploadPartCopyRequest.setPartNumber(partNumber);
             uploadPartCopyRequest.setUploadId(uploadId);
@@ -334,9 +334,9 @@ public class ObjectVersionTest extends TestBase {
 
             // Complete multipart upload
             CompleteMultipartUploadRequest completeMultipartUploadRequest =
-                new CompleteMultipartUploadRequest(bucketName, destKey, uploadId, partETags);
+                    new CompleteMultipartUploadRequest(bucketName, destKey, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
-                ossClient.completeMultipartUpload(completeMultipartUploadRequest);
+                    ossClient.completeMultipartUpload(completeMultipartUploadRequest);
             Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
             Assert.assertEquals(destKey, completeMultipartUploadResult.getKey());
             Assert.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
@@ -350,7 +350,7 @@ public class ObjectVersionTest extends TestBase {
             Assert.assertEquals(calcMultipartsETag(partETags), ossObject.getObjectMetadata().getETag());
             Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
             Assert.assertEquals(completeMultipartUploadResult.getVersionId(),
-                ossObject.getObjectMetadata().getVersionId());
+                    ossObject.getObjectMetadata().getVersionId());
             ossObject.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -396,9 +396,9 @@ public class ObjectVersionTest extends TestBase {
 
             // Test getSimplifiedObjectMeta
             GenericRequest getSimplifiedObjectMetaRequest =
-                new GenericRequest(bucketName, key, versionId1);
+                    new GenericRequest(bucketName, key, versionId1);
             SimplifiedObjectMeta simplifiedObjectMeta =
-                ossClient.getSimplifiedObjectMeta(getSimplifiedObjectMetaRequest);
+                    ossClient.getSimplifiedObjectMeta(getSimplifiedObjectMetaRequest);
             Assert.assertNotNull(simplifiedObjectMeta.getVersionId());
             Assert.assertEquals(64, simplifiedObjectMeta.getVersionId().length());
             Assert.assertEquals(simplifiedObjectMeta.getVersionId(), versionId1);
@@ -419,20 +419,20 @@ public class ObjectVersionTest extends TestBase {
             PutObjectResult putResult = ossClient.putObject(bucketName, key, instream, metadata);
             Assert.assertNotNull(putResult.getVersionId());
             String versionId1 = putResult.getVersionId();
-            
+
             instream = genFixedLengthInputStream(inputStreamLength);
             putResult = ossClient.putObject(bucketName, key, instream, metadata);
             Assert.assertNotNull(putResult.getVersionId());
             String versionId2 = putResult.getVersionId();
-            
+
             // Set version1 'PublicRead'
             SetObjectAclRequest setObjectAclRequest = new SetObjectAclRequest(bucketName, key,
                     versionId1, CannedAccessControlList.PublicRead);
             ossClient.setObjectAcl(setObjectAclRequest);
-            
+
             // Set version2 'Private'
             setObjectAclRequest = new SetObjectAclRequest(bucketName, key,
-                    versionId2, CannedAccessControlList.Private);
+                    versionId2).withCannedACL(CannedAccessControlList.Private);
             ossClient.setObjectAcl(setObjectAclRequest);
 
             // Check acl of object version1
@@ -528,7 +528,7 @@ public class ObjectVersionTest extends TestBase {
             downloadFileRequest.setPartSize(512 * 1024);
             downloadFileRequest.setDownloadFile(downFileName);
             ossClient.downloadFile(downloadFileRequest);
-            
+
             File downFile = new File(downFileName);
             long length1 = downFile.length();
             downFile.delete();
@@ -541,7 +541,7 @@ public class ObjectVersionTest extends TestBase {
             downloadFileRequest.setVersionId(versionId2);
             downloadFileRequest.setDownloadFile(downFileName);
             ossClient.downloadFile(downloadFileRequest);
-    
+
             downFile = new File(downFileName);
             long length2 = downFile.length();
             downFile.delete();

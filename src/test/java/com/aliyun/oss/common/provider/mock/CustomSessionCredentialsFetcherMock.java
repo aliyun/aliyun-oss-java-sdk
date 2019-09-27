@@ -55,8 +55,33 @@ public class CustomSessionCredentialsFetcherMock extends CustomSessionCredential
             + "\"AccessKeySecret\" : \"CJ7G63EhuZuN8rfSg2Rd****qAgHMhmDuMkp****NPUV\","
             + "\"Expiration\" : \"2016-11-11T16:10:03Z\"" + "}";
 
+    private static final String FORMAT_INVALID__WITHOUT_STATUSCODE_METADATA = "{" + "\"AccessKeyId\" : \"STS.EgnR2nX****FAf9uuqjHS8Ddt\","
+            + "\"AccessKeySecret\" : \"CJ7G63EhuZuN8rfSg2Rd****qAgHMhmDuMkp****NPUV\","
+            + "\"Expiration\" : \"2020-11-11T16:10:03Z\","
+            + "\"SecurityToken\" : \"CAISigJ1q6Ft5B2yfSjIpKTbGYjatahPg6CtQ0CIkXUkZsd/14HPljz2IHBE****AOEetfs2lW1T6P0TlrRtTtpfTEmBbI569s1WqQW+Z5fT5JHo4LZfhoGoRzB9keMGTIyADd/iRfbxJ92PCTmd5AIRrJ****K9JS/HVbSClZ9gaPkOQwC8dkAoLdxKJwxk2qR4XDmrQp****PxhXfKB0dFoxd1jXgFiZ6y2cqB8BHT/jaYo603392ofsj1NJE1ZMglD4nlhbxMG/CfgHIK2X9j77xriaFIwzDDs+yGDkNZixf8aLqEqIM/dV4hPfdjSvMf8qOtj5t1sffJnoHtzBJAIexOT****FVtcH5xchqAAXp1d/dYv+2L+dJDW+2pm1vACD/UlRk93prPkyuU3zH2wnvXBxEi26QnoQSCA+T1yE2wo41V2mS+LSGYN/PC+2Ml1q+JX5DzKgfGrUPt7kU4FeXJDzGh2YaXRGpO7yERKgAc/NukkDNqthMaHntyTeix08DYBuTT6gd3V8XmN8vF\","
+            + "\"NoStatusCode\" : \"200\"" + "}";
+
+    private static final String FORMAT_FAIL_STATUSCODE_METADATA = "{" + "\"AccessKeyId\" : \"STS.EgnR2nX****FAf9uuqjHS8Ddt\","
+            + "\"AccessKeySecret\" : \"CJ7G63EhuZuN8rfSg2Rd****qAgHMhmDuMkp****NPUV\","
+            + "\"Expiration\" : \"2020-11-11T16:10:03Z\","
+            + "\"SecurityToken\" : \"CAISigJ1q6Ft5B2yfSjIpKTbGYjatahPg6CtQ0CIkXUkZsd/14HPljz2IHBE****AOEetfs2lW1T6P0TlrRtTtpfTEmBbI569s1WqQW+Z5fT5JHo4LZfhoGoRzB9keMGTIyADd/iRfbxJ92PCTmd5AIRrJ****K9JS/HVbSClZ9gaPkOQwC8dkAoLdxKJwxk2qR4XDmrQp****PxhXfKB0dFoxd1jXgFiZ6y2cqB8BHT/jaYo603392ofsj1NJE1ZMglD4nlhbxMG/CfgHIK2X9j77xriaFIwzDDs+yGDkNZixf8aLqEqIM/dV4hPfdjSvMf8qOtj5t1sffJnoHtzBJAIexOT****FVtcH5xchqAAXp1d/dYv+2L+dJDW+2pm1vACD/UlRk93prPkyuU3zH2wnvXBxEi26QnoQSCA+T1yE2wo41V2mS+LSGYN/PC+2Ml1q+JX5DzKgfGrUPt7kU4FeXJDzGh2YaXRGpO7yERKgAc/NukkDNqthMaHntyTeix08DYBuTT6gd3V8XmN8vF\","
+            + "\"StatusCode\" : \"400\"" + "}";
+
+    private static final String FORMAT_INVALID_WITHOUT_AK_METADATA = "{" + "\"NoAccessKeyId\" : \"STS.EgnR2nX****FAf9uuqjHS8Ddt\","
+            + "\"AccessKeySecret\" : \"CJ7G63EhuZuN8rfSg2Rd****qAgHMhmDuMkp****NPUV\","
+            + "\"Expiration\" : \"2020-11-11T16:10:03Z\","
+            + "\"SecurityToken\" : \"CAISigJ1q6Ft5B2yfSjIpKTbGYjatahPg6CtQ0CIkXUkZsd/14HPljz2IHBE****AOEetfs2lW1T6P0TlrRtTtpfTEmBbI569s1WqQW+Z5fT5JHo4LZfhoGoRzB9keMGTIyADd/iRfbxJ92PCTmd5AIRrJ****K9JS/HVbSClZ9gaPkOQwC8dkAoLdxKJwxk2qR4XDmrQp****PxhXfKB0dFoxd1jXgFiZ6y2cqB8BHT/jaYo603392ofsj1NJE1ZMglD4nlhbxMG/CfgHIK2X9j77xriaFIwzDDs+yGDkNZixf8aLqEqIM/dV4hPfdjSvMf8qOtj5t1sffJnoHtzBJAIexOT****FVtcH5xchqAAXp1d/dYv+2L+dJDW+2pm1vACD/UlRk93prPkyuU3zH2wnvXBxEi26QnoQSCA+T1yE2wo41V2mS+LSGYN/PC+2Ml1q+JX5DzKgfGrUPt7kU4FeXJDzGh2YaXRGpO7yERKgAc/NukkDNqthMaHntyTeix08DYBuTT6gd3V8XmN8vF\","
+            + "\"StatusCode\" : \"200\"" + "}";
+
+    private static final String FORMAT_INVALID_WITHOUT_SK_METADATA = "{" + "\"AccessKeyId\" : \"STS.EgnR2nX****FAf9uuqjHS8Ddt\","
+            + "\"NoAccessKeySecret\" : \"CJ7G63EhuZuN8rfSg2Rd****qAgHMhmDuMkp****NPUV\","
+            + "\"Expiration\" : \"2020-11-11T16:10:03Z\","
+            + "\"SecurityToken\" : \"CAISigJ1q6Ft5B2yfSjIpKTbGYjatahPg6CtQ0CIkXUkZsd/14HPljz2IHBE****AOEetfs2lW1T6P0TlrRtTtpfTEmBbI569s1WqQW+Z5fT5JHo4LZfhoGoRzB9keMGTIyADd/iRfbxJ92PCTmd5AIRrJ****K9JS/HVbSClZ9gaPkOQwC8dkAoLdxKJwxk2qR4XDmrQp****PxhXfKB0dFoxd1jXgFiZ6y2cqB8BHT/jaYo603392ofsj1NJE1ZMglD4nlhbxMG/CfgHIK2X9j77xriaFIwzDDs+yGDkNZixf8aLqEqIM/dV4hPfdjSvMf8qOtj5t1sffJnoHtzBJAIexOT****FVtcH5xchqAAXp1d/dYv+2L+dJDW+2pm1vACD/UlRk93prPkyuU3zH2wnvXBxEi26QnoQSCA+T1yE2wo41V2mS+LSGYN/PC+2Ml1q+JX5DzKgfGrUPt7kU4FeXJDzGh2YaXRGpO7yERKgAc/NukkDNqthMaHntyTeix08DYBuTT6gd3V8XmN8vF\","
+            + "\"StatusCode\" : \"200\"" + "}";
+
     public enum ResponseCategory {
-        Normal, NormalWithoutExpiration, NormalWithoutToken, Expired, FormatInvalid, ServerHalt, Exceptional
+        Normal, NormalWithoutExpiration, NormalWithoutToken, Expired, FormatInvalid, ServerHalt, Exceptional,
+        ExceptionalWithoutStatus, ExceptionalFailStatus, ExceptionalWithoutAK, ExceptionalWithoutSK
     };
 
     @Override
@@ -95,6 +120,22 @@ public class CustomSessionCredentialsFetcherMock extends CustomSessionCredential
             break;
         case Exceptional:
             throw new IOException("CredentialsFetcher.send Exception.");
+        case ExceptionalWithoutStatus:
+            response.setStatus(200);
+            response.setHttpContent(FORMAT_INVALID__WITHOUT_STATUSCODE_METADATA.getBytes(), "UTF-8", FormatType.JSON);
+            break;
+        case ExceptionalFailStatus:
+            response.setStatus(200);
+            response.setHttpContent(FORMAT_FAIL_STATUSCODE_METADATA.getBytes(), "UTF-8", FormatType.JSON);
+            break;
+        case ExceptionalWithoutAK:
+            response.setStatus(200);
+            response.setHttpContent(FORMAT_INVALID_WITHOUT_AK_METADATA.getBytes(), "UTF-8", FormatType.JSON);
+            break;
+        case ExceptionalWithoutSK:
+            response.setStatus(200);
+            response.setHttpContent(FORMAT_INVALID_WITHOUT_SK_METADATA.getBytes(), "UTF-8", FormatType.JSON);
+            break;
         default:
             break;
         }

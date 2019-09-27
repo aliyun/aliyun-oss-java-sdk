@@ -42,6 +42,8 @@ public class UploadFileTest extends TestBase {
             UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
             uploadFileRequest.setUploadFile(file.getAbsolutePath());
             uploadFileRequest.setTaskNum(10);
+
+            uploadFileRequest = new UploadFileRequest(bucketName, key, file.getAbsolutePath(), (1024 * 100),10);
             
             UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
             Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
@@ -82,7 +84,15 @@ public class UploadFileTest extends TestBase {
             uploadFileRequest.setUploadFile(file.getAbsolutePath());
             uploadFileRequest.setTaskNum(10);
             uploadFileRequest.setEnableCheckpoint(true);
-            
+            uploadFileRequest.setPartSize(1024);
+
+            uploadFileRequest = new UploadFileRequest(bucketName, key, file.getAbsolutePath(), (1024 * 100),10, true);
+            uploadFileRequest.setTaskNum(0);
+            Assert.assertEquals(1, uploadFileRequest.getTaskNum());
+            uploadFileRequest.setTaskNum(1001);
+            Assert.assertEquals(1000, uploadFileRequest.getTaskNum());
+            uploadFileRequest.setTaskNum(10);
+
             UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
             Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
             Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
@@ -123,7 +133,11 @@ public class UploadFileTest extends TestBase {
             uploadFileRequest.setTaskNum(10);
             uploadFileRequest.setEnableCheckpoint(true);
             uploadFileRequest.setCheckpointFile("BingWallpaper.ucp");
-            
+
+            uploadFileRequest = new UploadFileRequest(bucketName, key, file.getAbsolutePath(),
+                    (1024 * 100),10,
+                    true, "BingWallpaper.ucp");
+
             UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
             Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
             Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);

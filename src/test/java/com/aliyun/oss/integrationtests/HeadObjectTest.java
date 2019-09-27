@@ -49,6 +49,9 @@ public class HeadObjectTest extends TestBase {
             headObjectRequest.setUnmodifiedSinceConstraint(new Date(System.currentTimeMillis() + 3600 * 1000));
             o = ossClient.headObject(headObjectRequest);
             Assert.assertEquals(o.getETag(), putObjectResult.getETag());
+
+            o = ossClient.headObject(bucketName, key);
+            Assert.assertEquals(o.getETag(), putObjectResult.getETag());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }

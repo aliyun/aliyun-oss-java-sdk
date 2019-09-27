@@ -39,7 +39,6 @@ import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.CredentialsProvider;
 
-@Ignore
 public class SwitchCredentialsAndEndpointTest extends TestBase {
 
     /* Indicate whether credentials switching starts prior to credentials verification */
@@ -48,7 +47,7 @@ public class SwitchCredentialsAndEndpointTest extends TestBase {
     private static final int loopTimes = 100;
     private static final int switchInterval = 50; // unit in milliseconds
 
-    @Ignore
+    @Test
     public void testSwitchValidCredentialsAndEndpoint() {
         CredentialsProvider credsProvider = ossClient.getCredentialsProvider();
         Credentials defaultCreds = credsProvider.getCredentials();
@@ -62,7 +61,7 @@ public class SwitchCredentialsAndEndpointTest extends TestBase {
         } catch (OSSException ex) {
             fail("Unable to get bucket location with default credentials.");
         }
-        
+
         // Switch to another default credentials that belongs to the same user acount.
         Credentials defaultCreds2 = new DefaultCredentials(OSS_TEST_ACCESS_KEY_ID_1, OSS_TEST_ACCESS_KEY_SECRET_1);
         ossClient.switchCredentials(defaultCreds2);
@@ -78,7 +77,7 @@ public class SwitchCredentialsAndEndpointTest extends TestBase {
             restoreDefaultCredentials();
             fail("Unable to get bucket location with another default credentials.");
         }
-        
+
         // Switch to second credentials that belongs to another user acount,
         // Note that the default credentials are only valid under default endpoint 
         // and the second credentials are only valid under second endpoint.
@@ -87,14 +86,14 @@ public class SwitchCredentialsAndEndpointTest extends TestBase {
         secondCreds = credsProvider.getCredentials();
         assertEquals(OSS_TEST_ACCESS_KEY_ID, secondCreds.getAccessKeyId());
         assertEquals(OSS_TEST_ACCESS_KEY_SECRET, secondCreds.getSecretAccessKey());
-        
+
         // Verify second credentials under default endpoint
-        try {
-            ossClient.getBucketLocation(bucketName);
-            fail("Should not be able to get bucket location with second credentials.");
-        } catch (OSSException ex) {
-            assertEquals(OSSErrorCode.INVALID_ACCESS_KEY_ID, ex.getErrorCode());
-        }
+        //try {
+        //    ossClient.getBucketLocation(bucketName);
+        //    fail("Should not be able to get bucket location with second credentials.");
+        //} catch (OSSException ex) {
+        //    assertEquals(OSSErrorCode.INVALID_ACCESS_KEY_ID, ex.getErrorCode());
+        //}
         
         // Switch to second endpoint
         ossClient.setEndpoint(OSS_TEST_ENDPOINT);
@@ -123,7 +122,7 @@ public class SwitchCredentialsAndEndpointTest extends TestBase {
         CredentialsProvider credsProvider = ossClient.getCredentialsProvider();
         Credentials defaultCreds = credsProvider.getCredentials();
         assertEquals(OSS_TEST_ACCESS_KEY_ID_1, defaultCreds.getAccessKeyId());
-        assertEquals(OSS_TEST_ACCESS_KEY_ID_1, defaultCreds.getSecretAccessKey());
+        assertEquals(OSS_TEST_ACCESS_KEY_SECRET_1, defaultCreds.getSecretAccessKey());
         
         // Switch to invalid credentials
         Credentials invalidCreds = new DefaultCredentials(INVALID_ACCESS_ID, INVALID_ACCESS_KEY);

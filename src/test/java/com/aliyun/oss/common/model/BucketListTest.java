@@ -46,6 +46,7 @@ public class BucketListTest {
        bucket.setName("name");
        bucket.setLocation("osslocation");
        buckets.add(bucket);
+       bucketList.clearBucketList();
        bucketList.setBucketList(buckets);
        assertEquals("prefix", bucketList.getPrefix());
        assertEquals("marker", bucketList.getMarker());
@@ -57,6 +58,13 @@ public class BucketListTest {
        bucket = buckets.get(0);
        assertEquals("name", bucket.getName());
        assertEquals("osslocation", bucket.getLocation());
+
+       bucketList.setBucketList(null);
+       assertEquals(0, bucketList.getBucketList().size());
+
+       buckets.clear();
+       bucketList.setBucketList(buckets);
+       assertEquals(0, bucketList.getBucketList().size());
    }
 
    @Test
@@ -65,6 +73,9 @@ public class BucketListTest {
        assertEquals("prefix", request.getPrefix());
        assertEquals("marker", request.getMarker());
        assertEquals(Integer.valueOf(1000), request.getMaxKeys());
+
+       request = request.withPrefix("prefix0").withMarker("marker20").withMaxKeys(20);
+
        request.setPrefix("prefix2");
        request.setMarker("marker2");
        request.setMaxKeys(Integer.valueOf(1));

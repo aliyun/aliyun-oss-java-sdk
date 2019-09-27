@@ -19,10 +19,6 @@
 
 package com.aliyun.oss.integrationtests;
 
-import static com.aliyun.oss.integrationtests.TestConfig.OSS_TEST_REPLICATION_ENDPOINT;
-import static com.aliyun.oss.integrationtests.TestConfig.OSS_TEST_REPLICATION_ACCESS_KEY_ID;
-import static com.aliyun.oss.integrationtests.TestConfig.OSS_TEST_REPLICATION_ACCESS_KEY_SECRET;
-
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,33 +43,26 @@ import com.aliyun.oss.model.ReplicationRule;
 import com.aliyun.oss.model.ReplicationStatus;
 import com.aliyun.oss.model.AddBucketReplicationRequest;
 
-@Ignore
+import static com.aliyun.oss.integrationtests.TestConfig.*;
+
 public class BucketReplicationTest extends TestBase {
-    protected static OSS replicationClient;
-    final static String targetBucketName = "java-sdk-test-qd-15";
+    static String targetBucketName = "java-sdk-test-qd-15";
     final String targetBucketLoc = "oss-cn-qingdao";
-    
-    @BeforeClass
-    public static void beforeClass() {
-        if (replicationClient == null) {
-            replicationClient = new OSSClientBuilder().build(OSS_TEST_REPLICATION_ENDPOINT,
-                    OSS_TEST_REPLICATION_ACCESS_KEY_ID, 
-                    OSS_TEST_REPLICATION_ACCESS_KEY_SECRET);
-            
-          replicationClient.createBucket(targetBucketName);
-            
-          BucketList buckets = replicationClient.listBuckets(targetBucketName, "", 100);
-          Assert.assertEquals(1, buckets.getBucketList().size());
-        }
+    static OSS replicationClient = null;
+
+    public void setUp() throws Exception {
+        super.setUp();
+        targetBucketName = super.bucketName + "-bucket-replication";
+        replicationClient = new OSSClientBuilder().build("oss-cn-qingdao.aliyuncs.com",
+                OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET);
+        replicationClient.createBucket(targetBucketName);
     }
-    
-    @AfterClass
-    public static void afterClass() {
-        replicationClient.deleteBucket(targetBucketName);
+
+    public void tearDown() throws Exception {
+        super.tearDown();
         replicationClient.shutdown();
     }
-    
-    @Test
+
     public void testNormalAddBucketReplication() throws ParseException {
         final String bucketName = "test-bucket-set-replication";
         final String ruleId = "bucket-replication-rule-id";
@@ -131,7 +120,6 @@ public class BucketReplicationTest extends TestBase {
         }
     }
     
-    @Test
     public void testNormalAddBucketReplicationWithDefaultRuleID() throws ParseException {
         final String bucketName = "test-bucket-replication-default-ruleid";
 
@@ -162,7 +150,6 @@ public class BucketReplicationTest extends TestBase {
         }
     }
     
-    @Test
     public void testNormalAddBucketReplicationWithRuleID() throws ParseException {
         final String bucketName = "test-bucket-replication-ruleid-3";
         final String repRuleID = "~`!@#$%^&*()-_+=|\\[]{}<>:;\"',./?";
@@ -203,7 +190,6 @@ public class BucketReplicationTest extends TestBase {
         }
     }
     
-    @Test
     public void testNormalAddBucketReplicationWithAction() throws ParseException {
         final String bucketName = "test-bucket-replication-action-10";
 
@@ -247,7 +233,6 @@ public class BucketReplicationTest extends TestBase {
         }
     }
     
-    @Test
     public void testNormalDeleteBucketReplication() throws ParseException {
         final String bucketName = "test-bucket-delete-replication";
         final String repRuleID = "test-replication-ruleid";
@@ -280,7 +265,6 @@ public class BucketReplicationTest extends TestBase {
         }
     }
     
-    @Test
     public void testNormalDeleteBucketReplicationWithRuleID() throws ParseException {
         final String bucketName = "test-bucket-delete-replication-ruleid";
         final String repRuleID = "test-replication-ruleid";
@@ -313,7 +297,6 @@ public class BucketReplicationTest extends TestBase {
         }
     }
     
-    @Test
     public void testNormalGetBucketReplicationProgress() throws ParseException {
         final String bucketName = "test-bucket-get-replication-progress";
         final String repRuleID = "test-replication-progress-ruleid";
@@ -353,7 +336,6 @@ public class BucketReplicationTest extends TestBase {
         }
     }
     
-    @Test
     public void testNormalGetBucketReplicationProgressWithDisableHistory() throws ParseException {
         final String bucketName = "test-bucket-replication-progress-disable-history";
         final String repRuleID = "test-replication-ruleid";
@@ -399,7 +381,6 @@ public class BucketReplicationTest extends TestBase {
         }
     }
     
-    @Test
     public void testNormalGetBucketReplicationLocation() throws ParseException {
         final String bucketName = "test-bucket-replication-location";
 
@@ -423,7 +404,7 @@ public class BucketReplicationTest extends TestBase {
     // Negative
     @Test
     public void testUnormalSetBucketReplication() throws ParseException {
-        final String bucketName = "test-unormal-bucket-replication";
+        final String bucketName = super.bucketName  + "-unormal-bucket-replication";
         final String ruleId = "bucket-replication-rule-id";
 
         try {
@@ -454,7 +435,7 @@ public class BucketReplicationTest extends TestBase {
     
     @Test
     public void testUnormalSetBucketReplicationLocation() throws ParseException {
-        final String bucketName = "test-unormal-bucket-replication-loc";
+        final String bucketName = super.bucketName  + "-unormal-bucket-replication-loc";
         final String ruleId = "bucket-replication-rule-id";
 
         try {
@@ -482,7 +463,7 @@ public class BucketReplicationTest extends TestBase {
     
     @Test
     public void testUnormalGetBucketReplication() throws ParseException {
-        final String bucketName = "test-unormal-get-bucket-replication";
+        final String bucketName = super.bucketName  + "-unormal-get-bucket-replication";
 
         try {
             ossClient.createBucket(bucketName);
@@ -504,7 +485,7 @@ public class BucketReplicationTest extends TestBase {
     
     @Test
     public void testUnormalGetBucketReplicationProgress() throws ParseException {
-        final String bucketName = "test-unormal-bucket-replication-progress";
+        final String bucketName = super.bucketName  + "-unormal-bucket-replication-progress";
         final String repRuleID = "test-replication-progress-ruleid";
         
         try {
@@ -527,7 +508,7 @@ public class BucketReplicationTest extends TestBase {
     
     @Test
     public void testUnormalGetBucketReplicationLocation() throws ParseException {
-        final String bucketName = "test-unormal-bucket-replication-location";
+        final String bucketName = super.bucketName  + "-unormal-bucket-replication-location";
 
         try {
             ossClient.getBucketReplicationLocation(bucketName);
@@ -541,7 +522,7 @@ public class BucketReplicationTest extends TestBase {
     
     @Test
     public void testUnormalSetBucketReplicationInvalidParam() throws ParseException {
-        final String bucketName = "test-unormal-bucket-delete-replication-param";
+        final String bucketName = super.bucketName  + "-unormal-bucket-delete-replication-param";
         
         try {
             ossClient.createBucket(bucketName);
@@ -564,7 +545,7 @@ public class BucketReplicationTest extends TestBase {
     
     @Test
     public void testUnormalDeleteBucketReplicationInvalidParam() throws ParseException {
-        final String bucketName = "test-unormal-bucket-delete-replication-param";
+        final String bucketName = super.bucketName  + "-unormal-bucket-delete-replication-param";
         final String ruleId = "bucket-replication-rule-id";
         
         try {
@@ -593,7 +574,7 @@ public class BucketReplicationTest extends TestBase {
     
     @Test
     public void testUnormalGetBucketReplicationProgressInvalidParam() throws ParseException {
-        final String bucketName = "test-unormal-bucket-replication-progress";
+        final String bucketName = super.bucketName  + "-unormal-bucket-replication-progress";
         final String ruleId = "bucket-replication-rule-id";
         
         try {

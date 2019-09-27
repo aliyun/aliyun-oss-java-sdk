@@ -20,10 +20,16 @@
 package com.aliyun.oss.common.utils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
+import com.aliyun.oss.OSSException;
+import com.aliyun.oss.internal.model.OSSErrorResult;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.NonRepeatableRequestException;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.junit.Test;
 
@@ -37,11 +43,28 @@ public class ExceptionFactoryTest {
         SocketTimeoutException ste = new SocketTimeoutException();
         ClientException ex = ExceptionFactory.createNetworkException(ste);
         assertEquals(ex.getErrorCode(), ClientErrorCode.SOCKET_TIMEOUT);
+
+        SocketException se = new SocketException();
+        ex = ExceptionFactory.createNetworkException(se);
+        assertEquals(ex.getErrorCode(), ClientErrorCode.SOCKET_EXCEPTION);
+
         ConnectTimeoutException cte = new ConnectTimeoutException();
         ex = ExceptionFactory.createNetworkException(cte);
         assertEquals(ex.getErrorCode(), ClientErrorCode.CONNECTION_TIMEOUT);
+
         IOException ioe = new IOException();
         ex = ExceptionFactory.createNetworkException(ioe);
         assertEquals(ex.getErrorCode(), ClientErrorCode.UNKNOWN);
+
+        ClientProtocolException cpe = new ClientProtocolException(new NonRepeatableRequestException());
+        ex = ExceptionFactory.createNetworkException(cpe);
+        assertEquals(ex.getErrorCode(), ClientErrorCode.NONREPEATABLE_REQUEST);
+
+        OSSException ose = ExceptionFactory.createInvalidResponseException("request id", new ConnectTimeoutException());
+        assertNotNull(ose);
+        ose = ExceptionFactory.createInvalidResponseException("request id", new ConnectTimeoutException());
+        assertNotNull(ose);
+        ose = ExceptionFactory.createOSSException(new OSSErrorResult());
+        assertNotNull(ose);
     }
 }

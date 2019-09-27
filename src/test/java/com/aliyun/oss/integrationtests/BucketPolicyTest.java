@@ -2,12 +2,16 @@ package com.aliyun.oss.integrationtests;
 
 import java.util.Date;
 import java.util.Random;
+
+import com.aliyun.oss.model.GenericRequest;
 import org.junit.Test;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.GetBucketPolicyResult;
 import com.aliyun.oss.model.SetBucketPolicyRequest;
+
 import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_BUCKET_ERR;
+
 import junit.framework.Assert;
 
 public class BucketPolicyTest extends TestBase {
@@ -30,25 +34,26 @@ public class BucketPolicyTest extends TestBase {
             Assert.fail(e.getMessage());
         } finally {
             // Delete policy after test
-            ossClient.deleteBucketPolicy(bucketName);
+            ossClient.deleteBucketPolicy(new GenericRequest(bucketName));
         }
     }
-    
+
     @Test
     public void testUnnormalSetPolicy() {
         long ticks = new Date().getTime() / 1000 + new Random().nextInt(5000);
         String notExsiteBucketName = BUCKET_NAME_PREFIX + ticks;
         String normalPolicyText = "{\"Version\":\"1\",\"Statement\":[{\"Action\":[\"oss:GetObject\",\"oss:PutObject\"],\"Effect\":\"Deny\",\"Principal\":\"[123456790]\",\"Resource\":\"[\\\"acs:oss:*:1234567890:*\\/*\\\"]\"}]}";
-       
+
         // Set non-existent bucket
         try {
-            SetBucketPolicyRequest setPolicyReq = new SetBucketPolicyRequest(notExsiteBucketName, normalPolicyText);
+            SetBucketPolicyRequest setPolicyReq = new SetBucketPolicyRequest(notExsiteBucketName);
+            setPolicyReq.setPolicyText(normalPolicyText);
             ossClient.setBucketPolicy(setPolicyReq);
-        } catch(OSSException e) {
+        } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-           Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         }
-        
+
         // Set bucket without ownership
         final String bucketWithoutOwnership = "oss";//AccessDenied
         try {
@@ -77,10 +82,10 @@ public class BucketPolicyTest extends TestBase {
 
         // Get non-existent bucket
         try {
-            GetBucketPolicyResult result = ossClient.getBucketPolicy(notExsiteBucketName);
-        } catch(OSSException e) {
-           Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-           Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+            GetBucketPolicyResult result = ossClient.getBucketPolicy(new GenericRequest(notExsiteBucketName));
+        } catch (OSSException e) {
+            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         }
 
         // Get non-exsitent policy
@@ -88,7 +93,7 @@ public class BucketPolicyTest extends TestBase {
         try {
             ossClient.createBucket(newBucketName);
             GetBucketPolicyResult result = ossClient.getBucketPolicy(newBucketName);
-        } catch(OSSException e) {
+        } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET_POLICY, e.getErrorCode());
         } finally {
             ossClient.deleteBucket(newBucketName);
@@ -112,9 +117,9 @@ public class BucketPolicyTest extends TestBase {
         // Delete non-existent bucket
         try {
             ossClient.deleteBucketPolicy(notExsiteBucketName);
-        } catch(OSSException e) {
-           Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-           Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+        } catch (OSSException e) {
+            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         }
 
         // Delete non-exsitent policy
@@ -123,7 +128,7 @@ public class BucketPolicyTest extends TestBase {
             ossClient.createBucket(newBucketName);
             ossClient.deleteBucketPolicy(newBucketName);
         } catch (Exception e) {
-           Assert.fail("deleteBucketPolicy err" + e.getMessage());
+            Assert.fail("deleteBucketPolicy err" + e.getMessage());
         } finally {
             ossClient.deleteBucket(newBucketName);
         }

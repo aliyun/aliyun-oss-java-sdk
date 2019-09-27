@@ -122,6 +122,13 @@ public class UdfTest extends TestBase {
         } catch (Exception e) {
             Assert.assertTrue(true);
         }
+
+        try {
+            CannedUdfAcl.parse("UN");
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
     }
 
     @Test

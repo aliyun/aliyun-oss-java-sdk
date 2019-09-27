@@ -50,6 +50,7 @@ public class BucketProcesTest extends TestBase {
             // put 1
             ImageProcess imageProcess = new ImageProcess("Img", true, "jpg,png", "/,-");
             SetBucketProcessRequest request = new SetBucketProcessRequest(bucketName, imageProcess);
+            request.setImageProcess(imageProcess);
             ossClient.setBucketProcess(request);
 
             waitForCacheExpiration(2);

@@ -1,10 +1,8 @@
 package com.aliyun.oss.integrationtests;
 
+import java.util.Date;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
 import com.aliyun.oss.ClientBuilderConfiguration;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
@@ -16,20 +14,18 @@ import com.aliyun.oss.model.PutImageStyleRequest;
 import com.aliyun.oss.model.Style;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.Test;
 
-@Ignore
-public class TestForImg extends TestCase {
-    private static String accessKeyId = "your-access-id";
-    private static String accessKeySecret = "your-access-key";
-    private static String bucketName = "img-sdk-test-bucket";
-    private static String endpointImg = "http://img-test.aliyun-inc.com";
-    private static String endpointOss = "http://oss-test.aliyun-inc.com";
+import static com.aliyun.oss.integrationtests.TestConfig.OSS_TEST_ACCESS_KEY_ID;
+import static com.aliyun.oss.integrationtests.TestConfig.OSS_TEST_ACCESS_KEY_SECRET;
+import static com.aliyun.oss.integrationtests.TestConfig.OSS_TEST_ENDPOINT;
 
-    private static OSS clientImg = new OSSClientBuilder().build(endpointImg,
-            accessKeyId, accessKeySecret, new ClientBuilderConfiguration());
-    private static OSS clientOss = new OSSClientBuilder().build(endpointOss,
-            accessKeyId, accessKeySecret, new ClientBuilderConfiguration());
+
+public class TestForImg extends TestBase {
+    private static String endpointImg;
+    private static String endpointOss;
+    private static OSS clientImg;
+    private static OSS clientOss;
 
     public void sleepSecond(int time) {
         try {
@@ -39,16 +35,22 @@ public class TestForImg extends TestCase {
         }
     }
 
-    @Before
-    public void setUp() {
-        clientOss.createBucket(bucketName);
-        sleepSecond(10);
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        endpointImg = OSS_TEST_ENDPOINT;
+        endpointOss = OSS_TEST_ENDPOINT;
+        clientImg = new OSSClientBuilder().build(endpointImg,
+                OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET, new ClientBuilderConfiguration());
+        clientOss = new OSSClientBuilder().build(endpointOss,
+                OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET, new ClientBuilderConfiguration());
     }
 
-    @After
-    public void tearDown() {
-        clientOss.deleteBucket(bucketName);
-        clientImg.deleteBucketImage(bucketName);
+    @Override
+    public void tearDown() throws Exception {
+        super.tearDown();
+        clientImg.shutdown();
+        clientOss.shutdown();
     }
 
     public void testPutGetBucketImage() {
@@ -226,5 +228,106 @@ public class TestForImg extends TestCase {
             clientImg.listImageStyle(bucketName, req);
         } catch (Exception e) {
         }
+    }
+
+    // Negative
+    @Test
+    public void testPutGetBucketImageNegative() {
+        String bucketName = "no-exist-bucket";
+        try {
+            PutBucketImageRequest request = new PutBucketImageRequest(bucketName);
+            clientImg.putBucketImage(request);
+            Assert.assertTrue(false);
+        }catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        try {
+            PutBucketImageRequest request = new PutBucketImageRequest(bucketName);
+            request.SetIsForbidOrigPicAccess(true);
+            request.SetIsUseStyleOnly(true);
+            request.SetIsAutoSetContentType(true);
+            request.SetIsUseSrcFormat(true);
+            request.SetIsSetAttachName(true);
+            String default404Pic = "index.png";
+            request.SetDefault404Pic(default404Pic);
+            String styleDelimiters = "_";
+            request.SetStyleDelimiters(styleDelimiters);
+            clientImg.putBucketImage(request);
+            Assert.assertTrue(false);
+        }catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        try {
+            GetBucketImageResult result = clientImg.getBucketImage(bucketName);
+            Assert.assertTrue(false);
+        }catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+    }
+
+    @Test
+    public void testForDeleteBucketImageNegative() {
+        String bucketName = "no-exist-bucket";
+        try {
+            clientImg.deleteBucketImage(bucketName);
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+    }
+
+    @Test
+    public void testPutGetDeleteImageStyleNegative() {
+        String bucketName = "no-exist-bucket";
+        PutImageStyleRequest requestStyle = new PutImageStyleRequest();
+        requestStyle.SetBucketName(bucketName);
+        String styleName = "myStyle";
+        String style = "200w";
+        requestStyle.SetStyle(style);
+        requestStyle.SetStyleName(styleName);
+        try {
+            clientImg.putImageStyle(requestStyle);
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        try {
+            GetImageStyleResult result = clientImg.getImageStyle(bucketName, styleName);
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        try {
+            clientImg.deleteImageStyle(bucketName, styleName);
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+    }
+
+    @Test
+    public void testListImageStyleNegative() {
+        String bucketName = "no-exist-bucket";
+        try {
+            List<Style> styleList = clientImg.listImageStyle(bucketName);
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        Style style = new Style();
+        Date date = new Date();
+        style.SetStyleName("name");
+        Assert.assertEquals("name", style.GetStyleName());
+        style.SetLastModifyTime(date);
+        Assert.assertEquals(date, style.GetLastModifyTime());
+        style.SetCreationDate(date);
+        Assert.assertEquals(date, style.GetCreationDate());
+        style.SetStyle("style");
+        Assert.assertEquals("style", style.GetStyle());
     }
 }

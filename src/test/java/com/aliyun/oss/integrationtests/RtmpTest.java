@@ -22,6 +22,9 @@ package com.aliyun.oss.integrationtests;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 import junit.framework.Assert;
 
 import org.junit.Ignore;
@@ -616,12 +619,16 @@ public class RtmpTest extends TestBase {
             Assert.assertEquals(uri, uri2);
             
             ossClient.deleteLiveChannel(bucketName, liveChannel);
-            
+
+            OSS client = new OSSClientBuilder().build("https://endpoint/", "ak", "sk", "sts");
+            uri = client.generateRtmpUri("bucket", "live", "play.m3u8", 1000 );
+            Assert.assertTrue(uri.startsWith("rtmp://" + bucketName));
+
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
     }
-    
+
     private static boolean dateAfterValidator(Date date) throws ParseException {
         if (date == null) {
             return false;
