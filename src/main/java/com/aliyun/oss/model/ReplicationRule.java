@@ -104,6 +104,30 @@ public class ReplicationRule {
         }
     }
 
+    public void setSyncRole(String name) {
+        this.syncRole = name;
+    }
+
+    public String getSyncRole() {
+        return this.syncRole;
+    }
+
+    public void setReplicaKmsKeyID(String id) {
+        this.replicaKmsKeyID = id;
+    }
+
+    public String getReplicaKmsKeyID() {
+        return this.replicaKmsKeyID;
+    }
+
+    public void setSseKmsEncryptedObjectsStatus(String status) {
+        this.sseKmsEncryptedObjectsStatus = status;
+    }
+
+    public String getSseKmsEncryptedObjectsStatus() {
+        return this.sseKmsEncryptedObjectsStatus;
+    }
+
     private String replicationRuleID;
     private ReplicationStatus replicationStatus;
     private String targetBucketName;
@@ -113,4 +137,7 @@ public class ReplicationRule {
     private boolean enableHistoricalObjectReplication;
     private List<String> objectPrefixList;
     private List<ReplicationAction> replicationActionList;
+    private String syncRole;
+    private String replicaKmsKeyID;
+    private String sseKmsEncryptedObjectsStatus;
 }

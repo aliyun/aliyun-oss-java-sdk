@@ -200,4 +200,142 @@ public class ResponseParsersTest {
         Assert.assertEquals(0.9f, progress.getHistoricalObjectProgress());
         Assert.assertEquals(dt, progress.getNewObjectProgress());
     }
+
+    @Test
+    public void testParseGetBucketReplicationWithSyncRole()  {
+        String respBody = "<ReplicationConfiguration>\n" +
+                " <Rule>\n" +
+                "    <ID>12345678</ID>\n" +
+                "        <Destination>\n" +
+                "            <Bucket>testBucketName</Bucket>\n" +
+                "            <Cloud>testCloud</Cloud>\n" +
+                "            <CloudLocation>testCloudLocation</CloudLocation>\n" +
+                "        </Destination>\n" +
+                "    <Status>doing</Status>\n" +
+                "    <HistoricalObjectReplication>enabled</HistoricalObjectReplication>\n" +
+                "    <SyncRole>ft-sync-role</SyncRole>\n" +
+                " </Rule>\n" +
+                "</ReplicationConfiguration>\n";
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        List<ReplicationRule>  rules = null;
+        try {
+            rules = ResponseParsers.parseGetBucketReplication(instream);
+        } catch (ResponseParseException e) {
+            e.printStackTrace();
+            Assert.fail("parse bucket replication response body fail!");
+        }
+        Assert.assertTrue(rules.size() > 0);
+
+        ReplicationRule rule = rules.get(0);
+        Assert.assertEquals("12345678", rule.getReplicationRuleID());
+        Assert.assertEquals("testBucketName", rule.getTargetBucketName());
+        Assert.assertNull(rule.getTargetBucketLocation());
+        Assert.assertEquals("testCloud", rule.getTargetCloud());
+        Assert.assertEquals("testCloudLocation", rule.getTargetCloudLocation());
+        Assert.assertEquals(true, rule.isEnableHistoricalObjectReplication());
+        Assert.assertEquals("ft-sync-role", rule.getSyncRole());
+        Assert.assertNull(rule.getSseKmsEncryptedObjectsStatus());
+        Assert.assertNull(rule.getReplicaKmsKeyID());
+    }
+
+    @Test
+    public void testParseGetBucketReplicationWithReplicaKmsKeyID()  {
+        String respBody = "<ReplicationConfiguration>\n" +
+                " <Rule>\n" +
+                "    <ID>12345678</ID>\n" +
+                "        <Destination>\n" +
+                "            <Bucket>testBucketName</Bucket>\n" +
+                "            <Cloud>testCloud</Cloud>\n" +
+                "            <CloudLocation>testCloudLocation</CloudLocation>\n" +
+                "        </Destination>\n" +
+                "    <Status>doing</Status>\n" +
+                "    <HistoricalObjectReplication>enabled</HistoricalObjectReplication>\n" +
+                "    <EncryptionConfiguration>\n" +
+                "        <ReplicaKmsKeyID>12345</ReplicaKmsKeyID>\n" +
+                "    </EncryptionConfiguration>\n" +
+                " </Rule>\n" +
+                "</ReplicationConfiguration>\n";
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        List<ReplicationRule>  rules = null;
+        try {
+            rules = ResponseParsers.parseGetBucketReplication(instream);
+        } catch (ResponseParseException e) {
+            e.printStackTrace();
+            Assert.fail("parse bucket replication response body fail!");
+        }
+        Assert.assertTrue(rules.size() > 0);
+
+        ReplicationRule rule = rules.get(0);
+        Assert.assertEquals("12345678", rule.getReplicationRuleID());
+        Assert.assertEquals("testBucketName", rule.getTargetBucketName());
+        Assert.assertNull(rule.getTargetBucketLocation());
+        Assert.assertEquals("testCloud", rule.getTargetCloud());
+        Assert.assertEquals("testCloudLocation", rule.getTargetCloudLocation());
+        Assert.assertEquals(true, rule.isEnableHistoricalObjectReplication());
+        Assert.assertNull(rule.getSyncRole());
+        Assert.assertNull(rule.getSseKmsEncryptedObjectsStatus());
+        Assert.assertEquals("12345", rule.getReplicaKmsKeyID());
+    }
+
+    @Test
+    public void testParseGetBucketReplicationWithSseKmsEncryptedObjectsStatus()  {
+        String respBody = "<ReplicationConfiguration>\n" +
+                " <Rule>\n" +
+                "    <ID>12345678</ID>\n" +
+                "        <Destination>\n" +
+                "            <Bucket>testBucketName</Bucket>\n" +
+                "            <Cloud>testCloud</Cloud>\n" +
+                "            <CloudLocation>testCloudLocation</CloudLocation>\n" +
+                "        </Destination>\n" +
+                "    <Status>doing</Status>\n" +
+                "    <HistoricalObjectReplication>enabled</HistoricalObjectReplication>\n" +
+                "    <SourceSelectionCriteria>\n" +
+                "         <SseKmsEncryptedObjects>\n" +
+                "             <Status>Enabled</Status>\n" +
+                "         </SseKmsEncryptedObjects>\n" +
+                "    </SourceSelectionCriteria>\n" +
+                " </Rule>\n" +
+                "</ReplicationConfiguration>\n";
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        List<ReplicationRule>  rules = null;
+        try {
+            rules = ResponseParsers.parseGetBucketReplication(instream);
+        } catch (ResponseParseException e) {
+            e.printStackTrace();
+            Assert.fail("parse bucket replication response body fail!");
+        }
+        Assert.assertTrue(rules.size() > 0);
+
+        ReplicationRule rule = rules.get(0);
+        Assert.assertEquals("12345678", rule.getReplicationRuleID());
+        Assert.assertEquals("testBucketName", rule.getTargetBucketName());
+        Assert.assertNull(rule.getTargetBucketLocation());
+        Assert.assertEquals("testCloud", rule.getTargetCloud());
+        Assert.assertEquals("testCloudLocation", rule.getTargetCloudLocation());
+        Assert.assertEquals(true, rule.isEnableHistoricalObjectReplication());
+        Assert.assertNull(rule.getSyncRole());
+        Assert.assertEquals("Enabled", rule.getSseKmsEncryptedObjectsStatus());
+        Assert.assertNull(rule.getReplicaKmsKeyID());
+    }
 }
