@@ -152,6 +152,33 @@ public class AddBucketReplicationRequest extends GenericRequest {
         }
     }
 
+    public void setSyncRole(String name) {
+        this.syncRole = name;
+    }
+
+    public String getSyncRole() {
+        return this.syncRole;
+    }
+
+    public void setReplicaKmsKeyID(String id) {
+        this.replicaKmsKeyID = id;
+    }
+
+    public String getReplicaKmsKeyID() {
+        return this.replicaKmsKeyID;
+    }
+
+    public void setSseKmsEncryptedObjectsStatus(String status) {
+        this.sseKmsEncryptedObjectsStatus = status;
+    }
+
+    public String getSseKmsEncryptedObjectsStatus() {
+        return this.sseKmsEncryptedObjectsStatus;
+    }
+
+    public static final String DISABLED = "Disabled";
+    public static final String ENABLED = "Enabled";
+
     private String replicationRuleID = "";
     private String targetBucketName;
     private String targetBucketLocation;
@@ -160,4 +187,7 @@ public class AddBucketReplicationRequest extends GenericRequest {
     private boolean enableHistoricalObjectReplication = true;
     private List<String> objectPrefixList = new ArrayList<String>();
     private List<ReplicationAction> replicationActionList = new ArrayList<ReplicationAction>();
+    private String syncRole;
+    private String replicaKmsKeyID;
+    private String sseKmsEncryptedObjectsStatus;
 }

@@ -749,6 +749,22 @@ public final class RequestMarshallers {
                 xmlBody.append("<Action>" + RequestMarshallers.joinRepliationAction(request.getReplicationActionList())
                         + "</Action>");
             }
+
+            if (request.getSyncRole() != null) {
+                xmlBody.append("<SyncRole>" + request.getSyncRole() + "</SyncRole>");
+            }
+            if (request.getReplicaKmsKeyID() != null) {
+                xmlBody.append("<EncryptionConfiguration>");
+                xmlBody.append("<ReplicaKmsKeyID>" + request.getReplicaKmsKeyID() + "</ReplicaKmsKeyID>");
+                xmlBody.append("</EncryptionConfiguration>");
+            }
+            if (request.ENABLED.equals(request.getSseKmsEncryptedObjectsStatus()) ||
+                    request.DISABLED.equals(request.getSseKmsEncryptedObjectsStatus())) {
+                xmlBody.append("<SourceSelectionCriteria><SseKmsEncryptedObjects>");
+                xmlBody.append("<Status>" + request.getSseKmsEncryptedObjectsStatus() + "</Status>");
+                xmlBody.append("</SseKmsEncryptedObjects></SourceSelectionCriteria>");
+            }
+
             xmlBody.append("</Rule>");
             xmlBody.append("</ReplicationConfiguration>");
             return stringMarshaller.marshall(xmlBody.toString());

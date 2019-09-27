@@ -2184,6 +2184,18 @@ public final class ResponseParsers {
                     repRule.setReplicationActionList(repActions);
                 }
 
+                repRule.setSyncRole(ruleElem.getChildText("SyncRole"));
+
+                if (ruleElem.getChild("EncryptionConfiguration") != null){
+                    repRule.setReplicaKmsKeyID(ruleElem.getChild("EncryptionConfiguration").getChildText("ReplicaKmsKeyID"));
+                }
+
+                if (ruleElem.getChild("SourceSelectionCriteria") != null &&
+                    ruleElem.getChild("SourceSelectionCriteria").getChildren("SseKmsEncryptedObjects") != null) {
+                    repRule.setSseKmsEncryptedObjectsStatus(ruleElem.getChild("SourceSelectionCriteria").
+                            getChild("SseKmsEncryptedObjects").getChildText("Status"));
+                }
+
                 repRules.add(repRule);
             }
 
