@@ -16,40 +16,38 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.aliyun.oss.common.utils;
+
+package com.aliyun.oss.common.io;
+
+import com.aliyun.oss.common.comm.io.ChunkedUploadStream;
+import com.aliyun.oss.utils.ResourceUtils;
+import org.junit.Test;
+
+import java.io.FileInputStream;
 
 import static org.junit.Assert.assertTrue;
 
-import java.text.ParseException;
-import java.util.Date;
-
-import org.junit.Test;
-
-public class DateUtilTest {
+public class ChunkedUploadStreamTest {
+    String path = ResourceUtils.getTestFilename("oss/example.jpg");
 
     @Test
-    public void testFormatGMTDate() {
-        String expectedRegex = "\\w{3}, \\d{2} \\w{3} \\d{4} \\d{2}:\\d{2}:\\d{2} GMT";
-
-        String actual = DateUtil.formatRfc822Date(new Date());
-        assertTrue(actual.matches(expectedRegex));
-    }
-
-    @Test
-    public void testFormatIso8601Date() {
-        String expectedRegex = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z";
-
-        String actual = DateUtil.formatAlternativeIso8601Date(new Date());
-        assertTrue(actual.matches(expectedRegex));
-    }
-
-    @Test
-    public void testParseIso8601Date() {
+    public void testChunkedUploadStream() {
         try {
-            DateUtil.parseIso8601Date("invalid");
-            assertTrue(false);
-        } catch (ParseException e) {
+            FileInputStream inputFile = new FileInputStream(path);
+            ChunkedUploadStream input = new ChunkedUploadStream(inputFile, 10 * 1024);
+            byte[] bOut = new byte[20];
+            byte[] bOut1 = new byte[10 * 1024];
+            int ret;
+            ret = input.read();
+
+            ret = input.read(bOut1);
+            ret = input.read(bOut1);
+            ret = input.read(bOut1);
+            ret = input.read();
             assertTrue(true);
+            input.close();
+        } catch (Exception e) {
+            assertTrue(false);
         }
     }
 }

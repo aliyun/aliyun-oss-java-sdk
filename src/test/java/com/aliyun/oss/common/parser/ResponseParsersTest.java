@@ -18,19 +18,19 @@ import java.util.List;
  */
 public class ResponseParsersTest {
     @Test
-    public void testParseGetBucketReplicationWithCloudLocation()  {
+    public void testParseGetBucketReplicationWithCloudLocation() {
         String respBody = "<ReplicationConfiguration>\n" +
-                 " <Rule>\n" +
-                 "    <ID>12345678</ID>\n" +
-                 "        <Destination>\n" +
-                 "            <Bucket>testBucketName</Bucket>\n" +
-                 "            <Cloud>testCloud</Cloud>\n" +
-                 "            <CloudLocation>testCloudLocation</CloudLocation>\n" +
-                 "        </Destination>\n" +
-                 "    <Status>doing</Status>\n" +
-                 "    <HistoricalObjectReplication>enabled</HistoricalObjectReplication>\n" +
-                 " </Rule>\n" +
-                 "</ReplicationConfiguration>\n";
+                " <Rule>\n" +
+                "    <ID>12345678</ID>\n" +
+                "        <Destination>\n" +
+                "            <Bucket>testBucketName</Bucket>\n" +
+                "            <Cloud>testCloud</Cloud>\n" +
+                "            <CloudLocation>testCloudLocation</CloudLocation>\n" +
+                "        </Destination>\n" +
+                "    <Status>doing</Status>\n" +
+                "    <HistoricalObjectReplication>enabled</HistoricalObjectReplication>\n" +
+                " </Rule>\n" +
+                "</ReplicationConfiguration>\n";
         InputStream instream = null;
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
@@ -39,7 +39,7 @@ public class ResponseParsersTest {
             Assert.fail("UnsupportedEncodingException");
         }
 
-        List<ReplicationRule>  rules = null;
+        List<ReplicationRule> rules = null;
         try {
             rules = ResponseParsers.parseGetBucketReplication(instream);
         } catch (ResponseParseException e) {
@@ -58,8 +58,7 @@ public class ResponseParsersTest {
     }
 
     @Test
-    public void testParseGetBucketReplicationWithoutCloudLocation()
-    {
+    public void testParseGetBucketReplicationWithoutCloudLocation() {
         String respBody = "<ReplicationConfiguration>\n" +
                 " <Rule>\n" +
                 "    <ID>12345678</ID>\n" +
@@ -79,7 +78,7 @@ public class ResponseParsersTest {
             Assert.fail("UnsupportedEncodingException");
         }
 
-        List<ReplicationRule>  rules = null;
+        List<ReplicationRule> rules = null;
         try {
             rules = ResponseParsers.parseGetBucketReplication(instream);
         } catch (ResponseParseException e) {
@@ -98,8 +97,7 @@ public class ResponseParsersTest {
     }
 
     @Test
-    public void testParseGetBucketReplicationProgressWithCloudLocation()
-    {
+    public void testParseGetBucketReplicationProgressWithCloudLocation() {
         Date dt = new Date();
         String respBody = "<ReplicationProgress>\n" +
                 " <Rule>\n" +
@@ -134,7 +132,7 @@ public class ResponseParsersTest {
 
         BucketReplicationProgress progress = null;
         try {
-            progress =  ResponseParsers.parseGetBucketReplicationProgress(instream);
+            progress = ResponseParsers.parseGetBucketReplicationProgress(instream);
         } catch (ResponseParseException e) {
             e.printStackTrace();
             Assert.fail("parse bucket replication process response body fail!");
@@ -151,8 +149,7 @@ public class ResponseParsersTest {
     }
 
     @Test
-    public void testParseGetBucketReplicationProgressWithoutCloudLocation()
-    {
+    public void testParseGetBucketReplicationProgressWithoutCloudLocation() {
         Date dt = new Date();
         String respBody = "<ReplicationProgress>\n" +
                 " <Rule>\n" +
@@ -186,7 +183,7 @@ public class ResponseParsersTest {
 
         BucketReplicationProgress progress = null;
         try {
-            progress =  ResponseParsers.parseGetBucketReplicationProgress(instream);
+            progress = ResponseParsers.parseGetBucketReplicationProgress(instream);
         } catch (ResponseParseException e) {
             e.printStackTrace();
             Assert.fail("parse bucket replication process response body fail!");
@@ -202,7 +199,7 @@ public class ResponseParsersTest {
     }
 
     @Test
-    public void testParseGetBucketReplicationWithSyncRole()  {
+    public void testParseGetBucketReplicationWithSyncRole() {
         String respBody = "<ReplicationConfiguration>\n" +
                 " <Rule>\n" +
                 "    <ID>12345678</ID>\n" +
@@ -224,7 +221,7 @@ public class ResponseParsersTest {
             Assert.fail("UnsupportedEncodingException");
         }
 
-        List<ReplicationRule>  rules = null;
+        List<ReplicationRule> rules = null;
         try {
             rules = ResponseParsers.parseGetBucketReplication(instream);
         } catch (ResponseParseException e) {
@@ -246,7 +243,7 @@ public class ResponseParsersTest {
     }
 
     @Test
-    public void testParseGetBucketReplicationWithReplicaKmsKeyID()  {
+    public void testParseGetBucketReplicationWithReplicaKmsKeyID() {
         String respBody = "<ReplicationConfiguration>\n" +
                 " <Rule>\n" +
                 "    <ID>12345678</ID>\n" +
@@ -270,7 +267,7 @@ public class ResponseParsersTest {
             Assert.fail("UnsupportedEncodingException");
         }
 
-        List<ReplicationRule>  rules = null;
+        List<ReplicationRule> rules = null;
         try {
             rules = ResponseParsers.parseGetBucketReplication(instream);
         } catch (ResponseParseException e) {
@@ -292,7 +289,7 @@ public class ResponseParsersTest {
     }
 
     @Test
-    public void testParseGetBucketReplicationWithSseKmsEncryptedObjectsStatus()  {
+    public void testParseGetBucketReplicationWithSseKmsEncryptedObjectsStatus() {
         String respBody = "<ReplicationConfiguration>\n" +
                 " <Rule>\n" +
                 "    <ID>12345678</ID>\n" +
@@ -318,7 +315,7 @@ public class ResponseParsersTest {
             Assert.fail("UnsupportedEncodingException");
         }
 
-        List<ReplicationRule>  rules = null;
+        List<ReplicationRule> rules = null;
         try {
             rules = ResponseParsers.parseGetBucketReplication(instream);
         } catch (ResponseParseException e) {

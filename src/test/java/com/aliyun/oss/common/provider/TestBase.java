@@ -91,7 +91,7 @@ public class TestBase {
         }
 
         if (TestConfig.ECS_ROLE_NAME == null) {
-            TestConfig.ECS_ROLE_NAME = System.getenv().get("ECS_ROLE_NAME");
+            TestConfig.ECS_ROLE_NAME = System.getenv().get("OSS_TEST_ECS_ROLE_NAME");
         }
 
         if (TestConfig.PUBLIC_KEY_PATH == null) {
@@ -108,6 +108,10 @@ public class TestBase {
 
         if (TestConfig.OSS_BUCKET == null) {
             TestConfig.OSS_BUCKET = System.getenv().get("OSS_BUCKET");
+        }
+
+        if (TestConfig.OSS_AUTH_SERVER_HOST == null) {
+            TestConfig.OSS_AUTH_SERVER_HOST = System.getenv().get("OSS_TEST_AUTH_SERVER_HOST");
         }
     }
 
@@ -149,11 +153,10 @@ public class TestBase {
 
     /**
      * Set environment variables to include those in the given map.
-     * 
-     * @param newenv
-     *            the map of new variables to include.
+     *
+     * @param newenv the map of new variables to include.
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static void setEnv(Map<String, String> newenv) {
         try {
             Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
@@ -191,11 +194,10 @@ public class TestBase {
     /**
      * Remove the specified variables from the current map of environment
      * variables.
-     * 
-     * @param vars
-     *            the names of the variables to remove.
+     *
+     * @param vars the names of the variables to remove.
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static void unsetEnv(List<String> vars) {
         try {
             Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
@@ -244,6 +246,7 @@ public class TestBase {
     public static void waitForCacheExpiration(int durationSeconds) {
         try {
             Thread.sleep(durationSeconds * 1000);
-        } catch (InterruptedException e) { }
+        } catch (InterruptedException e) {
+        }
     }
 }

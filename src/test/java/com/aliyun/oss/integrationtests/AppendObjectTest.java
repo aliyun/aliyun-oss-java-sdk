@@ -28,6 +28,7 @@ import static com.aliyun.oss.integrationtests.TestUtils.genFixedLengthInputStrea
 import java.io.File;
 import java.io.InputStream;
 
+import com.aliyun.oss.InconsistentException;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -157,6 +158,24 @@ public class AppendObjectTest extends TestBase {
         } catch (OSSException ex) {
             Assert.assertEquals(OSSErrorCode.MISSING_ARGUMENT, ex.getErrorCode());
             Assert.assertTrue(ex.getMessage().startsWith(MISSING_ARGUMENT_ERR));
+        }
+    }
+
+    @Test
+    public void testAppendObjectWithInvalidCRC() throws Exception {
+        String key = "append-object-with-invalid-crc";
+        final long instreamLength = 128 * 1024;
+
+        try {
+            Assert.assertEquals(true, ossClient.doesBucketExist(bucketName));
+            InputStream instream = genFixedLengthInputStream(instreamLength);
+            AppendObjectRequest appendObjectRequest = new AppendObjectRequest(bucketName, key, instream, null);
+            appendObjectRequest.setPosition((long) 0);
+            appendObjectRequest.setInitCRC((long) 123);
+            ossClient.appendObject(appendObjectRequest);
+            Assert.assertTrue(false);
+        } catch (Exception ex) {
+            Assert.assertTrue(ex instanceof InconsistentException);
         }
     }
 }

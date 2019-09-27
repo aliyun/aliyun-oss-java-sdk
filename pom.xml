@@ -106,9 +106,6 @@
                     <execution>
                         <id>run-test</id>
                         <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
                         <configuration>
                             <excludes>
                                 <exclude>**/integration/*.java</exclude>
@@ -153,9 +150,11 @@
                 <version>2.7</version>
                 <configuration>
                     <format>xml</format>
+                    <format>html</format>
                     <maxmem>256m</maxmem>
                     <!-- aggregated reports for multi-module projects -->
                     <aggregate>true</aggregate>
+                    <check/>
                 </configuration>
             </plugin>
             <plugin>

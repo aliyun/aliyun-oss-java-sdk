@@ -58,29 +58,25 @@ public class IniEditorTest extends TestCase {
         try {
             i.addSection("[hallo");
             fail("Should throw IllegalArgumentException.");
-        }
-        catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ex) {
             /* ok, this should happen */
         }
         try {
             i.addSection("hallo]");
             fail("Should throw IllegalArgumentException.");
-        }
-        catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ex) {
             /* ok, this should happen */
         }
         try {
             i.addSection("  \t ");
             fail("Should throw IllegalArgumentException.");
-        }
-        catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ex) {
             /* ok, this should happen */
         }
         try {
             i.addSection("");
             fail("Should throw IllegalArgumentException.");
-        }
-        catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ex) {
             /* ok, this should happen */
         }
     }
@@ -105,8 +101,7 @@ public class IniEditorTest extends TestCase {
         try {
             i.removeSection("common");
             fail("Should throw IllegalArgumentException");
-        }
-        catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ex) {
             /* ok, this should happen */
         }
         assertTrue(i.removeSection("test"));
@@ -158,9 +153,8 @@ public class IniEditorTest extends TestCase {
         try {
             i.getSectionMap(null);
             fail("Should throw NullPointerException");
-        }
-        catch (NullPointerException ex) {
-        /* ok, this should happen */
+        } catch (NullPointerException ex) {
+            /* ok, this should happen */
         }
         i = new IniEditor("common");
         assertEquals(i.getSectionMap("common"), new HashMap<String, String>());
@@ -175,22 +169,19 @@ public class IniEditorTest extends TestCase {
         try {
             i.set("test", "hallo=", "velo");
             fail("Should throw IllegalArgumentException");
-        }
-        catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ex) {
             /* ok, this should happen */
         }
         try {
             i.set("test", " \t\t ", "velo");
             fail("Should throw IllegalArgumentException");
-        }
-        catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ex) {
             /* ok, this should happen */
         }
         try {
             i.set("test", "", "velo");
             fail("Should throw IllegalArgumentException");
-        }
-        catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ex) {
             /* ok, this should happen */
         }
     }
@@ -203,8 +194,7 @@ public class IniEditorTest extends TestCase {
         try {
             i.set("test", "hallo", "velo");
             fail("Should throw NoSuchSectionException");
-        }
-        catch (IniEditor.NoSuchSectionException ex) {
+        } catch (IniEditor.NoSuchSectionException ex) {
             /* ok, this should happen */
         }
     }
@@ -218,30 +208,26 @@ public class IniEditorTest extends TestCase {
         try {
             i.set(null, "hallo", "velo");
             fail("Should throw NullPointerException");
-        }
-        catch (NullPointerException ex) {
+        } catch (NullPointerException ex) {
             /* ok, this should happen */
         }
         try {
             i.set("test", null, "velo");
             fail("Should throw NullPointerException");
-        }
-        catch (NullPointerException ex) {
+        } catch (NullPointerException ex) {
             /* ok, this should happen */
         }
         i.set("test", "hallo", null);
         try {
             i.get(null, "hallo");
             fail("Should throw NullPointerException");
-        }
-        catch (NullPointerException ex) {
+        } catch (NullPointerException ex) {
             /* ok, this should happen */
         }
         try {
             i.get("test", null);
             fail("Should throw NullPointerException");
-        }
-        catch (NullPointerException ex) {
+        } catch (NullPointerException ex) {
             /* ok, this should happen */
         }
     }
@@ -260,9 +246,8 @@ public class IniEditorTest extends TestCase {
         assertTrue(!i.remove("test", "hallo"));
         try {
             i.remove("test2", "hallo");
-            fail ("Should throw NoSuchSectionException");
-        }
-        catch (IniEditor.NoSuchSectionException ex) {
+            fail("Should throw NoSuchSectionException");
+        } catch (IniEditor.NoSuchSectionException ex) {
             /* ok, should happen */
         }
     }
@@ -314,8 +299,8 @@ public class IniEditorTest extends TestCase {
      * Saving to a file.
      */
     public void testSave() throws IOException {
-        String[] expected = new String[] {"[common]", "[test]", "", "hallo = velo", "# english",
-                                          "hello = bike"};
+        String[] expected = new String[]{"[common]", "[test]", "", "hallo = velo", "# english",
+                "hello = bike"};
         IniEditor i = new IniEditor("common");
         i.addSection("test");
         i.addBlankLine("test");
@@ -383,8 +368,7 @@ public class IniEditorTest extends TestCase {
         try {
             i.set("TesT", "hallo", "velo");
             fail("should fail");
-        }
-        catch (IniEditor.NoSuchSectionException ex) {
+        } catch (IniEditor.NoSuchSectionException ex) {
             /* ok */
         }
     }

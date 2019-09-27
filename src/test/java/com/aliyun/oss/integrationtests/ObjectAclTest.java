@@ -57,38 +57,39 @@ import com.aliyun.oss.model.PartETag;
 import com.aliyun.oss.model.PutObjectResult;
 import com.aliyun.oss.model.UploadPartRequest;
 import com.aliyun.oss.model.UploadPartResult;
+import com.aliyun.oss.model.SetObjectAclRequest;
 
 public class ObjectAclTest extends TestBase {
 
     private static final CannedAccessControlList[] ACLS = {
         CannedAccessControlList.Default,
-        CannedAccessControlList.Private, 
-        CannedAccessControlList.PublicRead, 
-        CannedAccessControlList.PublicReadWrite 
+        CannedAccessControlList.Private,
+        CannedAccessControlList.PublicRead,
+        CannedAccessControlList.PublicReadWrite
     };
-    
+
     @Test
     public void testNormalSetObjectAcl() {
         final String key = "normal-set-object-acl";
         final long inputStreamLength = 128 * 1024; //128KB
-        
+
         try {
             InputStream instream = genFixedLengthInputStream(inputStreamLength);
             ossClient.putObject(bucketName, key, instream);
-            
+
             for (CannedAccessControlList acl : ACLS) {
                 ossClient.setObjectAcl(bucketName, key, acl);
-                
+
                 ObjectAcl returnedAcl = ossClient.getObjectAcl(bucketName, key);
                 Assert.assertEquals(acl.toString(), returnedAcl.getPermission().toString());
                 Assert.assertEquals(returnedAcl.getRequestId().length(), REQUEST_ID_LEN);
-                
+
                 OSSObject object = ossClient.getObject(bucketName, key);
                 Assert.assertEquals(inputStreamLength, object.getObjectMetadata().getContentLength());
                 Assert.assertEquals(object.getRequestId().length(), REQUEST_ID_LEN);
                 object.getObjectContent().close();
             }
-            
+
             // Set to default acl again
             ossClient.setObjectAcl(bucketName, key, CannedAccessControlList.Default);
             ObjectAcl returnedAcl = ossClient.getObjectAcl(bucketName, key);
@@ -98,20 +99,23 @@ public class ObjectAclTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-    
+
     @Test
     public void testUnormalSetObjectAcl() {
-        try {        
+        try {
             // Set non-existent object
             final String nonexistentObject = "unormal-set-object-acl";
             try {
-                ossClient.setObjectAcl(bucketName, nonexistentObject, CannedAccessControlList.Private);
+                SetObjectAclRequest request = new SetObjectAclRequest(bucketName, nonexistentObject)
+                        .withCannedACL(CannedAccessControlList.Default);
+                request.setCannedACL(CannedAccessControlList.Private);
+                ossClient.setObjectAcl(request);
                 Assert.fail("Set object acl should not be successful");
             } catch (OSSException e) {
                 Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
                 Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_KEY_ERR));
             }
-            
+
             // Set unknown permission
             final String unknownPermission = "UnknownPermission";
             try {
@@ -120,12 +124,12 @@ public class ObjectAclTest extends TestBase {
             } catch (Exception e) {
                 Assert.fail(e.getMessage());
             }
-            
+
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
     }
-    
+
     @Test
     public void testUnormalGetObjectAcl() {
         // Get non-existent object acl
@@ -137,7 +141,7 @@ public class ObjectAclTest extends TestBase {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
             Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_KEY_ERR));
         }
-        
+
         // Get object using default acl
         final String objectUsingDefaultAcl = "object-using-default-acl";
         final long inputStreamLength = 128 * 1024; //128KB
@@ -148,14 +152,14 @@ public class ObjectAclTest extends TestBase {
             Assert.assertEquals(ObjectPermission.Default, returnedACL.getPermission());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
-        } 
+        }
     }
-    
+
     @Test
     public void testPutObjectWithACLHeader() throws IOException {
         final String key = "put-object-with-acl-header";
         final long inputStreamLength = 128 * 1024; //128KB
-        
+
         try {
             InputStream instream = genFixedLengthInputStream(inputStreamLength);
             ObjectMetadata metadata = new ObjectMetadata();
@@ -164,7 +168,7 @@ public class ObjectAclTest extends TestBase {
             OSSObject o = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, o.getKey());
             Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
-            
+
             // Verify uploaded objects acl
             ObjectAcl returnedACL = ossClient.getObjectAcl(bucketName, key);
             Assert.assertEquals(ObjectPermission.PublicRead, returnedACL.getPermission());
@@ -172,14 +176,14 @@ public class ObjectAclTest extends TestBase {
             Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
-        } 
+        }
     }
-    
+
     @Test
     public void testAppendObjectWithACLHeader() throws IOException {
         final String key = "append-object-with-acl-header";
         final long inputStreamLength = 128 * 1024; //128KB
-        
+
         try {
             // Append at first
             InputStream instream = genFixedLengthInputStream(inputStreamLength);
@@ -196,7 +200,7 @@ public class ObjectAclTest extends TestBase {
             if (appendObjectResult.getNextPosition() != null) {
                 Assert.assertEquals(inputStreamLength, appendObjectResult.getNextPosition().longValue());
             }
-            
+
             // Append at twice
             final String filePath = genFixedLengthFile(inputStreamLength);
             appendObjectRequest = new AppendObjectRequest(bucketName, key, new File(filePath));
@@ -205,10 +209,10 @@ public class ObjectAclTest extends TestBase {
             o = ossClient.getObject(bucketName, key);
             Assert.assertEquals(inputStreamLength * 2, o.getObjectMetadata().getContentLength());
             Assert.assertEquals(APPENDABLE_OBJECT_TYPE, o.getObjectMetadata().getObjectType());
-            if (appendObjectResult.getNextPosition() != null) {                
+            if (appendObjectResult.getNextPosition() != null) {
                 Assert.assertEquals(inputStreamLength * 2, appendObjectResult.getNextPosition().longValue());
             }
-            
+
             // Verify uploaded objects acl
             ObjectAcl returnedACL = ossClient.getObjectAcl(bucketName, key);
             Assert.assertEquals(ObjectPermission.PublicReadWrite, returnedACL.getPermission());
@@ -218,32 +222,32 @@ public class ObjectAclTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-    
+
     @Test
     public void testCopyObjectWithACLHeader() throws IOException {
         final String sourceBucket = "copy-existing-object-source-bucket";
         final String targetBucket = "copy-existing-object-target-bucket";
         final String sourceKey = "copy-existing-object-source-object";
         final String targetKey = "copy-existing-object-target-object";
-        
+
         final String userMetaKey0 = "user";
         final String userMetaValue0 = "aliy";
         final String userMetaKey1 = "tag";
         final String userMetaValue1 = "copy-object";
         final String contentType = "application/txt";
-        
+
         try {
             ossClient.createBucket(sourceBucket);
             ossClient.createBucket(targetBucket);
-            
-            byte[] content = { 'A', 'l', 'i', 'y', 'u', 'n' };
+
+            byte[] content = {'A', 'l', 'i', 'y', 'u', 'n'};
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(content.length);
             metadata.setContentType(DEFAULT_OBJECT_CONTENT_TYPE);
             metadata.addUserMetadata(userMetaKey0, userMetaValue0);
-            PutObjectResult putObjectResult = ossClient.putObject(sourceBucket, sourceKey, 
+            PutObjectResult putObjectResult = ossClient.putObject(sourceBucket, sourceKey,
                     new ByteArrayInputStream(content), metadata);
-            
+
             ObjectMetadata newObjectMetadata = new ObjectMetadata();
             newObjectMetadata.setContentLength(content.length);
             newObjectMetadata.setContentType(contentType);
@@ -257,12 +261,12 @@ public class ObjectAclTest extends TestBase {
             String targetETag = copyObjectResult.getETag();
             Assert.assertEquals(sourceETag, targetETag);
             Assert.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
-            
+
             OSSObject ossObject = ossClient.getObject(targetBucket, targetKey);
             newObjectMetadata = ossObject.getObjectMetadata();
             Assert.assertEquals(contentType, newObjectMetadata.getContentType());
             Assert.assertEquals(userMetaValue1, newObjectMetadata.getUserMetadata().get(userMetaKey1));
-            
+
             // Verify uploaded objects acl
             ObjectAcl returnedACL = ossClient.getObjectAcl(targetBucket, targetKey);
             Assert.assertEquals(ObjectPermission.PublicRead, returnedACL.getPermission());
@@ -276,17 +280,17 @@ public class ObjectAclTest extends TestBase {
             deleteBucketWithObjects(ossClient, targetBucket);
         }
     }
-    
+
     @Test
     public void testUploadMultipartsWithAclHeader() {
         final String key = "normal-upload-multiparts-with-acl-header";
         final int partSize = 128 * 1024;     //128KB
         final int partCount = 10;
-        
+
         try {
             // Initial multipart upload
             String uploadId = claimUploadId(ossClient, bucketName, key);
-            
+
             // Upload parts
             List<PartETag> partETags = new ArrayList<PartETag>();
             for (int i = 0; i < partCount; i++) {
@@ -298,30 +302,30 @@ public class ObjectAclTest extends TestBase {
                 uploadPartRequest.setPartNumber(i + 1);
                 uploadPartRequest.setPartSize(partSize);
                 uploadPartRequest.setUploadId(uploadId);
-                UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);                
+                UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
                 Assert.assertEquals(uploadPartResult.getRequestId().length(), REQUEST_ID_LEN);
                 partETags.add(uploadPartResult.getPartETag());
             }
-            
+
             // Complete multipart upload
-            CompleteMultipartUploadRequest completeMultipartUploadRequest = 
+            CompleteMultipartUploadRequest completeMultipartUploadRequest =
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             completeMultipartUploadRequest.setObjectACL(CannedAccessControlList.PublicRead);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-            Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key), 
+            Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key),
                     completeMultipartUploadResult.getLocation());
             Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
             Assert.assertEquals(key, completeMultipartUploadResult.getKey());
             Assert.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
             Assert.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
-            
+
             // Get uploaded object
             OSSObject o = ossClient.getObject(bucketName, key);
             final long objectSize = partCount * partSize;
             Assert.assertEquals(objectSize, o.getObjectMetadata().getContentLength());
             Assert.assertEquals(calcMultipartsETag(partETags), o.getObjectMetadata().getETag());
-            
+
             // Verify uploaded objects acl
             ObjectAcl returnedACL = ossClient.getObjectAcl(bucketName, key);
             Assert.assertEquals(ObjectPermission.PublicRead, returnedACL.getPermission());
@@ -331,7 +335,7 @@ public class ObjectAclTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-    
+
     @Test
     public void testIllegalObjectAcl() {
         final String dummyKey = "test-illegal-object-acl";
@@ -341,7 +345,7 @@ public class ObjectAclTest extends TestBase {
             Assert.assertTrue(e instanceof NullPointerException);
         }
     }
-    
+
     @Test
     public void testIgnoredObjectAclHeader() {
         final String dummyKey = "test-ignored-object-acl-header";
@@ -352,7 +356,7 @@ public class ObjectAclTest extends TestBase {
             ObjectAcl objectAcl = ossClient.getObjectAcl(bucketName, dummyKey);
             Assert.assertEquals(ObjectPermission.Default, objectAcl.getPermission());
             Assert.assertEquals(objectAcl.getRequestId().length(), REQUEST_ID_LEN);
-            
+
             metadata.setObjectAcl(CannedAccessControlList.Private);
             ossClient.putObject(bucketName, dummyKey, new ByteArrayInputStream(new byte[0]), metadata);
             objectAcl = ossClient.getObjectAcl(bucketName, dummyKey);

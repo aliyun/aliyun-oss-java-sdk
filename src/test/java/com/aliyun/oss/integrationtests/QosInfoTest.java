@@ -24,6 +24,7 @@ import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.BucketQosInfo;
 import com.aliyun.oss.model.UserQosInfo;
+import com.aliyun.oss.model.SetBucketQosInfoRequest;
 import junit.framework.Assert;
 
 public class QosInfoTest extends TestBase {
@@ -109,7 +110,7 @@ public class QosInfoTest extends TestBase {
     public void testPutBucketQosInfoWithIllegalArgs() {
         UserQosInfo userQosInfo = null;
         try {
-            userQosInfo= ossClient.getUserQosInfo();
+            userQosInfo = ossClient.getUserQosInfo();
             Assert.assertEquals(userQosInfo.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
@@ -120,8 +121,10 @@ public class QosInfoTest extends TestBase {
             Integer totalUploadBw = userQosInfo.getTotalUploadBw() + 1;
             BucketQosInfo bucketQosInfo = new BucketQosInfo();
             bucketQosInfo.setTotalUploadBw(totalUploadBw);
-            ossClient.setBucketQosInfo(bucketName, bucketQosInfo);
-        }  catch (OSSException e) {
+            SetBucketQosInfoRequest request = new SetBucketQosInfoRequest(bucketName);
+            request.setBucketQosInfo(bucketQosInfo);
+            ossClient.setBucketQosInfo(request);
+        } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         }
 
@@ -141,7 +144,7 @@ public class QosInfoTest extends TestBase {
             Integer totalUploadBw = userQosInfo.getTotalUploadBw();
             BucketQosInfo bucketQosInfo = new BucketQosInfo();
             bucketQosInfo.setTotalUploadBw(totalUploadBw);
-            bucketQosInfo.setExtranetUploadBw(totalUploadBw +1);
+            bucketQosInfo.setExtranetUploadBw(totalUploadBw + 1);
             ossClient.setBucketQosInfo(bucketName, bucketQosInfo);
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
@@ -153,7 +156,7 @@ public class QosInfoTest extends TestBase {
             BucketQosInfo bucketQosInfo = new BucketQosInfo();
             bucketQosInfo.setTotalUploadBw(totalDownloadBw);
             ossClient.setBucketQosInfo(bucketName, bucketQosInfo);
-        }  catch (OSSException e) {
+        } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         }
 
@@ -185,7 +188,7 @@ public class QosInfoTest extends TestBase {
             BucketQosInfo bucketQosInfo = new BucketQosInfo();
             bucketQosInfo.setTotalUploadBw(totalQps);
             ossClient.setBucketQosInfo(bucketName, bucketQosInfo);
-        }  catch (OSSException e) {
+        } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         }
 

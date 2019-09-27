@@ -182,7 +182,6 @@ public class CustomSessionCredentialsProviderTest extends TestBase {
         }
     }
 
-    @Test
     public void testGetCredentialsFromAuthInOss() {
         try {
             CustomSessionCredentialsProvider credentialsProvider = new CustomSessionCredentialsProvider(
@@ -211,7 +210,6 @@ public class CustomSessionCredentialsProviderTest extends TestBase {
         }
     }
 
-    @Test
     public void testGetCredentialsUseInOss() {
         try {
             CustomSessionCredentialsProvider credentialsProvider = CredentialsProviderFactory

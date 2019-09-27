@@ -44,7 +44,32 @@ public class BucketTaggingTest extends TestBase {
             Assert.assertEquals(2, tags.size());
             Assert.assertTrue(tags.containsKey("tk1"));
             Assert.assertTrue(tags.containsKey("tk2"));
-            
+
+            //
+            request = new SetBucketTaggingRequest(bucketName,tagSet);
+            tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
+            Assert.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
+            tags = tagSet.getAllTags();
+            Assert.assertEquals(2, tags.size());
+            Assert.assertTrue(tags.containsKey("tk1"));
+            Assert.assertTrue(tags.containsKey("tk2"));
+
+            request = new SetBucketTaggingRequest(bucketName).withTagSet(tagSet);
+            tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
+            Assert.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
+            tags = tagSet.getAllTags();
+            Assert.assertEquals(2, tags.size());
+            Assert.assertTrue(tags.containsKey("tk1"));
+            Assert.assertTrue(tags.containsKey("tk2"));
+
+            request = new SetBucketTaggingRequest(bucketName, tags);
+            tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
+            Assert.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
+            tags = tagSet.getAllTags();
+            Assert.assertEquals(2, tags.size());
+            Assert.assertTrue(tags.containsKey("tk1"));
+            Assert.assertTrue(tags.containsKey("tk2"));
+
             ossClient.deleteBucketTagging(new GenericRequest(bucketName));
           
             waitForCacheExpiration(5);

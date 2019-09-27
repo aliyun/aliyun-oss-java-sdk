@@ -65,6 +65,9 @@ public class BucketListTest {
        assertEquals("prefix", request.getPrefix());
        assertEquals("marker", request.getMarker());
        assertEquals(Integer.valueOf(1000), request.getMaxKeys());
+
+       request = request.withPrefix("prefix0").withMarker("marker20").withMaxKeys(20);
+
        request.setPrefix("prefix2");
        request.setMarker("marker2");
        request.setMaxKeys(Integer.valueOf(1));

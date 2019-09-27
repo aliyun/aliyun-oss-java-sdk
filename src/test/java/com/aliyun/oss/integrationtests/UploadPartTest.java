@@ -62,19 +62,19 @@ import com.aliyun.oss.model.UploadPartRequest;
 import com.aliyun.oss.model.UploadPartResult;
 
 public class UploadPartTest extends TestBase {
-    
+
     private static final int LIST_PART_MAX_RETURNS = 1000;
     private static final int LIST_UPLOAD_MAX_RETURNS = 1000;
-    
+
     @Test
     public void testNormalUploadSinglePart() {
         final String key = "normal-upload-single-part-object";
         final int partSize = 128 * 1024;     //128KB
-        
+
         try {
             String uploadId = claimUploadId(ossClient, bucketName, key);
             InputStream instream = genFixedLengthInputStream(partSize);
-            
+
             // Upload single part
             UploadPartRequest uploadPartRequest = new UploadPartRequest();
             uploadPartRequest.setBucketName(bucketName);
@@ -84,7 +84,7 @@ public class UploadPartTest extends TestBase {
             uploadPartRequest.setPartSize(partSize);
             uploadPartRequest.setUploadId(uploadId);
             ossClient.uploadPart(uploadPartRequest);
-            
+
             // List single multipart upload under this bucket
             ListMultipartUploadsRequest listMultipartUploadsRequest = new ListMultipartUploadsRequest(bucketName);
             MultipartUploadListing multipartUploadListing = ossClient.listMultipartUploads(listMultipartUploadsRequest);
@@ -105,7 +105,7 @@ public class UploadPartTest extends TestBase {
             // Abort multipart upload
             AbortMultipartUploadRequest abortMultipartUploadRequest = new AbortMultipartUploadRequest(bucketName, key, uploadId);
             ossClient.abortMultipartUpload(abortMultipartUploadRequest);
-            
+
             // List single multipart upload under this bucket again
             listMultipartUploadsRequest = new ListMultipartUploadsRequest(bucketName);
             multipartUploadListing = ossClient.listMultipartUploads(listMultipartUploadsRequest);
@@ -124,16 +124,16 @@ public class UploadPartTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-    
+
     @Test
     public void testNormalUploadMultiparts() {
         final String key = "normal-upload-multiparts-object";
         final int partSize = 128 * 1024;     //128KB
         final int partCount = 10;
-        
+
         try {
             String uploadId = claimUploadId(ossClient, bucketName, key);
-            
+
             // Upload parts
             List<PartETag> partETags = new ArrayList<PartETag>();
             for (int i = 0; i < partCount; i++) {
@@ -145,13 +145,14 @@ public class UploadPartTest extends TestBase {
                 uploadPartRequest.setPartNumber(i + 1);
                 uploadPartRequest.setPartSize(partSize);
                 uploadPartRequest.setUploadId(uploadId);
-                UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);                
+                UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
                 Assert.assertEquals(uploadPartResult.getRequestId().length(), REQUEST_ID_LEN);
                 partETags.add(uploadPartResult.getPartETag());
             }
-            
+
             // List parts
             ListPartsRequest listPartsRequest = new ListPartsRequest(bucketName, key, uploadId);
+            listPartsRequest.setUploadId(uploadId);
             PartListing partListing = ossClient.listParts(listPartsRequest);
             Assert.assertEquals(partCount, partListing.getParts().size());
             for (int i = 0; i < partCount; i++) {
@@ -184,19 +185,19 @@ public class UploadPartTest extends TestBase {
             Assert.assertEquals(key, multipartUploads.get(0).getKey());
             Assert.assertEquals(uploadId, multipartUploads.get(0).getUploadId());
             Assert.assertEquals(multipartUploadListing.getRequestId().length(), REQUEST_ID_LEN);
-            
+
             // Complete multipart upload
-            CompleteMultipartUploadRequest completeMultipartUploadRequest = 
+            CompleteMultipartUploadRequest completeMultipartUploadRequest =
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-            Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key), 
+            Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key),
                     completeMultipartUploadResult.getLocation());
             Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
             Assert.assertEquals(key, completeMultipartUploadResult.getKey());
             Assert.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
             Assert.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
-            
+
             // List single multipart uploads under this bucket again
             listMultipartUploadsRequest = new ListMultipartUploadsRequest(bucketName);
             multipartUploadListing = ossClient.listMultipartUploads(listMultipartUploadsRequest);
@@ -211,7 +212,7 @@ public class UploadPartTest extends TestBase {
             Assert.assertNull(multipartUploadListing.getKeyMarker());
             Assert.assertNull(multipartUploadListing.getUploadIdMarker());
             Assert.assertEquals(multipartUploadListing.getRequestId().length(), REQUEST_ID_LEN);
-            
+
             // Get uploaded object
             OSSObject o = ossClient.getObject(bucketName, key);
             final long objectSize = partCount * partSize;
@@ -222,16 +223,16 @@ public class UploadPartTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-    
+
     @Test
     public void testNormalListParts() {
         final String key = "normal-list-parts-object";
         final int partSize = 128 * 1024;     //128KB
         final int partCount = 25;
-        
+
         try {
             String uploadId = claimUploadId(ossClient, bucketName, key);
-            
+
             // List parts under empty bucket
             ListPartsRequest listPartsRequest = new ListPartsRequest(bucketName, key, uploadId);
             PartListing partListing = ossClient.listParts(listPartsRequest);
@@ -243,7 +244,7 @@ public class UploadPartTest extends TestBase {
             Assert.assertNull(partListing.getNextPartNumberMarker());
             Assert.assertFalse(partListing.isTruncated());
             Assert.assertEquals(partListing.getRequestId().length(), REQUEST_ID_LEN);
-            
+
             // Upload parts
             List<PartETag> partETags = new ArrayList<PartETag>();
             for (int i = 0; i < partCount; i++) {
@@ -255,11 +256,11 @@ public class UploadPartTest extends TestBase {
                 uploadPartRequest.setPartNumber(i + 1);
                 uploadPartRequest.setPartSize(partSize);
                 uploadPartRequest.setUploadId(uploadId);
-                UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);                
+                UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
                 Assert.assertEquals(uploadPartResult.getRequestId().length(), REQUEST_ID_LEN);
                 partETags.add(uploadPartResult.getPartETag());
             }
-            
+
             // List parts without any special conditions
             listPartsRequest = new ListPartsRequest(bucketName, key, uploadId);
             partListing = ossClient.listParts(listPartsRequest);
@@ -277,7 +278,7 @@ public class UploadPartTest extends TestBase {
             Assert.assertEquals(partCount, partListing.getNextPartNumberMarker().intValue());
             Assert.assertFalse(partListing.isTruncated());
             Assert.assertEquals(partListing.getRequestId().length(), REQUEST_ID_LEN);
-            
+
             // List 'max-parts' parts each time
             final int maxParts = 15;
             listPartsRequest = new ListPartsRequest(bucketName, key, uploadId);
@@ -298,7 +299,7 @@ public class UploadPartTest extends TestBase {
             Assert.assertEquals(maxParts, partListing.getNextPartNumberMarker().intValue());
             Assert.assertTrue(partListing.isTruncated());
             Assert.assertEquals(partListing.getRequestId().length(), REQUEST_ID_LEN);
-            
+
             // List 'max-parts' parts with 'part-number-marker' 
             final int partNumberMarker = 20;
             listPartsRequest.setPartNumberMarker(partNumberMarker);
@@ -318,19 +319,19 @@ public class UploadPartTest extends TestBase {
             Assert.assertEquals(partCount, partListing.getNextPartNumberMarker().intValue());
             Assert.assertFalse(partListing.isTruncated());
             Assert.assertEquals(partListing.getRequestId().length(), REQUEST_ID_LEN);
-            
+
             // Complete multipart upload
-            CompleteMultipartUploadRequest completeMultipartUploadRequest = 
+            CompleteMultipartUploadRequest completeMultipartUploadRequest =
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-            Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key), 
+            Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key),
                     completeMultipartUploadResult.getLocation());
             Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
             Assert.assertEquals(key, completeMultipartUploadResult.getKey());
             Assert.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
             Assert.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
-            
+
             // Get uploaded object
             OSSObject o = ossClient.getObject(bucketName, key);
             final long objectSize = partCount * partSize;
@@ -341,16 +342,16 @@ public class UploadPartTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-    
+
     @Test
     public void testNormalListPartsWithEncoding() {
         final String key = "normal-list-parts-常记溪亭日暮，沉醉不知归路";
         final int partSize = 128 * 1024;
         final int partCount = 25;
-        
+
         try {
             String uploadId = claimUploadId(ossClient, bucketName, key);
-            
+
             // List parts under empty bucket
             ListPartsRequest listPartsRequest = new ListPartsRequest(bucketName, key, uploadId);
             PartListing partListing = ossClient.listParts(listPartsRequest);
@@ -362,7 +363,7 @@ public class UploadPartTest extends TestBase {
             Assert.assertNull(partListing.getNextPartNumberMarker());
             Assert.assertFalse(partListing.isTruncated());
             Assert.assertEquals(partListing.getRequestId().length(), REQUEST_ID_LEN);
-            
+
             // Upload parts
             List<PartETag> partETags = new ArrayList<PartETag>();
             for (int i = 0; i < partCount; i++) {
@@ -374,11 +375,11 @@ public class UploadPartTest extends TestBase {
                 uploadPartRequest.setPartNumber(i + 1);
                 uploadPartRequest.setPartSize(partSize);
                 uploadPartRequest.setUploadId(uploadId);
-                UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);                
+                UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
                 Assert.assertEquals(uploadPartResult.getRequestId().length(), REQUEST_ID_LEN);
                 partETags.add(uploadPartResult.getPartETag());
             }
-            
+
             // List parts with encoding
             listPartsRequest = new ListPartsRequest(bucketName, key, uploadId);
             listPartsRequest.setEncodingType(DEFAULT_ENCODING_TYPE);
@@ -391,36 +392,36 @@ public class UploadPartTest extends TestBase {
                 Assert.assertEquals(eTag.getETag(), ps.getETag());
             }
             Assert.assertEquals(bucketName, partListing.getBucketName());
-            Assert.assertEquals(key, URLDecoder.decode(partListing.getKey(), "UTF-8"));            
+            Assert.assertEquals(key, URLDecoder.decode(partListing.getKey(), "UTF-8"));
             Assert.assertEquals(uploadId, partListing.getUploadId());
             Assert.assertEquals(LIST_PART_MAX_RETURNS, partListing.getMaxParts().intValue());
             Assert.assertEquals(partCount, partListing.getNextPartNumberMarker().intValue());
             Assert.assertFalse(partListing.isTruncated());
             Assert.assertEquals(partListing.getRequestId().length(), REQUEST_ID_LEN);
-            
+
             // Complete multipart upload
-            CompleteMultipartUploadRequest completeMultipartUploadRequest = 
+            CompleteMultipartUploadRequest completeMultipartUploadRequest =
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-            Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key), 
+            Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key),
                     completeMultipartUploadResult.getLocation());
             Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
             Assert.assertEquals(key, completeMultipartUploadResult.getKey());
             Assert.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
             Assert.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
-            
+
             ossClient.deleteObject(bucketName, key);
-            
+
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
     }
-    
+
     @Test
     public void testUnormalListParts() {
         final String key = "unormal-list-parts-object";
-        
+
         // Try to list parts with non-existent part id
         final String nonexistentUploadId = "nonexistent-upload-id";
         try {
@@ -430,8 +431,8 @@ public class UploadPartTest extends TestBase {
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_UPLOAD, e.getErrorCode());
             Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_UPLOAD_ERR));
-        } 
-        
+        }
+
         // Try to list LIST_PART_MAX_RETURNS + 1 parts each time
         String uploadId = null;
         try {
@@ -442,43 +443,43 @@ public class UploadPartTest extends TestBase {
             Assert.fail("List parts should not be successful");
         } catch (Exception e) {
             Assert.assertTrue(e instanceof IllegalArgumentException);
-            AbortMultipartUploadRequest abortMultipartUploadRequest = 
+            AbortMultipartUploadRequest abortMultipartUploadRequest =
                     new AbortMultipartUploadRequest(bucketName, key, uploadId);
             ossClient.abortMultipartUpload(abortMultipartUploadRequest);
         }
     }
-    
+
     @Test
     public void testUnormalAbortMultipartUpload() {
         final String key = "unormal-abort-multipart-upload-object";
-        
+
         // Try to abort multipart upload with non-existent part id
         final String nonexistentUploadId = "nonexistent-upload-id";
         try {
-            AbortMultipartUploadRequest abortMultipartUploadRequest = 
+            AbortMultipartUploadRequest abortMultipartUploadRequest =
                     new AbortMultipartUploadRequest(bucketName, key, nonexistentUploadId);
             ossClient.abortMultipartUpload(abortMultipartUploadRequest);
             Assert.fail("Abort multipart upload should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_UPLOAD, e.getErrorCode());
             Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_UPLOAD_ERR));
-        } 
-        
+        }
+
         // Try to delete bucket with incompleted multipart uploads
         final String existingBucket = "unormal-abort-multipart-upload-existing-bucket";
         try {
             ossClient.createBucket(existingBucket);
-            
+
             String uploadId = claimUploadId(ossClient, existingBucket, key);
-            
+
             try {
                 ossClient.deleteBucket(existingBucket);
             } catch (OSSException e) {
                 Assert.assertEquals(OSSErrorCode.BUCKET_NOT_EMPTY, e.getErrorCode());
                 Assert.assertTrue(e.getMessage().startsWith(BUCKET_NOT_EMPTY_ERR));
-            } 
-            
-            AbortMultipartUploadRequest abortMultipartUploadRequest = 
+            }
+
+            AbortMultipartUploadRequest abortMultipartUploadRequest =
                     new AbortMultipartUploadRequest(existingBucket, key, uploadId);
             ossClient.abortMultipartUpload(abortMultipartUploadRequest);
         } catch (Exception e) {
@@ -487,7 +488,7 @@ public class UploadPartTest extends TestBase {
             ossClient.deleteBucket(existingBucket);
         }
     }
-    
+
     @Test
     public void testNormalListMultipartUploads() {
         try {
@@ -504,21 +505,21 @@ public class UploadPartTest extends TestBase {
                     existingKeys.add(lv0KeyPrefix + i);
                 } else {
                     existingKeys.add(lv1KeyPrefix + i);
-                    if (i % 100 == 0) {                        
+                    if (i % 100 == 0) {
                         existingKeys.add(lv2KeyPrefix + i);
                     }
                 }
             }
-            
+
             // Upload single part for each multipart upload
             final int partSize = 128;     //128B
             List<String> uploadIds = new ArrayList<String>(multipartUploadCount);
             for (int i = 0; i < multipartUploadCount; i++) {
                 String key = existingKeys.get(i);
-                
+
                 String uploadId = claimUploadId(ossClient, bucketName, key);
                 uploadIds.add(uploadId);
-                
+
                 InputStream instream = genFixedLengthInputStream(partSize);
                 UploadPartRequest uploadPartRequest = new UploadPartRequest();
                 uploadPartRequest.setBucketName(bucketName);
@@ -531,7 +532,7 @@ public class UploadPartTest extends TestBase {
                 Assert.assertEquals(1, uploadPartResult.getPartNumber());
                 Assert.assertEquals(uploadPartResult.getRequestId().length(), REQUEST_ID_LEN);
             }
-        
+
             // List multipart uploads without any conditions
             ListMultipartUploadsRequest listMultipartUploadsRequest = new ListMultipartUploadsRequest(bucketName);
             MultipartUploadListing multipartUploadListing = ossClient.listMultipartUploads(listMultipartUploadsRequest);
@@ -549,9 +550,9 @@ public class UploadPartTest extends TestBase {
             Assert.assertEquals(LIST_UPLOAD_MAX_RETURNS, multipartUploads.size());
             for (int i = 0; i < LIST_UPLOAD_MAX_RETURNS; i++) {
                 Assert.assertTrue(existingKeys.contains(multipartUploads.get(i).getKey()));
-                Assert.assertTrue(uploadIds.contains(multipartUploads.get(i).getUploadId()));                
+                Assert.assertTrue(uploadIds.contains(multipartUploads.get(i).getUploadId()));
             }
-            
+
             String keyMarker = multipartUploadListing.getNextKeyMarker();
             String uploadIdMarker = multipartUploadListing.getNextUploadIdMarker();
             listMultipartUploadsRequest.setKeyMarker(keyMarker);
@@ -573,7 +574,7 @@ public class UploadPartTest extends TestBase {
                 Assert.assertTrue(existingKeys.contains(multipartUploads.get(i).getKey()));
                 Assert.assertTrue(uploadIds.contains(multipartUploads.get(i).getUploadId()));
             }
-            
+
             // List 'max-uploads' multipart uploads with 'prefix'
             final int maxUploads = 100;
             listMultipartUploadsRequest = new ListMultipartUploadsRequest(bucketName);
@@ -596,7 +597,7 @@ public class UploadPartTest extends TestBase {
                 Assert.assertTrue(existingKeys.contains(multipartUploads.get(i).getKey()));
                 Assert.assertTrue(uploadIds.contains(multipartUploads.get(i).getUploadId()));
             }
-            
+
             keyMarker = multipartUploadListing.getNextKeyMarker();
             uploadIdMarker = multipartUploadListing.getNextUploadIdMarker();
             listMultipartUploadsRequest.setKeyMarker(keyMarker);
@@ -618,7 +619,7 @@ public class UploadPartTest extends TestBase {
                 Assert.assertTrue(existingKeys.contains(multipartUploads.get(i).getKey()));
                 Assert.assertTrue(uploadIds.contains(multipartUploads.get(i).getUploadId()));
             }
-            
+
             // List object with 'prefix' and 'delimiter'
             final String delimiter = "/";
             final String keyPrefix0 = "normal-list-multiparts-lv0-objects/";
@@ -645,14 +646,14 @@ public class UploadPartTest extends TestBase {
             }
             Assert.assertEquals(1, multipartUploadListing.getCommonPrefixes().size());
             Assert.assertEquals(keyPrefix1, multipartUploadListing.getCommonPrefixes().get(0));
-            
+
             // Abort all incompleted multipart uploads 
             for (int i = 0; i < multipartUploadCount; i++) {
-                AbortMultipartUploadRequest abortMultipartUploadRequest = 
+                AbortMultipartUploadRequest abortMultipartUploadRequest =
                         new AbortMultipartUploadRequest(bucketName, existingKeys.get(i), uploadIds.get(i));
                 ossClient.abortMultipartUpload(abortMultipartUploadRequest);
             }
-            
+
             // List all incompleted multipart uploads under this bucket again
             listMultipartUploadsRequest = new ListMultipartUploadsRequest(bucketName);
             multipartUploadListing = ossClient.listMultipartUploads(listMultipartUploadsRequest);
@@ -671,7 +672,7 @@ public class UploadPartTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-    
+
     @Test
     public void testNormalListMultipartUploadsWithEncoding() {
         try {
@@ -687,21 +688,21 @@ public class UploadPartTest extends TestBase {
                     existingKeys.add(lv0KeyPrefix + i);
                 } else {
                     existingKeys.add(lv1KeyPrefix + i);
-                    if (i % 100 == 0) {                        
+                    if (i % 100 == 0) {
                         existingKeys.add(lv2KeyPrefix + i);
                     }
                 }
             }
-            
+
             // Upload single part for each multipart upload
             final int partSize = 128;     //128B
             List<String> uploadIds = new ArrayList<String>(multipartUploadCount);
             for (int i = 0; i < multipartUploadCount; i++) {
                 String key = existingKeys.get(i);
-                
+
                 String uploadId = claimUploadId(ossClient, bucketName, key);
                 uploadIds.add(uploadId);
-                
+
                 InputStream instream = genFixedLengthInputStream(partSize);
                 UploadPartRequest uploadPartRequest = new UploadPartRequest();
                 uploadPartRequest.setBucketName(bucketName);
@@ -714,7 +715,7 @@ public class UploadPartTest extends TestBase {
                 Assert.assertEquals(1, uploadPartResult.getPartNumber());
                 Assert.assertEquals(uploadPartResult.getRequestId().length(), REQUEST_ID_LEN);
             }
-        
+
             // List multipart uploads without any conditions
             ListMultipartUploadsRequest listMultipartUploadsRequest = new ListMultipartUploadsRequest(bucketName);
             listMultipartUploadsRequest.setEncodingType(DEFAULT_ENCODING_TYPE);
@@ -735,23 +736,23 @@ public class UploadPartTest extends TestBase {
                 Assert.assertTrue(existingKeys.contains(URLDecoder.decode(multipartUploads.get(i).getKey(), "UTF-8")));
                 Assert.assertTrue(uploadIds.contains(multipartUploads.get(i).getUploadId()));
             }
-            
+
             // Abort all incompleted multipart uploads 
             for (int i = 0; i < multipartUploadCount; i++) {
-                AbortMultipartUploadRequest abortMultipartUploadRequest = 
+                AbortMultipartUploadRequest abortMultipartUploadRequest =
                         new AbortMultipartUploadRequest(bucketName, existingKeys.get(i), uploadIds.get(i));
                 ossClient.abortMultipartUpload(abortMultipartUploadRequest);
             }
-            
+
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
     }
-    
+
     @Test
     public void testUnormalListMultipartUploads() {
         final String key = "unormal-list-multipart-uploads-object";
-        
+
         // Try to list multipart uploads under non-existent bucket
         final String nonexistentBucket = "nonexistent-upload-id";
         try {
@@ -761,8 +762,8 @@ public class UploadPartTest extends TestBase {
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
             Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
-        } 
-        
+        }
+
         // Try to list LIST_UPLOAD_MAX_RETURNS + 1 parts each time
         final int maxUploads = LIST_UPLOAD_MAX_RETURNS + 1;
         String uploadId = null;
@@ -774,21 +775,21 @@ public class UploadPartTest extends TestBase {
             Assert.fail("List multipart uploads should not be successful");
         } catch (Exception e) {
             Assert.assertTrue(e instanceof IllegalArgumentException);
-            AbortMultipartUploadRequest abortMultipartUploadRequest = 
+            AbortMultipartUploadRequest abortMultipartUploadRequest =
                     new AbortMultipartUploadRequest(bucketName, key, uploadId);
             ossClient.abortMultipartUpload(abortMultipartUploadRequest);
         }
     }
-    
+
     @Test
     public void testNormalCompleteMultipartUpload() {
         final String key = "normal-complete-multipart-upload-object";
         final int partSize = 128 * 1024;     //128KB
         final int partCount = 10;
-        
+
         try {
             String uploadId = claimUploadId(ossClient, bucketName, key);
-            
+
             // Upload parts
             List<PartETag> partETags = new ArrayList<PartETag>();
             for (int i = 0; i < partCount; i++) {
@@ -800,33 +801,33 @@ public class UploadPartTest extends TestBase {
                 uploadPartRequest.setPartNumber(i + 1);
                 uploadPartRequest.setPartSize(partSize);
                 uploadPartRequest.setUploadId(uploadId);
-                UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);                
+                UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
                 Assert.assertEquals(uploadPartResult.getRequestId().length(), REQUEST_ID_LEN);
                 partETags.add(uploadPartResult.getPartETag());
             }
-            
+
             // Complete multipart upload with all uploaded parts
-            CompleteMultipartUploadRequest completeMultipartUploadRequest = 
+            CompleteMultipartUploadRequest completeMultipartUploadRequest =
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-            Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key), 
+            Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key),
                     completeMultipartUploadResult.getLocation());
             Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
             Assert.assertEquals(key, completeMultipartUploadResult.getKey());
             Assert.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
             Assert.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
-            
+
             // Get uploaded object
             OSSObject o = ossClient.getObject(bucketName, key);
             long objectSize = partCount * partSize;
             Assert.assertEquals(objectSize, o.getObjectMetadata().getContentLength());
             Assert.assertEquals(calcMultipartsETag(partETags), o.getObjectMetadata().getETag());
             Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
-            
+
             // Reclaim upload id
             uploadId = claimUploadId(ossClient, bucketName, key);
-            
+
             // Upload parts again
             partETags.clear();
             for (int i = 0; i < partCount; i++) {
@@ -838,11 +839,11 @@ public class UploadPartTest extends TestBase {
                 uploadPartRequest.setPartNumber(i + 1);
                 uploadPartRequest.setPartSize(partSize);
                 uploadPartRequest.setUploadId(uploadId);
-                UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);                
+                UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
                 Assert.assertEquals(uploadPartResult.getRequestId().length(), REQUEST_ID_LEN);
                 partETags.add(uploadPartResult.getPartETag());
             }
-            
+
             // Complete multipart upload with some discontinuous parts
             List<PartETag> discontinuousPartETags = new ArrayList<PartETag>();
             discontinuousPartETags.add(partETags.get(0));
@@ -850,13 +851,13 @@ public class UploadPartTest extends TestBase {
             discontinuousPartETags.add(partETags.get(7));
             completeMultipartUploadRequest = new CompleteMultipartUploadRequest(bucketName, key, uploadId, discontinuousPartETags);
             completeMultipartUploadResult = ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-            Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key), 
+            Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key),
                     completeMultipartUploadResult.getLocation());
             Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
             Assert.assertEquals(key, completeMultipartUploadResult.getKey());
             Assert.assertEquals(calcMultipartsETag(discontinuousPartETags), completeMultipartUploadResult.getETag());
             Assert.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
-            
+
             // Get uploaded object again
             o = ossClient.getObject(bucketName, key);
             objectSize = discontinuousPartETags.size() * partSize;
@@ -867,16 +868,16 @@ public class UploadPartTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-    
+
     @Test
     public void testUnormalCompleteMultipartUpload() {
         final String key = "unormal-complete-multipart-upload-object";
         final int partSize = 128 * 1024;     //128KB
         final int partCount = 10;
-        
+
         try {
             String uploadId = claimUploadId(ossClient, bucketName, key);
-            
+
             // Set length of parts less than minimum limit(100KB)
             final int invalidPartSize = 64 * 1024;
             List<PartETag> partETags = new ArrayList<PartETag>();
@@ -889,28 +890,28 @@ public class UploadPartTest extends TestBase {
                 uploadPartRequest.setPartNumber(i + 1);
                 uploadPartRequest.setPartSize(invalidPartSize);
                 uploadPartRequest.setUploadId(uploadId);
-                UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);                
+                UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
                 partETags.add(uploadPartResult.getPartETag());
             }
-            
+
             // Try to complete multipart upload with all uploaded parts
             try {
-                CompleteMultipartUploadRequest completeMultipartUploadRequest = 
+                CompleteMultipartUploadRequest completeMultipartUploadRequest =
                         new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
                 ossClient.completeMultipartUpload(completeMultipartUploadRequest);
             } catch (OSSException e) {
                 Assert.assertEquals(OSSErrorCode.ENTITY_TOO_SMALL, e.getErrorCode());
                 Assert.assertTrue(e.getMessage().startsWith(ENTITY_TOO_SMALL_ERR));
             }
-            
+
             // Abort the incompleted multipart upload
-            AbortMultipartUploadRequest abortMultipartUploadRequest = 
+            AbortMultipartUploadRequest abortMultipartUploadRequest =
                     new AbortMultipartUploadRequest(bucketName, key, uploadId);
             ossClient.abortMultipartUpload(abortMultipartUploadRequest);
-            
+
             // Reclaim upload id
             uploadId = claimUploadId(ossClient, bucketName, key);
-            
+
             // Upload parts again
             partETags.clear();
             for (int i = 0; i < partCount; i++) {
@@ -922,10 +923,10 @@ public class UploadPartTest extends TestBase {
                 uploadPartRequest.setPartNumber(i + 1);
                 uploadPartRequest.setPartSize(partSize);
                 uploadPartRequest.setUploadId(uploadId);
-                UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);                
+                UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
                 partETags.add(uploadPartResult.getPartETag());
             }
-            
+
             // Given part's ETag not match with actual ETag
             final String invalidETag = "Invalid-ETag";
             final int partNumber = 4;
@@ -933,7 +934,7 @@ public class UploadPartTest extends TestBase {
             PartETag invalidPartETag = new PartETag(partNumber, invalidETag);
             partETags.set(partNumber - 1, invalidPartETag);
             try {
-                CompleteMultipartUploadRequest completeMultipartUploadRequest = 
+                CompleteMultipartUploadRequest completeMultipartUploadRequest =
                         new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
                 ossClient.completeMultipartUpload(completeMultipartUploadRequest);
                 Assert.fail("Complete multipart upload should not be successful");
@@ -943,12 +944,12 @@ public class UploadPartTest extends TestBase {
             } finally {
                 partETags.set(partNumber - 1, originalPartETag);
             }
-            
+
             // Try to complete multipart upload with non-existent part
             PartETag nonexistentPartETag = new PartETag(partCount + 1, invalidETag);
             partETags.add(nonexistentPartETag);
             try {
-                CompleteMultipartUploadRequest completeMultipartUploadRequest = 
+                CompleteMultipartUploadRequest completeMultipartUploadRequest =
                         new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
                 ossClient.completeMultipartUpload(completeMultipartUploadRequest);
                 Assert.fail("Complete multipart upload should not be successful");
@@ -958,19 +959,19 @@ public class UploadPartTest extends TestBase {
             } finally {
                 partETags.remove(partCount);
             }
-            
+
             // Complete multipart upload with all uploaded parts
-            CompleteMultipartUploadRequest completeMultipartUploadRequest = 
+            CompleteMultipartUploadRequest completeMultipartUploadRequest =
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-            Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key), 
+            Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key),
                     completeMultipartUploadResult.getLocation());
             Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
             Assert.assertEquals(key, completeMultipartUploadResult.getKey());
             Assert.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
             Assert.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
-            
+
             // Get uploaded object
             OSSObject o = ossClient.getObject(bucketName, key);
             long objectSize = partCount * partSize;
@@ -981,20 +982,20 @@ public class UploadPartTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-    
+
     @Test
     public void testUploadPartWithChunked() {
         final String key = "upload-part-with-chunked-object";
         final int partSize = 128 * 1024;     //128KB
         final int partCount = 10;
-        
+
         String uploadId = null;
         String filePath = null;
-        
+
         {
             try {
                 uploadId = claimUploadId(ossClient, bucketName, key);
-                
+
                 // Upload parts
                 List<PartETag> partETags = new ArrayList<PartETag>();
                 for (int i = 0; i < partCount; i++) {
@@ -1006,23 +1007,23 @@ public class UploadPartTest extends TestBase {
                     uploadPartRequest.setPartNumber(i + 1);
                     uploadPartRequest.setUseChunkEncoding(true);
                     uploadPartRequest.setUploadId(uploadId);
-                    UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);                
+                    UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
                     Assert.assertEquals(uploadPartResult.getRequestId().length(), REQUEST_ID_LEN);
                     partETags.add(uploadPartResult.getPartETag());
                 }
-            
+
                 // Complete multipart upload with all uploaded parts
-                CompleteMultipartUploadRequest completeMultipartUploadRequest = 
+                CompleteMultipartUploadRequest completeMultipartUploadRequest =
                         new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
                 CompleteMultipartUploadResult completeMultipartUploadResult =
                         ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-                Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key), 
+                Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key),
                         completeMultipartUploadResult.getLocation());
                 Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
                 Assert.assertEquals(key, completeMultipartUploadResult.getKey());
                 Assert.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
                 Assert.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
-                
+
                 // Get uploaded object
                 OSSObject o = ossClient.getObject(bucketName, key);
                 long objectSize = partCount * partSize;
@@ -1033,12 +1034,12 @@ public class UploadPartTest extends TestBase {
                 Assert.fail(e.getMessage());
             }
         }
-        
+
         {
             try {
                 uploadId = claimUploadId(ossClient, bucketName, key);
                 filePath = genFixedLengthFile(partSize * partCount);
-                
+
                 // Upload parts
                 List<PartETag> partETags = new ArrayList<PartETag>();
                 for (int i = 0; i < partCount; i++) {
@@ -1052,23 +1053,23 @@ public class UploadPartTest extends TestBase {
                     uploadPartRequest.setPartSize(partSize);
                     uploadPartRequest.setUseChunkEncoding(true);
                     uploadPartRequest.setUploadId(uploadId);
-                    UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);                
+                    UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
                     Assert.assertEquals(uploadPartResult.getRequestId().length(), REQUEST_ID_LEN);
                     partETags.add(uploadPartResult.getPartETag());
                 }
-            
+
                 // Complete multipart upload with all uploaded parts
-                CompleteMultipartUploadRequest completeMultipartUploadRequest = 
+                CompleteMultipartUploadRequest completeMultipartUploadRequest =
                         new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
                 CompleteMultipartUploadResult completeMultipartUploadResult =
                         ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-                Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key), 
+                Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key),
                         completeMultipartUploadResult.getLocation());
                 Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
                 Assert.assertEquals(key, completeMultipartUploadResult.getKey());
                 Assert.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
                 Assert.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
-                
+
                 // Get uploaded object
                 OSSObject o = ossClient.getObject(bucketName, key);
                 long objectSize = partCount * partSize;
@@ -1082,7 +1083,7 @@ public class UploadPartTest extends TestBase {
             }
         }
     }
-    
+
     @Ignore
     public void testDeleteAllBuckets() {
         try {
@@ -1098,7 +1099,7 @@ public class UploadPartTest extends TestBase {
                     listMultipartUploadsRequest = new ListMultipartUploadsRequest(bktName);
                     listMultipartUploadsRequest.setKeyMarker(keyMarker);
                     listMultipartUploadsRequest.setUploadIdMarker(uploadIdMarker);
-                    
+
                     multipartUploadListing = ossClient.listMultipartUploads(listMultipartUploadsRequest);
                     multipartUploads = multipartUploadListing.getMultipartUploads();
                     for (MultipartUpload mu : multipartUploads) {
@@ -1106,11 +1107,11 @@ public class UploadPartTest extends TestBase {
                         String uploadId = mu.getUploadId();
                         ossClient.abortMultipartUpload(new AbortMultipartUploadRequest(bktName, key, uploadId));
                     }
-                    
+
                     keyMarker = multipartUploadListing.getKeyMarker();
                     uploadIdMarker = multipartUploadListing.getUploadIdMarker();
                 } while (multipartUploadListing != null && multipartUploadListing.isTruncated());
-                
+
                 deleteBucketWithObjects(ossClient, bktName);
             }
         } catch (Exception e) {
@@ -1118,5 +1119,5 @@ public class UploadPartTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-    
+
 }

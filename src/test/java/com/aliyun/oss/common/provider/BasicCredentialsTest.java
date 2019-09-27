@@ -20,6 +20,7 @@
 package com.aliyun.oss.common.provider;
 
 import com.aliyun.oss.common.auth.BasicCredentials;
+import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import junit.framework.Assert;
 import org.junit.Test;
 
@@ -46,7 +47,7 @@ public class BasicCredentialsTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-    
+
     @Test
     public void testWillSoonExpire() {
         try {
@@ -64,7 +65,7 @@ public class BasicCredentialsTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-    
+
     @Test
     public void testExpiredFactor() {
         try {
@@ -72,12 +73,12 @@ public class BasicCredentialsTest extends TestBase {
                     .withExpiredFactor(1.0).withExpiredDuration(3);
             Thread.sleep(2000);
             Assert.assertFalse(credentials.willSoonExpire());
-            
+
             credentials = new BasicCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, SECURITY_TOKEN).withExpiredFactor(0.1)
                     .withExpiredDuration(3);
             Thread.sleep(1000);
             Assert.assertTrue(credentials.willSoonExpire());
-            
+
             credentials = new BasicCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, SECURITY_TOKEN).withExpiredFactor(1.0)
                     .withExpiredDuration(1);
             Thread.sleep(1500);
@@ -87,7 +88,48 @@ public class BasicCredentialsTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-    
+
+    @Test
+    public void testDefaultCredentialProvider() {
+        DefaultCredentialProvider provider;
+        try {
+            provider = new DefaultCredentialProvider(null, "");
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        try {
+            provider = new DefaultCredentialProvider("", "");
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        try {
+            provider = new DefaultCredentialProvider(ACCESS_KEY_ID, null);
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        try {
+            provider = new DefaultCredentialProvider(ACCESS_KEY_ID, "");
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        try {
+            provider = new DefaultCredentialProvider(ACCESS_KEY_ID, ACCESS_KEY_SECRET);
+            Assert.assertTrue(true);
+            provider.setCredentials(null);
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+    }
+
     private static final String ACCESS_KEY_ID = "AccessKeyId";
     private static final String ACCESS_KEY_SECRET = "AccessKeySecret";
     private static final String SECURITY_TOKEN = "SecurityToken";
