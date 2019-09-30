@@ -449,6 +449,15 @@ public class TestBase {
         if (TestConfig.OSS_TEST_PAYER_ACCESS_KEY_SECRET == null) {
             TestConfig.OSS_TEST_PAYER_ACCESS_KEY_SECRET = System.getenv().get("OSS_TEST_PAYER_ACCESS_KEY_SECRET");
         }
+
+
+        if (TestConfig.OSS_TEST_REGION2 == null) {
+            TestConfig.OSS_TEST_REGION2 = System.getenv().get("OSS_TEST_REGION2");
+        }
+
+        if (TestConfig.OSS_TEST_REGION2_CMK == null) {
+            TestConfig.OSS_TEST_REGION2_CMK = System.getenv().get("OSS_TEST_REGION2_CMK");
+        }
     }
 
 }

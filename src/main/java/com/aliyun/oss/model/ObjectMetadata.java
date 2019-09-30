@@ -89,6 +89,16 @@ public class ObjectMetadata {
     }
 
     /**
+     * Removes the http header (SDK internal usage only).
+     * 
+     * @param key
+     *            The key of header.
+     */
+    public void removeHeader(String key) {
+        metadata.remove(key);
+    }
+
+    /**
      * Adds a new custom metadata.
      * 
      * @param key
