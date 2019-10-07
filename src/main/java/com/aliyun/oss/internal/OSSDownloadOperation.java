@@ -62,6 +62,7 @@ import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.Payer;
 import com.aliyun.oss.model.SimplifiedObjectMeta;
+import com.aliyun.oss.common.utils.RangeSpec;
 import com.aliyun.oss.model.HeadObjectRequest;
 
 /**
@@ -446,10 +447,21 @@ public class OSSDownloadOperation {
         downloadCheckPoint.bucketName = downloadFileRequest.getBucketName();
         downloadCheckPoint.objectKey = downloadFileRequest.getKey();
         downloadCheckPoint.objectStat = ObjectStat.getFileStat(objectOperation, downloadFileRequest);
-        downloadCheckPoint.downloadParts = splitFile(downloadCheckPoint.objectStat.size,
-                downloadFileRequest.getPartSize());
 
-        createFixedFile(downloadFileRequest.getTempDownloadFile(), downloadCheckPoint.objectStat.size);
+        // Support download part of the OSS Object.
+        long start = 0L;
+        long fileSize = downloadCheckPoint.objectStat.size;
+        if (downloadFileRequest.getRange() != null ){
+            RangeSpec rangeSpec = RangeSpec.parse(downloadFileRequest.getRange());
+            fileSize = rangeSpec.getLength(fileSize);
+            if (rangeSpec.getStart() > 0){
+                start = rangeSpec.getStart();
+            }
+        }
+        downloadCheckPoint.downloadParts = splitFile(fileSize,
+                downloadFileRequest.getPartSize(), start);
+
+        createFixedFile(downloadFileRequest.getTempDownloadFile(), fileSize);
     }
 
     public static void createFixedFile(String filePath, long length) throws IOException {
@@ -650,7 +662,7 @@ public class OSSDownloadOperation {
         private ProgressListener progressListener;
     }
 
-    private ArrayList<DownloadPart> splitFile(long objectSize, long partSize) {
+    private ArrayList<DownloadPart> splitFile(long objectSize, long partSize, long offset) {
         ArrayList<DownloadPart> parts = new ArrayList<DownloadPart>();
 
         long partNum = objectSize / partSize;
@@ -658,7 +670,7 @@ public class OSSDownloadOperation {
             partSize = objectSize / (10000 - 1);
         }
 
-        long offset = 0L;
+        // long offset = 0L;
         for (int i = 0; offset < objectSize; offset += partSize, i++) {
             DownloadPart part = new DownloadPart();
             part.index = i;

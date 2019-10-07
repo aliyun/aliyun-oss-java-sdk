@@ -57,6 +57,26 @@ public class RangeSpec {
         return type;
     }
 
+    public long getLength(long contentLen) {
+        long length = -1;
+
+        switch (type) {
+            case NORMAL_RANGE:
+                length = end - start;
+                break;
+
+            case START_TO:
+                length = contentLen - start;
+                break;
+
+            case TO_END:
+                formatted = end;
+                break;
+        }
+
+        return length;
+    }
+
     public static RangeSpec parse(long[] range) {
         if (range == null || range.length != 2) {
             getLog().warn("Invalid range value " + range + ", ignore it and just get entire object");
