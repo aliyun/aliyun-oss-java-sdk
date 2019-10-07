@@ -57,7 +57,7 @@ public class RangeSpec {
         return type;
     }
 
-    public long getLength(long objectSize) {
+    public long getRangeSize(long objectSize) {
         long length = -1;
 
         switch (type) {
