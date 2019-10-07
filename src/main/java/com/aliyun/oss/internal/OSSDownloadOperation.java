@@ -453,7 +453,7 @@ public class OSSDownloadOperation {
         long fileSize = downloadCheckPoint.objectStat.size;
         if (downloadFileRequest.getRange() != null ){
             RangeSpec rangeSpec = RangeSpec.parse(downloadFileRequest.getRange());
-            fileSize = rangeSpec.getLength(fileSize);
+            fileSize = rangeSpec.getLength(downloadCheckPoint.objectStat.size);
             if (rangeSpec.getStart() > 0){
                 start = rangeSpec.getStart();
             }

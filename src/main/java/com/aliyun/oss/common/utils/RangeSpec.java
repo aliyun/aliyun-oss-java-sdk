@@ -57,7 +57,7 @@ public class RangeSpec {
         return type;
     }
 
-    public long getLength(long contentLen) {
+    public long getLength(long objectSize) {
         long length = -1;
 
         switch (type) {
@@ -66,7 +66,7 @@ public class RangeSpec {
                 break;
 
             case START_TO:
-                length = contentLen - start;
+                length = objectSize - start;
                 break;
 
             case TO_END:
