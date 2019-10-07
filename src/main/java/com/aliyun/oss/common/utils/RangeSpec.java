@@ -70,7 +70,7 @@ public class RangeSpec {
                 break;
 
             case TO_END:
-                formatted = end;
+                length = end;
                 break;
         }
 
