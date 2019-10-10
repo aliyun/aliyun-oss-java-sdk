@@ -55,4 +55,9 @@ public final class TestConfig {
     public static String OSS_TEST_PAYER_UID = null;
     public static String OSS_TEST_PAYER_ACCESS_KEY_ID = null;
     public static String OSS_TEST_PAYER_ACCESS_KEY_SECRET = null;
+
+    // OSS encryption client kms test multi region cmk.
+    public static String OSS_TEST_KMS_REGION = null;
+    public static String OSS_TEST_KMS_REGION2 = null;
+    public static String OSS_TEST_KMS_REGION2_CMK = null;
 }
