@@ -457,6 +457,8 @@ public class OSSDownloadOperation {
             if (rangeSpec.getStart() > 0){
                 start = rangeSpec.getStart();
             }
+            // If the objectOperation
+            objectOperation.getInnerClient().getClientConfiguration().setCrcCheckEnabled(false);
         }
         downloadCheckPoint.downloadParts = splitFile(fileSize,
                 downloadFileRequest.getPartSize(), start);
