@@ -40,9 +40,11 @@ import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.AccessControlList;
 import com.aliyun.oss.model.Bucket;
+import com.aliyun.oss.model.BucketInfo;
 import com.aliyun.oss.model.BucketList;
 import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.CreateBucketRequest;
+import com.aliyun.oss.model.DataRedundancyType;
 import com.aliyun.oss.model.Grant;
 import com.aliyun.oss.model.GroupGrantee;
 import com.aliyun.oss.model.Permission;
@@ -435,5 +437,35 @@ public class CreateBucketTest extends TestBase {
             ossClient.deleteBucket(bucketName);
         }
     }
-    
+
+    @Test
+    public void testPutWithDataRedundancyType() {
+        final String bucketName = super.bucketName + "-with-data-redundancy-type";
+
+        try {
+            CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName)
+                    .withDataRedundancyType(DataRedundancyType.LRS).withStorageType(StorageClass.Standard);
+            ossClient.createBucket(createBucketRequest);
+            Thread.sleep(2000);
+            BucketInfo bucketInfo = ossClient.getBucketInfo(bucketName);
+            Assert.assertEquals(DataRedundancyType.LRS, bucketInfo.getDataRedundancyType());
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        } finally {
+            ossClient.deleteBucket(bucketName);
+        }
+
+        try {
+            CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName)
+                    .withDataRedundancyType(DataRedundancyType.ZRS).withStorageType(StorageClass.Standard);
+            ossClient.createBucket(createBucketRequest);
+            Thread.sleep(2000);
+            BucketInfo bucketInfo = ossClient.getBucketInfo(bucketName);
+            Assert.assertEquals(DataRedundancyType.ZRS, bucketInfo.getDataRedundancyType());
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        } finally {
+            ossClient.deleteBucket(bucketName);
+        }
+    }
 }

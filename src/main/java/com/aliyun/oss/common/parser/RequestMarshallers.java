@@ -198,13 +198,18 @@ public final class RequestMarshallers {
         @Override
         public FixedLengthInputStream marshall(CreateBucketRequest request) {
             StringBuffer xmlBody = new StringBuffer();
-            if (request.getLocationConstraint() != null || request.getStorageClass() != null) {
+            if (request.getLocationConstraint() != null 
+                    || request.getStorageClass() != null 
+                    || request.getDataRedundancyType() != null) {
                 xmlBody.append("<CreateBucketConfiguration>");
                 if (request.getLocationConstraint() != null) {
                     xmlBody.append("<LocationConstraint>" + request.getLocationConstraint() + "</LocationConstraint>");
                 }
                 if (request.getStorageClass() != null) {
                     xmlBody.append("<StorageClass>" + request.getStorageClass().toString() + "</StorageClass>");
+                }
+                if (request.getDataRedundancyType() != null) {
+                    xmlBody.append("<DataRedundancyType>" + request.getDataRedundancyType().toString() + "</DataRedundancyType>");
                 }
                 xmlBody.append("</CreateBucketConfiguration>");
             }
