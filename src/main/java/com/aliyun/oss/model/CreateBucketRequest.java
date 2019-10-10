@@ -24,6 +24,7 @@ public class CreateBucketRequest extends GenericRequest {
     private String locationConstraint;
     private CannedAccessControlList cannedACL;
     private StorageClass storageClass;
+    private DataRedundancyType dataRedundancyType;
 
     public CreateBucketRequest(String bucketName) {
         super(bucketName);
@@ -85,5 +86,35 @@ public class CreateBucketRequest extends GenericRequest {
     public CreateBucketRequest withStorageType(StorageClass storageClass) {
         setStorageClass(storageClass);
         return this;
+    }
+
+    /**
+     * Sets the bucket's data redundancy type.
+     * If the storage class has not been specified, the creating opreation maybe failed.
+     * 
+     * @param dataRedundancyType
+     *            The Bucketdata redundancy type.
+     */
+    public void setDataRedundancyType(DataRedundancyType dataRedundancyType) {
+        this.dataRedundancyType = dataRedundancyType;
+    }
+
+    /**
+     * Creates the instance with data redundancy type.
+     * If the storage class has not been specified, the creating opreation maybe failed.
+     * 
+     * @param dataRedundancyType
+     *            The Bucketdata redundancy type.
+     */
+    public CreateBucketRequest withDataRedundancyType(DataRedundancyType dataRedundancyType) {
+        setDataRedundancyType(dataRedundancyType);
+        return this;
+    }
+
+    /**
+     * Gets the bucket's data redundancy type.
+     */
+    public DataRedundancyType getDataRedundancyType() {
+        return dataRedundancyType;
     }
 }
