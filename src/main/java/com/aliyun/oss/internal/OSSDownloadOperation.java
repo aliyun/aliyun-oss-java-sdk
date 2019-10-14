@@ -221,6 +221,7 @@ public class OSSDownloadOperation {
             result = prime * result + (int) (end ^ (end >>> 32));
             result = prime * result + (int) (start ^ (start >>> 32));
             result = prime * result + (int) (crc ^ (crc >>> 32));
+            result = prime * result + (int) (fileStart ^ (fileStart >>> 32));
             return result;
         }
 
@@ -230,6 +231,7 @@ public class OSSDownloadOperation {
         public boolean isCompleted; // flag of part download finished or not;
         public long length; // length of part
         public long crc; // part crc.
+        public long fileStart;  // start index in file, for range get
     }
 
     static class PartResult {
@@ -412,7 +414,8 @@ public class OSSDownloadOperation {
         }
 
         // check crc64
-        if(objectOperation.getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
+        if(objectOperation.getInnerClient().getClientConfiguration().isCrcCheckEnabled() &&
+           !hasRangeInRequest(downloadFileRequest)) {
             Long clientCRC = calcObjectCRCFromParts(downloadResult.getPartResults());
             try {
                 OSSUtils.checkChecksum(clientCRC, serverCRC, downloadResult.getObjectMetadata().getRequestId());
@@ -446,10 +449,17 @@ public class OSSDownloadOperation {
         downloadCheckPoint.bucketName = downloadFileRequest.getBucketName();
         downloadCheckPoint.objectKey = downloadFileRequest.getKey();
         downloadCheckPoint.objectStat = ObjectStat.getFileStat(objectOperation, downloadFileRequest);
-        downloadCheckPoint.downloadParts = splitFile(downloadCheckPoint.objectStat.size,
-                downloadFileRequest.getPartSize());
-
-        createFixedFile(downloadFileRequest.getTempDownloadFile(), downloadCheckPoint.objectStat.size);
+        long downloadSize;
+        if (downloadCheckPoint.objectStat.size > 0) {
+            long[] slice = getSlice(downloadFileRequest.getRange(), downloadCheckPoint.objectStat.size);
+            downloadCheckPoint.downloadParts = splitFile(slice[0], slice[1], downloadFileRequest.getPartSize());
+            downloadSize = slice[1];
+        } else {
+            //download whole file
+            downloadSize = 0;
+            downloadCheckPoint.downloadParts = splitOneFile();
+        }
+        createFixedFile(downloadFileRequest.getTempDownloadFile(), downloadSize);
     }
 
     public static void createFixedFile(String filePath, long length) throws IOException {
@@ -544,6 +554,10 @@ public class OSSDownloadOperation {
         return downloadResult;
     }
 
+    private boolean hasRangeInRequest(DownloadFileRequest downloadFileRequest) {
+        return downloadFileRequest.getRange() != null;
+    }
+
     static class Task implements Callable<PartResult> {
 
         public Task(int id, String name, DownloadCheckPoint downloadCheckPoint, int partIndex,
@@ -569,7 +583,7 @@ public class OSSDownloadOperation {
                 tr = new PartResult(partIndex + 1, downloadPart.start, downloadPart.end);
 
                 output = new RandomAccessFile(downloadFileRequest.getTempDownloadFile(), "rw");
-                output.seek(downloadPart.start);
+                output.seek(downloadPart.fileStart);
 
                 GetObjectRequest getObjectRequest = new GetObjectRequest(downloadFileRequest.getBucketName(),
                         downloadFileRequest.getKey());
@@ -650,7 +664,7 @@ public class OSSDownloadOperation {
         private ProgressListener progressListener;
     }
 
-    private ArrayList<DownloadPart> splitFile(long objectSize, long partSize) {
+    private ArrayList<DownloadPart> splitFile(long start, long objectSize, long partSize) {
         ArrayList<DownloadPart> parts = new ArrayList<DownloadPart>();
 
         long partNum = objectSize / partSize;
@@ -662,8 +676,9 @@ public class OSSDownloadOperation {
         for (int i = 0; offset < objectSize; offset += partSize, i++) {
             DownloadPart part = new DownloadPart();
             part.index = i;
-            part.start = offset;
-            part.end = getPartEnd(offset, objectSize, partSize);
+            part.start = offset + start;
+            part.end = getPartEnd(offset, objectSize, partSize) + start;
+            part.fileStart = offset;
             parts.add(part);
         }
 
@@ -675,6 +690,45 @@ public class OSSDownloadOperation {
             return total - 1;
         }
         return begin + per - 1;
+    }
+
+    private ArrayList<DownloadPart> splitOneFile() {
+        ArrayList<DownloadPart> parts = new ArrayList<DownloadPart>();
+        DownloadPart part = new DownloadPart();
+        part.index = 0;
+        part.start = 0;
+        part.end = -1;
+        part.fileStart = 0;
+        parts.add(part);
+        return parts;
+    }
+
+    private long[] getSlice(long[] range, long totalSize) {
+        long start = 0;
+        long size = totalSize;
+
+        if ((range == null) ||
+            (range.length != 2) ||
+            (totalSize < 1) ||
+            (range[0] < 0 && range[1] < 0) ||
+            (range[0] > 0 && range[1] > 0 && range[0] > range[1])||
+            (range[0] >= totalSize)) {
+            //download all
+        } else {
+            //dwonload part by range & total size
+            long begin = range[0];
+            long end = range[1];
+            if (range[0] < 0) {
+                begin = 0;
+            }
+            if (range[1] < 0 || range[1] >= totalSize) {
+                end = totalSize -1;
+            }
+            start = begin;
+            size = end - begin + 1;
+        }
+
+        return new long[]{start, size};
     }
 
     private boolean remove(String filePath) {
