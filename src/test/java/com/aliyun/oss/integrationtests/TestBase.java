@@ -333,7 +333,59 @@ public class TestBase {
             }
         }
     }
-    
+
+    public static boolean compareFileWithRange(String fileNameLeft, long start, long end, String fileNameRight) throws IOException {
+        FileInputStream fisLeft = null;
+        FileInputStream fisRight = null;
+        long comlen = end - start + 1;
+
+        try {
+            fisLeft = new FileInputStream(fileNameLeft);
+            fisRight = new FileInputStream(fileNameRight);
+
+            int len1 = fisLeft.available();
+            int len2 = fisRight.available();
+
+            if (len1 < comlen) {
+                return false;
+            }
+
+            fisLeft.skip(start);
+
+            if (comlen == len2) {
+                byte[] data1 = new byte[len2];
+                byte[] data2 = new byte[len2];
+
+                fisLeft.read(data1);
+                fisRight.read(data2);
+
+                for (int i = 0; i < len2; i++) {
+                    if (data1[i] != data2[i]) {
+                        return false;
+                    }
+                }
+
+                return true;
+            } else {
+                return false;
+            }
+        } finally {
+            if (fisLeft != null) {
+                try {
+                    fisLeft.close();
+                } catch (IOException e) {
+                }
+            }
+
+            if (fisRight != null) {
+                try {
+                    fisRight.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+    }
+
     public static File createSampleFile(String fileName, long size) throws IOException {
         File file = File.createTempFile(fileName, ".txt");
         file.deleteOnExit();

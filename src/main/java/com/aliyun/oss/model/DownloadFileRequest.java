@@ -235,6 +235,46 @@ public class DownloadFileRequest extends GenericRequest {
         return trafficLimit;
     }
 
+    /**
+     * Gets the range of the object to download. The range is in the form of
+     * {start, end}---start and end is position of the object's content.
+     *
+     * @return The range of the object to download.
+     */
+    public long[] getRange() {
+        return range;
+    }
+
+    /**
+     * Sets the range of the object to download (optional).
+     *
+     * @param start
+     *            <p>
+     *            Start position
+     *            </p>
+     *            <p>
+     *            When the start is non-negative, it means the starting position
+     *            to download. When the start is -1, it means the range is
+     *            determined by the end only and the end could not be -1. For
+     *            example, when start is -1 and end is 100. It means the
+     *            download range will be the last 100 bytes.
+     *            </p>
+     * @param end
+     *            <p>
+     *            End position
+     *            </p>
+     *            <p>
+     *            When the end is non-negative, it means the ending position to
+     *            download. When the end is -1, it means the range is determined
+     *            by the start only and the start could not be -1. For example,
+     *            when end is -1 and start is 100. It means the download range
+     *            will be all exception first 100 bytes.
+     *            </p>
+     */
+    public void setRange(long start, long end) {
+        range = new long[] { start, end };
+    }
+
     // Part size in byte, by default it's 100KB.
     private long partSize = 1024 * 100;
     // Thread count for downloading parts, by default it's 1.
@@ -259,4 +299,6 @@ public class DownloadFileRequest extends GenericRequest {
 
     // Traffic limit speed, its uint is bit/s
     private int trafficLimit;
+
+    private long[] range;
 }
