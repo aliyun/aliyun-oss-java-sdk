@@ -166,7 +166,11 @@ public class OSSClientTest {
         conf.setSignerHandlers(null);
 
         List<String> cnameList = conf.getCnameExcludeList();
-        conf.setCnameExcludeList(cnameList);
+        assertEquals(3, cnameList.size());
+        assertEquals(true, cnameList.contains("aliyuncs.com"));
+        assertEquals(true, cnameList.contains("aliyun-inc.com"));
+        assertEquals(true, cnameList.contains("aliyun.com"));
+
         cnameList = new ArrayList<String>();
         cnameList.add("");
         cnameList.add("cname");
@@ -177,6 +181,15 @@ public class OSSClientTest {
         assertEquals(5, gCnameList.size());
         assertEquals(true, gCnameList.contains("cname"));
         assertEquals(true, gCnameList.contains("cname1"));
+        assertEquals(true, gCnameList.contains("aliyun-inc.com"));
+
+        cnameList = new ArrayList<String>();
+        conf.setCnameExcludeList(cnameList);
+        gCnameList = conf.getCnameExcludeList();
+        assertEquals(3, gCnameList.size());
+        assertEquals(true, gCnameList.contains("aliyuncs.com"));
+        assertEquals(true, gCnameList.contains("aliyun-inc.com"));
+        assertEquals(true, gCnameList.contains("aliyun.com"));
 
         try {
             conf.setCnameExcludeList(null);

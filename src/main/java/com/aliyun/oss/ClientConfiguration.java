@@ -99,6 +99,11 @@ public class ClientConfiguration {
 
     protected SignVersion signatureVersion = DEFAULT_SIGNATURE_VERSION;
 
+    public ClientConfiguration() {
+        super();
+        AppendDefaultExcludeList(this.cnameExcludeList);
+    }
+
     /**
      * Gets the user agent string.
      *
@@ -420,13 +425,6 @@ public class ClientConfiguration {
      * @return The excluded CName list, immutable.
      */
     public List<String> getCnameExcludeList() {
-        if (this.cnameExcludeList.size() == 0) {
-            rlock.lock();
-            if (this.cnameExcludeList.size() == 0) {
-                AppendDefaultExcludeList(this.cnameExcludeList);
-            }
-            rlock.unlock();
-        }
         return Collections.unmodifiableList(this.cnameExcludeList);
     }
 

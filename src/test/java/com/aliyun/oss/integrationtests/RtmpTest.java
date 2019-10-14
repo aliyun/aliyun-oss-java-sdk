@@ -622,7 +622,7 @@ public class RtmpTest extends TestBase {
 
             OSS client = new OSSClientBuilder().build("https://endpoint/", "ak", "sk", "sts");
             uri = client.generateRtmpUri("bucket", "live", "play.m3u8", 1000 );
-            Assert.assertTrue(uri.startsWith("rtmp://" + bucketName));
+            Assert.assertTrue(uri.startsWith("rtmp://bucket"));
 
         } catch (Exception e) {
             Assert.fail(e.getMessage());
