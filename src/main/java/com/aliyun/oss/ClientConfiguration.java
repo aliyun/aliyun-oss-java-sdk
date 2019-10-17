@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -98,6 +99,8 @@ public class ClientConfiguration {
     protected List<RequestSigner> signerHandlers = new LinkedList<RequestSigner>();
 
     protected SignVersion signatureVersion = DEFAULT_SIGNATURE_VERSION;
+
+    protected long tickOffset = 0;
 
     public ClientConfiguration() {
         super();
@@ -671,5 +674,29 @@ public class ClientConfiguration {
      */
     public void setSignatureVersion(SignVersion signatureVersion) {
         this.signatureVersion = signatureVersion;
+    }
+
+    /**
+     * Gets the difference between customized epoch time and local time, in millisecond.
+     *
+     * @return tick Offset
+     */
+    public long getTickOffset() {
+        return tickOffset;
+    }
+
+    /**
+     * Sets the custom base time.
+     * OSS's token validation logic depends on the time.
+     * It requires that there's no more than 15 min time difference between client and OSS server.
+     * This API calculates the difference between local time to epoch time.
+     * Later one other APIs use this difference to offset the local time before sending request to OSS.
+     *
+     * @param epochTicks
+     *             Custom Epoch ticks (in millisecond).
+     */
+    public void setTickOffset(long epochTicks) {
+        long localTime = new Date().getTime();
+        this.tickOffset = epochTicks - localTime;
     }
 }
