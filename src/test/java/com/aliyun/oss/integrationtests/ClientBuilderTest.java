@@ -21,10 +21,9 @@ package com.aliyun.oss.integrationtests;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Date;
 
-import com.aliyun.oss.ClientBuilderConfiguration;
-import com.aliyun.oss.OSSClient;
-import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.*;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.model.BucketInfo;
@@ -32,6 +31,8 @@ import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.ObjectMetadata;
 import junit.framework.Assert;
 import org.junit.Test;
+
+import static com.aliyun.oss.OSSErrorCode.REQUEST_TIME_TOO_SKEWED;
 
 public class ClientBuilderTest extends TestBase {
 
@@ -170,4 +171,56 @@ public class ClientBuilderTest extends TestBase {
         }
     }
 
+    @Test
+    public void testClientBuilderSpecialEpochTicks() {
+        OSSClient client = null;
+        ClientBuilderConfiguration config = new ClientBuilderConfiguration();
+        Assert.assertEquals(config.getTickOffset(), 0);
+        config.setSupportCname(true);
+        config.setConnectionTimeout(10000);
+        try {
+            long epochTicks = new Date().getTime();
+            epochTicks -= 16*600*1000;
+            config.setTickOffset(epochTicks);
+            client = (OSSClient) new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT,
+                    new DefaultCredentialProvider(TestConfig.OSS_TEST_ACCESS_KEY_ID,
+                            TestConfig.OSS_TEST_ACCESS_KEY_SECRET),
+                    config);
+            Assert.assertTrue(client.getClientConfiguration().isSupportCname());
+            Assert.assertEquals(client.getClientConfiguration().getConnectionTimeout(), 10000);
+            Assert.assertEquals(client.getClientConfiguration().getTickOffset(), -16*600*1000);
+
+            BucketInfo info = client.getBucketInfo(bucketName);
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            if (e instanceof ServiceException) {
+                String errorCode = ((ServiceException) e).getErrorCode();
+                Assert.assertEquals(errorCode, REQUEST_TIME_TOO_SKEWED);
+            } else {
+                Assert.assertTrue(false);
+            }
+        } finally {
+            client.shutdown();
+        }
+
+        try {
+            long epochTicks = new Date().getTime();
+            config.setTickOffset(epochTicks);
+            client = (OSSClient) new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT,
+                    new DefaultCredentialProvider(TestConfig.OSS_TEST_ACCESS_KEY_ID,
+                            TestConfig.OSS_TEST_ACCESS_KEY_SECRET),
+                    config);
+            Assert.assertTrue(client.getClientConfiguration().isSupportCname());
+            Assert.assertEquals(client.getClientConfiguration().getConnectionTimeout(), 10000);
+
+            BucketInfo info = client.getBucketInfo(bucketName);
+            Assert.assertEquals(info.getBucket().getName(), bucketName);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        } finally {
+            client.shutdown();
+        }
+
+
+    }
 }
