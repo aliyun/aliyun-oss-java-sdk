@@ -63,7 +63,7 @@ public class LogUtils {
         String detailMessage = messagePrefix + ((Exception) ex).getMessage();
         if (ex instanceof ServiceException && errorCodeFilterList.contains(((ServiceException) ex).getErrorCode())) {
             if (logEnabled) {
-                log.info(detailMessage);
+                log.debug(detailMessage);
             }
         } else {
             if (logEnabled) {
