@@ -72,10 +72,16 @@ public class SetBucketLifecycleRequest extends GenericRequest {
         int expirationTimeFlag = lifecycleRule.hasExpirationTime() ? 1 : 0;
         int expirationDaysFlag = lifecycleRule.hasExpirationDays() ? 1 : 0;
         int createdBeforeDateFlag = lifecycleRule.hasCreatedBeforeDate() ? 1 : 0;
-        int flagSum = expirationTimeFlag + expirationDaysFlag + createdBeforeDateFlag;
-        if (flagSum > 1 || (flagSum == 0 && !lifecycleRule.hasAbortMultipartUpload()
-                && !lifecycleRule.hasStorageTransition())) {
+        int expiredDeleteMarkerFlag = lifecycleRule.hasExpiredDeleteMarker() ? 1: 0;
+        int flagSum = expirationTimeFlag + expirationDaysFlag + createdBeforeDateFlag + expiredDeleteMarkerFlag;
+        if (flagSum > 1 ) {
             throw new IllegalArgumentException("Only one expiration property should be specified.");
+        }
+
+        if (flagSum == 0 && !lifecycleRule.hasAbortMultipartUpload()
+                && !lifecycleRule.hasStorageTransition() && !lifecycleRule.hasNoncurrentVersionStorageTransitions()
+                && !lifecycleRule.hasNoncurrentVersionExpiration()) {
+            throw new IllegalArgumentException("Rule has none expiration or transition specified.");
         }
 
         if (lifecycleRule.getStatus() == LifecycleRule.RuleStatus.Unknown) {

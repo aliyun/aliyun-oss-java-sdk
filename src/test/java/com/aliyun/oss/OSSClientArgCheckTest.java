@@ -27,6 +27,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.aliyun.oss.internal.OSSConstants;
@@ -55,6 +56,21 @@ public class OSSClientArgCheckTest {
         
         // Legal key
         assertTrue(OSSUtils.validateObjectKey((char)9 + "" + (char)0x20 + "123_.*  中文-!@#$%^&*()_+-=;'\"~`><?/':[]|\\"));
+    }
+
+    @Test
+    public void testValidBucketName() {
+        String bucketName = "123456789012345678901234567890123456789012345678901234567890123";
+        Assert.assertTrue(OSSUtils.validateBucketName(bucketName));
+        Assert.assertFalse(OSSUtils.validateBucketName(bucketName + "4"));
+
+        bucketName = "lyz-jdifd";
+        Assert.assertTrue(OSSUtils.validateBucketName(bucketName));
+        Assert.assertFalse(OSSUtils.validateBucketName(bucketName + "dd-"));
+        Assert.assertFalse(OSSUtils.validateBucketName(bucketName + "Ldfd"));
+        Assert.assertFalse(OSSUtils.validateBucketName(bucketName + "~dd"));
+        Assert.assertFalse(OSSUtils.validateBucketName(bucketName + "_dd"));
+        Assert.assertFalse(OSSUtils.validateBucketName(bucketName + "\\dd"));
     }
 
     @Test

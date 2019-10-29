@@ -19,6 +19,8 @@
 
 package com.aliyun.oss.model;
 
+import com.aliyun.oss.common.utils.BinaryUtil;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -75,7 +77,11 @@ public class DownloadFileRequest extends GenericRequest {
     }
 
     public String getTempDownloadFile() {
-        return downloadFile + ".tmp";
+        if (getVersionId() != null) {
+            return downloadFile + "." + BinaryUtil.encodeMD5(getVersionId().getBytes()) + ".tmp";
+        } else {
+            return downloadFile + ".tmp";
+        }
     }
 
     public void setDownloadFile(String downloadFile) {

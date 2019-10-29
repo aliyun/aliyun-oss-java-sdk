@@ -40,6 +40,8 @@ import com.aliyun.oss.model.DeleteVersionsRequest.KeyVersion;
 import com.aliyun.oss.model.LifecycleRule.AbortMultipartUpload;
 import com.aliyun.oss.model.LifecycleRule.RuleStatus;
 import com.aliyun.oss.model.LifecycleRule.StorageTransition;
+import com.aliyun.oss.model.LifecycleRule.NoncurrentVersionStorageTransition;
+import com.aliyun.oss.model.LifecycleRule.NoncurrentVersionExpiration;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
 
 /**
@@ -401,6 +403,9 @@ public final class RequestMarshallers {
                     String formatDate = DateUtil.formatIso8601Date(rule.getCreatedBeforeDate());
                     xmlBody.append(
                             "<Expiration><CreatedBeforeDate>" + formatDate + "</CreatedBeforeDate></Expiration>");
+                } else if (rule.getExpiredDeleteMarker() != null) {
+                    xmlBody.append("<Expiration><ExpiredObjectDeleteMarker>" + rule.getExpiredDeleteMarker() +
+                            "</ExpiredObjectDeleteMarker></Expiration>");
                 }
 
                 if (rule.hasAbortMultipartUpload()) {
@@ -426,6 +431,23 @@ public final class RequestMarshallers {
                         }
                         xmlBody.append("<StorageClass>" + storageTransition.getStorageClass() + "</StorageClass>");
                         xmlBody.append("</Transition>");
+                    }
+                }
+
+                if (rule.hasNoncurrentVersionExpiration()) {
+                    NoncurrentVersionExpiration expiration = rule.getNoncurrentVersionExpiration();
+                    if (expiration.hasNoncurrentDays()) {
+                        xmlBody.append("<NoncurrentVersionExpiration><NoncurrentDays>" + expiration.getNoncurrentDays() +
+                                "</NoncurrentDays></NoncurrentVersionExpiration>");
+                    }
+                }
+
+                if (rule.hasNoncurrentVersionStorageTransitions()) {
+                    for (NoncurrentVersionStorageTransition transition : rule.getNoncurrentVersionStorageTransitions()) {
+                        xmlBody.append("<NoncurrentVersionTransition>");
+                        xmlBody.append("<NoncurrentDays>" + transition.getNoncurrentDays() + "</NoncurrentDays>");
+                        xmlBody.append("<StorageClass>" + transition.getStorageClass() + "</StorageClass>");
+                        xmlBody.append("</NoncurrentVersionTransition>");
                     }
                 }
 

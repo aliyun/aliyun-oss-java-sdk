@@ -128,6 +128,8 @@ import com.aliyun.oss.model.UserQosInfo;
 import com.aliyun.oss.model.VersionListing;
 import com.aliyun.oss.model.GetBucketPolicyResult;
 import com.aliyun.oss.model.GetBucketRequestPaymentResult;
+import com.aliyun.oss.model.LifecycleRule.NoncurrentVersionStorageTransition;
+import com.aliyun.oss.model.LifecycleRule.NoncurrentVersionExpiration;
 
 /*
  * A collection of parsers that parse HTTP reponses into corresponding human-readable results.
@@ -2798,10 +2800,12 @@ public final class ResponseParsers {
                         rule.setExpirationTime(expirationDate);
                     } else if (ruleElem.getChild("Expiration").getChild("Days") != null) {
                         rule.setExpirationDays(Integer.parseInt(ruleElem.getChild("Expiration").getChildText("Days")));
-                    } else {
+                    }  else if (ruleElem.getChild("Expiration").getChild("CreatedBeforeDate") != null) {
                         Date createdBeforeDate = DateUtil
                                 .parseIso8601Date(ruleElem.getChild("Expiration").getChildText("CreatedBeforeDate"));
                         rule.setCreatedBeforeDate(createdBeforeDate);
+                    } else if (ruleElem.getChild("Expiration").getChild("ExpiredObjectDeleteMarker") != null) {
+                        rule.setExpiredDeleteMarker(Boolean.valueOf(ruleElem.getChild("Expiration").getChildText("ExpiredObjectDeleteMarker")));
                     }
                 }
 
@@ -2836,6 +2840,28 @@ public final class ResponseParsers {
                     storageTransitions.add(storageTransition);
                 }
                 rule.setStorageTransition(storageTransitions);
+
+                if (ruleElem.getChild("NoncurrentVersionExpiration") != null) {
+                    NoncurrentVersionExpiration expiration = new NoncurrentVersionExpiration();
+                    if (ruleElem.getChild("NoncurrentVersionExpiration").getChild("NoncurrentDays") != null) {
+                        expiration.setNoncurrentDays(Integer.parseInt(ruleElem.getChild("NoncurrentVersionExpiration").getChildText("NoncurrentDays")));
+                        rule.setNoncurrentVersionExpiration(expiration);
+                    }
+                }
+
+                List<Element> versionTansitionElements = ruleElem.getChildren("NoncurrentVersionTransition");
+                List<NoncurrentVersionStorageTransition> noncurrentVersionTransitions = new ArrayList<NoncurrentVersionStorageTransition>();
+                for (Element transitionElem : versionTansitionElements) {
+                    NoncurrentVersionStorageTransition transition = new NoncurrentVersionStorageTransition();
+                    if (transitionElem.getChild("NoncurrentDays") != null) {
+                        transition.setNoncurrentDays(Integer.parseInt(transitionElem.getChildText("NoncurrentDays")));
+                    }
+                    if (transitionElem.getChild("StorageClass") != null) {
+                        transition.setStorageClass(StorageClass.parse(transitionElem.getChildText("StorageClass")));
+                    }
+                    noncurrentVersionTransitions.add(transition);
+                }
+                rule.setNoncurrentVersionStorageTransitions(noncurrentVersionTransitions);
 
                 lifecycleRules.add(rule);
             }

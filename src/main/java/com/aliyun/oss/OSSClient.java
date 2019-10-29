@@ -1242,32 +1242,32 @@ public class OSSClient implements OSS {
 
     @Override
     public void setBucketPolicy(String bucketName,  String policyText) throws OSSException, ClientException {
-    	this.bucketOperation.setBucketPolicy(new SetBucketPolicyRequest(bucketName, policyText));
+        this.setBucketPolicy(new SetBucketPolicyRequest(bucketName, policyText));
     }
 
     @Override
     public void setBucketPolicy(SetBucketPolicyRequest setBucketPolicyRequest) throws OSSException, ClientException {
-    	this.bucketOperation.setBucketPolicy(setBucketPolicyRequest);
+        this.bucketOperation.setBucketPolicy(setBucketPolicyRequest);
     }
 
     @Override
     public GetBucketPolicyResult getBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException {
-    	return bucketOperation.getBucketPolicy(genericRequest);
+        return this.bucketOperation.getBucketPolicy(genericRequest);
     }
 
     @Override
     public GetBucketPolicyResult getBucketPolicy(String bucketName) throws OSSException, ClientException {
-    	return bucketOperation.getBucketPolicy(new GenericRequest(bucketName));
+        return this.getBucketPolicy(new GenericRequest(bucketName));
     }
 
     @Override
     public void deleteBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException {
-    	bucketOperation.deleteBucketPolicy(genericRequest);
+        this.bucketOperation.deleteBucketPolicy(genericRequest);
     }
 
     @Override
     public void deleteBucketPolicy(String bucketName) throws OSSException, ClientException {
-    	bucketOperation.deleteBucketPolicy(new GenericRequest(bucketName));
+        this.deleteBucketPolicy(new GenericRequest(bucketName));
     }
 
     @Override
@@ -1420,7 +1420,7 @@ public class OSSClient implements OSS {
 
     @Override
     public void setBucketRequestPayment(String bucketName, Payer payer) throws OSSException, ClientException {
-        this.bucketOperation.setBucketRequestPayment(new SetBucketRequestPaymentRequest(bucketName, payer));
+        this.setBucketRequestPayment(new SetBucketRequestPaymentRequest(bucketName, payer));
     }
 
     @Override
@@ -1430,7 +1430,7 @@ public class OSSClient implements OSS {
 
     @Override
     public GetBucketRequestPaymentResult getBucketRequestPayment(String bucketName) throws OSSException, ClientException {
-        return this.bucketOperation.getBucketRequestPayment(new GenericRequest(bucketName));
+        return this.getBucketRequestPayment(new GenericRequest(bucketName));
     }
 
     @Override
@@ -1440,7 +1440,7 @@ public class OSSClient implements OSS {
 
     @Override
     public void setBucketQosInfo(String bucketName, BucketQosInfo bucketQosInfo) throws OSSException, ClientException {
-        this.bucketOperation.setBucketQosInfo(new SetBucketQosInfoRequest(bucketName, bucketQosInfo));
+        this.setBucketQosInfo(new SetBucketQosInfoRequest(bucketName, bucketQosInfo));
     }
 
     @Override
@@ -1450,7 +1450,7 @@ public class OSSClient implements OSS {
 
     @Override
     public BucketQosInfo getBucketQosInfo(String bucketName) throws OSSException, ClientException {
-        return this.bucketOperation.getBucketQosInfo(new GenericRequest(bucketName));
+        return this.getBucketQosInfo(new GenericRequest(bucketName));
     }
 
     @Override
@@ -1460,7 +1460,7 @@ public class OSSClient implements OSS {
 
     @Override
     public void deleteBucketQosInfo(String bucketName) throws OSSException, ClientException {
-        this.bucketOperation.deleteBucketQosInfo(new GenericRequest(bucketName));
+        this.deleteBucketQosInfo(new GenericRequest(bucketName));
     }
  
     @Override
