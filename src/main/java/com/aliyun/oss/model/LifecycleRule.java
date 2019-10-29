@@ -151,18 +151,93 @@ public class LifecycleRule {
         }
     }
 
+    public static class NoncurrentVersionStorageTransition {
+        private Integer noncurrentDays;
+        private StorageClass storageClass;
+
+        public NoncurrentVersionStorageTransition() {
+        }
+
+        public NoncurrentVersionStorageTransition(Integer noncurrentDays, StorageClass storageClass) {
+            this.noncurrentDays = noncurrentDays;
+            this.storageClass = storageClass;
+        }
+
+        public Integer getNoncurrentDays() {
+            return noncurrentDays;
+        }
+
+        public void setNoncurrentDays(Integer noncurrentDays) {
+            this.noncurrentDays = noncurrentDays;
+        }
+
+        public NoncurrentVersionStorageTransition withNoncurrentDays(Integer noncurrentDays) {
+            setNoncurrentDays(noncurrentDays);
+            return this;
+        }
+
+        public boolean hasNoncurrentDays() {
+            return this.noncurrentDays != null;
+        }
+
+        public StorageClass getStorageClass() {
+            return storageClass;
+        }
+
+        public void setStorageClass(StorageClass storageClass) {
+            this.storageClass = storageClass;
+        }
+
+        public NoncurrentVersionStorageTransition withStrorageClass(StorageClass storageClass) {
+            setStorageClass(storageClass);
+            return this;
+        }
+    }
+
+    public static class NoncurrentVersionExpiration {
+        private Integer noncurrentDays;
+
+        public NoncurrentVersionExpiration() {
+        }
+
+        public NoncurrentVersionExpiration(Integer noncurrentDays) {
+            this.noncurrentDays = noncurrentDays;
+        }
+
+        public Integer getNoncurrentDays() {
+            return noncurrentDays;
+        }
+
+        public void setNoncurrentDays(Integer noncurrentDays) {
+            this.noncurrentDays = noncurrentDays;
+        }
+
+        public NoncurrentVersionExpiration withNoncurrentDays(Integer noncurrentDays) {
+            setNoncurrentDays(noncurrentDays);
+            return this;
+        }
+
+        public boolean hasNoncurrentDays() {
+            return this.noncurrentDays != null;
+        }
+    }
+
     private String id;
     private String prefix;
     private RuleStatus status;
     private int expirationDays;
     private Date expirationTime;
     private Date createdBeforeDate;
+    private Boolean expiredDeleteMarker;
 
     private AbortMultipartUpload abortMultipartUpload;
     private List<StorageTransition> storageTransitions = new ArrayList<StorageTransition>();
-
     private Map<String, String> tags = new HashMap<String, String>();
-    
+    private NoncurrentVersionExpiration noncurrentVersionExpiration;
+    private List<NoncurrentVersionStorageTransition> noncurrentVersionStorageTransitions =
+            new ArrayList<NoncurrentVersionStorageTransition>();
+
+
     public LifecycleRule() {
         status = RuleStatus.Unknown;
     }
@@ -313,6 +388,18 @@ public class LifecycleRule {
         return this.createdBeforeDate != null;
     }
 
+    public Boolean getExpiredDeleteMarker() {
+        return expiredDeleteMarker;
+    }
+
+    public void setExpiredDeleteMarker(Boolean expiredDeleteMarker) {
+        this.expiredDeleteMarker = expiredDeleteMarker;
+    }
+
+    public boolean hasExpiredDeleteMarker() {
+        return expiredDeleteMarker != null;
+    }
+
     public AbortMultipartUpload getAbortMultipartUpload() {
         return abortMultipartUpload;
     }
@@ -351,5 +438,30 @@ public class LifecycleRule {
 
     public boolean hasTags() {
         return this.tags != null && !tags.isEmpty();
+    }
+
+    public NoncurrentVersionExpiration getNoncurrentVersionExpiration() {
+        return noncurrentVersionExpiration;
+    }
+
+    public void setNoncurrentVersionExpiration(NoncurrentVersionExpiration noncurrentVersionExpiration) {
+        this.noncurrentVersionExpiration = noncurrentVersionExpiration;
+    }
+
+    public boolean hasNoncurrentVersionExpiration() {
+        return noncurrentVersionExpiration != null;
+    }
+
+    public List<NoncurrentVersionStorageTransition> getNoncurrentVersionStorageTransitions() {
+        return noncurrentVersionStorageTransitions;
+    }
+
+    public boolean hasNoncurrentVersionStorageTransitions() {
+        return noncurrentVersionStorageTransitions != null && !noncurrentVersionStorageTransitions.isEmpty();
+    }
+
+    public void setNoncurrentVersionStorageTransitions(List<NoncurrentVersionStorageTransition>
+                                                               noncurrentVersionStorageTransitions) {
+        this.noncurrentVersionStorageTransitions = noncurrentVersionStorageTransitions;
     }
 }
