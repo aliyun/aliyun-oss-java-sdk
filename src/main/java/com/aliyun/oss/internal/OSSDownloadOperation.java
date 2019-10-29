@@ -49,6 +49,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import com.aliyun.oss.InconsistentException;
+import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.CRC64;
 import com.aliyun.oss.common.utils.IOUtils;
 import com.aliyun.oss.event.ProgressEventType;
@@ -111,13 +112,24 @@ public class OSSDownloadOperation {
         /**
          * Check if the object matches the checkpoint information.
          */
-        public synchronized boolean isValid(OSSObjectOperation objectOperation) {
+        public synchronized boolean isValid(OSSObjectOperation objectOperation, DownloadFileRequest downloadFileRequest) {
             // 比较checkpoint的magic和md5
             if (this.magic == null || !this.magic.equals(DOWNLOAD_MAGIC) || this.md5 != hashCode()) {
                 return false;
             }
 
             GenericRequest genericRequest = new GenericRequest(bucketName, objectKey);
+
+            Payer payer = downloadFileRequest.getRequestPayer();
+            if (payer != null) {
+                genericRequest.setRequestPayer(payer);
+            }
+
+            String versionId = downloadFileRequest.getVersionId();
+            if (versionId != null) {
+                genericRequest.setVersionId(versionId);
+            }
+
             SimplifiedObjectMeta meta = objectOperation.getSimplifiedObjectMeta(genericRequest);
 
             // Object's size, last modified time or ETAG are not same as the one
@@ -363,7 +375,13 @@ public class OSSDownloadOperation {
         // checkpoint file name.
         if (downloadFileRequest.isEnableCheckpoint()) {
             if (downloadFileRequest.getCheckpointFile() == null || downloadFileRequest.getCheckpointFile().isEmpty()) {
-                downloadFileRequest.setCheckpointFile(downloadFileRequest.getDownloadFile() + ".dcp");
+                String versionId = downloadFileRequest.getVersionId();
+                if (versionId != null) {
+                    downloadFileRequest.setCheckpointFile(downloadFileRequest.getDownloadFile() + "."
+                            + BinaryUtil.encodeMD5(versionId.getBytes()) + ".dcp");
+                } else {
+                    downloadFileRequest.setCheckpointFile(downloadFileRequest.getDownloadFile() + ".dcp");
+                }
             }
         }
 
@@ -387,7 +405,7 @@ public class OSSDownloadOperation {
             }
 
             // The download checkpoint is corrupted, download again.
-            if (!downloadCheckPoint.isValid(objectOperation)) {
+            if (!downloadCheckPoint.isValid(objectOperation, downloadFileRequest)) {
                 prepare(downloadCheckPoint, downloadFileRequest);
                 remove(downloadFileRequest.getCheckpointFile());
             }

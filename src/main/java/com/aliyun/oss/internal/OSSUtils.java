@@ -52,7 +52,7 @@ public class OSSUtils {
     public static final ResourceManager OSS_RESOURCE_MANAGER = ResourceManager.getInstance(RESOURCE_NAME_OSS);
     public static final ResourceManager COMMON_RESOURCE_MANAGER = ResourceManager.getInstance(RESOURCE_NAME_COMMON);
 
-    private static final String BUCKET_NAMING_REGEX = "^[a-z0-9][a-z0-9_\\-]{1,61}[a-z0-9]$";
+    private static final String BUCKET_NAMING_REGEX = "^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$";
 
     /**
      * Validate bucket name.
