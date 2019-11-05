@@ -30,7 +30,7 @@ import com.aliyun.oss.model.WebServiceRequest;
 /**
  * Represent HTTP requests sent to OSS.
  */
-public class RequestMessage extends HttpMesssage {
+public class RequestMessage extends AbstractHttpMessage {
 
     /* bucket name */
     private String bucket;

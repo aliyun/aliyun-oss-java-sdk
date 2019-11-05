@@ -19,6 +19,8 @@
 
 package com.aliyun.oss.common.comm;
 
+import com.aliyun.oss.internal.OSSHeaders;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -27,7 +29,7 @@ import java.util.Map;
 /**
  * Common class for both HTTP request and HTTP response.
  */
-public abstract class HttpMesssage {
+public abstract class AbstractHttpMessage {
 
     private Map<String, String> headers = new HashMap<String, String>();
     private InputStream content;
@@ -43,6 +45,10 @@ public abstract class HttpMesssage {
 
     public void addHeader(String key, String value) {
         this.headers.put(key, value);
+
+        if (OSSHeaders.ETAG.toLowerCase().equals(key) && this.headers.get(OSSHeaders.ETAG) == null) {
+            this.headers.put(OSSHeaders.ETAG, value);
+        }
     }
 
     public InputStream getContent() {
