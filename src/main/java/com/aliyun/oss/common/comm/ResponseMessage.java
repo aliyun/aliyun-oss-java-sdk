@@ -25,7 +25,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 
 import com.aliyun.oss.internal.OSSHeaders;
 
-public class ResponseMessage extends HttpMesssage {
+public class ResponseMessage extends AbstractHttpMessage {
 
     private static final int HTTP_SUCCESS_STATUS_CODE = 200;
 
