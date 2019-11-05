@@ -322,7 +322,7 @@ public abstract class ServiceClient {
      * Wrapper class based on {@link HttpMessage} that represents HTTP request
      * message to OSS.
      */
-    public static class Request extends HttpMesssage {
+    public static class Request extends AbstractHttpMessage {
         private String uri;
         private HttpMethod method;
         private boolean useUrlSignature = false;
