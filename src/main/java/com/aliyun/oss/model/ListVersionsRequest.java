@@ -151,7 +151,7 @@ public class ListVersionsRequest extends GenericRequest {
      * can add this parameter to request that OSS encode the keys in the
      * response.
      */
-    private String encodingType = OSSConstants.URL_ENCODING;
+    private String encodingType;
 
 
     /**

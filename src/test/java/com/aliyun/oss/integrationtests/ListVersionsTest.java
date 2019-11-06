@@ -33,17 +33,15 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.DefaultCredentials;
+import com.aliyun.oss.internal.OSSConstants;
+import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 
 import org.junit.Test;
 
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
-import com.aliyun.oss.model.ListVersionsRequest;
-import com.aliyun.oss.model.OSSVersionSummary;
-import com.aliyun.oss.model.VersionListing;
-import com.aliyun.oss.model.BucketVersioningConfiguration;
-import com.aliyun.oss.model.SetBucketVersioningRequest;
+import com.aliyun.oss.model.DeleteVersionsRequest.KeyVersion;
 
 public class ListVersionsTest extends TestBase {
 
@@ -176,8 +174,7 @@ public class ListVersionsTest extends TestBase {
                 // Unormal
                 ListVersionsRequest listVersionsRequest = new ListVersionsRequest()
                     .withBucketName(bucketName)
-                    .withPrefix(objectPrefix)
-                    .withEncodingType(null);
+                    .withPrefix(objectPrefix);
 
                 ossClient.listVersions(listVersionsRequest);
                 Assert.fail("List version should not be successful.");
@@ -189,12 +186,19 @@ public class ListVersionsTest extends TestBase {
             // Normal
             ListVersionsRequest listVersionsRequest = new ListVersionsRequest()
                 .withBucketName(bucketName)
-                .withPrefix(objectPrefix);
+                .withPrefix(objectPrefix)
+                .withEncodingType(OSSConstants.URL_ENCODING);
 
             VersionListing versionListing = ossClient.listVersions(listVersionsRequest);
-            for (OSSVersionSummary version : versionListing.getVersionSummaries()) {
-                String decodedKey = URLDecoder.decode(version.getKey(), "UTF-8");
-                Assert.assertTrue(existingKeys.contains(decodedKey));
+            if (versionListing.getVersionSummaries().size() > 0) {
+                List<KeyVersion> keyVersionsList = new ArrayList<KeyVersion>();
+                for (OSSVersionSummary version : versionListing.getVersionSummaries()) {
+                    String decodedKey = URLDecoder.decode(version.getKey(), "UTF-8");
+                    Assert.assertTrue(existingKeys.contains(decodedKey));
+                    keyVersionsList.add(new KeyVersion(version.getKey(), version.getVersionId()));
+                }
+                DeleteVersionsRequest delVersionsRequest = new DeleteVersionsRequest(bucketName).withKeys(keyVersionsList);
+                ossClient.deleteVersions(delVersionsRequest);
             }
             Assert.assertNull(versionListing.getEncodingType());
         } catch (Exception e) {
