@@ -31,6 +31,7 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.DefaultCredentials;
+import com.aliyun.oss.internal.OSSUtils;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -70,6 +71,7 @@ import com.aliyun.oss.model.BucketVersioningConfiguration;
 import com.aliyun.oss.model.SetBucketVersioningRequest;
 
 import static com.aliyun.oss.integrationtests.TestUtils.*;
+import static org.junit.Assert.assertTrue;
 
 public class ObjectVersionTest extends TestBase {
 
@@ -222,8 +224,8 @@ public class ObjectVersionTest extends TestBase {
     }
 
     @Test
-    public void tesDeleteVersions() {
-        String prefix = "version-test-del-multiple-versions";
+    public void testDeleteVersions() {
+        String prefix = (char)9 + "" + (char)0x20 + "123_.*  中文-!@#$%^&*()_+-=;'\"~`><?/':[]|\\";
         long inputStreamLength = 1024;
         String key = null;
 

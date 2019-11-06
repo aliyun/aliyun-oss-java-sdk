@@ -700,7 +700,7 @@ public final class RequestMarshallers {
                 KeyVersion key = keysToDelete.get(i);
                 xmlBody.append("<Object>");
                 xmlBody.append("<Key>" +
-                    escapeKey(HttpUtil.urlEncode(key.getKey(), StringUtils.DEFAULT_ENCODING)) + "</Key>");
+                    escapeKey(key.getKey()) + "</Key>");
                 if (key.getVersion() != null) {
                     xmlBody.append("<VersionId>" + key.getVersion() + "</VersionId>");
                 }
