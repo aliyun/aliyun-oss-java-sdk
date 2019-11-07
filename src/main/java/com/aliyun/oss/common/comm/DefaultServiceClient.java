@@ -162,7 +162,7 @@ public class DefaultServiceClient extends ServiceClient {
         }
 
         for (Header header : httpResponse.getAllHeaders()) {
-            if (HttpHeaders.CONTENT_LENGTH.equals(header.getName())) {
+            if (HttpHeaders.CONTENT_LENGTH.equalsIgnoreCase(header.getName())) {
                 response.setContentLength(Long.parseLong(header.getValue()));
             }
             response.addHeader(header.getName(), header.getValue());

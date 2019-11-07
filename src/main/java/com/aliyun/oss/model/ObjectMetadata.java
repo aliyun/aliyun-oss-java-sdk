@@ -23,7 +23,7 @@ import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.Map;
 
 import com.aliyun.oss.common.utils.DateUtil;
@@ -37,10 +37,10 @@ import com.aliyun.oss.internal.SignV2Utils;
 public class ObjectMetadata {
 
     // The user's custom metadata, whose prefix in http header is x-oss-meta-.
-    private Map<String, String> userMetadata = new HashMap<String, String>();
+    private Map<String, String> userMetadata = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 
     // Other non-custom metadata.
-    protected Map<String, Object> metadata = new HashMap<String, Object>();
+    protected Map<String, Object> metadata = new TreeMap<String, Object>(String.CASE_INSENSITIVE_ORDER);
 
     public static final String AES_256_SERVER_SIDE_ENCRYPTION = "AES256";
 

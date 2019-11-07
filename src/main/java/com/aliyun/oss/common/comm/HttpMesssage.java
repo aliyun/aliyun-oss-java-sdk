@@ -21,15 +21,15 @@ package com.aliyun.oss.common.comm;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Common class for both HTTP request and HTTP response.
  */
 public abstract class HttpMesssage {
 
-    private Map<String, String> headers = new HashMap<String, String>();
+    private Map<String, String> headers = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);;
     private InputStream content;
     private long contentLength;
 
