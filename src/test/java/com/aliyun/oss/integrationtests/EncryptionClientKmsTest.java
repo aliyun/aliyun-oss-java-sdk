@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.aliyun.oss.model.*;
 import org.junit.Test;
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSSEncryptionClient;
@@ -39,15 +41,6 @@ import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.crypto.EncryptionMaterials;
 import com.aliyun.oss.crypto.KmsEncryptionMaterials;
 import com.aliyun.oss.crypto.MultipartUploadCryptoContext;
-import com.aliyun.oss.model.CompleteMultipartUploadRequest;
-import com.aliyun.oss.model.GetObjectRequest;
-import com.aliyun.oss.model.InitiateMultipartUploadRequest;
-import com.aliyun.oss.model.InitiateMultipartUploadResult;
-import com.aliyun.oss.model.OSSObject;
-import com.aliyun.oss.model.PartETag;
-import com.aliyun.oss.model.PutObjectRequest;
-import com.aliyun.oss.model.UploadPartRequest;
-import com.aliyun.oss.model.UploadPartResult;
 
 import junit.framework.Assert;
 
@@ -365,6 +358,123 @@ public class EncryptionClientKmsTest extends TestBase {
             }
         } catch (Throwable e) {
             e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testUploadFile() {
+        try {
+            String key = "encryption-client-uploadfile.txt";
+            String filePathNew = key + "-new.txt";
+            File file = createSampleFile(key, 1024 * 500);
+
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
+            uploadFileRequest.setUploadFile(file.getAbsolutePath());
+            uploadFileRequest.setPartSize(1 * 100 * 1024);
+            uploadFileRequest.setEnableCheckpoint(true);
+            ObjectMetadata objMetadata = new ObjectMetadata();
+            objMetadata.addUserMetadata("prop", "propval");
+            uploadFileRequest.setObjectMetadata(objMetadata);
+
+            ossEncryptionClient.uploadFile(uploadFileRequest);
+
+            GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
+            ObjectMetadata objectMetadata = ossEncryptionClient.getObject(getObjectRequest, new File(filePathNew));
+            Assert.assertEquals(file.length(), objectMetadata.getContentLength());
+            Assert.assertEquals("propval", objectMetadata.getUserMetadata().get("prop"));
+
+            File fileNew = new File(filePathNew);
+            Assert.assertTrue("comparte file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
+            fileNew.delete();
+        } catch (Throwable e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testDownloadFile() {
+        try {
+            String key = "encryption-client-downloadfile.txt";
+            String filePathNew = key + "-new.txt";
+            File file = createSampleFile(key, 2 * 1024 * 1024);
+
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file);
+            ObjectMetadata objMetadata = new ObjectMetadata();
+            objMetadata.addUserMetadata("prop", "propval");
+            putObjectRequest.setMetadata(objMetadata);
+            ossEncryptionClient.putObject(putObjectRequest);
+
+            String downloadFile = key + "-down.txt";
+            DownloadFileRequest downloadFileRequest = new DownloadFileRequest(bucketName, key);
+            downloadFileRequest.setDownloadFile(downloadFile);
+            downloadFileRequest.setPartSize(1 * 100 * 1024);
+            downloadFileRequest.setTaskNum(5);
+            downloadFileRequest.setEnableCheckpoint(true);
+
+            DownloadFileResult result = ossEncryptionClient.downloadFile(downloadFileRequest);
+            Assert.assertEquals("propval", result.getObjectMetadata().getUserMetadata().get("prop"));
+
+            File fileNew = new File(downloadFile);
+            Assert.assertTrue("compare file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
+            fileNew.delete();
+        } catch (Throwable e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testDownloadSmallFile() throws Throwable {
+        try {
+            String key = "encryption-client-downloadfile.txt";
+            String filePathNew = key + "-new.txt";
+            File file = createSampleFile(key, 200 * 1024);
+
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file);
+            ossEncryptionClient.putObject(putObjectRequest);
+
+            String downloadFile = key + "-down.txt";
+            DownloadFileRequest downloadFileRequest = new DownloadFileRequest(bucketName, key);
+            downloadFileRequest.setDownloadFile(downloadFile);
+            downloadFileRequest.setPartSize(500 * 1024);
+            downloadFileRequest.setTaskNum(5);
+            downloadFileRequest.setEnableCheckpoint(true);
+
+            DownloadFileResult result = ossEncryptionClient.downloadFile(downloadFileRequest);
+            Assert.assertEquals(file.length(), result.getObjectMetadata().getContentLength());
+
+            File fileNew = new File(downloadFile);
+            Assert.assertTrue("compare file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
+            fileNew.delete();
+        } catch (Throwable e){
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testDownloadFileWithWrongPartSize() throws Throwable {
+        try {
+            String key = "encryption-client-downloadfile.txt";
+            String filePathNew = key + "-new.txt";
+            File file = createSampleFile(key, 2 * 1024 * 1024);
+
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file);
+            ossEncryptionClient.putObject(putObjectRequest);
+
+            String downloadFile = key + "-down.txt";
+            DownloadFileRequest downloadFileRequest = new DownloadFileRequest(bucketName, key);
+            downloadFileRequest.setDownloadFile(downloadFile);
+            downloadFileRequest.setPartSize(1 * 100 * 1024 + 1);
+            downloadFileRequest.setTaskNum(5);
+            downloadFileRequest.setEnableCheckpoint(true);
+
+            ossEncryptionClient.downloadFile(downloadFileRequest);
+            Assert.fail("the part size is not 16 bytes alignment. should be failed.");
+        } catch (IllegalArgumentException e) {
+            // Expected exception.
+        } catch (Throwable e){
             Assert.fail(e.getMessage());
         }
     }

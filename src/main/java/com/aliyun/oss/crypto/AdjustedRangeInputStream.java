@@ -52,10 +52,16 @@ public class AdjustedRangeInputStream extends InputStream {
         initializeForRead(rangeBeginning, rangeEnd);
     }
 
+    /**
+     * Aborts the inputstream operation if thread is interrupted.
+     * interrupted status of the thread is cleared by this method.
+     *
+     * @throws ClientException with ClientErrorCode INPUTSTREAM_READING_ABORTED if thread aborted.
+     */
     protected final void abortIfNeeded() {
         if (shouldAbort()) {
             abort();
-            throw new ClientException("Thread aborted, inputStream aborted...", 
+            throw new ClientException("Thread aborted, inputStream aborted...",
                                       ClientErrorCode.INPUTSTREAM_READING_ABORTED, null);
         }
     }
@@ -157,7 +163,7 @@ public class AdjustedRangeInputStream extends InputStream {
         }
     }
 
-    protected InputStream getWrappedInputStream() {
+    public InputStream getWrappedInputStream() {
         return decryptedContents;
     }
 }

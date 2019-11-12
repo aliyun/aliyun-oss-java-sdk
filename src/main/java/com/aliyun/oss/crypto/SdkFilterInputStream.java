@@ -45,10 +45,10 @@ public class SdkFilterInputStream extends FilterInputStream {
     }
 
     /**
-     * Aborts with subclass specific abortion logic executed if needed. Note the
+     * Aborts the inputstream operation if thread is interrupted.
      * interrupted status of the thread is cleared by this method.
      * 
-     * @throws AbortedException if found necessary.
+     * @throws ClientException with ClientErrorCode INPUTSTREAM_READING_ABORTED if thread aborted.
      */
     protected final void abortIfNeeded() {
         if (shouldAbort()) {
@@ -58,11 +58,6 @@ public class SdkFilterInputStream extends FilterInputStream {
         }
     }
 
-    /**
-     * Can be used to provide abortion logic prior to throwing the AbortedException.
-     * If the wrapped {@code InputStream} is also an instance of this class, then it
-     * will also be aborted, otherwise this is a no-op.
-     */
     public void abort() {
         if (in instanceof SdkFilterInputStream) {
             ((SdkFilterInputStream) in).abort();

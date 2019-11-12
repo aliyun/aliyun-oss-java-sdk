@@ -24,33 +24,12 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
 import com.aliyun.oss.common.auth.CredentialsProvider;
-import com.aliyun.oss.crypto.CryptoConfiguration;
-import com.aliyun.oss.crypto.CryptoModule;
-import com.aliyun.oss.crypto.CryptoModuleDispatcher;
-import com.aliyun.oss.crypto.EncryptionMaterials;
-import com.aliyun.oss.crypto.KmsEncryptionMaterials;
-import com.aliyun.oss.crypto.MultipartUploadCryptoContext;
-import com.aliyun.oss.crypto.OSSDirect;
-import com.aliyun.oss.model.AbortMultipartUploadRequest;
-import com.aliyun.oss.model.AppendObjectRequest;
-import com.aliyun.oss.model.AppendObjectResult;
-import com.aliyun.oss.model.CompleteMultipartUploadRequest;
-import com.aliyun.oss.model.CompleteMultipartUploadResult;
-import com.aliyun.oss.model.DownloadFileRequest;
-import com.aliyun.oss.model.DownloadFileResult;
-import com.aliyun.oss.model.GetObjectRequest;
-import com.aliyun.oss.model.InitiateMultipartUploadRequest;
-import com.aliyun.oss.model.InitiateMultipartUploadResult;
-import com.aliyun.oss.model.OSSObject;
-import com.aliyun.oss.model.ObjectMetadata;
-import com.aliyun.oss.model.PutObjectRequest;
-import com.aliyun.oss.model.PutObjectResult;
-import com.aliyun.oss.model.UploadFileRequest;
-import com.aliyun.oss.model.UploadFileResult;
-import com.aliyun.oss.model.UploadPartCopyRequest;
-import com.aliyun.oss.model.UploadPartCopyResult;
-import com.aliyun.oss.model.UploadPartRequest;
-import com.aliyun.oss.model.UploadPartResult;
+import com.aliyun.oss.crypto.*;
+import com.aliyun.oss.internal.OSSDownloadOperationEncrypted;
+import com.aliyun.oss.internal.OSSUploadOperationEncrypted;
+import com.aliyun.oss.model.*;
+import static com.aliyun.oss.crypto.CryptoModuleBase.hasEncryptionInfo;
+
 /**
  * OSSEncryptionClient is used to do client-side encryption.
  */
@@ -88,14 +67,84 @@ public class OSSEncryptionClient extends OSSClient {
         return crypto.getObjectSecurely(req);
     }
 
+    @Override
     public ObjectMetadata getObject(GetObjectRequest req, File file) throws OSSException, ClientException {
         CryptoModule crypto = new CryptoModuleDispatcher(ossDirect, encryptionMaterials, cryptoConfig);
         return crypto.getObjectSecurely(req, file);
     }
 
+    @Override
+    public UploadFileResult uploadFile(UploadFileRequest uploadFileRequest) throws Throwable {
+        OSSUploadOperationEncrypted ossUploadOperationEncrypted = new OSSUploadOperationEncrypted(this, encryptionMaterials);
+        this.setUploadOperation(ossUploadOperationEncrypted);
+        return super.uploadFile(uploadFileRequest);
+    }
+
+    @Override
+    public DownloadFileResult downloadFile(DownloadFileRequest downloadFileRequest) throws Throwable {
+        GenericRequest genericRequest = new GenericRequest(downloadFileRequest.getBucketName(), downloadFileRequest.getKey());
+        String versionId = downloadFileRequest.getVersionId();
+        if (versionId != null) {
+            genericRequest.setVersionId(versionId);
+        }
+        Payer payer = downloadFileRequest.getRequestPayer();
+        if (payer != null) {
+            genericRequest.setRequestPayer(payer);
+        }
+        ObjectMetadata objectMetadata = getObjectMetadata(genericRequest);
+
+        long objectSize = objectMetadata.getContentLength();
+        if (objectSize <= downloadFileRequest.getPartSize()) {
+            GetObjectRequest getObjectRequest = convertToGetObjectRequest(downloadFileRequest);
+            objectMetadata = this.getObject(getObjectRequest, new File(downloadFileRequest.getDownloadFile()));
+            DownloadFileResult downloadFileResult = new DownloadFileResult();
+            downloadFileResult.setObjectMetadata(objectMetadata);
+            return downloadFileResult;
+        } else {
+            if (!hasEncryptionInfo(objectMetadata)) {
+                return super.downloadFile(downloadFileRequest);
+            } else {
+                long partSize = downloadFileRequest.getPartSize();
+                if (0 != (partSize % CryptoScheme.BLOCK_SIZE) || partSize <= 0) {
+                    throw new IllegalArgumentException("download file part size is not 16 bytes alignment.");
+                }
+                OSSDownloadOperationEncrypted ossDownloadOperationEncrypted = new OSSDownloadOperationEncrypted(this);
+                this.setDownloadOperation(ossDownloadOperationEncrypted);
+                return super.downloadFile(downloadFileRequest);
+            }
+        }
+    }
+
+    private static GetObjectRequest convertToGetObjectRequest(DownloadFileRequest downloadFileRequest) {
+        GetObjectRequest getObjectRequest = new GetObjectRequest(downloadFileRequest.getBucketName(),
+                downloadFileRequest.getKey());
+        getObjectRequest.setMatchingETagConstraints(downloadFileRequest.getMatchingETagConstraints());
+        getObjectRequest.setNonmatchingETagConstraints(downloadFileRequest.getNonmatchingETagConstraints());
+        getObjectRequest.setModifiedSinceConstraint(downloadFileRequest.getModifiedSinceConstraint());
+        getObjectRequest.setUnmodifiedSinceConstraint(downloadFileRequest.getUnmodifiedSinceConstraint());
+        getObjectRequest.setResponseHeaders(downloadFileRequest.getResponseHeaders());
+
+        String versionId = downloadFileRequest.getVersionId();
+        if (versionId != null) {
+            getObjectRequest.setVersionId(versionId);
+        }
+
+        Payer payer = downloadFileRequest.getRequestPayer();
+        if (payer != null) {
+            getObjectRequest.setRequestPayer(payer);
+        }
+
+        int limit = downloadFileRequest.getTrafficLimit();
+        if (limit > 0) {
+            getObjectRequest.setTrafficLimit(limit);
+        }
+
+        return getObjectRequest;
+    }
+
     public InitiateMultipartUploadResult initiateMultipartUpload(InitiateMultipartUploadRequest request,
                                                                  MultipartUploadCryptoContext context)
-                                                                 throws OSSException, ClientException{
+                                                                 throws OSSException, ClientException {
         CryptoModule crypto = new CryptoModuleDispatcher(ossDirect, encryptionMaterials, cryptoConfig);
         return crypto.initiateMultipartUploadSecurely(request, context);
     }
@@ -107,7 +156,7 @@ public class OSSEncryptionClient extends OSSClient {
 
     public CompleteMultipartUploadResult completeMultipartUpload(CompleteMultipartUploadRequest request, 
                                                                  MultipartUploadCryptoContext context) 
-                                                                 throws OSSException, ClientException{
+                                                                 throws OSSException, ClientException {
         return super.completeMultipartUpload(request);
     }
 
@@ -171,8 +220,8 @@ public class OSSEncryptionClient extends OSSClient {
      * Note: This method is disabled in encryption client.
      *  
      * @deprecated please use normal oss client method
-     *     {@link OSSClient#putObject(URL signedUrl, InputStream requestContent, long contentLength,
-                Map<String, String> requestHeaders, boolean useChunkEncoding)}.             
+     *     {@link OSSClient}#putObject(URL signedUrl, InputStream requestContent, long contentLength,
+     *           Map<String, String> requestHeaders, boolean useChunkEncoding).
      */
     @Override
     @Deprecated
@@ -183,30 +232,6 @@ public class OSSEncryptionClient extends OSSClient {
                 + "long contentLength, Map<String, String> requestHeaders, boolean useChunkEncoding)");
     }
 
-    /**
-     * Note: This method is disabled in encryption client.
-     *  
-     * @deprecated please use normal oss client method
-     *     {@link OSSClient#ploadFile(UploadFileRequest uploadFileRequest)}.             
-     */
-    @Override
-    @Deprecated
-    public UploadFileResult uploadFile(UploadFileRequest uploadFileRequest) throws Throwable {
-        throw new ClientException("Encryption client error, this method is disabled in encryption client." + 
-                "Please use normal oss client method {@link OSSClient#ploadFile(UploadFileRequest uploadFileRequest)}");
-    }
-
-    /**
-     * Note: This method is disabled in encryption client.
-     *  
-     * @deprecated please use normal oss client method
-     *     {@link OSSClient#downloadFile(DownloadFileRequest downloadFileRequest)}.             
-     */
-    @Override
-    public DownloadFileResult downloadFile(DownloadFileRequest downloadFileRequest) throws Throwable {
-        throw new ClientException("Encryption client error, this method is disabled in encryption client." + 
-                "Please use normal oss client method {@link OSSClient#downloadFile(DownloadFileRequest downloadFileRequest)}");
-    }
 
     private final class OSSDirectImpl implements OSSDirect {
         @Override

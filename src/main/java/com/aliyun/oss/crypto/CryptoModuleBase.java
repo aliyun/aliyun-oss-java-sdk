@@ -31,10 +31,12 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.zip.CheckedInputStream;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
+import com.aliyun.oss.model.*;
 import org.apache.http.protocol.HTTP;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -42,16 +44,6 @@ import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSSEncryptionClient;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.IOUtils;
-import com.aliyun.oss.model.GetObjectRequest;
-import com.aliyun.oss.model.InitiateMultipartUploadRequest;
-import com.aliyun.oss.model.InitiateMultipartUploadResult;
-import com.aliyun.oss.model.OSSObject;
-import com.aliyun.oss.model.ObjectMetadata;
-import com.aliyun.oss.model.PutObjectRequest;
-import com.aliyun.oss.model.PutObjectResult;
-import com.aliyun.oss.model.UploadPartRequest;
-import com.aliyun.oss.model.UploadPartResult;
-import com.aliyun.oss.model.WebServiceRequest;
 import com.aliyun.oss.internal.Mimetypes;
 import com.aliyun.oss.internal.OSSHeaders;
 import com.aliyun.oss.internal.OSSUtils;
@@ -88,7 +80,7 @@ public abstract class CryptoModuleBase implements CryptoModule {
     }
 
     abstract byte[] generateIV();
-    abstract CryptoCipher createCryptoCipherFromContentMaterial(ContentCryptoMaterial cekMaterial, 
+    abstract CryptoCipher createCryptoCipherFromContentMaterial(ContentCryptoMaterial cekMaterial,
                                                        int cipherMode, long[] cryptoRange, long skipBlock);
 
     /**
@@ -185,7 +177,7 @@ public abstract class CryptoModuleBase implements CryptoModule {
     /**
      * Checks there an encryption info in the metadata.
      */
-    private static boolean hasEncryptionInfo(ObjectMetadata metadata) {
+    public static boolean hasEncryptionInfo(ObjectMetadata metadata) {
         Map<String, String> userMeta = metadata.getUserMetadata();
         return userMeta != null && userMeta.containsKey(CryptoHeaders.CRYPTO_KEY)
                 && userMeta.containsKey(CryptoHeaders.CRYPTO_IV);
@@ -312,8 +304,19 @@ public abstract class CryptoModuleBase implements CryptoModule {
             while ((bytesRead = ossObject.getObjectContent().read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
             }
-            if (ossDirect.getInnerClientConfiguration().isCrcCheckEnabled() && getObjectRequest.getRange() != null) {
-                Long clientCRC = IOUtils.getCRCValue(ossObject.getObjectContent());
+
+            if (ossDirect.getInnerClientConfiguration().isCrcCheckEnabled() && getObjectRequest.getRange() == null) {
+                Long clientCRC = null;
+                InputStream contentInputStream = ossObject.getObjectContent();
+                if (contentInputStream instanceof CipherInputStream) {
+                    InputStream subStream = ((CipherInputStream) contentInputStream).getDelegateStream();
+                    if (subStream instanceof CheckedInputStream){
+                        clientCRC = ((CheckedInputStream) subStream).getChecksum().getValue();
+                    }
+                }
+                else {
+                    clientCRC = IOUtils.getCRCValue(ossObject.getObjectContent());
+                }
                 OSSUtils.checkChecksum(clientCRC, ossObject.getServerCRC(), ossObject.getRequestId());
             }
             return ossObject.getObjectMetadata();
@@ -376,7 +379,7 @@ public abstract class CryptoModuleBase implements CryptoModule {
             throw new ClientException("The multipartUploadCryptoContextcontext input upload id is invalid."
                     + "context uploadid:" + context.getUploadId() + ",uploadRequest uploadid:" + req.getUploadId());
         }
-        
+
         // Update User-Agent.
         setUserAgent(req, encryptionClientUserAgent);
 
@@ -471,13 +474,7 @@ public abstract class CryptoModuleBase implements CryptoModule {
         contentMaterialRW.setContentCryptoAlgorithm(contentCryptoScheme.getContentChiperAlgorithm());
         encryptionMaterials.encryptCEK(contentMaterialRW);
 
-        return new ContentCryptoMaterial(contentMaterialRW.getCEK(),
-                                         contentMaterialRW.getIV(),
-                                         contentMaterialRW.getContentCryptoAlgorithm(),
-                                         contentMaterialRW.getEncryptedCEK(),
-                                         contentMaterialRW.getEncryptedIV(),
-                                         contentMaterialRW.getKeyWrapAlgorithm(),
-                                         contentMaterialRW.getMaterialsDescription());
+        return contentMaterialRW;
     }
 
     /**

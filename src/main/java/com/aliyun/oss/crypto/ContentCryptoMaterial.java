@@ -19,6 +19,7 @@
 
 package com.aliyun.oss.crypto;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
@@ -28,9 +29,12 @@ import javax.crypto.SecretKey;
  * Content crypto material used for client-side content encryption/decryption in OSS,
  * it only provide getting accessor.
  */
-public class ContentCryptoMaterial {
-    protected SecretKey cek;
-    protected byte[] iv;
+public class ContentCryptoMaterial implements Serializable {
+    private static final long serialVersionUID = -2728152316155503945L;
+    /**Prevent sensitive information serializing.*/
+    protected transient SecretKey cek;
+    /**Prevent sensitive information serializing.*/
+    protected transient byte[] iv;
     protected String contentCryptoAlgorithm;
     protected byte[] encryptedCEK;
     protected byte[] encryptedIV;
@@ -54,6 +58,41 @@ public class ContentCryptoMaterial {
         this.encryptedIV = encryptedIV.clone();
         this.keyWrapAlgorithm = keyWrapAlgorithm;
         this.matdesc = Collections.unmodifiableMap(new TreeMap<String, String>(matDesc));
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+
+        if (cek != null) {
+            for (int i=0; i<cek.getEncoded().length; i++){
+                result = prime * result + cek.getEncoded()[i];
+            }
+        }
+
+        if (iv != null) {
+            for (int i=0; i<iv.length; i++){
+                result = prime * result + iv[i];
+            }
+        }
+
+        if (encryptedCEK != null) {
+            for (int i=0; i<encryptedCEK.length; i++){
+                result = prime * result + encryptedCEK[i];
+            }
+        }
+
+        if (encryptedIV != null) {
+            for (int i=0; i<encryptedIV.length; i++){
+                result = prime * result + encryptedIV[i];
+            }
+        }
+
+        result = prime * result + ((contentCryptoAlgorithm == null) ? 0 : contentCryptoAlgorithm.hashCode());
+        result = prime * result + ((keyWrapAlgorithm == null) ? 0 : keyWrapAlgorithm.hashCode());
+        result = prime * result + ((matdesc == null) ? 0 : matdesc.hashCode());
+        return result;
     }
 
     /**

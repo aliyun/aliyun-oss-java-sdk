@@ -19,7 +19,10 @@
 
 package com.aliyun.oss.crypto;
 
-public class MultipartUploadCryptoContext {
+import java.io.Serializable;
+
+public class MultipartUploadCryptoContext implements Serializable {
+    private static final long serialVersionUID = -1273005579744565699L;
     private String uploadId;
     private ContentCryptoMaterial cekMaterial;
     private long partSize;
@@ -28,6 +31,17 @@ public class MultipartUploadCryptoContext {
     public MultipartUploadCryptoContext() {
         partSize = 0;
         dataSize = 0;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (int)partSize;
+        result = prime * result + (int)dataSize;
+        result = prime * result + ((uploadId == null) ? 0 : uploadId.hashCode());
+        result = prime * result + ((cekMaterial == null) ? 0 : cekMaterial.hashCode());
+        return result;
     }
 
     public void setPartSize(long partSize) {

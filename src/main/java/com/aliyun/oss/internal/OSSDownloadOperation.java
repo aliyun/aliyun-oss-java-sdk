@@ -70,6 +70,14 @@ import com.aliyun.oss.model.HeadObjectRequest;
  */
 public class OSSDownloadOperation {
 
+    protected OSSObject getObjectWrap(GetObjectRequest getObjectRequest){
+        return objectOperation.getObject(getObjectRequest);
+    }
+
+    protected Long getInputStreamCRCWrap(InputStream inputStream) {
+        return IOUtils.getCRCValue(inputStream);
+    }
+
     static class DownloadCheckPoint implements Serializable {
 
         private static final long serialVersionUID = 4682293344365787077L;
@@ -111,13 +119,24 @@ public class OSSDownloadOperation {
         /**
          * Check if the object matches the checkpoint information.
          */
-        public synchronized boolean isValid(OSSObjectOperation objectOperation) {
+        public synchronized boolean isValid(OSSObjectOperation objectOperation, DownloadFileRequest downloadFileRequest) {
             // 比较checkpoint的magic和md5
             if (this.magic == null || !this.magic.equals(DOWNLOAD_MAGIC) || this.md5 != hashCode()) {
                 return false;
             }
 
             GenericRequest genericRequest = new GenericRequest(bucketName, objectKey);
+
+            Payer payer = downloadFileRequest.getRequestPayer();
+            if (payer != null) {
+                genericRequest.setRequestPayer(payer);
+            }
+
+            String versionId = downloadFileRequest.getVersionId();
+            if (versionId != null) {
+                genericRequest.setVersionId(versionId);
+            }
+
             SimplifiedObjectMeta meta = objectOperation.getSimplifiedObjectMeta(genericRequest);
 
             // Object's size, last modified time or ETAG are not same as the one
@@ -385,7 +404,7 @@ public class OSSDownloadOperation {
             }
 
             // The download checkpoint is corrupted, download again.
-            if (!downloadCheckPoint.isValid(objectOperation)) {
+            if (!downloadCheckPoint.isValid(objectOperation, downloadFileRequest)) {
                 prepare(downloadCheckPoint, downloadFileRequest);
                 remove(downloadFileRequest.getCheckpointFile());
             }
@@ -544,7 +563,7 @@ public class OSSDownloadOperation {
         return downloadResult;
     }
 
-    static class Task implements Callable<PartResult> {
+    class Task implements Callable<PartResult> {
 
         public Task(int id, String name, DownloadCheckPoint downloadCheckPoint, int partIndex,
                 DownloadFileRequest downloadFileRequest, OSSObjectOperation objectOperation,
@@ -595,7 +614,7 @@ public class OSSDownloadOperation {
                     getObjectRequest.setTrafficLimit(limit);
                 }
 
-                OSSObject ossObj = objectOperation.getObject(getObjectRequest);
+                OSSObject ossObj = getObjectWrap(getObjectRequest);
                 objectMetadata = ossObj.getObjectMetadata();
                 content = ossObj.getObjectContent();
 
@@ -606,7 +625,7 @@ public class OSSDownloadOperation {
                 }
 
                 if (objectOperation.getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
-                    Long clientCRC = IOUtils.getCRCValue(content);
+                    Long clientCRC = getInputStreamCRCWrap(content);
                     tr.setClientCRC(clientCRC);
                     tr.setServerCRC(objectMetadata.getServerCRC());
                     tr.setLength(objectMetadata.getContentLength());
