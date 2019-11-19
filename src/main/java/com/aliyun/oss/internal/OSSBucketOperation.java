@@ -19,25 +19,7 @@
 
 package com.aliyun.oss.internal;
 
-import static com.aliyun.oss.common.parser.RequestMarshallers.bucketRefererMarshaller;
-import static com.aliyun.oss.common.parser.RequestMarshallers.createBucketRequestMarshaller;
-import static com.aliyun.oss.common.parser.RequestMarshallers.putBucketImageRequestMarshaller;
-import static com.aliyun.oss.common.parser.RequestMarshallers.putImageStyleRequestMarshaller;
-import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketLifecycleRequestMarshaller;
-import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketLoggingRequestMarshaller;
-import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketTaggingRequestMarshaller;
-import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketWebsiteRequestMarshaller;
-import static com.aliyun.oss.common.parser.RequestMarshallers.addBucketReplicationRequestMarshaller;
-import static com.aliyun.oss.common.parser.RequestMarshallers.deleteBucketReplicationRequestMarshaller;
-import static com.aliyun.oss.common.parser.RequestMarshallers.addBucketCnameRequestMarshaller;
-import static com.aliyun.oss.common.parser.RequestMarshallers.deleteBucketCnameRequestMarshaller;
-import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketQosRequestMarshaller;
-import static com.aliyun.oss.common.parser.RequestMarshallers.bucketImageProcessConfMarshaller;
-import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketVersioningRequestMarshaller;
-import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketEncryptionRequestMarshaller;
-import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketPolicyRequestMarshaller;
-import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketRequestPaymentRequestMarshaller;
-import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketQosInfoRequestMarshaller;
+import static com.aliyun.oss.common.parser.RequestMarshallers.*;
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
@@ -70,6 +52,8 @@ import static com.aliyun.oss.internal.ResponseParsers.getBucketPolicyResponsePar
 import static com.aliyun.oss.internal.ResponseParsers.getBucketRequestPaymentResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getUSerQosInfoResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketQosInfoResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.setAsyncFetchTaskResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getAsyncFetchTaskResponseParser;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -91,61 +75,7 @@ import com.aliyun.oss.common.comm.ServiceClient;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.ExceptionFactory;
 import com.aliyun.oss.common.utils.HttpHeaders;
-import com.aliyun.oss.model.AccessControlList;
-import com.aliyun.oss.model.Bucket;
-import com.aliyun.oss.model.BucketInfo;
-import com.aliyun.oss.model.BucketList;
-import com.aliyun.oss.model.BucketLoggingResult;
-import com.aliyun.oss.model.BucketMetadata;
-import com.aliyun.oss.model.BucketProcess;
-import com.aliyun.oss.model.BucketQosInfo;
-import com.aliyun.oss.model.BucketReferer;
-import com.aliyun.oss.model.BucketReplicationProgress;
-import com.aliyun.oss.model.BucketStat;
-import com.aliyun.oss.model.BucketVersioningConfiguration;
-import com.aliyun.oss.model.BucketWebsiteResult;
-import com.aliyun.oss.model.CannedAccessControlList;
-import com.aliyun.oss.model.CnameConfiguration;
-import com.aliyun.oss.model.CreateBucketRequest;
-import com.aliyun.oss.model.DeleteBucketCnameRequest;
-import com.aliyun.oss.model.DeleteBucketReplicationRequest;
-import com.aliyun.oss.model.GenericRequest;
-import com.aliyun.oss.model.GetBucketImageResult;
-import com.aliyun.oss.model.GetBucketReplicationProgressRequest;
-import com.aliyun.oss.model.GetBucketRequestPaymentResult;
-import com.aliyun.oss.model.ImageProcess;
-import com.aliyun.oss.model.ReplicationRule;
-import com.aliyun.oss.model.ServerSideEncryptionConfiguration;
-import com.aliyun.oss.model.SetBucketEncryptionRequest;
-import com.aliyun.oss.model.GetImageStyleResult;
-import com.aliyun.oss.model.LifecycleRule;
-import com.aliyun.oss.model.ListBucketsRequest;
-import com.aliyun.oss.model.ListObjectsRequest;
-import com.aliyun.oss.model.ListVersionsRequest;
-import com.aliyun.oss.model.ObjectListing;
-import com.aliyun.oss.model.Payer;
-import com.aliyun.oss.model.PutBucketImageRequest;
-import com.aliyun.oss.model.PutImageStyleRequest;
-import com.aliyun.oss.model.SetBucketAclRequest;
-import com.aliyun.oss.model.AddBucketCnameRequest;
-import com.aliyun.oss.model.SetBucketLifecycleRequest;
-import com.aliyun.oss.model.SetBucketLoggingRequest;
-import com.aliyun.oss.model.SetBucketProcessRequest;
-import com.aliyun.oss.model.SetBucketQosInfoRequest;
-import com.aliyun.oss.model.SetBucketRefererRequest;
-import com.aliyun.oss.model.SetBucketRequestPaymentRequest;
-import com.aliyun.oss.model.AddBucketReplicationRequest;
-import com.aliyun.oss.model.SetBucketStorageCapacityRequest;
-import com.aliyun.oss.model.SetBucketTaggingRequest;
-import com.aliyun.oss.model.SetBucketVersioningRequest;
-import com.aliyun.oss.model.SetBucketWebsiteRequest;
-import com.aliyun.oss.model.SetBucketPolicyRequest;
-import com.aliyun.oss.model.GetBucketPolicyResult;
-import com.aliyun.oss.model.TagSet;
-import com.aliyun.oss.model.Style;
-import com.aliyun.oss.model.UserQos;
-import com.aliyun.oss.model.UserQosInfo;
-import com.aliyun.oss.model.VersionListing;
+import com.aliyun.oss.model.*;
 import org.apache.http.HttpStatus;
 
 /**
@@ -1452,6 +1382,56 @@ public class OSSBucketOperation extends OSSOperation {
                 .setMethod(HttpMethod.GET).setParameters(params).setOriginalRequest(gGenericRequest).build();
 
         return doOperation(request, getUSerQosInfoResponseParser, null, null, true);
+    }
+
+    public SetAsyncFetchTaskResult setAsyncFetchTask(SetAsyncFetchTaskRequest setAsyncFetchTaskRequest)
+            throws OSSException, ClientException {
+        assertParameterNotNull(setAsyncFetchTaskRequest, "setAsyncFetchTaskRequest");
+
+        String bucketName = setAsyncFetchTaskRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        AsyncFetchTaskConfiguration taskConfiguration = setAsyncFetchTaskRequest.getAsyncFetchTaskConfiguration();
+        assertParameterNotNull(taskConfiguration, "taskConfiguration");
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_ASYNC_FETCH, null);
+
+        byte[] rawContent = setAsyncFetchTaskRequestMarshaller.marshall(setAsyncFetchTaskRequest.getAsyncFetchTaskConfiguration());
+        Map<String, String> headers = new HashMap<String, String>();
+        addRequestRequiredHeaders(headers, rawContent);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.POST).setBucket(bucketName).setParameters(params).setHeaders(headers)
+                .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+                .setOriginalRequest(setAsyncFetchTaskRequest).build();
+
+        return doOperation(request, setAsyncFetchTaskResponseParser, bucketName, null, true);
+    }
+
+    public GetAsyncFetchTaskResult getAsyncFetchTask(GetAsyncFetchTaskRequest getAsyncFetchTaskRequest)
+            throws OSSException, ClientException {
+        assertParameterNotNull(getAsyncFetchTaskRequest, "getAsyncFetchTaskInfoRequest");
+
+        String bucketName = getAsyncFetchTaskRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        String taskId = getAsyncFetchTaskRequest.getTaskId();
+        assertParameterNotNull(taskId, "taskId");
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_ASYNC_FETCH, null);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put(OSSHeaders.OSS_HEADER_TASK_ID, taskId);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setHeaders(headers).setParameters(params)
+                .setOriginalRequest(getAsyncFetchTaskRequest).build();
+
+        return doOperation(request, getAsyncFetchTaskResponseParser, bucketName, null, true);
     }
 
     private static void populateListObjectsRequestParameters(ListObjectsRequest listObjectsRequest,

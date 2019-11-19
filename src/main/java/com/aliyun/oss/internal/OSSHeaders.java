@@ -96,4 +96,6 @@ public interface OSSHeaders extends HttpHeaders {
 
     static final String OSS_HEADER_TRAFFIC_LIMIT = "x-oss-traffic-limit";
 
+    static final String OSS_HEADER_TASK_ID = "x-oss-task-id";
+
 }
