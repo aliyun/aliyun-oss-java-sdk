@@ -38,6 +38,7 @@ import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketEncryptio
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketPolicyRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketRequestPaymentRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketQosInfoRequestMarshaller;
+import static com.aliyun.oss.common.parser.RequestMarshallers.setAsyncFetchTaskRequestMarshaller;
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
@@ -70,6 +71,8 @@ import static com.aliyun.oss.internal.ResponseParsers.getBucketPolicyResponsePar
 import static com.aliyun.oss.internal.ResponseParsers.getBucketRequestPaymentResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getUSerQosInfoResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketQosInfoResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getAsyncFetchTaskResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.setAsyncFetchTaskResponseParser;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -147,7 +150,11 @@ import com.aliyun.oss.model.UserQos;
 import com.aliyun.oss.model.UserQosInfo;
 import com.aliyun.oss.model.VersionListing;
 import org.apache.http.HttpStatus;
-
+import com.aliyun.oss.model.SetAsyncFetchTaskRequest;
+import com.aliyun.oss.model.SetAsyncFetchTaskResult;
+import com.aliyun.oss.model.GetAsyncFetchTaskRequest;
+import com.aliyun.oss.model.GetAsyncFetchTaskResult;
+import com.aliyun.oss.model.AsyncFetchTaskConfiguration;
 /**
  * Bucket operation.
  */
@@ -1452,6 +1459,56 @@ public class OSSBucketOperation extends OSSOperation {
                 .setMethod(HttpMethod.GET).setParameters(params).setOriginalRequest(gGenericRequest).build();
 
         return doOperation(request, getUSerQosInfoResponseParser, null, null, true);
+    }
+
+    public SetAsyncFetchTaskResult setAsyncFetchTask(SetAsyncFetchTaskRequest setAsyncFetchTaskRequest)
+            throws OSSException, ClientException {
+        assertParameterNotNull(setAsyncFetchTaskRequest, "setAsyncFetchTaskRequest");
+
+        String bucketName = setAsyncFetchTaskRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        AsyncFetchTaskConfiguration taskConfiguration = setAsyncFetchTaskRequest.getAsyncFetchTaskConfiguration();
+        assertParameterNotNull(taskConfiguration, "taskConfiguration");
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_ASYNC_FETCH, null);
+
+        byte[] rawContent = setAsyncFetchTaskRequestMarshaller.marshall(setAsyncFetchTaskRequest.getAsyncFetchTaskConfiguration());
+        Map<String, String> headers = new HashMap<String, String>();
+        addRequestRequiredHeaders(headers, rawContent);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.POST).setBucket(bucketName).setParameters(params).setHeaders(headers)
+                .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+                .setOriginalRequest(setAsyncFetchTaskRequest).build();
+
+        return doOperation(request, setAsyncFetchTaskResponseParser, bucketName, null, true);
+    }
+
+    public GetAsyncFetchTaskResult getAsyncFetchTask(GetAsyncFetchTaskRequest getAsyncFetchTaskRequest)
+            throws OSSException, ClientException {
+        assertParameterNotNull(getAsyncFetchTaskRequest, "getAsyncFetchTaskInfoRequest");
+
+        String bucketName = getAsyncFetchTaskRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        String taskId = getAsyncFetchTaskRequest.getTaskId();
+        assertParameterNotNull(taskId, "taskId");
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_ASYNC_FETCH, null);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put(OSSHeaders.OSS_HEADER_TASK_ID, taskId);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setHeaders(headers).setParameters(params)
+                .setOriginalRequest(getAsyncFetchTaskRequest).build();
+
+        return doOperation(request, getAsyncFetchTaskResponseParser, bucketName, null, true);
     }
 
     private static void populateListObjectsRequestParameters(ListObjectsRequest listObjectsRequest,

@@ -130,6 +130,10 @@ import com.aliyun.oss.model.GetBucketPolicyResult;
 import com.aliyun.oss.model.GetBucketRequestPaymentResult;
 import com.aliyun.oss.model.LifecycleRule.NoncurrentVersionStorageTransition;
 import com.aliyun.oss.model.LifecycleRule.NoncurrentVersionExpiration;
+import com.aliyun.oss.model.SetAsyncFetchTaskResult;
+import com.aliyun.oss.model.GetAsyncFetchTaskResult;
+import com.aliyun.oss.model.AsyncFetchTaskConfiguration;
+import com.aliyun.oss.model.AsyncFetchTaskState;
 
 /*
  * A collection of parsers that parse HTTP reponses into corresponding human-readable results.
@@ -163,6 +167,8 @@ public final class ResponseParsers {
     public static final GetBucketRequestPaymentResponseParser getBucketRequestPaymentResponseParser = new GetBucketRequestPaymentResponseParser();
     public static final GetUSerQosInfoResponseParser getUSerQosInfoResponseParser = new GetUSerQosInfoResponseParser();
     public static final GetBucketQosInfoResponseParser getBucketQosInfoResponseParser = new GetBucketQosInfoResponseParser();
+    public static final SetAsyncFetchTaskResponseParser setAsyncFetchTaskResponseParser = new SetAsyncFetchTaskResponseParser();
+    public static final GetAsyncFetchTaskResponseParser getAsyncFetchTaskResponseParser = new GetAsyncFetchTaskResponseParser();
 
     public static final ListObjectsReponseParser listObjectsReponseParser = new ListObjectsReponseParser();
     public static final ListVersionsReponseParser listVersionsReponseParser = new ListVersionsReponseParser();
@@ -505,6 +511,36 @@ public final class ResponseParsers {
         public BucketQosInfo parse(ResponseMessage response) throws ResponseParseException {
             try {
                 BucketQosInfo result = parseGetBucketQosInfo(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
+
+    public static final class SetAsyncFetchTaskResponseParser implements ResponseParser<SetAsyncFetchTaskResult> {
+
+        @Override
+        public SetAsyncFetchTaskResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                SetAsyncFetchTaskResult result = parseSetAsyncFetchTaskResult(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
+
+    public static final class GetAsyncFetchTaskResponseParser implements ResponseParser<GetAsyncFetchTaskResult> {
+
+        @Override
+        public GetAsyncFetchTaskResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetAsyncFetchTaskResult result = parseGetAsyncFetchTaskResult(response.getContent());
                 result.setRequestId(response.getRequestId());
                 return result;
             } finally {
@@ -2902,6 +2938,64 @@ public final class ResponseParsers {
             }
 
             return cnames;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Unmarshall set async fetch task response body to corresponding result.
+     */
+    public static SetAsyncFetchTaskResult parseSetAsyncFetchTaskResult(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+            SetAsyncFetchTaskResult setAsyncFetchTaskResult = new SetAsyncFetchTaskResult();
+            setAsyncFetchTaskResult.setTaskId(root.getChildText("TaskId"));
+            return setAsyncFetchTaskResult;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+
+    private static AsyncFetchTaskConfiguration parseAsyncFetchTaskInfo(Element taskInfoEle) {
+        if (taskInfoEle == null) {
+            return null;
+        }
+
+        AsyncFetchTaskConfiguration configuration = new AsyncFetchTaskConfiguration();
+        configuration.setUrl(taskInfoEle.getChildText("Url"));
+        configuration.setObjectName(taskInfoEle.getChildText("Object"));
+        configuration.setHost(taskInfoEle.getChildText("Host"));
+        configuration.setContentMd5(taskInfoEle.getChildText("ContentMD5"));
+        configuration.setCallback(taskInfoEle.getChildText("Callback"));
+        if (taskInfoEle.getChild("IgnoreSameKey") != null) {
+            configuration.setIgnoreSameKey(Boolean.valueOf(taskInfoEle.getChildText("IgnoreSameKey")));
+        }
+
+        return configuration;
+    }
+
+    /**
+     * Unmarshall get async fetch task info response body to corresponding result.
+     */
+    public static GetAsyncFetchTaskResult parseGetAsyncFetchTaskResult(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+            GetAsyncFetchTaskResult getAsyncFetchTaskResult = new GetAsyncFetchTaskResult();
+
+            getAsyncFetchTaskResult.setTaskId(root.getChildText("TaskId"));
+            getAsyncFetchTaskResult.setAsyncFetchTaskState(AsyncFetchTaskState.parse(root.getChildText("State")));
+            getAsyncFetchTaskResult.setErrorMsg(root.getChildText("ErrorMsg"));
+            AsyncFetchTaskConfiguration configuration = parseAsyncFetchTaskInfo(root.getChild("TaskInfo"));
+            getAsyncFetchTaskResult.setAsyncFetchTaskConfiguration(configuration);
+
+            return getAsyncFetchTaskResult;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
