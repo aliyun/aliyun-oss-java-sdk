@@ -263,7 +263,12 @@ public interface OSSErrorCode {
     static final String INVALID_POLICY_DOCUMENT = "InvalidPolicyDocument";
     
     /**
-     * The exsiting bucket without policy 
+     * The exsiting bucket without policy.
      */
     static final String NO_SUCH_BUCKET_POLICY = "NoSuchBucketPolicy";
+
+    /**
+     * The object has already exists.
+     */
+    static final String OBJECT_ALREADY_EXISTS = "ObjectAlreadyExists";
 }

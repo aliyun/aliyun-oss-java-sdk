@@ -82,6 +82,7 @@ public final class RequestMarshallers {
     public static final SetBucketPolicyRequestMarshaller setBucketPolicyRequestMarshaller = new SetBucketPolicyRequestMarshaller();
     public static final SetBucketRequestPaymentRequestMarshaller setBucketRequestPaymentRequestMarshaller = new SetBucketRequestPaymentRequestMarshaller();
     public static final SetBucketQosInfoRequestMarshaller setBucketQosInfoRequestMarshaller = new SetBucketQosInfoRequestMarshaller();
+    public static final SetAsyncFetchTaskRequestMarshaller setAsyncFetchTaskRequestMarshaller = new SetAsyncFetchTaskRequestMarshaller();
 
     public static final CreateSelectObjectMetadataRequestMarshaller createSelectObjectMetadataRequestMarshaller = new CreateSelectObjectMetadataRequestMarshaller();
     public static final SelectObjectRequestMarshaller selectObjectRequestMarshaller = new SelectObjectRequestMarshaller();
@@ -1053,6 +1054,50 @@ public final class RequestMarshallers {
             }
 
             xmlBody.append("</QoSConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+
+    }
+
+    public static final class SetAsyncFetchTaskRequestMarshaller implements RequestMarshaller2<AsyncFetchTaskConfiguration> {
+
+        @Override
+        public byte[] marshall(AsyncFetchTaskConfiguration asyncFetchTaskConfiguration) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<AsyncFetchTaskConfiguration>");
+
+            if (asyncFetchTaskConfiguration.getUrl() != null) {
+                xmlBody.append("<Url>" + escapeKey(asyncFetchTaskConfiguration.getUrl()) + "</Url>");
+            }
+
+            if (asyncFetchTaskConfiguration.getObjectName() != null) {
+                xmlBody.append("<Object>" + asyncFetchTaskConfiguration.getObjectName() + "</Object>");
+            }
+
+            if (asyncFetchTaskConfiguration.getHost() != null) {
+                xmlBody.append("<Host>" + asyncFetchTaskConfiguration.getHost() + "</Host>");
+            }
+
+            if (asyncFetchTaskConfiguration.getContentMd5() != null) {
+                xmlBody.append("<ContentMD5>" + asyncFetchTaskConfiguration.getContentMd5() + "</ContentMD5>");
+            }
+
+            if (asyncFetchTaskConfiguration.getCallback() != null) {
+                xmlBody.append("<Callback>" + asyncFetchTaskConfiguration.getCallback() + "</Callback>");
+            }
+
+            if (asyncFetchTaskConfiguration.getIgnoreSameKey() != null) {
+                xmlBody.append("<IgnoreSameKey>" + asyncFetchTaskConfiguration.getIgnoreSameKey() + "</IgnoreSameKey>");
+            }
+
+            xmlBody.append("</AsyncFetchTaskConfiguration>");
 
             byte[] rawData = null;
             try {

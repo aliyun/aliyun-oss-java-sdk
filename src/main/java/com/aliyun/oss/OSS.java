@@ -3197,7 +3197,7 @@ public interface OSS {
     public BucketQosInfo getBucketQosInfo(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
-     * Deletes the bucket qos info
+     * Deletes the bucket qos info.
      * @param bucketName
      *            The bucket name
      * @throws OSSException
@@ -3208,7 +3208,7 @@ public interface OSS {
     public void deleteBucketQosInfo(String bucketName) throws OSSException, ClientException;
  
     /**
-     * Deletes the bucket qos info
+     * Deletes the bucket qos info.
      * @param genericRequest
      *            A {@link GenericRequest} instance that has the bucket name
      * @throws OSSException
@@ -3219,8 +3219,8 @@ public interface OSS {
     public void deleteBucketQosInfo(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
-     * Gets the User qos info 
-     * 
+     * Gets the User qos info.
+     *
      * @return  A {@link UserQosInfo} instance.
      * @throws OSSException
      *             OSS Server side exception.
@@ -3228,6 +3228,69 @@ public interface OSS {
      *             OSS Client side exception.
      */
     public UserQosInfo getUserQosInfo() throws OSSException, ClientException;
+
+    /**
+     * Sets an async fetch task.
+     *
+     * @param bucketName
+     *          The bucket name.
+     * @param asyncFetchTaskConfiguration
+     *          The async fetch task configuration.
+     * @return  A {@link SetAsyncFetchTaskResult} instance.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public SetAsyncFetchTaskResult setAsyncFetchTask(String bucketName,
+            AsyncFetchTaskConfiguration asyncFetchTaskConfiguration) throws OSSException, ClientException;
+
+    /**
+     * Sets an async fetch task.
+     *
+     * @param setAsyncFetchTaskRequest
+     *          A {@link SetAsyncFetchTaskRequest} instance that specified the bucket name
+     *          and the task configuration.
+     * @return  A {@link SetAsyncFetchTaskResult} instance.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public SetAsyncFetchTaskResult setAsyncFetchTask(SetAsyncFetchTaskRequest setAsyncFetchTaskRequest)
+            throws OSSException, ClientException;
+
+
+    /**
+     * Gets the async fetch task information.
+     *
+     * @param bucketName
+     *          The bucket name.
+     * @param taskId
+     *          The id of the task which you want to get.
+     * @return  A {@link GetAsyncFetchTaskResult} instance.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public GetAsyncFetchTaskResult getAsyncFetchTask(String bucketName, String taskId) throws OSSException, ClientException;
+
+
+    /**
+     * Gets the async fetch task information.
+     *
+     * @param getAsyncFetchTaskRequest
+     *          A {@link GetAsyncFetchTaskRequest} instance that specified the bucket name
+     *          and the task id.
+     * @return  A {@link GetAsyncFetchTaskResult} instance.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public GetAsyncFetchTaskResult getAsyncFetchTask(GetAsyncFetchTaskRequest getAsyncFetchTaskRequest)
+            throws OSSException, ClientException;
 
     /**
      * Creates UDF

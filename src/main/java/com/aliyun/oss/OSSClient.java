@@ -1474,6 +1474,30 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public SetAsyncFetchTaskResult setAsyncFetchTask(String bucketName,
+        AsyncFetchTaskConfiguration asyncFetchTaskConfiguration) throws OSSException, ClientException {
+        return this.setAsyncFetchTask(new SetAsyncFetchTaskRequest(bucketName,asyncFetchTaskConfiguration));
+    }
+
+    @Override
+    public SetAsyncFetchTaskResult setAsyncFetchTask(SetAsyncFetchTaskRequest setAsyncFetchTaskRequest)
+            throws OSSException, ClientException {
+        return this.bucketOperation.setAsyncFetchTask(setAsyncFetchTaskRequest);
+    }
+
+    @Override
+    public GetAsyncFetchTaskResult getAsyncFetchTask(String bucketName, String taskId)
+            throws OSSException, ClientException {
+        return this.getAsyncFetchTask(new GetAsyncFetchTaskRequest(bucketName, taskId));
+    }
+
+    @Override
+    public GetAsyncFetchTaskResult getAsyncFetchTask(GetAsyncFetchTaskRequest getAsyncFetchTaskRequest)
+            throws OSSException, ClientException {
+        return this.bucketOperation.getAsyncFetchTask(getAsyncFetchTaskRequest);
+    }
+
+    @Override
     public void createUdf(CreateUdfRequest createUdfRequest) throws OSSException, ClientException {
         throw new ClientException("Not supported.");
     }
