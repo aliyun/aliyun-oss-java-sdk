@@ -20,53 +20,30 @@
 package com.aliyun.oss.model;
 
 /**
- * The storage class.
+ * The job parameters of restoring the {@link StorageClass#LongTermArchive} object. If the restore job parameters
+ * has not be specified, the default restore priority is {@link RestoreTier#RESTORE_TIER_STANDARD}.
  */
-public enum StorageClass {
-
+public class RestoreJobParameters {
     /**
-     * Standard
+     * The priority of restore the {@link StorageClass#LongTermArchive} object job.
      */
-    Standard("Standard"),
+    RestoreTier restoreTier;
 
-    /**
-     * Infrequent Access
-     */
-    IA("IA"),
-
-    /**
-     * Archive
-     */
-    Archive("Archive"),
-
-    /**
-     * LongTermArchive
-     */
-    LongTermArchive("LongTermArchive"),
-
-    /**
-     * Unknown
-     */
-    Unknown("Unknown");
-
-    private String storageClassString;
-
-    private StorageClass(String storageClassString) {
-        this.storageClassString = storageClassString;
+    public RestoreJobParameters(RestoreTier restoreTier) {
+        this.restoreTier = restoreTier;
     }
 
-    @Override
-    public String toString() {
-        return this.storageClassString;
+    /**
+     * Gets the priority of restore the {@link StorageClass#LongTermArchive} object job.
+     */
+    public RestoreTier getRestoreTier() {
+        return restoreTier;
     }
 
-    public static StorageClass parse(String storageClassString) {
-        for (StorageClass st : StorageClass.values()) {
-            if (st.toString().equals(storageClassString)) {
-                return st;
-            }
-        }
-
-        throw new IllegalArgumentException("Unable to parse " + storageClassString);
+    /**
+     * Sets the priority of restore the {@link StorageClass#LongTermArchive} object job.
+     */
+    public void setRestoreTier(RestoreTier restoreTier) {
+        this.restoreTier = restoreTier;
     }
 }

@@ -1443,6 +1443,38 @@ public interface OSS {
 
 
     /**
+     * Restores the object of archive storage. The function is not applicable to
+     * Normal or IA storage. The restoreObject() needs to be called prior to
+     * calling getObject() on an archive object.
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param key
+     *            Object Key.
+     * @param restoreConfiguration
+     *            A {@link RestoreConfiguration} instance that specifies the restore configuration.
+     * @return A {@link RestoreObjectResult} instance.
+     */
+    public RestoreObjectResult restoreObject(String bucketName, String key, RestoreConfiguration restoreConfiguration)
+            throws OSSException, ClientException;
+
+
+    /**
+     * Restores the object of archive storage. The function is not applicable to
+     * Normal or IA storage. The restoreObject() needs to be called prior to
+     * calling getObject() on an archive object.
+     *
+     * @param restoreObjectRequest
+     *            A {@link RestoreObjectRequest} instance that specifies the bucket
+     *            name, object key and restore configuration.
+     * @return A {@link RestoreObjectResult} instance.
+     */
+    public RestoreObjectResult restoreObject(RestoreObjectRequest restoreObjectRequest) throws OSSException, ClientException;
+
+
+
+
+    /**
      * Sets the tags on the OSS object.
      * 
      * @param bucketName

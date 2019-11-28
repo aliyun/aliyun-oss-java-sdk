@@ -738,6 +738,11 @@ public class OSSObjectOperation extends OSSOperation {
         assertParameterNotNull(key, "key");
         ensureObjectKeyValid(key);
 
+        byte[] content = new byte[0];
+        if (genericRequest instanceof RestoreObjectRequest) {
+            content = restoreObjectRequestMarshaller.marshall((RestoreObjectRequest) genericRequest);
+        }
+
         Map<String, String> params = new HashMap<String, String>();
         params.put(RequestParameters.SUBRESOURCE_RESTORE, null);
         if (versionId != null) {
@@ -749,7 +754,7 @@ public class OSSObjectOperation extends OSSOperation {
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.POST).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(params)
-                .setInputStream(new ByteArrayInputStream(new byte[0])).setInputSize(0)
+                .setInputStream(new ByteArrayInputStream(content)).setInputSize(content.length)
                 .setOriginalRequest(genericRequest).build();
 
         return doOperation(request, ResponseParsers.restoreObjectResponseParser, bucketName, key);

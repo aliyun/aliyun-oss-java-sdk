@@ -20,53 +20,43 @@
 package com.aliyun.oss.model;
 
 /**
- * The storage class.
+ * The restore priority.
  */
-public enum StorageClass {
+public enum RestoreTier {
+    /**
+     * The restore job will be done in one hour.
+     */
+    RESTORE_TIER_EXPEDITED("Expedited"),
 
     /**
-     * Standard
+     * The restore job will be done in five hours.
      */
-    Standard("Standard"),
+    RESTORE_TIER_STANDARD("Standard"),
 
     /**
-     * Infrequent Access
+     * The restore job will be done in ten hours.
      */
-    IA("IA"),
+    RESTORE_TIER_BULK("Bulk");
 
-    /**
-     * Archive
-     */
-    Archive("Archive"),
 
-    /**
-     * LongTermArchive
-     */
-    LongTermArchive("LongTermArchive"),
+    private String tierString;
 
-    /**
-     * Unknown
-     */
-    Unknown("Unknown");
-
-    private String storageClassString;
-
-    private StorageClass(String storageClassString) {
-        this.storageClassString = storageClassString;
+    RestoreTier(String tierString) {
+        this.tierString = tierString;
     }
 
     @Override
     public String toString() {
-        return this.storageClassString;
+        return this.tierString;
     }
 
-    public static StorageClass parse(String storageClassString) {
-        for (StorageClass st : StorageClass.values()) {
-            if (st.toString().equals(storageClassString)) {
-                return st;
+    public static RestoreTier parse(String tier) {
+        for (RestoreTier o : RestoreTier.values()) {
+            if (o.toString().toLowerCase().equals(tier.toLowerCase())) {
+                return o;
             }
         }
 
-        throw new IllegalArgumentException("Unable to parse " + storageClassString);
+        throw new IllegalArgumentException("Unable to parse the RestoreTier text :" + tier);
     }
 }

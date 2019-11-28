@@ -83,6 +83,7 @@ public final class RequestMarshallers {
     public static final SetBucketRequestPaymentRequestMarshaller setBucketRequestPaymentRequestMarshaller = new SetBucketRequestPaymentRequestMarshaller();
     public static final SetBucketQosInfoRequestMarshaller setBucketQosInfoRequestMarshaller = new SetBucketQosInfoRequestMarshaller();
     public static final SetAsyncFetchTaskRequestMarshaller setAsyncFetchTaskRequestMarshaller = new SetAsyncFetchTaskRequestMarshaller();
+    public static final RestoreObjectRequestMarshaller restoreObjectRequestMarshaller = new RestoreObjectRequestMarshaller();
 
     public static final CreateSelectObjectMetadataRequestMarshaller createSelectObjectMetadataRequestMarshaller = new CreateSelectObjectMetadataRequestMarshaller();
     public static final SelectObjectRequestMarshaller selectObjectRequestMarshaller = new SelectObjectRequestMarshaller();
@@ -1227,6 +1228,36 @@ public final class RequestMarshallers {
         }
 
     }
+
+    public static final class RestoreObjectRequestMarshaller implements RequestMarshaller2<RestoreObjectRequest> {
+
+        @Override
+        public byte[] marshall(RestoreObjectRequest request) {
+            StringBuffer body = new StringBuffer();
+
+            body.append("<RestoreRequest>");
+            body.append("<Days>" + request.getRestoreConfiguration().getDays() + "</Days>");
+            if (request.getRestoreConfiguration().getRestoreJobParameters() != null) {
+                body.append("<JobParameters>");
+                RestoreJobParameters jobParameters = request.getRestoreConfiguration().getRestoreJobParameters();
+                if (jobParameters.getRestoreTier() != null) {
+                    body.append("<Tier>" + jobParameters.getRestoreTier() + "</Tier>");
+                }
+                body.append("</JobParameters>");
+            }
+            body.append("</RestoreRequest>");
+
+            byte[] rawData = null;
+            try {
+                rawData = body.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+
+    }
+
 
     private static enum EscapedChar {
         // "\r"
