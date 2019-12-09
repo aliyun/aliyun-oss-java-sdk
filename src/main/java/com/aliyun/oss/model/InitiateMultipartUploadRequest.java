@@ -26,6 +26,7 @@ package com.aliyun.oss.model;
 public class InitiateMultipartUploadRequest extends GenericRequest {
 
     private ObjectMetadata objectMetadata;
+    private Boolean sequentialMode;
 
     /**
      * Constructor
@@ -74,4 +75,20 @@ public class InitiateMultipartUploadRequest extends GenericRequest {
     public void setObjectMetadata(ObjectMetadata objectMetadata) {
         this.objectMetadata = objectMetadata;
     }
+
+
+    /**
+     * Gets the sequential mode setting.
+     */
+    public Boolean getSequentialMode() {
+        return sequentialMode;
+    }
+
+    /**
+     * Sets upload in sequential mode or not.
+     */
+    public void setSequentialMode(Boolean sequentialMode) {
+        this.sequentialMode = sequentialMode;
+    }
+
 }

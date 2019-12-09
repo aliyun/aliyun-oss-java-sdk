@@ -136,6 +136,20 @@ public class UploadFileRequest extends GenericRequest {
         return trafficLimit;
     }
 
+    /**
+     * Gets the sequential mode setting.
+     */
+    public Boolean getSequentialMode() {
+        return sequentialMode;
+    }
+
+    /**
+     * Sets upload in sequential mode or not.
+     */
+    public void setSequentialMode(Boolean sequentialMode) {
+        this.sequentialMode = sequentialMode;
+    }
+
     // Part size, by default it's 100KB.
     private long partSize = 1024 * 100;
     // Concurrent parts upload thread count. By default it's 1.
@@ -152,4 +166,6 @@ public class UploadFileRequest extends GenericRequest {
     private Callback callback;
     // Traffic limit speed, its uint is bit/s
     private int trafficLimit;
+    // Is Sequential mode or not.
+    private Boolean sequentialMode;
 }
