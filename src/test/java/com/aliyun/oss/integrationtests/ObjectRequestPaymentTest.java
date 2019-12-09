@@ -24,22 +24,19 @@ import static com.aliyun.oss.integrationtests.TestUtils.genFixedLengthInputStrea
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URL;
+import java.util.*;
+
+import com.aliyun.oss.*;
+import com.aliyun.oss.internal.RequestParameters;
 import junit.framework.Assert;
 import org.junit.Test;
-import com.aliyun.oss.ClientConfiguration;
-import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.internal.OSSHeaders;
 import com.aliyun.oss.model.*;
-import com.aliyun.oss.OSSErrorCode;
-import com.aliyun.oss.OSSException;
 import com.aliyun.oss.utils.ResourceUtils;
 
 public class ObjectRequestPaymentTest extends TestBase {
@@ -1099,4 +1096,62 @@ public class ObjectRequestPaymentTest extends TestBase {
             ossClient.deleteObject(bucketName, key);
         }
     }
+
+    @Test
+    public void testPutSignUrl() {
+        String key = "requestpayment-test-put-sign-url";
+        long inputStreamLength = 10;
+        InputStream instream = genFixedLengthInputStream(inputStreamLength);
+
+        Date date = new Date();
+        date.setTime(date.getTime() + 60 * 1000);
+
+        GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.PUT);
+        request.setExpiration(date);
+
+        Map<String, String> queryParam = new HashMap<String, String>();
+        queryParam.put(RequestParameters.OSS_REQUEST_PAYER, Payer.Requester.toString().toLowerCase());
+        request.setQueryParameter(queryParam);
+
+        URL signedUrl = ossPayerClient.generatePresignedUrl(request);
+        try {
+            ossPayerClient.putObject(signedUrl, instream, -1, null, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testGetSignUrl() {
+        String key = "requestpayment-test-get-sign-url";
+        InputStream instream = genFixedLengthInputStream(10);
+        try {
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, instream);
+            ossClient.putObject(putObjectRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        Date date = new Date();
+        date.setTime(date.getTime()+ 60*1000);
+
+        GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.GET);
+        request.setExpiration(date);
+
+        Map<String, String> queryParam = new HashMap<String, String>();
+        queryParam.put(RequestParameters.OSS_REQUEST_PAYER, Payer.Requester.toString().toLowerCase());
+        request.setQueryParameter(queryParam);
+
+        URL signedUrl = ossPayerClient.generatePresignedUrl(request);
+        try {
+            ossPayerClient.getObject(signedUrl, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+    }
+
 }

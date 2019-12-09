@@ -419,6 +419,8 @@ public class OSSUploadOperation {
             initiateUploadRequest.setRequestPayer(payer);
         }
 
+        initiateUploadRequest.setSequentialMode(uploadFileRequest.getSequentialMode());
+
         InitiateMultipartUploadResult initiateUploadResult = multipartOperation
                 .initiateMultipartUpload(initiateUploadRequest);
         uploadCheckPoint.uploadID = initiateUploadResult.getUploadId();

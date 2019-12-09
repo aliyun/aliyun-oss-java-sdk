@@ -222,6 +222,11 @@ public class OSSMultipartOperation extends OSSOperation {
         Map<String, String> params = new HashMap<String, String>();
         params.put(SUBRESOURCE_UPLOADS, null);
 
+        Boolean sequentialMode = initiateMultipartUploadRequest.getSequentialMode();
+        if (sequentialMode != null && sequentialMode.equals(true)) {
+            params.put(SEQUENTIAL, null);
+        }
+
         // Set the request content to be empty (but not null) to avoid putting
         // parameters
         // to request body. Set HttpRequestFactory#createHttpRequest for

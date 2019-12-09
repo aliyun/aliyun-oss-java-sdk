@@ -91,6 +91,7 @@ public final class RequestParameters {
     public static final String MAX_PARTS = "max-parts";
     public static final String PART_NUMBER_MARKER = "part-number-marker";
     public static final String RULE_ID = "rule-id";
+    public static final String SEQUENTIAL = "sequential";
 
     public static final String SECURITY_TOKEN = "security-token";
 
@@ -121,5 +122,6 @@ public final class RequestParameters {
     public static final String OSS_SIGNATURE = "x-oss-signature";
 
     public static final String OSS_TRAFFIC_LIMIT = "x-oss-traffic-limit";
+    public static final String OSS_REQUEST_PAYER = "x-oss-request-payer";
 
 }

@@ -20,15 +20,17 @@
 package com.aliyun.oss.integrationtests;
 
 import java.io.File;
+
+import com.aliyun.oss.ClientConfiguration;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.common.auth.Credentials;
+import com.aliyun.oss.common.auth.DefaultCredentialProvider;
+import com.aliyun.oss.common.auth.DefaultCredentials;
+import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 
 import org.junit.Test;
-
-import com.aliyun.oss.model.GetObjectRequest;
-import com.aliyun.oss.model.ObjectListing;
-import com.aliyun.oss.model.ObjectMetadata;
-import com.aliyun.oss.model.UploadFileRequest;
-import com.aliyun.oss.model.UploadFileResult;
 
 public class UploadFileTest extends TestBase {
 
@@ -72,7 +74,57 @@ public class UploadFileTest extends TestBase {
             ossClient.deleteBucket(bucketName);
         }
     }
-    
+
+    @Test
+    public void testUploadFileSequential() {
+        final String key = "obj-upload-file-Sequential";
+
+        String testBucketName = super.bucketName + "-upload-sequential";
+        String endpoint = "http://oss-cn-shanghai.aliyuncs.com";
+
+        //create client
+        ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);
+        Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
+        OSS testOssClient = new OSSClient(endpoint, new DefaultCredentialProvider(credentials), conf);
+        testOssClient.createBucket(testBucketName);
+
+
+        try {
+            File file = createSampleFile(key, 600 * 1024);
+
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(testBucketName, key);
+            uploadFileRequest.setUploadFile(file.getAbsolutePath());
+            testOssClient.uploadFile(uploadFileRequest);
+
+            GetObjectRequest getObjectRequest = new GetObjectRequest(testBucketName, key);
+            OSSObject ossObject = testOssClient.getObject(getObjectRequest);
+            Assert.assertNull(ossObject.getResponse().getHeaders().get("Content-MD5"));
+        } catch (Throwable e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        try {
+            File file = createSampleFile(key, 600 * 1024);
+
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(testBucketName, key);
+            uploadFileRequest.setUploadFile(file.getAbsolutePath());
+            uploadFileRequest.setSequentialMode(true);
+
+            testOssClient.uploadFile(uploadFileRequest);
+
+            GetObjectRequest getObjectRequest = new GetObjectRequest(testBucketName, key);
+            OSSObject ossObject = testOssClient.getObject(getObjectRequest);
+
+            Assert.assertNotNull(ossObject.getResponse().getHeaders().get("Content-MD5"));
+            testOssClient.deleteObject(testBucketName, key);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+            testOssClient.deleteBucket(testBucketName);
+        }
+    }
+
     @Test
     public void testUploadFileWithCheckpoint() {
         final String key = "obj-upload-file-cp";
