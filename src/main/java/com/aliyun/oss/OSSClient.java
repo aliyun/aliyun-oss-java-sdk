@@ -1498,6 +1498,36 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public CreateVpcipResult createVpcip(CreateVpcipRequest createVpcipRequest) throws OSSException, ClientException {
+        return bucketOperation.createVpcip(createVpcipRequest);
+    }
+
+    @Override
+    public List<Vpcip> listVpcip() throws OSSException, ClientException {
+        return bucketOperation.listVpcip();
+    }
+
+    @Override
+    public void deleteVpcip(DeleteVpcipRequest deleteVpcipRequest) throws OSSException, ClientException {
+        bucketOperation.deleteVpcip(deleteVpcipRequest);
+    }
+
+    @Override
+    public void createBucketVpcip(CreateBucketVpcipRequest createBucketVpcipRequest) throws OSSException, ClientException {
+        bucketOperation.createBucketVpcip(createBucketVpcipRequest);
+    }
+
+    @Override
+    public void deleteBucketVpcip(DeleteBucketVpcipRequest deleteBucketVpcipRequest) throws OSSException, ClientException {
+        bucketOperation.deleteBucketVpcip(deleteBucketVpcipRequest);
+    }
+
+    @Override
+    public List<VpcPolicy> getBucketVpcip(GenericRequest genericRequest) throws OSSException, ClientException {
+        return bucketOperation.getBucketVpcip(genericRequest);
+    }
+
+    @Override
     public void createUdf(CreateUdfRequest createUdfRequest) throws OSSException, ClientException {
         throw new ClientException("Not supported.");
     }

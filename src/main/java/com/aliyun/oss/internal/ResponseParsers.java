@@ -134,6 +134,8 @@ import com.aliyun.oss.model.SetAsyncFetchTaskResult;
 import com.aliyun.oss.model.GetAsyncFetchTaskResult;
 import com.aliyun.oss.model.AsyncFetchTaskConfiguration;
 import com.aliyun.oss.model.AsyncFetchTaskState;
+import com.aliyun.oss.model.VpcPolicy;
+import com.aliyun.oss.model.Vpcip;
 
 /*
  * A collection of parsers that parse HTTP reponses into corresponding human-readable results.
@@ -169,6 +171,9 @@ public final class ResponseParsers {
     public static final GetBucketQosInfoResponseParser getBucketQosInfoResponseParser = new GetBucketQosInfoResponseParser();
     public static final SetAsyncFetchTaskResponseParser setAsyncFetchTaskResponseParser = new SetAsyncFetchTaskResponseParser();
     public static final GetAsyncFetchTaskResponseParser getAsyncFetchTaskResponseParser = new GetAsyncFetchTaskResponseParser();
+    public static final CreateVpcipResultResponseParser createVpcipResultResponseParser = new CreateVpcipResultResponseParser();
+    public static final ListVpcipResultResponseParser listVpcipResultResponseParser = new ListVpcipResultResponseParser();
+    public static final ListVpcPolicyResultResponseParser listVpcPolicyResultResponseParser = new ListVpcPolicyResultResponseParser();
 
     public static final ListObjectsReponseParser listObjectsReponseParser = new ListObjectsReponseParser();
     public static final ListVersionsReponseParser listVersionsReponseParser = new ListVersionsReponseParser();
@@ -3001,6 +3006,134 @@ public final class ResponseParsers {
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
         }
+    }
+
+
+    public static final class CreateVpcipResultResponseParser implements ResponseParser<Vpcip> {
+
+        @Override
+        public Vpcip parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                Vpcip result = parseGetCreateVpcipResult(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
+
+    public static final class ListVpcipResultResponseParser implements ResponseParser<List<Vpcip>> {
+        @Override
+        public List<Vpcip> parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                return parseListVpcipResult(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+    }
+
+    public static final class ListVpcPolicyResultResponseParser implements ResponseParser<List<VpcPolicy>> {
+        @Override
+        public List<VpcPolicy> parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                return parseListVpcPolicyResult(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+    }
+
+    /**
+     * Unmarshall image Vpcip response body to style list.
+     */
+    public static Vpcip parseGetCreateVpcipResult(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+            Vpcip vpcip = new Vpcip();
+
+            if (root.getChild("Region") != null) {
+                vpcip.setRegion(root.getChildText("Region"));
+            }
+            if (root.getChild("VpcId") != null) {
+                vpcip.setVpcId(root.getChildText("VpcId"));
+            }
+            if (root.getChild("Vip") != null) {
+                vpcip.setVip(root.getChildText("Vip"));
+            }
+            if (root.getChild("Label") != null) {
+                vpcip.setLabel(root.getChildText("Label"));
+            }
+
+            return vpcip;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * Unmarshall list image Vpcip response body to style list.
+     */
+    @SuppressWarnings("unchecked")
+    public static List<Vpcip> parseListVpcipResult(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+
+            List<Vpcip> vpcipList = new ArrayList<Vpcip>();
+            List<Element> vpcips = root.getChildren("Vpcip");
+
+            for (Element e : vpcips) {
+                Vpcip vpcipInfo = new Vpcip();
+                vpcipInfo.setRegion(e.getChildText("Region"));
+                vpcipInfo.setVpcId(e.getChildText("VpcId"));
+                vpcipInfo.setVip(e.getChildText("Vip"));
+                vpcipInfo.setLabel(e.getChildText("Label"));
+                vpcipList.add(vpcipInfo);
+            }
+
+            return vpcipList;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * Unmarshall list image VpcPolicy response body to style list.
+     */
+    @SuppressWarnings("unchecked")
+    public static List<VpcPolicy> parseListVpcPolicyResult(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+            List<VpcPolicy> vpcipList = new ArrayList<VpcPolicy>();
+            List<Element> vpcips = root.getChildren("Vpcip");
+
+            for (Element e : vpcips) {
+                VpcPolicy vpcipInfo = new VpcPolicy();
+
+                vpcipInfo.setRegion(e.getChildText("Region"));
+                vpcipInfo.setVpcId(e.getChildText("VpcId"));
+                vpcipInfo.setVip(e.getChildText("Vip"));
+                vpcipList.add(vpcipInfo);
+            }
+
+            return vpcipList;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
     }
 
 }
