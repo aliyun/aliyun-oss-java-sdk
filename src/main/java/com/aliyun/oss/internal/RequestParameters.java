@@ -124,4 +124,6 @@ public final class RequestParameters {
     public static final String OSS_TRAFFIC_LIMIT = "x-oss-traffic-limit";
     public static final String OSS_REQUEST_PAYER = "x-oss-request-payer";
 
+    public static final String VPCIP = "vpcip";
+    public static final String VIP = "vip";
 }
