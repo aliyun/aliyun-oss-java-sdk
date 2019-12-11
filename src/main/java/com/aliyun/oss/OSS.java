@@ -3293,6 +3293,77 @@ public interface OSS {
             throws OSSException, ClientException;
 
     /**
+     * Creates a vpcip tunnel {@link Vpcip}.
+     * @param createVpcipRequest
+     *         A {@link CreateVpcipRequest} instance that specified the vpc information.
+     * @return A {@link CreateVpcipResult} instance.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public CreateVpcipResult createVpcip(CreateVpcipRequest createVpcipRequest) throws OSSException, ClientException;
+
+    /**
+     * Returns all {@link Vpcip} instances of the current account.
+     *
+     * @return A list of {@link Vpcip} instances. If there's no Vpcips, the
+     *         list will be empty (instead of null).
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public List<Vpcip> listVpcip() throws OSSException, ClientException;
+
+    /**
+     * Deletes the {@link Vpcip} instance.
+     *
+     * @param deleteVpcipRequest
+     *          A {@link DeleteVpcipRequest} that specified the vpc policy.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public void deleteVpcip(DeleteVpcipRequest deleteVpcipRequest) throws OSSException, ClientException;
+
+    /**
+     * Bind a Vpcip to a bucket.
+     * @param createBucketVpcipRequest
+     *          A {@link CreateBucketVpcipRequest} instance that specified the bucketName and the {@link VpcPolicy} instance.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public void createBucketVpcip(CreateBucketVpcipRequest createBucketVpcipRequest) throws OSSException, ClientException;
+
+    /**
+     * Returns all {@link VpcPolicy} instances of the Bucket.
+     *
+     * @return A list of {@link VpcPolicy} instances. If there's no list, the
+     *         list will be empty (instead of null).
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public List<VpcPolicy> getBucketVpcip(GenericRequest genericRequest) throws OSSException, ClientException;
+
+    /**
+     * Deletes the {@link VpcPolicy} instance that has binded to the bucket.
+     *
+     * @param deleteBucketVpcipRequest
+     *          A {@link DeleteBucketVpcipRequest} instance that has specified the bucketName and the {@link VpcPolicy} instance.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public void deleteBucketVpcip(DeleteBucketVpcipRequest deleteBucketVpcipRequest) throws OSSException, ClientException;
+
+    /**
      * Creates UDF
      * 
      * @param createUdfRequest

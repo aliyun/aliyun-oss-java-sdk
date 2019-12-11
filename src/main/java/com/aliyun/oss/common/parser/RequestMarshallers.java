@@ -43,6 +43,9 @@ import com.aliyun.oss.model.LifecycleRule.StorageTransition;
 import com.aliyun.oss.model.LifecycleRule.NoncurrentVersionStorageTransition;
 import com.aliyun.oss.model.LifecycleRule.NoncurrentVersionExpiration;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
+import com.aliyun.oss.model.CreateBucketVpcipRequest;
+import com.aliyun.oss.model.CreateVpcipRequest;
+import com.aliyun.oss.model.DeleteVpcipRequest;
 
 /**
  * A collection of marshallers that marshall HTTP request into crossponding
@@ -86,6 +89,11 @@ public final class RequestMarshallers {
 
     public static final CreateSelectObjectMetadataRequestMarshaller createSelectObjectMetadataRequestMarshaller = new CreateSelectObjectMetadataRequestMarshaller();
     public static final SelectObjectRequestMarshaller selectObjectRequestMarshaller = new SelectObjectRequestMarshaller();
+
+    public static final CreateVpcipRequestMarshaller createVpcipRequestMarshaller = new CreateVpcipRequestMarshaller();
+    public static final CreateBucketVpcipRequestMarshaller createBucketVpcipRequestMarshaller = new CreateBucketVpcipRequestMarshaller();
+    public static final DeleteVpcipRequestMarshaller deleteVpcipRequestMarshaller = new DeleteVpcipRequestMarshaller();
+    public static final DeleteBucketVpcipRequestMarshaller deleteBucketVpcipRequestMarshaller = new DeleteBucketVpcipRequestMarshaller();
 
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
 
@@ -1224,6 +1232,108 @@ public final class RequestMarshallers {
                 throw new ClientException("Unsupported encoding " + e.getMessage(), e);
             }
             return rawData;
+        }
+
+    }
+
+    public static final class CreateVpcipRequestMarshaller implements RequestMarshaller<CreateVpcipRequest> {
+
+        @Override
+        public FixedLengthInputStream marshall(CreateVpcipRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+
+            if (request.getRegion() != null || request.getVSwitchId() != null) {
+                xmlBody.append("<CreateVpcip>");
+                if (request.getRegion() != null) {
+                    xmlBody.append("<Region>" + request.getRegion() + "</Region>");
+                }
+                if (request.getVSwitchId() != null) {
+                    xmlBody.append("<VSwitchId>" + request.getVSwitchId() + "</VSwitchId>");
+                }
+                if(request.getLabel() != null){
+                    xmlBody.append("<Label>" + request.getLabel() + "</Label>");
+                }
+                xmlBody.append("</CreateVpcip>");
+            }
+
+            return stringMarshaller.marshall(xmlBody.toString());
+        }
+
+    }
+
+    public static final class DeleteVpcipRequestMarshaller implements RequestMarshaller<DeleteVpcipRequest> {
+
+        @Override
+        public FixedLengthInputStream marshall(DeleteVpcipRequest deleteVpcipRequest) {
+            StringBuffer xmlBody = new StringBuffer();
+            VpcPolicy request = deleteVpcipRequest.getVpcPolicy();
+
+            if (request.getRegion() != null || request.getVpcId() != null || request.getVip() != null) {
+                xmlBody.append("<DeleteVpcip>");
+                if (request.getRegion() != null) {
+                    xmlBody.append("<Region>" + request.getRegion() + "</Region>");
+                }
+                if (request.getVpcId() != null) {
+                    xmlBody.append("<VpcId>" + request.getVpcId() + "</VpcId>");
+                }
+                if (request.getVip() != null) {
+                    xmlBody.append("<Vip>" + request.getVip() + "</Vip>");
+                }
+                xmlBody.append("</DeleteVpcip>");
+            }
+
+            return stringMarshaller.marshall(xmlBody.toString());
+        }
+
+    }
+
+    public static final class DeleteBucketVpcipRequestMarshaller implements RequestMarshaller<VpcPolicy> {
+
+        @Override
+        public FixedLengthInputStream marshall(VpcPolicy request) {
+            StringBuffer xmlBody = new StringBuffer();
+
+            if (request.getRegion() != null || request.getVpcId() != null || request.getVip() != null) {
+                xmlBody.append("<DeleteBucketVpcPolicy>");
+                if (request.getRegion() != null) {
+                    xmlBody.append("<Region>" + request.getRegion() + "</Region>");
+                }
+                if (request.getVpcId() != null) {
+                    xmlBody.append("<VpcId>" + request.getVpcId() + "</VpcId>");
+                }
+                if (request.getVip() != null) {
+                    xmlBody.append("<Vip>" + request.getVip() + "</Vip>");
+                }
+                xmlBody.append("</DeleteBucketVpcPolicy>");
+            }
+
+            return stringMarshaller.marshall(xmlBody.toString());
+        }
+
+    }
+
+    public static final class CreateBucketVpcipRequestMarshaller implements RequestMarshaller<CreateBucketVpcipRequest> {
+
+        @Override
+        public FixedLengthInputStream marshall(CreateBucketVpcipRequest bucketVpcPolicyRequest) {
+            StringBuffer xmlBody = new StringBuffer();
+            VpcPolicy request = bucketVpcPolicyRequest.getVpcPolicy();
+
+            if (request.getRegion() != null || request.getVpcId() != null || request.getVip() != null) {
+                xmlBody.append("<CreateBucketVpcPolicy>");
+                if (request.getRegion() != null) {
+                    xmlBody.append("<Region>" + request.getRegion() + "</Region>");
+                }
+                if (request.getVpcId() != null) {
+                    xmlBody.append("<VpcId>" + request.getVpcId() + "</VpcId>");
+                }
+                if (request.getVip() != null) {
+                    xmlBody.append("<Vip>" + request.getVip() + "</Vip>");
+                }
+                xmlBody.append("</CreateBucketVpcPolicy>");
+            }
+
+            return stringMarshaller.marshall(xmlBody.toString());
         }
 
     }
