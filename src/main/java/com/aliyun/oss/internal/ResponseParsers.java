@@ -2351,8 +2351,10 @@ public final class ResponseParsers {
 
             // data redundancy type
             String dataRedundancyString = bucketElem.getChildText("DataRedundancyType");
-            DataRedundancyType dataRedundancyType = DataRedundancyType.parse(dataRedundancyString);
-            bucketInfo.setDataRedundancyType(dataRedundancyType);
+            if (dataRedundancyString != null) {
+                DataRedundancyType dataRedundancyType = DataRedundancyType.parse(dataRedundancyString);
+                bucketInfo.setDataRedundancyType(dataRedundancyType);
+            }
 
             // acl
             String aclString = bucketElem.getChild("AccessControlList").getChildText("Grant");

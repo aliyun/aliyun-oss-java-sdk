@@ -528,8 +528,7 @@ public class BucketReplicationTest extends TestBase {
             ossClient.createBucket(bucketName);
                      
             AddBucketReplicationRequest request = new AddBucketReplicationRequest(bucketName);
-            request.setTargetBucketName(targetBucketName);
-                
+
             try {
                 ossClient.addBucketReplication(request);
                 Assert.fail("Get bucket replication should not be successful.");

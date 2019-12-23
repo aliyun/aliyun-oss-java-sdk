@@ -552,4 +552,47 @@ public class ResponseParsersTest {
         Assert.assertEquals(new Boolean(true), result.get(0).getPurgeCdnCache());
         Assert.assertEquals(null, result.get(1).getPurgeCdnCache());
     }
+
+    @Test
+    public void testParseGetBucketInfo() {
+        String respBody = "" +
+                "<BucketInfo>\n" +
+                "  <Bucket>\n" +
+                "           <CreationDate>2013-07-31T10:56:21.000Z</CreationDate>\n" +
+                "            <ExtranetEndpoint>oss-cn-hangzhou.aliyuncs.com</ExtranetEndpoint>\n" +
+                "            <IntranetEndpoint>oss-cn-hangzhou-internal.aliyuncs.com</IntranetEndpoint>\n" +
+                "            <Location>oss-cn-hangzhou</Location>\n" +
+                "            <Name>oss-example</Name>\n" +
+                "            <Owner>\n" +
+                "              <DisplayName>username</DisplayName>\n" +
+                "              <ID>27183473914****</ID>\n" +
+                "            </Owner>\n" +
+                "            <AccessControlList>\n" +
+                "              <Grant>private</Grant>\n" +
+                "            </AccessControlList>\n" +
+                "            <Comment>test</Comment>\n" +
+                "          </Bucket>\n" +
+                " </BucketInfo>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        BucketInfo result = null;
+        try {
+            result = ResponseParsers.parseGetBucketInfo(instream);
+        } catch (ResponseParseException e) {
+            e.printStackTrace();
+            Assert.fail("parse bucket replication response body fail!");
+        }
+
+        Assert.assertEquals("test", result.getComment());
+        Assert.assertEquals(CannedAccessControlList.Private, result.getCannedACL());
+        Assert.assertEquals("oss-cn-hangzhou", result.getBucket().getLocation());
+        Assert.assertEquals("oss-example", result.getBucket().getName());
+    }
 }
