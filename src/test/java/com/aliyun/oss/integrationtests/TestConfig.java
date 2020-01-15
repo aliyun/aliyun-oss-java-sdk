@@ -55,4 +55,8 @@ public final class TestConfig {
     public static String OSS_TEST_PAYER_UID = null;
     public static String OSS_TEST_PAYER_ACCESS_KEY_ID = null;
     public static String OSS_TEST_PAYER_ACCESS_KEY_SECRET = null;
+
+    // OSS Inventory test configuration
+    public static String OSS_TEST_INVENTORY_BUCKET_DESTINATION_ACCOUNT = null;
+    public static String OSS_TEST_INVENTORY_BUCKET_DESTINATION_ARN = null;
 }
