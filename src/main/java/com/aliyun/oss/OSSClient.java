@@ -53,6 +53,7 @@ import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.internal.*;
 import com.aliyun.oss.model.*;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
+import com.aliyun.oss.model.InventoryConfiguration;
 
 /**
  * The entry point class of OSS that implements the OSS interface.
@@ -1525,6 +1526,61 @@ public class OSSClient implements OSS {
     @Override
     public List<VpcPolicy> getBucketVpcip(GenericRequest genericRequest) throws OSSException, ClientException {
         return bucketOperation.getBucketVpcip(genericRequest);
+    }
+
+    @Override
+    public void setBucketInventoryConfiguration(String bucketName, InventoryConfiguration inventoryConfiguration)
+            throws OSSException, ClientException {
+        this.setBucketInventoryConfiguration(new SetBucketInventoryConfigurationRequest(bucketName, inventoryConfiguration));
+    }
+
+    @Override
+    public void setBucketInventoryConfiguration(SetBucketInventoryConfigurationRequest
+            setBucketInventoryConfigurationRequest) throws OSSException, ClientException {
+        this.bucketOperation.setBucketInventoryConfiguration(setBucketInventoryConfigurationRequest);
+    }
+
+    @Override
+    public GetBucketInventoryConfigurationResult getBucketInventoryConfiguration(String bucketName, String inventoryId)
+            throws OSSException, ClientException {
+        return this.getBucketInventoryConfiguration(new GetBucketInventoryConfigurationRequest(bucketName, inventoryId));
+    }
+
+    @Override
+    public GetBucketInventoryConfigurationResult getBucketInventoryConfiguration(GetBucketInventoryConfigurationRequest
+            getBucketInventoryConfigurationRequest) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketInventoryConfiguration(getBucketInventoryConfigurationRequest);
+    }
+
+    @Override
+    public ListBucketInventoryConfigurationsResult listBucketInventoryConfigurations(String bucketName)
+            throws OSSException, ClientException{
+        return this.listBucketInventoryConfigurations(new ListBucketInventoryConfigurationsRequest(bucketName));
+    }
+
+    @Override
+    public ListBucketInventoryConfigurationsResult listBucketInventoryConfigurations(
+            String bucketName, String continuationToken) throws OSSException, ClientException {
+        return this.listBucketInventoryConfigurations(new ListBucketInventoryConfigurationsRequest(
+                bucketName, continuationToken));
+    }
+
+    @Override
+    public ListBucketInventoryConfigurationsResult listBucketInventoryConfigurations(ListBucketInventoryConfigurationsRequest
+            listBucketInventoryConfigurationsRequest) throws OSSException, ClientException {
+        return this.bucketOperation.listBucketInventoryConfigurations(listBucketInventoryConfigurationsRequest);
+    }
+
+    @Override
+    public void deleteBucketInventoryConfiguration(String bucketName, String inventoryId) throws OSSException, ClientException {
+        this.deleteBucketInventoryConfiguration(new DeleteBucketInventoryConfigurationRequest(bucketName, inventoryId));
+    }
+
+    @Override
+    public void deleteBucketInventoryConfiguration(
+            DeleteBucketInventoryConfigurationRequest deleteBucketInventoryConfigurationRequest)
+            throws OSSException, ClientException {
+        this.bucketOperation.deleteBucketInventoryConfiguration(deleteBucketInventoryConfigurationRequest);
     }
 
     @Override
