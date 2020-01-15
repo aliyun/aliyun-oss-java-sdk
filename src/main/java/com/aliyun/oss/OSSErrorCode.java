@@ -271,4 +271,9 @@ public interface OSSErrorCode {
      * The object has already exists.
      */
     static final String OBJECT_ALREADY_EXISTS = "ObjectAlreadyExists";
+
+    /**
+     * The exsiting bucket without inventory.
+     */
+    static final String NO_SUCH_INVENTORY = "NoSuchInventory";
 }

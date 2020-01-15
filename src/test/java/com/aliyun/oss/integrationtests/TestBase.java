@@ -501,6 +501,17 @@ public class TestBase {
         if (TestConfig.OSS_TEST_PAYER_ACCESS_KEY_SECRET == null) {
             TestConfig.OSS_TEST_PAYER_ACCESS_KEY_SECRET = System.getenv().get("OSS_TEST_PAYER_ACCESS_KEY_SECRET");
         }
+
+        if (TestConfig.OSS_TEST_INVENTORY_BUCKET_DESTINATION_ACCOUNT == null) {
+            TestConfig.OSS_TEST_INVENTORY_BUCKET_DESTINATION_ACCOUNT = System.getenv()
+                    .get("OSS_TEST_INVENTORY_BUCKET_DESTINATION_ACCOUNT");
+        }
+
+        if (TestConfig.OSS_TEST_INVENTORY_BUCKET_DESTINATION_ARN == null) {
+            TestConfig.OSS_TEST_INVENTORY_BUCKET_DESTINATION_ARN = System.getenv()
+                    .get("OSS_TEST_INVENTORY_BUCKET_DESTINATION_ARN");
+        }
+
     }
 
 }
