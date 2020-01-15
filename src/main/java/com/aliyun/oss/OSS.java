@@ -31,6 +31,7 @@ import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.comm.SignVersion;
 import com.aliyun.oss.model.*;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
+import com.aliyun.oss.model.InventoryConfiguration;
 
 /**
  * Entry point interface of Alibaba Cloud's OSS (Object Store Service)
@@ -2572,7 +2573,7 @@ public interface OSS {
     /**
      * Sets the policy on the {@link Bucket} instance.
      * 
-     * @param SetBucketPolicyRequest
+     * @param setBucketPolicyRequest
      *            {@link SetBucketPolicyRequest} instance that has bucket
      *            information as well as policy information.
      * @throws OSSException
@@ -3362,6 +3363,121 @@ public interface OSS {
      *             OSS Client side exception.
      */
     public void deleteBucketVpcip(DeleteBucketVpcipRequest deleteBucketVpcipRequest) throws OSSException, ClientException;
+
+    /**
+     * Sets the bucket inventory configuration.
+     *
+     * @param bucketName
+     *              The bucket name.
+     * @param inventoryConfiguration
+     *              The inventory configuration.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public void setBucketInventoryConfiguration(String bucketName, InventoryConfiguration inventoryConfiguration)
+            throws OSSException, ClientException;
+
+    /**
+     * Sets the bucket inventory configuration.
+     *
+     * @param setBucketInventoryConfigurationRequest
+     *              The {@link SetBucketInventoryConfigurationRequest} instance that has the inventory configuration.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public void setBucketInventoryConfiguration(SetBucketInventoryConfigurationRequest
+            setBucketInventoryConfigurationRequest) throws OSSException, ClientException;
+
+    /**
+     * Gets the bucket inventory configuration.
+     *
+     * @param bucketName
+     *              The bucket name.
+     * @param id
+     *              The id of the inventory configuration that want to get.
+     * @return A {@link GetBucketInventoryConfigurationResult} instance.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public GetBucketInventoryConfigurationResult getBucketInventoryConfiguration(String bucketName, String id)
+            throws OSSException, ClientException;
+
+    /**
+     * Gets the bucket inventory configuration.
+     *
+     * @param getBucketInventoryConfigurationRequest
+     *          The {@link GetBucketInventoryConfigurationRequest} instance that has the bucketName and the configuration id.
+     * @return A {@link GetBucketInventoryConfigurationResult} instance that has the result.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public GetBucketInventoryConfigurationResult getBucketInventoryConfiguration(GetBucketInventoryConfigurationRequest
+            getBucketInventoryConfigurationRequest) throws OSSException, ClientException;
+
+    /**
+     * Returns the list of inventory configurations for the bucket.
+     *
+     * @param bucketName
+     *              The bucket name.
+     *
+     * @return A {@link ListBucketInventoryConfigurationsResult} object
+     * containing the list of {@link InventoryConfiguration}.
+     */
+    public ListBucketInventoryConfigurationsResult listBucketInventoryConfigurations(String bucketName)
+            throws OSSException, ClientException;
+
+    /**
+     * Returns the list of inventory configurations for the bucket.
+     *
+     * @param bucketName
+     *              The bucket name.
+     * @param  continuationToken
+     *              The continuation token allows list to be continued from a specific point.
+     *
+     * @return A {@link ListBucketInventoryConfigurationsResult} object containing the inventory configurations.
+     */
+    public ListBucketInventoryConfigurationsResult listBucketInventoryConfigurations(
+            String bucketName, String continuationToken) throws OSSException, ClientException;
+
+    /**
+     * Returns the list of inventory configurations for the bucket.
+     *
+     * @param listBucketInventoryConfigurationsRequest
+     *              The request object to list the inventory configurations in a bucket.
+     *
+     * @return A {@link ListBucketInventoryConfigurationsResult} object
+     * containing the list of {@link InventoryConfiguration}.
+     */
+    public ListBucketInventoryConfigurationsResult listBucketInventoryConfigurations(ListBucketInventoryConfigurationsRequest
+            listBucketInventoryConfigurationsRequest) throws OSSException, ClientException;
+
+    /**
+     * Deletes an inventory configuration of the bucket.
+     *
+     * @param bucketName
+     *              The name of the bucket.
+     * @param id
+     *              The id of the inventory configuration.
+     */
+    public void deleteBucketInventoryConfiguration(String bucketName, String id) throws OSSException, ClientException;
+
+    /**
+     * Deletes an inventory configuration of the bucket.
+     *
+     * @param deleteBucketInventoryConfigurationRequest
+     *              The request object for deleting an inventory configuration.
+     */
+    public void deleteBucketInventoryConfiguration(
+            DeleteBucketInventoryConfigurationRequest deleteBucketInventoryConfigurationRequest)
+            throws OSSException, ClientException;
 
     /**
      * Creates UDF

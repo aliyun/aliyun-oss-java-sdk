@@ -35,6 +35,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.CheckedInputStream;
 
+import com.aliyun.oss.model.GetBucketInventoryConfigurationResult;
+import com.aliyun.oss.model.ListBucketInventoryConfigurationsResult;
+import com.aliyun.oss.model.InventoryConfiguration;
+import com.aliyun.oss.model.InventoryDestination;
+import com.aliyun.oss.model.InventoryEncryption;
+import com.aliyun.oss.model.InventoryFilter;
+import com.aliyun.oss.model.InventoryOSSBucketDestination;
+import com.aliyun.oss.model.InventorySchedule;
+import com.aliyun.oss.model.InventoryServerSideEncryptionKMS;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.JDOMParseException;
@@ -63,7 +72,6 @@ import com.aliyun.oss.model.BucketStat;
 import com.aliyun.oss.model.BucketVersioningConfiguration;
 import com.aliyun.oss.model.BucketWebsiteResult;
 import com.aliyun.oss.model.CannedAccessControlList;
-import com.aliyun.oss.model.CannedUdfAcl;
 import com.aliyun.oss.model.CnameConfiguration;
 import com.aliyun.oss.model.CompleteMultipartUploadResult;
 import com.aliyun.oss.model.CopyObjectResult;
@@ -89,7 +97,6 @@ import com.aliyun.oss.model.ReplicationRule;
 import com.aliyun.oss.model.GetImageStyleResult;
 import com.aliyun.oss.model.GroupGrantee;
 import com.aliyun.oss.model.InitiateMultipartUploadResult;
-import com.aliyun.oss.model.InstanceFlavor;
 import com.aliyun.oss.model.LifecycleRule;
 import com.aliyun.oss.model.ReplicationStatus;
 import com.aliyun.oss.model.RestoreObjectResult;
@@ -118,10 +125,6 @@ import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
 import com.aliyun.oss.model.SimplifiedObjectMeta;
 import com.aliyun.oss.model.Style;
 import com.aliyun.oss.model.TagSet;
-import com.aliyun.oss.model.UdfApplicationInfo;
-import com.aliyun.oss.model.UdfApplicationLog;
-import com.aliyun.oss.model.UdfImageInfo;
-import com.aliyun.oss.model.UdfInfo;
 import com.aliyun.oss.model.UploadPartCopyResult;
 import com.aliyun.oss.model.UserQos;
 import com.aliyun.oss.model.UserQosInfo;
@@ -175,6 +178,8 @@ public final class ResponseParsers {
     public static final ListVpcipResultResponseParser listVpcipResultResponseParser = new ListVpcipResultResponseParser();
     public static final ListVpcPolicyResultResponseParser listVpcPolicyResultResponseParser = new ListVpcPolicyResultResponseParser();
 
+    public static final GetBucketInventoryConfigurationParser getBucketInventoryConfigurationParser = new GetBucketInventoryConfigurationParser();
+    public static final ListBucketInventoryConfigurationsParser listBucketInventoryConfigurationsParser = new ListBucketInventoryConfigurationsParser();
     public static final ListObjectsReponseParser listObjectsReponseParser = new ListObjectsReponseParser();
     public static final ListVersionsReponseParser listVersionsReponseParser = new ListVersionsReponseParser();
     public static final PutObjectReponseParser putObjectReponseParser = new PutObjectReponseParser();
@@ -546,6 +551,36 @@ public final class ResponseParsers {
         public GetAsyncFetchTaskResult parse(ResponseMessage response) throws ResponseParseException {
             try {
                 GetAsyncFetchTaskResult result = parseGetAsyncFetchTaskResult(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
+
+    public static final class GetBucketInventoryConfigurationParser implements ResponseParser<GetBucketInventoryConfigurationResult> {
+
+        @Override
+        public GetBucketInventoryConfigurationResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetBucketInventoryConfigurationResult result = parseGetBucketInventoryConfig(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
+
+    public static final class ListBucketInventoryConfigurationsParser implements ResponseParser<ListBucketInventoryConfigurationsResult> {
+
+        @Override
+        public ListBucketInventoryConfigurationsResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                ListBucketInventoryConfigurationsResult result = parseListBucketInventoryConfigurations(response.getContent());
                 result.setRequestId(response.getRequestId());
                 return result;
             } finally {
@@ -2790,6 +2825,148 @@ public final class ResponseParsers {
             throw new ResponseParseException(e.getMessage(), e);
         }
 
+    }
+
+    private static InventoryConfiguration parseInventoryConfigurationElem(Element configElem) {
+        InventoryConfiguration inventoryConfiguration = new InventoryConfiguration();
+
+        if (configElem.getChildText("Id") != null) {
+            inventoryConfiguration.setInventoryId(configElem.getChildText("Id"));
+        }
+
+        if (configElem.getChildText("IncludedObjectVersions") != null) {
+            inventoryConfiguration.setIncludedObjectVersions(configElem.getChildText("IncludedObjectVersions"));
+        }
+
+        if (configElem.getChildText("IsEnabled") != null) {
+            inventoryConfiguration.setEnabled(Boolean.valueOf(configElem.getChildText("IsEnabled")));
+        }
+
+        if (configElem.getChild("Filter") != null) {
+            Element elem = configElem.getChild("Filter");
+            if (elem.getChildText("Prefix") != null) {
+                InventoryFilter filter = new InventoryFilter().withPrefix(elem.getChildText("Prefix"));
+                inventoryConfiguration.setInventoryFilter(filter);
+            }
+        }
+
+        if (configElem.getChild("Schedule") != null) {
+            InventorySchedule schedule = new InventorySchedule();
+            Element elem = configElem.getChild("Schedule");
+            if (elem.getChild("Frequency") != null) {
+                schedule.setFrequency(elem.getChildText("Frequency"));
+                inventoryConfiguration.setSchedule(schedule);
+            }
+        }
+
+        if (configElem.getChild("OptionalFields") != null) {
+            Element OptionalFieldsElem = configElem.getChild("OptionalFields");
+            List<String> optionalFields = new ArrayList<String>();
+            List<Element> fieldElems = OptionalFieldsElem.getChildren("Field");
+            for (Element e : fieldElems) {
+                optionalFields.add(e.getText());
+            }
+            inventoryConfiguration.setOptionalFields(optionalFields);
+        }
+
+        if (configElem.getChild("Destination") != null) {
+            InventoryDestination destination = new InventoryDestination();
+            Element destinElem = configElem.getChild("Destination");
+            if (destinElem.getChild("OSSBucketDestination") != null) {
+                InventoryOSSBucketDestination ossBucketDestion = new InventoryOSSBucketDestination();
+                Element bucketDistinElem = destinElem.getChild("OSSBucketDestination");
+                if (bucketDistinElem.getChildText("Format") != null) {
+                    ossBucketDestion.setFormat(bucketDistinElem.getChildText("Format"));
+                }
+                if (bucketDistinElem.getChildText("AccountId") != null) {
+                    ossBucketDestion.setAccountId(bucketDistinElem.getChildText("AccountId"));
+                }
+                if (bucketDistinElem.getChildText("RoleArn") != null) {
+                    ossBucketDestion.setRoleArn(bucketDistinElem.getChildText("RoleArn"));
+                }
+                if (bucketDistinElem.getChildText("Bucket") != null) {
+                    String tmpBucket = bucketDistinElem.getChildText("Bucket");
+                    String bucket = tmpBucket.replaceFirst("acs:oss:::", "");
+                    ossBucketDestion.setBucket(bucket);
+                }
+                if (bucketDistinElem.getChildText("Prefix") != null) {
+                    ossBucketDestion.setPrefix(bucketDistinElem.getChildText("Prefix"));
+                }
+
+                if (bucketDistinElem.getChild("Encryption") != null) {
+                    InventoryEncryption inventoryEncryption = new InventoryEncryption();
+                    if (bucketDistinElem.getChild("Encryption").getChild("SSE-KMS") != null) {
+                        String keyId = bucketDistinElem.getChild("Encryption").getChild("SSE-KMS").getChildText("KeyId");
+                        inventoryEncryption.setServerSideKmsEncryption(new InventoryServerSideEncryptionKMS().withKeyId(keyId));
+                    }
+                    ossBucketDestion.setEncryption(inventoryEncryption);
+                }
+                destination.setOssBucketDestination(ossBucketDestion);
+            }
+            inventoryConfiguration.setDestination(destination);
+        }
+
+        return inventoryConfiguration;
+    }
+
+
+    /**
+     * Unmarshall get bucuket inventory configuration response body to GetBucketInventoryConfigurationResult.
+     */
+    public static GetBucketInventoryConfigurationResult parseGetBucketInventoryConfig(InputStream responseBody)
+            throws ResponseParseException {
+        try {
+            GetBucketInventoryConfigurationResult result = new GetBucketInventoryConfigurationResult();
+            Element root = getXmlRootElement(responseBody);
+            InventoryConfiguration configuration = parseInventoryConfigurationElem(root);
+            result.setInventoryConfiguration(configuration);
+            return result;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+
+
+    /**
+     * Unmarshall get bucuket qos info response body to BucketQosInfo.
+     */
+    public static ListBucketInventoryConfigurationsResult parseListBucketInventoryConfigurations(InputStream responseBody)
+            throws ResponseParseException {
+        try {
+            Element root = getXmlRootElement(responseBody);
+            ListBucketInventoryConfigurationsResult result = new ListBucketInventoryConfigurationsResult();
+            List<InventoryConfiguration> inventoryConfigurationList = null;
+
+            if (root.getChild("InventoryConfiguration") != null) {
+                inventoryConfigurationList = new ArrayList<InventoryConfiguration>();
+                List<Element> configurationElems = root.getChildren("InventoryConfiguration");
+                for (Element elem : configurationElems) {
+                    InventoryConfiguration configuration = parseInventoryConfigurationElem(elem);
+                    inventoryConfigurationList.add(configuration);
+                }
+                result.setInventoryConfigurationList(inventoryConfigurationList);
+            }
+
+            if (root.getChild("ContinuationToken") != null) {
+                result.setContinuationToken(root.getChildText("ContinuationToken"));
+            }
+
+            if (root.getChild("IsTruncated") != null) {
+                result.setTruncated(Boolean.valueOf(root.getChildText("IsTruncated")));
+            }
+
+            if (root.getChild("NextContinuationToken") != null) {
+                result.setNextContinuationToken(root.getChildText("NextContinuationToken"));
+            }
+
+            return result;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
     }
 
     /**
