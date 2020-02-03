@@ -335,7 +335,7 @@ public class OSSMultipartOperation extends OSSOperation {
 
         populateRequestPayerHeader(headers, uploadPartRequest.getRequestPayer());
         populateTrafficLimitHeader(headers, uploadPartRequest.getTrafficLimit());
-
+        OSSUtils.addSSECHeader(headers, uploadPartRequest.getSseCustomerKey());
         // Use a LinkedHashMap to preserve the insertion order.
         Map<String, String> params = new LinkedHashMap<String, String>();
         params.put(PART_NUMBER, Integer.toString(partNumber));
@@ -363,6 +363,7 @@ public class OSSMultipartOperation extends OSSOperation {
         result.setETag(trimQuotes(response.getHeaders().get(OSSHeaders.ETAG)));
         result.setRequestId(response.getRequestId());
         result.setPartSize(uploadPartRequest.getPartSize());
+        result.setResponse(response);
         ResponseParsers.setCRC(result, response);
 
         if (getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
@@ -405,6 +406,8 @@ public class OSSMultipartOperation extends OSSOperation {
         Map<String, String> headers = new HashMap<String, String>();
         populateCopyPartRequestHeaders(uploadPartCopyRequest, headers);
 
+        OSSUtils.addCopySourceSSECHeader(headers, uploadPartCopyRequest.getSourceSseCustomerKey());
+        OSSUtils.addSSECHeader(headers, uploadPartCopyRequest.getDestinationSSECustomerKey());
         // Use a LinkedHashMap to preserve the insertion order.
         Map<String, String> params = new LinkedHashMap<String, String>();
         params.put(PART_NUMBER, Integer.toString(partNumber));

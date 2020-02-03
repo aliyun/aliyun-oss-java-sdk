@@ -19,6 +19,7 @@
 
 package com.aliyun.oss.integrationtests;
 
+import com.aliyun.oss.internal.OSSHeaders;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -32,15 +33,17 @@ import com.aliyun.oss.model.ServerSideEncryptionByDefault;
 import com.aliyun.oss.model.ServerSideEncryptionConfiguration;
 import com.aliyun.oss.model.SetBucketEncryptionRequest;
 
+import java.io.File;
+import java.util.Map;
+
 public class BucketEncryptionTest extends TestBase {
 
-    @Test
-    public void testSetBucketEncryption() {
+    private void testSetBucketEncryptionInternal(SSEAlgorithm algorithm) {
 
         try {
             // set
             ServerSideEncryptionByDefault applyServerSideEncryptionByDefault =
-                    new ServerSideEncryptionByDefault(SSEAlgorithm.AES256.toString());
+                    new ServerSideEncryptionByDefault(algorithm.toString());
             ServerSideEncryptionConfiguration setConfiguration = new ServerSideEncryptionConfiguration();
             setConfiguration.setApplyServerSideEncryptionByDefault(applyServerSideEncryptionByDefault);
             SetBucketEncryptionRequest setRequest = new SetBucketEncryptionRequest(bucketName, setConfiguration);
@@ -49,9 +52,16 @@ public class BucketEncryptionTest extends TestBase {
 
             // get
             ServerSideEncryptionConfiguration getConfiguration = ossClient.getBucketEncryption(bucketName);
-            Assert.assertEquals(SSEAlgorithm.AES256.toString(),
+            Assert.assertEquals(algorithm.toString(),
                     getConfiguration.getApplyServerSideEncryptionByDefault().getSSEAlgorithm());
             Assert.assertNull(getConfiguration.getApplyServerSideEncryptionByDefault().getKMSMasterKeyID());
+
+            String fileName = TestUtils.genFixedLengthFile(1024);
+            String objectName = "encryption-" + TestUtils.genRandomString(10);
+            ossClient.putObject(bucketName, objectName, new File(fileName));
+
+            Map<String, String> headers = ossClient.getObject(bucketName, objectName).getResponse().getHeaders();
+            Assert.assertEquals(algorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION));
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());
@@ -59,13 +69,19 @@ public class BucketEncryptionTest extends TestBase {
     }
 
     @Test
-    public void testDeleteBucketEncryption() {
+    public void testSetBucketEncryption() {
+        testSetBucketEncryptionInternal(SSEAlgorithm.AES256);
+        testSetBucketEncryptionInternal(SSEAlgorithm.SM4);
+    }
+
+    private void testDeleteBucketEncryptionInternal(SSEAlgorithm algorithm) {
 
         try {
             // set
             ServerSideEncryptionByDefault applyServerSideEncryptionByDefault =
-                    new ServerSideEncryptionByDefault().withSSEAlgorithm(SSEAlgorithm.KMS);
-            applyServerSideEncryptionByDefault.setKMSMasterKeyID("test-kms-master-key-id");
+                    new ServerSideEncryptionByDefault().withSSEAlgorithm(algorithm);
+            if (algorithm == SSEAlgorithm.KMS)
+                applyServerSideEncryptionByDefault.setKMSMasterKeyID("test-kms-master-key-id");
             ServerSideEncryptionConfiguration setConfiguration = new ServerSideEncryptionConfiguration()
                     .withApplyServerSideEncryptionByDefault(applyServerSideEncryptionByDefault);
             setConfiguration.setApplyServerSideEncryptionByDefault(applyServerSideEncryptionByDefault);
@@ -76,10 +92,11 @@ public class BucketEncryptionTest extends TestBase {
 
             // get
             ServerSideEncryptionConfiguration getConfiguration = ossClient.getBucketEncryption(bucketName);
-            Assert.assertEquals(SSEAlgorithm.KMS.toString(),
+            Assert.assertEquals(algorithm.toString(),
                     getConfiguration.getApplyServerSideEncryptionByDefault().getSSEAlgorithm());
-            Assert.assertEquals("test-kms-master-key-id",
-                    getConfiguration.getApplyServerSideEncryptionByDefault().getKMSMasterKeyID());
+            if (algorithm == SSEAlgorithm.KMS)
+                Assert.assertEquals("test-kms-master-key-id",
+                        getConfiguration.getApplyServerSideEncryptionByDefault().getKMSMasterKeyID());
 
             // delete
             ossClient.deleteBucketEncryption(bucketName);
@@ -98,12 +115,18 @@ public class BucketEncryptionTest extends TestBase {
     }
 
     @Test
-    public void testBucketInfo() {
+    public void testDeleteBucketEncryption() {
+        testDeleteBucketEncryptionInternal(SSEAlgorithm.AES256);
+        testDeleteBucketEncryptionInternal(SSEAlgorithm.SM4);
+        testDeleteBucketEncryptionInternal(SSEAlgorithm.KMS);
+    }
+
+    public void testBucketInfoInternal(SSEAlgorithm algorithm) {
 
         try {
             // set 1
             ServerSideEncryptionByDefault applyServerSideEncryptionByDefault =
-                    new ServerSideEncryptionByDefault(SSEAlgorithm.AES256);
+                    new ServerSideEncryptionByDefault(algorithm);
             ServerSideEncryptionConfiguration setConfiguration = new ServerSideEncryptionConfiguration();
             setConfiguration.setApplyServerSideEncryptionByDefault(applyServerSideEncryptionByDefault);
             SetBucketEncryptionRequest setRequest = new SetBucketEncryptionRequest(bucketName, setConfiguration);
@@ -112,7 +135,7 @@ public class BucketEncryptionTest extends TestBase {
 
             // get
             BucketInfo bucketInfo = ossClient.getBucketInfo(bucketName);
-            Assert.assertEquals(SSEAlgorithm.AES256.toString(), bucketInfo.getServerSideEncryptionConfiguration()
+            Assert.assertEquals(algorithm.toString(), bucketInfo.getServerSideEncryptionConfiguration()
                     .getApplyServerSideEncryptionByDefault().getSSEAlgorithm());
             Assert.assertNull(bucketInfo.getServerSideEncryptionConfiguration()
                     .getApplyServerSideEncryptionByDefault().getKMSMasterKeyID());
@@ -151,4 +174,9 @@ public class BucketEncryptionTest extends TestBase {
         }
     }
 
+    @Test
+    public void testBucketInfo() {
+        testBucketInfoInternal(SSEAlgorithm.AES256);
+        testBucketInfoInternal(SSEAlgorithm.SM4);
+    }
 }

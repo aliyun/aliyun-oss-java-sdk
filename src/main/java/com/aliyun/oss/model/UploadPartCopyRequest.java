@@ -50,6 +50,10 @@ public class UploadPartCopyRequest extends WebServiceRequest {
     private Date unmodifiedSinceConstraint;
 
     private Date modifiedSinceConstraint;
+
+    private SSECustomerKey sourceSSECustomerKey;
+
+    private SSECustomerKey destinationSSECustomerKey;
     
     /**
      * Optional version Id specifying which version of the source object to
@@ -360,5 +364,37 @@ public class UploadPartCopyRequest extends WebServiceRequest {
 
     public void setModifiedSinceConstraint(Date modifiedSinceConstraint) {
         this.modifiedSinceConstraint = modifiedSinceConstraint;
+    }
+
+    /**
+     * Gets source object's server side encryption customer algorithm arguments.
+     * @return
+     */
+    public SSECustomerKey getSourceSseCustomerKey() {
+        return sourceSSECustomerKey;
+    }
+
+    /**
+     * Sets source object's server side encryption customer algorithm arguments.
+     * @param sseCustomerKey
+     */
+    public void setSourceSseCustomerKey(SSECustomerKey sseCustomerKey) {
+        this.sourceSSECustomerKey = sseCustomerKey;
+    }
+
+    /**
+     * Gets destination object's server side encryption customer algorithm arguments.
+     * @return
+     */
+    public SSECustomerKey getDestinationSSECustomerKey() {
+        return destinationSSECustomerKey;
+    }
+
+    /**
+     * Sets destination object's server side encryption customer algorithm arguments.
+     * @param sseCustomerKey
+     */
+    public void setDestinationSSECustomerKey(SSECustomerKey sseCustomerKey) {
+        this.destinationSSECustomerKey = sseCustomerKey;
     }
 }

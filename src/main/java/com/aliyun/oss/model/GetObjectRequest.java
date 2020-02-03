@@ -41,6 +41,8 @@ public class GetObjectRequest extends GenericRequest {
 
     private ResponseHeaderOverrides responseHeaders;
 
+    private SSECustomerKey sseCustomerKey;
+
     /**
      * Fields releated with getobject operation by using url signature.
      */
@@ -63,7 +65,22 @@ public class GetObjectRequest extends GenericRequest {
     public GetObjectRequest(String bucketName, String key) {
         super(bucketName, key);
     }
-    
+
+    /**
+     * Constructs a new {@link GetObjectRequest} with all the required parameters.
+     * @param bucketName
+     *            The name of the bucket containing the desired object.
+     * @param key
+     *            The key in the specified bucket under which the object is
+     *            stored.
+     * @param sseCustomerKey
+     *            The server side encryption customer algorithm arguments.
+     */
+    public GetObjectRequest(String bucketName, String key, SSECustomerKey sseCustomerKey) {
+        this(bucketName, key);
+        setSseCustomerKey(sseCustomerKey);
+    }
+
     /**
      * Constructs a new {@link GetObjectRequest} with all the required parameters.
      *
@@ -79,6 +96,26 @@ public class GetObjectRequest extends GenericRequest {
     public GetObjectRequest(String bucketName, String key, String versionId) {
         super(bucketName, key);
         setVersionId(versionId);
+    }
+
+    /**
+     * Constructs a new {@link GetObjectRequest} with all the required parameters.
+     *
+     * @param bucketName
+     *            The name of the bucket containing the desired object.
+     * @param key
+     *            The key in the specified bucket under which the object is
+     *            stored.
+     * @param versionId
+     *            The OSS version ID specifying a specific version of the
+     *            object to download.
+     * @param sseCustomerKey
+     *            The server side encryption customer algorithm arguments.
+     */
+    public GetObjectRequest(String bucketName, String key, String versionId, SSECustomerKey sseCustomerKey) {
+        super(bucketName, key);
+        setVersionId(versionId);
+        setSseCustomerKey(sseCustomerKey);
     }
 
     /**
@@ -337,4 +374,19 @@ public class GetObjectRequest extends GenericRequest {
         return trafficLimit;
     }
 
+    /**
+     * Gets object's server side encryption customer algorithm arguments.
+     * @return
+     */
+    public SSECustomerKey getSseCustomerKey() {
+        return sseCustomerKey;
+    }
+
+    /**
+     * Sets object's server side encryption customer algorithm arguments.
+     * @param sseCustomerKey
+     */
+    public void setSseCustomerKey(SSECustomerKey sseCustomerKey) {
+        this.sseCustomerKey = sseCustomerKey;
+    }
 }

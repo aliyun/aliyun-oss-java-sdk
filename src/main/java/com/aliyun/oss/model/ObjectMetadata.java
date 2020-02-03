@@ -23,11 +23,13 @@ import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.Map;
 
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.internal.OSSHeaders;
+import com.aliyun.oss.internal.OSSUtils;
 import com.aliyun.oss.internal.SignV2Utils;
 
 /**
@@ -308,6 +310,17 @@ public class ObjectMetadata {
      */
     public void setServerSideEncryptionKeyId(String serverSideEncryptionKeyId) {
         metadata.put(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION_KEY_ID, serverSideEncryptionKeyId);
+    }
+
+    /**
+     * Sets the destination object's server side customer algorithm arguments.
+     *
+     * @param sseCustomerKey See {@link SSECustomerKey} for more details.
+     */
+    public void setSSECustomerKey(SSECustomerKey sseCustomerKey) {
+        Map<String, String> ssecHeaders = new HashMap<String, String>();
+        OSSUtils.addSSECHeader(ssecHeaders, sseCustomerKey);
+        metadata.putAll(ssecHeaders);
     }
 
     /**

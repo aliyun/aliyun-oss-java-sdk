@@ -58,4 +58,9 @@ public class BinaryUtil {
         }
         return new String(buf);
     }
+
+    public static String toBase64Md5FromBase64String(String base64String) {
+        byte[] encryptionKey = BinaryUtil.fromBase64String(base64String);
+        return BinaryUtil.toBase64String(BinaryUtil.calculateMd5(encryptionKey));
+    }
 }

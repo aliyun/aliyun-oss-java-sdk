@@ -46,6 +46,7 @@ import com.aliyun.oss.model.Callback;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.ResponseHeaderOverrides;
 import com.aliyun.oss.model.Callback.CalbackBodyType;
+import com.aliyun.oss.model.SSECustomerKey;
 
 public class OSSUtils {
 
@@ -250,6 +251,41 @@ public class OSSUtils {
     public static void addHeader(Map<String, String> headers, String header, String value) {
         if (value != null) {
             headers.put(header, value);
+        }
+    }
+
+    public static void addSSECHeader(Map<String, String> headers, SSECustomerKey sseCustomerKey) {
+        if (sseCustomerKey == null) {
+            return;
+        }
+        headers.put(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION_CUSTOMER_ALGORITHM,
+                sseCustomerKey.getAlgorithm());
+        headers.put(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION_CUSTOMER_KEY,
+                sseCustomerKey.getBase64EncodedKey());
+        if (sseCustomerKey.getBase64EncodedMd5() == null) {
+            headers.put(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION_CUSTOMER_KEY_MD5,
+                    BinaryUtil.toBase64Md5FromBase64String(sseCustomerKey.getBase64EncodedKey()));
+        } else {
+            headers.put(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION_CUSTOMER_KEY_MD5,
+                    sseCustomerKey.getBase64EncodedMd5());
+        }
+    }
+
+    public static void addCopySourceSSECHeader(Map<String, String> headers, SSECustomerKey sseCustomerKey) {
+        if (sseCustomerKey == null) {
+            return;
+        }
+
+        headers.put(OSSHeaders.OSS_COPY_SOURCE_SERVER_SIDE_ENCRYPTION_CUSTOMER_ALGORITHM,
+                sseCustomerKey.getAlgorithm());
+        headers.put(OSSHeaders.OSS_COPY_SOURCE_SERVER_SIDE_ENCRYPTION_CUSTOMER_KEY,
+                sseCustomerKey.getBase64EncodedKey());
+        if (sseCustomerKey.getBase64EncodedMd5() == null) {
+            headers.put(OSSHeaders.OSS_COPY_SOURCE_SERVER_SIDE_ENCRYPTION_CUSTOMER_KEY_MD5,
+                    BinaryUtil.toBase64Md5FromBase64String(sseCustomerKey.getBase64EncodedKey()));
+        } else {
+            headers.put(OSSHeaders.OSS_COPY_SOURCE_SERVER_SIDE_ENCRYPTION_CUSTOMER_KEY_MD5,
+                    sseCustomerKey.getBase64EncodedMd5());
         }
     }
 

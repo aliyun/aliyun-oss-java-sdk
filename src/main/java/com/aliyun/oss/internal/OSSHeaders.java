@@ -32,6 +32,12 @@ public interface OSSHeaders extends HttpHeaders {
 
     static final String OSS_SERVER_SIDE_ENCRYPTION = "x-oss-server-side-encryption";
     static final String OSS_SERVER_SIDE_ENCRYPTION_KEY_ID = "x-oss-server-side-encryption-key-id";
+    static final String OSS_SERVER_SIDE_ENCRYPTION_CUSTOMER_ALGORITHM = "x-oss-server-side-encryption-customer-algorithm";
+    static final String OSS_SERVER_SIDE_ENCRYPTION_CUSTOMER_KEY = "x-oss-server-side-encryption-customer-key";
+    static final String OSS_SERVER_SIDE_ENCRYPTION_CUSTOMER_KEY_MD5 = "x-oss-server-side-encryption-customer-key-MD5";
+    static final String OSS_COPY_SOURCE_SERVER_SIDE_ENCRYPTION_CUSTOMER_ALGORITHM = "x-oss-copy-source-server-side-encryption-customer-algorithm";
+    static final String OSS_COPY_SOURCE_SERVER_SIDE_ENCRYPTION_CUSTOMER_KEY = "x-oss-copy-source-server-side-encryption-customer-key";
+    static final String OSS_COPY_SOURCE_SERVER_SIDE_ENCRYPTION_CUSTOMER_KEY_MD5 = "x-oss-copy-source-server-side-encryption-customer-key-MD5";
 
     static final String GET_OBJECT_IF_MODIFIED_SINCE = "If-Modified-Since";
     static final String GET_OBJECT_IF_UNMODIFIED_SINCE = "If-Unmodified-Since";

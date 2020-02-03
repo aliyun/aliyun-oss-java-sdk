@@ -653,6 +653,7 @@ public class OSSObjectOperation extends OSSOperation {
 
         populateRequestPayerHeader(headers, headObjectRequest.getRequestPayer());
 
+        OSSUtils.addSSECHeader(headers, headObjectRequest.getSseCustomerKey());
         Map<String, String> params = new HashMap<String, String>();
         if (headObjectRequest.getVersionId() != null) {
             params.put(RequestParameters.SUBRESOURCE_VRESION_ID, headObjectRequest.getVersionId());
@@ -1165,6 +1166,7 @@ public class OSSObjectOperation extends OSSOperation {
         addHeader(headers, OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION, copyObjectRequest.getServerSideEncryption());
         addHeader(headers, OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION_KEY_ID, copyObjectRequest.getServerSideEncryptionKeyId());
 
+        OSSUtils.addCopySourceSSECHeader(headers, copyObjectRequest.getSourceSseCustomerKey());
         ObjectMetadata newObjectMetadata = copyObjectRequest.getNewObjectMetadata();
         if (newObjectMetadata != null) {
             headers.put(OSSHeaders.COPY_OBJECT_METADATA_DIRECTIVE, MetadataDirective.REPLACE.toString());
@@ -1207,6 +1209,7 @@ public class OSSObjectOperation extends OSSOperation {
                     joinETags(getObjectRequest.getNonmatchingETagConstraints()));
         }
 
+        OSSUtils.addSSECHeader(headers, getObjectRequest.getSseCustomerKey());
         populateRequestPayerHeader(headers, getObjectRequest.getRequestPayer());
         populateTrafficLimitHeader(headers, getObjectRequest.getTrafficLimit());
     }
