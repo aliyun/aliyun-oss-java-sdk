@@ -714,6 +714,18 @@ public class OSSClient implements OSS {
     }
     
     @Override
+    public RestoreObjectResult restoreObject(String bucketName, String key, RestoreConfiguration restoreConfiguration)
+            throws OSSException, ClientException {
+        return this.restoreObject(new RestoreObjectRequest(bucketName, key, restoreConfiguration));
+    }
+
+    @Override
+    public RestoreObjectResult restoreObject(RestoreObjectRequest restoreObjectRequest)
+            throws OSSException, ClientException {
+        return objectOperation.restoreObject(restoreObjectRequest);
+    }
+
+    @Override
     public void setObjectTagging(String bucketName, String key, Map<String, String> tags)
         throws OSSException, ClientException {
         this.setObjectTagging(new SetObjectTaggingRequest(bucketName, key, tags));
