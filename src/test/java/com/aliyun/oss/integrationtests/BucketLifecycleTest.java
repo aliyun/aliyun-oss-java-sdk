@@ -98,7 +98,7 @@ public class BucketLifecycleTest extends TestBase {
             rule.setCreatedBeforeDate(DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z"));
             request.AddLifecycleRule(rule);
 
-            rule = new LifecycleRule(ruleId5, matchPrefix5, RuleStatus.Enabled);
+            rule = new LifecycleRule(ruleId5, matchPrefix5, RuleStatus.Disabled);
             storageTransition = new LifecycleRule.StorageTransition();
             storageTransition.setStorageClass(StorageClass.Archive);
             storageTransition.setCreatedBeforeDate(DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z"));
@@ -158,7 +158,7 @@ public class BucketLifecycleTest extends TestBase {
             LifecycleRule r5 = rules.get(5);
             Assert.assertEquals(r5.getId(), ruleId5);
             Assert.assertEquals(r5.getPrefix(), matchPrefix5);
-            Assert.assertEquals(r5.getStatus(), RuleStatus.Enabled);
+            Assert.assertEquals(r5.getStatus(), RuleStatus.Disabled);
             Assert.assertFalse(r5.hasCreatedBeforeDate());
             Assert.assertFalse(r5.hasExpirationTime());
             Assert.assertFalse(r5.hasExpirationDays());

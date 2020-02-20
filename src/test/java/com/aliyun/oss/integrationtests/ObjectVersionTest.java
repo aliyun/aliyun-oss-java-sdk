@@ -247,6 +247,8 @@ public class ObjectVersionTest extends TestBase {
             List<KeyVersion> keysTodel = new ArrayList<KeyVersion>();
             for (OSSVersionSummary ossVersion : versionListing.getVersionSummaries()) {
                 keysTodel.add(new KeyVersion(ossVersion.getKey(), ossVersion.getVersionId()));
+                Assert.assertNotNull(ossVersion.getOwner());
+                Assert.assertNotNull(ossVersion.getLastModified());
             }
 
             // Delete versions

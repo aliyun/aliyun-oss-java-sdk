@@ -25,6 +25,7 @@ import java.util.List;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.model.SetLiveChannelRequest;
 import junit.framework.Assert;
 
 import org.junit.Ignore;
@@ -173,7 +174,9 @@ public class RtmpTest extends TestBase {
             ossClient.createLiveChannel(createLiveChannelRequest);
 
             // set disable
-            ossClient.setLiveChannelStatus(bucketName, liveChannel, LiveChannelStatus.Disabled);
+            SetLiveChannelRequest setLiveChannelRequest = new SetLiveChannelRequest(bucketName, liveChannel,  LiveChannelStatus.Enabled);
+            setLiveChannelRequest.setLiveChannelStatus(LiveChannelStatus.Disabled);
+            ossClient.setLiveChannelStatus(setLiveChannelRequest);
             
             LiveChannelInfo liveChannelInfo = ossClient.getLiveChannelInfo(bucketName, liveChannel);
             Assert.assertEquals(liveChannelInfo.getStatus(), LiveChannelStatus.Disabled);
