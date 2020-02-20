@@ -115,6 +115,23 @@ public class ProfilesConfigFileTest extends TestBase {
             Assert.assertFalse(credentials.useSecurityToken());
 
             new File(AuthUtils.DEFAULT_PROFILE_PATH).delete();
+
+            // filepath
+            options = new HashMap<String, String>();
+            options.put(AuthUtils.OSS_ACCESS_KEY_ID, TEST_ACCESS_KEY_ID);
+            options.put(AuthUtils.OSS_SECRET_ACCESS_KEY, TEST_ACCESS_KEY_SECRET);
+            generateProfileFile(AuthUtils.DEFAULT_PROFILE_PATH,
+                    AuthUtils.DEFAULT_SECTION_NAME, options);
+
+            configFile = new ProfileConfigFile(AuthUtils.DEFAULT_PROFILE_PATH, profileLoader);
+            credentials = configFile.getCredentials();
+
+            Assert.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
+            Assert.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
+            Assert.assertNull(credentials.getSecurityToken());
+            Assert.assertFalse(credentials.useSecurityToken());
+
+            new File(AuthUtils.DEFAULT_PROFILE_PATH).delete();
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());
@@ -198,6 +215,17 @@ public class ProfilesConfigFileTest extends TestBase {
             Assert.fail(e.getMessage());
         } finally {
             new File(AuthUtils.DEFAULT_PROFILE_PATH).delete();
+        }
+    }
+
+    @Test
+    public void testConfigFileNull() {
+        try {
+            String filepath = null;
+            ProfileConfigFile profileConfigFile = new ProfileConfigFile(filepath);
+            Assert.fail("File path error, should be failed here.");
+        } catch (IllegalArgumentException e) {
+            // expected.
         }
     }
 
