@@ -47,6 +47,7 @@ public class TimeoutServiceClientTest {
 
             TimeoutServiceClient client = new TimeoutServiceClient(config);
             client.sendRequest(request, context);
+            client.shutdown();
         } catch (Exception e) {
             e.printStackTrace();
         }

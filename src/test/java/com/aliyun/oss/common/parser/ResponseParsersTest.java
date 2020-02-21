@@ -198,6 +198,119 @@ public class ResponseParsersTest {
     }
 
     @Test
+    public void testParseGetBucketReplicationProgressWithUnnormalParam() {
+        Date dt = new Date();
+        // <HistoricalObjectReplication>disabled
+        String respBody1 = "<ReplicationProgress>\n" +
+                " <Rule>\n" +
+                "     <ID>12345678</ID>\n" +
+                "     <Destination>\n" +
+                "         <Bucket>testBucketName</Bucket>\n" +
+                "         <Location>testLocation</Location>\n" +
+                "     </Destination>\n" +
+                "     <PrefixSet>\n" +
+                "         <Prefix>aaa</Prefix>\n" +
+                "         <Prefix>bbb</Prefix>\n" +
+                "     </PrefixSet>\n" +
+                "     <Action>xxx,xxx,xxx</Action>\n" +
+                "     <Status>doing</Status>\n" +
+                "     <HistoricalObjectReplication>disabled</HistoricalObjectReplication>\n" +
+                "     <Progress>\n" +
+                "         <HistoricalObject>0.9</HistoricalObject>\n" +
+                "         <NewObject>" + DateUtil.formatIso8601Date(dt) + "</NewObject>\n" +
+                "     </Progress>\n" +
+                " </Rule>\n" +
+                "</ReplicationProgress>";
+
+        // none <Progress>
+        String respBody2 = "<ReplicationProgress>\n" +
+                " <Rule>\n" +
+                "     <ID>12345678</ID>\n" +
+                "     <Destination>\n" +
+                "         <Bucket>testBucketName</Bucket>\n" +
+                "         <Location>testLocation</Location>\n" +
+                "     </Destination>\n" +
+                "     <PrefixSet>\n" +
+                "         <Prefix>aaa</Prefix>\n" +
+                "         <Prefix>bbb</Prefix>\n" +
+                "     </PrefixSet>\n" +
+                "     <Action>xxx,xxx,xxx</Action>\n" +
+                "     <Status>doing</Status>\n" +
+                "     <HistoricalObjectReplication>enabled</HistoricalObjectReplication>\n" +
+                " </Rule>\n" +
+                "</ReplicationProgress>";
+
+        // none <HistoricalObject>
+        String respBody3 = "<ReplicationProgress>\n" +
+                " <Rule>\n" +
+                "     <ID>12345678</ID>\n" +
+                "     <Destination>\n" +
+                "         <Bucket>testBucketName</Bucket>\n" +
+                "         <Location>testLocation</Location>\n" +
+                "     </Destination>\n" +
+                "     <PrefixSet>\n" +
+                "         <Prefix>aaa</Prefix>\n" +
+                "         <Prefix>bbb</Prefix>\n" +
+                "     </PrefixSet>\n" +
+                "     <Action>xxx,xxx,xxx</Action>\n" +
+                "     <Status>doing</Status>\n" +
+                "     <HistoricalObjectReplication>enabled</HistoricalObjectReplication>\n" +
+                "     <Progress>\n" +
+                "         <NewObject>" + DateUtil.formatIso8601Date(dt) + "</NewObject>\n" +
+                "     </Progress>\n" +
+                " </Rule>\n" +
+                "</ReplicationProgress>";
+
+
+        InputStream instream1 = null;
+        InputStream instream2 = null;
+        InputStream instream3 = null;
+        try {
+            instream1 = new ByteArrayInputStream(respBody1.getBytes("utf-8"));
+            instream2 = new ByteArrayInputStream(respBody2.getBytes("utf-8"));
+            instream3 = new ByteArrayInputStream(respBody3.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        BucketReplicationProgress progress1 = null;
+        BucketReplicationProgress progress2 = null;
+        BucketReplicationProgress progress3 = null;
+        try {
+            progress1 = ResponseParsers.parseGetBucketReplicationProgress(instream1);
+            progress2 = ResponseParsers.parseGetBucketReplicationProgress(instream2);
+            progress3 = ResponseParsers.parseGetBucketReplicationProgress(instream3);
+        } catch (ResponseParseException e) {
+            e.printStackTrace();
+            Assert.fail("parse bucket replication process response body fail!");
+        }
+
+        Assert.assertFalse(progress1.isEnableHistoricalObjectReplication());
+        Assert.assertEquals(Float.parseFloat("0"), progress2.getHistoricalObjectProgress());
+        Assert.assertNull(progress2.getNewObjectProgress());
+        Assert.assertEquals(Float.parseFloat("0"), progress3.getHistoricalObjectProgress());
+        Assert.assertNotNull(progress3.getNewObjectProgress());
+
+        // test parse error
+        String respBody4 = respBody1 + "-error-body";
+
+        InputStream instream4 = null;
+        try {
+            instream4 = new ByteArrayInputStream(respBody4.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseParsers.parseGetBucketReplicationProgress(instream4);
+        } catch (ResponseParseException e) {
+            // expected exception.
+        }
+    }
+
+    @Test
     public void testParseGetBucketReplicationWithSyncRole() {
         String respBody = "<ReplicationConfiguration>\n" +
                 " <Rule>\n" +
@@ -334,6 +447,108 @@ public class ResponseParsersTest {
         Assert.assertEquals("Enabled", rule.getSseKmsEncryptedObjectsStatus());
         Assert.assertNull(rule.getReplicaKmsKeyID());
     }
+
+    @Test
+    public void testParseGetBucketReplicationWithPrefixAndAction() {
+        String respBody = "<ReplicationConfiguration>\n" +
+                " <Rule>\n" +
+                "    <ID>12345678</ID>\n" +
+                "        <Destination>\n" +
+                "            <Bucket>testBucketName</Bucket>\n" +
+                "            <Cloud>testCloud</Cloud>\n" +
+                "            <CloudLocation>testCloudLocation</CloudLocation>\n" +
+                "        </Destination>\n" +
+                "    <Status>doing</Status>\n" +
+                "    <HistoricalObjectReplication>enabled</HistoricalObjectReplication>\n" +
+                "    <PrefixSet>\n" +
+                "        <Prefix>test-prefix-1</Prefix>\n" +
+                "        <Prefix>test-prefix-2</Prefix>\n" +
+                "        <Prefix>test-prefix-3</Prefix>\n" +
+                "    </PrefixSet>\n" +
+                "    <Action>PUT,DELETE</Action>\n" +
+                "    <EncryptionConfiguration>\n" +
+                "        <ReplicaKmsKeyID>12345</ReplicaKmsKeyID>\n" +
+                "    </EncryptionConfiguration>\n" +
+                " </Rule>\n" +
+                "</ReplicationConfiguration>\n";
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        List<ReplicationRule> rules = null;
+        try {
+            rules = ResponseParsers.parseGetBucketReplication(instream);
+        } catch (ResponseParseException e) {
+            e.printStackTrace();
+            Assert.fail("parse bucket replication response body fail!");
+        }
+        Assert.assertTrue(rules.size() > 0);
+
+        ReplicationRule rule = rules.get(0);
+        Assert.assertEquals("12345678", rule.getReplicationRuleID());
+        Assert.assertEquals("testBucketName", rule.getTargetBucketName());
+        Assert.assertNull(rule.getTargetBucketLocation());
+        Assert.assertEquals("testCloud", rule.getTargetCloud());
+        Assert.assertEquals("testCloudLocation", rule.getTargetCloudLocation());
+        Assert.assertEquals(true, rule.isEnableHistoricalObjectReplication());
+        Assert.assertEquals(3, rule.getObjectPrefixList().size());
+        for (String o : rule.getObjectPrefixList()) {
+            Assert.assertTrue(o.startsWith("test-prefix-"));
+        }
+        Assert.assertEquals(2, rule.getReplicationActionList().size());
+        Assert.assertNull(rule.getSyncRole());
+        Assert.assertNull(rule.getSseKmsEncryptedObjectsStatus());
+        Assert.assertEquals("12345", rule.getReplicaKmsKeyID());
+    }
+
+    @Test
+    public void parseGetBucketReplicationLocation() {
+        String respBody = "<ReplicationLocation>\n" +
+                "    <Location>test-location-1</Location>\n" +
+                "    <Location>test-location-2</Location>\n" +
+                "</ReplicationLocation>\n";
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        List<String> locations = null;
+        try {
+            locations = ResponseParsers.parseGetBucketReplicationLocation(instream);
+        } catch (ResponseParseException e) {
+            e.printStackTrace();
+            Assert.fail("parse bucket replication response body fail!");
+        }
+        Assert.assertEquals(2, locations.size());
+        for (String o : locations) {
+            Assert.assertTrue(o.startsWith("test-location-"));
+        }
+
+
+        // test parse error
+        respBody  += "-error-body";
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseParsers.parseGetBucketReplicationLocation(instream);
+            Assert.fail("should be failed here.");
+        } catch (Exception e) {
+            // expected exception.
+        }
+    }
+
 
     @Test
     public void testParseGetLiveChannelStat() {
@@ -594,5 +809,89 @@ public class ResponseParsersTest {
         Assert.assertEquals(CannedAccessControlList.Private, result.getCannedACL());
         Assert.assertEquals("oss-cn-hangzhou", result.getBucket().getLocation());
         Assert.assertEquals("oss-example", result.getBucket().getName());
+    }
+
+    @Test
+    public void testParseListVpcip() {
+        String respBody = "" +
+                "<ListVpcipResult>\n" +
+                "  <Vpcip>\n" +
+                "           <Region>test-region-1</Region>\n" +
+                "            <VpcId>test-vpcid-1</VpcId>\n" +
+                "            <Vip>test-vip-1</Vip>\n" +
+                "            <Label>test-label-1</Label>\n" +
+                " </Vpcip>\n" +
+                "  <Vpcip>\n" +
+                "           <Region>test-region-2</Region>\n" +
+                "            <VpcId>test-vpcid-2</VpcId>\n" +
+                "            <Vip>test-vip-2</Vip>\n" +
+                "            <Label>test-label-2</Label>\n" +
+                " </Vpcip>\n" +
+                "</ListVpcipResult>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        List<Vpcip>  result = null;
+        try {
+            result = ResponseParsers.parseListVpcipResult(instream);
+        } catch (ResponseParseException e) {
+            e.printStackTrace();
+            Assert.fail("parse bucket replication response body fail!");
+        }
+
+        Assert.assertEquals(2, result.size());
+        for (Vpcip v: result) {
+            Assert.assertTrue(v.getRegion().startsWith("test-region-"));
+            Assert.assertTrue(v.getVpcId().startsWith("test-vpcid-"));
+            Assert.assertTrue(v.getVip().startsWith("test-vip-"));
+            Assert.assertTrue(v.getLabel().startsWith("test-label-"));
+        }
+    }
+
+
+    @Test
+    public void testParseGetBucketVpcip() {
+        String respBody = "" +
+                "<ListVpcPolicyResult>\n" +
+                "  <Vpcip>\n" +
+                "           <Region>test-region-1</Region>\n" +
+                "            <VpcId>test-vpcid-1</VpcId>\n" +
+                "            <Vip>test-vip-1</Vip>\n" +
+                " </Vpcip>\n" +
+                "  <Vpcip>\n" +
+                "           <Region>test-region-2</Region>\n" +
+                "            <VpcId>test-vpcid-2</VpcId>\n" +
+                "            <Vip>test-vip-2</Vip>\n" +
+                " </Vpcip>\n" +
+                "</ListVpcPolicyResult>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        List<VpcPolicy>  result = null;
+        try {
+            result = ResponseParsers.parseListVpcPolicyResult(instream);
+        } catch (ResponseParseException e) {
+            e.printStackTrace();
+            Assert.fail("parse bucket replication response body fail!");
+        }
+
+        Assert.assertEquals(2, result.size());
+        for (VpcPolicy v: result) {
+            Assert.assertTrue(v.getRegion().startsWith("test-region-"));
+            Assert.assertTrue(v.getVpcId().startsWith("test-vpcid-"));
+            Assert.assertTrue(v.getVip().startsWith("test-vip-"));
+        }
     }
 }
