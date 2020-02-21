@@ -23,6 +23,11 @@ import com.aliyun.oss.utils.ResourceUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+
 import static com.aliyun.oss.common.utils.AuthUtils.loadPrivateKeyFromFile;
 import static com.aliyun.oss.common.utils.AuthUtils.loadPublicKeyFromFile;
 import static org.junit.Assert.assertEquals;
@@ -68,4 +73,30 @@ public class AuthUtilTest {
             assertTrue(true);
         }
     }
+
+    @Test
+    public void testLoadNonRsaPrivateKeyFromFile() {
+        File file = null;
+        try {
+            file = File.createTempFile("test-private-key", ".pem");
+            file.deleteOnExit();
+            String privateKeyContent = "-----BEGIN PRIVATE KEY-----\n" +
+                    "abc\n" +
+                    "-----END PRIVATE KEY-----";
+            Writer writer = new OutputStreamWriter(new FileOutputStream(file));
+            writer.write(privateKeyContent);
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        try {
+            String data = loadPrivateKeyFromFile(file.getAbsolutePath());
+            assertEquals("abc\n", data);
+        } catch (Exception e) {
+            Assert.fail("load private key error.");
+        }
+    }
+
 }

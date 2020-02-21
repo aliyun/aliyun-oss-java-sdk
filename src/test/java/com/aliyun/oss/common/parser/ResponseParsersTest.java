@@ -851,9 +851,9 @@ public class ResponseParsersTest {
             Assert.assertTrue(v.getVpcId().startsWith("test-vpcid-"));
             Assert.assertTrue(v.getVip().startsWith("test-vip-"));
             Assert.assertTrue(v.getLabel().startsWith("test-label-"));
+            Assert.assertTrue(v.toString().contains("test-region-"));
         }
     }
-
 
     @Test
     public void testParseGetBucketVpcip() {
@@ -894,4 +894,52 @@ public class ResponseParsersTest {
             Assert.assertTrue(v.getVip().startsWith("test-vip-"));
         }
     }
+
+    @Test
+    public void testparseGetCreateVpcipResult() {
+        String respBody = "" +
+                "<Vpcip>\n" +
+                "     <Region>test-region-1</Region>\n" +
+                "     <VpcId>test-vpcid-1</VpcId>\n" +
+                "     <Vip>test-vip-1</Vip>\n" +
+                "     <Label>test-label-1</Label>\n" +
+                "</Vpcip>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        Vpcip vpcip = null;
+        try {
+            vpcip = ResponseParsers.parseGetCreateVpcipResult(instream);
+        } catch (ResponseParseException e) {
+            e.printStackTrace();
+            Assert.fail("parse bucket replication response body fail!");
+        }
+
+        Assert.assertTrue(vpcip.getRegion().startsWith("test-region-"));
+        Assert.assertTrue(vpcip.getVpcId().startsWith("test-vpcid-"));
+        Assert.assertTrue(vpcip.getVip().startsWith("test-vip-"));
+        Assert.assertTrue(vpcip.getLabel().startsWith("test-label-"));
+        Assert.assertTrue(vpcip.toString().contains("test-region-"));
+
+        // test error body
+        try {
+            instream = new ByteArrayInputStream((respBody + "error-body").getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseParsers.parseGetCreateVpcipResult(instream);
+        } catch (ResponseParseException e) {
+           // expected exception.
+        }
+    }
+
 }
