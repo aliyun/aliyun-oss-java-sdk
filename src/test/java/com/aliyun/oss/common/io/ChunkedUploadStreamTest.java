@@ -21,12 +21,14 @@ package com.aliyun.oss.common.io;
 
 import com.aliyun.oss.common.comm.io.ChunkedUploadStream;
 import com.aliyun.oss.utils.ResourceUtils;
+import org.apache.http.entity.ContentType;
+import org.junit.Assert;
 import org.junit.Test;
-
+import com.aliyun.oss.common.comm.io.ChunkedInputStreamEntity.ReleasableInputStreamEntity;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
+import java.io.InputStream;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ChunkedUploadStreamTest {
@@ -66,6 +68,29 @@ public class ChunkedUploadStreamTest {
             input.read(null, 0, 0);
         } catch (Exception e) {
             assertTrue(true);
+        }
+    }
+
+    @Test
+    public void testReleasableInputStreamEntity() {
+        try {
+            InputStream in = new ByteArrayInputStream("123".getBytes());
+            ReleasableInputStreamEntity releasableInputStreamEntity = new ReleasableInputStreamEntity(in);
+            Assert.assertEquals(-1, releasableInputStreamEntity.getContentLength());
+            releasableInputStreamEntity.close();
+            releasableInputStreamEntity.release();
+
+            releasableInputStreamEntity = new ReleasableInputStreamEntity(in, ContentType.TEXT_PLAIN);
+            Assert.assertTrue(releasableInputStreamEntity.isRepeatable());
+            Assert.assertFalse(releasableInputStreamEntity.isCloseDisabled());
+            Assert.assertTrue(releasableInputStreamEntity.isStreaming());
+            Assert.assertNotNull(releasableInputStreamEntity.getContent());
+            Assert.assertFalse(releasableInputStreamEntity.isCloseDisabled());
+            releasableInputStreamEntity.close();
+            releasableInputStreamEntity.release();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
         }
     }
 }

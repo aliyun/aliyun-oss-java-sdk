@@ -17,25 +17,17 @@
  * under the License.
  */
 
-package com.aliyun.oss.common;
+package com.aliyun.oss.common.comm;
 
-import com.aliyun.oss.common.utils.AuthUtils;
-import com.aliyun.oss.common.utils.VersionInfoUtils;
-import com.aliyun.oss.internal.OSSConstants;
-import com.aliyun.oss.internal.RequestParameters;
-import com.aliyun.oss.internal.SignParameters;
-import com.aliyun.oss.model.LocationConstraint;
+import junit.framework.Assert;
 import org.junit.Test;
 
-public class NoCreationClassTest {
+public class IdleConnectionReaperTest {
     @Test
-    public void testNoCreationClass() {
-        // update coverage
-        RequestParameters requestParameters = new RequestParameters();
-        OSSConstants ossConstants = new OSSConstants();
-        LocationConstraint locationConstraint = new LocationConstraint();
-        SignParameters signParameters = new SignParameters();
-        AuthUtils authUtils = new AuthUtils();
-        VersionInfoUtils versionInfoUtils = new VersionInfoUtils();
+    public void testIdleConnectionReaperMethod() {
+        IdleConnectionReaper.registerConnectionManager(null);
+        Assert.assertTrue(IdleConnectionReaper.shutdown());
+        Assert.assertFalse(IdleConnectionReaper.shutdown());
+        Assert.assertEquals(0, IdleConnectionReaper.size());
     }
 }
