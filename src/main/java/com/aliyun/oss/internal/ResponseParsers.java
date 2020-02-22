@@ -944,7 +944,7 @@ public final class ResponseParsers {
 
                 // Occurs when deleting multiple objects in quiet mode.
                 if (response.getContentLength() == 0) {
-                    result = new DeleteVersionsResult(null);
+                    result = new DeleteVersionsResult(new ArrayList<DeletedVersion>());
                 } else {
                     result = parseDeleteVersionsResult(response.getContent());
                 }
@@ -2234,7 +2234,7 @@ public final class ResponseParsers {
                 }
 
                 if (ruleElem.getChild("SourceSelectionCriteria") != null &&
-                    ruleElem.getChild("SourceSelectionCriteria").getChildren("SseKmsEncryptedObjects") != null) {
+                    ruleElem.getChild("SourceSelectionCriteria").getChild("SseKmsEncryptedObjects") != null) {
                     repRule.setSseKmsEncryptedObjectsStatus(ruleElem.getChild("SourceSelectionCriteria").
                             getChild("SseKmsEncryptedObjects").getChildText("Status"));
                 }

@@ -99,6 +99,43 @@ public class OSSClientTest {
 
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret, conf);
         ossClient.shutdown();
+
+
+        conf = new ClientBuilderConfiguration();
+        //conf.setProxyHost(endpoint);
+        conf.setProxyPort(80);
+        //conf.setProxyUsername("user");
+        //conf.setProxyPassword("passwd");
+
+        ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret, conf);
+        ossClient.shutdown();
+
+        conf = new ClientBuilderConfiguration();
+        conf.setProxyHost(endpoint);
+        conf.setProxyPort(0);
+        //conf.setProxyUsername("user");
+        //conf.setProxyPassword("passwd");
+
+        ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret, conf);
+        ossClient.shutdown();
+
+        conf = new ClientBuilderConfiguration();
+        conf.setProxyHost(endpoint);
+        conf.setProxyPort(80);
+        conf.setProxyUsername("user");
+        //conf.setProxyPassword("passwd");
+
+        ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret, conf);
+        ossClient.shutdown();
+
+        conf = new ClientBuilderConfiguration();
+        conf.setProxyHost(endpoint);
+        conf.setProxyPort(80);
+        //conf.setProxyUsername("user");
+        conf.setProxyPassword("passwd");
+
+        ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret, conf);
+        ossClient.shutdown();
     }
 
     @Test
