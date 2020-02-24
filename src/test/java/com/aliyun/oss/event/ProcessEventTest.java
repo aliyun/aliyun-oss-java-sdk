@@ -52,7 +52,8 @@ public class ProcessEventTest {
         }
     }
 
-    @Test public void testProcessPublisher() {
+    @Test
+    public void testProcessPublisher() {
         ProgressPublisher publisher = new ProgressPublisher();
         TestProgressListener listener = new TestProgressListener();
 

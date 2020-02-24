@@ -51,6 +51,13 @@ public class TimeoutServiceClientTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        try {
+            TimeoutServiceClient client = new TimeoutServiceClient(config);
+            client.shutdown();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -658,6 +658,16 @@ public class RtmpTest extends TestBase {
         }
     }
 
+    @Test
+    public void testParseLiveStatusWrong() {
+        try {
+            LiveChannelStatus.parse("wrong-status");
+            Assert.fail("should be failed here.");
+        } catch (IllegalArgumentException e) {
+            // expected exception.
+        }
+    }
+
     private static boolean dateAfterValidator(Date date) throws ParseException {
         if (date == null) {
             return false;

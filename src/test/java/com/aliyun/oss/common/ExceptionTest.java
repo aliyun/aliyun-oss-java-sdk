@@ -19,12 +19,19 @@
 
 package com.aliyun.oss.common;
 
+import com.aliyun.oss.ClientErrorCode;
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.InconsistentException;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.ServiceException;
+import com.aliyun.oss.common.utils.ExceptionFactory;
+import org.apache.http.HttpHost;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.conn.HttpHostConnectException;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.net.ConnectException;
 
 
 public class ExceptionTest {
@@ -94,6 +101,14 @@ public class ExceptionTest {
         Assert.assertEquals("test header", exception.getHeader());
         Assert.assertEquals("test resource type", exception.getResourceType());
         Assert.assertEquals("test method", exception.getMethod());
+    }
+
+    @Test
+    public void testExceptionFactory() {
+        ExceptionFactory factory = new ExceptionFactory();
+        ClientProtocolException protocolException = new ClientProtocolException("");
+        ClientException clientException = factory.createNetworkException(protocolException);
+        Assert.assertEquals(ClientErrorCode.UNKNOWN, clientException.getErrorCode());
     }
 
 }

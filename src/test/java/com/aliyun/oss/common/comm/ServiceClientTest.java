@@ -32,6 +32,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.aliyun.oss.ClientConfiguration;
@@ -245,4 +246,17 @@ public class ServiceClientTest {
             assertEquals(1, client.getRequestAttempts());
         }
     }
+
+    @Test
+    public void testResponseMessageAbort()  {
+        try {
+            ResponseMessage responseMessage = new ResponseMessage(new ServiceClient.Request());
+            Assert.assertNull(responseMessage.getHttpResponse());
+            responseMessage.abort();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+    }
+
 }

@@ -86,7 +86,7 @@ public class AccessControlList extends GenericResult implements Serializable {
 
         ArrayList<Grant> grantsToRemove = new ArrayList<Grant>();
         for (Grant g : grants) {
-            if (g.getGrantee().equals(g)) {
+            if (g.getGrantee().equals(grantee)) {
                 grantsToRemove.add(g);
             }
         }
