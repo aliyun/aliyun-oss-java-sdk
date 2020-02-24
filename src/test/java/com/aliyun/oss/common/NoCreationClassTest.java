@@ -21,11 +21,17 @@ package com.aliyun.oss.common;
 
 import com.aliyun.oss.common.utils.AuthUtils;
 import com.aliyun.oss.common.utils.VersionInfoUtils;
+import com.aliyun.oss.internal.Mimetypes;
 import com.aliyun.oss.internal.OSSConstants;
 import com.aliyun.oss.internal.RequestParameters;
 import com.aliyun.oss.internal.SignParameters;
 import com.aliyun.oss.model.LocationConstraint;
+import org.junit.Assert;
 import org.junit.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class NoCreationClassTest {
     @Test
@@ -37,5 +43,25 @@ public class NoCreationClassTest {
         SignParameters signParameters = new SignParameters();
         AuthUtils authUtils = new AuthUtils();
         VersionInfoUtils versionInfoUtils = new VersionInfoUtils();
+    }
+
+    @Test
+    public void testMimetypesClass() {
+        String content = "" +
+             "xdoc    application/xdoc\n" +
+             "#xogg    application/xogg\n" +
+             "\n" +
+             "xpdf \n" +
+             "";
+        try {
+            Mimetypes mime = Mimetypes.getInstance();
+            InputStream input = new ByteArrayInputStream(content.getBytes());
+            mime.loadMimetypes(input);
+            Assert.assertEquals(mime.getMimetype("test.xdoc"), "application/xdoc");
+            Assert.assertEquals(mime.getMimetype("test.xogg"), "application/octet-stream");
+        } catch (IOException e) {
+            Assert.fail(e.getMessage());
+        }
+
     }
 }

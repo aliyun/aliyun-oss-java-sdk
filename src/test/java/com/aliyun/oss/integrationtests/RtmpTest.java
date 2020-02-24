@@ -632,6 +632,32 @@ public class RtmpTest extends TestBase {
         }
     }
 
+    @Test
+    public void testListAllLiveChannel() {
+        final String liveChannelPrefix = "normal-list-all-live-channel";
+        final int testCnt = 102;
+
+        try {
+            // create live channels
+            for (int i = 0; i < testCnt; i++) {
+                CreateLiveChannelRequest createLiveChannelRequest = new CreateLiveChannelRequest(
+                        bucketName, liveChannelPrefix + i);
+                ossClient.createLiveChannel(createLiveChannelRequest);
+            }
+
+            // list all
+            List<LiveChannel> liveChannels = ossClient.listLiveChannels(bucketName);
+            Assert.assertTrue(liveChannels.size() >= testCnt);
+
+            // delete live channels
+            for (int i = 0; i < testCnt; i++) {
+                ossClient.deleteLiveChannel(bucketName, liveChannelPrefix + i);
+            }
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
     private static boolean dateAfterValidator(Date date) throws ParseException {
         if (date == null) {
             return false;
