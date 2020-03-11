@@ -1187,6 +1187,7 @@ public final class ResponseParsers {
                 ossObjectSummary.setLastModified(DateUtil.parseIso8601Date(elem.getChildText("LastModified")));
                 ossObjectSummary.setSize(Long.valueOf(elem.getChildText("Size")));
                 ossObjectSummary.setStorageClass(elem.getChildText("StorageClass"));
+                ossObjectSummary.setType(elem.getChildText("Type"));
                 ossObjectSummary.setBucketName(objectListing.getBucketName());
 
                 String id = elem.getChild("Owner").getChildText("ID");
@@ -1280,6 +1281,7 @@ public final class ResponseParsers {
                 ossVersionSummary.setLastModified(DateUtil.parseIso8601Date(elem.getChildText("LastModified")));
                 ossVersionSummary.setSize(Long.valueOf(elem.getChildText("Size")));
                 ossVersionSummary.setStorageClass(elem.getChildText("StorageClass"));
+                ossVersionSummary.setType(elem.getChildText("Type"));
                 ossVersionSummary.setBucketName(versionListing.getBucketName());
                 ossVersionSummary.setIsDeleteMarker(false);
 

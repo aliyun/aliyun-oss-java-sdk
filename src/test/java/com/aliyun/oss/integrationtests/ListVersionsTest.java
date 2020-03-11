@@ -23,6 +23,7 @@ import static com.aliyun.oss.integrationtests.TestUtils.batchPutObject;
 import static com.aliyun.oss.integrationtests.TestUtils.genFixedLengthInputStream;
 import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class ListVersionsTest extends TestBase {
         super.setUp();
 
         bucketName = super.bucketName + "-list-versions";
-        endpoint = "http://oss-ap-south-1.aliyuncs.com";
+        endpoint = TestConfig.OSS_TEST_ENDPOINT;//"http://oss-ap-south-1.aliyuncs.com";
 
         //create client
         ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);
@@ -206,4 +207,33 @@ public class ListVersionsTest extends TestBase {
         }
     }
 
+    @Test
+    public void testListVersionsWithDifferentObjectType() {
+        final String objectPrefix = "object-with-diff-object-type-";
+        final String key1 = objectPrefix + "1";
+        final String key2 = objectPrefix + "2";
+
+        try {
+            InputStream input = new ByteArrayInputStream("hello world".getBytes());
+            ossClient.putObject(bucketName, key1,  input);
+            input = new ByteArrayInputStream("hello world".getBytes());
+            AppendObjectRequest request = new AppendObjectRequest(bucketName, key2, input);
+            request.setPosition(0L);
+            ossClient.appendObject(request);
+
+            ListVersionsRequest listVersionsRequest = new ListVersionsRequest()
+                    .withBucketName(bucketName)
+                    .withPrefix(objectPrefix)
+                    .withEncodingType(OSSConstants.URL_ENCODING);
+
+            VersionListing versionListing = ossClient.listVersions(listVersionsRequest);
+
+            Assert.assertEquals(versionListing.getVersionSummaries().size(), 2);
+            Assert.assertEquals(versionListing.getVersionSummaries().get(0).getType(), "Normal");
+            Assert.assertEquals(versionListing.getVersionSummaries().get(1).getType(), "Appendable");
+
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
 }

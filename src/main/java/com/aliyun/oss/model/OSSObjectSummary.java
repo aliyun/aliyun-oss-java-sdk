@@ -42,6 +42,8 @@ public class OSSObjectSummary {
 
     private Owner owner;
 
+    private String type;
+
     /**
      * Constructor.
      */
@@ -182,4 +184,22 @@ public class OSSObjectSummary {
         this.storageClass = storageClass;
     }
 
+    /**
+     * Gets the type of the object.
+     *
+     * @return Object type.
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Sets the type of the object.
+     *
+     * @param type
+     *            Object type.
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
 }

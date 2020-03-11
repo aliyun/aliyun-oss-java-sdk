@@ -68,7 +68,9 @@ public class OSSVersionSummary implements Serializable {
     /** True if this object represents a delete marker */
     private boolean isDeleteMarker;
 
-    
+    /** The object type of this version */
+    private String type;
+
     /**
      * Gets the name of the OSS bucket in which this version is stored.
      * 
@@ -336,4 +338,26 @@ public class OSSVersionSummary implements Serializable {
         this.size = size;
     }
 
+    /**
+     * Gets the type of this version.
+     *
+     * @return object type of this version.
+     *
+     * @see OSSVersionSummary#setType(String)
+     */
+     public String getType() {
+        return type;
+    }
+
+    /**
+     * Sets the type of this version.
+     *
+     * @param type
+     *            The type of this version.
+     *
+     * @see OSSVersionSummary#getType()
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
 }

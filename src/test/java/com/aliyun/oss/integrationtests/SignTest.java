@@ -40,7 +40,7 @@ public class SignTest {
         String filePath = null;
 
         try {
-            filePath = genFixedLengthFile(1 * 1024 * 1024); //1MB
+            filePath = genFixedLengthFile(100);
             PutObjectRequest request = new PutObjectRequest(bucket, key, new File(filePath));
             request.addHeader("x-oss-head1", "value");
             request.addHeader("abc", "value");

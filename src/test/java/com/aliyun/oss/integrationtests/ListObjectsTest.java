@@ -21,10 +21,13 @@ package com.aliyun.oss.integrationtests;
 
 import static com.aliyun.oss.integrationtests.TestUtils.batchPutObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aliyun.oss.model.AppendObjectRequest;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -286,5 +289,32 @@ public class ListObjectsTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-    
+
+    @Test
+    public void testListObjectsWithDifferentObjectType() {
+        final String objectPrefix = "object-with-diff-object-type-";
+        final String key1 = objectPrefix + "1";
+        final String key2 = objectPrefix + "2";
+
+        try {
+            InputStream input = new ByteArrayInputStream("hello world".getBytes());
+            ossClient.putObject(bucketName, key1,  input);
+            input = new ByteArrayInputStream("hello world".getBytes());
+            AppendObjectRequest request = new AppendObjectRequest(bucketName, key2, input);
+            request.setPosition(0L);
+            ossClient.appendObject(request);
+
+            // List objects under nonempty bucket
+            ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucketName)
+                    .withPrefix(objectPrefix);
+            listObjectsRequest.setEncodingType(DEFAULT_ENCODING_TYPE);
+            ObjectListing objectListing = ossClient.listObjects(listObjectsRequest);
+            Assert.assertEquals(objectListing.getObjectSummaries().size(), 2);
+            Assert.assertEquals(objectListing.getObjectSummaries().get(0).getType(), "Normal");
+            Assert.assertEquals(objectListing.getObjectSummaries().get(1).getType(), "Appendable");
+
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
 }

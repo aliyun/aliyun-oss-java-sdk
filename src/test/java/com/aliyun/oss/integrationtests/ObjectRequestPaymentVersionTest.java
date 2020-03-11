@@ -50,7 +50,7 @@ public class ObjectRequestPaymentVersionTest extends TestBase {
         super.setUp();
 
         bucketName = super.bucketName + "-request-payment-version";
-        endpoint = "http://oss-ap-south-1.aliyuncs.com";
+        endpoint = TestConfig.OSS_TEST_ENDPOINT;//"http://oss-ap-south-1.aliyuncs.com";
 
         //create client
         ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);
