@@ -123,6 +123,7 @@ import com.aliyun.oss.model.Permission;
 import com.aliyun.oss.model.PutObjectResult;
 import com.aliyun.oss.model.PushflowStatus;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
+import com.aliyun.oss.model.CORSConfiguration;
 import com.aliyun.oss.model.SimplifiedObjectMeta;
 import com.aliyun.oss.model.Style;
 import com.aliyun.oss.model.TagSet;
@@ -662,10 +663,10 @@ public final class ResponseParsers {
 
     }
 
-    public static final class GetBucketCorsResponseParser implements ResponseParser<List<CORSRule>> {
+    public static final class GetBucketCorsResponseParser implements ResponseParser<CORSConfiguration> {
 
         @Override
-        public List<CORSRule> parse(ResponseMessage response) throws ResponseParseException {
+        public CORSConfiguration parse(ResponseMessage response) throws ResponseParseException {
             try {
                 return parseListBucketCORS(response.getContent());
             } finally {
@@ -2130,12 +2131,11 @@ public final class ResponseParsers {
      * Unmarshall get bucket cors response body to cors rules.
      */
     @SuppressWarnings("unchecked")
-    public static List<CORSRule> parseListBucketCORS(InputStream responseBody) throws ResponseParseException {
+    public static CORSConfiguration parseListBucketCORS(InputStream responseBody) throws ResponseParseException {
 
         try {
             Element root = getXmlRootElement(responseBody);
-
-            List<CORSRule> corsRules = new ArrayList<CORSRule>();
+            CORSConfiguration result = new CORSConfiguration();
             List<Element> corsRuleElems = root.getChildren("CORSRule");
 
             for (Element corsRuleElem : corsRuleElems) {
@@ -2165,11 +2165,15 @@ public final class ResponseParsers {
                 if (maxAgeSecondsElem != null) {
                     rule.setMaxAgeSeconds(Integer.parseInt(maxAgeSecondsElem.getValue()));
                 }
-
-                corsRules.add(rule);
+                result.getCorsRules().add(rule);
             }
 
-            return corsRules;
+            Element responseVaryElems = root.getChild("ResponseVary");
+            if (responseVaryElems != null) {
+                result.setResponseVary(Boolean.parseBoolean(responseVaryElems.getValue()));
+            }
+
+            return result;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
