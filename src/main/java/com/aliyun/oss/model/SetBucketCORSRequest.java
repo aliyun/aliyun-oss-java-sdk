@@ -30,6 +30,8 @@ public class SetBucketCORSRequest extends GenericRequest {
 
     private List<CORSRule> corsRules = new ArrayList<CORSRule>();
 
+    private Boolean responseVary;
+
     public SetBucketCORSRequest(String bucketName) {
         super(bucketName);
     }
@@ -139,6 +141,14 @@ public class SetBucketCORSRequest extends GenericRequest {
 
     public void clearCorsRules() {
         this.corsRules.clear();
+    }
+
+    public void setResponseVary(Boolean responseVary) {
+        this.responseVary = responseVary;
+    }
+
+    public Boolean getResponseVary() {
+        return this.responseVary;
     }
 
     public static class CORSRule {

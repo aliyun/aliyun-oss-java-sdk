@@ -500,6 +500,9 @@ public final class RequestMarshallers {
 
                 xmlBody.append("</CORSRule>");
             }
+            if (null != request.getResponseVary()) {
+                xmlBody.append("<ResponseVary>" + request.getResponseVary() + "</ResponseVary>");
+            }
             xmlBody.append("</CORSConfiguration>");
             return stringMarshaller.marshall(xmlBody.toString());
         }

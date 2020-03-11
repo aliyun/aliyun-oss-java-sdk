@@ -854,7 +854,12 @@ public class OSSClient implements OSS {
 
     @Override
     public List<CORSRule> getBucketCORSRules(GenericRequest genericRequest) throws OSSException, ClientException {
-        return corsOperation.getBucketCORSRules(genericRequest);
+        return this.getBucketCORS(genericRequest).getCorsRules();
+    }
+
+    @Override
+    public CORSConfiguration getBucketCORS(GenericRequest genericRequest) throws OSSException, ClientException {
+        return corsOperation.getBucketCORS(genericRequest);
     }
 
     @Override

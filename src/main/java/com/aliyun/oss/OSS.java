@@ -1968,6 +1968,18 @@ public interface OSS {
     public List<CORSRule> getBucketCORSRules(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
+     * Get CORS configuration from the bucket.
+     *
+     * @param genericRequest
+     *            A {@link GenericRequest} instance that specifies the bucket
+     *            name.
+     * @return A {@link CORSConfiguration} instance which has the CORS configuration under the bucket.
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public CORSConfiguration getBucketCORS(GenericRequest genericRequest) throws OSSException, ClientException;
+
+    /**
      * Deletes all CORS rules under the bucket.
      * 
      * @param bucketName
