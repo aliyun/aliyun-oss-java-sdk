@@ -25,6 +25,8 @@ import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_CORS_CONFIGU
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aliyun.oss.model.CORSConfiguration;
+import com.aliyun.oss.model.GenericRequest;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -262,4 +264,118 @@ public class BucketCORSTest extends TestBase {
         }
     }
 
+    @Test
+    public void testSetBucketCORSWithResponseVary() {
+        final String bucketName = "set-bucket-cors-vary";
+
+        try {
+            ossClient.createBucket(bucketName);
+
+            // Set bucket cors ResponseVary true
+            SetBucketCORSRequest request = new SetBucketCORSRequest(bucketName);
+
+            CORSRule r0 = new CORSRule();
+            r0.addAllowdOrigin("http://www.a.com");
+            r0.addAllowdOrigin("http://www.b.com");
+            r0.addAllowedMethod("GET");
+            r0.addAllowedHeader("Authorization");
+            r0.addExposeHeader("x-oss-test");
+            r0.addExposeHeader("x-oss-test1");
+            r0.setMaxAgeSeconds(100);
+            request.addCorsRule(r0);
+
+            request.setResponseVary(true);
+            ossClient.setBucketCORS(request);
+
+            CORSConfiguration config = ossClient.getBucketCORS(new GenericRequest(bucketName));
+            List<CORSRule> rules = config.getCorsRules();
+            r0 = rules.get(0);
+            Assert.assertEquals(1, rules.size());
+            Assert.assertEquals(2, r0.getAllowedOrigins().size());
+            Assert.assertEquals(1, r0.getAllowedMethods().size());
+            Assert.assertEquals(1, r0.getAllowedHeaders().size());
+            Assert.assertEquals(2, r0.getExposeHeaders().size());
+            Assert.assertEquals(100, r0.getMaxAgeSeconds().intValue());
+
+            Assert.assertEquals(true, config.getResponseVary().booleanValue());
+
+            // Override existing bucket cors
+            CORSRule r1 = new CORSRule();
+            r1.addAllowdOrigin("*");
+            r1.addAllowedMethod("GET");
+            r1.addAllowedMethod("PUT");
+            r1.addAllowedHeader("Authorization");
+            request.clearCorsRules();
+            request.addCorsRule(r1);
+
+            ossClient.setBucketCORS(request);
+
+            rules = ossClient.getBucketCORSRules(bucketName);
+            r1 = rules.get(0);
+            Assert.assertEquals(1, rules.size());
+            Assert.assertEquals(1, r1.getAllowedOrigins().size());
+            Assert.assertEquals(2, r1.getAllowedMethods().size());
+            Assert.assertEquals(1, r1.getAllowedHeaders().size());
+
+            ossClient.deleteBucketCORSRules(bucketName);
+
+            // Set bucket cors ResponseVary false
+            request = new SetBucketCORSRequest(bucketName);
+
+            r0 = new CORSRule();
+            r0.addAllowdOrigin("http://www.a.com");
+            r0.addAllowedMethod("PUT");
+            r0.addAllowedHeader("Authorization");
+            r0.addExposeHeader("x-oss-abc");
+            r0.addExposeHeader("x-oss-abc1");
+            r0.setMaxAgeSeconds(110);
+            request.addCorsRule(r0);
+
+            request.setResponseVary(false);
+            ossClient.setBucketCORS(request);
+
+            config = ossClient.getBucketCORS(new GenericRequest(bucketName));
+            rules = config.getCorsRules();
+            r0 = rules.get(0);
+            Assert.assertEquals(1, rules.size());
+            Assert.assertEquals(1, r0.getAllowedOrigins().size());
+            Assert.assertEquals(1, r0.getAllowedMethods().size());
+            Assert.assertEquals(1, r0.getAllowedHeaders().size());
+            Assert.assertEquals(2, r0.getExposeHeaders().size());
+            Assert.assertEquals(110, r0.getMaxAgeSeconds().intValue());
+
+            Assert.assertEquals(false, config.getResponseVary().booleanValue());
+
+            ossClient.deleteBucketCORSRules(bucketName);
+
+            //set without setResponseVary
+            request = new SetBucketCORSRequest(bucketName);
+            r0 = new CORSRule();
+            r0.addAllowdOrigin("http://www.a.com");
+            r0.addAllowedMethod("PUT");
+            r0.addAllowedHeader("Authorization");
+            r0.addExposeHeader("x-oss-abc");
+            r0.addExposeHeader("x-oss-abc1");
+            r0.setMaxAgeSeconds(120);
+            request.addCorsRule(r0);
+            ossClient.setBucketCORS(request);
+
+            config = ossClient.getBucketCORS(new GenericRequest(bucketName));
+            rules = config.getCorsRules();
+            r0 = rules.get(0);
+            Assert.assertEquals(1, rules.size());
+            Assert.assertEquals(1, r0.getAllowedOrigins().size());
+            Assert.assertEquals(1, r0.getAllowedMethods().size());
+            Assert.assertEquals(1, r0.getAllowedHeaders().size());
+            Assert.assertEquals(2, r0.getExposeHeaders().size());
+            Assert.assertEquals(120, r0.getMaxAgeSeconds().intValue());
+
+            Assert.assertEquals(false, config.getResponseVary().booleanValue());
+
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        } finally {
+            ossClient.deleteBucket(bucketName);
+        }
+    }
 }
