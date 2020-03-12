@@ -79,4 +79,32 @@ public class PostPolicyTest extends TestBase {
         }
     }
 
+    @Test
+    public void testjsonizeError() {
+        PolicyConditions conditions = new PolicyConditions();
+
+        try {
+            conditions.jsonize();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        try {
+            conditions.addConditionItem(MatchMode.Exact, "bucket", "bucketName");
+            conditions.jsonize();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        try {
+            conditions.addConditionItem(MatchMode.Unknown, "bucket", "bucketName");
+            conditions.jsonize();
+            Assert.fail("MatchMode.Unknown, should be failed.");
+        } catch (IllegalArgumentException e) {
+            // expected exception.
+        }
+    }
+
 }

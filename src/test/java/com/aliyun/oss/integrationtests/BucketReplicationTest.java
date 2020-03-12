@@ -599,7 +599,16 @@ public class BucketReplicationTest extends TestBase {
             ossClient.deleteBucket(bucketName);
         }
     }
-    
+
+    @Test
+    public void testParseStatusWrong() {
+        try {
+            ReplicationStatus.parse("wrong-status");
+        } catch (IllegalArgumentException e) {
+            // expected exception.
+        }
+    }
+
     @SuppressWarnings("unused")
     private long diffSecond(Date post, Date pre) {
         long diff = post.getTime() - pre.getTime();

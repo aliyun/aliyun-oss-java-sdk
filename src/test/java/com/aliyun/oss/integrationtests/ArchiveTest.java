@@ -19,6 +19,7 @@
 
 package com.aliyun.oss.integrationtests;
 
+import com.aliyun.oss.model.RestoreObjectResult;
 import junit.framework.Assert;
 
 import static com.aliyun.oss.integrationtests.TestUtils.genFixedLengthFile;
@@ -141,5 +142,13 @@ public class ArchiveTest extends TestBase {
             ossClient.deleteBucket(bucketName);
         }
     }
-        
+
+    @Test
+    public void testRestoreResultClassSetter() {
+        // update coverage.
+        RestoreObjectResult result = new RestoreObjectResult(200);
+        result.setStatusCode(400);
+        Assert.assertEquals(400, result.getStatusCode());
+    }
+
 }

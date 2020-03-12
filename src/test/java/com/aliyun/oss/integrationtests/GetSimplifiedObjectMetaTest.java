@@ -60,6 +60,7 @@ public class GetSimplifiedObjectMetaTest extends TestBase {
             Assert.assertEquals(inputStreamLength, objectMeta.getSize());
             Assert.assertEquals(putObjectResult.getETag(), objectMeta.getETag());
             Assert.assertNotNull(objectMeta.getLastModified());
+            Assert.assertNotNull(objectMeta.toString());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }

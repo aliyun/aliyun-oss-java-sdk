@@ -33,6 +33,7 @@ import com.aliyun.oss.model.VpcPolicy;
 import com.aliyun.oss.model.Vpcip;
 
 import junit.framework.Assert;
+import org.junit.Test;
 
 public class VpcipTest extends TestBase {
 
@@ -144,6 +145,68 @@ public class VpcipTest extends TestBase {
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testNonVpcEnvironment() {
+        // update coverage.
+        try {
+            CreateVpcipRequest createVpcipRequest = new CreateVpcipRequest();
+            createVpcipRequest.setRegion(TestConfig.OSS_TEST_REGION);
+            createVpcipRequest.setVSwitchId(VPCIP_NAME);
+            ossClient.createVpcip(createVpcipRequest);
+        } catch (Exception e) {
+            // expected exception
+        }
+
+        try {
+            CreateBucketVpcipRequest vpcipRequest = new CreateBucketVpcipRequest();
+            vpcipRequest.setBucketName(bucketName);
+            VpcPolicy vpcPolicy = new VpcPolicy();
+            vpcPolicy.setVpcId("test-vpc-id");
+            vpcPolicy.setVip("test-vip");
+            vpcipRequest.setVpcPolicy(vpcPolicy);
+            ossClient.createBucketVpcip(vpcipRequest);
+        } catch (Exception e) {
+            // expected exception
+        }
+
+        try {
+            GenericRequest genericRequest = new GenericRequest();
+            genericRequest.setBucketName(bucketName);
+            ossClient.getBucketVpcip(genericRequest);
+        } catch (Exception e) {
+            // expected exception
+        }
+
+        try {
+            DeleteBucketVpcipRequest deleteBucketVpcipRequest = new DeleteBucketVpcipRequest();
+            deleteBucketVpcipRequest.setBucketName(bucketName);
+            VpcPolicy vpcPolicy = new VpcPolicy();
+            vpcPolicy.setVpcId("test-vpc-id");
+            vpcPolicy.setVip("test-vip");
+            deleteBucketVpcipRequest.setVpcPolicy(vpcPolicy);
+            ossClient.deleteBucketVpcip(deleteBucketVpcipRequest);
+        } catch (Exception e) {
+            // expected exception
+        }
+
+        try {
+            DeleteVpcipRequest deleteVpcipRequest = new DeleteVpcipRequest();
+            VpcPolicy vpcPolicy = new VpcPolicy();
+            vpcPolicy.setVpcId("test-vpc-id");
+            vpcPolicy.setVip("test-vip");
+            deleteVpcipRequest.setVpcPolicy(vpcPolicy);
+            ossClient.deleteVpcip(deleteVpcipRequest);
+        } catch (Exception e) {
+            // expected exception
+        }
+
+        try {
+            ossClient.listVpcip();
+        } catch (Exception e) {
+            // expected exception
         }
     }
 
