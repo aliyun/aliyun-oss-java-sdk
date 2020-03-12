@@ -51,6 +51,12 @@ public class SignTest {
             request.addAdditionalHeaderName("x-oss-head1");
             request.addAdditionalHeaderName("abc");
             request.addParameter("param1", "value1");
+            request.addParameter("|param1", "value2");
+            request.addParameter("+param1", "value3");
+            request.addParameter("|param1", "value4");
+            request.addParameter("+param2", "");
+            request.addParameter("|param2", null);
+            request.addParameter("param2", "");
 
             ossClient.putObject(request);
         } catch (Exception e) {
@@ -77,7 +83,7 @@ public class SignTest {
         String filePath;
 
         try {
-            filePath = genFixedLengthFile(1 * 1024 * 1024); //1MB
+            filePath = genFixedLengthFile(100); //1MB
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, key, new File(filePath));
 
             ossClient.putObject(putObjectRequest);
@@ -114,7 +120,7 @@ public class SignTest {
         String filePath;
 
         try {
-            filePath = genFixedLengthFile(1 * 1024 * 1024); //1MB
+            filePath = genFixedLengthFile(100);
 
             ossClient.putObject(bucket, key, new File(filePath));
 

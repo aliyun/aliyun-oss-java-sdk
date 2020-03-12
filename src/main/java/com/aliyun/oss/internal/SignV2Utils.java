@@ -237,18 +237,23 @@ public class SignV2Utils {
         builder.append(uriEncoding(resourcePath));
 
         if (parameters != null) {
-            String[] parameterNames = parameters.keySet().toArray(new String[parameters.size()]);
-            Arrays.sort(parameterNames);
+            TreeMap<String, String> canonicalizedParams = new TreeMap<String, String>();
+            for (Map.Entry<String, String> param : parameters.entrySet()) {
+                if (param.getValue() != null ) {
+                    canonicalizedParams.put(uriEncoding(param.getKey()), uriEncoding(param.getValue()));
+                }
+                else {
+                    canonicalizedParams.put(uriEncoding(param.getKey()), null);
+                }
+            }
 
             char separator = '?';
-            for (String paramName : parameterNames) {
+            for (Map.Entry<String, String> entry : canonicalizedParams.entrySet()) {
                 builder.append(separator);
-                builder.append(uriEncoding(paramName));
-                String paramValue = parameters.get(paramName);
-                if (paramValue != null && !paramValue.isEmpty()) {
-                    builder.append("=").append(uriEncoding(paramValue));
+                builder.append(entry.getKey());
+                if (entry.getValue() != null && !entry.getValue().isEmpty()) {
+                    builder.append("=").append(entry.getValue());
                 }
-
                 separator = '&';
             }
         }
