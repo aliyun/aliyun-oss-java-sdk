@@ -37,7 +37,7 @@ public class DeleteObjectTest extends TestBase {
     @Test
     public void testExistingBucketAndObject() {
         List<String> existingKeys = new ArrayList<String>();
-        final String existingKey = "existing-bucket-and-key";
+        final String existingKey = "existing-bucket-and-key\r\n<>&";
         existingKeys.add(existingKey);
         
         if (!batchPutObject(ossClient, bucketName, existingKeys)) {
@@ -50,6 +50,8 @@ public class DeleteObjectTest extends TestBase {
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
+
+        Assert.assertFalse(ossClient.doesObjectExist(bucketName, existingKey));
     }
     
     @Test

@@ -152,4 +152,16 @@ public class BucketProcesTest extends TestBase {
         }
     }
 
+    @Test
+    public void setImageProcessClassSetter() {
+        ImageProcess imageProcess = new ImageProcess(null, false, null, "/,-");
+        imageProcess.setCompliedHost("123");
+        imageProcess.setSourceFileProtectSuffix("*");
+        imageProcess.setStyleDelimiters("_");
+
+        Assert.assertEquals("123", imageProcess.getCompliedHost());
+        Assert.assertEquals("*", imageProcess.getSourceFileProtectSuffix());
+        Assert.assertEquals("_", imageProcess.getStyleDelimiters());
+    }
+
 }

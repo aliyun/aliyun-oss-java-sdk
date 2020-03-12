@@ -5,15 +5,16 @@ import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.common.comm.SignVersion;
+import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.HttpHeaders;
 import com.aliyun.oss.common.utils.IOUtils;
-import com.aliyun.oss.model.GeneratePresignedUrlRequest;
-import com.aliyun.oss.model.OSSObject;
-import com.aliyun.oss.model.PutObjectRequest;
+import com.aliyun.oss.model.*;
+import com.aliyun.oss.utils.ResourceUtils;
 import junit.framework.Assert;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -232,5 +233,336 @@ public class SignTest {
         } catch (Exception ex) {
             Assert.fail(ex.getMessage());
         }
+    }
+
+    @Test
+    public void testSignedURLV2() {
+        final String key = "test-signed-url-v2";
+        String endpiont = TestConfig.OSS_TEST_ENDPOINT + "/";
+        ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
+        conf.setSignatureVersion(SignVersion.V2);
+        OSS ossClient = new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT, TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET, conf);
+        long ticks = new Date().getTime() / 1000 + new Random().nextInt(5000);
+        String bucket = TestBase.BUCKET_NAME_PREFIX + ticks;
+        ossClient.createBucket(bucket);
+        String content = "Hello OSS";
+        String md5 = BinaryUtil.toBase64String(BinaryUtil.calculateMd5(content.getBytes()));
+
+        try {
+            ossClient.putObject(bucket, key, new ByteArrayInputStream(content.getBytes()), null);
+            Assert.assertTrue(true);
+        }catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        }
+
+        //get without metadata ok case
+        try {
+            Date  expirationDate = new Date();
+            Map<String, String> headers = new HashMap<String, String>();
+            expirationDate.setTime(expirationDate.getTime() + 3600000);
+
+            //default is get
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key, null);
+            request.setExpiration(expirationDate);
+            URL signedUrl = ossClient.generatePresignedUrl(request);
+
+            OSSObject o = ossClient.getObject(signedUrl, headers);
+            Assert.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
+            IOUtils.safeClose(o.getObjectContent());
+
+            //set content-type to null
+            request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.GET);
+            request.setExpiration(expirationDate);
+            request.setContentType(null);
+            signedUrl = ossClient.generatePresignedUrl(request);
+
+            o = ossClient.getObject(signedUrl, headers);
+            Assert.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
+            IOUtils.safeClose(o.getObjectContent());
+
+            //set content-type to ""
+            request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.GET);
+            request.setExpiration(expirationDate);
+            request.setContentType("");
+            signedUrl = ossClient.generatePresignedUrl(request);
+
+            o = ossClient.getObject(signedUrl, headers);
+            Assert.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
+            IOUtils.safeClose(o.getObjectContent());
+
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        }
+
+        //put with content-md5 OK case
+        try {
+            Date  expirationDate = new Date();
+            Map<String, String> headers = new HashMap<String, String>();
+            expirationDate.setTime(expirationDate.getTime() + 3600000);
+
+            //with md5
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.PUT);
+            request.setExpiration(expirationDate);
+            request.setContentMD5(md5);
+            URL signedUrl = ossClient.generatePresignedUrl(request);
+
+            headers.put(HttpHeaders.CONTENT_MD5, md5);
+            PutObjectResult result = ossClient.putObject(signedUrl, new ByteArrayInputStream(content.getBytes()), content.length(), headers);
+            Assert.assertEquals(result.getETag().isEmpty(), false);
+
+            //with md5 null
+            request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.PUT);
+            request.setExpiration(expirationDate);
+            signedUrl = ossClient.generatePresignedUrl(request);
+
+            result = ossClient.putObject(signedUrl, new ByteArrayInputStream(content.getBytes()), content.length(), null);
+            Assert.assertEquals(result.getETag().isEmpty(), false);
+
+            //with md5 ""
+            request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.PUT);
+            request.setExpiration(expirationDate);
+            request.setContentMD5("");
+            signedUrl = ossClient.generatePresignedUrl(request);
+
+            result = ossClient.putObject(signedUrl, new ByteArrayInputStream(content.getBytes()), content.length(), null);
+            Assert.assertEquals(result.getETag().isEmpty(), false);
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        }
+
+        //put with userMetadata
+        try {
+            Date  expirationDate = new Date();
+            Map<String, String> headers = new HashMap<String, String>();
+            expirationDate.setTime(expirationDate.getTime() + 3600000);
+
+            //with user metadata
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.PUT);
+            request.setExpiration(expirationDate);
+            request.addUserMetadata("user", "test");
+            request.setProcess("");
+            URL signedUrl = ossClient.generatePresignedUrl(request);
+
+            headers.put("x-oss-meta-user", "test");
+            PutObjectResult result = ossClient.putObject(signedUrl, new ByteArrayInputStream(content.getBytes()), content.length(), headers);
+            Assert.assertEquals(result.getETag().isEmpty(), false);
+
+            //
+            ResponseHeaderOverrides responseHeaders = new ResponseHeaderOverrides();
+            responseHeaders.setContentType("application/octet-stream");
+            request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.GET);
+            request.setExpiration(expirationDate);
+            request.setResponseHeaders(responseHeaders);
+            signedUrl = ossClient.generatePresignedUrl(request);
+
+            OSSObject o = ossClient.getObject(signedUrl, null);
+            Assert.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
+            IOUtils.safeClose(o.getObjectContent());
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        }
+
+        //process
+        try {
+            String originalImage = "oss/example.jpg";
+            String newImage = "oss/new-example.jpg";
+            String style = "image/resize,m_fixed,w_100,h_100";
+            ossClient.putObject(bucket, originalImage, new File(ResourceUtils.getTestFilename(originalImage)));
+
+            Date  expirationDate = new Date();
+            Map<String, String> headers = new HashMap<String, String>();
+            expirationDate.setTime(expirationDate.getTime() + 3600000);
+
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, originalImage, HttpMethod.GET);
+            request.setExpiration(expirationDate);
+            request.setProcess(style);
+            URL signedUrl = ossClient.generatePresignedUrl(request);
+            OSSObject o = ossClient.getObject(signedUrl, null);
+            Assert.assertTrue(true);
+            IOUtils.safeClose(o.getObjectContent());
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        }
+
+        //sts token
+        try {
+            Date  expirationDate = new Date();
+            expirationDate.setTime(expirationDate.getTime() + 3600000);
+            String stsEndpiont = TestConfig.OSS_TEST_ENDPOINT + "/";
+            OSS stsClient = new OSSClientBuilder().build(stsEndpiont, TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET, "test-sts-token", conf);
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.GET);
+            request.setExpiration(expirationDate);
+            URL signedUrl = stsClient.generatePresignedUrl(request);
+            Assert.assertTrue(signedUrl.toString().indexOf("security-token=test-sts-token") != -1);
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        }
+
+        TestBase.deleteBucket(bucket);
+    }
+
+    @Test
+    public void testSignedURLV1() {
+        final String key = "test-signed-url-v1";
+        ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
+        conf.setSignatureVersion(SignVersion.V1);
+        OSS ossClient = new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT, TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET, conf);
+        long ticks = new Date().getTime() / 1000 + new Random().nextInt(5000);
+        String bucket = TestBase.BUCKET_NAME_PREFIX + ticks;
+        ossClient.createBucket(bucket);
+        String content = "Hello OSS";
+        String md5 = BinaryUtil.toBase64String(BinaryUtil.calculateMd5(content.getBytes()));
+
+        try {
+            ossClient.putObject(bucket, key, new ByteArrayInputStream(content.getBytes()), null);
+            Assert.assertTrue(true);
+        }catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        }
+
+        //get without metadata ok case
+        try {
+            Date  expirationDate = new Date();
+            Map<String, String> headers = new HashMap<String, String>();
+            expirationDate.setTime(expirationDate.getTime() + 3600000);
+
+            //default is get
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key, null);
+            request.setExpiration(expirationDate);
+            URL signedUrl = ossClient.generatePresignedUrl(request);
+
+            OSSObject o = ossClient.getObject(signedUrl, headers);
+            Assert.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
+            IOUtils.safeClose(o.getObjectContent());
+
+            //set content-type to null
+            request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.GET);
+            request.setExpiration(expirationDate);
+            request.setContentType(null);
+            signedUrl = ossClient.generatePresignedUrl(request);
+
+            o = ossClient.getObject(signedUrl, headers);
+            Assert.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
+            IOUtils.safeClose(o.getObjectContent());
+
+            //set content-type to ""
+            request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.GET);
+            request.setExpiration(expirationDate);
+            request.setContentType("");
+            signedUrl = ossClient.generatePresignedUrl(request);
+
+            o = ossClient.getObject(signedUrl, headers);
+            Assert.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
+            IOUtils.safeClose(o.getObjectContent());
+
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        }
+
+        //put with content-md5 OK case
+        try {
+            Date  expirationDate = new Date();
+            Map<String, String> headers = new HashMap<String, String>();
+            expirationDate.setTime(expirationDate.getTime() + 3600000);
+
+            //with md5
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.PUT);
+            request.setExpiration(expirationDate);
+            request.setContentMD5(md5);
+            URL signedUrl = ossClient.generatePresignedUrl(request);
+
+            headers.put(HttpHeaders.CONTENT_MD5, md5);
+            PutObjectResult result = ossClient.putObject(signedUrl, new ByteArrayInputStream(content.getBytes()), content.length(), headers);
+            Assert.assertEquals(result.getETag().isEmpty(), false);
+
+            //with md5 null
+            request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.PUT);
+            request.setExpiration(expirationDate);
+            signedUrl = ossClient.generatePresignedUrl(request);
+
+            result = ossClient.putObject(signedUrl, new ByteArrayInputStream(content.getBytes()), content.length(), null);
+            Assert.assertEquals(result.getETag().isEmpty(), false);
+
+            //with md5 ""
+            request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.PUT);
+            request.setExpiration(expirationDate);
+            request.setContentMD5("");
+            signedUrl = ossClient.generatePresignedUrl(request);
+
+            result = ossClient.putObject(signedUrl, new ByteArrayInputStream(content.getBytes()), content.length(), null);
+            Assert.assertEquals(result.getETag().isEmpty(), false);
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        }
+
+        //put with userMetadata
+        try {
+            Date  expirationDate = new Date();
+            Map<String, String> headers = new HashMap<String, String>();
+            expirationDate.setTime(expirationDate.getTime() + 3600000);
+
+            //with user metadata
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.PUT);
+            request.setExpiration(expirationDate);
+            request.addUserMetadata("user", "test");
+            request.setProcess("");
+            URL signedUrl = ossClient.generatePresignedUrl(request);
+
+            headers.put("x-oss-meta-user", "test");
+            PutObjectResult result = ossClient.putObject(signedUrl, new ByteArrayInputStream(content.getBytes()), content.length(), headers);
+            Assert.assertEquals(result.getETag().isEmpty(), false);
+
+            //
+            ResponseHeaderOverrides responseHeaders = new ResponseHeaderOverrides();
+            responseHeaders.setContentType("application/octet-stream");
+            request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.GET);
+            request.setExpiration(expirationDate);
+            request.setResponseHeaders(responseHeaders);
+            signedUrl = ossClient.generatePresignedUrl(request);
+
+            OSSObject o = ossClient.getObject(signedUrl, null);
+            Assert.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
+            IOUtils.safeClose(o.getObjectContent());
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        }
+
+        //process
+        try {
+            String originalImage = "oss/example.jpg";
+            String newImage = "oss/new-example.jpg";
+            String style = "image/resize,m_fixed,w_100,h_100";
+            ossClient.putObject(bucket, originalImage, new File(ResourceUtils.getTestFilename(originalImage)));
+
+            Date  expirationDate = new Date();
+            Map<String, String> headers = new HashMap<String, String>();
+            expirationDate.setTime(expirationDate.getTime() + 3600000);
+
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, originalImage, HttpMethod.GET);
+            request.setExpiration(expirationDate);
+            request.setProcess(style);
+            URL signedUrl = ossClient.generatePresignedUrl(request);
+            OSSObject o = ossClient.getObject(signedUrl, null);
+            Assert.assertTrue(true);
+            IOUtils.safeClose(o.getObjectContent());
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        }
+
+        //sts token
+        try {
+            Date  expirationDate = new Date();
+            expirationDate.setTime(expirationDate.getTime() + 3600000);
+            String stsEndpiont = TestConfig.OSS_TEST_ENDPOINT + "/";
+            OSS stsClient = new OSSClientBuilder().build(stsEndpiont, TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET, "test-sts-token", conf);
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.GET);
+            request.setExpiration(expirationDate);
+            URL signedUrl = stsClient.generatePresignedUrl(request);
+            Assert.assertTrue(signedUrl.toString().indexOf("security-token=test-sts-token") != -1);
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        }
+
+        TestBase.deleteBucket(bucket);
     }
 }

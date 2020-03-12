@@ -83,6 +83,7 @@ public class ObjectAclTest extends TestBase {
                 ObjectAcl returnedAcl = ossClient.getObjectAcl(bucketName, key);
                 Assert.assertEquals(acl.toString(), returnedAcl.getPermission().toString());
                 Assert.assertEquals(returnedAcl.getRequestId().length(), REQUEST_ID_LEN);
+                Assert.assertNotNull(returnedAcl.toString());
 
                 OSSObject object = ossClient.getObject(bucketName, key);
                 Assert.assertEquals(inputStreamLength, object.getObjectMetadata().getContentLength());
