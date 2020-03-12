@@ -61,6 +61,9 @@ public class Bucket extends GenericResult {
     // location.
     private String intranetEndpoint;
 
+    // Region
+    private String region;
+
     /**
      * Default constructor.
      */
@@ -226,5 +229,24 @@ public class Bucket extends GenericResult {
      */
     public void setIntranetEndpoint(String endpoint) {
         this.intranetEndpoint = endpoint;
+    }
+
+    /**
+     * Gets the region.
+     *
+     * @return Region
+     */
+    public String getRegion() {
+        return this.region;
+    }
+
+    /**
+     * Sets the region.
+     *
+     * @param region
+     *            Region
+     */
+    public void setRegion(String region) {
+        this.region = region;
     }
 }
