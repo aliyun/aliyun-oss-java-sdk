@@ -56,7 +56,11 @@ public class BucketInfoTest extends TestBase {
                 Assert.assertEquals(grant.getGrantee(), GroupGrantee.AllUsers);
                 Assert.assertEquals(grant.getPermission(), Permission.Read);
             }
-            
+
+            ossClient.setBucketAcl(bucketName, CannedAccessControlList.PublicReadWrite);
+            info = ossClient.getBucketInfo(bucketName);
+            Assert.assertEquals(CannedAccessControlList.PublicReadWrite, info.getCannedACL());
+
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
