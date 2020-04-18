@@ -43,7 +43,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import com.aliyun.oss.ClientException;
 import com.aliyun.oss.InconsistentException;
+import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.utils.CRC64;
 import com.aliyun.oss.event.ProgressEventType;
 import com.aliyun.oss.event.ProgressListener;
@@ -65,6 +67,28 @@ import com.aliyun.oss.model.UploadPartResult;
  *
  */
 public class OSSUploadOperation {
+
+    protected UploadCheckPoint createUploadCheckPointWrap() {
+        return new UploadCheckPoint();
+    }
+
+    protected void loadUploadCheckPointWrap(UploadCheckPoint uploadCheckPoint, String checkpointFile) throws Throwable {
+        uploadCheckPoint.load(checkpointFile);
+    }
+
+    protected InitiateMultipartUploadResult initiateMultipartUploadWrap(UploadCheckPoint uploadCheckPoint,
+            InitiateMultipartUploadRequest initiateMultipartUploadRequest) throws OSSException, ClientException {
+        return multipartOperation.initiateMultipartUpload(initiateMultipartUploadRequest);
+    }
+
+    protected UploadPartResult uploadPartWrap(UploadCheckPoint uploadCheckPoint, UploadPartRequest request) throws OSSException, ClientException {
+        return multipartOperation.uploadPart(request);
+    }
+
+    protected CompleteMultipartUploadResult completeMultipartUploadWrap(UploadCheckPoint uploadCheckPoint, CompleteMultipartUploadRequest request)
+            throws OSSException, ClientException {
+        return multipartOperation.completeMultipartUpload(request);
+    }
 
     static class UploadCheckPoint implements Serializable {
 
@@ -144,10 +168,11 @@ public class OSSUploadOperation {
             result = prime * result + ((uploadFileStat == null) ? 0 : uploadFileStat.hashCode());
             result = prime * result + ((uploadID == null) ? 0 : uploadID.hashCode());
             result = prime * result + ((uploadParts == null) ? 0 : uploadParts.hashCode());
+            result = prime * result + (int) originPartSize;
             return result;
         }
 
-        private void assign(UploadCheckPoint ucp) {
+        public void assign(UploadCheckPoint ucp) {
             this.magic = ucp.magic;
             this.md5 = ucp.md5;
             this.uploadFile = ucp.uploadFile;
@@ -156,6 +181,7 @@ public class OSSUploadOperation {
             this.uploadID = ucp.uploadID;
             this.uploadParts = ucp.uploadParts;
             this.partETags = ucp.partETags;
+            this.originPartSize = ucp.originPartSize;
         }
 
         public String magic;
@@ -166,7 +192,7 @@ public class OSSUploadOperation {
         public String uploadID;
         public ArrayList<UploadPart> uploadParts;
         public ArrayList<PartETag> partETags;
-
+        public long originPartSize;
     }
 
     static class FileStat implements Serializable {
@@ -318,7 +344,7 @@ public class OSSUploadOperation {
 
     private UploadFileResult uploadFileWithCheckpoint(UploadFileRequest uploadFileRequest) throws Throwable {
         UploadFileResult uploadFileResult = new UploadFileResult();
-        UploadCheckPoint uploadCheckPoint = new UploadCheckPoint();
+        UploadCheckPoint uploadCheckPoint = createUploadCheckPointWrap();
 
         // The checkpoint is enabled, reading the checkpoint data from the
         // checkpoint file.
@@ -326,7 +352,7 @@ public class OSSUploadOperation {
             // The checkpoint file either does not exist, or is corrupted, the
             // whole file needs the re-upload.
             try {
-                uploadCheckPoint.load(uploadFileRequest.getCheckpointFile());
+                loadUploadCheckPointWrap(uploadCheckPoint, uploadFileRequest.getCheckpointFile());
             } catch (Exception e) {
                 remove(uploadFileRequest.getCheckpointFile());
             }
@@ -400,6 +426,7 @@ public class OSSUploadOperation {
         uploadCheckPoint.uploadFileStat = FileStat.getFileStat(uploadCheckPoint.uploadFile);
         uploadCheckPoint.uploadParts = splitFile(uploadCheckPoint.uploadFileStat.size, uploadFileRequest.getPartSize());
         uploadCheckPoint.partETags = new ArrayList<PartETag>();
+        uploadCheckPoint.originPartSize = uploadFileRequest.getPartSize();
 
         ObjectMetadata metadata = uploadFileRequest.getObjectMetadata();
         if (metadata == null) {
@@ -421,8 +448,7 @@ public class OSSUploadOperation {
 
         initiateUploadRequest.setSequentialMode(uploadFileRequest.getSequentialMode());
 
-        InitiateMultipartUploadResult initiateUploadResult = multipartOperation
-                .initiateMultipartUpload(initiateUploadRequest);
+        InitiateMultipartUploadResult initiateUploadResult = initiateMultipartUploadWrap(uploadCheckPoint, initiateUploadRequest);
         uploadCheckPoint.uploadID = initiateUploadResult.getUploadId();
     }
 
@@ -479,7 +505,7 @@ public class OSSUploadOperation {
         return taskResults;
     }
 
-    static class Task implements Callable<PartResult> {
+    class Task implements Callable<PartResult> {
 
         public Task(int id, String name, UploadCheckPoint uploadCheckPoint, int partIndex,
                 UploadFileRequest uploadFileRequest, OSSMultipartOperation multipartOperation,
@@ -523,7 +549,7 @@ public class OSSUploadOperation {
                     uploadPartRequest.setTrafficLimit(limit);
                 }
 
-                UploadPartResult uploadPartResult = multipartOperation.uploadPart(uploadPartRequest);
+                UploadPartResult uploadPartResult  = uploadPartWrap(uploadCheckPoint, uploadPartRequest);
 
                 if(multipartOperation.getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
                     OSSUtils.checkChecksum(uploadPartResult.getClientCRC(), uploadPartResult.getServerCRC(), uploadPartResult.getRequestId());
@@ -577,7 +603,8 @@ public class OSSUploadOperation {
         }
 
         completeUploadRequest.setCallback(uploadFileRequest.getCallback());
-        return multipartOperation.completeMultipartUpload(completeUploadRequest);
+
+        return completeMultipartUploadWrap(uploadCheckPoint, completeUploadRequest);
     }
 
     private ArrayList<UploadPart> splitFile(long fileSize, long partSize) {
@@ -621,5 +648,5 @@ public class OSSUploadOperation {
         return flag;
     }
 
-    private OSSMultipartOperation multipartOperation;
+    protected OSSMultipartOperation multipartOperation;
 }
