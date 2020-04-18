@@ -78,6 +78,26 @@ public class OSSClient implements OSS {
     private OSSDownloadOperation downloadOperation;
     private LiveChannelOperation liveChannelOperation;
 
+    /**Gets the inner multipartOperation, used for subclass to do implement opreation.*/
+    public OSSMultipartOperation getMultipartOperation() {
+        return multipartOperation;
+    }
+
+    /**Gets the inner objectOperation, used for subclass to do implement opreation.*/
+    public OSSObjectOperation getObjectOperation() {
+        return objectOperation;
+    }
+
+    /**Sets the inner downloadOperation.*/
+    public void setDownloadOperation(OSSDownloadOperation downloadOperation) {
+        this.downloadOperation = downloadOperation;
+    }
+
+    /**Sets the inner uploadOperation.*/
+    public void setUploadOperation(OSSUploadOperation uploadOperation) {
+        this.uploadOperation = uploadOperation;
+    }
+
     /**
      * Uses the default OSS Endpoint(http://oss-cn-hangzhou.aliyuncs.com) and
      * Access Id/Access Key to create a new {@link OSSClient} instance.

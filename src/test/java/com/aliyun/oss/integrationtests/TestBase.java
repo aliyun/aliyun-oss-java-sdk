@@ -479,17 +479,12 @@ public class TestBase {
             TestConfig.PROXY_PASSWORD = System.getenv().get("OSS_TEST_PROXY_PASSWORD");
         }
 
-        //kms
-        if (TestConfig.CMK_ID == null) {
-            TestConfig.CMK_ID = System.getenv().get("OSS_TEST_CMK_ID");
-        }
-
-        //callback
+        // callback
         if (TestConfig.CALLBACK_URL == null) {
             TestConfig.CALLBACK_URL = System.getenv().get("OSS_TEST_CALLBACK_URL");
         }
 
-        //request payment
+        // request payment
         if (TestConfig.OSS_TEST_PAYER_UID == null) {
             TestConfig.OSS_TEST_PAYER_UID = System.getenv().get("OSS_TEST_PAYER_UID");
         }
@@ -510,6 +505,23 @@ public class TestBase {
         if (TestConfig.OSS_TEST_INVENTORY_BUCKET_DESTINATION_ARN == null) {
             TestConfig.OSS_TEST_INVENTORY_BUCKET_DESTINATION_ARN = System.getenv()
                     .get("OSS_TEST_INVENTORY_BUCKET_DESTINATION_ARN");
+        }
+
+        // kms
+        if (TestConfig.OSS_TEST_KMS_REGION == null) {
+            TestConfig.OSS_TEST_KMS_REGION = System.getenv().get("OSS_TEST_KMS_REGION");
+        }
+
+        if (TestConfig.CMK_ID == null) {
+            TestConfig.CMK_ID = System.getenv().get("OSS_TEST_CMK_ID");
+        }
+
+        if (TestConfig.OSS_TEST_KMS_REGION2 == null) {
+            TestConfig.OSS_TEST_KMS_REGION2 = System.getenv().get("OSS_TEST_KMS_REGION2");
+        }
+
+        if (TestConfig.OSS_TEST_KMS_REGION2_CMK == null) {
+            TestConfig.OSS_TEST_KMS_REGION2_CMK = System.getenv().get("OSS_TEST_KMS_REGION2_CMK");
         }
 
     }

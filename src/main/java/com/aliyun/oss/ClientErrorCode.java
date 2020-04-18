@@ -56,5 +56,9 @@ public interface ClientErrorCode {
      * The input stream is not repeatable for reading.
      */
     static final String NONREPEATABLE_REQUEST = "NonRepeatableRequest";
-
+    
+    /**
+     * Thread interrupted while reading the input stream.
+     */
+    static final String INPUTSTREAM_READING_ABORTED = "InputStreamReadingAborted";
 }
