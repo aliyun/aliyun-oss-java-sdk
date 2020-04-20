@@ -19,9 +19,10 @@
 
 package com.aliyun.oss.integrationtests;
 
-import com.aliyun.oss.ClientException;
-import com.aliyun.oss.OSSErrorCode;
-import com.aliyun.oss.OSSException;
+import com.aliyun.oss.*;
+import com.aliyun.oss.common.auth.Credentials;
+import com.aliyun.oss.common.auth.DefaultCredentialProvider;
+import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 import org.junit.Test;
@@ -31,14 +32,37 @@ import java.util.List;
 
 public class BucketInventoryTest extends TestBase {
     private String destinBucket;
+    private OSSClient ossClient;
+    private String bucketName;
+    private String endpoint;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
+
+        bucketName = super.bucketName + "-inventory";
+        endpoint = "http://oss-ap-southeast-2.aliyuncs.com";
+
+        //create client
+        ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);
+        Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
+        ossClient = new OSSClient(endpoint, new DefaultCredentialProvider(credentials), conf);
+
+        ossClient.createBucket(bucketName);
+        Thread.sleep(2000);
+
         String destinBucketName = bucketName + "-destin";
         ossClient.createBucket(destinBucketName);
         Thread.sleep(2000);
         destinBucket = destinBucketName;
+    }
+
+    public void tearDown() throws Exception {
+        if (ossClient != null) {
+            ossClient.shutdown();
+            ossClient = null;
+        }
+        super.tearDown();
     }
 
     private InventoryConfiguration createTestInventoryConfiguration(String configurationId) {
@@ -67,8 +91,8 @@ public class BucketInventoryTest extends TestBase {
         InventoryOSSBucketDestination ossBucketDestin = new InventoryOSSBucketDestination()
                 .withFormat(InventoryFormat.CSV)
                 .withPrefix("bucket-prefix")
-                .withAccountId(TestConfig.OSS_TEST_INVENTORY_BUCKET_DESTINATION_ACCOUNT)
-                .withRoleArn(TestConfig.OSS_TEST_INVENTORY_BUCKET_DESTINATION_ARN)
+                .withAccountId(TestConfig.RAM_UID)
+                .withRoleArn(TestConfig.RAM_ROLE_ARN)
                 .withBucket(destinBucket)
                 .withEncryption(inventoryEncryption);
 
@@ -110,8 +134,8 @@ public class BucketInventoryTest extends TestBase {
         InventoryOSSBucketDestination ossBucketDestin = new InventoryOSSBucketDestination()
                 .withFormat(InventoryFormat.CSV)
                 .withPrefix("bucket-prefix")
-                .withAccountId(TestConfig.OSS_TEST_INVENTORY_BUCKET_DESTINATION_ACCOUNT)
-                .withRoleArn(TestConfig.OSS_TEST_INVENTORY_BUCKET_DESTINATION_ARN)
+                .withAccountId(TestConfig.RAM_UID)
+                .withRoleArn(TestConfig.RAM_ROLE_ARN)
                 .withBucket(destinBucket)
                 .withEncryption(inventoryEncryption);
 
@@ -148,9 +172,9 @@ public class BucketInventoryTest extends TestBase {
 
             InventoryOSSBucketDestination actualDestin = actualConfig.getDestination().getOssBucketDestination();
 
-            Assert.assertEquals(TestConfig.OSS_TEST_INVENTORY_BUCKET_DESTINATION_ACCOUNT, actualDestin.getAccountId());
+            Assert.assertEquals(TestConfig.RAM_UID, actualDestin.getAccountId());
             Assert.assertEquals(destinBucket, actualDestin.getBucket());
-            Assert.assertEquals(TestConfig.OSS_TEST_INVENTORY_BUCKET_DESTINATION_ARN, actualDestin.getRoleArn());
+            Assert.assertEquals(TestConfig.RAM_ROLE_ARN, actualDestin.getRoleArn());
             Assert.assertEquals(InventoryFormat.CSV.toString(), actualDestin.getFormat());
             Assert.assertEquals("bucket-prefix", actualDestin.getPrefix());
             Assert.assertNotNull(actualDestin.getEncryption().getServerSideOssEncryption());

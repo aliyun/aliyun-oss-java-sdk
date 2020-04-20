@@ -15,8 +15,7 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.aliyun.oss.common.parser.RequestMarshallers.*;
 
@@ -1033,6 +1032,59 @@ public class RequestMarshallersTest {
         Assert.assertEquals("test-region", region);
         Assert.assertEquals("test-vpc-id", vpcid);
         Assert.assertEquals("test-vip", vip);
+    }
+
+    @Test
+    public void testSetBucketInventoryRequestMarshaller() {
+
+        InventoryConfiguration  config = new InventoryConfiguration();
+
+        byte[] data = setBucketInventoryRequestMarshaller.marshall(config);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        Assert.assertEquals(root.getChild("Id"), null);
+        Assert.assertEquals(root.getChild("IsEnabled"), null);
+        Assert.assertEquals(root.getChild("IncludedObjectVersions"), null);
+        Assert.assertEquals(root.getChild("Filter"), null);
+        Assert.assertEquals(root.getChild("Schedule"), null);
+        Assert.assertEquals(root.getChild("OptionalFields"), null);
+        Assert.assertEquals(root.getChild("Destination"), null);
+
+        config = new InventoryConfiguration();
+        config.setOptionalFields(new ArrayList<String>());
+        config.setDestination(new InventoryDestination().withOSSBucketDestination(new InventoryOSSBucketDestination()));
+
+        data = setBucketInventoryRequestMarshaller.marshall(config);
+        is = new ByteArrayInputStream(data);
+
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        root = doc.getRootElement();
+        Assert.assertEquals(root.getChild("Id"), null);
+        Assert.assertEquals(root.getChild("IsEnabled"), null);
+        Assert.assertEquals(root.getChild("IncludedObjectVersions"), null);
+        Assert.assertEquals(root.getChild("Filter"), null);
+        Assert.assertEquals(root.getChild("Schedule"), null);
+        Assert.assertEquals(root.getChild("OptionalFields"), null);
+        Assert.assertNotNull(root.getChild("Destination"));
+
     }
 
 }

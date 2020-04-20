@@ -677,7 +677,12 @@ public class EncryptionClientRsaTest extends TestBase {
 
             CompleteMultipartUploadRequest completeMultipartUploadRequest = new CompleteMultipartUploadRequest(
                     bucketName, key, uploadId, partETags);
-            ossEncryptionClient.completeMultipartUpload(completeMultipartUploadRequest);
+            try {
+                ossEncryptionClient.completeMultipartUpload(completeMultipartUploadRequest);
+                Assert.fail("total size is not equal.");
+            } catch (OSSException e) {
+                // Expected exception.
+            }
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }

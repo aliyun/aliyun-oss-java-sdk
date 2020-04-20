@@ -45,8 +45,16 @@ public final class TestConfig {
     public static String PROXY_USER = null;
     public static String PROXY_PASSWORD = null;
 
+    // OSS RAM
+    public static String RAM_REGION = null;
+    public static String RAM_ROLE_ARN = null;
+    public static String RAM_UID = null;
+
     // OSS cmk id configuration
-    public static String CMK_ID = null;
+    public static String KMS_CMK_ID = null;
+    public static String KMS_REGION = null;
+    public static String KMS_CMK_ID_1 = null;
+    public static String KMS_REGION_1 = null;
 
     // OSS callback 
     public static String CALLBACK_URL = null;
@@ -55,13 +63,4 @@ public final class TestConfig {
     public static String OSS_TEST_PAYER_UID = null;
     public static String OSS_TEST_PAYER_ACCESS_KEY_ID = null;
     public static String OSS_TEST_PAYER_ACCESS_KEY_SECRET = null;
-
-    // OSS Inventory test configuration
-    public static String OSS_TEST_INVENTORY_BUCKET_DESTINATION_ACCOUNT = null;
-    public static String OSS_TEST_INVENTORY_BUCKET_DESTINATION_ARN = null;
-
-    // OSS encryption client kms test multi region cmk.
-    public static String OSS_TEST_KMS_REGION = null;
-    public static String OSS_TEST_KMS_REGION2 = null;
-    public static String OSS_TEST_KMS_REGION2_CMK = null;
 }

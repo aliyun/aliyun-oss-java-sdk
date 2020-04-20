@@ -19,8 +19,13 @@
 
 package com.aliyun.oss.integrationtests;
 
+import com.aliyun.oss.ClientConfiguration;
+import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
+import com.aliyun.oss.common.auth.Credentials;
+import com.aliyun.oss.common.auth.DefaultCredentialProvider;
+import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.internal.OSSHeaders;
 import com.aliyun.oss.model.*;
 import junit.framework.Assert;
@@ -28,6 +33,33 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 
 public class RestoreConfigurationTest extends TestBase {
+    private OSSClient ossClient;
+    private String bucketName;
+    private String endpoint;
+
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+
+        bucketName = super.bucketName + "-cold";
+        endpoint = "http://oss-ap-southeast-2.aliyuncs.com";
+
+        //create client
+        ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);
+        Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
+        ossClient = new OSSClient(endpoint, new DefaultCredentialProvider(credentials), conf);
+
+        ossClient.createBucket(bucketName);
+        Thread.sleep(2000);
+    }
+
+    public void tearDown() throws Exception {
+        if (ossClient != null) {
+            ossClient.shutdown();
+            ossClient = null;
+        }
+        super.tearDown();
+    }
 
     @Test
     public void testRestoreObjectWithConfig() {

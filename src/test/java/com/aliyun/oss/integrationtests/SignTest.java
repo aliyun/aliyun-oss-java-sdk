@@ -27,7 +27,7 @@ import static com.aliyun.oss.integrationtests.TestUtils.genFixedLengthInputStrea
 import static com.aliyun.oss.integrationtests.TestUtils.removeFile;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_OBJECT_CONTENT_TYPE;
 
-public class SignTest {
+public class SignTest extends  TestBase{
 
     @Test
     public void testSignV2() {
@@ -142,7 +142,7 @@ public class SignTest {
         String bucket = TestBase.BUCKET_NAME_PREFIX + ticks;
         ossClient.createBucket(bucket);
 
-        final String expirationString = "Sun, 12 Apr 2020 12:00:00 GMT";
+        final String expirationString = "Sun, 12 Apr 2022 12:00:00 GMT";
         final long inputStreamLength = 128 * 1024; //128KB
 
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.PUT);
@@ -188,7 +188,7 @@ public class SignTest {
         String bucket = TestBase.BUCKET_NAME_PREFIX + ticks;
         ossClient.createBucket(bucket);
 
-        final String expirationString = "Sun, 12 Apr 2020 12:00:00 GMT";
+        final String expirationString = "Sun, 12 Apr 2022 12:00:00 GMT";
         final long inputStreamLength = 128 * 1024; //128KB
         final long firstByte= inputStreamLength / 2;
         final long lastByte = inputStreamLength - 1;
