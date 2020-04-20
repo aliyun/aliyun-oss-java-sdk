@@ -3669,4 +3669,187 @@ public class ResponseParsersTest {
             Assert.assertTrue(false);
         }
     }
+
+    @Test
+    public void testparseGetBucketInventoryConfig() {
+        InputStream instream = null;
+        String respBody;
+
+        respBody = "" +
+                "<InventoryConfiguration>\n" +
+                "</InventoryConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseParsers.parseGetBucketInventoryConfig(instream);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        respBody = "" +
+                "<InventoryConfiguration>\n" +
+                "  <Filter>\n" +
+                "  </Filter>\n" +
+                "  <Schedule>\n" +
+                "  </Schedule>\n" +
+                "  <Destination>\n" +
+                "  </Destination>\n" +
+                "</InventoryConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseParsers.parseGetBucketInventoryConfig(instream);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        respBody = "" +
+                "<InventoryConfiguration>\n" +
+                "  <Filter>\n" +
+                "  </Filter>\n" +
+                "  <Schedule>\n" +
+                "  </Schedule>\n" +
+                "  <Destination>\n" +
+                "    <OSSBucketDestination>\n" +
+                "    </OSSBucketDestination>\n" +
+                "  </Destination>\n" +
+                "</InventoryConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseParsers.parseGetBucketInventoryConfig(instream);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        respBody = "" +
+                "<InventoryConfiguration>\n" +
+                "  <Filter>\n" +
+                "  </Filter>\n" +
+                "  <Schedule>\n" +
+                "  </Schedule>\n" +
+                "  <Destination>\n" +
+                "    <OSSBucketDestination>\n" +
+                "      <Encryption>\n" +
+                "      </Encryption>\n" +
+                "    </OSSBucketDestination>\n" +
+                "  </Destination>\n" +
+                "</InventoryConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseParsers.parseGetBucketInventoryConfig(instream);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        respBody = "invalid";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseParsers.parseGetBucketInventoryConfig(instream);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        try {
+            ResponseParsers.parseGetBucketInventoryConfig(null);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+    }
+
+    @Test
+    public void testparseListBucketInventoryConfigurations() {
+        InputStream instream = null;
+        String respBody;
+
+        respBody = "" +
+                "<ListInventoryConfiguration>\n" +
+                "</ListInventoryConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseParsers.parseListBucketInventoryConfigurations(instream);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        respBody = "invalid";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseParsers.parseListBucketInventoryConfigurations(instream);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        try {
+            ResponseParsers.parseListBucketInventoryConfigurations(null);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+    }
 }

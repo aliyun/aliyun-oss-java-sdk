@@ -30,10 +30,10 @@ public class CMKIDTest extends TestBase {
 
             final ObjectMetadata metadata = new ObjectMetadata();
             metadata.setServerSideEncryption(ObjectMetadata.KMS_SERVER_SIDE_ENCRYPTION);
-            metadata.setServerSideEncryptionKeyId(TestConfig.CMK_ID);
+            metadata.setServerSideEncryptionKeyId(TestConfig.KMS_CMK_ID);
             ossClient.putObject(bucketName, key, sampleFile, metadata);
             ObjectMetadata objectMetadata = ossClient.getObject(new GetObjectRequest(bucketName, key), new File(downloadLocalFilePath));
-            Assert.assertEquals(TestConfig.CMK_ID, objectMetadata.getServerSideEncryptionKeyId());
+            Assert.assertEquals(TestConfig.KMS_CMK_ID, objectMetadata.getServerSideEncryptionKeyId());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -55,7 +55,7 @@ public class CMKIDTest extends TestBase {
                     + sampleFile.getAbsolutePath());
             formFields.put("OSSAccessKeyId", TestConfig.OSS_TEST_ACCESS_KEY_ID);
             formFields.put("x-oss-server-side-encryption", ObjectMetadata.KMS_SERVER_SIDE_ENCRYPTION);
-            formFields.put("x-oss-server-side-encryption-key-id", TestConfig.CMK_ID);
+            formFields.put("x-oss-server-side-encryption-key-id", TestConfig.KMS_CMK_ID);
             String policy
                     = "{\"expiration\": \"2120-01-01T12:00:00.000Z\",\"conditions\": [[\"content-length-range\", 0, 104857600]]}";
             String encodePolicy = new String(Base64.encodeBase64(policy.getBytes()));
@@ -146,7 +146,7 @@ public class CMKIDTest extends TestBase {
             reader.close();
 
             ObjectMetadata objectMetadata = ossClient.getObject(new GetObjectRequest(bucketName, key), new File(downloadLocalFilePath));
-            Assert.assertEquals(TestConfig.CMK_ID, objectMetadata.getServerSideEncryptionKeyId());
+            Assert.assertEquals(TestConfig.KMS_CMK_ID, objectMetadata.getServerSideEncryptionKeyId());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
@@ -177,7 +177,7 @@ public class CMKIDTest extends TestBase {
             final File sampleFile = createSampleFile(uploadLocalFilePath, 1 * 1024 * 1024);
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setServerSideEncryption(ObjectMetadata.KMS_SERVER_SIDE_ENCRYPTION);
-            metadata.setServerSideEncryptionKeyId(TestConfig.CMK_ID);
+            metadata.setServerSideEncryptionKeyId(TestConfig.KMS_CMK_ID);
 
             InitiateMultipartUploadRequest request = new InitiateMultipartUploadRequest(bucketName, key, metadata);
             InitiateMultipartUploadResult result = ossClient.initiateMultipartUpload(request);
@@ -218,7 +218,7 @@ public class CMKIDTest extends TestBase {
 
             ObjectMetadata objectMetadata = ossClient.getObject(new GetObjectRequest(bucketName, key), new File(downloadLocalFilePath));
 
-            Assert.assertEquals(TestConfig.CMK_ID, objectMetadata.getServerSideEncryptionKeyId());
+            Assert.assertEquals(TestConfig.KMS_CMK_ID, objectMetadata.getServerSideEncryptionKeyId());
         } catch (IOException e) {
             Assert.fail(e.getMessage());
         }
@@ -236,14 +236,14 @@ public class CMKIDTest extends TestBase {
             ossClient.putObject(sourceBucketName, sourceKey, sampleFile);
 
             request.setServerSideEncryption(ObjectMetadata.KMS_SERVER_SIDE_ENCRYPTION);
-            request.setServerSideEncryptionKeyId(TestConfig.CMK_ID);
+            request.setServerSideEncryptionKeyId(TestConfig.KMS_CMK_ID);
             ossClient.copyObject(request);
 
             String copyLocalFilePath = "copy";
 
             ObjectMetadata metadataCopy = ossClient.getObject(new GetObjectRequest(bucketName, key), new File(copyLocalFilePath));
 
-            Assert.assertEquals(TestConfig.CMK_ID, metadataCopy.getServerSideEncryptionKeyId());
+            Assert.assertEquals(TestConfig.KMS_CMK_ID, metadataCopy.getServerSideEncryptionKeyId());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -259,7 +259,7 @@ public class CMKIDTest extends TestBase {
 
             meta.setContentType("text/plain");
             meta.setServerSideEncryption(ObjectMetadata.KMS_SERVER_SIDE_ENCRYPTION);
-            meta.setServerSideEncryptionKeyId(TestConfig.CMK_ID);
+            meta.setServerSideEncryptionKeyId(TestConfig.KMS_CMK_ID);
 
             AppendObjectRequest appendObjectRequest = new AppendObjectRequest(bucketName, key, new ByteArrayInputStream(content1.getBytes()),meta);
 

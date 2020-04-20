@@ -497,33 +497,30 @@ public class TestBase {
             TestConfig.OSS_TEST_PAYER_ACCESS_KEY_SECRET = System.getenv().get("OSS_TEST_PAYER_ACCESS_KEY_SECRET");
         }
 
-        if (TestConfig.OSS_TEST_INVENTORY_BUCKET_DESTINATION_ACCOUNT == null) {
-            TestConfig.OSS_TEST_INVENTORY_BUCKET_DESTINATION_ACCOUNT = System.getenv()
-                    .get("OSS_TEST_INVENTORY_BUCKET_DESTINATION_ACCOUNT");
+        if (TestConfig.RAM_ROLE_ARN == null) {
+            TestConfig.RAM_ROLE_ARN = System.getenv().get("OSS_TEST_RAM_ROLE_ARN");
         }
 
-        if (TestConfig.OSS_TEST_INVENTORY_BUCKET_DESTINATION_ARN == null) {
-            TestConfig.OSS_TEST_INVENTORY_BUCKET_DESTINATION_ARN = System.getenv()
-                    .get("OSS_TEST_INVENTORY_BUCKET_DESTINATION_ARN");
+        if (TestConfig.RAM_UID == null) {
+            TestConfig.RAM_UID = System.getenv().get("OSS_TEST_RAM_UID");
         }
 
         // kms
-        if (TestConfig.OSS_TEST_KMS_REGION == null) {
-            TestConfig.OSS_TEST_KMS_REGION = System.getenv().get("OSS_TEST_KMS_REGION");
+        if (TestConfig.KMS_REGION == null) {
+            TestConfig.KMS_REGION = System.getenv().get("OSS_TEST_KMS_REGION");
         }
 
-        if (TestConfig.CMK_ID == null) {
-            TestConfig.CMK_ID = System.getenv().get("OSS_TEST_CMK_ID");
+        if (TestConfig.KMS_CMK_ID == null) {
+            TestConfig.KMS_CMK_ID = System.getenv().get("OSS_TEST_KMS_CMK_ID");
         }
 
-        if (TestConfig.OSS_TEST_KMS_REGION2 == null) {
-            TestConfig.OSS_TEST_KMS_REGION2 = System.getenv().get("OSS_TEST_KMS_REGION2");
+        if (TestConfig.KMS_REGION_1 == null) {
+            TestConfig.KMS_REGION_1 = System.getenv().get("OSS_TEST_KMS_REGION_1");
         }
 
-        if (TestConfig.OSS_TEST_KMS_REGION2_CMK == null) {
-            TestConfig.OSS_TEST_KMS_REGION2_CMK = System.getenv().get("OSS_TEST_KMS_REGION2_CMK");
+        if (TestConfig.KMS_CMK_ID_1 == null) {
+            TestConfig.KMS_CMK_ID_1 = System.getenv().get("OSS_TEST_KMS_CMK_ID_1");
         }
-
     }
 
 }

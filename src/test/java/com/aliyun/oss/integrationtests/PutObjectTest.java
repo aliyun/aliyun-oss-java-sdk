@@ -350,7 +350,7 @@ public class PutObjectTest extends TestBase {
         final String key = "put-object-by-urlsignature";
         final String metaKey0 = "author";
         final String metaValue0 = "aliy";
-        final String expirationString = "Sun, 12 Apr 2020 12:00:00 GMT";
+        final String expirationString = "Sun, 12 Apr 2022 12:00:00 GMT";
         final long inputStreamLength = 128 * 1024; //128KB
         
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.PUT);

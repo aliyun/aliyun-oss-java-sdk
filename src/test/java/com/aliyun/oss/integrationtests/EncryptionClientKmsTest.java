@@ -55,8 +55,8 @@ public class EncryptionClientKmsTest extends TestBase {
 
         matDesc = new HashMap<String, String>();
         matDesc.put("Desc1-Key1", "Desc1-Value1");
-        kmsRegion = TestConfig.OSS_TEST_KMS_REGION;
-        EncryptionMaterials encryptionMaterials = new KmsEncryptionMaterials(kmsRegion, TestConfig.CMK_ID, matDesc);
+        kmsRegion = TestConfig.KMS_REGION;
+        EncryptionMaterials encryptionMaterials = new KmsEncryptionMaterials(kmsRegion, TestConfig.KMS_CMK_ID, matDesc);
         Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID,
                 TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
 
@@ -318,8 +318,8 @@ public class EncryptionClientKmsTest extends TestBase {
             Assert.assertEquals(content, readContent.toString());
 
             // Create new encryption materials.
-            String newRegion = TestConfig.OSS_TEST_KMS_REGION2;
-            String newCmkId = TestConfig.OSS_TEST_KMS_REGION2_CMK;
+            String newRegion = TestConfig.KMS_REGION_1;
+            String newCmkId = TestConfig.KMS_CMK_ID_1;
             KmsEncryptionMaterials encryptionMaterials = new KmsEncryptionMaterials(newRegion, newCmkId);
             Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
 
@@ -362,8 +362,8 @@ public class EncryptionClientKmsTest extends TestBase {
         
         try {
             // Create new encryption materials.
-            region2 = TestConfig.OSS_TEST_KMS_REGION;
-            String cmk2 = TestConfig.CMK_ID;
+            region2 = TestConfig.KMS_REGION;
+            String cmk2 = TestConfig.KMS_CMK_ID;
             KmsEncryptionMaterials encryptionMaterials = new KmsEncryptionMaterials(region2, cmk2, null);
 
             OSSEncryptionClient encryptionClient2 = new OSSEncryptionClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT,
@@ -380,8 +380,8 @@ public class EncryptionClientKmsTest extends TestBase {
         }
 
         try {
-            String newRegion = TestConfig.OSS_TEST_KMS_REGION2;
-            String newCmkId = TestConfig.OSS_TEST_KMS_REGION2_CMK;
+            String newRegion = TestConfig.KMS_REGION_1;
+            String newCmkId = TestConfig.KMS_CMK_ID_1;
             Map<String, String> desc = new HashMap<String, String>();
             desc.put("desc", "test-kms");
             KmsEncryptionMaterials encryptionMaterials = new KmsEncryptionMaterials(newRegion, newCmkId, desc);
