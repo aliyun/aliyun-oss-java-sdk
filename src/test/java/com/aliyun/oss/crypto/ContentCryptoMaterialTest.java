@@ -20,7 +20,6 @@
 package com.aliyun.oss.crypto;
 
 import junit.framework.Assert;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
 
 import java.security.SecureRandom;

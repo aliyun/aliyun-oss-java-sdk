@@ -204,13 +204,12 @@ public class SimpleRSAEncryptionMaterials implements EncryptionMaterials {
             CryptoRuntime.enableBouncyCastle();
 
             byte[] buffer = BinaryUtil.fromBase64String(adjustStr);
-            org.bouncycastle.asn1.pkcs.RSAPrivateKey asn1PrivKey = org.bouncycastle.asn1.pkcs.RSAPrivateKey
-                    .getInstance(buffer);
-            RSAPrivateKeySpec keySpec = new RSAPrivateKeySpec(asn1PrivKey.getModulus(),
-                    asn1PrivKey.getPrivateExponent());
+            RSAPrivateKeySpec keySpec = CryptoRuntime.convertPemPKCS1ToPrivateKey(buffer);
+
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 
             return (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
+
         } catch (Exception e) {
             throw new ClientException("get private key from PKCS1 pem String error." + e.getMessage(), e);
         }

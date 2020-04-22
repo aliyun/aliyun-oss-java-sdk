@@ -19,8 +19,14 @@
 
 package com.aliyun.oss.crypto;
 
+import com.aliyun.oss.common.utils.BinaryUtil;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.math.BigInteger;
 import java.security.Provider;
 import java.security.Security;
+import java.security.spec.RSAPrivateKeySpec;
 
 public class CryptoRuntime {
     static final String BOUNCY_CASTLE_PROVIDER = "BC";
@@ -38,6 +44,27 @@ public class CryptoRuntime {
             if (!isBouncyCastleAvailable()) {
                 throw new UnsupportedOperationException("The Bouncy castle library is not found.");
             }
+        }
+    }
+
+    public static RSAPrivateKeySpec convertPemPKCS1ToPrivateKey(byte[] buffer)
+    {
+        try {
+            Class<?> clz = Class.forName("org.bouncycastle.asn1.pkcs.RSAPrivateKey");
+            Method method = clz.getMethod("getInstance", new Class[] { Object.class});
+            Object obj = method.invoke(null, new Object[] {buffer});
+
+            clz = Class.forName("org.bouncycastle.asn1.pkcs.RSAPrivateKey");
+            method = clz.getMethod("getModulus", null);
+            BigInteger modulus = (BigInteger) method.invoke(obj, null);
+
+            method = clz.getMethod("getPrivateExponent", null);
+            BigInteger exponent = (BigInteger) method.invoke(obj, null);
+
+            return new RSAPrivateKeySpec(modulus,exponent);
+
+        } catch (Exception e) {
+            throw new UnsupportedOperationException("convertPemPKCS1ToPrivateKey fail.");
         }
     }
 

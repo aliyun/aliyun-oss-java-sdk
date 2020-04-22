@@ -21,11 +21,12 @@ package com.aliyun.oss.crypto;
 
 import java.security.KeyPair;
 import java.security.PrivateKey;
+import java.security.Provider;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import javax.crypto.Cipher;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import org.junit.Test;
 import junit.framework.Assert;
 
@@ -139,7 +140,7 @@ public class RSAEncryptionUnitTest {
             throw new Exception("public key is null.");
         }
 
-        Cipher cipher = Cipher.getInstance("RSA/NONE/PKCS1Padding", new BouncyCastleProvider());
+        Cipher cipher = Cipher.getInstance("RSA/NONE/PKCS1Padding", getBouncyCastleProvider());
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         byte[] output = cipher.doFinal(plainData);
         return output;
@@ -150,9 +151,19 @@ public class RSAEncryptionUnitTest {
             throw new Exception("private key is null.");
         }
         Cipher cipher = null;
-        cipher = Cipher.getInstance("RSA/NONE/PKCS1Padding", new BouncyCastleProvider());
+        cipher = Cipher.getInstance("RSA/NONE/PKCS1Padding", getBouncyCastleProvider());
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
         byte[] output = cipher.doFinal(cipherData);
         return output;
+    }
+
+    public static Provider getBouncyCastleProvider()
+    {
+        try {
+            Class<?> clz = Class.forName("org.bouncycastle.jce.provider.BouncyCastleProvider");
+            return (Provider)clz.newInstance();
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

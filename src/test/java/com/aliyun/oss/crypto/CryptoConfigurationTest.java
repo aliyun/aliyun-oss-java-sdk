@@ -19,8 +19,10 @@
 
 package com.aliyun.oss.crypto;
 
+
+import java.security.Provider;
 import java.security.SecureRandom;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import org.junit.Test;
 import junit.framework.Assert;
 
@@ -37,7 +39,7 @@ public class CryptoConfigurationTest {
                 ContentCryptoMode.AES_CTR_MODE,
                 CryptoStorageMethod.ObjectMetadata,
                 new SecureRandom(),
-                new BouncyCastleProvider());
+                getBouncyCastleProvider());
 
         Assert.assertEquals(ContentCryptoMode.AES_CTR_MODE, cryptoConfig.getContentCryptoMode());
         Assert.assertEquals(CryptoStorageMethod.ObjectMetadata, cryptoConfig.getStorageMethod());
@@ -63,11 +65,21 @@ public class CryptoConfigurationTest {
         CryptoConfiguration cryptoConfig = new CryptoConfiguration();
         Assert.assertNull(cryptoConfig.getContentCryptoProvider());
 
-        cryptoConfig = new CryptoConfiguration().withContentCryptoProvider(new BouncyCastleProvider());
+        cryptoConfig = new CryptoConfiguration().withContentCryptoProvider(getBouncyCastleProvider());
         Assert.assertEquals("BC", cryptoConfig.getContentCryptoProvider().getName());
 
         cryptoConfig = new CryptoConfiguration();
-        cryptoConfig.setContentCryptoProvider(new BouncyCastleProvider());
+        cryptoConfig.setContentCryptoProvider(getBouncyCastleProvider());
         Assert.assertEquals("BC", cryptoConfig.getContentCryptoProvider().getName());
+    }
+
+    public static Provider getBouncyCastleProvider()
+    {
+        try {
+            Class<?> clz = Class.forName("org.bouncycastle.jce.provider.BouncyCastleProvider");
+            return (Provider)clz.newInstance();
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
