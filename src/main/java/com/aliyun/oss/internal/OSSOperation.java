@@ -169,6 +169,11 @@ public abstract class OSSOperation {
         if (method == HttpMethod.POST) {
             context.setRetryStrategy(noRetryStrategy);
         }
+
+        if (client.getClientConfiguration().getRetryStrategy() != null) {
+            context.setRetryStrategy(client.getClientConfiguration().getRetryStrategy());
+        }
+
         context.setCredentials(credentials);
         return context;
     }
