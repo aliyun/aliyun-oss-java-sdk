@@ -21,6 +21,8 @@ package com.aliyun.oss;
 
 import com.aliyun.oss.common.auth.RequestSigner;
 import com.aliyun.oss.common.comm.RequestMessage;
+import com.aliyun.oss.common.comm.ResponseMessage;
+import com.aliyun.oss.common.comm.RetryStrategy;
 import junit.framework.Assert;
 import org.junit.Test;
 
@@ -66,4 +68,24 @@ public class OSSClientConfigurationTest {
         Assert.assertTrue(configuration.isRequestTimeoutEnabled());
     }
 
+    @Test
+    public void testUserRetryStrategy() {
+        ClientConfiguration configuration = new ClientConfiguration();
+        Assert.assertNull(configuration.getRetryStrategy());
+
+        configuration.setRetryStrategy(new TestRetryStrategy());
+        Assert.assertNotNull(configuration.getRetryStrategy());
+        Assert.assertTrue(configuration.getRetryStrategy().shouldRetry(null, null, null, 1));
+        Assert.assertFalse(configuration.getRetryStrategy().shouldRetry(null, null, null, 2));
+    }
+
+}
+
+
+class TestRetryStrategy extends RetryStrategy {
+
+    @Override
+    public boolean shouldRetry(Exception ex, RequestMessage request, ResponseMessage response, int retries) {
+        return retries < 2 ? true : false;
+    }
 }

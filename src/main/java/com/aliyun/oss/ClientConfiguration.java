@@ -32,6 +32,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import com.aliyun.oss.common.auth.RequestSigner;
 import com.aliyun.oss.common.comm.IdleConnectionReaper;
 import com.aliyun.oss.common.comm.Protocol;
+import com.aliyun.oss.common.comm.RetryStrategy;
 import com.aliyun.oss.common.comm.SignVersion;
 import com.aliyun.oss.common.utils.ResourceManager;
 import com.aliyun.oss.common.utils.VersionInfoUtils;
@@ -101,6 +102,8 @@ public class ClientConfiguration {
     protected SignVersion signatureVersion = DEFAULT_SIGNATURE_VERSION;
 
     protected long tickOffset = 0;
+
+    private RetryStrategy retryStrategy;
 
     public ClientConfiguration() {
         super();
@@ -699,4 +702,26 @@ public class ClientConfiguration {
         long localTime = new Date().getTime();
         this.tickOffset = epochTicks - localTime;
     }
+
+    /**
+     * Gets the retry strategy
+     *
+     * @return {@link RetryStrategy} object.
+     */
+    public RetryStrategy getRetryStrategy() {
+        return retryStrategy;
+    }
+
+    /**
+     * Sets the retry strategy.
+     *
+     * @param retryStrategy
+     *          The retryStrategy is used to check whether to retry request or not.
+     *          If it has been specified, the client will prefer this retryStrategy
+     *          than its private strategy {@link DefaultRetryStrategy}.
+     */
+    public void setRetryStrategy(RetryStrategy retryStrategy) {
+        this.retryStrategy = retryStrategy;
+    }
+
 }
