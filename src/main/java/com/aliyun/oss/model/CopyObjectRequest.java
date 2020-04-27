@@ -82,12 +82,6 @@ public class CopyObjectRequest extends WebServiceRequest {
     private Payer payer;
 
     /**
-     * The optional customer-provided server-side encryption key to use to
-     * decrypt the source object being copied.
-     */
-    private SSECustomerKey sourceSSECustomerKey;
-
-    /**
      * Constructor
      * 
      * @param sourceBucketName
@@ -103,29 +97,6 @@ public class CopyObjectRequest extends WebServiceRequest {
             String destinationKey) {
         setSourceBucketName(sourceBucketName);
         setSourceKey(sourceKey);
-        setDestinationBucketName(destinationBucketName);
-        setDestinationKey(destinationKey);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param sourceBucketName
-     *            Source bucket name.
-     * @param sourceKey
-     *            Source key.
-     * @param sourceSSECustomerKey
-     *            The server side encryption customer algorithm arguments for source object.
-     * @param destinationBucketName
-     *            Target bucket name.
-     * @param destinationKey
-     *            Target key.
-     */
-    public CopyObjectRequest(String sourceBucketName, String sourceKey, SSECustomerKey sourceSSECustomerKey,
-            String destinationBucketName, String destinationKey) {
-        setSourceBucketName(sourceBucketName);
-        setSourceKey(sourceKey);
-        setSourceSseCustomerKey(sourceSSECustomerKey);
         setDestinationBucketName(destinationBucketName);
         setDestinationKey(destinationKey);
     }
@@ -157,40 +128,6 @@ public class CopyObjectRequest extends WebServiceRequest {
         setSourceBucketName(sourceBucketName);
         setSourceKey(sourceKey);
         setSourceVersionId(sourceVersionId);
-        setDestinationBucketName(destinationBucketName);
-        setDestinationKey(destinationKey);
-    }
-
-    /**
-     * <p>
-     * Constructs a new {@link CopyObjectRequest} with basic options, providing
-     * an OSS version ID identifying the specific version of the source object
-     * to copy.
-     * </p>
-     *
-     * @param sourceBucketName
-     *            The name of the OSS bucket containing the object to copy.
-     * @param sourceKey
-     *            The key in the source bucket under which the object to copy is
-     *            stored.
-     * @param sourceVersionId
-     *            The OSS version ID which uniquely identifies a specific version
-     *            of the source object to copy.
-     * @param sourceSSECustomerKey
-     *            The server side encryption customer algorithm arguments for source object.
-     * @param destinationBucketName
-     *            The name of the OSS bucket in which the new object will be
-     *            copied.
-     * @param destinationKey
-     *            The key in the destination bucket under which the new object
-     *            will be copied.
-     */
-    public CopyObjectRequest(String sourceBucketName, String sourceKey, String sourceVersionId,
-            SSECustomerKey sourceSSECustomerKey, String destinationBucketName, String destinationKey) {
-        setSourceBucketName(sourceBucketName);
-        setSourceKey(sourceKey);
-        setSourceVersionId(sourceVersionId);
-        setSourceSseCustomerKey(sourceSSECustomerKey);
         setDestinationBucketName(destinationBucketName);
         setDestinationKey(destinationKey);
     }
@@ -488,21 +425,5 @@ public class CopyObjectRequest extends WebServiceRequest {
      * */
     public Payer getRequestPayer() {
         return payer;
-    }
-
-    /**
-     * Gets object's server side encryption customer algorithm arguments.
-     * @return
-     */
-    public SSECustomerKey getSourceSseCustomerKey() {
-        return sourceSSECustomerKey;
-    }
-
-    /**
-     * Sets object's server side encryption customer algorithm arguments.
-     * @param sseCustomerKey
-     */
-    public void setSourceSseCustomerKey(SSECustomerKey sseCustomerKey) {
-        this.sourceSSECustomerKey = sseCustomerKey;
     }
 }

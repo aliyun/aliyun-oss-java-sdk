@@ -43,8 +43,6 @@ public class UploadPartRequest extends GenericRequest {
     // Traffic limit speed, its uint is bit/s
     private int trafficLimit;
 
-    private SSECustomerKey sseCustomerKey;
-
     public UploadPartRequest() {
     }
 
@@ -52,24 +50,13 @@ public class UploadPartRequest extends GenericRequest {
         super(bucketName, key);
     }
 
-    public UploadPartRequest(String bucketName, String key, SSECustomerKey sseCustomerKey) {
-        super(bucketName, key);
-        this.sseCustomerKey = sseCustomerKey;
-    }
-
     public UploadPartRequest(String bucketName, String key, String uploadId, int partNumber, InputStream inputStream,
             long partSize) {
-        this(bucketName, key);
+        super(bucketName, key);
         this.uploadId = uploadId;
         this.partNumber = partNumber;
         this.inputStream = inputStream;
         this.partSize = partSize;
-    }
-
-    public UploadPartRequest(String bucketName, String key, SSECustomerKey sseCustomerKey, String uploadId, int partNumber, InputStream inputStream,
-            long partSize) {
-        this(bucketName, key, uploadId, partNumber, inputStream, partSize);
-        this.sseCustomerKey = sseCustomerKey;
     }
 
     /**
@@ -220,21 +207,5 @@ public class UploadPartRequest extends GenericRequest {
      */
     public int getTrafficLimit() {
         return trafficLimit;
-    }
-
-    /**
-     * Gets object's server side encryption customer algorithm arguments.
-     * @return
-     */
-    public SSECustomerKey getSseCustomerKey() {
-        return sseCustomerKey;
-    }
-
-    /**
-     * Sets object's server side encryption customer algorithm arguments.
-     * @param sseCustomerKey
-     */
-    public void setSseCustomerKey(SSECustomerKey sseCustomerKey) {
-        this.sseCustomerKey = sseCustomerKey;
     }
 }

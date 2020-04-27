@@ -764,7 +764,6 @@ public final class ResponseParsers {
         @Override
         public AppendObjectResult parse(ResponseMessage response) throws ResponseParseException {
             AppendObjectResult result = new AppendObjectResult();
-            result.setResponse(response);
             result.setRequestId(response.getRequestId());
             try {
                 String nextPosition = response.getHeaders().get(OSSHeaders.OSS_NEXT_APPEND_POSITION);
@@ -905,7 +904,6 @@ public final class ResponseParsers {
                 CopyObjectResult result = parseCopyObjectResult(response.getContent());
                 result.setVersionId(response.getHeaders().get(OSSHeaders.OSS_HEADER_VERSION_ID));
                 result.setRequestId(response.getRequestId());
-                result.setResponse(response);
                 return result;
             } finally {
                 safeCloseResponse(response);
@@ -1054,7 +1052,6 @@ public final class ResponseParsers {
                 result.setPartNumber(partNumber);
                 result.setETag(trimQuotes(parseUploadPartCopy(response.getContent())));
                 result.setRequestId(response.getRequestId());
-                result.setResponse(response);
                 return result;
             } finally {
                 safeCloseResponse(response);

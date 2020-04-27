@@ -42,27 +42,15 @@ public class HeadObjectRequest extends WebServiceRequest {
     // The one who pays for the request
     private Payer payer;
 
-    private SSECustomerKey sseCustomerKey;
-
     public HeadObjectRequest(String bucketName, String key, String versionId) {
         this.bucketName = bucketName;
         this.key = key;
         this.versionId = versionId;
     }
 
-    public HeadObjectRequest(String bucketName, String key, String versionId, SSECustomerKey sseCustomerKey) {
-        this(bucketName, key, versionId);
-        this.sseCustomerKey = sseCustomerKey;
-    }
-
     public HeadObjectRequest(String bucketName, String key) {
         this.bucketName = bucketName;
         this.key = key;
-    }
-
-    public HeadObjectRequest(String bucketName, String key, SSECustomerKey sseCustomerKey) {
-        this(bucketName, key);
-        this.sseCustomerKey = sseCustomerKey;
     }
 
     public String getBucketName() {
@@ -157,21 +145,5 @@ public class HeadObjectRequest extends WebServiceRequest {
      * */
     public Payer getRequestPayer() {
         return payer;
-    }
-
-    /**
-     * Gets object's server side encryption customer algorithm arguments.
-     * @return
-     */
-    public SSECustomerKey getSseCustomerKey() {
-        return sseCustomerKey;
-    }
-
-    /**
-     * Sets object's server side encryption customer algorithm arguments.
-     * @param sseCustomerKey
-     */
-    public void setSseCustomerKey(SSECustomerKey sseCustomerKey) {
-        this.sseCustomerKey = sseCustomerKey;
     }
 }
