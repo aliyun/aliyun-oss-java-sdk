@@ -100,7 +100,7 @@ public class CopyObjectRequest extends WebServiceRequest {
         setDestinationBucketName(destinationBucketName);
         setDestinationKey(destinationKey);
     }
-
+    
     /**
      * <p>
      * Constructs a new {@link CopyObjectRequest} with basic options, providing

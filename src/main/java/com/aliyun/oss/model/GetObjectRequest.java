@@ -63,7 +63,7 @@ public class GetObjectRequest extends GenericRequest {
     public GetObjectRequest(String bucketName, String key) {
         super(bucketName, key);
     }
-
+    
     /**
      * Constructs a new {@link GetObjectRequest} with all the required parameters.
      *
