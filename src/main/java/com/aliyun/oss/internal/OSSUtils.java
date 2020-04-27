@@ -46,7 +46,6 @@ import com.aliyun.oss.model.Callback;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.ResponseHeaderOverrides;
 import com.aliyun.oss.model.Callback.CalbackBodyType;
-import com.aliyun.oss.model.SSECustomerKey;
 
 public class OSSUtils {
 

@@ -40,7 +40,7 @@ public class HeadObjectRequest extends WebServiceRequest {
     private String versionId;
 
     // The one who pays for the request
-    private Payer payer;
+    private Payer payer; 
 
     public HeadObjectRequest(String bucketName, String key, String versionId) {
         this.bucketName = bucketName;

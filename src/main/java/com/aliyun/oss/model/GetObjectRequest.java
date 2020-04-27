@@ -336,4 +336,5 @@ public class GetObjectRequest extends GenericRequest {
     public int getTrafficLimit() {
         return trafficLimit;
     }
+
 }
