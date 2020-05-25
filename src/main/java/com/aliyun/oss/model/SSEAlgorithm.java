@@ -25,6 +25,7 @@ package com.aliyun.oss.model;
 public enum SSEAlgorithm {
     AES256("AES256"),
     KMS("KMS"),
+    SM4("SM4"),
     ;
 
     private final String algorithm;

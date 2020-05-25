@@ -27,7 +27,7 @@ public class ServerSideEncryptionByDefault {
 
     private String sseAlgorithm;
     private String kmsMasterKeyID;
-
+    private String kmsDataEncryption;
     /**
      * Creates a default instance.
      * 
@@ -126,5 +126,31 @@ public class ServerSideEncryptionByDefault {
         setKMSMasterKeyID(kmsMasterKeyID);
         return this;
     }
-    
+
+    /**
+     * @return This parameter is allowed if SSEAlgorithm is kms.
+     */
+    public String getKMSDataEncryption() {
+        return kmsDataEncryption;
+    }
+
+    /**
+     * Sets the KMS data encryption. This parameter is allowed if SSEAlgorithm is kms.
+     *
+     * @param kmsDataEncryption KMS data encryption to use.
+     */
+    public void setKMSDataEncryption(String kmsDataEncryption) {
+        this.kmsDataEncryption = kmsDataEncryption;
+    }
+
+    /**
+     * Sets the KMS data encryption. This parameter is allowed if SSEAlgorithm is kms.
+     *
+     * @param kmsDataEncryption KMS data encryption to use.
+     * @return This object for method chaining.
+     */
+    public ServerSideEncryptionByDefault withKMSDataEncryption(String kmsDataEncryption) {
+        setKMSDataEncryption(kmsDataEncryption);
+        return this;
+    }
 }

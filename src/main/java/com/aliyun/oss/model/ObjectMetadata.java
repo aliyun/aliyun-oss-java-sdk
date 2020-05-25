@@ -321,6 +321,25 @@ public class ObjectMetadata {
     }
 
     /**
+     * Sets the object's server side data encryption.
+     *
+     * @param serverSideDataEncryption
+     *            The server side data encryption.
+     */
+    public void setServerSideDataEncryption(String serverSideDataEncryption) {
+        metadata.put(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION, serverSideDataEncryption);
+    }
+
+    /**
+     * Gets the object's server side data encryption.
+     *
+     * @return The server side data encryption. Null means no data encryption.
+     */
+    public String getServerSideDataEncryption() {
+        return (String) metadata.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION);
+    }
+
+    /**
      * Gets the object's storage type, which only supports "normal" and
      * "appendable" for now.
      * 
