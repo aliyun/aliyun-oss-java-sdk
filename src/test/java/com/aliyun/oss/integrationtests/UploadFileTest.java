@@ -24,16 +24,16 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-
 import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.model.*;
 import junit.framework.Assert;
-
+import static com.aliyun.oss.OSSErrorCode.PART_NOT_SEQUENTIAL;
 import org.junit.Test;
 
 public class UploadFileTest extends TestBase {
@@ -80,7 +80,7 @@ public class UploadFileTest extends TestBase {
     }
 
     @Test
-    public void testUploadFileSequential() {
+    public void testUploadFileSequential() throws Throwable {
         final String key = "obj-upload-file-Sequential";
 
         String testBucketName = super.bucketName + "-upload-sequential";
@@ -92,12 +92,14 @@ public class UploadFileTest extends TestBase {
         OSS testOssClient = new OSSClient(endpoint, new DefaultCredentialProvider(credentials), conf);
         testOssClient.createBucket(testBucketName);
 
-
+        // default is none sequential mode.
         try {
             File file = createSampleFile(key, 600 * 1024);
 
             UploadFileRequest uploadFileRequest = new UploadFileRequest(testBucketName, key);
             uploadFileRequest.setUploadFile(file.getAbsolutePath());
+            uploadFileRequest.setTaskNum(5);
+            uploadFileRequest.setPartSize(100*1024);
             testOssClient.uploadFile(uploadFileRequest);
 
             GetObjectRequest getObjectRequest = new GetObjectRequest(testBucketName, key);
@@ -108,20 +110,46 @@ public class UploadFileTest extends TestBase {
             Assert.fail(e.getMessage());
         }
 
+        // sequential mode not support multi thread.
         try {
-            File file = createSampleFile(key, 600 * 1024);
+            String objectName = key + "-multi-thread";
+            File file = createSampleFile(objectName, 600 * 1024);
 
-            UploadFileRequest uploadFileRequest = new UploadFileRequest(testBucketName, key);
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(testBucketName, objectName);
             uploadFileRequest.setUploadFile(file.getAbsolutePath());
             uploadFileRequest.setSequentialMode(true);
+            uploadFileRequest.setTaskNum(5);
+            uploadFileRequest.setPartSize(100*1024);
+
+            testOssClient.uploadFile(uploadFileRequest);
+            Assert.fail("Not support multi thread upload in sequentialMode, Should be failed here.");
+        } catch (OSSException e) {
+            Assert.assertEquals(PART_NOT_SEQUENTIAL, e.getErrorCode());
+        }
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // single thread in sequential mode.
+        try {
+            String objectName = key + "-single-thread";
+            File file = createSampleFile(objectName, 600 * 1024);
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(testBucketName, objectName);
+            uploadFileRequest.setUploadFile(file.getAbsolutePath());
+            uploadFileRequest.setSequentialMode(true);
+            uploadFileRequest.setTaskNum(1);
+            uploadFileRequest.setPartSize(100*1024);
 
             testOssClient.uploadFile(uploadFileRequest);
 
-            GetObjectRequest getObjectRequest = new GetObjectRequest(testBucketName, key);
+            GetObjectRequest getObjectRequest = new GetObjectRequest(testBucketName, objectName);
             OSSObject ossObject = testOssClient.getObject(getObjectRequest);
 
             Assert.assertNotNull(ossObject.getResponse().getHeaders().get("Content-MD5"));
-            testOssClient.deleteObject(testBucketName, key);
+            testOssClient.deleteObject(testBucketName, objectName);
         } catch (Throwable e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());

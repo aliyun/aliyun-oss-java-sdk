@@ -66,6 +66,7 @@ import static com.aliyun.oss.internal.ResponseParsers.getBucketQosResponseParser
 import static com.aliyun.oss.internal.ResponseParsers.getBucketVersioningResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.listBucketResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.listObjectsReponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.listObjectsV2ResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.listVersionsReponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketImageResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getImageStyleResponseParser;
@@ -127,6 +128,8 @@ import com.aliyun.oss.model.GetBucketImageResult;
 import com.aliyun.oss.model.GetBucketReplicationProgressRequest;
 import com.aliyun.oss.model.GetBucketRequestPaymentResult;
 import com.aliyun.oss.model.ImageProcess;
+import com.aliyun.oss.model.ListObjectsV2Request;
+import com.aliyun.oss.model.ListObjectsV2Result;
 import com.aliyun.oss.model.ReplicationRule;
 import com.aliyun.oss.model.ServerSideEncryptionConfiguration;
 import com.aliyun.oss.model.SetBucketEncryptionRequest;
@@ -459,7 +462,31 @@ public class OSSBucketOperation extends OSSOperation {
 
         return doOperation(request, listObjectsReponseParser, bucketName, null, true);
     }
-    
+
+    /**
+     * List objects under the specified bucket.
+     */
+    public ListObjectsV2Result listObjectsV2(ListObjectsV2Request listObjectsV2Request) throws OSSException, ClientException {
+
+        assertParameterNotNull(listObjectsV2Request, "listObjectsRequest");
+
+        String bucketName = listObjectsV2Request.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new LinkedHashMap<String, String>();
+        populateListObjectsV2RequestParameters(listObjectsV2Request, params);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        populateRequestPayerHeader(headers, listObjectsV2Request.getRequestPayer());
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setHeaders(headers).setParameters(params)
+                .setOriginalRequest(listObjectsV2Request).build();
+
+        return doOperation(request, listObjectsV2ResponseParser, bucketName, null, true);
+    }
+
     /**
      * List versions under the specified bucket.
      */
@@ -1770,6 +1797,42 @@ public class OSSBucketOperation extends OSSOperation {
             params.put(ENCODING_TYPE, listObjectsRequest.getEncodingType());
         }
     }
+
+    private static void populateListObjectsV2RequestParameters(ListObjectsV2Request listObjectsV2Request,
+            Map<String, String> params) {
+
+        params.put(LIST_TYPE, "2");
+
+        if (listObjectsV2Request.getPrefix() != null) {
+            params.put(PREFIX, listObjectsV2Request.getPrefix());
+        }
+
+        if (listObjectsV2Request.getDelimiter() != null) {
+            params.put(DELIMITER, listObjectsV2Request.getDelimiter());
+        }
+
+        if (listObjectsV2Request.getMaxKeys() != null) {
+            params.put(MAX_KEYS, Integer.toString(listObjectsV2Request.getMaxKeys()));
+        }
+
+        if (listObjectsV2Request.getEncodingType() != null) {
+            params.put(ENCODING_TYPE, listObjectsV2Request.getEncodingType());
+        }
+
+        if (listObjectsV2Request.getStartAfter() != null) {
+            params.put(START_AFTER, listObjectsV2Request.getStartAfter());
+        }
+
+        if (listObjectsV2Request.isFetchOwner()) {
+            params.put(FETCH_OWNER, Boolean.toString(listObjectsV2Request.isFetchOwner()));
+        }
+
+        if (listObjectsV2Request.getContinuationToken() != null) {
+            params.put(SUBRESOURCE_CONTINUATION_TOKEN, listObjectsV2Request.getContinuationToken());
+        }
+
+    }
+
 
     private static void populateListVersionsRequestParameters(ListVersionsRequest listVersionsRequest,
         Map<String, String> params) {
