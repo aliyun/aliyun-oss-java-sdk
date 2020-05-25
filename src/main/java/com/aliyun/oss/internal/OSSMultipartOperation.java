@@ -363,6 +363,7 @@ public class OSSMultipartOperation extends OSSOperation {
         result.setETag(trimQuotes(response.getHeaders().get(OSSHeaders.ETAG)));
         result.setRequestId(response.getRequestId());
         result.setPartSize(uploadPartRequest.getPartSize());
+        result.setResponse(response);
         ResponseParsers.setCRC(result, response);
 
         if (getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {

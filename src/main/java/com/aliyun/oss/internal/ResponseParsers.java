@@ -771,6 +771,7 @@ public final class ResponseParsers {
                     result.setNextPosition(Long.valueOf(nextPosition));
                 }
                 result.setObjectCRC(response.getHeaders().get(OSSHeaders.OSS_HASH_CRC64_ECMA));
+                result.setResponse(response);
                 setCRC(result, response);
                 return result;
             } finally {
@@ -904,6 +905,7 @@ public final class ResponseParsers {
                 CopyObjectResult result = parseCopyObjectResult(response.getContent());
                 result.setVersionId(response.getHeaders().get(OSSHeaders.OSS_HEADER_VERSION_ID));
                 result.setRequestId(response.getRequestId());
+                result.setResponse(response);
                 return result;
             } finally {
                 safeCloseResponse(response);
@@ -999,6 +1001,7 @@ public final class ResponseParsers {
             try {
                 InitiateMultipartUploadResult result = parseInitiateMultipartUpload(response.getContent());
                 result.setRequestId(response.getRequestId());
+                result.setResponse(response);
                 return result;
             } finally {
                 safeCloseResponse(response);
@@ -1052,6 +1055,7 @@ public final class ResponseParsers {
                 result.setPartNumber(partNumber);
                 result.setETag(trimQuotes(parseUploadPartCopy(response.getContent())));
                 result.setRequestId(response.getRequestId());
+                result.setResponse(response);
                 return result;
             } finally {
                 safeCloseResponse(response);
@@ -2382,6 +2386,9 @@ public final class ResponseParsers {
                 if (sseElem.getChild("KMSMasterKeyID") != null) {
                     applyServerSideEncryptionByDefault.setKMSMasterKeyID(sseElem.getChildText("KMSMasterKeyID"));
                 }
+                if (sseElem.getChild("KMSDataEncryption") != null) {
+                    applyServerSideEncryptionByDefault.setKMSDataEncryption(sseElem.getChildText("KMSDataEncryption"));
+                }
                 serverSideEncryptionConfiguration
                     .setApplyServerSideEncryptionByDefault(applyServerSideEncryptionByDefault);
 
@@ -2679,6 +2686,7 @@ public final class ResponseParsers {
             Element sseElem = root.getChild("ApplyServerSideEncryptionByDefault");
             sseByDefault.setSSEAlgorithm(sseElem.getChildText("SSEAlgorithm"));
             sseByDefault.setKMSMasterKeyID(sseElem.getChildText("KMSMasterKeyID"));
+            sseByDefault.setKMSDataEncryption(sseElem.getChildText("KMSDataEncryption"));
             configuration.setApplyServerSideEncryptionByDefault(sseByDefault);
 
             return configuration;
