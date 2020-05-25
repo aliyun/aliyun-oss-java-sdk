@@ -561,7 +561,85 @@ public interface OSS {
      * @throws ClientException
      */
     public ObjectListing listObjects(ListObjectsRequest listObjectsRequest) throws OSSException, ClientException;
-    
+
+    /**
+     * Lists all objects under the specified {@link Bucket} in the parameter of
+     * {@link ListObjectsRequest}
+     *
+     * @param listObjectsV2Request
+     *            The {@link ListObjectsRequest} instance that defines the
+     *            bucket name as well as the criteria such as prefix, marker,
+     *            maxKeys, delimiter, etc.
+     *
+     * @return A {@link ListObjectsV2Result} instance that has the objects meet the
+     *         criteria
+     *
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public ListObjectsV2Result listObjectsV2(ListObjectsV2Request listObjectsV2Request) throws OSSException, ClientException;
+
+    /**
+     * Lists all objects under the specified {@link Bucket} in the parameter of
+     * {@link ListObjectsRequest}
+     *
+     * @param bucketName
+     *           The bucket name.
+     *
+     * @return A {@link ListObjectsV2Result} instance that has the listing result.
+     *
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public ListObjectsV2Result listObjectsV2(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Lists all objects under the specified {@link Bucket} in the parameter of
+     * {@link ListObjectsRequest}
+     *
+     * @param bucketName
+     *           bucket name.
+     * @param prefix
+     *              The prefix restricting the objects listing.
+     *
+     * @return A {@link ListObjectsV2Result} instance that has the listing result.
+     *
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public ListObjectsV2Result listObjectsV2(String bucketName, String prefix) throws OSSException, ClientException;
+
+    /**
+     * Lists all objects under the specified {@link Bucket} in the parameter of
+     * {@link ListObjectsRequest}
+     *
+     * @param bucketName
+     *              The bucket name.
+     * @param prefix
+     *              The prefix restricting the objects listing.
+     * @param continuationToken
+     *             The continuation token allows list to be continued from a specific point.
+     *             It values the last result {@link ListObjectsV2Result#getNextContinuationToken()}.
+     * @param startAfter
+     *              Where you want oss to start the object listing from.
+     * @param delimiter
+     *              The delimiter for condensing common prefixes in the returned listing results.
+     * @param maxKeys
+     *              The maximum number of results to return.
+     * @param encodingType
+     *              the encoding method to be applied on the response.
+     * @param fetchOwner
+     *              Whether to get the owner filed in the response or not.
+     *
+     * @return A {@link ListObjectsV2Result} instance that has the listing result.
+     *
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public ListObjectsV2Result listObjectsV2(String bucketName, String prefix, String continuationToken,
+            String startAfter, String delimiter, Integer maxKeys, String encodingType, boolean fetchOwner)
+            throws OSSException, ClientException;
+
     /**
      * <p>
      * Returns a list of summary information about the versions in the specified

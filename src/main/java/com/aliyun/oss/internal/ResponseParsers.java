@@ -45,6 +45,7 @@ import com.aliyun.oss.model.InventoryFilter;
 import com.aliyun.oss.model.InventoryOSSBucketDestination;
 import com.aliyun.oss.model.InventorySchedule;
 import com.aliyun.oss.model.InventoryServerSideEncryptionKMS;
+import com.aliyun.oss.model.ListObjectsV2Result;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.JDOMParseException;
@@ -183,6 +184,7 @@ public final class ResponseParsers {
     public static final GetBucketInventoryConfigurationParser getBucketInventoryConfigurationParser = new GetBucketInventoryConfigurationParser();
     public static final ListBucketInventoryConfigurationsParser listBucketInventoryConfigurationsParser = new ListBucketInventoryConfigurationsParser();
     public static final ListObjectsReponseParser listObjectsReponseParser = new ListObjectsReponseParser();
+    public static final ListObjectsV2ResponseParser listObjectsV2ResponseParser = new ListObjectsV2ResponseParser();
     public static final ListVersionsReponseParser listVersionsReponseParser = new ListVersionsReponseParser();
     public static final PutObjectReponseParser putObjectReponseParser = new PutObjectReponseParser();
     public static final PutObjectProcessReponseParser putObjectProcessReponseParser = new PutObjectProcessReponseParser();
@@ -747,6 +749,21 @@ public final class ResponseParsers {
         }
 
     }
+
+    public static final class ListObjectsV2ResponseParser implements ResponseParser<ListObjectsV2Result> {
+
+        @Override
+        public ListObjectsV2Result parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                ListObjectsV2Result result = parseListObjectsV2(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
     
     public static final class ListVersionsReponseParser implements ResponseParser<VersionListing> {
 
@@ -1190,6 +1207,10 @@ public final class ResponseParsers {
                 ossObjectSummary.setStorageClass(elem.getChildText("StorageClass"));
                 ossObjectSummary.setBucketName(objectListing.getBucketName());
 
+                if (elem.getChild("Type") != null) {
+                    ossObjectSummary.setType(elem.getChildText("Type"));
+                }
+
                 String id = elem.getChild("Owner").getChildText("ID");
                 String displayName = elem.getChild("Owner").getChildText("DisplayName");
                 ossObjectSummary.setOwner(new Owner(id, displayName));
@@ -1206,6 +1227,93 @@ public final class ResponseParsers {
             }
 
             return objectListing;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * Unmarshall list objects response body to ListObjectsV2Result.
+     */
+    @SuppressWarnings("unchecked")
+    public static ListObjectsV2Result parseListObjectsV2(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+
+            ListObjectsV2Result result = new ListObjectsV2Result();
+            result.setBucketName(root.getChildText("Name"));
+            result.setMaxKeys(Integer.valueOf(root.getChildText("MaxKeys")));
+            result.setTruncated(Boolean.valueOf(root.getChildText("IsTruncated")));
+            result.setKeyCount(Integer.valueOf(root.getChildText("KeyCount")));
+
+            if (root.getChild("Prefix") != null) {
+                String prefix = root.getChildText("Prefix");
+                result.setPrefix(isNullOrEmpty(prefix) ? null : prefix);
+            }
+
+            if (root.getChild("Delimiter") != null) {
+                String delimiter = root.getChildText("Delimiter");
+                result.setDelimiter(isNullOrEmpty(delimiter) ? null : delimiter);
+            }
+
+            if (root.getChild("ContinuationToken") != null) {
+                String continuationToken = root.getChildText("ContinuationToken");
+                result.setContinuationToken(isNullOrEmpty(continuationToken) ? null : continuationToken);
+            }
+
+            if (root.getChild("NextContinuationToken") != null) {
+                String nextContinuationToken = root.getChildText("NextContinuationToken");
+                result.setNextContinuationToken(isNullOrEmpty(nextContinuationToken) ? null : nextContinuationToken);
+            }
+
+            if (root.getChild("EncodingType") != null) {
+                String encodeType = root.getChildText("EncodingType");
+                result.setEncodingType(isNullOrEmpty(encodeType) ? null : encodeType);
+            }
+
+            if (root.getChild("StartAfter") != null) {
+                String startAfter = root.getChildText("StartAfter");
+                result.setStartAfter(isNullOrEmpty(startAfter) ? null : startAfter);
+            }
+
+            List<Element> objectSummaryElems = root.getChildren("Contents");
+            for (Element elem : objectSummaryElems) {
+                OSSObjectSummary ossObjectSummary = new OSSObjectSummary();
+
+                ossObjectSummary.setKey(elem.getChildText("Key"));
+                ossObjectSummary.setETag(trimQuotes(elem.getChildText("ETag")));
+                ossObjectSummary.setLastModified(DateUtil.parseIso8601Date(elem.getChildText("LastModified")));
+                ossObjectSummary.setSize(Long.valueOf(elem.getChildText("Size")));
+                ossObjectSummary.setStorageClass(elem.getChildText("StorageClass"));
+                ossObjectSummary.setBucketName(result.getBucketName());
+
+                if (elem.getChild("Type") != null) {
+                    ossObjectSummary.setType(elem.getChildText("Type"));
+                }
+
+                if (elem.getChild("Owner") != null) {
+                    String id = elem.getChild("Owner").getChildText("ID");
+                    String displayName = elem.getChild("Owner").getChildText("DisplayName");
+                    ossObjectSummary.setOwner(new Owner(id, displayName));
+                }
+
+                result.addObjectSummary(ossObjectSummary);
+            }
+
+            List<Element> commonPrefixesElems = root.getChildren("CommonPrefixes");
+
+            for (Element elem : commonPrefixesElems) {
+                String prefix = elem.getChildText("Prefix");
+                if (!isNullOrEmpty(prefix)) {
+                    result.addCommonPrefix(prefix);
+                }
+            }
+
+            return result;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
@@ -2388,12 +2496,14 @@ public final class ResponseParsers {
             bucketInfo.setBucket(bucket);
 
             // comment
-            String comment = bucketElem.getChildText("Comment");
-            bucketInfo.setComment(comment);
+            if (bucketElem.getChild("Comment") != null) {
+                String comment = bucketElem.getChildText("Comment");
+                bucketInfo.setComment(comment);
+            }
 
             // data redundancy type
-            String dataRedundancyString = bucketElem.getChildText("DataRedundancyType");
-            if (dataRedundancyString != null) {
+            if (bucketElem.getChild("DataRedundancyType") != null) {
+                String dataRedundancyString = bucketElem.getChildText("DataRedundancyType");
                 DataRedundancyType dataRedundancyType = DataRedundancyType.parse(dataRedundancyString);
                 bucketInfo.setDataRedundancyType(dataRedundancyType);
             }

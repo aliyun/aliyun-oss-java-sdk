@@ -276,4 +276,9 @@ public interface OSSErrorCode {
      * The exsiting bucket without inventory.
      */
     static final String NO_SUCH_INVENTORY = "NoSuchInventory";
+
+    /**
+     * The part is not upload sequentially
+     */
+    static final String PART_NOT_SEQUENTIAL = "PartNotSequential";
 }
