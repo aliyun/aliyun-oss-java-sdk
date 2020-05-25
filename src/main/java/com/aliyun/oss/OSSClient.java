@@ -460,8 +460,31 @@ public class OSSClient implements OSS {
     public ObjectListing listObjects(ListObjectsRequest listObjectsRequest) throws OSSException, ClientException {
         return bucketOperation.listObjects(listObjectsRequest);
     }
-    
-	@Override
+
+    @Override
+    public ListObjectsV2Result listObjectsV2(ListObjectsV2Request listObjectsV2Request) throws OSSException, ClientException {
+        return bucketOperation.listObjectsV2(listObjectsV2Request);
+    }
+
+    @Override
+    public ListObjectsV2Result listObjectsV2(String bucketName) throws OSSException, ClientException {
+        return bucketOperation.listObjectsV2(new ListObjectsV2Request(bucketName));
+    }
+
+    @Override
+    public ListObjectsV2Result listObjectsV2(String bucketName, String prefix) throws OSSException, ClientException {
+        return bucketOperation.listObjectsV2(new ListObjectsV2Request(bucketName, prefix));
+    }
+
+    @Override
+    public ListObjectsV2Result listObjectsV2(String bucketName, String prefix, String continuationToken,
+                                String startAfter, String delimiter, Integer maxKeys,
+                                String encodingType, boolean fetchOwner) throws OSSException, ClientException {
+        return bucketOperation.listObjectsV2(new ListObjectsV2Request(bucketName, prefix, continuationToken, startAfter,
+                delimiter, maxKeys, encodingType, fetchOwner));
+    }
+
+    @Override
 	public VersionListing listVersions(String bucketName, String prefix) throws OSSException, ClientException {
         return listVersions(new ListVersionsRequest(bucketName, prefix, null, null, null, null));
 	}

@@ -19,7 +19,7 @@ public class BucketPolicyTest extends TestBase {
     @Test
     public void testNormalPolicy() {
         try {
-            String policyText = "{\"Version\":\"1\",\"Statement\":[{\"Action\":[\"oss:GetObject\",\"oss:PutObject\"],\"Effect\":\"Deny\",\"Principal\":\"[123456790]\",\"Resource\":\"[\\\"acs:oss:*:1234567890:*\\/*\\\"]\"}]}";
+            String policyText = "{\"Statement\": [{\"Effect\": \"Allow\", \"Action\": [\"oss:GetObject\", \"oss:ListObjects\"], \"Resource\": [\"acs:oss:*:*:*/user1/*\"]}], \"Version\": \"1\"}";
 
             // Set normal policy
             ossClient.setBucketPolicy(bucketName, policyText);
@@ -42,7 +42,7 @@ public class BucketPolicyTest extends TestBase {
     public void testUnnormalSetPolicy() {
         long ticks = new Date().getTime() / 1000 + new Random().nextInt(5000);
         String notExsiteBucketName = BUCKET_NAME_PREFIX + ticks;
-        String normalPolicyText = "{\"Version\":\"1\",\"Statement\":[{\"Action\":[\"oss:GetObject\",\"oss:PutObject\"],\"Effect\":\"Deny\",\"Principal\":\"[123456790]\",\"Resource\":\"[\\\"acs:oss:*:1234567890:*\\/*\\\"]\"}]}";
+        String normalPolicyText = "{\"Statement\": [{\"Effect\": \"Allow\", \"Action\": [\"oss:GetObject\", \"oss:ListObjects\"], \"Resource\": [\"acs:oss:*:*:*/user1/*\"]}], \"Version\": \"1\"}";
 
         // Set non-existent bucket
         try {

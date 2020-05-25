@@ -129,4 +129,9 @@ public final class RequestParameters {
 
     public static final String VPCIP = "vpcip";
     public static final String VIP = "vip";
+
+    /* listObjectsV2 params */
+    public static final String LIST_TYPE = "list-type";
+    public static final String START_AFTER = "start-after";
+    public static final String FETCH_OWNER = "fetch-owner";
 }
