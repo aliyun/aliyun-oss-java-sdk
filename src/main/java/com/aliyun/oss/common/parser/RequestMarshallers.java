@@ -937,6 +937,9 @@ public final class RequestMarshallers {
     		} else {
     			xmlBody.append("<KMSMasterKeyID></KMSMasterKeyID>");
     		}
+            if (sseByDefault.getKMSDataEncryption() != null) {
+                xmlBody.append("<KMSDataEncryption>" + sseByDefault.getKMSDataEncryption() + "</KMSDataEncryption>");
+            }
 
     		xmlBody.append("</ApplyServerSideEncryptionByDefault>");
     		xmlBody.append("</ServerSideEncryptionRule>");

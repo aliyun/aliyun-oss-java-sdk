@@ -3852,4 +3852,101 @@ public class ResponseParsersTest {
             Assert.assertTrue(false);
         }
     }
+
+    @Test
+    public void testGetBucketEncryptionResponseParser() {
+        InputStream instream = null;
+        String respBody;
+
+        respBody = "" +
+                "<ServerSideEncryptionRule>\n" +
+                "  <ApplyServerSideEncryptionByDefault>\n" +
+                "    <SSEAlgorithm>KMS</SSEAlgorithm>\n" +
+                "    <KMSMasterKeyID>id</KMSMasterKeyID>\n" +
+                "    <KMSDataEncryption>SM4</KMSDataEncryption>\n" +
+                "  </ApplyServerSideEncryptionByDefault>\n" +
+                "</ServerSideEncryptionRule>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketEncryptionResponseParser parser = new ResponseParsers.GetBucketEncryptionResponseParser();
+            ServerSideEncryptionConfiguration config = parser.parse(response);
+            Assert.assertEquals(config.getApplyServerSideEncryptionByDefault().getSSEAlgorithm(), "KMS");
+            Assert.assertEquals(config.getApplyServerSideEncryptionByDefault().getKMSMasterKeyID(), "id");
+            Assert.assertEquals(config.getApplyServerSideEncryptionByDefault().getKMSDataEncryption(), "SM4");
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        respBody = "" +
+                "<ServerSideEncryptionRule>\n" +
+                "  <ApplyServerSideEncryptionByDefault>\n" +
+                "    <SSEAlgorithm>KMS</SSEAlgorithm>\n" +
+                "    <KMSMasterKeyID>id</KMSMasterKeyID>\n" +
+                "  </ApplyServerSideEncryptionByDefault>\n" +
+                "</ServerSideEncryptionRule>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketEncryptionResponseParser parser = new ResponseParsers.GetBucketEncryptionResponseParser();
+            ServerSideEncryptionConfiguration config = parser.parse(response);
+            Assert.assertEquals(config.getApplyServerSideEncryptionByDefault().getSSEAlgorithm(), "KMS");
+            Assert.assertEquals(config.getApplyServerSideEncryptionByDefault().getKMSMasterKeyID(), "id");
+            Assert.assertEquals(config.getApplyServerSideEncryptionByDefault().getKMSDataEncryption(), null);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        respBody = "invalid";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketEncryptionResponseParser parser = new ResponseParsers.GetBucketEncryptionResponseParser();
+            parser.parse(response);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(null);
+            ResponseParsers.GetBucketEncryptionResponseParser parser = new ResponseParsers.GetBucketEncryptionResponseParser();
+            parser.parse(response);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+    }
 }
