@@ -38,7 +38,7 @@ public class OSSUtilsTest {
 
         assertEquals(OSSUtils.validateObjectKey(null), false);
         assertEquals(OSSUtils.validateObjectKey(""), false);
-        assertEquals(OSSUtils.validateObjectKey("/key-with-invalid-prefix"), false);
+        assertEquals(OSSUtils.validateObjectKey("/key-with-invalid-prefix"), true);
         assertEquals(OSSUtils.validateObjectKey("\\key-with-invalid-prefix"), false);
 
         try {
@@ -58,12 +58,15 @@ public class OSSUtilsTest {
         assertEquals(OSSUtils.makeResourcePath("bucket", "key"),"bucket/key");
         assertEquals(OSSUtils.makeResourcePath("bucket", null),"bucket/");
         assertEquals(OSSUtils.makeResourcePath(null, "key"),null);
+        assertEquals(OSSUtils.makeResourcePath("key/123/"),"key/123/" );
+        assertEquals(OSSUtils.makeResourcePath("/key/123/"),"%2Fkey%2F123%2F" );
+        assertEquals(OSSUtils.makeResourcePath("bucket", "key/123/"),"bucket/key/123/" );
+        assertEquals(OSSUtils.makeResourcePath("bucket", "/key/123/"),"bucket/%2Fkey%2F123%2F" );
 
         assertEquals(OSSUtils.trimQuotes(null),null);
         assertEquals(OSSUtils.trimQuotes("\"test"),"test");
         assertEquals(OSSUtils.trimQuotes("test\""),"test");
         assertEquals(OSSUtils.trimQuotes("test"),"test");
         assertEquals(OSSUtils.trimQuotes("\"test\""),"test");
-
     }
 }

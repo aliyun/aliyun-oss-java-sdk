@@ -92,7 +92,7 @@ public class OSSUtils {
         // Validate exculde xml unsupported chars
         char keyChars[] = key.toCharArray();
         char firstChar = keyChars[0];
-        if (firstChar == '/' || firstChar == '\\') {
+        if (firstChar == '\\') {
             return false;
         }
 
@@ -188,6 +188,10 @@ public class OSSUtils {
      * Encode object URI.
      */
     private static String urlEncodeKey(String key) {
+        if (key.startsWith("/")) {
+            return HttpUtil.urlEncode(key, DEFAULT_CHARSET_NAME);
+        }
+
         StringBuffer resultUri = new StringBuffer();
 
         String[] keys = key.split("/");
