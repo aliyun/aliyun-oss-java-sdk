@@ -90,6 +90,7 @@ public class DefaultServiceClient extends ServiceClient {
         requestConfigBuilder.setConnectTimeout(config.getConnectionTimeout());
         requestConfigBuilder.setSocketTimeout(config.getSocketTimeout());
         requestConfigBuilder.setConnectionRequestTimeout(config.getConnectionRequestTimeout());
+        requestConfigBuilder.setRedirectsEnabled(config.isRedirectEnable());
 
         String proxyHost = config.getProxyHost();
         int proxyPort = config.getProxyPort();
