@@ -105,6 +105,8 @@ public class ClientConfiguration {
 
     private RetryStrategy retryStrategy;
 
+    private boolean redirectEnable = true;
+
     public ClientConfiguration() {
         super();
         AppendDefaultExcludeList(this.cnameExcludeList);
@@ -723,5 +725,27 @@ public class ClientConfiguration {
     public void setRetryStrategy(RetryStrategy retryStrategy) {
         this.retryStrategy = retryStrategy;
     }
+
+
+    /**
+     * Gets whether is enable redirection.
+     *
+     * @return whether is enable redirection.
+     */
+    public boolean isRedirectEnable() {
+        return redirectEnable;
+    }
+
+    /**
+     * Sets whether is enable redirection.
+     *
+     * @param redirectEnable
+     *          whether is enable redirection
+     */
+    public void setRedirectEnable(boolean redirectEnable) {
+        this.redirectEnable = redirectEnable;
+    }
+
+
 
 }
