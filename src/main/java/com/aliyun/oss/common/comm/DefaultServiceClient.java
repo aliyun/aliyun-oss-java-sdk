@@ -23,10 +23,14 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.security.KeyStore;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import javax.net.ssl.SSLContext;
+import javax.net.ssl.*;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
@@ -47,16 +51,15 @@ import org.apache.http.config.SocketConfig;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.ssl.SSLContextBuilder;
 
 import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.ClientErrorCode;
@@ -232,23 +235,49 @@ public class DefaultServiceClient extends ServiceClient {
     }
 
     protected HttpClientConnectionManager createHttpClientConnectionManager() {
-        SSLContext sslContext = null;
+        SSLConnectionSocketFactory sslSocketFactory = null;
         try {
-            sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+            List<TrustManager> trustManagerList = new ArrayList<TrustManager>();
+            X509TrustManager[] trustManagers = config.getX509TrustManagers();
 
-                @Override
-                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-                    return true;
+            if (null != trustManagers) {
+                trustManagerList.addAll(Arrays.asList(trustManagers));
+            }
+
+            // get trustManager using default certification from jdk
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init((KeyStore) null);
+            trustManagerList.addAll(Arrays.asList(tmf.getTrustManagers()));
+
+            final List<X509TrustManager> finalTrustManagerList = new ArrayList<X509TrustManager>();
+            for (TrustManager tm : trustManagerList) {
+                if (tm instanceof X509TrustManager) {
+                    finalTrustManagerList.add((X509TrustManager) tm);
                 }
+            }
+            CompositeX509TrustManager compositeX509TrustManager = new CompositeX509TrustManager(finalTrustManagerList);
+            compositeX509TrustManager.setVerifySSL(config.isVerifySSLEnable());
+            KeyManager[] keyManagers = null;
+            if (config.getKeyManagers() != null) {
+                keyManagers = config.getKeyManagers();
+            }
 
-            }).build();
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(keyManagers, new TrustManager[]{compositeX509TrustManager}, config.getSecureRandom());
 
+            HostnameVerifier hostnameVerifier = null;
+            if (!config.isVerifySSLEnable()) {
+                hostnameVerifier = new NoopHostnameVerifier();
+            } else if (config.getHostnameVerifier() != null) {
+                hostnameVerifier = config.getHostnameVerifier();
+            } else {
+                hostnameVerifier = new DefaultHostnameVerifier();
+            }
+            sslSocketFactory = new SSLConnectionSocketFactory(sslContext, hostnameVerifier);
         } catch (Exception e) {
             throw new ClientException(e.getMessage());
         }
 
-        SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext,
-                NoopHostnameVerifier.INSTANCE);
         Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory> create()
                 .register(Protocol.HTTP.toString(), PlainConnectionSocketFactory.getSocketFactory())
                 .register(Protocol.HTTPS.toString(), sslSocketFactory).build();
@@ -312,6 +341,55 @@ public class DefaultServiceClient extends ServiceClient {
                     Class.forName("org.apache.http.client.config.RequestConfig$Builder"),
                     "setNormalizeUri");
         } catch (Exception e) {
+        }
+    }
+
+    private class CompositeX509TrustManager implements X509TrustManager {
+
+        private final List<X509TrustManager> trustManagers;
+        private boolean verifySSL = true;
+
+        public boolean isVerifySSL() {
+            return this.verifySSL;
+        }
+
+        public void setVerifySSL(boolean verifySSL) {
+            this.verifySSL = verifySSL;
+        }
+
+        public CompositeX509TrustManager(List<X509TrustManager> trustManagers) {
+            this.trustManagers = trustManagers;
+        }
+
+        @Override
+        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            // do nothing
+        }
+
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            if (!verifySSL) {
+                return;
+            }
+            for (X509TrustManager trustManager : trustManagers) {
+                try {
+                    trustManager.checkServerTrusted(chain, authType);
+                    return; // someone trusts them. success!
+                } catch (CertificateException e) {
+                    // maybe someone else will trust them
+                }
+            }
+            throw new CertificateException("None of the TrustManagers trust this certificate chain");
+        }
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            List<X509Certificate> certificates = new ArrayList<X509Certificate>();
+            for (X509TrustManager trustManager : trustManagers) {
+                certificates.addAll(Arrays.asList(trustManager.getAcceptedIssuers()));
+            }
+            X509Certificate[] certificatesArray = new X509Certificate[certificates.size()];
+            return certificates.toArray(certificatesArray);
         }
     }
 }

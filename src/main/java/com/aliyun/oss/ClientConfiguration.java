@@ -28,6 +28,10 @@ import java.util.Map;
 import java.util.Date;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.X509TrustManager;
+import java.security.SecureRandom;
 
 import com.aliyun.oss.common.auth.RequestSigner;
 import com.aliyun.oss.common.comm.IdleConnectionReaper;
@@ -106,6 +110,12 @@ public class ClientConfiguration {
     private RetryStrategy retryStrategy;
 
     private boolean redirectEnable = true;
+
+    private boolean verifySSLEnable = true;
+    private KeyManager[] keyManagers = null;
+    private X509TrustManager[] x509TrustManagers = null;
+    private SecureRandom secureRandom = null;
+    private HostnameVerifier hostnameVerifier = null;
 
     public ClientConfiguration() {
         super();
@@ -726,7 +736,6 @@ public class ClientConfiguration {
         this.retryStrategy = retryStrategy;
     }
 
-
     /**
      * Gets whether is enable redirection.
      *
@@ -746,6 +755,103 @@ public class ClientConfiguration {
         this.redirectEnable = redirectEnable;
     }
 
+    /**
+     * Gets the flag of verifing SSL certificate. By default it's true.
+     *
+     * @return true verify SSL certificate;false ignore SSL certificate.
+     */
+    public boolean isVerifySSLEnable() {
+        return verifySSLEnable;
+    }
 
+    /**
+     * Sets the flag of verifing SSL certificate.
+     *
+     * @param verifySSLEnable
+     *            True to verify SSL certificate; False to ignore SSL certificate.
+     */
+    public void setVerifySSLEnable(boolean verifySSLEnable) {
+        this.verifySSLEnable = verifySSLEnable;
+    }
+
+    /**
+     * Gets the KeyManagers are responsible for managing the key material
+     * which is used to authenticate the local SSLSocket to its peer.
+     *
+     * @return the key managers.
+     */
+    public KeyManager[] getKeyManagers() {
+        return keyManagers;
+    }
+
+    /**
+     * Sets the key managers are responsible for managing the key material
+     * which is used to authenticate the local SSLSocket to its peer.
+     *
+     * @param keyManagers
+     *            the key managers
+     */
+    public void setKeyManagers(KeyManager[] keyManagers) {
+        this.keyManagers = keyManagers;
+    }
+
+    /**
+     * Gets the instance of this interface manage which X509 certificates
+     * may be used to authenticate the remote side of a secure socket.
+     *
+     * @return the x509 trust managers .
+     */
+    public X509TrustManager[] getX509TrustManagers() {
+        return x509TrustManagers;
+    }
+
+    /**
+     * Sets the instance of this interface manage which X509 certificates
+     * may be used to authenticate the remote side of a secure socket.
+     *
+     * @param x509TrustManagers
+     *            x509 trust managers
+     */
+    public void setX509TrustManagers(X509TrustManager[] x509TrustManagers) {
+        this.x509TrustManagers = x509TrustManagers;
+    }
+
+    /**
+     * Gets the cryptographically strong random number.
+     *
+     * @return random number.
+     */
+    public SecureRandom getSecureRandom() {
+        return secureRandom;
+    }
+
+    /**
+     * Sets the cryptographically strong random number.
+     *
+     * @param secureRandom
+     *            the cryptographically strong random number
+     */
+    public void setSecureRandom(SecureRandom secureRandom) {
+        this.secureRandom = secureRandom;
+    }
+
+    /**
+     * Gets the instance of this interface for hostname verification.
+     *
+     * @return the hostname verification instance.
+     */
+    public HostnameVerifier getHostnameVerifier() {
+        return hostnameVerifier;
+    }
+
+    /**
+     * Sets instance of this interface for hostname verification.
+     *
+     * @param hostnameVerifier
+     *            the hostname verification instance
+     */
+    public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
+        this.hostnameVerifier = hostnameVerifier;
+    }
 
 }

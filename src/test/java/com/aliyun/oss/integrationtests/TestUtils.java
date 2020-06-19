@@ -429,4 +429,13 @@ public class TestUtils {
         }
         return out.toByteArray();
     }
+
+    public static String getHttpsEndpoint(String endpoint) {
+        if (endpoint.startsWith("http://")) {
+            return endpoint.replace("http://", "https://");
+        }else if (!endpoint.startsWith("http")) {
+            return "https://" + endpoint;
+        }
+        return endpoint;
+    }
 }
