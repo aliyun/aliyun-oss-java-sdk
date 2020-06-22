@@ -737,19 +737,19 @@ public class ClientConfiguration {
     }
 
     /**
-     * Gets whether is enable redirection.
+     * Gets the flag of http redirection.
      *
-     * @return whether is enable redirection.
+     * @return the flag of http redirection.
      */
     public boolean isRedirectEnable() {
         return redirectEnable;
     }
 
     /**
-     * Sets whether is enable redirection.
+     * Sets the flag of http redirection.
      *
      * @param redirectEnable
-     *          whether is enable redirection
+     *          Determines whether redirects should be handled automatically.
      */
     public void setRedirectEnable(boolean redirectEnable) {
         this.redirectEnable = redirectEnable;
