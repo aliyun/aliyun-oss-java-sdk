@@ -32,10 +32,13 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.sax.SAXSource;
 
+import com.aliyun.oss.ClientException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.aliyun.oss.common.comm.ResponseMessage;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 /**
  * Implementation of <code>ResponseParser<code> with JAXB.
@@ -56,6 +59,18 @@ public class JAXBResponseParser implements ResponseParser<Object> {
     static {
         saxParserFactory.setNamespaceAware(true);
         saxParserFactory.setValidating(false);
+        try {
+            saxParserFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            saxParserFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            saxParserFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            saxParserFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        } catch (ParserConfigurationException e) {
+            throw new ClientException("SAXParserFactory set feature failed.");
+        } catch (SAXNotSupportedException e) {
+            throw new ClientException("SAXParserFactory set feature failed.");
+        } catch (SAXNotRecognizedException e) {
+            throw new ClientException("SAXParserFactory set feature failed.");
+        }
     }
 
     public JAXBResponseParser(Class<?> modelClass) {
