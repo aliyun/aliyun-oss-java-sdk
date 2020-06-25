@@ -46,10 +46,10 @@ import com.aliyun.oss.model.InventoryOSSBucketDestination;
 import com.aliyun.oss.model.InventorySchedule;
 import com.aliyun.oss.model.InventoryServerSideEncryptionKMS;
 import com.aliyun.oss.model.ListObjectsV2Result;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.input.JDOMParseException;
-import org.jdom.input.SAXBuilder;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.input.JDOMParseException;
+import org.jdom2.input.SAXBuilder;
 
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.parser.ResponseParseException;
@@ -1157,6 +1157,10 @@ public final class ResponseParsers {
 
     private static Element getXmlRootElement(InputStream responseBody) throws Exception {
         SAXBuilder builder = new SAXBuilder();
+        builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        builder.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        builder.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        builder.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
         Document doc = builder.build(responseBody);
         return doc.getRootElement();
     }

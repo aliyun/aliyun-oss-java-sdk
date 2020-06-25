@@ -3,8 +3,12 @@ package com.aliyun.oss.common.parser;
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.internal.ResponseParsers;
+import com.aliyun.oss.internal.model.OSSErrorResult;
 import com.aliyun.oss.model.*;
 import junit.framework.Assert;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.input.SAXBuilder;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
