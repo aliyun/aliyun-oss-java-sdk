@@ -3,8 +3,12 @@ package com.aliyun.oss.common.parser;
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.internal.ResponseParsers;
+import com.aliyun.oss.internal.model.OSSErrorResult;
 import com.aliyun.oss.model.*;
 import junit.framework.Assert;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.input.SAXBuilder;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -3990,4 +3994,104 @@ public class ResponseParsersTest {
             Assert.assertTrue(false);
         }
     }
+
+    @Test
+    public void testNormalResponseXXE() {
+        // If parser parses this xml success, the bucket Name should be valued "HELLO".
+        String respBody =
+                "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                        "<!DOCTYPE test [\n" +
+                        "        <!ENTITY test_xxe \"HELLO\">]>\n"+
+                "<BucketInfo>\n" +
+                "  <Bucket>\n" +
+                "           <CreationDate>2013-07-31T10:56:21.000Z</CreationDate>\n" +
+                "            <ExtranetEndpoint>oss-cn-hangzhou.aliyuncs.com</ExtranetEndpoint>\n" +
+                "            <IntranetEndpoint>oss-cn-hangzhou-internal.aliyuncs.com</IntranetEndpoint>\n" +
+                "            <Location>oss-cn-hangzhou</Location>\n" +
+                "            <Name>&test_xxe;</Name>\n" +
+                "            <Owner>\n" +
+                "              <DisplayName>username</DisplayName>\n" +
+                "              <ID>27183473914****</ID>\n" +
+                "            </Owner>\n" +
+                "            <AccessControlList>\n" +
+                "              <Grant>private</Grant>\n" +
+                "            </AccessControlList>\n" +
+                "            <Comment>test</Comment>\n" +
+                "            <DataRedundancyType>LRS</DataRedundancyType>\n" +
+                "          </Bucket>\n" +
+                " </BucketInfo>";
+
+        // Default jdom parser.
+        try {
+            SAXBuilder builder = new SAXBuilder();
+            Document doc;
+            doc = builder.build(new ByteArrayInputStream(respBody.getBytes("utf-8")));
+            Element root = doc.getRootElement();
+            Assert.assertEquals("HELLO", root.getChild("Bucket").getChildText("Name"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        // Test sdk response parser.
+        BucketInfo result = null;
+        try {
+            result = ResponseParsers.parseGetBucketInfo(instream);
+            Assert.fail("Sdk will forbid to parse this xml.");
+        } catch (ResponseParseException e) {
+        }
+    }
+
+    @Test
+    public void testErrorResponseXXE() {
+        String errorContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<Error>\n" +
+                "  <Code>NoSuchKey</Code>\n" +
+                "  <Message>The specified key does not exist.</Message>\n" +
+                "  <RequestId>5EF460A776DB4E3434D94C90</RequestId>\n" +
+                "  <HostId>oss-java-sdk-1393075190.oss-cn-shenzhen.aliyuncs.com</HostId>\n" +
+                "  <Key>12331-none-exist</Key>\n" +
+                "</Error>";
+
+        ResponseMessage responseMessage = new ResponseMessage(null);
+        responseMessage.setContent(new ByteArrayInputStream(errorContent.getBytes()));
+
+        JAXBResponseParser parser = new JAXBResponseParser(OSSErrorResult.class);
+        try {
+            OSSErrorResult errorResult = (OSSErrorResult) parser.parse(responseMessage);
+            Assert.assertEquals("NoSuchKey", errorResult.Code);
+        } catch (ResponseParseException e) {
+            Assert.fail(e.getMessage());
+            e.printStackTrace();
+        }
+
+        String errorContentXXE = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                "<!DOCTYPE test [\n" +
+                "        <!ENTITY test_xxe \"HELLO\">]>\n"+
+                "<Error>\n" +
+                "  <Code>NoSuchKey</Code>\n" +
+                "  <Message>The specified key does not exist.</Message>\n" +
+                "  <RequestId>5EF460A776DB4E3434D90000</RequestId>\n" +
+                "  <HostId>oss-java-sdk-1393075190.oss-cn-shenzhen.aliyuncs.com</HostId>\n" +
+                "  <Key>12331-none-exist</Key>\n" +
+                "</Error>";
+
+        responseMessage = new ResponseMessage(null);
+        responseMessage.setContent(new ByteArrayInputStream(errorContentXXE.getBytes()));
+
+        parser = new JAXBResponseParser(OSSErrorResult.class);
+        try {
+            OSSErrorResult errorResult = (OSSErrorResult) parser.parse(responseMessage);
+            Assert.fail("OSS SDK will forbid to parse this xml.");
+        } catch (ResponseParseException e) {
+        }
+    }
+
 }
