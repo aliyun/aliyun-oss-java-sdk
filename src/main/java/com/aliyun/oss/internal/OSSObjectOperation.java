@@ -487,7 +487,7 @@ public class OSSObjectOperation extends OSSOperation {
                     safeCloseResponse(response);
                     throw ExceptionFactory.createOSSException(
                             response.getHeaders().get(OSSHeaders.OSS_HEADER_REQUEST_ID), OSSErrorCode.NO_SUCH_KEY,
-                            OSS_RESOURCE_MANAGER.getString("NoSuchKey"));
+                            OSS_RESOURCE_MANAGER.getString("NoSuchKey") + ", bucketName is " + bucketName + ", key is " + key);
                 }
             }
 
