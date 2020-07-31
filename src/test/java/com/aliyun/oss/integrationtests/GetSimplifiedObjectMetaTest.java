@@ -78,7 +78,7 @@ public class GetSimplifiedObjectMetaTest extends TestBase {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, ex.getErrorCode());
             Assert.assertTrue(ex.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         }
-        
+
         // Try to get nonexistent object
         final String nonexistentKey = "nonexistent-object";
         try {
@@ -88,9 +88,9 @@ public class GetSimplifiedObjectMetaTest extends TestBase {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, ex.getErrorCode());
             Assert.assertTrue(ex.getMessage().startsWith(NO_SUCH_KEY_ERR));
         }
-        
-        // SignatureDoesNotMatch 
-        OSS client = new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT, TestConfig.OSS_TEST_ACCESS_KEY_ID, 
+
+        // SignatureDoesNotMatch
+        OSS client = new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT, TestConfig.OSS_TEST_ACCESS_KEY_ID,
                 TestConfig.OSS_TEST_ACCESS_KEY_SECRET + " ");
         try {
             client.getSimplifiedObjectMeta(bucketName, nonexistentKey);
@@ -99,7 +99,7 @@ public class GetSimplifiedObjectMetaTest extends TestBase {
             Assert.assertEquals(OSSErrorCode.SIGNATURE_DOES_NOT_MATCH, ex.getErrorCode());
         } finally {
             client.shutdown();
-        } 
-        
+        }
+
     }
 }

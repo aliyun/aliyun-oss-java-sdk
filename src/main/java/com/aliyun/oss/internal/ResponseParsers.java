@@ -20,6 +20,7 @@
 package com.aliyun.oss.internal;
 
 import static com.aliyun.oss.common.utils.CodingUtils.isNullOrEmpty;
+import static com.aliyun.oss.internal.OSSHeaders.OSS_HEADER_WORM_ID;
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
 import static com.aliyun.oss.internal.OSSUtils.trimQuotes;
 
@@ -36,6 +37,8 @@ import java.util.Map;
 import java.util.zip.CheckedInputStream;
 
 import com.aliyun.oss.model.GetBucketInventoryConfigurationResult;
+import com.aliyun.oss.model.GetBucketWormResult;
+import com.aliyun.oss.model.InitiateBucketWormResult;
 import com.aliyun.oss.model.InventoryServerSideEncryptionOSS;
 import com.aliyun.oss.model.ListBucketInventoryConfigurationsResult;
 import com.aliyun.oss.model.InventoryConfiguration;
@@ -180,6 +183,8 @@ public final class ResponseParsers {
     public static final CreateVpcipResultResponseParser createVpcipResultResponseParser = new CreateVpcipResultResponseParser();
     public static final ListVpcipResultResponseParser listVpcipResultResponseParser = new ListVpcipResultResponseParser();
     public static final ListVpcPolicyResultResponseParser listVpcPolicyResultResponseParser = new ListVpcPolicyResultResponseParser();
+    public static final InitiateBucketWormResponseParser initiateBucketWormResponseParser = new InitiateBucketWormResponseParser();
+    public static final GetBucketWormResponseParser getBucketWormResponseParser = new GetBucketWormResponseParser();
 
     public static final GetBucketInventoryConfigurationParser getBucketInventoryConfigurationParser = new GetBucketInventoryConfigurationParser();
     public static final ListBucketInventoryConfigurationsParser listBucketInventoryConfigurationsParser = new ListBucketInventoryConfigurationsParser();
@@ -1132,6 +1137,37 @@ public final class ResponseParsers {
         }
 
     }
+
+    public static final class InitiateBucketWormResponseParser implements ResponseParser<InitiateBucketWormResult> {
+
+        @Override
+        public InitiateBucketWormResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                InitiateBucketWormResult result = parseInitiateBucketWormResponseHeader(response.getHeaders());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
+
+    public static final class GetBucketWormResponseParser implements ResponseParser<GetBucketWormResult> {
+
+        @Override
+        public GetBucketWormResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetBucketWormResult result = parseWormConfiguration(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
+
 
     public static <ResultType extends GenericResult> void setCRC(ResultType result, ResponseMessage response) {
         InputStream inputStream = response.getRequest().getContent();
@@ -3440,6 +3476,42 @@ public final class ResponseParsers {
             }
 
             return vpcipList;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * Unmarshall initiate bucket worm result from response headers.
+     */
+    public static InitiateBucketWormResult parseInitiateBucketWormResponseHeader(Map<String, String> headers) throws ResponseParseException {
+
+        try {
+            InitiateBucketWormResult result = new InitiateBucketWormResult();
+            result.setWormId(headers.get(OSS_HEADER_WORM_ID));
+            return result;
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * Unmarshall get bucket worm result.
+     */
+    public static GetBucketWormResult parseWormConfiguration(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+            GetBucketWormResult result = new GetBucketWormResult();
+            result.setWormId(root.getChildText("WormId"));
+            result.setWormState(root.getChildText("State"));
+            result.setRetentionPeriodInDays(Integer.parseInt(root.getChildText("RetentionPeriodInDays")));
+            result.setCreationDate(DateUtil.parseIso8601Date(root.getChildText("CreationDate")));
+            return result;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {

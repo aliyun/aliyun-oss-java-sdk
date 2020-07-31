@@ -437,7 +437,7 @@ public class OSSObjectOperation extends OSSOperation {
         params.put(SUBRESOURCE_OBJECTMETA, null);
         if (genericRequest.getVersionId() != null) {
             params.put(RequestParameters.SUBRESOURCE_VRESION_ID,
-                genericRequest.getVersionId());
+                    genericRequest.getVersionId());
         }
 
         Map<String, String> headers = new HashMap<String, String>();
@@ -453,8 +453,8 @@ public class OSSObjectOperation extends OSSOperation {
     /**
      * Get object matadata.
      */
-    public ObjectMetadata getObjectMetadata(GenericRequest genericRequest) 
-        throws OSSException, ClientException {
+    public ObjectMetadata getObjectMetadata(GenericRequest genericRequest)
+            throws OSSException, ClientException {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
@@ -465,7 +465,7 @@ public class OSSObjectOperation extends OSSOperation {
         assertParameterNotNull(key, "key");
         ensureBucketNameValid(bucketName);
         ensureObjectKeyValid(key);
-        
+
         Map<String, String> params = new HashMap<String, String>();
         if (genericRequest.getVersionId() != null) {
             params.put(RequestParameters.SUBRESOURCE_VRESION_ID, genericRequest.getVersionId());
@@ -475,8 +475,8 @@ public class OSSObjectOperation extends OSSOperation {
         populateRequestPayerHeader(headers, genericRequest.getRequestPayer());
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-            .setMethod(HttpMethod.HEAD).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(params)
-            .setOriginalRequest(genericRequest).build();
+                .setMethod(HttpMethod.HEAD).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
 
         List<ResponseHandler> reponseHandlers = new ArrayList<ResponseHandler>();
         reponseHandlers.add(new ResponseHandler() {

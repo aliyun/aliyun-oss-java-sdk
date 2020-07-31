@@ -99,4 +99,6 @@ public interface OSSHeaders extends HttpHeaders {
 
     static final String OSS_HEADER_TASK_ID = "x-oss-task-id";
 
+    static final String OSS_HEADER_WORM_ID = "x-oss-worm-id";
+
 }

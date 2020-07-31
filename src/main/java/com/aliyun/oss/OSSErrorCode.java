@@ -281,4 +281,19 @@ public interface OSSErrorCode {
      * The part is not upload sequentially
      */
     static final String PART_NOT_SEQUENTIAL = "PartNotSequential";
+
+    /**
+     * The file is immutable.
+     */
+    static final String FILE_IMMUTABLE = "FileImmutable";
+
+    /**
+     * The worm configuration is locked.
+     */
+    static final String WORM_CONFIGURATION_LOCKED = "WORMConfigurationLocked";
+
+    /**
+     * The worm configuration is invalid.
+     */
+    static final String INVALID_WORM_CONFIGURATION = "InvalidWORMConfiguration";
 }

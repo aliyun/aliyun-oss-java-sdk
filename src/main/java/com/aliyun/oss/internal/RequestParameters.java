@@ -68,6 +68,9 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_INVENTORY = "inventory";
     public static final String SUBRESOURCE_INVENTORY_ID = "inventoryId";
     public static final String SUBRESOURCE_CONTINUATION_TOKEN = "continuation-token";
+    public static final String SUBRESOURCE_WORM = "worm";
+    public static final String SUBRESOURCE_WORM_ID = "wormId";
+    public static final String SUBRESOURCE_WORM_EXTEND = "wormExtend";
 
     public static final String SUBRESOURCE_UDF = "udf";
     public static final String SUBRESOURCE_UDF_NAME = "udfName";
