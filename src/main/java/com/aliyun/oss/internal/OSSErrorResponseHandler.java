@@ -59,6 +59,8 @@ public class OSSErrorResponseHandler implements ResponseHandler {
             } else if (statusCode == HttpStatus.SC_PRECONDITION_FAILED) {
                 throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.PRECONDITION_FAILED,
                         "Precondition Failed");
+            } else if (statusCode == HttpStatus.SC_FORBIDDEN) {
+                throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.ACCESS_FORBIDDEN, "AccessForbidden");
             } else {
                 throw ExceptionFactory.createUnknownOSSException(requestId, statusCode);
             }
