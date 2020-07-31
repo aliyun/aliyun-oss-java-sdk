@@ -81,24 +81,20 @@ import java.util.Map;
 import java.util.zip.CheckedInputStream;
 
 import com.aliyun.oss.model.*;
-import org.apache.http.HttpStatus;
 
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
-import com.aliyun.oss.ServiceException;
 import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.comm.ResponseHandler;
-import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.comm.ServiceClient;
 import com.aliyun.oss.common.comm.io.RepeatableFileInputStream;
 import com.aliyun.oss.common.parser.ResponseParser;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.CRC64;
 import com.aliyun.oss.common.utils.DateUtil;
-import com.aliyun.oss.common.utils.ExceptionFactory;
 import com.aliyun.oss.common.utils.HttpHeaders;
 import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.common.utils.IOUtils;
@@ -444,10 +440,10 @@ public class OSSObjectOperation extends OSSOperation {
         populateRequestPayerHeader(headers, genericRequest.getRequestPayer());
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(params)
+                .setMethod(HttpMethod.HEAD).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(params)
                 .setOriginalRequest(genericRequest).build();
 
-        return doOperation(request, getSimplifiedObjectMetaResponseParser, bucketName, key, true);
+        return doOperation(request, getSimplifiedObjectMetaResponseParser, bucketName, key);
     }
 
     /**
@@ -478,22 +474,7 @@ public class OSSObjectOperation extends OSSOperation {
             .setMethod(HttpMethod.HEAD).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(params)
             .setOriginalRequest(genericRequest).build();
 
-        List<ResponseHandler> reponseHandlers = new ArrayList<ResponseHandler>();
-        reponseHandlers.add(new ResponseHandler() {
-
-            @Override
-            public void handle(ResponseMessage response) throws ServiceException, ClientException {
-                if (response.getStatusCode() == HttpStatus.SC_NOT_FOUND) {
-                    safeCloseResponse(response);
-                    throw ExceptionFactory.createOSSException(
-                            response.getHeaders().get(OSSHeaders.OSS_HEADER_REQUEST_ID), OSSErrorCode.NO_SUCH_KEY,
-                            OSS_RESOURCE_MANAGER.getString("NoSuchKey"));
-                }
-            }
-
-        });
-
-        return doOperation(request, getObjectMetadataResponseParser, bucketName, key, true, null, reponseHandlers);
+        return doOperation(request, getObjectMetadataResponseParser, bucketName, key);
     }
 
     /**

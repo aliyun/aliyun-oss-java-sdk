@@ -78,7 +78,7 @@ import com.aliyun.oss.internal.OSSConstants;
  * </p>
  * <p>
  * For more information about enabling versioning for a bucket, see
- * {@link OSS#setBucketVersioningConfiguration(SetBucketVersioningConfigurationRequest)}.
+ * {@link com.aliyun.oss.OSS#setBucketVersioning(SetBucketVersioningRequest)}.
  * </p>
  */
 public class ListVersionsRequest extends GenericRequest {

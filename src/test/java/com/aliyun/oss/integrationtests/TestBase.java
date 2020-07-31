@@ -33,6 +33,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import com.aliyun.oss.OSSErrorCode;
+import com.aliyun.oss.OSSException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -120,8 +122,14 @@ public class TestBase {
     }
 
     protected static void deleteBucketWithObjects(OSSClient client, String bucketName) {
-        if (!client.doesBucketExist(bucketName)) {
-            return;
+        try {
+            if (!client.doesBucketExist(bucketName)) {
+                return;
+            }
+        } catch (OSSException e) {
+           if (e.getErrorCode().equals(OSSErrorCode.ACCESS_DENIED)) {
+               return;
+           }
         }
 
         //delete objects by version id
@@ -185,9 +193,17 @@ public class TestBase {
         for (LiveChannel channel : channels) {
             client.deleteLiveChannel(bucketName, channel.getName());
         }
-        
-        // delete bucket
-        client.deleteBucket(bucketName);
+
+        // bucket worm maybe causes delete failure.
+        try {
+            // delete bucket
+            client.deleteBucket(bucketName);
+        } catch (OSSException e) {
+            if (!e.getErrorCode().equals(OSSErrorCode.BUCKET_NOT_EMPTY)) {
+                throw e;
+            }
+        }
+
     }
     
     protected static void abortAllMultipartUploads(OSSClient client, String bucketName) {        

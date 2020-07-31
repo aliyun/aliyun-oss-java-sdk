@@ -1735,7 +1735,6 @@ public interface OSS {
      * @param genericRequest
      *            The origin request
      * @throws OSSException
-     * @param genericRequest
      * @throws ClientException
      */
     public void deleteBucketImage(String bucketName, GenericRequest genericRequest)
@@ -2610,8 +2609,6 @@ public interface OSS {
      *
      * @param setBucketEncryptionRequest The request object for setting the bucket encryption configuration.
      *
-     * @return A {@link SetBucketEncryptionRequest}.
-     * 
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
@@ -2619,7 +2616,7 @@ public interface OSS {
      */
     public void setBucketEncryption(SetBucketEncryptionRequest setBucketEncryptionRequest) 
     		throws OSSException, ClientException;
-    
+
     /**
      * Returns the server-side encryption configuration of a bucket.
      *
@@ -3600,6 +3597,118 @@ public interface OSS {
     public void deleteBucketInventoryConfiguration(
             DeleteBucketInventoryConfigurationRequest deleteBucketInventoryConfigurationRequest)
             throws OSSException, ClientException;
+
+
+    /**
+     * Initiate a bucket worm configuration
+     * <p>
+     * OSS support character of "Write Once Read Many".
+     * This method is intend to create a worm configuration that will be reserved for 24 hours
+     * unless you use the completeBucketWorm method to complete the worm configuration.
+     * </p>
+     *
+     * @param initiateBucketWormRequest
+     *             The {@lin InitiateBucketWormRequest} instance includes worm configuration.
+     *
+     * @return A {@link InitiateBucketWormResult} instance that contains worm id.
+     */
+    public InitiateBucketWormResult initiateBucketWorm(InitiateBucketWormRequest initiateBucketWormRequest)
+            throws OSSException, ClientException;
+
+    /**
+     * Initiate a bucket worm configuration
+     * <p>
+     * OSS support character of "Write Once Read Many".
+     * This method is intend to create a worm configuration that will be reserved for 24 hours
+     * unless you use the completeBucketWorm method to complete the worm configuration.
+     * </p>
+     *
+     * @param bucketName
+     *              The name of the bucket.
+     *
+     * @param retentionPeriodInDays
+     *              The object's retention days.
+     *
+     * @return A {@link InitiateBucketWormResult} instance that contains worm id.
+     */
+    public InitiateBucketWormResult initiateBucketWorm(String bucketName,  int retentionPeriodInDays)
+            throws OSSException, ClientException;
+
+    /**
+     * Abort the bucket worm configuration
+     *
+     * @param bucketName
+     *              The name of the bucket.
+     */
+    public void abortBucketWorm(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Abort the bucket worm configuration
+     *
+     * @param genericRequest
+     *              A {@link GenericRequest} instance that include the bucket name.
+     */
+    public void abortBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException;
+
+    /**
+     * Complete the bucket worm configuration
+     *
+     * @param bucketName
+     *              The name of the bucket.
+     * @param wormId
+     *              The id of the worm configuration you want to complete.
+     */
+    public void completeBucketWorm(String bucketName, String wormId) throws OSSException, ClientException;
+
+    /**
+     * Complete the bucket worm configuration
+     *
+     * @param completeBucketWormRequest
+     *              A {@link CompleteBucketWormRequest} instance that includes bucket name and worm id.
+     */
+    public void completeBucketWorm(CompleteBucketWormRequest completeBucketWormRequest) throws OSSException, ClientException;
+
+    /**
+     * Extend the bucket worm configuration
+     *
+     * @param bucketName
+     *              The name of the bucket.
+     * @param wormId
+     *              The id of the worm configuration you want to extend.
+     *
+     * @param retentionPeriodInDays
+     *              The object's retention days.
+     *
+     */
+    public void extendBucketWorm(String bucketName, String wormId, int retentionPeriodInDays) throws OSSException, ClientException;
+
+    /**
+     * Extend the bucket worm configuration
+     *
+     * @param extendBucketWormRequest
+     *              A {@link ExtendBucketWormRequest} instance that includes bucket name, worm id and retention days.
+     */
+    public void extendBucketWorm(ExtendBucketWormRequest extendBucketWormRequest) throws OSSException, ClientException;
+
+    /**
+     * Get the bucket worm configuration
+     *
+     * @param bucketName
+     *              The name of the bucket.
+     *
+     * @return A {@link GetBucketWormResult} instance that contains the worm configuration.
+     */
+    public GetBucketWormResult getBucketWorm(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Get the bucket worm configuration
+     *
+     * @param genericRequest
+     *              A {@link GenericRequest} instance that includes bucket name.
+     *
+     * @return A {@link GetBucketWormResult} instance that contains the worm configuration.
+     */
+    public GetBucketWormResult getBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
      * Creates UDF

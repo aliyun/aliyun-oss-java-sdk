@@ -17,22 +17,25 @@
  * under the License.
  */
 
-package com.aliyun.oss.common.parser;
+package com.aliyun.oss.model;
 
-import com.aliyun.oss.common.comm.ResponseMessage;
+public class InitiateBucketWormRequest extends GenericRequest {
+    private int retentionPeriodInDays;
 
-/**
- * Used to convert an result stream to a java object.
- */
-public interface ResponseParser<T> {
-    /**
-     * Converts the result from stream to a java object.
-     * 
-     * @param response
-     *            The http response message.
-     * @return The java Type T object that the result stands for.
-     * @throws ResponseParseException
-     *             Failed to parse the result.
-     */
-    public T parse(ResponseMessage response) throws ResponseParseException;
+    public InitiateBucketWormRequest(String bucketName) {
+        super(bucketName);
+    }
+
+    public InitiateBucketWormRequest(String bucketName, int retentionPeriodInDays) {
+        super(bucketName);
+        this.retentionPeriodInDays = retentionPeriodInDays;
+    }
+
+    public int getRetentionPeriodInDays() {
+        return retentionPeriodInDays;
+    }
+
+    public void setRetentionPeriodInDays(int retentionPeriodInDays) {
+        this.retentionPeriodInDays = retentionPeriodInDays;
+    }
 }

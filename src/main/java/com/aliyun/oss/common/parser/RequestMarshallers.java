@@ -83,6 +83,8 @@ public final class RequestMarshallers {
     public static final SetAsyncFetchTaskRequestMarshaller setAsyncFetchTaskRequestMarshaller = new SetAsyncFetchTaskRequestMarshaller();
     public static final SetBucketInventoryRequestMarshaller setBucketInventoryRequestMarshaller = new SetBucketInventoryRequestMarshaller();
     public static final RestoreObjectRequestMarshaller restoreObjectRequestMarshaller = new RestoreObjectRequestMarshaller();
+    public static final ExtendBucketWormRequestMarshaller extendBucketWormRequestMarshaller = new ExtendBucketWormRequestMarshaller();
+    public static final InitiateBucketWormRequestMarshaller initiateBucketWormRequestMarshaller = new InitiateBucketWormRequestMarshaller();
 
     public static final CreateSelectObjectMetadataRequestMarshaller createSelectObjectMetadataRequestMarshaller = new CreateSelectObjectMetadataRequestMarshaller();
     public static final SelectObjectRequestMarshaller selectObjectRequestMarshaller = new SelectObjectRequestMarshaller();
@@ -1203,6 +1205,44 @@ public final class RequestMarshallers {
             }
             xmlBody.append("</InventoryConfiguration>");
 
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+    }
+
+    public static final class InitiateBucketWormRequestMarshaller implements
+            RequestMarshaller2<InitiateBucketWormRequest> {
+        @Override
+        public byte[] marshall(InitiateBucketWormRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+
+            xmlBody.append("<InitiateWormConfiguration>");
+            xmlBody.append("<RetentionPeriodInDays>" + request.getRetentionPeriodInDays() + "</RetentionPeriodInDays>");
+            xmlBody.append("</InitiateWormConfiguration>");
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+    }
+
+    public static final class ExtendBucketWormRequestMarshaller implements
+            RequestMarshaller2<ExtendBucketWormRequest> {
+        @Override
+        public byte[] marshall(ExtendBucketWormRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+
+            xmlBody.append("<ExtendWormConfiguration>");
+            xmlBody.append("<RetentionPeriodInDays>" + request.getRetentionPeriodInDays()+ "</RetentionPeriodInDays>");
+            xmlBody.append("</ExtendWormConfiguration>");
             byte[] rawData = null;
             try {
                 rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
