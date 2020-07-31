@@ -187,7 +187,8 @@ public class ListObjectsV2Result extends GenericResult {
     /**
      * Sets the delimiter parameter.
      *
-     * @return The delimiter parameter originally used to request this object
+     * @param delimiter
+     *         The delimiter parameter originally used to request this object
      *         listing. Returns null if no delimiter was specified.
      */
     public void setDelimiter(String delimiter) {
@@ -269,7 +270,9 @@ public class ListObjectsV2Result extends GenericResult {
     /**
      * Sets the continuation token.
      *
-     * @return The continuation token that you have specified in the request.
+     * @param continuationToken
+     *              The parameter should be set with the value of
+     *              {@link ListObjectsV2Result#getNextContinuationToken()}
      */
     public void setContinuationToken(String continuationToken) {
         this.continuationToken = continuationToken;
@@ -293,8 +296,6 @@ public class ListObjectsV2Result extends GenericResult {
      *
      * @param nextContinuationToken
      *              The optional NextContinuationToken returned and can be used for the next request.
-     *
-     * @return The optional NextContinuationToken parameter.
      */
     public void setNextContinuationToken(String nextContinuationToken) {
         this.nextContinuationToken = nextContinuationToken;

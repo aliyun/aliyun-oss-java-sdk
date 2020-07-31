@@ -13,9 +13,9 @@ public class OSSEncryptionClientBuilder {
      *            OSS services Endpoint.
      * @param accessKeyId
      *            Access Key ID.
-     * @param secretAccessKey
+     * @param accessKeySecret
      *            Secret Access Key.
-     * @encryptionMaterials
+     * @param encryptionMaterials
      *            Encryption materials contains the consumer managed key, 
      *            it can be a asymmetric key or a symmetric key.
      * @return an encrytion client. it can put/get/upload object secured.
@@ -31,11 +31,11 @@ public class OSSEncryptionClientBuilder {
      *            OSS services Endpoint.
      * @param accessKeyId
      *            Access Id from STS.
-     * @param secretAccessKey
+     * @param accessKeySecret
      *            Access Key from STS
      * @param securityToken
      *            Security Token from STS. 
-     * @encryptionMaterials
+     * @param encryptionMaterials
      *            Encryption materials contains the consumer managed key, 
      *            it can be a asymmetric key or a symmetric key.
      * @return an encrytion client. it can put/get/upload object secured.
@@ -52,7 +52,7 @@ public class OSSEncryptionClientBuilder {
      * @param credsProvider
      *            Credentials provider which has access key Id and access Key
      *            secret.
-     * @encryptionMaterials
+     * @param encryptionMaterials
      *            Encryption materials contains the consumer managed key, 
      *            it can be a asymmetric key or a symmetric key.
      * @return an encrytion client. it can put/get/upload object secured.

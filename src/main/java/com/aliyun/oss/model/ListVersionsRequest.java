@@ -43,7 +43,7 @@ import com.aliyun.oss.internal.OSSConstants;
  * <p>
  * Objects created before versioning was enabled or when versioning is suspended
  * will be given the default <code>null</code> version ID (see
- * {@link Constants#NULL_VERSION_ID}). Note that the
+ * {@link com.aliyun.oss.internal.OSSConstants#NULL_VERSION_ID}). Note that the
  * <code>null</code> version ID is a valid version ID and is not the same
  * as not having a version ID.
  * </p>
@@ -78,7 +78,7 @@ import com.aliyun.oss.internal.OSSConstants;
  * </p>
  * <p>
  * For more information about enabling versioning for a bucket, see
- * {@link OSS#setBucketVersioningConfiguration(SetBucketVersioningConfigurationRequest)}.
+ * {@link com.aliyun.oss.OSS#setBucketVersioning(SetBucketVersioningRequest)}.
  * </p>
  */
 public class ListVersionsRequest extends GenericRequest {

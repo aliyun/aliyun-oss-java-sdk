@@ -1735,7 +1735,6 @@ public interface OSS {
      * @param genericRequest
      *            The origin request
      * @throws OSSException
-     * @param genericRequest
      * @throws ClientException
      */
     public void deleteBucketImage(String bucketName, GenericRequest genericRequest)
@@ -2610,8 +2609,6 @@ public interface OSS {
      *
      * @param setBucketEncryptionRequest The request object for setting the bucket encryption configuration.
      *
-     * @return A {@link SetBucketEncryptionRequest}.
-     * 
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
@@ -2619,7 +2616,7 @@ public interface OSS {
      */
     public void setBucketEncryption(SetBucketEncryptionRequest setBucketEncryptionRequest) 
     		throws OSSException, ClientException;
-    
+
     /**
      * Returns the server-side encryption configuration of a bucket.
      *

@@ -149,7 +149,6 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     /**
      * Get the expression which used to filter objects
-     * @return
      */
     public String getExpression() {
         return expression;
@@ -157,7 +156,6 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     /**
      * Set the expression which used to filter objects
-     * @param expression
      */
     public void setExpression(String expression) {
         this.expression = expression;
@@ -196,7 +194,7 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     /**
      * Get the expression type, we only support SQL now.
-     * @return
+     * @return {@link ExpressionType}
      */
     public ExpressionType getExpressionType() {
         return expressionType;
@@ -204,7 +202,7 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     /**
      * Get the input serialization, we use this to parse data
-     * @return
+     * @return {@link InputSerialization}
      */
     public InputSerialization getInputSerialization() {
         return inputSerialization;
@@ -212,7 +210,6 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     /**
      * Set the input serialization, we use this to parse data
-     * @param inputSerialization
      */
     public void setInputSerialization(InputSerialization inputSerialization) {
         if (inputSerialization.getSelectContentFormat() == SelectContentFormat.CSV) {
@@ -227,9 +224,10 @@ public class SelectObjectRequest extends GetObjectRequest {
         setInputSerialization(inputSerialization);
         return this;
     }
+
     /**
      * Get the output serialization, it defines the output format
-     * @return
+     * @return {@link OutputSerialization}
      */
     public OutputSerialization getOutputSerialization() {
         return outputSerialization;
@@ -237,7 +235,6 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     /**
      * Set the output serialization, it defines the output format
-     * @param outputSerialization
      */
     public void setOutputSerialization(OutputSerialization outputSerialization) {
         this.outputSerialization = outputSerialization;

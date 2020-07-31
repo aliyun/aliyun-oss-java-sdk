@@ -53,8 +53,8 @@ import java.io.Serializable;
  * OSS is eventually consistent. It may take time for the versioning status of a
  * bucket to be propagated throughout the system.
  * 
- * @see OSS#getBucketVersioning(String)
- * @see OSS#setBucketVersioning(SetBucketVersioningRequest)
+ * @see com.aliyun.oss.OSS#getBucketVersioning(String)
+ * @see com.aliyun.oss.OSS#setBucketVersioning(SetBucketVersioningRequest)
  */
 public class BucketVersioningConfiguration implements Serializable {
 
