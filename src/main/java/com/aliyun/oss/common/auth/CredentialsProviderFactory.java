@@ -89,9 +89,9 @@ public class CredentialsProviderFactory {
     /**
      * Create a new STSAssumeRoleSessionCredentialsProvider, which makes a
      * request to the Aliyun Security Token Service (STS), uses the provided
-     * {@link #roleArn} to assume a role and then request short lived session
-     * credentials, which will then be returned by this class's
-     * {@link #getCredentials()} method.
+     * roleArn to assume a role and then request short lived session
+     * credentials, which will then be returned by the credentials provider's
+     * {@link CredentialsProvider#getCredentials()} method.
      * 
      * @param regionId
      *            RAM's available area, for more information about regionId, see
@@ -103,7 +103,7 @@ public class CredentialsProviderFactory {
      *            Secret Access Key of the child user.
      * @param roleArn
      *            The ARN of the Role to be assumed.
-     * @return A {@link StsAssumeRoleCredentialsProvider} instance.
+     * @return A {@link STSAssumeRoleSessionCredentialsProvider} instance.
      * @throws ClientException
      *             OSS Client side exception.
      */
@@ -142,7 +142,7 @@ public class CredentialsProviderFactory {
      *            Public Key ID.
      * @param privateKey
      *            Private Key.
-     * @return A {@link StsKeyPairCredentialsProvider} instance.
+     * @return A {@link STSKeyPairSessionCredentialsProvider} instance.
      * @throws ClientException
      *             OSS Client side exception.
      */

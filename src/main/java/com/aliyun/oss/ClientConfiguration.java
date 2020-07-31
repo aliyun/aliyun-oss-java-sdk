@@ -730,7 +730,9 @@ public class ClientConfiguration {
      * @param retryStrategy
      *          The retryStrategy is used to check whether to retry request or not.
      *          If it has been specified, the client will prefer this retryStrategy
-     *          than its private strategy {@link DefaultRetryStrategy}.
+     *          to its private strategy, you can check the SDK private class
+     *          com.aliyun.oss.common.comm.DefaultServiceClient#DefaultRetryStrategy
+     *          to see the service client's private default strategy.
      */
     public void setRetryStrategy(RetryStrategy retryStrategy) {
         this.retryStrategy = retryStrategy;

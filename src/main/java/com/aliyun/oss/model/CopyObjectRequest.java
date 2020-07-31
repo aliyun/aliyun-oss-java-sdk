@@ -179,7 +179,7 @@ public class CopyObjectRequest extends WebServiceRequest {
      * <p>
      * Objects created before enabling versioning or when versioning is
      * suspended are given the default <code>null</code> version ID (see
-     * {@link OSSConstants#NULL_VERSION_ID}). Note that the
+     * {@link com.aliyun.oss.internal.OSSConstants#NULL_VERSION_ID}). Note that the
      * <code>null</code> version ID is a valid version ID and is not the
      * same as not having a version ID.
      * </p>
@@ -187,7 +187,7 @@ public class CopyObjectRequest extends WebServiceRequest {
      * @return The version ID specifying which version of the source
      *         object to copy.
      *
-     * @see OSSConstants#NULL_VERSION_ID
+     * @see com.aliyun.oss.internal.OSSConstants#NULL_VERSION_ID
      * @see CopyObjectRequest#setSourceVersionId(String sourceVersionId)
      */
     public String getSourceVersionId() {
@@ -203,7 +203,7 @@ public class CopyObjectRequest extends WebServiceRequest {
      * <p>
      * Objects created before enabling versioning or when versioning is
      * suspended are given the default <code>null</code> version ID (see
-     * {@link OSSConstants#NULL_VERSION_ID}). Note that the
+     * {@link com.aliyun.oss.internal.OSSConstants#NULL_VERSION_ID}). Note that the
      * <code>null</code> version ID is a valid version ID and is not the
      * same as not having a version ID.
      * </p>

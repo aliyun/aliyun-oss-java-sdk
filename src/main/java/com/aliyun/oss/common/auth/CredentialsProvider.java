@@ -22,7 +22,7 @@ package com.aliyun.oss.common.auth;
 /**
  * Abstract credentials provider that maintains only one user credentials. Users
  * can switch to other valid credentials with
- * {@link OSS#switchCredentials(com.aliyun.oss.common.auth.Credentials)} Note
+ * {@link com.aliyun.oss.OSS#switchCredentials(com.aliyun.oss.common.auth.Credentials)} Note
  * that <b>implementations of this interface must be thread-safe.</b>
  */
 public interface CredentialsProvider {

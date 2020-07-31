@@ -28,8 +28,8 @@ public interface ResponseParser<T> {
     /**
      * Converts the result from stream to a java object.
      * 
-     * @param resultStream
-     *            The stream of the result.
+     * @param response
+     *            The http response message.
      * @return The java Type T object that the result stands for.
      * @throws ResponseParseException
      *             Failed to parse the result.
