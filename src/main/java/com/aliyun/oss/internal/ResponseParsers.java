@@ -897,7 +897,7 @@ public final class ResponseParsers {
             try {
                 return parseSimplifiedObjectMeta(response.getHeaders());
             } finally {
-                OSSUtils.mandatoryCloseResponse(response);
+                safeCloseResponse(response);
             }
         }
 

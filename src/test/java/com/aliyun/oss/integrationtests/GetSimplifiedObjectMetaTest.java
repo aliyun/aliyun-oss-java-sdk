@@ -75,8 +75,7 @@ public class GetSimplifiedObjectMetaTest extends TestBase {
             ossClient.getSimplifiedObjectMeta(nonexistentBucket, key);
             Assert.fail("Get simplified object meta should not be successful");
         } catch (OSSException ex) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, ex.getErrorCode());
-            Assert.assertTrue(ex.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+            Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, ex.getErrorCode());
         }
 
         // Try to get nonexistent object
@@ -86,17 +85,16 @@ public class GetSimplifiedObjectMetaTest extends TestBase {
             Assert.fail("Get simplified object meta should not be successful");
         } catch (OSSException ex) {
             Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, ex.getErrorCode());
-            Assert.assertTrue(ex.getMessage().startsWith(NO_SUCH_KEY_ERR));
         }
-
-        // SignatureDoesNotMatch
-        OSS client = new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT, TestConfig.OSS_TEST_ACCESS_KEY_ID,
+        
+        // Forbidden
+        OSS client = new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT, TestConfig.OSS_TEST_ACCESS_KEY_ID, 
                 TestConfig.OSS_TEST_ACCESS_KEY_SECRET + " ");
         try {
             client.getSimplifiedObjectMeta(bucketName, nonexistentKey);
             Assert.fail("Get simplified object meta should not be successful");
         } catch (OSSException ex) {
-            Assert.assertEquals(OSSErrorCode.SIGNATURE_DOES_NOT_MATCH, ex.getErrorCode());
+            Assert.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, ex.getErrorCode());
         } finally {
             client.shutdown();
         }
