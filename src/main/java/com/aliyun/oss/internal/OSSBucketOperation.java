@@ -44,6 +44,8 @@ import static com.aliyun.oss.common.parser.RequestMarshallers.deleteVpcipRequest
 import static com.aliyun.oss.common.parser.RequestMarshallers.createBucketVpcipRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.deleteBucketVpcipRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketInventoryRequestMarshaller;
+import static com.aliyun.oss.common.parser.RequestMarshallers.extendBucketWormRequestMarshaller;
+import static com.aliyun.oss.common.parser.RequestMarshallers.initiateBucketWormRequestMarshaller;
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
@@ -84,6 +86,8 @@ import static com.aliyun.oss.internal.ResponseParsers.listVpcipResultResponsePar
 import static com.aliyun.oss.internal.ResponseParsers.listVpcPolicyResultResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketInventoryConfigurationParser;
 import static com.aliyun.oss.internal.ResponseParsers.listBucketInventoryConfigurationsParser;
+import static com.aliyun.oss.internal.ResponseParsers.initiateBucketWormResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getBucketWormResponseParser;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -181,6 +185,11 @@ import com.aliyun.oss.model.GetBucketInventoryConfigurationResult;
 import com.aliyun.oss.model.ListBucketInventoryConfigurationsRequest;
 import com.aliyun.oss.model.ListBucketInventoryConfigurationsResult;
 import com.aliyun.oss.model.DeleteBucketInventoryConfigurationRequest;
+import com.aliyun.oss.model.ExtendBucketWormRequest;
+import com.aliyun.oss.model.GetBucketWormResult;
+import com.aliyun.oss.model.CompleteBucketWormRequest;
+import com.aliyun.oss.model.InitiateBucketWormRequest;
+import com.aliyun.oss.model.InitiateBucketWormResult;
 
 /**
  * Bucket operation.
@@ -1772,6 +1781,107 @@ public class OSSBucketOperation extends OSSOperation {
                 .setOriginalRequest(deleteBucketInventoryConfigurationRequest).build();
 
         doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    public InitiateBucketWormResult initiateBucketWorm(InitiateBucketWormRequest initiateBucketWormRequest) throws OSSException, ClientException {
+        assertParameterNotNull(initiateBucketWormRequest, "initiateBucketWormRequest");
+        String bucketName = initiateBucketWormRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_WORM, null);
+
+        byte[] rawContent = initiateBucketWormRequestMarshaller.marshall(initiateBucketWormRequest);
+        Map<String, String> headers = new HashMap<String, String>();
+        addRequestRequiredHeaders(headers, rawContent);
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.POST).setBucket(bucketName).setParameters(params).setHeaders(headers)
+                .setOriginalRequest(initiateBucketWormRequest)
+                .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+                .build();
+
+
+        return doOperation(request, initiateBucketWormResponseParser, bucketName, null);
+    }
+
+    public void abortBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_WORM, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest)
+                .build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    public void completeBucketWorm(CompleteBucketWormRequest completeBucketWormRequest) throws OSSException, ClientException {
+        assertParameterNotNull(completeBucketWormRequest, "completeBucketWormRequest");
+        String bucketName = completeBucketWormRequest.getBucketName();
+        String wormId = completeBucketWormRequest.getWormId();
+        assertParameterNotNull(wormId, "wormId");
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_WORM_ID, wormId);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.POST).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(completeBucketWormRequest)
+                .setInputSize(0).setInputStream(new ByteArrayInputStream(new byte[0]))
+                .build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    public void extendBucketWorm(ExtendBucketWormRequest extendBucketWormRequest) throws OSSException, ClientException {
+        assertParameterNotNull(extendBucketWormRequest, "extendBucketWormRequest");
+        String bucketName = extendBucketWormRequest.getBucketName();
+        String wormId = extendBucketWormRequest.getWormId();
+        assertParameterNotNull(wormId, "wormId");
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_WORM_ID, wormId);
+        params.put(SUBRESOURCE_WORM_EXTEND, null);
+
+        byte[] rawContent = extendBucketWormRequestMarshaller.marshall(extendBucketWormRequest);
+        Map<String, String> headers = new HashMap<String, String>();
+        addRequestRequiredHeaders(headers, rawContent);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.POST).setBucket(bucketName).setParameters(params).setHeaders(headers)
+                .setOriginalRequest(extendBucketWormRequest)
+                .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+                .build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    public GetBucketWormResult getBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_WORM, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest)
+                .build();
+
+        return doOperation(request, getBucketWormResponseParser, bucketName, null, true);
     }
 
     private static void populateListObjectsRequestParameters(ListObjectsRequest listObjectsRequest,

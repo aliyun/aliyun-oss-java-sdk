@@ -1644,6 +1644,56 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public InitiateBucketWormResult initiateBucketWorm(InitiateBucketWormRequest initiateBucketWormRequest) throws OSSException, ClientException {
+        return this.bucketOperation.initiateBucketWorm(initiateBucketWormRequest);
+    }
+
+    @Override
+    public InitiateBucketWormResult initiateBucketWorm(String bucketName, int retentionPeriodInDays) throws OSSException, ClientException {
+        return this.initiateBucketWorm(new InitiateBucketWormRequest(bucketName, retentionPeriodInDays));
+    }
+
+    @Override
+    public void abortBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException {
+        this.bucketOperation.abortBucketWorm(genericRequest);
+    }
+
+    @Override
+    public void abortBucketWorm(String bucketName) throws OSSException, ClientException {
+        this.abortBucketWorm(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public void completeBucketWorm(CompleteBucketWormRequest completeBucketWormRequest) throws OSSException, ClientException {
+        this.bucketOperation.completeBucketWorm(completeBucketWormRequest);
+    }
+
+    @Override
+    public void completeBucketWorm(String bucketName, String wormId) throws OSSException, ClientException {
+        this.completeBucketWorm(new CompleteBucketWormRequest(bucketName, wormId));
+    }
+
+    @Override
+    public void extendBucketWorm(ExtendBucketWormRequest extendBucketWormRequest) throws OSSException, ClientException {
+        this.bucketOperation.extendBucketWorm(extendBucketWormRequest);
+    }
+
+    @Override
+    public void extendBucketWorm(String bucketName, String wormId, int retentionPeriodInDays) throws OSSException, ClientException {
+        this.extendBucketWorm(new ExtendBucketWormRequest(bucketName, wormId, retentionPeriodInDays));
+    }
+
+    @Override
+    public GetBucketWormResult getBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketWorm(genericRequest);
+    }
+
+    @Override
+    public GetBucketWormResult getBucketWorm(String bucketName) throws OSSException, ClientException {
+        return this.getBucketWorm(new GenericRequest(bucketName));
+    }
+
+    @Override
     public void createUdf(CreateUdfRequest createUdfRequest) throws OSSException, ClientException {
         throw new ClientException("Not supported.");
     }

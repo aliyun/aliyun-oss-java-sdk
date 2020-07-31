@@ -185,7 +185,7 @@ public class TestBase {
         for (LiveChannel channel : channels) {
             client.deleteLiveChannel(bucketName, channel.getName());
         }
-        
+
         // delete bucket
         client.deleteBucket(bucketName);
     }
