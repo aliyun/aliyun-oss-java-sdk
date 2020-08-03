@@ -26,6 +26,8 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -71,6 +73,47 @@ public class OSSClientArgCheckTest {
         Assert.assertFalse(OSSUtils.validateBucketName(bucketName + "~dd"));
         Assert.assertFalse(OSSUtils.validateBucketName(bucketName + "_dd"));
         Assert.assertFalse(OSSUtils.validateBucketName(bucketName + "\\dd"));
+    }
+
+    @Test
+    public void testValidEndpoint() {
+        URL url1 = null;
+        URL url2 = null;
+        URL url3 = null;
+
+        try {
+            url1 = new URL("https://www.test.com\\www.aliyun.com?x=123");
+            url2 = new URL("http://www.test.com#www.aliyun.com?x=123");
+            url3 = new URL("http://www.aliyun.com?x=123");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Assert.assertNotNull(url1);
+        Assert.assertNotNull(url2);
+        Assert.assertNotNull(url3);
+
+        Assert.assertFalse(OSSUtils.validateEndpoint(url1.getHost()));
+        Assert.assertFalse(OSSUtils.validateEndpoint(url2.getHost()));
+        Assert.assertTrue(OSSUtils.validateEndpoint(url3.getHost()));
+
+        Assert.assertTrue(OSSUtils.validateEndpoint("oss-cn-shenzhen.aliyuncs.com"));
+        Assert.assertTrue(OSSUtils.validateEndpoint("abc_123"));
+        Assert.assertTrue(OSSUtils.validateEndpoint("abc_123.adf-"));
+        Assert.assertTrue(OSSUtils.validateEndpoint("192.168.1.1"));
+        Assert.assertFalse(OSSUtils.validateEndpoint("www.test.com\\www.aliyun.com"));
+        Assert.assertFalse(OSSUtils.validateEndpoint("www.test.com#www.aliyun.com"));
+
+        try {
+            OSSUtils.ensureEndpointValid("www.test.com\\www.aliyun.com");
+            Assert.fail("should not here.");
+        }
+        catch (IllegalArgumentException e) {
+            Assert.assertTrue(true);
+        }
+        catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
     }
 
     @Test

@@ -245,6 +245,8 @@ public class OSSClient implements OSS {
         URI uri = toURI(endpoint);
         this.endpoint = uri;
 
+        OSSUtils.ensureEndpointValid(uri.getHost());
+
         if (isIpOrLocalhost(uri)) {
             serviceClient.getClientConfiguration().setSLDEnabled(true);
         }

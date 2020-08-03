@@ -220,7 +220,20 @@ public class ClientBuilderTest extends TestBase {
         } finally {
             client.shutdown();
         }
+    }
 
-
+    @Test
+    public void testClientBuilderWithInvalidEndpoint() {
+        OSSClient client = null;
+        try {
+            OSSClient ossClient = (OSSClient) new OSSClientBuilder().build(
+                    "http://oss-cn-hangzhou.aliyuncs.com\\oss-cn-shenzhen.aliyuncs.com?test=123",
+                    new DefaultCredentialProvider(TestConfig.OSS_TEST_ACCESS_KEY_ID,
+                            TestConfig.OSS_TEST_ACCESS_KEY_SECRET),
+                    new ClientBuilderConfiguration());
+            Assert.fail("should not here.");
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
     }
 }
