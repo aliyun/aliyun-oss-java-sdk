@@ -74,6 +74,22 @@ public class OSSClientArgCheckTest {
     }
 
     @Test
+    public void testValidEndpoint() {
+        final String endpoint = "oss-cn-shenzhen.aliyuncs.com";
+        Assert.assertTrue(OSSUtils.validateEndpoint(endpoint));
+        Assert.assertTrue(OSSUtils.validateEndpoint("ftp://" + endpoint));
+        Assert.assertTrue(OSSUtils.validateEndpoint("http://" + endpoint));
+        Assert.assertTrue(OSSUtils.validateEndpoint("https://" + endpoint));
+        Assert.assertTrue(OSSUtils.validateEndpoint("11.11.11.11"));
+        Assert.assertTrue(OSSUtils.validateEndpoint("http://11.11.11.11"));
+        Assert.assertTrue(OSSUtils.validateEndpoint("https://11.11.11.11"));
+        Assert.assertTrue(OSSUtils.validateEndpoint(endpoint + "_"));
+        Assert.assertFalse(OSSUtils.validateEndpoint(endpoint + "#"));
+        Assert.assertFalse(OSSUtils.validateEndpoint(endpoint + "\\"));
+        Assert.assertFalse(OSSUtils.validateEndpoint("://" + endpoint));
+    }
+
+    @Test
     public void testBucketArgChecking() throws Exception{
 
         OSS client = getOSSClient();

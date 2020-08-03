@@ -215,6 +215,7 @@ public class OSSClient implements OSS {
      *            client configuration.
      */
     public OSSClient(String endpoint, CredentialsProvider credsProvider, ClientConfiguration config) {
+        OSSUtils.ensureEndpointValid(endpoint);
         this.credsProvider = credsProvider;
         config = config == null ? new ClientConfiguration() : config;
         if (config.isRequestTimeoutEnabled()) {
