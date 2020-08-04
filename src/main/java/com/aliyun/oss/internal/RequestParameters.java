@@ -71,6 +71,8 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_WORM = "worm";
     public static final String SUBRESOURCE_WORM_ID = "wormId";
     public static final String SUBRESOURCE_WORM_EXTEND = "wormExtend";
+    public static final String SUBRESOURCE_CALLBACK = "callback";
+    public static final String SUBRESOURCE_CALLBACK_VAR = "callback-var";
 
     public static final String SUBRESOURCE_UDF = "udf";
     public static final String SUBRESOURCE_UDF_NAME = "udfName";
