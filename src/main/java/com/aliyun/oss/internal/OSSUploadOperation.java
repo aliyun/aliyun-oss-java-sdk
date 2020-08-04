@@ -50,6 +50,7 @@ import com.aliyun.oss.common.utils.CRC64;
 import com.aliyun.oss.event.ProgressEventType;
 import com.aliyun.oss.event.ProgressListener;
 import com.aliyun.oss.event.ProgressPublisher;
+import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.CompleteMultipartUploadRequest;
 import com.aliyun.oss.model.CompleteMultipartUploadResult;
 import com.aliyun.oss.model.InitiateMultipartUploadRequest;
@@ -600,6 +601,15 @@ public class OSSUploadOperation {
         Payer payer = uploadFileRequest.getRequestPayer();
         if (payer != null) {
             completeUploadRequest.setRequestPayer(payer);
+        }
+
+        ObjectMetadata metadata = uploadFileRequest.getObjectMetadata();
+        if (metadata != null) {
+            String acl = (String) metadata.getRawMetadata().get(OSSHeaders.OSS_OBJECT_ACL);
+            if (acl != null && !acl.equals("")) {
+                CannedAccessControlList accessControlList = CannedAccessControlList.parse(acl);
+                completeUploadRequest.setObjectACL(accessControlList);
+            }
         }
 
         completeUploadRequest.setCallback(uploadFileRequest.getCallback());
