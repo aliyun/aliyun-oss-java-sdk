@@ -372,4 +372,63 @@ public class UploadFileTest extends TestBase {
         }
     }
 
+    @Test
+    public void testAcl() {
+        String key = "test-upload-file-with-acl";
+
+        // Upload file without acl setting, returned acl will be DEFAULT.
+        try {
+            File file = createSampleFile(key, 1024 * 500);
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key, file.getAbsolutePath(), (1024 * 100), 10);
+
+            UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
+
+            ObjectAcl acl = ossClient.getObjectAcl(bucketName, key);
+            Assert.assertEquals(acl.getPermission(), ObjectPermission.Default);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        // Upload With PRIVATE acl setting, returned acl will be PRIVATE.
+        try {
+            File file = createSampleFile(key, 1024 * 500);
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key, file.getAbsolutePath(), (1024 * 100), 10);
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setObjectAcl(CannedAccessControlList.Private);
+            uploadFileRequest.setObjectMetadata(metadata);
+
+            UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
+
+            ObjectAcl acl = ossClient.getObjectAcl(bucketName, key);
+            Assert.assertEquals(acl.getPermission(), ObjectPermission.Private);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        // Test set acl null.
+        try {
+            File file = createSampleFile(key, 1024 * 500);
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key, file.getAbsolutePath(), (1024 * 100), 10);
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setObjectAcl(null);
+            uploadFileRequest.setObjectMetadata(metadata);
+
+            UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
+
+            ObjectAcl acl = ossClient.getObjectAcl(bucketName, key);
+            Assert.assertEquals(acl.getPermission(), ObjectPermission.Default);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+    }
+
 }
