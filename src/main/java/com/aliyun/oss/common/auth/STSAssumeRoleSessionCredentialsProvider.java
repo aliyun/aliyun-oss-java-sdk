@@ -19,8 +19,6 @@
 
 package com.aliyun.oss.common.auth;
 
-import com.aliyun.oss.common.auth.Credentials;
-import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.utils.AuthUtils;
 import com.aliyun.oss.common.utils.LogUtils;
 import com.aliyuncs.DefaultAcsClient;
@@ -84,7 +82,11 @@ public class STSAssumeRoleSessionCredentialsProvider implements CredentialsProvi
     @Override
     public Credentials getCredentials() {
         if (credentials == null || credentials.willSoonExpire()) {
-            credentials = getNewSessionCredentials();
+            synchronized (this) {
+                if (credentials == null || credentials.willSoonExpire()) {
+                    credentials = getNewSessionCredentials();
+                }
+            }
         }
         return credentials;
     }
@@ -108,10 +110,10 @@ public class STSAssumeRoleSessionCredentialsProvider implements CredentialsProvi
                 expiredDurationSeconds).withExpiredFactor(expiredFactor);
     }
 
-    private DefaultAcsClient ramClient;
-    private String roleArn;
+    private final DefaultAcsClient ramClient;
+    private final String roleArn;
     private String roleSessionName;
-    private BasicCredentials credentials;
+    private volatile BasicCredentials credentials;
 
     private long expiredDurationSeconds = AuthUtils.DEFAULT_EXPIRED_DURATION_SECONDS;
     private double expiredFactor = AuthUtils.DEFAULT_EXPIRED_FACTOR;
