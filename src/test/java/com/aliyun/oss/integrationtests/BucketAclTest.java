@@ -52,7 +52,7 @@ public class BucketAclTest extends TestBase {
     
     @Test
     public void testNormalSetBucketAcl() {
-        final String bucketName = "normal-set-bucket-acl";
+        final String bucketName = super.bucketName + "normal-set-bucket-acl";
         
         try {
             ossClient.createBucket(bucketName);
@@ -90,7 +90,7 @@ public class BucketAclTest extends TestBase {
     
     @Test
     public void testUnormalSetBucketAcl() {
-        final String nonexistentBucket = "unormal-set-bucket-acl";
+        final String nonexistentBucket = super.bucketName + "unormal-set-bucket-acl";
         
         try {            
             // set non-existent bucket
@@ -133,7 +133,7 @@ public class BucketAclTest extends TestBase {
     @Test
     public void testUnormalGetBucketAcl() {
         // Get non-existent bucket
-        final String nonexistentBucket = "unormal-get-bucket-acl";
+        final String nonexistentBucket = super.bucketName + "unormal-get-bucket-acl";
         try {
             ossClient.getBucketAcl(nonexistentBucket);
             Assert.fail("Get bucket acl should not be successful");
@@ -169,7 +169,7 @@ public class BucketAclTest extends TestBase {
     
     @Test
     public void testUnormalDoesBucketExist() {
-        final String nonexistentBucket = "unormal-does-bucket-exist";
+        final String nonexistentBucket = super.bucketName + "unormal-does-bucket-exist";
         
         try {
             Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
@@ -177,7 +177,7 @@ public class BucketAclTest extends TestBase {
             ossClient.doesBucketExist(nonexistentBucket);
             Assert.fail("Does bucket exist should not be successful");
         } catch (Exception e) {
-            Assert.assertEquals("unormal-does-bucket-exist.oss-cn-taikang.aliyuncs.com\n" +
+            Assert.assertEquals(nonexistentBucket + ".oss-cn-taikang.aliyuncs.com\n" +
                     "[ErrorCode]: UnknownHost\n" +
                     "[RequestId]: Unknown", e.getMessage());
         }

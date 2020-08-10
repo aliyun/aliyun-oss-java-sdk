@@ -132,9 +132,9 @@ public class ObjectRelatedTest {
             keys = new ArrayList<String>();
             keys.add("//aaaa");
             request.setKeys(keys);
-            assertTrue(false);
-        } catch (Exception e) {
             assertTrue(true);
+        } catch (Exception e) {
+            assertTrue(false);
         }
     }
 
