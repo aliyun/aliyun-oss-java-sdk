@@ -331,14 +331,14 @@ public class OSSClientTest {
         try {
             OSS client = new OSSClientBuilder().build("https://www.alibabacloud.com\\www.aliyun.com", "id", "key");
             Assert.fail("should be failed here.");
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
         }
 
         // false
         try {
             OSS client = new OSSClientBuilder().build("https://www.alibabacloud.com#www.aliyun.com", "id", "key");
+        } catch (Exception e) {
             Assert.fail("should be failed here.");
-        } catch (IllegalArgumentException e) {
         }
     }
 
