@@ -36,7 +36,7 @@ public class DefaultCredentials implements Credentials {
         if (accessKeyId == null || accessKeyId.equals("")) {
             throw new InvalidCredentialsException("Access key id should not be null or empty.");
         }
-        if (secretAccessKey == null || accessKeyId.equals("")) {
+        if (secretAccessKey == null || secretAccessKey.equals("")) {
             throw new InvalidCredentialsException("Secret access key should not be null or empty.");
         }
 
