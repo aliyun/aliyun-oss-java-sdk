@@ -29,13 +29,14 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.http.HttpRequest;
 import com.aliyuncs.http.HttpResponse;
 import com.aliyuncs.http.MethodType;
+import com.aliyuncs.http.clients.CompatibleUrlConnClient;
 
 public abstract class HttpCredentialsFetcher implements CredentialsFetcher {
-    
+
     public abstract URL buildUrl() throws ClientException;
-    
+
     public abstract Credentials parse(HttpResponse response) throws ClientException;
-    
+
     @Override
     public Credentials fetch() throws ClientException {
         URL url = buildUrl();
@@ -53,16 +54,23 @@ public abstract class HttpCredentialsFetcher implements CredentialsFetcher {
         
         return parse(response);
     }
-    
+
     @Override
     public HttpResponse send(HttpRequest request) throws IOException {
-        HttpResponse response = HttpResponse.getResponse(request);
+
+        HttpResponse response = null;
+        try {
+            response = CompatibleUrlConnClient.compatibleGetResponse(request);
+        } catch (ClientException e) {
+            throw new IOException(e);
+        }
+
         if (response.getStatus() != HttpURLConnection.HTTP_OK) {
             throw new IOException("HttpCode=" + response.getStatus());
         }
         return response;
     }
-    
+
     @Override
     public Credentials fetch(int retryTimes) throws ClientException {
         for (int i = 0; i <= retryTimes; i++) {
@@ -76,5 +84,5 @@ public abstract class HttpCredentialsFetcher implements CredentialsFetcher {
         }
         throw new ClientException("Failed to connect ECS Metadata Service: Max retry times exceeded.");
     }
-    
+
 }
