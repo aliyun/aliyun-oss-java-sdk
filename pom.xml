@@ -36,7 +36,7 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>aliyun-java-sdk-core</artifactId>
-            <version>3.4.0</version>
+            <version>4.5.10</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.json</groupId>
