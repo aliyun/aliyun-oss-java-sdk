@@ -322,9 +322,8 @@ public class UploadFileTest extends TestBase {
             }, "upload effective cpf thread");
 
             thread.start();
-            Thread.sleep(3000);
+            Thread.sleep(1500);
             thread.interrupt();
-            System.out.println("cp exist3:" + cpfFile.exists());
 
             Assert.assertTrue(cpfFile.exists());
 
