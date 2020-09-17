@@ -49,6 +49,8 @@ public final class TestConfig {
     public static String RAM_REGION = null;
     public static String RAM_ROLE_ARN = null;
     public static String RAM_UID = null;
+    public static String RAM_ACCESS_KEY_ID = null;
+    public static String RAM_ACCESS_KEY_SECRET = null;
 
     // OSS cmk id configuration
     public static String KMS_CMK_ID = null;
