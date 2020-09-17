@@ -69,7 +69,7 @@ public class STSKeyPairSessionCredentialsProvider implements CredentialsProvider
         GetSessionAccessKeyRequest request = new GetSessionAccessKeyRequest();
         request.setPublicKeyId(keyPairCredentials.getAccessKeyId());
         request.setDurationSeconds((int) expiredDurationSeconds);
-        request.setProtocol(ProtocolType.HTTPS);
+        request.setSysProtocol(ProtocolType.HTTPS);
 
         GenerateSessionAccessKeyResponse response = null;
         try {

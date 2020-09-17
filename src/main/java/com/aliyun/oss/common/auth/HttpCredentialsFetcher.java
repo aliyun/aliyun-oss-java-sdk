@@ -41,9 +41,9 @@ public abstract class HttpCredentialsFetcher implements CredentialsFetcher {
     public Credentials fetch() throws ClientException {
         URL url = buildUrl();
         HttpRequest request = new HttpRequest(url.toString());
-        request.setMethod(MethodType.GET);
-        request.setConnectTimeout(AuthUtils.DEFAULT_HTTP_SOCKET_TIMEOUT_IN_MILLISECONDS);
-        request.setReadTimeout(AuthUtils.DEFAULT_HTTP_SOCKET_TIMEOUT_IN_MILLISECONDS);
+        request.setSysMethod(MethodType.GET);
+        request.setSysConnectTimeout(AuthUtils.DEFAULT_HTTP_SOCKET_TIMEOUT_IN_MILLISECONDS);
+        request.setSysReadTimeout(AuthUtils.DEFAULT_HTTP_SOCKET_TIMEOUT_IN_MILLISECONDS);
         
         HttpResponse response = null;
         try {

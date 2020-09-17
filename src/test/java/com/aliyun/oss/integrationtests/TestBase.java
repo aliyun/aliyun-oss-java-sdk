@@ -505,6 +505,18 @@ public class TestBase {
             TestConfig.RAM_UID = System.getenv().get("OSS_TEST_RAM_UID");
         }
 
+        if (TestConfig.RAM_REGION == null) {
+            TestConfig.RAM_REGION = System.getenv().get("OSS_TEST_RAM_REGION");
+        }
+
+        if (TestConfig.RAM_ACCESS_KEY_ID == null) {
+            TestConfig.RAM_ACCESS_KEY_ID = System.getenv().get("USER_ACCESS_KEY_ID");
+        }
+
+        if (TestConfig.RAM_ACCESS_KEY_SECRET == null) {
+            TestConfig.RAM_ACCESS_KEY_SECRET = System.getenv().get("USER_ACCESS_KEY_SECRET");
+        }
+
         // kms
         if (TestConfig.KMS_REGION == null) {
             TestConfig.KMS_REGION = System.getenv().get("OSS_TEST_KMS_REGION");

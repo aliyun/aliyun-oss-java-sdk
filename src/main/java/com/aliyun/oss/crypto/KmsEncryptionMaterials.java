@@ -103,9 +103,9 @@ public class KmsEncryptionMaterials implements EncryptionMaterials {
     private EncryptResponse encryptPlainText(String keyId, String plainText) throws ClientException {
         DefaultAcsClient kmsClient = createKmsClient(region, credentialsProvider);
         final EncryptRequest encReq = new EncryptRequest();
-        encReq.setProtocol(ProtocolType.HTTPS);
+        encReq.setSysProtocol(ProtocolType.HTTPS);
         encReq.setAcceptFormat(FormatType.JSON);
-        encReq.setMethod(MethodType.POST);
+        encReq.setSysMethod(MethodType.POST);
         encReq.setKeyId(keyId);
         encReq.setPlaintext(plainText);
 
@@ -125,9 +125,9 @@ public class KmsEncryptionMaterials implements EncryptionMaterials {
             throws ClientException {
         final DefaultAcsClient kmsClient = createKmsClient(kmsClientSuite.region, kmsClientSuite.credentialsProvider);
         final DecryptRequest decReq = new DecryptRequest();
-        decReq.setProtocol(ProtocolType.HTTPS);
+        decReq.setSysProtocol(ProtocolType.HTTPS);
         decReq.setAcceptFormat(FormatType.JSON);
-        decReq.setMethod(MethodType.POST);
+        decReq.setSysMethod(MethodType.POST);
         decReq.setCiphertextBlob(cipherBlob);
 
         final DecryptResponse decResponse;
