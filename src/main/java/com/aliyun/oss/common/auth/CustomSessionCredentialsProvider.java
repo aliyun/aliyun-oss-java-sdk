@@ -44,11 +44,15 @@ public class CustomSessionCredentialsProvider implements CredentialsProvider {
     @Override
     public Credentials getCredentials() {        
         if (credentials == null || credentials.willSoonExpire()) {
-            try {
-                credentials = (BasicCredentials) fetcher.fetch(maxRetryTimes);
-            } catch (ClientException e) {
-                LogUtils.logException("OssAuthCredentialsProvider.fetch Exception:", e);
-                return null;
+            synchronized (this) {
+                if (credentials == null || credentials.willSoonExpire()) {
+                    try {
+                        credentials = (BasicCredentials) fetcher.fetch(maxRetryTimes);
+                    } catch (ClientException e) {
+                        LogUtils.logException("OssAuthCredentialsProvider.fetch Exception:", e);
+                        return null;
+                    }
+                }
             }
         }
         return credentials;
