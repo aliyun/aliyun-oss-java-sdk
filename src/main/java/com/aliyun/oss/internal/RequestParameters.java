@@ -65,6 +65,14 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_REQUEST_PAYMENT = "requestPayment";
     public static final String SUBRESOURCE_QOS_INFO = "qosInfo";
     public static final String SUBRESOURCE_ASYNC_FETCH = "asyncFetch";
+    public static final String SUBRESOURCE_INVENTORY = "inventory";
+    public static final String SUBRESOURCE_INVENTORY_ID = "inventoryId";
+    public static final String SUBRESOURCE_CONTINUATION_TOKEN = "continuation-token";
+    public static final String SUBRESOURCE_WORM = "worm";
+    public static final String SUBRESOURCE_WORM_ID = "wormId";
+    public static final String SUBRESOURCE_WORM_EXTEND = "wormExtend";
+    public static final String SUBRESOURCE_CALLBACK = "callback";
+    public static final String SUBRESOURCE_CALLBACK_VAR = "callback-var";
 
     public static final String SUBRESOURCE_UDF = "udf";
     public static final String SUBRESOURCE_UDF_NAME = "udfName";
@@ -126,4 +134,9 @@ public final class RequestParameters {
 
     public static final String VPCIP = "vpcip";
     public static final String VIP = "vip";
+
+    /* listObjectsV2 params */
+    public static final String LIST_TYPE = "list-type";
+    public static final String START_AFTER = "start-after";
+    public static final String FETCH_OWNER = "fetch-owner";
 }

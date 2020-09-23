@@ -43,6 +43,9 @@ import static com.aliyun.oss.common.parser.RequestMarshallers.createVpcipRequest
 import static com.aliyun.oss.common.parser.RequestMarshallers.deleteVpcipRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.createBucketVpcipRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.deleteBucketVpcipRequestMarshaller;
+import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketInventoryRequestMarshaller;
+import static com.aliyun.oss.common.parser.RequestMarshallers.extendBucketWormRequestMarshaller;
+import static com.aliyun.oss.common.parser.RequestMarshallers.initiateBucketWormRequestMarshaller;
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
@@ -65,6 +68,7 @@ import static com.aliyun.oss.internal.ResponseParsers.getBucketQosResponseParser
 import static com.aliyun.oss.internal.ResponseParsers.getBucketVersioningResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.listBucketResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.listObjectsReponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.listObjectsV2ResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.listVersionsReponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketImageResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getImageStyleResponseParser;
@@ -80,6 +84,10 @@ import static com.aliyun.oss.internal.ResponseParsers.setAsyncFetchTaskResponseP
 import static com.aliyun.oss.internal.ResponseParsers.createVpcipResultResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.listVpcipResultResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.listVpcPolicyResultResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getBucketInventoryConfigurationParser;
+import static com.aliyun.oss.internal.ResponseParsers.listBucketInventoryConfigurationsParser;
+import static com.aliyun.oss.internal.ResponseParsers.initiateBucketWormResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getBucketWormResponseParser;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -124,6 +132,8 @@ import com.aliyun.oss.model.GetBucketImageResult;
 import com.aliyun.oss.model.GetBucketReplicationProgressRequest;
 import com.aliyun.oss.model.GetBucketRequestPaymentResult;
 import com.aliyun.oss.model.ImageProcess;
+import com.aliyun.oss.model.ListObjectsV2Request;
+import com.aliyun.oss.model.ListObjectsV2Result;
 import com.aliyun.oss.model.ReplicationRule;
 import com.aliyun.oss.model.ServerSideEncryptionConfiguration;
 import com.aliyun.oss.model.SetBucketEncryptionRequest;
@@ -169,6 +179,17 @@ import com.aliyun.oss.model.DeleteBucketVpcipRequest;
 import com.aliyun.oss.model.DeleteVpcipRequest;
 import com.aliyun.oss.model.VpcPolicy;
 import com.aliyun.oss.model.Vpcip;
+import com.aliyun.oss.model.SetBucketInventoryConfigurationRequest;
+import com.aliyun.oss.model.GetBucketInventoryConfigurationRequest;
+import com.aliyun.oss.model.GetBucketInventoryConfigurationResult;
+import com.aliyun.oss.model.ListBucketInventoryConfigurationsRequest;
+import com.aliyun.oss.model.ListBucketInventoryConfigurationsResult;
+import com.aliyun.oss.model.DeleteBucketInventoryConfigurationRequest;
+import com.aliyun.oss.model.ExtendBucketWormRequest;
+import com.aliyun.oss.model.GetBucketWormResult;
+import com.aliyun.oss.model.CompleteBucketWormRequest;
+import com.aliyun.oss.model.InitiateBucketWormRequest;
+import com.aliyun.oss.model.InitiateBucketWormResult;
 
 /**
  * Bucket operation.
@@ -450,7 +471,31 @@ public class OSSBucketOperation extends OSSOperation {
 
         return doOperation(request, listObjectsReponseParser, bucketName, null, true);
     }
-    
+
+    /**
+     * List objects under the specified bucket.
+     */
+    public ListObjectsV2Result listObjectsV2(ListObjectsV2Request listObjectsV2Request) throws OSSException, ClientException {
+
+        assertParameterNotNull(listObjectsV2Request, "listObjectsRequest");
+
+        String bucketName = listObjectsV2Request.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new LinkedHashMap<String, String>();
+        populateListObjectsV2RequestParameters(listObjectsV2Request, params);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        populateRequestPayerHeader(headers, listObjectsV2Request.getRequestPayer());
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setHeaders(headers).setParameters(params)
+                .setOriginalRequest(listObjectsV2Request).build();
+
+        return doOperation(request, listObjectsV2ResponseParser, bucketName, null, true);
+    }
+
     /**
      * List versions under the specified bucket.
      */
@@ -1648,6 +1693,197 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, listVpcPolicyResultResponseParser, bucketName, null,true);
     }
 
+    public void setBucketInventoryConfiguration(SetBucketInventoryConfigurationRequest
+            setBucketInventoryConfigurationRequest) throws OSSException, ClientException {
+        assertParameterNotNull(setBucketInventoryConfigurationRequest, "SetBucketInventoryConfigurationRequest");
+        String bucketName = setBucketInventoryConfigurationRequest.getBucketName();
+        String inventoryId = setBucketInventoryConfigurationRequest.getInventoryConfiguration().getInventoryId();
+        assertParameterNotNull(inventoryId, "inventory configuration id");
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        byte[] rawContent = setBucketInventoryRequestMarshaller.marshall(
+                setBucketInventoryConfigurationRequest.getInventoryConfiguration());
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_INVENTORY, null);
+        params.put(SUBRESOURCE_INVENTORY_ID, inventoryId);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        addRequestRequiredHeaders(headers, rawContent);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params).setHeaders(headers)
+                .setOriginalRequest(setBucketInventoryConfigurationRequest)
+                .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+                .build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    public GetBucketInventoryConfigurationResult getBucketInventoryConfiguration(GetBucketInventoryConfigurationRequest
+            getBucketInventoryConfigurationRequest) throws OSSException, ClientException {
+        assertParameterNotNull(getBucketInventoryConfigurationRequest, "getBucketInventoryConfigurationRequest");
+        String bucketName = getBucketInventoryConfigurationRequest.getBucketName();
+        String inventoryId = getBucketInventoryConfigurationRequest.getInventoryId();
+        assertParameterNotNull(inventoryId, "inventory configuration id");
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_INVENTORY, null);
+        params.put(SUBRESOURCE_INVENTORY_ID, inventoryId);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(getBucketInventoryConfigurationRequest)
+                .build();
+
+        return doOperation(request, getBucketInventoryConfigurationParser, bucketName, null, true);
+    }
+
+    public ListBucketInventoryConfigurationsResult listBucketInventoryConfigurations(ListBucketInventoryConfigurationsRequest
+            listBucketInventoryConfigurationsRequest) throws OSSException, ClientException {
+        assertParameterNotNull(listBucketInventoryConfigurationsRequest, "listBucketInventoryConfigurationsRequest");
+        String bucketName = listBucketInventoryConfigurationsRequest.getBucketName();
+        String continuationToken = listBucketInventoryConfigurationsRequest.getContinuationToken();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_INVENTORY, null);
+        if (continuationToken != null && !continuationToken.isEmpty()) {
+            params.put(SUBRESOURCE_CONTINUATION_TOKEN, continuationToken);
+        }
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(listBucketInventoryConfigurationsRequest)
+                .build();
+
+        return doOperation(request, listBucketInventoryConfigurationsParser, bucketName, null, true);
+    }
+
+    public void deleteBucketInventoryConfiguration(DeleteBucketInventoryConfigurationRequest
+            deleteBucketInventoryConfigurationRequest) throws OSSException, ClientException {
+        assertParameterNotNull(deleteBucketInventoryConfigurationRequest, "deleteBucketInventoryConfigurationRequest");
+        String bucketName = deleteBucketInventoryConfigurationRequest.getBucketName();
+        String inventoryId = deleteBucketInventoryConfigurationRequest.getInventoryId();
+        assertParameterNotNull(inventoryId, "id");
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_INVENTORY, null);
+        params.put(SUBRESOURCE_INVENTORY_ID, inventoryId);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(deleteBucketInventoryConfigurationRequest).build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    public InitiateBucketWormResult initiateBucketWorm(InitiateBucketWormRequest initiateBucketWormRequest) throws OSSException, ClientException {
+        assertParameterNotNull(initiateBucketWormRequest, "initiateBucketWormRequest");
+        String bucketName = initiateBucketWormRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_WORM, null);
+
+        byte[] rawContent = initiateBucketWormRequestMarshaller.marshall(initiateBucketWormRequest);
+        Map<String, String> headers = new HashMap<String, String>();
+        addRequestRequiredHeaders(headers, rawContent);
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.POST).setBucket(bucketName).setParameters(params).setHeaders(headers)
+                .setOriginalRequest(initiateBucketWormRequest)
+                .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+                .build();
+
+
+        return doOperation(request, initiateBucketWormResponseParser, bucketName, null);
+    }
+
+    public void abortBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_WORM, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest)
+                .build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    public void completeBucketWorm(CompleteBucketWormRequest completeBucketWormRequest) throws OSSException, ClientException {
+        assertParameterNotNull(completeBucketWormRequest, "completeBucketWormRequest");
+        String bucketName = completeBucketWormRequest.getBucketName();
+        String wormId = completeBucketWormRequest.getWormId();
+        assertParameterNotNull(wormId, "wormId");
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_WORM_ID, wormId);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.POST).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(completeBucketWormRequest)
+                .setInputSize(0).setInputStream(new ByteArrayInputStream(new byte[0]))
+                .build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    public void extendBucketWorm(ExtendBucketWormRequest extendBucketWormRequest) throws OSSException, ClientException {
+        assertParameterNotNull(extendBucketWormRequest, "extendBucketWormRequest");
+        String bucketName = extendBucketWormRequest.getBucketName();
+        String wormId = extendBucketWormRequest.getWormId();
+        assertParameterNotNull(wormId, "wormId");
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_WORM_ID, wormId);
+        params.put(SUBRESOURCE_WORM_EXTEND, null);
+
+        byte[] rawContent = extendBucketWormRequestMarshaller.marshall(extendBucketWormRequest);
+        Map<String, String> headers = new HashMap<String, String>();
+        addRequestRequiredHeaders(headers, rawContent);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.POST).setBucket(bucketName).setParameters(params).setHeaders(headers)
+                .setOriginalRequest(extendBucketWormRequest)
+                .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+                .build();
+
+        doOperation(request, emptyResponseParser, bucketName, null);
+    }
+
+    public GetBucketWormResult getBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_WORM, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest)
+                .build();
+
+        return doOperation(request, getBucketWormResponseParser, bucketName, null, true);
+    }
+
     private static void populateListObjectsRequestParameters(ListObjectsRequest listObjectsRequest,
             Map<String, String> params) {
 
@@ -1671,6 +1907,42 @@ public class OSSBucketOperation extends OSSOperation {
             params.put(ENCODING_TYPE, listObjectsRequest.getEncodingType());
         }
     }
+
+    private static void populateListObjectsV2RequestParameters(ListObjectsV2Request listObjectsV2Request,
+            Map<String, String> params) {
+
+        params.put(LIST_TYPE, "2");
+
+        if (listObjectsV2Request.getPrefix() != null) {
+            params.put(PREFIX, listObjectsV2Request.getPrefix());
+        }
+
+        if (listObjectsV2Request.getDelimiter() != null) {
+            params.put(DELIMITER, listObjectsV2Request.getDelimiter());
+        }
+
+        if (listObjectsV2Request.getMaxKeys() != null) {
+            params.put(MAX_KEYS, Integer.toString(listObjectsV2Request.getMaxKeys()));
+        }
+
+        if (listObjectsV2Request.getEncodingType() != null) {
+            params.put(ENCODING_TYPE, listObjectsV2Request.getEncodingType());
+        }
+
+        if (listObjectsV2Request.getStartAfter() != null) {
+            params.put(START_AFTER, listObjectsV2Request.getStartAfter());
+        }
+
+        if (listObjectsV2Request.isFetchOwner()) {
+            params.put(FETCH_OWNER, Boolean.toString(listObjectsV2Request.isFetchOwner()));
+        }
+
+        if (listObjectsV2Request.getContinuationToken() != null) {
+            params.put(SUBRESOURCE_CONTINUATION_TOKEN, listObjectsV2Request.getContinuationToken());
+        }
+
+    }
+
 
     private static void populateListVersionsRequestParameters(ListVersionsRequest listVersionsRequest,
         Map<String, String> params) {

@@ -53,6 +53,7 @@ import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.internal.*;
 import com.aliyun.oss.model.*;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
+import com.aliyun.oss.model.InventoryConfiguration;
 
 /**
  * The entry point class of OSS that implements the OSS interface.
@@ -76,6 +77,26 @@ public class OSSClient implements OSS {
     private OSSUploadOperation uploadOperation;
     private OSSDownloadOperation downloadOperation;
     private LiveChannelOperation liveChannelOperation;
+
+    /**Gets the inner multipartOperation, used for subclass to do implement opreation.*/
+    public OSSMultipartOperation getMultipartOperation() {
+        return multipartOperation;
+    }
+
+    /**Gets the inner objectOperation, used for subclass to do implement opreation.*/
+    public OSSObjectOperation getObjectOperation() {
+        return objectOperation;
+    }
+
+    /**Sets the inner downloadOperation.*/
+    public void setDownloadOperation(OSSDownloadOperation downloadOperation) {
+        this.downloadOperation = downloadOperation;
+    }
+
+    /**Sets the inner uploadOperation.*/
+    public void setUploadOperation(OSSUploadOperation uploadOperation) {
+        this.uploadOperation = uploadOperation;
+    }
 
     /**
      * Uses the default OSS Endpoint(http://oss-cn-hangzhou.aliyuncs.com) and
@@ -223,6 +244,8 @@ public class OSSClient implements OSS {
     public synchronized void setEndpoint(String endpoint) {
         URI uri = toURI(endpoint);
         this.endpoint = uri;
+
+        OSSUtils.ensureEndpointValid(uri.getHost());
 
         if (isIpOrLocalhost(uri)) {
             serviceClient.getClientConfiguration().setSLDEnabled(true);
@@ -439,8 +462,31 @@ public class OSSClient implements OSS {
     public ObjectListing listObjects(ListObjectsRequest listObjectsRequest) throws OSSException, ClientException {
         return bucketOperation.listObjects(listObjectsRequest);
     }
-    
-	@Override
+
+    @Override
+    public ListObjectsV2Result listObjectsV2(ListObjectsV2Request listObjectsV2Request) throws OSSException, ClientException {
+        return bucketOperation.listObjectsV2(listObjectsV2Request);
+    }
+
+    @Override
+    public ListObjectsV2Result listObjectsV2(String bucketName) throws OSSException, ClientException {
+        return bucketOperation.listObjectsV2(new ListObjectsV2Request(bucketName));
+    }
+
+    @Override
+    public ListObjectsV2Result listObjectsV2(String bucketName, String prefix) throws OSSException, ClientException {
+        return bucketOperation.listObjectsV2(new ListObjectsV2Request(bucketName, prefix));
+    }
+
+    @Override
+    public ListObjectsV2Result listObjectsV2(String bucketName, String prefix, String continuationToken,
+                                String startAfter, String delimiter, Integer maxKeys,
+                                String encodingType, boolean fetchOwner) throws OSSException, ClientException {
+        return bucketOperation.listObjectsV2(new ListObjectsV2Request(bucketName, prefix, continuationToken, startAfter,
+                delimiter, maxKeys, encodingType, fetchOwner));
+    }
+
+    @Override
 	public VersionListing listVersions(String bucketName, String prefix) throws OSSException, ClientException {
         return listVersions(new ListVersionsRequest(bucketName, prefix, null, null, null, null));
 	}
@@ -713,6 +759,18 @@ public class OSSClient implements OSS {
     }
     
     @Override
+    public RestoreObjectResult restoreObject(String bucketName, String key, RestoreConfiguration restoreConfiguration)
+            throws OSSException, ClientException {
+        return this.restoreObject(new RestoreObjectRequest(bucketName, key, restoreConfiguration));
+    }
+
+    @Override
+    public RestoreObjectResult restoreObject(RestoreObjectRequest restoreObjectRequest)
+            throws OSSException, ClientException {
+        return objectOperation.restoreObject(restoreObjectRequest);
+    }
+
+    @Override
     public void setObjectTagging(String bucketName, String key, Map<String, String> tags)
         throws OSSException, ClientException {
         this.setObjectTagging(new SetObjectTaggingRequest(bucketName, key, tags));
@@ -841,7 +899,12 @@ public class OSSClient implements OSS {
 
     @Override
     public List<CORSRule> getBucketCORSRules(GenericRequest genericRequest) throws OSSException, ClientException {
-        return corsOperation.getBucketCORSRules(genericRequest);
+        return this.getBucketCORS(genericRequest).getCorsRules();
+    }
+
+    @Override
+    public CORSConfiguration getBucketCORS(GenericRequest genericRequest) throws OSSException, ClientException {
+        return corsOperation.getBucketCORS(genericRequest);
     }
 
     @Override
@@ -1525,6 +1588,111 @@ public class OSSClient implements OSS {
     @Override
     public List<VpcPolicy> getBucketVpcip(GenericRequest genericRequest) throws OSSException, ClientException {
         return bucketOperation.getBucketVpcip(genericRequest);
+    }
+
+    @Override
+    public void setBucketInventoryConfiguration(String bucketName, InventoryConfiguration inventoryConfiguration)
+            throws OSSException, ClientException {
+        this.setBucketInventoryConfiguration(new SetBucketInventoryConfigurationRequest(bucketName, inventoryConfiguration));
+    }
+
+    @Override
+    public void setBucketInventoryConfiguration(SetBucketInventoryConfigurationRequest
+            setBucketInventoryConfigurationRequest) throws OSSException, ClientException {
+        this.bucketOperation.setBucketInventoryConfiguration(setBucketInventoryConfigurationRequest);
+    }
+
+    @Override
+    public GetBucketInventoryConfigurationResult getBucketInventoryConfiguration(String bucketName, String inventoryId)
+            throws OSSException, ClientException {
+        return this.getBucketInventoryConfiguration(new GetBucketInventoryConfigurationRequest(bucketName, inventoryId));
+    }
+
+    @Override
+    public GetBucketInventoryConfigurationResult getBucketInventoryConfiguration(GetBucketInventoryConfigurationRequest
+            getBucketInventoryConfigurationRequest) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketInventoryConfiguration(getBucketInventoryConfigurationRequest);
+    }
+
+    @Override
+    public ListBucketInventoryConfigurationsResult listBucketInventoryConfigurations(String bucketName)
+            throws OSSException, ClientException{
+        return this.listBucketInventoryConfigurations(new ListBucketInventoryConfigurationsRequest(bucketName));
+    }
+
+    @Override
+    public ListBucketInventoryConfigurationsResult listBucketInventoryConfigurations(
+            String bucketName, String continuationToken) throws OSSException, ClientException {
+        return this.listBucketInventoryConfigurations(new ListBucketInventoryConfigurationsRequest(
+                bucketName, continuationToken));
+    }
+
+    @Override
+    public ListBucketInventoryConfigurationsResult listBucketInventoryConfigurations(ListBucketInventoryConfigurationsRequest
+            listBucketInventoryConfigurationsRequest) throws OSSException, ClientException {
+        return this.bucketOperation.listBucketInventoryConfigurations(listBucketInventoryConfigurationsRequest);
+    }
+
+    @Override
+    public void deleteBucketInventoryConfiguration(String bucketName, String inventoryId) throws OSSException, ClientException {
+        this.deleteBucketInventoryConfiguration(new DeleteBucketInventoryConfigurationRequest(bucketName, inventoryId));
+    }
+
+    @Override
+    public void deleteBucketInventoryConfiguration(
+            DeleteBucketInventoryConfigurationRequest deleteBucketInventoryConfigurationRequest)
+            throws OSSException, ClientException {
+        this.bucketOperation.deleteBucketInventoryConfiguration(deleteBucketInventoryConfigurationRequest);
+    }
+
+    @Override
+    public InitiateBucketWormResult initiateBucketWorm(InitiateBucketWormRequest initiateBucketWormRequest) throws OSSException, ClientException {
+        return this.bucketOperation.initiateBucketWorm(initiateBucketWormRequest);
+    }
+
+    @Override
+    public InitiateBucketWormResult initiateBucketWorm(String bucketName, int retentionPeriodInDays) throws OSSException, ClientException {
+        return this.initiateBucketWorm(new InitiateBucketWormRequest(bucketName, retentionPeriodInDays));
+    }
+
+    @Override
+    public void abortBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException {
+        this.bucketOperation.abortBucketWorm(genericRequest);
+    }
+
+    @Override
+    public void abortBucketWorm(String bucketName) throws OSSException, ClientException {
+        this.abortBucketWorm(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public void completeBucketWorm(CompleteBucketWormRequest completeBucketWormRequest) throws OSSException, ClientException {
+        this.bucketOperation.completeBucketWorm(completeBucketWormRequest);
+    }
+
+    @Override
+    public void completeBucketWorm(String bucketName, String wormId) throws OSSException, ClientException {
+        this.completeBucketWorm(new CompleteBucketWormRequest(bucketName, wormId));
+    }
+
+    @Override
+    public void extendBucketWorm(ExtendBucketWormRequest extendBucketWormRequest) throws OSSException, ClientException {
+        this.bucketOperation.extendBucketWorm(extendBucketWormRequest);
+    }
+
+    @Override
+    public void extendBucketWorm(String bucketName, String wormId, int retentionPeriodInDays) throws OSSException, ClientException {
+        this.extendBucketWorm(new ExtendBucketWormRequest(bucketName, wormId, retentionPeriodInDays));
+    }
+
+    @Override
+    public GetBucketWormResult getBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketWorm(genericRequest);
+    }
+
+    @Override
+    public GetBucketWormResult getBucketWorm(String bucketName) throws OSSException, ClientException {
+        return this.getBucketWorm(new GenericRequest(bucketName));
     }
 
     @Override

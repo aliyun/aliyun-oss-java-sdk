@@ -20,6 +20,7 @@
 package com.aliyun.oss.common.model;
 
 import com.aliyun.oss.model.*;
+import junit.framework.Assert;
 import org.junit.Test;
 
 import java.util.*;
@@ -308,7 +309,54 @@ public class BucketRelatedTest {
         } catch (Exception e) {
             assertTrue(true);
         }
-	
+
+        try {
+            SetBucketCORSRequest corsRequest = new SetBucketCORSRequest("bucketName");
+            CORSRule corsRule = new CORSRule();
+            corsRule.addAllowdOrigin("*");
+            corsRule.addAllowedMethod("GET");
+            corsRule.addAllowedHeader("**");
+            corsRequest.addCorsRule(corsRule);
+            Assert.fail("no more than one '*' allowed, should be failed here.");
+        } catch (IllegalArgumentException e) {
+        }
+
+        try {
+            SetBucketCORSRequest corsRequest = new SetBucketCORSRequest("bucketName");
+            CORSRule corsRule = new CORSRule();
+            corsRule.addAllowedMethod("GET");
+            corsRule.addAllowedHeader("*");
+            corsRule.setAllowedOrigins(new ArrayList<String>(Arrays.asList("*", "", null)));
+            corsRequest.addCorsRule(corsRule);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        try {
+            SetBucketCORSRequest corsRequest = new SetBucketCORSRequest("bucketName");
+            CORSRule corsRule = new CORSRule();
+            corsRule.setAllowedMethods(new ArrayList<String>(Arrays.asList("GET", "")));
+            corsRule.addAllowedHeader("*");
+            corsRule.setAllowedOrigins(new ArrayList<String>(Arrays.asList("*")));
+            corsRequest.addCorsRule(corsRule);
+            Assert.fail("not allowed method, should be failed here.");
+        } catch (IllegalArgumentException e) {
+            // expected exception.
+        }
+
+        try {
+            SetBucketCORSRequest corsRequest = new SetBucketCORSRequest("bucketName");
+            CORSRule corsRule = new CORSRule();
+            corsRule.setAllowedMethods(new ArrayList<String>(Arrays.asList("GET", null)));
+            corsRule.addAllowedHeader("*");
+            corsRule.setAllowedOrigins(new ArrayList<String>(Arrays.asList("*")));
+            corsRequest.addCorsRule(corsRule);
+            Assert.fail("not allowed method, should be failed here.");
+        } catch (IllegalArgumentException e) {
+            // expected exception.
+        }
+
     }
 
     @Test
@@ -517,6 +565,39 @@ public class BucketRelatedTest {
         }
 
         try {
+            List<LifecycleRule> lifecycleRules = new ArrayList<LifecycleRule>();
+            for (int i = 0; i < 3; i++)
+                lifecycleRules.add(new LifecycleRule());
+            request.setLifecycleRules(lifecycleRules);
+            Assert.assertEquals(3, request.getLifecycleRules().size());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        try {
+            Date date = new Date();
+            LifecycleRule.AbortMultipartUpload abortMultipartUpload = new LifecycleRule.AbortMultipartUpload(date);
+            LifecycleRule rule = new LifecycleRule("id", "prefix", LifecycleRule.RuleStatus.Unknown,
+                    10, abortMultipartUpload);
+            request.AddLifecycleRule(rule);
+            assertTrue(false);
+        } catch (IllegalArgumentException e) {
+            assertTrue(true);
+        }
+
+        try {
+            LifecycleRule.NoncurrentVersionExpiration expiration = new LifecycleRule.NoncurrentVersionExpiration();
+            expiration.setNoncurrentDays(1);
+            LifecycleRule rule = new LifecycleRule("id", "prefix", LifecycleRule.RuleStatus.Enabled);
+            rule.setNoncurrentVersionExpiration(expiration);
+            request.AddLifecycleRule(rule);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        try {
             request.AddLifecycleRule(null);
             assertTrue(false);
         } catch (Exception e) {
@@ -623,21 +704,21 @@ public class BucketRelatedTest {
         try {
             condition.setHttpErrorCodeReturnedEquals(-1);
             assertTrue(false);
-        }catch (Exception e) {
+        } catch (Exception e) {
             assertEquals(codeReturned, condition.getHttpErrorCodeReturnedEquals());
         }
 
         try {
             RoutingRule.RedirectType.parse("UN");
             assertTrue(false);
-        }catch (Exception e) {
+        } catch (Exception e) {
             assertTrue(true);
         }
 
         try {
             RoutingRule.Protocol.parse("UN");
             assertTrue(false);
-        }catch (Exception e) {
+        } catch (Exception e) {
             assertTrue(true);
         }
 
@@ -650,80 +731,80 @@ public class BucketRelatedTest {
         try {
             redirect.setHttpRedirectCode(200);
             assertTrue(false);
-        }catch (Exception e) {
+        } catch (Exception e) {
             assertEquals(httpRedirectCode, redirect.getHttpRedirectCode());
         }
 
         try {
             redirect.setHttpRedirectCode(400);
             assertTrue(false);
-        }catch (Exception e) {
+        } catch (Exception e) {
             assertEquals(httpRedirectCode, redirect.getHttpRedirectCode());
         }
 
         redirect = new RoutingRule.Redirect();
         try {
             redirect.ensureRedirectValid();
-        }catch (Exception e) {}
+        } catch (Exception e) {}
 
         redirect.setHostName("hostname");
         try {
             redirect.ensureRedirectValid();
-        }catch (Exception e) {}
+        } catch (Exception e) {}
         redirect.setProtocol(RoutingRule.Protocol.Https);
         try {
             redirect.ensureRedirectValid();
-        }catch (Exception e) {}
+        } catch (Exception e) {}
         redirect.setReplaceKeyWith("key");
         try {
             redirect.ensureRedirectValid();
-        }catch (Exception e) {}
+        } catch (Exception e) {}
         redirect.setReplaceKeyPrefixWith("prefix");
         try {
             redirect.ensureRedirectValid();
-        }catch (Exception e) {}
+        } catch (Exception e) {}
         redirect.setHttpRedirectCode(303);
         try {
             redirect.ensureRedirectValid();
-        }catch (Exception e) {}
+        } catch (Exception e) {}
         redirect.setMirrorURL("url");
         try {
             redirect.ensureRedirectValid();
-        }catch (Exception e) {}
+        } catch (Exception e) {}
 
         redirect.setRedirectType(RoutingRule.RedirectType.External);
         try {
             redirect.ensureRedirectValid();
-        }catch (Exception e) {}
+        } catch (Exception e) {}
 
         redirect.setMirrorURL(null);
         try {
             redirect.ensureRedirectValid();
-        }catch (Exception e) {}
+        } catch (Exception e) {}
 
         redirect.setRedirectType(RoutingRule.RedirectType.Mirror);
         redirect.setMirrorURL(null);
         try {
             redirect.ensureRedirectValid();
-        }catch (Exception e) {}
+        } catch (Exception e) {}
 
         redirect.setRedirectType(RoutingRule.RedirectType.Mirror);
         redirect.setMirrorURL("url");
         try {
             redirect.ensureRedirectValid();
-        }catch (Exception e) {}
+        } catch (Exception e) {}
 
         redirect.setRedirectType(RoutingRule.RedirectType.Mirror);
         redirect.setMirrorURL("http://adbcd");
         try {
             redirect.ensureRedirectValid();
-        }catch (Exception e) {}
+        } catch (Exception e) {}
 
         redirect.setRedirectType(RoutingRule.RedirectType.Mirror);
         redirect.setMirrorURL("http://adbcd/");
         try {
             redirect.ensureRedirectValid();
-        }catch (Exception e) {}
+        } catch (Exception e) {}
 
 
         RoutingRule rule = new RoutingRule();
@@ -731,12 +812,78 @@ public class BucketRelatedTest {
         rule.setNumber(null);
         try {
             rule.ensureRoutingRuleValid();
-        }catch (Exception e) {}
+        } catch (Exception e) {}
 
         rule.setNumber(new Integer(-1));
         try {
             rule.ensureRoutingRuleValid();
-        }catch (Exception e) {}
+        } catch (Exception e) {}
+    }
+
+    @Test
+    public void testRoutingRuleMoreEnsureBranch() {
+        try {
+            RoutingRule.Redirect redirect = new RoutingRule.Redirect();
+            redirect.setProtocol(RoutingRule.Protocol.Https);
+            redirect.ensureRedirectValid();
+        } catch (IllegalArgumentException e) {}
+
+        try {
+            RoutingRule.Redirect redirect = new RoutingRule.Redirect();
+            redirect.setReplaceKeyWith("key");
+            redirect.ensureRedirectValid();
+        }catch (IllegalArgumentException e) {}
+
+
+        try {
+            RoutingRule.Redirect redirect = new RoutingRule.Redirect();
+            redirect.setReplaceKeyPrefixWith("prefix");
+            redirect.ensureRedirectValid();
+        }catch (IllegalArgumentException e) {}
+
+
+
+        try {
+            RoutingRule.Redirect redirect = new RoutingRule.Redirect();
+            redirect.setMirrorURL("url");
+            redirect.ensureRedirectValid();
+        }catch (IllegalArgumentException e) {}
+
+
+        try {
+            RoutingRule.Redirect redirect = new RoutingRule.Redirect();
+            redirect.setHttpRedirectCode(303);
+            redirect.ensureRedirectValid();
+        }catch (IllegalArgumentException e) {}
+
+
+        try {
+            RoutingRule.Redirect redirect = new RoutingRule.Redirect();
+            redirect.setHostName("test-host");
+            redirect.setRedirectType(RoutingRule.RedirectType.Mirror);
+            redirect.ensureRedirectValid();
+        } catch (IllegalArgumentException e) {}
+
+        try {
+            RoutingRule.Redirect redirect = new RoutingRule.Redirect();
+            redirect.setHostName("test-host");
+            redirect.setRedirectType(RoutingRule.RedirectType.Mirror);
+            redirect.setMirrorURL("https://123");
+            redirect.ensureRedirectValid();
+            Assert.fail("should be failed here.");
+        } catch (IllegalArgumentException e) {}
+
+        try {
+            RoutingRule.Redirect redirect = new RoutingRule.Redirect();
+            redirect.setHostName("test-host");
+            redirect.setRedirectType(RoutingRule.RedirectType.Mirror);
+            redirect.setMirrorURL("https://123/");
+            redirect.ensureRedirectValid();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
     }
 
     @SuppressWarnings("deprecation")
@@ -861,6 +1008,33 @@ public class BucketRelatedTest {
 
         request = new SetBucketVersioningRequest("bucket", null).withVersioningConfiguration(configuration);
         assertEquals(configuration, request.getVersioningConfiguration());
+    }
+
+    @Test
+    public void testRevokeAllPermissions() {
+        AccessControlList accessControlList = new AccessControlList();
+        Assert.assertEquals(0, accessControlList.getGrants().size());
+
+        accessControlList.grantPermission(GroupGrantee.AllUsers, Permission.Read);
+        Assert.assertEquals(1, accessControlList.getGrants().size());
+
+        accessControlList.revokeAllPermissions(GroupGrantee.AllUsers);
+        Assert.assertEquals(0, accessControlList.getGrants().size());
+    }
+
+    @Test
+    public void testParseAsyncFetchTaskStateWrong() {
+        try {
+            AsyncFetchTaskState.parse("wrong-value");
+        } catch (IllegalArgumentException e) {
+            // expected exception.
+        }
+    }
+
+    @Test
+    public void testBucketConstruction() {
+        Bucket bucket = new Bucket("abc");
+        Assert.assertEquals("abc", bucket.getName());
     }
 
 }

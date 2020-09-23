@@ -83,7 +83,7 @@ public class ObjectVersionTest extends TestBase {
         super.setUp();
 
         bucketName = super.bucketName + "-object-version";
-        endpoint = "http://oss-ap-south-1.aliyuncs.com";
+        endpoint = TestConfig.OSS_TEST_ENDPOINT;
 
         //create client
         ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);
@@ -247,6 +247,8 @@ public class ObjectVersionTest extends TestBase {
             List<KeyVersion> keysTodel = new ArrayList<KeyVersion>();
             for (OSSVersionSummary ossVersion : versionListing.getVersionSummaries()) {
                 keysTodel.add(new KeyVersion(ossVersion.getKey(), ossVersion.getVersionId()));
+                Assert.assertNotNull(ossVersion.getOwner());
+                Assert.assertNotNull(ossVersion.getLastModified());
             }
 
             // Delete versions
@@ -278,7 +280,7 @@ public class ObjectVersionTest extends TestBase {
             ossClient.createSymlink(bucketName, link, target);
 
             OSSSymlink symlink = ossClient.getSymlink(bucketName, link);
-            Assert.assertEquals(64, symlink.getMetadata().getVersionId().length());
+            Assert.assertEquals(false, symlink.getMetadata().getVersionId().isEmpty());
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }

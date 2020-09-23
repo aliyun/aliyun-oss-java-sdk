@@ -89,6 +89,16 @@ public class ObjectMetadata {
     }
 
     /**
+     * Removes the http header (SDK internal usage only).
+     * 
+     * @param key
+     *            The key of header.
+     */
+    public void removeHeader(String key) {
+        metadata.remove(key);
+    }
+
+    /**
      * Adds a new custom metadata.
      * 
      * @param key
@@ -308,6 +318,25 @@ public class ObjectMetadata {
      */
     public void setServerSideEncryptionKeyId(String serverSideEncryptionKeyId) {
         metadata.put(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION_KEY_ID, serverSideEncryptionKeyId);
+    }
+
+    /**
+     * Sets the object's server side data encryption.
+     *
+     * @param serverSideDataEncryption
+     *            The server side data encryption.
+     */
+    public void setServerSideDataEncryption(String serverSideDataEncryption) {
+        metadata.put(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION, serverSideDataEncryption);
+    }
+
+    /**
+     * Gets the object's server side data encryption.
+     *
+     * @return The server side data encryption. Null means no data encryption.
+     */
+    public String getServerSideDataEncryption() {
+        return (String) metadata.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION);
     }
 
     /**

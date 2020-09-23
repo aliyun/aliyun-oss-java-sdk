@@ -28,7 +28,7 @@ import java.util.List;
  * deleted, the object(s) can only be restored if versioning was enabled when
  * the object(s) was deleted.
  * 
- * @see OSS#deleteVersions(DeleteVersionsRequest)
+ * @see com.aliyun.oss.OSS#deleteVersions(DeleteVersionsRequest)
  */
 public class DeleteVersionsRequest extends GenericRequest {
 	

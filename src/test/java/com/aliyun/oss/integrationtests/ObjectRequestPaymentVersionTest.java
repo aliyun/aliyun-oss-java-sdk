@@ -50,7 +50,7 @@ public class ObjectRequestPaymentVersionTest extends TestBase {
         super.setUp();
 
         bucketName = super.bucketName + "-request-payment-version";
-        endpoint = "http://oss-ap-south-1.aliyuncs.com";
+        endpoint = TestConfig.OSS_TEST_ENDPOINT;
 
         //create client
         ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);
@@ -140,10 +140,10 @@ public class ObjectRequestPaymentVersionTest extends TestBase {
             try {
                 genericRequest = new GenericRequest(bucketName, key); 
                 genericRequest.setVersionId(version1);
-                ossClient.doesObjectExist(genericRequest);
+                ossPayerClient.doesObjectExist(genericRequest);
                 Assert.fail("no such version , should not be successful");
             } catch(OSSException e) {
-                Assert.assertEquals(OSSErrorCode.NO_SUCH_VERSION, e.getErrorCode()); 
+                Assert.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, e.getErrorCode());
             }
         } catch (Exception e) {
             Assert.fail(e.getMessage());

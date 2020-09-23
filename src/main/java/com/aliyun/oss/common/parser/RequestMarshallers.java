@@ -31,8 +31,6 @@ import com.aliyun.oss.ClientException;
 import com.aliyun.oss.common.comm.io.FixedLengthInputStream;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.DateUtil;
-import com.aliyun.oss.common.utils.HttpUtil;
-import com.aliyun.oss.common.utils.StringUtils;
 import com.aliyun.oss.internal.RequestParameters;
 import com.aliyun.oss.model.*;
 import com.aliyun.oss.model.AddBucketReplicationRequest.ReplicationAction;
@@ -43,9 +41,6 @@ import com.aliyun.oss.model.LifecycleRule.StorageTransition;
 import com.aliyun.oss.model.LifecycleRule.NoncurrentVersionStorageTransition;
 import com.aliyun.oss.model.LifecycleRule.NoncurrentVersionExpiration;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
-import com.aliyun.oss.model.CreateBucketVpcipRequest;
-import com.aliyun.oss.model.CreateVpcipRequest;
-import com.aliyun.oss.model.DeleteVpcipRequest;
 
 /**
  * A collection of marshallers that marshall HTTP request into crossponding
@@ -86,6 +81,10 @@ public final class RequestMarshallers {
     public static final SetBucketRequestPaymentRequestMarshaller setBucketRequestPaymentRequestMarshaller = new SetBucketRequestPaymentRequestMarshaller();
     public static final SetBucketQosInfoRequestMarshaller setBucketQosInfoRequestMarshaller = new SetBucketQosInfoRequestMarshaller();
     public static final SetAsyncFetchTaskRequestMarshaller setAsyncFetchTaskRequestMarshaller = new SetAsyncFetchTaskRequestMarshaller();
+    public static final SetBucketInventoryRequestMarshaller setBucketInventoryRequestMarshaller = new SetBucketInventoryRequestMarshaller();
+    public static final RestoreObjectRequestMarshaller restoreObjectRequestMarshaller = new RestoreObjectRequestMarshaller();
+    public static final ExtendBucketWormRequestMarshaller extendBucketWormRequestMarshaller = new ExtendBucketWormRequestMarshaller();
+    public static final InitiateBucketWormRequestMarshaller initiateBucketWormRequestMarshaller = new InitiateBucketWormRequestMarshaller();
 
     public static final CreateSelectObjectMetadataRequestMarshaller createSelectObjectMetadataRequestMarshaller = new CreateSelectObjectMetadataRequestMarshaller();
     public static final SelectObjectRequestMarshaller selectObjectRequestMarshaller = new SelectObjectRequestMarshaller();
@@ -502,6 +501,9 @@ public final class RequestMarshallers {
                 }
 
                 xmlBody.append("</CORSRule>");
+            }
+            if (null != request.getResponseVary()) {
+                xmlBody.append("<ResponseVary>" + request.getResponseVary() + "</ResponseVary>");
             }
             xmlBody.append("</CORSConfiguration>");
             return stringMarshaller.marshall(xmlBody.toString());
@@ -937,6 +939,9 @@ public final class RequestMarshallers {
     		} else {
     			xmlBody.append("<KMSMasterKeyID></KMSMasterKeyID>");
     		}
+            if (sseByDefault.getKMSDataEncryption() != null) {
+                xmlBody.append("<KMSDataEncryption>" + sseByDefault.getKMSDataEncryption() + "</KMSDataEncryption>");
+            }
 
     		xmlBody.append("</ApplyServerSideEncryptionByDefault>");
     		xmlBody.append("</ServerSideEncryptionRule>");
@@ -1116,6 +1121,136 @@ public final class RequestMarshallers {
             return rawData;
         }
 
+    }
+
+
+    public static final class SetBucketInventoryRequestMarshaller implements
+            RequestMarshaller2<InventoryConfiguration> {
+        @Override
+        public byte[] marshall(InventoryConfiguration config) {
+            StringBuffer xmlBody = new StringBuffer();
+
+            xmlBody.append("<InventoryConfiguration>");
+            if (config.getInventoryId() != null) {
+                xmlBody.append("<Id>" + config.getInventoryId() + "</Id>");
+            }
+
+            if(config.isEnabled() != null) {
+                xmlBody.append("<IsEnabled>" + config.isEnabled() + "</IsEnabled>");
+            }
+
+            if (config.getIncludedObjectVersions() != null) {
+                xmlBody.append("<IncludedObjectVersions>" + config.getIncludedObjectVersions() + "</IncludedObjectVersions>");
+            }
+
+            if (config.getInventoryFilter() != null) {
+                if (config.getInventoryFilter().getPrefix() != null) {
+                    xmlBody.append("<Filter>");
+                    xmlBody.append("<Prefix>" +config.getInventoryFilter().getPrefix() + "</Prefix>");
+                    xmlBody.append("</Filter>");
+                }
+            }
+
+            if (config.getSchedule() != null) {
+                xmlBody.append("<Schedule>");
+                xmlBody.append("<Frequency>" + config.getSchedule().getFrequency() + "</Frequency>");
+                xmlBody.append("</Schedule>");
+            }
+
+            List<String> fields = config.getOptionalFields();
+            if (fields != null && !fields.isEmpty()) {
+                xmlBody.append("<OptionalFields>");
+                for (String field : fields) {
+                    xmlBody.append("<Field>" + field + "</Field>");
+                }
+                xmlBody.append("</OptionalFields>");
+            }
+
+            InventoryDestination destination = config.getDestination();
+            if (destination != null) {
+                InventoryOSSBucketDestination bucketDestination = destination.getOssBucketDestination();
+                if (bucketDestination != null) {
+                    xmlBody.append("<Destination>");
+                    xmlBody.append("<OSSBucketDestination>");
+                    if (bucketDestination.getAccountId() != null) {
+                        xmlBody.append("<AccountId>" + bucketDestination.getAccountId() + "</AccountId>");
+                    }
+                    if (bucketDestination.getRoleArn() != null) {
+                        xmlBody.append("<RoleArn>" + bucketDestination.getRoleArn()+ "</RoleArn>");
+                    }
+                    if (bucketDestination.getBucket() != null) {
+                        xmlBody.append("<Bucket>" + "acs:oss:::" + bucketDestination.getBucket()+ "</Bucket>");
+                    }
+                    if (bucketDestination.getPrefix() != null) {
+                        xmlBody.append("<Prefix>" + bucketDestination.getPrefix() + "</Prefix>");
+                    }
+                    if (bucketDestination.getFormat() != null) {
+                        xmlBody.append("<Format>" + bucketDestination.getFormat()+ "</Format>");
+                    }
+                    if (bucketDestination.getEncryption() != null) {
+                        xmlBody.append("<Encryption>");
+                        if (bucketDestination.getEncryption().getServerSideKmsEncryption() != null) {
+                            xmlBody.append("<SSE-KMS>");
+                            xmlBody.append("<KeyId>" + bucketDestination.getEncryption()
+                                    .getServerSideKmsEncryption().getKeyId() + "</KeyId>");
+                            xmlBody.append("</SSE-KMS>");
+                        } else if (bucketDestination.getEncryption().getServerSideOssEncryption() != null) {
+                            xmlBody.append("<SSE-OSS></SSE-OSS>");
+                        }
+                        xmlBody.append("</Encryption>");
+                    }
+                    xmlBody.append("</OSSBucketDestination>");
+                    xmlBody.append("</Destination>");
+                }
+            }
+            xmlBody.append("</InventoryConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+    }
+
+    public static final class InitiateBucketWormRequestMarshaller implements
+            RequestMarshaller2<InitiateBucketWormRequest> {
+        @Override
+        public byte[] marshall(InitiateBucketWormRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+
+            xmlBody.append("<InitiateWormConfiguration>");
+            xmlBody.append("<RetentionPeriodInDays>" + request.getRetentionPeriodInDays() + "</RetentionPeriodInDays>");
+            xmlBody.append("</InitiateWormConfiguration>");
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+    }
+
+    public static final class ExtendBucketWormRequestMarshaller implements
+            RequestMarshaller2<ExtendBucketWormRequest> {
+        @Override
+        public byte[] marshall(ExtendBucketWormRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+
+            xmlBody.append("<ExtendWormConfiguration>");
+            xmlBody.append("<RetentionPeriodInDays>" + request.getRetentionPeriodInDays()+ "</RetentionPeriodInDays>");
+            xmlBody.append("</ExtendWormConfiguration>");
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
     }
 
     public static final class CreateUdfRequestMarshaller implements RequestMarshaller2<CreateUdfRequest> {
@@ -1337,6 +1472,37 @@ public final class RequestMarshallers {
         }
 
     }
+
+
+    public static final class RestoreObjectRequestMarshaller implements RequestMarshaller2<RestoreObjectRequest> {
+
+        @Override
+        public byte[] marshall(RestoreObjectRequest request) {
+            StringBuffer body = new StringBuffer();
+
+            body.append("<RestoreRequest>");
+            body.append("<Days>" + request.getRestoreConfiguration().getDays() + "</Days>");
+            if (request.getRestoreConfiguration().getRestoreJobParameters() != null) {
+                body.append("<JobParameters>");
+                RestoreJobParameters jobParameters = request.getRestoreConfiguration().getRestoreJobParameters();
+                if (jobParameters.getRestoreTier() != null) {
+                    body.append("<Tier>" + jobParameters.getRestoreTier() + "</Tier>");
+                }
+                body.append("</JobParameters>");
+            }
+            body.append("</RestoreRequest>");
+
+            byte[] rawData = null;
+            try {
+                rawData = body.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+
+    }
+
 
     private static enum EscapedChar {
         // "\r"

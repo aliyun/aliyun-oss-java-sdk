@@ -73,7 +73,7 @@ public class DateUtil {
      * Parse a date string in the format of ISO 8601.
      * 
      * @param dateString
-     * @return
+     * @return a {@link Date} instance.
      * @throws ParseException
      */
     public static Date parseIso8601Date(String dateString) throws ParseException {

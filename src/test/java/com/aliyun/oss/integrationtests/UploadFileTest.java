@@ -20,16 +20,20 @@
 package com.aliyun.oss.integrationtests;
 
 import java.io.File;
-
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.model.*;
 import junit.framework.Assert;
-
+import static com.aliyun.oss.OSSErrorCode.PART_NOT_SEQUENTIAL;
 import org.junit.Test;
 
 public class UploadFileTest extends TestBase {
@@ -37,20 +41,20 @@ public class UploadFileTest extends TestBase {
     @Test
     public void testUploadFileWithoutCheckpoint() {
         final String key = "obj-upload-file-wcp";
-        
-        try {            
+
+        try {
             File file = createSampleFile(key, 1024 * 500);
-             
+
             UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
             uploadFileRequest.setUploadFile(file.getAbsolutePath());
             uploadFileRequest.setTaskNum(10);
 
             uploadFileRequest = new UploadFileRequest(bucketName, key, file.getAbsolutePath(), (1024 * 100),10);
-            
+
             UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
             Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
             Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
-                
+
             ObjectListing objects = ossClient.listObjects(bucketName, key);
             Assert.assertEquals(objects.getObjectSummaries().size(), 1);
             Assert.assertEquals(objects.getObjectSummaries().get(0).getKey(), key);
@@ -60,12 +64,12 @@ public class UploadFileTest extends TestBase {
             ObjectMetadata meta = ossClient.getObjectMetadata(bucketName, key);
             Assert.assertEquals(meta.getContentLength(), file.length());
             Assert.assertEquals(meta.getContentType(), "text/plain");
-            
+
             File fileNew = new File(key + "-new.txt");
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             ossClient.getObject(getObjectRequest, fileNew);
             Assert.assertEquals(file.length(), fileNew.length());
-            
+
             ossClient.deleteObject(bucketName, key);
             fileNew.delete();
         } catch (Throwable e) {
@@ -76,7 +80,7 @@ public class UploadFileTest extends TestBase {
     }
 
     @Test
-    public void testUploadFileSequential() {
+    public void testUploadFileSequential() throws Throwable {
         final String key = "obj-upload-file-Sequential";
 
         String testBucketName = super.bucketName + "-upload-sequential";
@@ -88,12 +92,14 @@ public class UploadFileTest extends TestBase {
         OSS testOssClient = new OSSClient(endpoint, new DefaultCredentialProvider(credentials), conf);
         testOssClient.createBucket(testBucketName);
 
-
+        // default is none sequential mode.
         try {
             File file = createSampleFile(key, 600 * 1024);
 
             UploadFileRequest uploadFileRequest = new UploadFileRequest(testBucketName, key);
             uploadFileRequest.setUploadFile(file.getAbsolutePath());
+            uploadFileRequest.setTaskNum(5);
+            uploadFileRequest.setPartSize(100*1024);
             testOssClient.uploadFile(uploadFileRequest);
 
             GetObjectRequest getObjectRequest = new GetObjectRequest(testBucketName, key);
@@ -104,20 +110,46 @@ public class UploadFileTest extends TestBase {
             Assert.fail(e.getMessage());
         }
 
+        // sequential mode not support multi thread.
         try {
-            File file = createSampleFile(key, 600 * 1024);
+            String objectName = key + "-multi-thread";
+            File file = createSampleFile(objectName, 600 * 1024);
 
-            UploadFileRequest uploadFileRequest = new UploadFileRequest(testBucketName, key);
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(testBucketName, objectName);
             uploadFileRequest.setUploadFile(file.getAbsolutePath());
             uploadFileRequest.setSequentialMode(true);
+            uploadFileRequest.setTaskNum(5);
+            uploadFileRequest.setPartSize(100*1024);
+
+            testOssClient.uploadFile(uploadFileRequest);
+            Assert.fail("Not support multi thread upload in sequentialMode, Should be failed here.");
+        } catch (OSSException e) {
+            Assert.assertEquals(PART_NOT_SEQUENTIAL, e.getErrorCode());
+        }
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // single thread in sequential mode.
+        try {
+            String objectName = key + "-single-thread";
+            File file = createSampleFile(objectName, 600 * 1024);
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(testBucketName, objectName);
+            uploadFileRequest.setUploadFile(file.getAbsolutePath());
+            uploadFileRequest.setSequentialMode(true);
+            uploadFileRequest.setTaskNum(1);
+            uploadFileRequest.setPartSize(100*1024);
 
             testOssClient.uploadFile(uploadFileRequest);
 
-            GetObjectRequest getObjectRequest = new GetObjectRequest(testBucketName, key);
+            GetObjectRequest getObjectRequest = new GetObjectRequest(testBucketName, objectName);
             OSSObject ossObject = testOssClient.getObject(getObjectRequest);
 
             Assert.assertNotNull(ossObject.getResponse().getHeaders().get("Content-MD5"));
-            testOssClient.deleteObject(testBucketName, key);
+            testOssClient.deleteObject(testBucketName, objectName);
         } catch (Throwable e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());
@@ -128,10 +160,10 @@ public class UploadFileTest extends TestBase {
     @Test
     public void testUploadFileWithCheckpoint() {
         final String key = "obj-upload-file-cp";
-        
-        try {            
+
+        try {
             File file = createSampleFile(key, 1024 * 500);
-             
+
             UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
             uploadFileRequest.setUploadFile(file.getAbsolutePath());
             uploadFileRequest.setTaskNum(10);
@@ -148,7 +180,7 @@ public class UploadFileTest extends TestBase {
             UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
             Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
             Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
-                
+
             ObjectListing objects = ossClient.listObjects(bucketName, key);
             Assert.assertEquals(objects.getObjectSummaries().size(), 1);
             Assert.assertEquals(objects.getObjectSummaries().get(0).getKey(), key);
@@ -158,12 +190,12 @@ public class UploadFileTest extends TestBase {
             ObjectMetadata meta = ossClient.getObjectMetadata(bucketName, key);
             Assert.assertEquals(meta.getContentLength(), file.length());
             Assert.assertEquals(meta.getContentType(), "text/plain");
-            
+
             File fileNew = new File(key + "-new.txt");
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             ossClient.getObject(getObjectRequest, fileNew);
             Assert.assertEquals(file.length(), fileNew.length());
-            
+
             ossClient.deleteObject(bucketName, key);
             fileNew.delete();
         } catch (Throwable e) {
@@ -176,10 +208,10 @@ public class UploadFileTest extends TestBase {
     @Test
     public void testUploadFileWithCheckpointFile() {
         final String key = "obj-upload-file-cpf";
-        
-        try {            
+
+        try {
             File file = createSampleFile(key, 1024 * 500);
-             
+
             UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
             uploadFileRequest.setUploadFile(file.getAbsolutePath());
             uploadFileRequest.setTaskNum(10);
@@ -193,7 +225,7 @@ public class UploadFileTest extends TestBase {
             UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
             Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
             Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
-                
+
             ObjectListing objects = ossClient.listObjects(bucketName, key);
             Assert.assertEquals(objects.getObjectSummaries().size(), 1);
             Assert.assertEquals(objects.getObjectSummaries().get(0).getKey(), key);
@@ -203,12 +235,12 @@ public class UploadFileTest extends TestBase {
             ObjectMetadata meta = ossClient.getObjectMetadata(bucketName, key);
             Assert.assertEquals(meta.getContentLength(), file.length());
             Assert.assertEquals(meta.getContentType(), "text/plain");
-            
+
             File fileNew = new File(key + "-new.txt");
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             ossClient.getObject(getObjectRequest, fileNew);
             Assert.assertEquals(file.length(), fileNew.length());
-            
+
             ossClient.deleteObject(bucketName, key);
             fileNew.delete();
         } catch (Throwable e) {
@@ -217,5 +249,185 @@ public class UploadFileTest extends TestBase {
             ossClient.deleteBucket(bucketName);
         }
     }
-    
+
+    @Test
+    public void loadErrorCpf() {
+        try {
+            String key = "test-up-with-error-cpf";
+            String cpf = "upload-err.ucp";
+            File cpfFile = createSampleFile(cpf, 1024 * 1);
+            File file = createSampleFile(key, 1024 * 500);
+
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
+            uploadFileRequest.setUploadFile(file.getAbsolutePath());
+            uploadFileRequest.setTaskNum(10);
+            uploadFileRequest.setEnableCheckpoint(true);
+            uploadFileRequest.setCheckpointFile(cpfFile.getAbsolutePath());
+
+            UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
+
+            File fileNew = new File(key + "-new.txt");
+            GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
+            ossClient.getObject(getObjectRequest, fileNew);
+            Assert.assertEquals(file.length(), fileNew.length());
+
+            ossClient.deleteObject(bucketName, key);
+            fileNew.delete();
+        } catch (Throwable e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void loadEffectiveCpf() {
+        final String key = "test-up-with-effective-cpf";
+
+        final String cpf = "effective.ucp";
+        final File cpfFile = new File(cpf);
+
+        final String newCpf = cpf + "-new.cpf";
+        final File newCpfFile = new File(newCpf);
+
+        try {
+            final File file = createSampleFile(key, 10 * 1024 * 1024);
+
+            if (cpfFile.exists()) {
+                cpfFile.delete();
+            }
+
+            Assert.assertFalse(cpfFile.exists());
+
+            // create a effective checkpoint file.
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
+                        uploadFileRequest.setUploadFile(file.getAbsolutePath());
+                        uploadFileRequest.setTaskNum(1);
+                        uploadFileRequest.setPartSize(100 * 1024);
+                        uploadFileRequest.setEnableCheckpoint(true);
+                        uploadFileRequest.setCheckpointFile(cpf);
+
+                        UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } catch (Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                }
+            }, "upload effective cpf thread");
+
+            thread.start();
+            Thread.sleep(1500);
+            thread.interrupt();
+
+            Assert.assertTrue(cpfFile.exists());
+
+            if (newCpfFile.exists()) {
+                newCpfFile.delete();
+            }
+
+            // cp checkpoint file to a new checkpoint file.
+            InputStream is = new FileInputStream(cpfFile);
+            OutputStream os = new FileOutputStream(newCpfFile);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = is.read(buffer)) > 0) {
+                os.write(buffer, 0, length);
+            }
+            is.close();
+            os.close();
+
+            // upload with effective checkpoint file.
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
+            uploadFileRequest.setUploadFile(file.getAbsolutePath());
+            uploadFileRequest.setTaskNum(10);
+            uploadFileRequest.setPartSize(1024 * 1024);
+            uploadFileRequest.setEnableCheckpoint(true);
+            uploadFileRequest.setCheckpointFile(newCpf);
+
+            UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
+
+            File fileNew = new File(key + "-new.txt");
+            GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
+            ossClient.getObject(getObjectRequest, fileNew);
+            Assert.assertEquals(file.length(), fileNew.length());
+            Assert.assertTrue("compare file", compareFile(fileNew.getAbsolutePath(), file.getAbsolutePath()));
+
+            ossClient.deleteObject(bucketName, key);
+            fileNew.delete();
+        } catch (Throwable e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        } finally {
+            cpfFile.delete();
+            newCpfFile.delete();
+        }
+    }
+
+    @Test
+    public void testAcl() {
+        String key = "test-upload-file-with-acl";
+
+        // Upload file without acl setting, returned acl will be DEFAULT.
+        try {
+            File file = createSampleFile(key, 1024 * 500);
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key, file.getAbsolutePath(), (1024 * 100), 10);
+
+            UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
+
+            ObjectAcl acl = ossClient.getObjectAcl(bucketName, key);
+            Assert.assertEquals(acl.getPermission(), ObjectPermission.Default);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        // Upload With PRIVATE acl setting, returned acl will be PRIVATE.
+        try {
+            File file = createSampleFile(key, 1024 * 500);
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key, file.getAbsolutePath(), (1024 * 100), 10);
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setObjectAcl(CannedAccessControlList.Private);
+            uploadFileRequest.setObjectMetadata(metadata);
+
+            UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
+
+            ObjectAcl acl = ossClient.getObjectAcl(bucketName, key);
+            Assert.assertEquals(acl.getPermission(), ObjectPermission.Private);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        // Test set acl null.
+        try {
+            File file = createSampleFile(key, 1024 * 500);
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key, file.getAbsolutePath(), (1024 * 100), 10);
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setObjectAcl(null);
+            uploadFileRequest.setObjectMetadata(metadata);
+
+            UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
+
+            ObjectAcl acl = ossClient.getObjectAcl(bucketName, key);
+            Assert.assertEquals(acl.getPermission(), ObjectPermission.Default);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+    }
+
 }

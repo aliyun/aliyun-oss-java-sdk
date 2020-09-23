@@ -28,6 +28,7 @@ import java.util.*;
 
 import com.aliyun.oss.*;
 import com.aliyun.oss.internal.OSSConstants;
+import junit.framework.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
@@ -98,6 +99,43 @@ public class OSSClientTest {
         conf.setProxyPassword("passwd");
 
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret, conf);
+        ossClient.shutdown();
+
+
+        conf = new ClientBuilderConfiguration();
+        //conf.setProxyHost(endpoint);
+        conf.setProxyPort(80);
+        //conf.setProxyUsername("user");
+        //conf.setProxyPassword("passwd");
+
+        ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret, conf);
+        ossClient.shutdown();
+
+        conf = new ClientBuilderConfiguration();
+        conf.setProxyHost(endpoint);
+        conf.setProxyPort(80);
+        //conf.setProxyUsername("user");
+        //conf.setProxyPassword("passwd");
+
+        ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret, conf);
+        ossClient.shutdown();
+
+        conf = new ClientBuilderConfiguration();
+        conf.setProxyHost(endpoint);
+        conf.setProxyPort(80);
+        conf.setProxyUsername("user");
+        //conf.setProxyPassword("passwd");
+
+        ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret, conf);
+        ossClient.shutdown();
+
+        conf = new ClientBuilderConfiguration();
+        conf.setProxyHost(endpoint);
+        conf.setProxyPort(80);
+        //conf.setProxyUsername("user");
+        conf.setProxyPassword("passwd");
+
+        ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret, conf);
         ossClient.shutdown();
     }
 
@@ -242,5 +280,67 @@ public class OSSClientTest {
             client.isBucketExist("bucketName");
         } catch (Exception e){}
     }
+
+    @Test
+    public void testValidateEndpoint() {
+        final String endpoint = "oss-cn-shenzhen.aliyuncs.com";
+
+        // true
+        try {
+            OSS client = new OSSClientBuilder().build(endpoint, "id", "key");
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+
+        // true
+        try {
+            OSS client = new OSSClientBuilder().build("http://" + endpoint, "id", "key");
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+
+        // true
+        try {
+            OSS client = new OSSClientBuilder().build("https://" + endpoint, "id", "key");
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+
+        // true
+        try {
+            OSS client = new OSSClientBuilder().build("11.11.11.11", "id", "key");
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+
+        // true
+        try {
+            OSS client = new OSSClientBuilder().build("http://11.11.11.11", "id", "key");
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+
+        // true
+        try {
+            OSS client = new OSSClientBuilder().build("https://11.11.11.11", "id", "key");
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+
+        // false
+        try {
+            OSS client = new OSSClientBuilder().build("https://www.alibabacloud.com\\www.aliyun.com", "id", "key");
+            Assert.fail("should be failed here.");
+        } catch (Exception e) {
+        }
+
+        // false
+        try {
+            OSS client = new OSSClientBuilder().build("https://www.alibabacloud.com#www.aliyun.com", "id", "key");
+        } catch (Exception e) {
+            Assert.fail("should be failed here.");
+        }
+    }
+
 }
 

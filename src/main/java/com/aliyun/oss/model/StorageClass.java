@@ -40,6 +40,11 @@ public enum StorageClass {
     Archive("Archive"),
 
     /**
+     * ColdArchive
+     */
+    ColdArchive("ColdArchive"),
+
+    /**
      * Unknown
      */
     Unknown("Unknown");

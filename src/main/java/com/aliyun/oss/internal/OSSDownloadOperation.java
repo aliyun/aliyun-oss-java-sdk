@@ -71,6 +71,14 @@ import com.aliyun.oss.model.HeadObjectRequest;
  */
 public class OSSDownloadOperation {
 
+    protected OSSObject getObjectWrap(GetObjectRequest getObjectRequest){
+        return objectOperation.getObject(getObjectRequest);
+    }
+
+    protected Long getInputStreamCRCWrap(InputStream inputStream) {
+        return IOUtils.getCRCValue(inputStream);
+    }
+
     static class DownloadCheckPoint implements Serializable {
 
         private static final long serialVersionUID = 4682293344365787077L;
@@ -576,7 +584,7 @@ public class OSSDownloadOperation {
         return downloadFileRequest.getRange() != null;
     }
 
-    static class Task implements Callable<PartResult> {
+    class Task implements Callable<PartResult> {
 
         public Task(int id, String name, DownloadCheckPoint downloadCheckPoint, int partIndex,
                 DownloadFileRequest downloadFileRequest, OSSObjectOperation objectOperation,
@@ -627,7 +635,7 @@ public class OSSDownloadOperation {
                     getObjectRequest.setTrafficLimit(limit);
                 }
 
-                OSSObject ossObj = objectOperation.getObject(getObjectRequest);
+                OSSObject ossObj = getObjectWrap(getObjectRequest);
                 objectMetadata = ossObj.getObjectMetadata();
                 content = ossObj.getObjectContent();
 
@@ -638,7 +646,7 @@ public class OSSDownloadOperation {
                 }
 
                 if (objectOperation.getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
-                    Long clientCRC = IOUtils.getCRCValue(content);
+                    Long clientCRC = getInputStreamCRCWrap(content);
                     tr.setClientCRC(clientCRC);
                     tr.setServerCRC(objectMetadata.getServerCRC());
                     tr.setLength(objectMetadata.getContentLength());

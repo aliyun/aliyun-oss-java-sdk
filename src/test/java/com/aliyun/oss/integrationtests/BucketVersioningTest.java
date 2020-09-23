@@ -39,7 +39,7 @@ public class BucketVersioningTest extends TestBase {
         OSSClient ossClient = null;
 
         try {
-            final String endpoint = "http://oss-ap-south-1.aliyuncs.com";
+            final String endpoint = TestConfig.OSS_TEST_ENDPOINT;
             final String bucketName = super.bucketName + "-bucket-versioning";
 
             //create client

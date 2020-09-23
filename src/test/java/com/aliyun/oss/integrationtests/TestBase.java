@@ -185,7 +185,7 @@ public class TestBase {
         for (LiveChannel channel : channels) {
             client.deleteLiveChannel(bucketName, channel.getName());
         }
-        
+
         // delete bucket
         client.deleteBucket(bucketName);
     }
@@ -479,17 +479,12 @@ public class TestBase {
             TestConfig.PROXY_PASSWORD = System.getenv().get("OSS_TEST_PROXY_PASSWORD");
         }
 
-        //kms
-        if (TestConfig.CMK_ID == null) {
-            TestConfig.CMK_ID = System.getenv().get("OSS_TEST_CMK_ID");
-        }
-
-        //callback
+        // callback
         if (TestConfig.CALLBACK_URL == null) {
             TestConfig.CALLBACK_URL = System.getenv().get("OSS_TEST_CALLBACK_URL");
         }
 
-        //request payment
+        // request payment
         if (TestConfig.OSS_TEST_PAYER_UID == null) {
             TestConfig.OSS_TEST_PAYER_UID = System.getenv().get("OSS_TEST_PAYER_UID");
         }
@@ -500,6 +495,43 @@ public class TestBase {
 
         if (TestConfig.OSS_TEST_PAYER_ACCESS_KEY_SECRET == null) {
             TestConfig.OSS_TEST_PAYER_ACCESS_KEY_SECRET = System.getenv().get("OSS_TEST_PAYER_ACCESS_KEY_SECRET");
+        }
+
+        if (TestConfig.RAM_ROLE_ARN == null) {
+            TestConfig.RAM_ROLE_ARN = System.getenv().get("OSS_TEST_RAM_ROLE_ARN");
+        }
+
+        if (TestConfig.RAM_UID == null) {
+            TestConfig.RAM_UID = System.getenv().get("OSS_TEST_RAM_UID");
+        }
+
+        if (TestConfig.RAM_REGION == null) {
+            TestConfig.RAM_REGION = System.getenv().get("OSS_TEST_RAM_REGION");
+        }
+
+        if (TestConfig.RAM_ACCESS_KEY_ID == null) {
+            TestConfig.RAM_ACCESS_KEY_ID = System.getenv().get("USER_ACCESS_KEY_ID");
+        }
+
+        if (TestConfig.RAM_ACCESS_KEY_SECRET == null) {
+            TestConfig.RAM_ACCESS_KEY_SECRET = System.getenv().get("USER_ACCESS_KEY_SECRET");
+        }
+
+        // kms
+        if (TestConfig.KMS_REGION == null) {
+            TestConfig.KMS_REGION = System.getenv().get("OSS_TEST_KMS_REGION");
+        }
+
+        if (TestConfig.KMS_CMK_ID == null) {
+            TestConfig.KMS_CMK_ID = System.getenv().get("OSS_TEST_KMS_CMK_ID");
+        }
+
+        if (TestConfig.KMS_REGION_1 == null) {
+            TestConfig.KMS_REGION_1 = System.getenv().get("OSS_TEST_KMS_REGION_1");
+        }
+
+        if (TestConfig.KMS_CMK_ID_1 == null) {
+            TestConfig.KMS_CMK_ID_1 = System.getenv().get("OSS_TEST_KMS_CMK_ID_1");
         }
     }
 

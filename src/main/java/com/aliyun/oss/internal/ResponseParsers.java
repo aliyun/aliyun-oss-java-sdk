@@ -20,6 +20,7 @@
 package com.aliyun.oss.internal;
 
 import static com.aliyun.oss.common.utils.CodingUtils.isNullOrEmpty;
+import static com.aliyun.oss.internal.OSSHeaders.OSS_HEADER_WORM_ID;
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
 import static com.aliyun.oss.internal.OSSUtils.trimQuotes;
 
@@ -35,10 +36,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.CheckedInputStream;
 
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.input.JDOMParseException;
-import org.jdom.input.SAXBuilder;
+import com.aliyun.oss.model.GetBucketInventoryConfigurationResult;
+import com.aliyun.oss.model.GetBucketWormResult;
+import com.aliyun.oss.model.InitiateBucketWormResult;
+import com.aliyun.oss.model.InventoryServerSideEncryptionOSS;
+import com.aliyun.oss.model.ListBucketInventoryConfigurationsResult;
+import com.aliyun.oss.model.InventoryConfiguration;
+import com.aliyun.oss.model.InventoryDestination;
+import com.aliyun.oss.model.InventoryEncryption;
+import com.aliyun.oss.model.InventoryFilter;
+import com.aliyun.oss.model.InventoryOSSBucketDestination;
+import com.aliyun.oss.model.InventorySchedule;
+import com.aliyun.oss.model.InventoryServerSideEncryptionKMS;
+import com.aliyun.oss.model.ListObjectsV2Result;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.input.JDOMParseException;
+import org.jdom2.input.SAXBuilder;
 
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.parser.ResponseParseException;
@@ -63,7 +77,6 @@ import com.aliyun.oss.model.BucketStat;
 import com.aliyun.oss.model.BucketVersioningConfiguration;
 import com.aliyun.oss.model.BucketWebsiteResult;
 import com.aliyun.oss.model.CannedAccessControlList;
-import com.aliyun.oss.model.CannedUdfAcl;
 import com.aliyun.oss.model.CnameConfiguration;
 import com.aliyun.oss.model.CompleteMultipartUploadResult;
 import com.aliyun.oss.model.CopyObjectResult;
@@ -89,7 +102,6 @@ import com.aliyun.oss.model.ReplicationRule;
 import com.aliyun.oss.model.GetImageStyleResult;
 import com.aliyun.oss.model.GroupGrantee;
 import com.aliyun.oss.model.InitiateMultipartUploadResult;
-import com.aliyun.oss.model.InstanceFlavor;
 import com.aliyun.oss.model.LifecycleRule;
 import com.aliyun.oss.model.ReplicationStatus;
 import com.aliyun.oss.model.RestoreObjectResult;
@@ -115,13 +127,10 @@ import com.aliyun.oss.model.Permission;
 import com.aliyun.oss.model.PutObjectResult;
 import com.aliyun.oss.model.PushflowStatus;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
+import com.aliyun.oss.model.CORSConfiguration;
 import com.aliyun.oss.model.SimplifiedObjectMeta;
 import com.aliyun.oss.model.Style;
 import com.aliyun.oss.model.TagSet;
-import com.aliyun.oss.model.UdfApplicationInfo;
-import com.aliyun.oss.model.UdfApplicationLog;
-import com.aliyun.oss.model.UdfImageInfo;
-import com.aliyun.oss.model.UdfInfo;
 import com.aliyun.oss.model.UploadPartCopyResult;
 import com.aliyun.oss.model.UserQos;
 import com.aliyun.oss.model.UserQosInfo;
@@ -174,8 +183,13 @@ public final class ResponseParsers {
     public static final CreateVpcipResultResponseParser createVpcipResultResponseParser = new CreateVpcipResultResponseParser();
     public static final ListVpcipResultResponseParser listVpcipResultResponseParser = new ListVpcipResultResponseParser();
     public static final ListVpcPolicyResultResponseParser listVpcPolicyResultResponseParser = new ListVpcPolicyResultResponseParser();
+    public static final InitiateBucketWormResponseParser initiateBucketWormResponseParser = new InitiateBucketWormResponseParser();
+    public static final GetBucketWormResponseParser getBucketWormResponseParser = new GetBucketWormResponseParser();
 
+    public static final GetBucketInventoryConfigurationParser getBucketInventoryConfigurationParser = new GetBucketInventoryConfigurationParser();
+    public static final ListBucketInventoryConfigurationsParser listBucketInventoryConfigurationsParser = new ListBucketInventoryConfigurationsParser();
     public static final ListObjectsReponseParser listObjectsReponseParser = new ListObjectsReponseParser();
+    public static final ListObjectsV2ResponseParser listObjectsV2ResponseParser = new ListObjectsV2ResponseParser();
     public static final ListVersionsReponseParser listVersionsReponseParser = new ListVersionsReponseParser();
     public static final PutObjectReponseParser putObjectReponseParser = new PutObjectReponseParser();
     public static final PutObjectProcessReponseParser putObjectProcessReponseParser = new PutObjectProcessReponseParser();
@@ -555,6 +569,36 @@ public final class ResponseParsers {
 
     }
 
+    public static final class GetBucketInventoryConfigurationParser implements ResponseParser<GetBucketInventoryConfigurationResult> {
+
+        @Override
+        public GetBucketInventoryConfigurationResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetBucketInventoryConfigurationResult result = parseGetBucketInventoryConfig(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
+
+    public static final class ListBucketInventoryConfigurationsParser implements ResponseParser<ListBucketInventoryConfigurationsResult> {
+
+        @Override
+        public ListBucketInventoryConfigurationsResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                ListBucketInventoryConfigurationsResult result = parseListBucketInventoryConfigurations(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
+
     public static final class CreateLiveChannelResponseParser implements ResponseParser<CreateLiveChannelResult> {
 
         @Override
@@ -626,10 +670,10 @@ public final class ResponseParsers {
 
     }
 
-    public static final class GetBucketCorsResponseParser implements ResponseParser<List<CORSRule>> {
+    public static final class GetBucketCorsResponseParser implements ResponseParser<CORSConfiguration> {
 
         @Override
-        public List<CORSRule> parse(ResponseMessage response) throws ResponseParseException {
+        public CORSConfiguration parse(ResponseMessage response) throws ResponseParseException {
             try {
                 return parseListBucketCORS(response.getContent());
             } finally {
@@ -710,6 +754,21 @@ public final class ResponseParsers {
         }
 
     }
+
+    public static final class ListObjectsV2ResponseParser implements ResponseParser<ListObjectsV2Result> {
+
+        @Override
+        public ListObjectsV2Result parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                ListObjectsV2Result result = parseListObjectsV2(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
     
     public static final class ListVersionsReponseParser implements ResponseParser<VersionListing> {
 
@@ -771,6 +830,7 @@ public final class ResponseParsers {
                     result.setNextPosition(Long.valueOf(nextPosition));
                 }
                 result.setObjectCRC(response.getHeaders().get(OSSHeaders.OSS_HASH_CRC64_ECMA));
+                result.setResponse(response);
                 setCRC(result, response);
                 return result;
             } finally {
@@ -837,7 +897,7 @@ public final class ResponseParsers {
             try {
                 return parseSimplifiedObjectMeta(response.getHeaders());
             } finally {
-                OSSUtils.mandatoryCloseResponse(response);
+                safeCloseResponse(response);
             }
         }
 
@@ -904,6 +964,7 @@ public final class ResponseParsers {
                 CopyObjectResult result = parseCopyObjectResult(response.getContent());
                 result.setVersionId(response.getHeaders().get(OSSHeaders.OSS_HEADER_VERSION_ID));
                 result.setRequestId(response.getRequestId());
+                result.setResponse(response);
                 return result;
             } finally {
                 safeCloseResponse(response);
@@ -944,7 +1005,7 @@ public final class ResponseParsers {
 
                 // Occurs when deleting multiple objects in quiet mode.
                 if (response.getContentLength() == 0) {
-                    result = new DeleteVersionsResult(null);
+                    result = new DeleteVersionsResult(new ArrayList<DeletedVersion>());
                 } else {
                     result = parseDeleteVersionsResult(response.getContent());
                 }
@@ -999,6 +1060,7 @@ public final class ResponseParsers {
             try {
                 InitiateMultipartUploadResult result = parseInitiateMultipartUpload(response.getContent());
                 result.setRequestId(response.getRequestId());
+                result.setResponse(response);
                 return result;
             } finally {
                 safeCloseResponse(response);
@@ -1052,6 +1114,7 @@ public final class ResponseParsers {
                 result.setPartNumber(partNumber);
                 result.setETag(trimQuotes(parseUploadPartCopy(response.getContent())));
                 result.setRequestId(response.getRequestId());
+                result.setResponse(response);
                 return result;
             } finally {
                 safeCloseResponse(response);
@@ -1074,6 +1137,37 @@ public final class ResponseParsers {
         }
 
     }
+
+    public static final class InitiateBucketWormResponseParser implements ResponseParser<InitiateBucketWormResult> {
+
+        @Override
+        public InitiateBucketWormResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                InitiateBucketWormResult result = parseInitiateBucketWormResponseHeader(response.getHeaders());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
+
+    public static final class GetBucketWormResponseParser implements ResponseParser<GetBucketWormResult> {
+
+        @Override
+        public GetBucketWormResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetBucketWormResult result = parseWormConfiguration(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
+
 
     public static <ResultType extends GenericResult> void setCRC(ResultType result, ResponseMessage response) {
         InputStream inputStream = response.getRequest().getContent();
@@ -1099,6 +1193,10 @@ public final class ResponseParsers {
 
     private static Element getXmlRootElement(InputStream responseBody) throws Exception {
         SAXBuilder builder = new SAXBuilder();
+        builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        builder.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        builder.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        builder.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
         Document doc = builder.build(responseBody);
         return doc.getRootElement();
     }
@@ -1153,6 +1251,10 @@ public final class ResponseParsers {
                 ossObjectSummary.setStorageClass(elem.getChildText("StorageClass"));
                 ossObjectSummary.setBucketName(objectListing.getBucketName());
 
+                if (elem.getChild("Type") != null) {
+                    ossObjectSummary.setType(elem.getChildText("Type"));
+                }
+
                 String id = elem.getChild("Owner").getChildText("ID");
                 String displayName = elem.getChild("Owner").getChildText("DisplayName");
                 ossObjectSummary.setOwner(new Owner(id, displayName));
@@ -1169,6 +1271,93 @@ public final class ResponseParsers {
             }
 
             return objectListing;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * Unmarshall list objects response body to ListObjectsV2Result.
+     */
+    @SuppressWarnings("unchecked")
+    public static ListObjectsV2Result parseListObjectsV2(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+
+            ListObjectsV2Result result = new ListObjectsV2Result();
+            result.setBucketName(root.getChildText("Name"));
+            result.setMaxKeys(Integer.valueOf(root.getChildText("MaxKeys")));
+            result.setTruncated(Boolean.valueOf(root.getChildText("IsTruncated")));
+            result.setKeyCount(Integer.valueOf(root.getChildText("KeyCount")));
+
+            if (root.getChild("Prefix") != null) {
+                String prefix = root.getChildText("Prefix");
+                result.setPrefix(isNullOrEmpty(prefix) ? null : prefix);
+            }
+
+            if (root.getChild("Delimiter") != null) {
+                String delimiter = root.getChildText("Delimiter");
+                result.setDelimiter(isNullOrEmpty(delimiter) ? null : delimiter);
+            }
+
+            if (root.getChild("ContinuationToken") != null) {
+                String continuationToken = root.getChildText("ContinuationToken");
+                result.setContinuationToken(isNullOrEmpty(continuationToken) ? null : continuationToken);
+            }
+
+            if (root.getChild("NextContinuationToken") != null) {
+                String nextContinuationToken = root.getChildText("NextContinuationToken");
+                result.setNextContinuationToken(isNullOrEmpty(nextContinuationToken) ? null : nextContinuationToken);
+            }
+
+            if (root.getChild("EncodingType") != null) {
+                String encodeType = root.getChildText("EncodingType");
+                result.setEncodingType(isNullOrEmpty(encodeType) ? null : encodeType);
+            }
+
+            if (root.getChild("StartAfter") != null) {
+                String startAfter = root.getChildText("StartAfter");
+                result.setStartAfter(isNullOrEmpty(startAfter) ? null : startAfter);
+            }
+
+            List<Element> objectSummaryElems = root.getChildren("Contents");
+            for (Element elem : objectSummaryElems) {
+                OSSObjectSummary ossObjectSummary = new OSSObjectSummary();
+
+                ossObjectSummary.setKey(elem.getChildText("Key"));
+                ossObjectSummary.setETag(trimQuotes(elem.getChildText("ETag")));
+                ossObjectSummary.setLastModified(DateUtil.parseIso8601Date(elem.getChildText("LastModified")));
+                ossObjectSummary.setSize(Long.valueOf(elem.getChildText("Size")));
+                ossObjectSummary.setStorageClass(elem.getChildText("StorageClass"));
+                ossObjectSummary.setBucketName(result.getBucketName());
+
+                if (elem.getChild("Type") != null) {
+                    ossObjectSummary.setType(elem.getChildText("Type"));
+                }
+
+                if (elem.getChild("Owner") != null) {
+                    String id = elem.getChild("Owner").getChildText("ID");
+                    String displayName = elem.getChild("Owner").getChildText("DisplayName");
+                    ossObjectSummary.setOwner(new Owner(id, displayName));
+                }
+
+                result.addObjectSummary(ossObjectSummary);
+            }
+
+            List<Element> commonPrefixesElems = root.getChildren("CommonPrefixes");
+
+            for (Element elem : commonPrefixesElems) {
+                String prefix = elem.getChildText("Prefix");
+                if (!isNullOrEmpty(prefix)) {
+                    result.addCommonPrefix(prefix);
+                }
+            }
+
+            return result;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
@@ -1449,7 +1638,9 @@ public final class ResponseParsers {
                     }
                     bucket.setExtranetEndpoint(e.getChildText("ExtranetEndpoint"));
                     bucket.setIntranetEndpoint(e.getChildText("IntranetEndpoint"));
-
+                    if (e.getChild("Region") != null) {
+                        bucket.setRegion(e.getChildText("Region"));
+                    }
                     buckets.add(bucket);
                 }
             }
@@ -2094,12 +2285,11 @@ public final class ResponseParsers {
      * Unmarshall get bucket cors response body to cors rules.
      */
     @SuppressWarnings("unchecked")
-    public static List<CORSRule> parseListBucketCORS(InputStream responseBody) throws ResponseParseException {
+    public static CORSConfiguration parseListBucketCORS(InputStream responseBody) throws ResponseParseException {
 
         try {
             Element root = getXmlRootElement(responseBody);
-
-            List<CORSRule> corsRules = new ArrayList<CORSRule>();
+            CORSConfiguration result = new CORSConfiguration();
             List<Element> corsRuleElems = root.getChildren("CORSRule");
 
             for (Element corsRuleElem : corsRuleElems) {
@@ -2129,11 +2319,15 @@ public final class ResponseParsers {
                 if (maxAgeSecondsElem != null) {
                     rule.setMaxAgeSeconds(Integer.parseInt(maxAgeSecondsElem.getValue()));
                 }
-
-                corsRules.add(rule);
+                result.getCorsRules().add(rule);
             }
 
-            return corsRules;
+            Element responseVaryElems = root.getChild("ResponseVary");
+            if (responseVaryElems != null) {
+                result.setResponseVary(Boolean.parseBoolean(responseVaryElems.getValue()));
+            }
+
+            return result;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
@@ -2234,7 +2428,7 @@ public final class ResponseParsers {
                 }
 
                 if (ruleElem.getChild("SourceSelectionCriteria") != null &&
-                    ruleElem.getChild("SourceSelectionCriteria").getChildren("SseKmsEncryptedObjects") != null) {
+                    ruleElem.getChild("SourceSelectionCriteria").getChild("SseKmsEncryptedObjects") != null) {
                     repRule.setSseKmsEncryptedObjectsStatus(ruleElem.getChild("SourceSelectionCriteria").
                             getChild("SseKmsEncryptedObjects").getChildText("Status"));
                 }
@@ -2346,12 +2540,14 @@ public final class ResponseParsers {
             bucketInfo.setBucket(bucket);
 
             // comment
-            String comment = bucketElem.getChildText("Comment");
-            bucketInfo.setComment(comment);
+            if (bucketElem.getChild("Comment") != null) {
+                String comment = bucketElem.getChildText("Comment");
+                bucketInfo.setComment(comment);
+            }
 
             // data redundancy type
-            String dataRedundancyString = bucketElem.getChildText("DataRedundancyType");
-            if (dataRedundancyString != null) {
+            if (bucketElem.getChild("DataRedundancyType") != null) {
+                String dataRedundancyString = bucketElem.getChildText("DataRedundancyType");
                 DataRedundancyType dataRedundancyType = DataRedundancyType.parse(dataRedundancyString);
                 bucketInfo.setDataRedundancyType(dataRedundancyType);
             }
@@ -2381,6 +2577,9 @@ public final class ResponseParsers {
                 applyServerSideEncryptionByDefault.setSSEAlgorithm(sseElem.getChildText("SSEAlgorithm"));
                 if (sseElem.getChild("KMSMasterKeyID") != null) {
                     applyServerSideEncryptionByDefault.setKMSMasterKeyID(sseElem.getChildText("KMSMasterKeyID"));
+                }
+                if (sseElem.getChild("KMSDataEncryption") != null) {
+                    applyServerSideEncryptionByDefault.setKMSDataEncryption(sseElem.getChildText("KMSDataEncryption"));
                 }
                 serverSideEncryptionConfiguration
                     .setApplyServerSideEncryptionByDefault(applyServerSideEncryptionByDefault);
@@ -2679,6 +2878,9 @@ public final class ResponseParsers {
             Element sseElem = root.getChild("ApplyServerSideEncryptionByDefault");
             sseByDefault.setSSEAlgorithm(sseElem.getChildText("SSEAlgorithm"));
             sseByDefault.setKMSMasterKeyID(sseElem.getChildText("KMSMasterKeyID"));
+            if (sseElem.getChild("KMSDataEncryption") != null) {
+                sseByDefault.setKMSDataEncryption(sseElem.getChildText("KMSDataEncryption"));
+            }
             configuration.setApplyServerSideEncryptionByDefault(sseByDefault);
 
             return configuration;
@@ -2790,6 +2992,150 @@ public final class ResponseParsers {
             throw new ResponseParseException(e.getMessage(), e);
         }
 
+    }
+
+    private static InventoryConfiguration parseInventoryConfigurationElem(Element configElem) {
+        InventoryConfiguration inventoryConfiguration = new InventoryConfiguration();
+
+        if (configElem.getChildText("Id") != null) {
+            inventoryConfiguration.setInventoryId(configElem.getChildText("Id"));
+        }
+
+        if (configElem.getChildText("IncludedObjectVersions") != null) {
+            inventoryConfiguration.setIncludedObjectVersions(configElem.getChildText("IncludedObjectVersions"));
+        }
+
+        if (configElem.getChildText("IsEnabled") != null) {
+            inventoryConfiguration.setEnabled(Boolean.valueOf(configElem.getChildText("IsEnabled")));
+        }
+
+        if (configElem.getChild("Filter") != null) {
+            Element elem = configElem.getChild("Filter");
+            if (elem.getChildText("Prefix") != null) {
+                InventoryFilter filter = new InventoryFilter().withPrefix(elem.getChildText("Prefix"));
+                inventoryConfiguration.setInventoryFilter(filter);
+            }
+        }
+
+        if (configElem.getChild("Schedule") != null) {
+            InventorySchedule schedule = new InventorySchedule();
+            Element elem = configElem.getChild("Schedule");
+            if (elem.getChild("Frequency") != null) {
+                schedule.setFrequency(elem.getChildText("Frequency"));
+                inventoryConfiguration.setSchedule(schedule);
+            }
+        }
+
+        if (configElem.getChild("OptionalFields") != null) {
+            Element OptionalFieldsElem = configElem.getChild("OptionalFields");
+            List<String> optionalFields = new ArrayList<String>();
+            List<Element> fieldElems = OptionalFieldsElem.getChildren("Field");
+            for (Element e : fieldElems) {
+                optionalFields.add(e.getText());
+            }
+            inventoryConfiguration.setOptionalFields(optionalFields);
+        }
+
+        if (configElem.getChild("Destination") != null) {
+            InventoryDestination destination = new InventoryDestination();
+            Element destinElem = configElem.getChild("Destination");
+            if (destinElem.getChild("OSSBucketDestination") != null) {
+                InventoryOSSBucketDestination ossBucketDestion = new InventoryOSSBucketDestination();
+                Element bucketDistinElem = destinElem.getChild("OSSBucketDestination");
+                if (bucketDistinElem.getChildText("Format") != null) {
+                    ossBucketDestion.setFormat(bucketDistinElem.getChildText("Format"));
+                }
+                if (bucketDistinElem.getChildText("AccountId") != null) {
+                    ossBucketDestion.setAccountId(bucketDistinElem.getChildText("AccountId"));
+                }
+                if (bucketDistinElem.getChildText("RoleArn") != null) {
+                    ossBucketDestion.setRoleArn(bucketDistinElem.getChildText("RoleArn"));
+                }
+                if (bucketDistinElem.getChildText("Bucket") != null) {
+                    String tmpBucket = bucketDistinElem.getChildText("Bucket");
+                    String bucket = tmpBucket.replaceFirst("acs:oss:::", "");
+                    ossBucketDestion.setBucket(bucket);
+                }
+                if (bucketDistinElem.getChildText("Prefix") != null) {
+                    ossBucketDestion.setPrefix(bucketDistinElem.getChildText("Prefix"));
+                }
+
+                if (bucketDistinElem.getChild("Encryption") != null) {
+                    InventoryEncryption inventoryEncryption = new InventoryEncryption();
+                    if (bucketDistinElem.getChild("Encryption").getChild("SSE-KMS") != null) {
+                        String keyId = bucketDistinElem.getChild("Encryption").getChild("SSE-KMS").getChildText("KeyId");
+                        inventoryEncryption.setServerSideKmsEncryption(new InventoryServerSideEncryptionKMS().withKeyId(keyId));
+                    } else if (bucketDistinElem.getChild("Encryption").getChild("SSE-OSS") != null) {
+                        inventoryEncryption.setServerSideOssEncryption(new InventoryServerSideEncryptionOSS());
+                    }
+                    ossBucketDestion.setEncryption(inventoryEncryption);
+                }
+                destination.setOssBucketDestination(ossBucketDestion);
+            }
+            inventoryConfiguration.setDestination(destination);
+        }
+
+        return inventoryConfiguration;
+    }
+
+
+    /**
+     * Unmarshall get bucuket inventory configuration response body to GetBucketInventoryConfigurationResult.
+     */
+    public static GetBucketInventoryConfigurationResult parseGetBucketInventoryConfig(InputStream responseBody)
+            throws ResponseParseException {
+        try {
+            GetBucketInventoryConfigurationResult result = new GetBucketInventoryConfigurationResult();
+            Element root = getXmlRootElement(responseBody);
+            InventoryConfiguration configuration = parseInventoryConfigurationElem(root);
+            result.setInventoryConfiguration(configuration);
+            return result;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+
+
+    /**
+     * Unmarshall get bucuket qos info response body to BucketQosInfo.
+     */
+    public static ListBucketInventoryConfigurationsResult parseListBucketInventoryConfigurations(InputStream responseBody)
+            throws ResponseParseException {
+        try {
+            Element root = getXmlRootElement(responseBody);
+            ListBucketInventoryConfigurationsResult result = new ListBucketInventoryConfigurationsResult();
+            List<InventoryConfiguration> inventoryConfigurationList = null;
+
+            if (root.getChild("InventoryConfiguration") != null) {
+                inventoryConfigurationList = new ArrayList<InventoryConfiguration>();
+                List<Element> configurationElems = root.getChildren("InventoryConfiguration");
+                for (Element elem : configurationElems) {
+                    InventoryConfiguration configuration = parseInventoryConfigurationElem(elem);
+                    inventoryConfigurationList.add(configuration);
+                }
+                result.setInventoryConfigurationList(inventoryConfigurationList);
+            }
+
+            if (root.getChild("ContinuationToken") != null) {
+                result.setContinuationToken(root.getChildText("ContinuationToken"));
+            }
+
+            if (root.getChild("IsTruncated") != null) {
+                result.setTruncated(Boolean.valueOf(root.getChildText("IsTruncated")));
+            }
+
+            if (root.getChild("NextContinuationToken") != null) {
+                result.setNextContinuationToken(root.getChildText("NextContinuationToken"));
+            }
+
+            return result;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
     }
 
     /**
@@ -3130,6 +3476,42 @@ public final class ResponseParsers {
             }
 
             return vpcipList;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * Unmarshall initiate bucket worm result from response headers.
+     */
+    public static InitiateBucketWormResult parseInitiateBucketWormResponseHeader(Map<String, String> headers) throws ResponseParseException {
+
+        try {
+            InitiateBucketWormResult result = new InitiateBucketWormResult();
+            result.setWormId(headers.get(OSS_HEADER_WORM_ID));
+            return result;
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * Unmarshall get bucket worm result.
+     */
+    public static GetBucketWormResult parseWormConfiguration(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+            GetBucketWormResult result = new GetBucketWormResult();
+            result.setWormId(root.getChildText("WormId"));
+            result.setWormState(root.getChildText("State"));
+            result.setRetentionPeriodInDays(Integer.parseInt(root.getChildText("RetentionPeriodInDays")));
+            result.setCreationDate(DateUtil.parseIso8601Date(root.getChildText("CreationDate")));
+            return result;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {

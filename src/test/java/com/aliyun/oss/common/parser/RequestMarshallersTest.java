@@ -7,16 +7,15 @@ package com.aliyun.oss.common.parser;
 import com.aliyun.oss.common.comm.io.FixedLengthInputStream;
 import com.aliyun.oss.model.*;
 import junit.framework.Assert;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.aliyun.oss.common.parser.RequestMarshallers.*;
 
@@ -904,6 +903,188 @@ public class RequestMarshallersTest {
         Element CORSRule = root.getChild("CORSRule");
         Element AllowedHeader = CORSRule.getChild("AllowedHeader");
         Assert.assertNotNull(AllowedHeader);
+    }
+
+    @Test
+    public void testCreateVpcipRequestMarshaller() {
+        CreateVpcipRequest createVpcipRequest = new CreateVpcipRequest();
+        createVpcipRequest.setRegion("test-region");
+        createVpcipRequest.setVSwitchId("test-vpcip-name");
+        createVpcipRequest.setLabel("test-vpcip-label");
+        createVpcipRequest.toString();
+
+        FixedLengthInputStream is = createVpcipRequestMarshaller.marshall(createVpcipRequest);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        String region = root.getChildText("Region");
+        String switchid = root.getChildText("VSwitchId");
+        String label = root.getChildText("Label");
+        Assert.assertEquals("test-region", region);
+        Assert.assertEquals("test-vpcip-name", switchid);
+        Assert.assertEquals("test-vpcip-label", label);
+    }
+
+    @Test
+    public void testCreateBucketVpcipRequestMarshaller() {
+        String bucketName = "alicloud-bucket";
+        CreateBucketVpcipRequest createBucketVpcipRequest = new CreateBucketVpcipRequest();
+        createBucketVpcipRequest.setBucketName(bucketName);
+        VpcPolicy vpcPolicy = new VpcPolicy();
+        vpcPolicy.setRegion("test-region");
+        vpcPolicy.setVpcId("test-vpc-id");
+        vpcPolicy.setVip("test-vip");
+        createBucketVpcipRequest.setVpcPolicy(vpcPolicy);
+        createBucketVpcipRequest.toString();
+
+        FixedLengthInputStream is = createBucketVpcipRequestMarshaller.marshall(createBucketVpcipRequest);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        String region = root.getChildText("Region");
+        String vpcid = root.getChildText("VpcId");
+        String vip = root.getChildText("Vip");
+        Assert.assertEquals("test-region", region);
+        Assert.assertEquals("test-vpc-id", vpcid);
+        Assert.assertEquals("test-vip", vip);
+    }
+
+
+    @Test
+    public void testDeleteBucketVpcipRequestMarshaller() {
+        String bucketName = "alicloud-bucket";
+
+        DeleteBucketVpcipRequest deleteBucketVpcipRequest = new DeleteBucketVpcipRequest();
+        deleteBucketVpcipRequest.setBucketName(bucketName);
+        VpcPolicy vpcPolicy = new VpcPolicy();
+        vpcPolicy.setRegion("test-region");
+        vpcPolicy.setVpcId("test-vpc-id");
+        vpcPolicy.setVip("test-vip");
+        deleteBucketVpcipRequest.setVpcPolicy(vpcPolicy);
+        deleteBucketVpcipRequest.toString();
+
+        FixedLengthInputStream is = deleteBucketVpcipRequestMarshaller.marshall(deleteBucketVpcipRequest.getVpcPolicy());
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        String region = root.getChildText("Region");
+        String vpcid = root.getChildText("VpcId");
+        String vip = root.getChildText("Vip");
+        Assert.assertEquals("test-region", region);
+        Assert.assertEquals("test-vpc-id", vpcid);
+        Assert.assertEquals("test-vip", vip);
+    }
+
+    @Test
+    public void testDeleteVpcipRequestMarshaller() {
+
+        DeleteVpcipRequest deleteVpcipRequest = new DeleteVpcipRequest();
+        VpcPolicy vpcPolicy = new VpcPolicy();
+        vpcPolicy.setRegion("test-region");
+        vpcPolicy.setVpcId("test-vpc-id");
+        vpcPolicy.setVip("test-vip");
+        deleteVpcipRequest.setVpcPolicy(vpcPolicy);
+        deleteVpcipRequest.toString();
+
+        FixedLengthInputStream is = deleteVpcipRequestMarshaller.marshall(deleteVpcipRequest);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        String region = root.getChildText("Region");
+        String vpcid = root.getChildText("VpcId");
+        String vip = root.getChildText("Vip");
+        Assert.assertEquals("test-region", region);
+        Assert.assertEquals("test-vpc-id", vpcid);
+        Assert.assertEquals("test-vip", vip);
+    }
+
+    @Test
+    public void testSetBucketInventoryRequestMarshaller() {
+
+        InventoryConfiguration  config = new InventoryConfiguration();
+
+        byte[] data = setBucketInventoryRequestMarshaller.marshall(config);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        Assert.assertEquals(root.getChild("Id"), null);
+        Assert.assertEquals(root.getChild("IsEnabled"), null);
+        Assert.assertEquals(root.getChild("IncludedObjectVersions"), null);
+        Assert.assertEquals(root.getChild("Filter"), null);
+        Assert.assertEquals(root.getChild("Schedule"), null);
+        Assert.assertEquals(root.getChild("OptionalFields"), null);
+        Assert.assertEquals(root.getChild("Destination"), null);
+
+        config = new InventoryConfiguration();
+        config.setOptionalFields(new ArrayList<String>());
+        config.setDestination(new InventoryDestination().withOSSBucketDestination(new InventoryOSSBucketDestination()));
+
+        data = setBucketInventoryRequestMarshaller.marshall(config);
+        is = new ByteArrayInputStream(data);
+
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        root = doc.getRootElement();
+        Assert.assertEquals(root.getChild("Id"), null);
+        Assert.assertEquals(root.getChild("IsEnabled"), null);
+        Assert.assertEquals(root.getChild("IncludedObjectVersions"), null);
+        Assert.assertEquals(root.getChild("Filter"), null);
+        Assert.assertEquals(root.getChild("Schedule"), null);
+        Assert.assertEquals(root.getChild("OptionalFields"), null);
+        Assert.assertNotNull(root.getChild("Destination"));
+
     }
 
 }

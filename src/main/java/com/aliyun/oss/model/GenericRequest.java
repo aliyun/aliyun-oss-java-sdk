@@ -83,7 +83,7 @@ public class GenericRequest extends WebServiceRequest {
      * <p>
      * Objects created before versioning was enabled or when versioning is
      * suspended are given the default <code>null</code> version ID (see
-     * {@link OSSConstants#NULL_VERSION_ID}). Note that the
+     * {@link com.aliyun.oss.internal.OSSConstants#NULL_VERSION_ID}). Note that the
      * <code>null</code> version ID is a valid version ID and is not the
      * same as not having a version ID.
      * </p>
@@ -101,7 +101,7 @@ public class GenericRequest extends WebServiceRequest {
      * <p>
      * Objects created before versioning was enabled or when versioning is
      * suspended will be given the default <code>null</code> version ID (see
-     * {@link OSSConstants#NULL_VERSION_ID}). Note that the
+     * {@link com.aliyun.oss.internal.OSSConstants#NULL_VERSION_ID}). Note that the
      * <code>null</code> version ID is a valid version ID and is not the
      * same as not having a version ID.
      * </p>
@@ -124,7 +124,7 @@ public class GenericRequest extends WebServiceRequest {
      * <p>
      * Objects created before versioning was enabled or when versioning is
      * suspended will be given the default or <code>null</code> version ID (see
-     * {@link OSSConstants#NULL_VERSION_ID}). Note that the
+     * {@link com.aliyun.oss.internal.OSSConstants#NULL_VERSION_ID}). Note that the
      * <code>null</code> version ID is a valid version ID and is not the
      * same as not having a version ID.
      * </p>

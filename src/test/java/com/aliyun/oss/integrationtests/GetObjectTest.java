@@ -529,7 +529,7 @@ public class GetObjectTest extends TestBase {
     @Test
     public void testGetObjectByUrlsignature() {    
         final String key = "put-object-by-urlsignature";
-        final String expirationString = "Sun, 12 Apr 2020 12:00:00 GMT";
+        final String expirationString = "Sun, 12 Apr 2022 12:00:00 GMT";
         final long inputStreamLength = 128 * 1024; //128KB
         final long firstByte= inputStreamLength / 2;
         final long lastByte = inputStreamLength - 1;

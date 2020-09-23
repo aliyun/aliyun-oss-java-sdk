@@ -326,18 +326,20 @@ public class PutObjectTest extends TestBase {
             Assert.assertEquals(key, o.getKey());
             Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
             Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
-            
+
             // Override 2
             final String filePath = genFixedLengthFile(instreamLength);
             ossClient.putObject(bucketName, key, new File(filePath));
             Assert.assertEquals(instreamLength, new File(filePath).length());
-            
+
             // Override 3
             ossClient.putObject(new PutObjectRequest(bucketName, key, new File(filePath)));
             o = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, o.getKey());
             Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
             Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+
+            new File(filePath).delete();
         } catch (Exception ex) {
             Assert.fail(ex.getMessage());
         }
@@ -348,7 +350,7 @@ public class PutObjectTest extends TestBase {
         final String key = "put-object-by-urlsignature";
         final String metaKey0 = "author";
         final String metaValue0 = "aliy";
-        final String expirationString = "Sun, 12 Apr 2020 12:00:00 GMT";
+        final String expirationString = "Sun, 12 Apr 2022 12:00:00 GMT";
         final long inputStreamLength = 128 * 1024; //128KB
         
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.PUT);
@@ -521,6 +523,39 @@ public class PutObjectTest extends TestBase {
             if (instream != null) {
                 instream.close();
             }
+        }
+    }
+
+
+    @Test
+    public void testPutObjectRequestClassSetter() {
+        String key = "test-put-object-request-class-setter";
+        final int instreamLength = 128 * 1024;
+        try {
+            final String filePath = genFixedLengthFile(instreamLength);
+
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType("text/plain");
+            metadata.addUserMetadata("property", "property-value");
+
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, (File) null);
+            putObjectRequest.setFile(new File(filePath));
+            putObjectRequest.setMetadata(metadata);
+            putObjectRequest.setProcess("process");
+
+            ossClient.putObject(putObjectRequest);
+            OSSObject o = ossClient.getObject(bucketName, key);
+            Assert.assertEquals(key, o.getKey());
+            Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
+            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assert.assertEquals(o.getObjectMetadata().getContentType(), "text/plain");
+            Assert.assertEquals(o.getObjectMetadata().getUserMetadata().get("property"), "property-value");
+            Assert.assertEquals("process", putObjectRequest.getProcess());
+
+            new File(filePath).delete();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
         }
     }
 }

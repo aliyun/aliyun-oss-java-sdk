@@ -473,8 +473,8 @@ public class ObjectRequestPaymentTest extends TestBase {
             boolean isExist = ossPayerClient.doesObjectExist(genericRequest, isOnlyInOSS);
             Assert.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
+            Assert.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, e.getErrorCode());
+            //Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         }
 
         // Put request without payer setting
@@ -486,7 +486,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             Assert.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
+            //Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         }
 
         // Put request with payer setting, should be successful.
@@ -522,8 +522,8 @@ public class ObjectRequestPaymentTest extends TestBase {
             ossPayerClient.getSimplifiedObjectMeta(genericRequest);
             Assert.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
+            Assert.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, e.getErrorCode());
+            //Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         }
 
          // Get simplified meta with payer setting, should be successful.
@@ -645,8 +645,8 @@ public class ObjectRequestPaymentTest extends TestBase {
 
             Assert.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
+            Assert.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, e.getErrorCode());
+            //Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         }
 
          // Upload file with payer setting, should be successful.

@@ -35,7 +35,7 @@ package com.aliyun.oss.model;
  * An owner can only delete a version of an object if the owner has enabled versioning for
  * their bucket. 
  * For more information about enabling versioning for a bucket, see 
- * {@link OSS#setBucketVersioning(SetBucketVersioningRequest)}.
+ * {@link com.aliyun.oss.OSS#setBucketVersioning(SetBucketVersioningRequest)}.
  * </p>
  * <p>
  * Note: When attempting to delete an object that does not exist, 
@@ -62,8 +62,6 @@ public class DeleteVersionRequest extends GenericRequest {
      *            The key of the object version to delete.
      * @param versionId
      *            The version ID identifying the version to delete.
-     *            
-     * @see DeleteVersionRequest#DeleteVersionRequest(String, String, String, MultiFactorAuthentication)          
      */
     public DeleteVersionRequest(String bucketName, String key, String versionId) {
     	super(bucketName, key);
@@ -119,5 +117,5 @@ public class DeleteVersionRequest extends GenericRequest {
         setVersionId(versionId);
         return this;
     }
-    
+
 }

@@ -210,7 +210,7 @@ public class LiveChannelOperation extends OSSOperation {
         List<LiveChannel> liveChannels = liveChannelListing.getLiveChannels();
         while (liveChannelListing.isTruncated()) {
             liveChannelListing = listLiveChannels(
-                    new ListLiveChannelsRequest(bucketName, liveChannelListing.getNextMarker(), null));
+                    new ListLiveChannelsRequest(bucketName, "", liveChannelListing.getNextMarker()));
             liveChannels.addAll(liveChannelListing.getLiveChannels());
         }
         return liveChannels;

@@ -45,8 +45,18 @@ public final class TestConfig {
     public static String PROXY_USER = null;
     public static String PROXY_PASSWORD = null;
 
+    // OSS RAM
+    public static String RAM_REGION = null;
+    public static String RAM_ROLE_ARN = null;
+    public static String RAM_UID = null;
+    public static String RAM_ACCESS_KEY_ID = null;
+    public static String RAM_ACCESS_KEY_SECRET = null;
+
     // OSS cmk id configuration
-    public static String CMK_ID = null;
+    public static String KMS_CMK_ID = null;
+    public static String KMS_REGION = null;
+    public static String KMS_CMK_ID_1 = null;
+    public static String KMS_REGION_1 = null;
 
     // OSS callback 
     public static String CALLBACK_URL = null;

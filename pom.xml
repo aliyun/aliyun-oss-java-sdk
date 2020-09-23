@@ -11,7 +11,7 @@
 
     <groupId>com.aliyun.oss</groupId>
     <artifactId>aliyun-sdk-oss</artifactId>
-    <version>3.8.1</version>
+    <version>3.11.1</version>
     <packaging>jar</packaging>
     <name>Aliyun OSS SDK for Java</name>
     <description>The Aliyun OSS SDK for Java used for accessing Aliyun Object Storage Service</description>
@@ -25,8 +25,8 @@
         </dependency>
         <dependency>
             <groupId>org.jdom</groupId>
-            <artifactId>jdom</artifactId>
-            <version>1.1</version>
+            <artifactId>jdom2</artifactId>
+            <version>2.0.6</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jettison</groupId>
@@ -36,7 +36,7 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>aliyun-java-sdk-core</artifactId>
-            <version>3.4.0</version>
+            <version>4.5.10</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.json</groupId>
@@ -47,17 +47,17 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>aliyun-java-sdk-ram</artifactId>
-            <version>3.0.0</version>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>com.aliyun</groupId>
-            <artifactId>aliyun-java-sdk-sts</artifactId>
-            <version>3.0.0</version>
+            <artifactId>aliyun-java-sdk-kms</artifactId>
+            <version>2.11.0</version>
         </dependency>
         <dependency>
-            <groupId>com.aliyun</groupId>
-            <artifactId>aliyun-java-sdk-ecs</artifactId>
-            <version>4.2.0</version>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.62</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

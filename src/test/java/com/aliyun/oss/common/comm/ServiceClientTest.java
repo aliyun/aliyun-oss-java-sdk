@@ -22,6 +22,8 @@ package com.aliyun.oss.common.comm;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNull;
+
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -39,11 +41,6 @@ import com.aliyun.oss.ClientErrorCode;
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.ServiceException;
-import com.aliyun.oss.common.comm.DefaultServiceClient;
-import com.aliyun.oss.common.comm.ExecutionContext;
-import com.aliyun.oss.common.comm.RequestMessage;
-import com.aliyun.oss.common.comm.ResponseHandler;
-import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.internal.OSSConstants;
 import com.aliyun.oss.utils.ResourceUtils;
 import com.aliyun.oss.utils.StreamUtils;
@@ -245,4 +242,16 @@ public class ServiceClientTest {
             assertEquals(1, client.getRequestAttempts());
         }
     }
+
+    @Test
+    public void testResponseMessageAbort()  {
+        try {
+            ResponseMessage responseMessage = new ResponseMessage(new ServiceClient.Request());
+            assertNull(responseMessage.getHttpResponse());
+            responseMessage.abort();
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
 }

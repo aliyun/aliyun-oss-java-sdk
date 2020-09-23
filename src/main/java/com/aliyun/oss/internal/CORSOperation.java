@@ -36,6 +36,7 @@ import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.comm.ServiceClient;
 import com.aliyun.oss.model.GenericRequest;
+import com.aliyun.oss.model.CORSConfiguration;
 import com.aliyun.oss.model.OptionsRequest;
 import com.aliyun.oss.model.SetBucketCORSRequest;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
@@ -70,9 +71,9 @@ public class CORSOperation extends OSSOperation {
     }
 
     /**
-     * Return a list of CORS rules of the specified bucket.
+     * Return the CORS configuration of the specified bucket.
      */
-    public List<CORSRule> getBucketCORSRules(GenericRequest genericRequest) {
+    public CORSConfiguration getBucketCORS(GenericRequest genericRequest) {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 

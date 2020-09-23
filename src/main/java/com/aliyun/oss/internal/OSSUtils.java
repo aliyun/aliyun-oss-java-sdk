@@ -53,6 +53,24 @@ public class OSSUtils {
     public static final ResourceManager COMMON_RESOURCE_MANAGER = ResourceManager.getInstance(RESOURCE_NAME_COMMON);
 
     private static final String BUCKET_NAMING_REGEX = "^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$";
+    private static final String ENDPOINT_REGEX = "^[a-zA-Z0-9._-]+$";
+
+    /**
+     * Validate endpoint.
+     */
+    public static boolean validateEndpoint(String endpoint) {
+        if (endpoint == null) {
+            return false;
+        }
+        return endpoint.matches(ENDPOINT_REGEX);
+    }
+
+    public static void ensureEndpointValid(String endpoint) {
+        if (!validateEndpoint(endpoint)) {
+            throw new IllegalArgumentException(
+                    OSS_RESOURCE_MANAGER.getFormattedString("EndpointInvalid", endpoint));
+        }
+    }
 
     /**
      * Validate bucket name.
@@ -92,7 +110,7 @@ public class OSSUtils {
         // Validate exculde xml unsupported chars
         char keyChars[] = key.toCharArray();
         char firstChar = keyChars[0];
-        if (firstChar == '/' || firstChar == '\\') {
+        if (firstChar == '\\') {
             return false;
         }
 
@@ -188,6 +206,10 @@ public class OSSUtils {
      * Encode object URI.
      */
     private static String urlEncodeKey(String key) {
+        if (key.startsWith("/")) {
+            return HttpUtil.urlEncode(key, DEFAULT_CHARSET_NAME);
+        }
+
         StringBuffer resultUri = new StringBuffer();
 
         String[] keys = key.split("/");
@@ -479,5 +501,4 @@ public class OSSUtils {
             throw new InconsistentException(clientChecksum, serverChecksum, requestId);
         }
     }
-
 }

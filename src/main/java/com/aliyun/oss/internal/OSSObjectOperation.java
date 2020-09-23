@@ -81,24 +81,20 @@ import java.util.Map;
 import java.util.zip.CheckedInputStream;
 
 import com.aliyun.oss.model.*;
-import org.apache.http.HttpStatus;
 
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
-import com.aliyun.oss.ServiceException;
 import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.comm.ResponseHandler;
-import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.comm.ServiceClient;
 import com.aliyun.oss.common.comm.io.RepeatableFileInputStream;
 import com.aliyun.oss.common.parser.ResponseParser;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.CRC64;
 import com.aliyun.oss.common.utils.DateUtil;
-import com.aliyun.oss.common.utils.ExceptionFactory;
 import com.aliyun.oss.common.utils.HttpHeaders;
 import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.common.utils.IOUtils;
@@ -437,24 +433,24 @@ public class OSSObjectOperation extends OSSOperation {
         params.put(SUBRESOURCE_OBJECTMETA, null);
         if (genericRequest.getVersionId() != null) {
             params.put(RequestParameters.SUBRESOURCE_VRESION_ID,
-                genericRequest.getVersionId());
+                    genericRequest.getVersionId());
         }
 
         Map<String, String> headers = new HashMap<String, String>();
         populateRequestPayerHeader(headers, genericRequest.getRequestPayer());
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(params)
+                .setMethod(HttpMethod.HEAD).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(params)
                 .setOriginalRequest(genericRequest).build();
 
-        return doOperation(request, getSimplifiedObjectMetaResponseParser, bucketName, key, true);
+        return doOperation(request, getSimplifiedObjectMetaResponseParser, bucketName, key);
     }
 
     /**
      * Get object matadata.
      */
-    public ObjectMetadata getObjectMetadata(GenericRequest genericRequest) 
-        throws OSSException, ClientException {
+    public ObjectMetadata getObjectMetadata(GenericRequest genericRequest)
+            throws OSSException, ClientException {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
@@ -465,7 +461,7 @@ public class OSSObjectOperation extends OSSOperation {
         assertParameterNotNull(key, "key");
         ensureBucketNameValid(bucketName);
         ensureObjectKeyValid(key);
-        
+
         Map<String, String> params = new HashMap<String, String>();
         if (genericRequest.getVersionId() != null) {
             params.put(RequestParameters.SUBRESOURCE_VRESION_ID, genericRequest.getVersionId());
@@ -475,25 +471,10 @@ public class OSSObjectOperation extends OSSOperation {
         populateRequestPayerHeader(headers, genericRequest.getRequestPayer());
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-            .setMethod(HttpMethod.HEAD).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(params)
-            .setOriginalRequest(genericRequest).build();
+                .setMethod(HttpMethod.HEAD).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
 
-        List<ResponseHandler> reponseHandlers = new ArrayList<ResponseHandler>();
-        reponseHandlers.add(new ResponseHandler() {
-
-            @Override
-            public void handle(ResponseMessage response) throws ServiceException, ClientException {
-                if (response.getStatusCode() == HttpStatus.SC_NOT_FOUND) {
-                    safeCloseResponse(response);
-                    throw ExceptionFactory.createOSSException(
-                            response.getHeaders().get(OSSHeaders.OSS_HEADER_REQUEST_ID), OSSErrorCode.NO_SUCH_KEY,
-                            OSS_RESOURCE_MANAGER.getString("NoSuchKey"));
-                }
-            }
-
-        });
-
-        return doOperation(request, getObjectMetadataResponseParser, bucketName, key, true, null, reponseHandlers);
+        return doOperation(request, getObjectMetadataResponseParser, bucketName, key);
     }
 
     /**
@@ -738,6 +719,14 @@ public class OSSObjectOperation extends OSSOperation {
         assertParameterNotNull(key, "key");
         ensureObjectKeyValid(key);
 
+        byte[] content = new byte[0];
+        if (genericRequest instanceof RestoreObjectRequest) {
+            RestoreObjectRequest restoreObjectRequest = (RestoreObjectRequest) genericRequest;
+            if (restoreObjectRequest.getRestoreConfiguration() != null) {
+                content = restoreObjectRequestMarshaller.marshall(restoreObjectRequest);
+            }
+        }
+
         Map<String, String> params = new HashMap<String, String>();
         params.put(RequestParameters.SUBRESOURCE_RESTORE, null);
         if (versionId != null) {
@@ -749,7 +738,7 @@ public class OSSObjectOperation extends OSSOperation {
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.POST).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(params)
-                .setInputStream(new ByteArrayInputStream(new byte[0])).setInputSize(0)
+                .setInputStream(new ByteArrayInputStream(content)).setInputSize(content.length)
                 .setOriginalRequest(genericRequest).build();
 
         return doOperation(request, ResponseParsers.restoreObjectResponseParser, bucketName, key);
