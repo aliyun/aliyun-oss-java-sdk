@@ -31,6 +31,9 @@ import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.DefaultCredentials;
+import com.aliyun.oss.event.ProgressEvent;
+import com.aliyun.oss.event.ProgressEventType;
+import com.aliyun.oss.event.ProgressListener;
 import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 import static com.aliyun.oss.OSSErrorCode.PART_NOT_SEQUENTIAL;
@@ -308,9 +311,10 @@ public class UploadFileTest extends TestBase {
                         UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
                         uploadFileRequest.setUploadFile(file.getAbsolutePath());
                         uploadFileRequest.setTaskNum(1);
-                        uploadFileRequest.setPartSize(100 * 1024);
+                        uploadFileRequest.setPartSize(200 * 1024);
                         uploadFileRequest.setEnableCheckpoint(true);
                         uploadFileRequest.setCheckpointFile(cpf);
+                        uploadFileRequest.setTrafficLimit(8 * 3 * 1024 * 1024);
 
                         UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
                     } catch (Exception e) {
@@ -427,6 +431,148 @@ public class UploadFileTest extends TestBase {
         } catch (Throwable e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testUploadRetryWithProgress() {
+        final String objectName = "test-upload-with-progress";
+        final String ucpName = objectName + ".ucp";
+        final String newUcpName = ucpName + ".new";
+        File file = null;
+        File ucpFile = null;
+        File newUcpFile = new File(newUcpName);
+        try {
+            file = createSampleFile(objectName, 10 * 1024 * 1024);
+            ucpFile = new File(ucpName);
+
+            if (ucpFile.exists()) {
+                ucpFile.delete();
+            }
+
+            Assert.assertFalse(ucpFile.exists());
+
+            // create a effective checkpoint file.
+            final File finalFile = file;
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, objectName);
+                        uploadFileRequest.setUploadFile(finalFile.getAbsolutePath());
+                        uploadFileRequest.setTaskNum(1);
+                        uploadFileRequest.setPartSize(200 * 1024);
+                        uploadFileRequest.setEnableCheckpoint(true);
+                        uploadFileRequest.setCheckpointFile(ucpName);
+                        uploadFileRequest.setTrafficLimit(8 * 2 * 1024 * 1024);
+                        uploadFileRequest.withProgressListener(new UploadFileProgressListener(finalFile.length(), false, 200 * 1024));
+                        ossClient.uploadFile(uploadFileRequest);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } catch (Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                }
+            }, "upload-with-progress");
+
+            thread.start();
+            Thread.sleep(2000);
+            thread.interrupt();
+
+            if (newUcpFile.exists()) {
+                newUcpFile.delete();
+            }
+
+            // cp checkpoint file to a new checkpoint file.
+            InputStream is = new FileInputStream(ucpFile);
+            OutputStream os = new FileOutputStream(newUcpFile);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = is.read(buffer)) > 0) {
+                os.write(buffer, 0, length);
+            }
+            is.close();
+            os.close();
+        } catch (Throwable e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        // use new ucp file and new progress listener.
+        try {
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, objectName);
+            uploadFileRequest.setUploadFile(file.getAbsolutePath());
+            uploadFileRequest.setTaskNum(1);
+            uploadFileRequest.setPartSize(200 * 1024);
+            uploadFileRequest.setEnableCheckpoint(true);
+            uploadFileRequest.setCheckpointFile(newUcpName);
+            uploadFileRequest.withProgressListener(new UploadFileProgressListener(file.length(), true, 200 * 1024));
+            ossClient.uploadFile(uploadFileRequest);
+        }  catch (Throwable e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        } finally {
+            ucpFile.delete();
+            newUcpFile.delete();
+        }
+
+    }
+
+    public class UploadFileProgressListener implements ProgressListener {
+        private long bytesWritten = 0;
+        private long totalBytes = -1;
+        private boolean succeed = false;
+        private long expectedTotalBytes = -1;
+        private boolean reUploadFlag = false;
+        private long partSize = -1;
+
+        UploadFileProgressListener(long expectedTotalBytes, boolean reUploadFlag, long partSize) {
+            this.expectedTotalBytes = expectedTotalBytes;
+            this.reUploadFlag = reUploadFlag;
+            this.partSize = partSize;
+        }
+
+        @Override
+        public void progressChanged(ProgressEvent progressEvent) {
+            long bytes = progressEvent.getBytes();
+            ProgressEventType eventType = progressEvent.getEventType();
+            switch (eventType) {
+                case TRANSFER_STARTED_EVENT:
+                    System.out.println("Start to upload......");
+                    break;
+                case REQUEST_CONTENT_LENGTH_EVENT:
+                    this.totalBytes = bytes;
+                    Assert.assertEquals(this.expectedTotalBytes, this.totalBytes);
+                    System.out.println(this.totalBytes + " bytes in total will be uploaded to OSS");
+                    break;
+                case REQUEST_BYTE_TRANSFER_EVENT:
+                    if (this.reUploadFlag) {
+                        Assert.assertTrue( bytes > this.partSize);
+                        this.reUploadFlag = false;
+                    }
+                    this.bytesWritten += bytes;
+                    if (this.totalBytes != -1) {
+                        int percent = (int) (this.bytesWritten * 100.0 / this.totalBytes);
+                        System.out.println(bytes + " bytes have been written at this time, upload progress: " + percent + "%(" + this.bytesWritten + "/" + this.totalBytes + ")");
+                    } else {
+                        System.out.println(bytes + " bytes have been written at this time, upload ratio: unknown" + "(" + this.bytesWritten + "/...)");
+                    }
+                    break;
+                case TRANSFER_COMPLETED_EVENT:
+                    Assert.assertEquals(this.expectedTotalBytes, this.bytesWritten);
+                    this.succeed = true;
+                    System.out.println("Succeed to upload, " + this.bytesWritten + " bytes have been transferred in total");
+                    break;
+                case TRANSFER_FAILED_EVENT:
+                    System.out.println("Failed to upload, " + this.bytesWritten + " bytes have been transferred");
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public boolean isSucceed() {
+            return succeed;
         }
     }
 
