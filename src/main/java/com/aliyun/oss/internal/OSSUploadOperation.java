@@ -462,12 +462,17 @@ public class OSSUploadOperation {
 
         // Compute the size of the data pending upload.
         long contentLength = 0;
+        long completedLength = 0;
         for (int i = 0; i < uploadCheckPoint.uploadParts.size(); i++) {
-            if (!uploadCheckPoint.uploadParts.get(i).isCompleted) {
-                contentLength += uploadCheckPoint.uploadParts.get(i).size;
+            long partSize = uploadCheckPoint.uploadParts.get(i).size;
+            contentLength += partSize;
+            if (uploadCheckPoint.uploadParts.get(i).isCompleted) {
+                completedLength += partSize;
             }
         }
+
         ProgressPublisher.publishRequestContentLength(listener, contentLength);
+        ProgressPublisher.publishRequestBytesTransferred(listener, completedLength);
         uploadFileRequest.setProgressListener(null);
 
         // Upload parts.

@@ -524,15 +524,19 @@ public class OSSDownloadOperation {
         ProgressListener listener = downloadFileRequest.getProgressListener();
 
         // Compute the size of data pending download.
+        long completedLength = 0;
         long contentLength = 0;
         for (int i = 0; i < downloadCheckPoint.downloadParts.size(); i++) {
-            if (!downloadCheckPoint.downloadParts.get(i).isCompleted) {
-                long partSize = downloadCheckPoint.downloadParts.get(i).end
-                        - downloadCheckPoint.downloadParts.get(i).start + 1;
-                contentLength += partSize;
+            long partSize = downloadCheckPoint.downloadParts.get(i).end -
+                    downloadCheckPoint.downloadParts.get(i).start + 1;
+            contentLength += partSize;
+            if (downloadCheckPoint.downloadParts.get(i).isCompleted) {
+                completedLength += partSize;
             }
         }
+
         ProgressPublisher.publishResponseContentLength(listener, contentLength);
+        ProgressPublisher.publishResponseBytesTransferred(listener, completedLength);
         downloadFileRequest.setProgressListener(null);
 
         // Concurrently download parts.
