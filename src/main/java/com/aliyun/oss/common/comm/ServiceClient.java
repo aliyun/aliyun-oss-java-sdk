@@ -39,6 +39,7 @@ import com.aliyun.oss.ServiceException;
 import com.aliyun.oss.common.auth.RequestSigner;
 import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.common.utils.LogUtils;
+import com.aliyun.oss.common.utils.HttpHeaders;
 import com.aliyun.oss.internal.OSSConstants;
 
 /**
@@ -129,11 +130,12 @@ public abstract class ServiceClient {
                 Request httpRequest = buildRequest(request, context);
 
                 // Step 3. Send HTTP request to OSS.
+                String poolStatsInfo = config.isLogConnectionPoolStatsEnable()? "Connection pool stats " + getConnectionPoolStats():"";
                 long startTime = System.currentTimeMillis();
                 response = sendRequestCore(httpRequest, context);
                 long duration = System.currentTimeMillis() - startTime;
                 if (duration > config.getSlowRequestsThreshold()) {
-                    LogUtils.getLog().warn(formatSlowRequestLog(request, response, duration));
+                    LogUtils.getLog().warn(formatSlowRequestLog(request, response, duration) + poolStatsInfo);
                 }
 
                 // Step 4. Preprocess HTTP response.
@@ -309,14 +311,18 @@ public abstract class ServiceClient {
 
     private String formatSlowRequestLog(RequestMessage request, ResponseMessage response, long useTimesMs) {
         return String.format(
-                "Request cost %d seconds, endpoint %s, resourcePath %s, " + "method %s, statusCode %d, requestId %s.",
-                useTimesMs / 1000, request.getEndpoint(), request.getResourcePath(), request.getMethod(),
+                "Request cost %d seconds, endpoint %s, resourcePath %s, " + "method %s, Date '%s', statusCode %d, requestId %s.",
+                useTimesMs / 1000, request.getEndpoint(), request.getResourcePath(), request.getMethod(), request.getHeaders().get(HttpHeaders.DATE),
                 response.getStatusCode(), response.getRequestId());
     }
 
     protected abstract RetryStrategy getDefaultRetryStrategy();
 
     public abstract void shutdown();
+
+    protected String getConnectionPoolStats() {
+        return "";
+    };
 
     /**
      * Wrapper class based on {@link HttpMessage} that represents HTTP request

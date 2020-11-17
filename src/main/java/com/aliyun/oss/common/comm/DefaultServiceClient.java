@@ -321,6 +321,15 @@ public class DefaultServiceClient extends ServiceClient {
         this.connectionManager.shutdown();
     }
 
+    @Override
+    protected String getConnectionPoolStats() {
+        if (connectionManager != null && connectionManager instanceof PoolingHttpClientConnectionManager) {
+            PoolingHttpClientConnectionManager conn = (PoolingHttpClientConnectionManager)connectionManager;
+            return conn.getTotalStats().toString();
+        }
+        return "";
+    }
+
     private static Method getClassMethd(Class<?> clazz, String methodName) {
         try {
             Method[] method = clazz.getDeclaredMethods();

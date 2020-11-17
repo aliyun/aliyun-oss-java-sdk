@@ -117,6 +117,8 @@ public class ClientConfiguration {
     private SecureRandom secureRandom = null;
     private HostnameVerifier hostnameVerifier = null;
 
+    protected boolean logConnectionPoolStats = false;
+
     public ClientConfiguration() {
         super();
         AppendDefaultExcludeList(this.cnameExcludeList);
@@ -846,7 +848,7 @@ public class ClientConfiguration {
         return hostnameVerifier;
     }
 
-    /**
+	/**
      * Sets instance of this interface for hostname verification.
      *
      * @param hostnameVerifier
@@ -854,6 +856,25 @@ public class ClientConfiguration {
      */
     public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
         this.hostnameVerifier = hostnameVerifier;
+    }
+
+    /**
+     * Sets the flag of logging connection pool statistics.
+     *
+     * @param enabled
+     *            True if it's enabled; False if it's disabled.
+     */
+    public void setLogConnectionPoolStats(boolean enabled) {
+        this.logConnectionPoolStats = enabled;
+    }
+
+    /**
+     * Gets the flag of logging connection pool statistics. By default it's disabled.
+     *
+     * @return true enabled; false disabled.
+     */
+    public boolean isLogConnectionPoolStatsEnable() {
+        return logConnectionPoolStats;
     }
 
 }
