@@ -178,6 +178,7 @@ public class ClientBuilderTest extends TestBase {
         Assert.assertEquals(config.getTickOffset(), 0);
         config.setSupportCname(true);
         config.setConnectionTimeout(10000);
+        config.setSlowRequestsThreshold(0);
         try {
             long epochTicks = new Date().getTime();
             epochTicks -= 16*600*1000;
@@ -234,6 +235,28 @@ public class ClientBuilderTest extends TestBase {
             Assert.fail("should not here.");
         } catch (Exception e) {
             Assert.assertTrue(true);
+        }
+    }
+
+    @Test
+    public void testClientBuilderLogConnectionPoolStats() {
+        OSSClient client = null;
+        ClientBuilderConfiguration config = new ClientBuilderConfiguration();
+        Assert.assertEquals(config.isLogConnectionPoolStatsEnable(), false);
+        config.setLogConnectionPoolStats(true);
+        Assert.assertEquals(config.isLogConnectionPoolStatsEnable(), true);
+        config.setSlowRequestsThreshold(0);
+        try {
+            client = (OSSClient) new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT,
+                    new DefaultCredentialProvider(TestConfig.OSS_TEST_ACCESS_KEY_ID,
+                            TestConfig.OSS_TEST_ACCESS_KEY_SECRET),
+                    config);
+            BucketInfo info = client.getBucketInfo(bucketName);
+            Assert.assertEquals(info.getBucket().getName(), bucketName);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        } finally {
+            client.shutdown();
         }
     }
 }

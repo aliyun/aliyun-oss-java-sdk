@@ -254,4 +254,44 @@ public class ServiceClientTest {
         }
     }
 
+    @Test
+    public void testLogConnectionPoolStats() throws Exception{
+        // This request will fail after 1 retries
+        ClientConfiguration config = new ClientConfiguration();
+        config.setMaxErrorRetry(1);
+        config.setLogConnectionPoolStats(true);
+        config.setSlowRequestsThreshold(0);
+        int maxFailures = 0; // It should be always successful.
+
+        String content = "Let's retry!";
+        byte[] contentBytes = content.getBytes(OSSConstants.DEFAULT_CHARSET_NAME);
+        ByteArrayInputStream contentStream = new ByteArrayInputStream(contentBytes);
+
+        RequestMessage request = new RequestMessage(null, null);
+        request.setEndpoint(new URI("http://localhost"));
+        request.setMethod(HttpMethod.GET);
+        request.setContent(contentStream);
+        request.setContentLength(contentBytes.length);
+
+        ExecutionContext context = new ExecutionContext();
+        context.getResponseHandlers().add(new ResponseHandler() {
+
+            @Override
+            public void handle(ResponseMessage responseData) throws ServiceException,
+                    ClientException {
+                throw new ServiceException();
+            }
+        });
+
+        // This request will succeed after 2 retries
+        ServiceClientImpl client = new ServiceClientImpl(config, maxFailures, null, 500, content);
+        // Fix the max error retry count to 3
+        try{
+            client.sendRequest(request, context);
+            fail("ServiceException has not been thrown.");
+        } catch (ServiceException e){
+            assertEquals(2, client.getRequestAttempts());
+        }
+    }
+
 }
