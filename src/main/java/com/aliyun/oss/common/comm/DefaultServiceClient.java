@@ -395,7 +395,10 @@ public class DefaultServiceClient extends ServiceClient {
         public X509Certificate[] getAcceptedIssuers() {
             List<X509Certificate> certificates = new ArrayList<X509Certificate>();
             for (X509TrustManager trustManager : trustManagers) {
-                certificates.addAll(Arrays.asList(trustManager.getAcceptedIssuers()));
+                X509Certificate[] accepts = trustManager.getAcceptedIssuers();
+                if(accepts != null && accepts.length > 0) {
+                    certificates.addAll(Arrays.asList(accepts));
+                }
             }
             X509Certificate[] certificatesArray = new X509Certificate[certificates.size()];
             return certificates.toArray(certificatesArray);
