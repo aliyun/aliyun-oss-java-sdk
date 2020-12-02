@@ -26,6 +26,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
@@ -50,29 +52,50 @@ public class Mimetypes {
             return mimetypes;
 
         mimetypes = new Mimetypes();
-        InputStream is = mimetypes.getClass().getResourceAsStream("/mime.types");
-        if (is != null) {
-            getLog().debug("Loading mime types from file in the classpath: mime.types");
+        Enumeration<URL> urls = null;
+        try {
+            urls = mimetypes.getClass().getClassLoader().getResources("mime.types");
+        } catch (IOException e) {
+            getLog().error("Failed to load mime types from file in the classpath: mime.types", e);
+        }
 
-            try {
-                mimetypes.loadMimetypes(is);
-            } catch (IOException e) {
-                getLog().error("Failed to load mime types from file in the classpath: mime.types", e);
-            } finally {
+        if (urls != null) {
+            while (urls.hasMoreElements()) {
+                InputStream is = null;
+                URL url = urls.nextElement();
+                String urlPath = url.getPath();
                 try {
-                    is.close();
-                } catch (IOException ex) {
+                    is = url.openStream();
+                } catch (Exception e) {
+                    getLog().error("Failed to load mime types from file: " + urlPath, e);
+                    continue;
+                }
+                if (is != null) {
+                    getLog().debug(String.format("Loading mime types from file: %s", urlPath));
+                    try {
+                        if (mimetypes.loadMimetypes(is)) {
+                            getLog().debug(String.format("Loaded mime types from file: %s successfully.", urlPath));
+                            break;
+                        }
+                        getLog().debug(String.format("Loaded mime types from file: %s failed.", urlPath));
+                    } catch (IOException e) {
+                        getLog().error("Failed to load mime types from file: " + urlPath, e);
+                    } finally {
+                        try {
+                            is.close();
+                        } catch (IOException ex) {
+                        }
+                    }
                 }
             }
-        } else {
-            getLog().warn("Unable to find 'mime.types' file in classpath");
         }
         return mimetypes;
     }
 
-    public void loadMimetypes(InputStream is) throws IOException {
+    public boolean loadMimetypes(InputStream is) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         String line = null;
+        boolean isFirstLine = true;
 
         while ((line = br.readLine()) != null) {
             line = line.trim();
@@ -85,11 +108,18 @@ public class Mimetypes {
                     String extension = st.nextToken();
                     if (st.hasMoreTokens()) {
                         String mimetype = st.nextToken();
+                        if (isFirstLine) {
+                            isFirstLine = false;
+                            if (!mimetype.startsWith("application")) {
+                                return false;
+                            }
+                        }
                         extensionToMimetypeMap.put(extension.toLowerCase(), mimetype);
                     }
                 }
             }
         }
+        return true;
     }
 
     public String getMimetype(String fileName) {
