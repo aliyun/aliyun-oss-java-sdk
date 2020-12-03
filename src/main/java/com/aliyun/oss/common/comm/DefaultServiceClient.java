@@ -322,7 +322,7 @@ public class DefaultServiceClient extends ServiceClient {
     }
 
     @Override
-    protected String getConnectionPoolStats() {
+    public String getConnectionPoolStats() {
         if (connectionManager != null && connectionManager instanceof PoolingHttpClientConnectionManager) {
             PoolingHttpClientConnectionManager conn = (PoolingHttpClientConnectionManager)connectionManager;
             return conn.getTotalStats().toString();
