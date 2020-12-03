@@ -242,6 +242,7 @@ public class ClientBuilderTest extends TestBase {
     public void testClientBuilderLogConnectionPoolStats() {
         OSSClient client = null;
         ClientBuilderConfiguration config = new ClientBuilderConfiguration();
+        config.setMaxConnections(10);
         Assert.assertEquals(config.isLogConnectionPoolStatsEnable(), false);
         config.setLogConnectionPoolStats(true);
         Assert.assertEquals(config.isLogConnectionPoolStatsEnable(), true);
@@ -251,8 +252,43 @@ public class ClientBuilderTest extends TestBase {
                     new DefaultCredentialProvider(TestConfig.OSS_TEST_ACCESS_KEY_ID,
                             TestConfig.OSS_TEST_ACCESS_KEY_SECRET),
                     config);
-            BucketInfo info = client.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
+
+            final OSSClient innerClient = client;
+
+            int threadCount = 20;
+            Thread[] ts = new Thread[threadCount];
+            for (int i = 0; i < threadCount; i++) {
+                final int seqNum = i;
+                Runnable r = new Runnable() {
+
+                    @Override
+                    public void run() {
+                        try {
+                            BucketInfo info = innerClient.getBucketInfo(bucketName);
+                            Assert.assertEquals(info.getBucket().getName(), bucketName);
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                };
+
+                ts[i] = new Thread(r);
+            }
+
+            for (int i = 0; i < threadCount; i++) {
+                ts[i].start();
+            }
+
+            for (int i = 0; i < threadCount; i++) {
+                ts[i].join();
+            }
+
+            String str  = client.getConnectionPoolStats();
+            Assert.assertTrue(str.indexOf("leased: 0") != -1);
+            Assert.assertTrue(str.indexOf("pending: 0") != -1);
+            Assert.assertTrue(str.indexOf("available: 10") != -1);
+            Assert.assertTrue(str.indexOf("max: 10") != -1);
+
         } catch (Exception e) {
             Assert.assertTrue(false);
         } finally {

@@ -320,7 +320,7 @@ public abstract class ServiceClient {
 
     public abstract void shutdown();
 
-    protected String getConnectionPoolStats() {
+    public String getConnectionPoolStats() {
         return "";
     };
 

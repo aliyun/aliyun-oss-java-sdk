@@ -1779,4 +1779,12 @@ public class OSSClient implements OSS {
         }
     }
 
+    @Override
+    public String getConnectionPoolStats() {
+        try {
+            return serviceClient.getConnectionPoolStats();
+        } catch (Exception e) {
+        }
+        return "";
+    }
 }

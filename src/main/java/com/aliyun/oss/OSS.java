@@ -69,6 +69,11 @@ public interface OSS {
     public void shutdown();
 
     /**
+     * Get the statistics of the connection pool.
+     */
+    public String getConnectionPoolStats();
+
+    /**
      * Creates {@link Bucket} instance. The bucket name specified must be
      * globally unique and follow the naming rules from
      * https://www.alibabacloud.com/help/doc-detail/31827.htm?spm=a3c0i.o32012en
