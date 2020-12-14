@@ -50,14 +50,14 @@ public class Mimetypes {
             return mimetypes;
 
         mimetypes = new Mimetypes();
-        InputStream is = mimetypes.getClass().getResourceAsStream("/mime.types");
+        InputStream is = mimetypes.getClass().getResourceAsStream("/oss.mime.types");
         if (is != null) {
-            getLog().debug("Loading mime types from file in the classpath: mime.types");
+            getLog().debug("Loading mime types from file in the classpath: oss.mime.types");
 
             try {
                 mimetypes.loadMimetypes(is);
             } catch (IOException e) {
-                getLog().error("Failed to load mime types from file in the classpath: mime.types", e);
+                getLog().error("Failed to load mime types from file in the classpath: oss.mime.types", e);
             } finally {
                 try {
                     is.close();
@@ -65,7 +65,7 @@ public class Mimetypes {
                 }
             }
         } else {
-            getLog().warn("Unable to find 'mime.types' file in classpath");
+            getLog().warn("Unable to find 'oss.mime.types' file in classpath");
         }
         return mimetypes;
     }
