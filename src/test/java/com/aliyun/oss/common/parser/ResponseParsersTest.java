@@ -2677,6 +2677,55 @@ public class ResponseParsersTest {
     }
 
     @Test
+    public void testparseBucketWebsiteErrorHttpStatus() {
+        InputStream instream = null;
+        String respBody;
+
+        respBody = "" +
+                "<WebsiteConfiguration>\n" +
+                "  <ErrorDocument>\n" +
+                "    <Key>error.html</Key>\n" +
+                "    <HttpStatus>200</HttpStatus>\n" +
+                "  </ErrorDocument>\n" +
+                "</WebsiteConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            BucketWebsiteResult result = ResponseParsers.parseBucketWebsite(instream);
+            Assert.assertEquals("error.html", result.getErrorDocument());
+            Assert.assertEquals(Integer.valueOf(200), result.getErrorDocumentHttpStatus());
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        respBody = "" +
+                "<WebsiteConfiguration>\n" +
+                "  <ErrorDocument>\n" +
+                "    <Key>error.html</Key>\n" +
+                "  </ErrorDocument>\n" +
+                "</WebsiteConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            BucketWebsiteResult result = ResponseParsers.parseBucketWebsite(instream);
+            Assert.assertNull(result.getErrorDocumentHttpStatus());
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+    }
+
+
+    @Test
     public void testparseCopyObjectResult() {
         InputStream instream = null;
         String respBody;

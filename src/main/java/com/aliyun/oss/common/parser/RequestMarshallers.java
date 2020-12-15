@@ -287,9 +287,16 @@ public final class RequestMarshallers {
                 xmlBody.append("<Suffix>" + request.getIndexDocument() + "</Suffix>");
                 xmlBody.append("</IndexDocument>");
             }
-            if (request.getErrorDocument() != null) {
+            String errorDocument = request.getErrorDocument();
+            Integer errorDocumentHttpStatus = request.getErrorDocumentHttpStatus();
+            if (errorDocument != null || errorDocumentHttpStatus != null) {
                 xmlBody.append("<ErrorDocument>");
-                xmlBody.append("<Key>" + request.getErrorDocument() + "</Key>");
+                if (errorDocument != null) {
+                    xmlBody.append("<Key>" + request.getErrorDocument() + "</Key>");
+                }
+                if (errorDocumentHttpStatus != null) {
+                    xmlBody.append("<HttpStatus>" + errorDocumentHttpStatus + "</HttpStatus>");
+                }
                 xmlBody.append("</ErrorDocument>");
             }
 
