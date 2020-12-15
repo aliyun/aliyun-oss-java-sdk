@@ -2125,6 +2125,10 @@ public final class ResponseParsers {
                 result.setIndexDocument(root.getChild("IndexDocument").getChildText("Suffix"));
             }
             if (root.getChild("ErrorDocument") != null) {
+                String httpStatus = root.getChild("ErrorDocument").getChildText("HttpStatus");
+                if (httpStatus != null) {
+                    result.setErrorDocumentHttpStatus(Integer.valueOf(httpStatus));
+                }
                 result.setErrorDocument(root.getChild("ErrorDocument").getChildText("Key"));
             }
             if (root.getChild("RoutingRules") != null) {

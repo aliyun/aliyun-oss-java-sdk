@@ -25,6 +25,7 @@ import java.util.List;
 public class BucketWebsiteResult extends GenericResult {
     private String indexDocument;
     private String errorDocument;
+    private Integer errorDocumentHttpStatus;
     private List<RoutingRule> routingRules;
 
     public String getIndexDocument() {
@@ -41,6 +42,14 @@ public class BucketWebsiteResult extends GenericResult {
 
     public void setErrorDocument(String errorDocument) {
         this.errorDocument = errorDocument;
+    }
+
+    public Integer getErrorDocumentHttpStatus() {
+        return errorDocumentHttpStatus;
+    }
+
+    public void setErrorDocumentHttpStatus(Integer errorDocumentHttpStatus) {
+        this.errorDocumentHttpStatus = errorDocumentHttpStatus;
     }
 
     public List<RoutingRule> getRoutingRules() {
