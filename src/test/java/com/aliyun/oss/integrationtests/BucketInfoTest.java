@@ -19,6 +19,8 @@
 
 package com.aliyun.oss.integrationtests;
 
+import com.aliyun.oss.OSSErrorCode;
+import com.aliyun.oss.OSSException;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -101,5 +103,22 @@ public class BucketInfoTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-    
+
+    @Test
+    public void testCreateBucket() {
+        final String testBucketName = bucketName + "-test-_1";
+        try {
+            ossClient.createBucket(testBucketName);
+            Assert.fail("should fail.");
+        } catch (IllegalArgumentException e) {
+        }
+
+        try {
+            ossClient.getBucketInfo(testBucketName);
+            Assert.fail("should fail.");
+        } catch (OSSException e) {
+            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+        }
+    }
+
 }
