@@ -73,6 +73,9 @@ public class ClientConfiguration {
     protected int connectionRequestTimeout = DEFAULT_CONNECTION_REQUEST_TIMEOUT;
     protected int connectionTimeout = DEFAULT_CONNECTION_TIMEOUT;
     protected int socketTimeout = DEFAULT_SOCKET_TIMEOUT;
+    protected Integer socketBacklogSize = null;
+    protected Integer socketRcvBufSize = null;
+    protected Integer socketSndBufSize = null;
     protected int maxConnections = DEFAULT_MAX_CONNECTIONS;
     protected long connectionTTL = DEFAULT_CONNECTION_TTL;
     protected boolean useReaper = DEFAULT_USE_REAPER;
@@ -304,6 +307,66 @@ public class ClientConfiguration {
      */
     public void setSocketTimeout(int socketTimeout) {
         this.socketTimeout = socketTimeout;
+    }
+
+    /**
+     * Gets the socket backlog size.
+     * null and 0 means to use system default.
+     *
+     * @return The socket backlog size.
+     */
+    public Integer getSocketBacklogSize() {
+        return socketBacklogSize;
+    }
+
+    /**
+     * Sets the socket backlog size
+     *
+     * @param socketBacklogSize
+     *            The socket backlog size, null or 0 means to use system default.
+     */
+    public void setSocketBacklogSize(Integer socketBacklogSize) {
+        this.socketBacklogSize = socketBacklogSize;
+    }
+
+    /**
+     * Gets the socket receive buffer size.
+     * null and 0 means to use system default.
+     *
+     * @return The socket receive buffer size.
+     */
+    public Integer getSocketRcvBufSize() {
+        return socketRcvBufSize;
+    }
+
+    /**
+     * Sets the socket receive buffer size.
+     *
+     * @param socketRcvBufSize
+     *            The socket receive buffer size, null or 0 means to use system default.
+     */
+    public void setSocketRcvBufSize(Integer socketRcvBufSize) {
+        this.socketRcvBufSize = socketRcvBufSize;
+    }
+
+    /**
+     * Gets the socket send buffer size.
+     * null and 0 means to use system default.
+     *
+     * @return The socket send buffer size.
+     */
+    public Integer getSocketSndBufSize() {
+        return socketSndBufSize;
+    }
+
+    /**
+     * Sets the socket send buffer size
+     *
+     * @param socketSndBufSize
+     *            The socket send buffer size, null or 0 means to use system default.
+     */
+    public void setSocketSndBufSize(Integer socketSndBufSize) {
+        this.socketSndBufSize = socketSndBufSize;
     }
 
     /**

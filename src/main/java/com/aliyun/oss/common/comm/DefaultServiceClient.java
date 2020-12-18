@@ -287,8 +287,18 @@ public class DefaultServiceClient extends ServiceClient {
         connectionManager.setDefaultMaxPerRoute(config.getMaxConnections());
         connectionManager.setMaxTotal(config.getMaxConnections());
         connectionManager.setValidateAfterInactivity(config.getValidateAfterInactivity());
-        connectionManager.setDefaultSocketConfig(
-                SocketConfig.custom().setSoTimeout(config.getSocketTimeout()).setTcpNoDelay(true).build());
+        SocketConfig.Builder builder = SocketConfig.custom()
+                .setSoTimeout(config.getSocketTimeout()).setTcpNoDelay(true);
+        if (config.getSocketBacklogSize() != null) {
+            builder.setBacklogSize(config.getSocketBacklogSize());
+        }
+        if (config.getSocketRcvBufSize() != null) {
+            builder.setRcvBufSize(config.getSocketRcvBufSize());
+        }
+        if (config.getSocketSndBufSize() != null) {
+            builder.setSndBufSize(config.getSocketSndBufSize());
+        }
+        connectionManager.setDefaultSocketConfig(builder.build());
         if (config.isUseReaper()) {
             IdleConnectionReaper.setIdleConnectionTime(config.getIdleConnectionTime());
             IdleConnectionReaper.registerConnectionManager(connectionManager);
