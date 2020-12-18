@@ -311,7 +311,7 @@ public class ClientBuilderTest extends TestBase {
         client.shutdown();
 
         config = new ClientBuilderConfiguration();
-        config.setSocketTimeout(10);
+        config.setSocketTimeout(10 * 1000);
         config.setSocketBacklogSize(100);
         config.setSocketRcvBufSize(4098);
         config.setSocketSndBufSize(4097);
@@ -319,7 +319,7 @@ public class ClientBuilderTest extends TestBase {
                 new DefaultCredentialProvider(TestConfig.OSS_TEST_ACCESS_KEY_ID,
                         TestConfig.OSS_TEST_ACCESS_KEY_SECRET),
                 config);
-        Assert.assertEquals(10, client.getClientConfiguration().getSocketTimeout());
+        Assert.assertEquals(10 * 1000, client.getClientConfiguration().getSocketTimeout());
         Assert.assertEquals(Integer.valueOf(100), client.getClientConfiguration().getSocketBacklogSize());
         Assert.assertEquals(Integer.valueOf(4098), client.getClientConfiguration().getSocketRcvBufSize());
         Assert.assertEquals(Integer.valueOf(4097), client.getClientConfiguration().getSocketSndBufSize());

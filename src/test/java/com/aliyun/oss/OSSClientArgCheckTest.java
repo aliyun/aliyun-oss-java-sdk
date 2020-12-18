@@ -71,8 +71,23 @@ public class OSSClientArgCheckTest {
         Assert.assertFalse(OSSUtils.validateBucketName(bucketName + "dd-"));
         Assert.assertFalse(OSSUtils.validateBucketName(bucketName + "Ldfd"));
         Assert.assertFalse(OSSUtils.validateBucketName(bucketName + "~dd"));
-        Assert.assertFalse(OSSUtils.validateBucketName(bucketName + "_dd"));
+        Assert.assertTrue(OSSUtils.validateBucketName(bucketName + "_dd"));
         Assert.assertFalse(OSSUtils.validateBucketName(bucketName + "\\dd"));
+    }
+
+    @Test
+    public void testValidBucketNameCreation() {
+        String bucketName = "123456789012345678901234567890123456789012345678901234567890123";
+        Assert.assertTrue(OSSUtils.validateBucketNameCreation(bucketName));
+        Assert.assertFalse(OSSUtils.validateBucketNameCreation(bucketName + "4"));
+
+        bucketName = "lyz-jdifd";
+        Assert.assertTrue(OSSUtils.validateBucketNameCreation(bucketName));
+        Assert.assertFalse(OSSUtils.validateBucketNameCreation(bucketName + "dd-"));
+        Assert.assertFalse(OSSUtils.validateBucketNameCreation(bucketName + "Ldfd"));
+        Assert.assertFalse(OSSUtils.validateBucketNameCreation(bucketName + "~dd"));
+        Assert.assertFalse(OSSUtils.validateBucketNameCreation(bucketName + "_dd"));
+        Assert.assertFalse(OSSUtils.validateBucketNameCreation(bucketName + "\\dd"));
     }
 
     @Test

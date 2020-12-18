@@ -52,7 +52,8 @@ public class OSSUtils {
     public static final ResourceManager OSS_RESOURCE_MANAGER = ResourceManager.getInstance(RESOURCE_NAME_OSS);
     public static final ResourceManager COMMON_RESOURCE_MANAGER = ResourceManager.getInstance(RESOURCE_NAME_COMMON);
 
-    private static final String BUCKET_NAMING_REGEX = "^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$";
+    private static final String BUCKET_NAMING_CREATION_REGEX = "^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$";
+    private static final String BUCKET_NAMING_REGEX = "^[a-z0-9][a-z0-9-_]{1,61}[a-z0-9]$";
     private static final String ENDPOINT_REGEX = "^[a-zA-Z0-9._-]+$";
 
     /**
@@ -86,6 +87,25 @@ public class OSSUtils {
 
     public static void ensureBucketNameValid(String bucketName) {
         if (!validateBucketName(bucketName)) {
+            throw new IllegalArgumentException(
+                    OSS_RESOURCE_MANAGER.getFormattedString("BucketNameInvalid", bucketName));
+        }
+    }
+
+    /**
+     * Validate bucket creation name.
+     */
+    public static boolean validateBucketNameCreation(String bucketName) {
+
+        if (bucketName == null) {
+            return false;
+        }
+
+        return bucketName.matches(BUCKET_NAMING_CREATION_REGEX);
+    }
+
+    public static void ensureBucketNameCreationValid(String bucketName) {
+        if (!validateBucketNameCreation(bucketName)) {
             throw new IllegalArgumentException(
                     OSS_RESOURCE_MANAGER.getFormattedString("BucketNameInvalid", bucketName));
         }

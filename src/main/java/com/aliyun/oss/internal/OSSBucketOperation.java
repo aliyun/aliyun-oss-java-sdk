@@ -49,6 +49,7 @@ import static com.aliyun.oss.common.parser.RequestMarshallers.initiateBucketWorm
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
+import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameCreationValid;
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
 import static com.aliyun.oss.internal.RequestParameters.*;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketAclResponseParser;
@@ -209,7 +210,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         String bucketName = createBucketRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
+        ensureBucketNameCreationValid(bucketName);
 
         Map<String, String> headers = new HashMap<String, String>();
         addOptionalACLHeader(headers, createBucketRequest.getCannedACL());
