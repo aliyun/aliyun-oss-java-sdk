@@ -30,6 +30,7 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_UPLOADS = "uploads";
     public static final String SUBRESOURCE_DELETE = "delete";
     public static final String SUBRESOURCE_CORS = "cors";
+    public static final String SUBRESOURCE_COPY = "copy";
     public static final String SUBRESOURCE_APPEND = "append";
     public static final String SUBRESOURCE_TAGGING = "tagging";
     public static final String SUBRESOURCE_IMG = "img";

@@ -80,6 +80,7 @@ import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.CnameConfiguration;
 import com.aliyun.oss.model.CompleteMultipartUploadResult;
 import com.aliyun.oss.model.CopyObjectResult;
+import com.aliyun.oss.model.CopyObjectsResult;
 import com.aliyun.oss.model.CreateLiveChannelResult;
 import com.aliyun.oss.model.DataRedundancyType;
 import com.aliyun.oss.model.DeleteObjectsResult;
@@ -126,6 +127,7 @@ import com.aliyun.oss.model.Payer;
 import com.aliyun.oss.model.Permission;
 import com.aliyun.oss.model.PutObjectResult;
 import com.aliyun.oss.model.PushflowStatus;
+import com.aliyun.oss.model.SingleCopyObjectResult;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
 import com.aliyun.oss.model.CORSConfiguration;
 import com.aliyun.oss.model.SimplifiedObjectMeta;
@@ -196,6 +198,7 @@ public final class ResponseParsers {
     public static final AppendObjectResponseParser appendObjectResponseParser = new AppendObjectResponseParser();
     public static final GetObjectMetadataResponseParser getObjectMetadataResponseParser = new GetObjectMetadataResponseParser();
     public static final CopyObjectResponseParser copyObjectResponseParser = new CopyObjectResponseParser();
+    public static final CopyObjectsResponseParser copyObjectsResponseParser = new CopyObjectsResponseParser();
     public static final DeleteObjectsResponseParser deleteObjectsResponseParser = new DeleteObjectsResponseParser();
     public static final DeleteVersionsResponseParser deleteVersionsResponseParser = new DeleteVersionsResponseParser();
     public static final GetObjectAclResponseParser getObjectAclResponseParser = new GetObjectAclResponseParser();
@@ -995,7 +998,22 @@ public final class ResponseParsers {
         }
 
     }
-    
+
+    public static final class CopyObjectsResponseParser implements ResponseParser<CopyObjectsResult> {
+
+        @Override
+        public CopyObjectsResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                CopyObjectsResult result = parseCopyObjectsResult(response.getContent());
+                result.setRequestId(response.getRequestId());
+                result.setResponse(response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+    }
+
     public static final class DeleteVersionsResponseParser implements ResponseParser<DeleteVersionsResult> {
 
         @Override
@@ -2195,6 +2213,40 @@ public final class ResponseParsers {
             result.setLastModified(DateUtil.parseIso8601Date(root.getChildText("LastModified")));
             result.setEtag(trimQuotes(root.getChildText("ETag")));
 
+            return result;
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Unmarshall copy objects response body to corresponding result.
+     */
+    public static CopyObjectsResult parseCopyObjectsResult(InputStream responseBody) throws ResponseParseException {
+        try {
+            Element root = getXmlRootElement(responseBody);
+            CopyObjectsResult result = new CopyObjectsResult();
+            for (Element element : root.getChildren()) {
+                if (element.getName().equals("Success")) {
+                    for (Element object : element.getChildren()) {
+                        result.addSuccessResult(
+                                SingleCopyObjectResult.success(
+                                        object.getChild("SourceKey").getText(),
+                                        object.getChild("TargetKey").getText(),
+                                        object.getChild("ETag").getText()));
+                    }
+                } else if (element.getName().equals("Failed")) {
+                    for (Element object : element.getChildren()) {
+                        result.addFailureResult(
+                                SingleCopyObjectResult.failure(
+                                        object.getChild("SourceKey").getText(),
+                                        object.getChild("TargetKey").getText(),
+                                        object.getChild("ErrorStatus").getText()));
+                    }
+                } else {
+                    throw new Exception("Invalid xml node: " + element.getName());
+                }
+            }
             return result;
         } catch (Exception e) {
             throw new ResponseParseException(e.getMessage(), e);
