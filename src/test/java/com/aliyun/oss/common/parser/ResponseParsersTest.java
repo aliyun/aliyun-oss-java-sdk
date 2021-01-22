@@ -96,6 +96,50 @@ public class ResponseParsersTest {
         Assert.assertNull(rule.getTargetCloud());
         Assert.assertNull(rule.getTargetCloudLocation());
         Assert.assertEquals(false, rule.isEnableHistoricalObjectReplication());
+        Assert.assertNull(rule.getSourceBucketLocation());
+
+    }
+
+    @Test
+    public void testParseGetBucketReplicationWithSourceLocation() {
+        String respBody = "<ReplicationConfiguration>\n" +
+                " <Rule>\n" +
+                "    <ID>12345678</ID>\n" +
+                "    <Destination>\n" +
+                "        <Bucket>testBucketName</Bucket>\n" +
+                "        <Cloud>testCloud</Cloud>\n" +
+                "        <CloudLocation>testCloudLocation</CloudLocation>\n" +
+                "    </Destination>\n" +
+                "    <Status>doing</Status>\n" +
+                "    <HistoricalObjectReplication>enabled</HistoricalObjectReplication>\n" +
+                "    <Source>\n" +
+                "        <Location>sourceLocation</Location>\n" +
+                "    </Source>\n" +
+                " </Rule>\n" +
+                "</ReplicationConfiguration>\n";
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        List<ReplicationRule> rules = null;
+        try {
+            rules = ResponseParsers.parseGetBucketReplication(instream);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse bucket replication response body fail!");
+        }
+        Assert.assertTrue(rules.size() > 0);
+
+        ReplicationRule rule = rules.get(0);
+        Assert.assertEquals("12345678", rule.getReplicationRuleID());
+        Assert.assertEquals("testBucketName", rule.getTargetBucketName());
+        Assert.assertNull(rule.getTargetBucketLocation());
+        Assert.assertEquals("testCloud", rule.getTargetCloud());
+        Assert.assertEquals("testCloudLocation", rule.getTargetCloudLocation());
+        Assert.assertEquals(true, rule.isEnableHistoricalObjectReplication());
+        Assert.assertEquals("sourceLocation", rule.getSourceBucketLocation());
     }
 
     @Test

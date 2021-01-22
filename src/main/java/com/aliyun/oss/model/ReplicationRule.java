@@ -128,6 +128,14 @@ public class ReplicationRule {
         return this.sseKmsEncryptedObjectsStatus;
     }
 
+    public String getSourceBucketLocation() {
+        return sourceBucketLocation;
+    }
+
+    public void setSourceBucketLocation(String sourceBucketLocation) {
+        this.sourceBucketLocation = sourceBucketLocation;
+    }
+
     private String replicationRuleID;
     private ReplicationStatus replicationStatus;
     private String targetBucketName;
@@ -140,4 +148,6 @@ public class ReplicationRule {
     private String syncRole;
     private String replicaKmsKeyID;
     private String sseKmsEncryptedObjectsStatus;
+    private String sourceBucketLocation;
+
 }
