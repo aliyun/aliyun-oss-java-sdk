@@ -71,7 +71,8 @@ public class EcsRamRoleCredentialsFetcher extends HttpCredentialsFetcher {
                 return new InstanceProfileCredentials(jsonObject.getString("AccessKeyId"),
                         jsonObject.getString("AccessKeySecret"), securityToken, jsonObject.getString("Expiration"))
                                 .withExpiredDuration(
-                                        AuthUtils.DEFAULT_STS_SESSION_TOKEN_DURATION_SECONDS);
+                                        AuthUtils.DEFAULT_ECS_SESSION_TOKEN_DURATION_SECONDS)
+                                .withExpiredFactor(0.85);
             }
 
             return new BasicCredentials(jsonObject.getString("AccessKeyId"), jsonObject.getString("AccessKeySecret"),

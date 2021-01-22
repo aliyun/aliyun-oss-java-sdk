@@ -27,6 +27,8 @@ import java.net.URL;
 import java.util.*;
 
 import com.aliyun.oss.*;
+import com.aliyun.oss.common.auth.Credentials;
+import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.internal.OSSConstants;
 import junit.framework.Assert;
 import org.junit.Ignore;
@@ -242,7 +244,7 @@ public class OSSClientTest {
     @Test
     public void testSwitchFuncWithException() {
 
-        OSS client = new OSSClientBuilder().build("endpoint", "ak", "sk", "");
+        OSS client = new OSSClientBuilder().build("oss-cn-hangzhou.aliyuncs.com", "ak", "sk", "");
 
         try {
             client.switchCredentials(null);
@@ -266,15 +268,15 @@ public class OSSClientTest {
         OSSClient client = new OSSClient("ak", "sk");
         assertEquals(OSSConstants.DEFAULT_OSS_ENDPOINT, client.getEndpoint().toString());
 
-        client = new OSSClient("endpoint", "ak", "sk", "sts");
-        assertEquals("http://endpoint", client.getEndpoint().toString());
+        client = new OSSClient("oss-cn-hangzhou.aliyuncs.com", "ak", "sk", "sts");
+        assertEquals("http://oss-cn-hangzhou.aliyuncs.com", client.getEndpoint().toString());
 
 
-        client = new OSSClient("endpoint1", "ak", "sk", new ClientConfiguration());
-        assertEquals("http://endpoint1", client.getEndpoint().toString());
+        client = new OSSClient("oss-cn-shenzhen.aliyuncs.com", "ak", "sk", new ClientConfiguration());
+        assertEquals("http://oss-cn-shenzhen.aliyuncs.com", client.getEndpoint().toString());
 
-        client = new OSSClient("endpoint2", "ak", "sk", "sts", new ClientConfiguration());
-        assertEquals("http://endpoint2", client.getEndpoint().toString());
+        client = new OSSClient("oss-cn-zhangjiakou.aliyuncs.com", "ak", "sk", "sts", new ClientConfiguration());
+        assertEquals("http://oss-cn-zhangjiakou.aliyuncs.com", client.getEndpoint().toString());
 
         try {
             client.isBucketExist("bucketName");
@@ -342,5 +344,29 @@ public class OSSClientTest {
         }
     }
 
+    private class NullCredentialProvider implements CredentialsProvider {
+        private volatile Credentials creds = null;
+        @Override
+        public synchronized void setCredentials(Credentials creds) {
+            this.creds = creds;
+        }
+
+        @Override
+        public Credentials getCredentials() {
+            return this.creds;
+        }
+    }
+
+    @Test
+    public void testNullCredential(){
+        OSS client = new OSSClientBuilder().build("oss-cn-hangzhou.aliyuncs.com", new NullCredentialProvider());
+        try {
+            client.getObject("bucket","objedct");
+            Assert.fail("should be failed here.");
+        } catch (NullPointerException e) {
+        } catch (Exception e1) {
+            Assert.fail("should be failed here.");
+        }
+    }
 }
 

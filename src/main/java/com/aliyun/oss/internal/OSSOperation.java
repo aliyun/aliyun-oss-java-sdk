@@ -19,6 +19,7 @@
 
 package com.aliyun.oss.internal;
 
+import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.common.utils.LogUtils.logException;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
@@ -163,6 +164,7 @@ public abstract class OSSOperation {
     protected ExecutionContext createDefaultContext(HttpMethod method, String bucketName, String key) {
         ExecutionContext context = new ExecutionContext();
 		Credentials credentials = credsProvider.getCredentials();
+        assertParameterNotNull(credentials, "credentials");
         context.setCharset(DEFAULT_CHARSET_NAME);
         context.setSigner(createSigner(method, bucketName, key, credentials, client.getClientConfiguration().getSignatureVersion()));
         context.addResponseHandler(errorResponseHandler);
