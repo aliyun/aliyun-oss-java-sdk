@@ -432,6 +432,73 @@ public class RequestMarshallersTest {
     }
 
     @Test
+    public void testAddBucketReplicationRequestMarshallerWithSourceLocation() {
+        String bucketName = "alicloud-bucket";
+        String targetBucketName = "alicloud-targetBucketName";
+        String targetCloud = "testTargetCloud";
+        String targetCloudLocation = "testTargetCloudLocation";
+        String syncRole = "syncRole";
+        String sourceLocation = "sourceLocation";
+        AddBucketReplicationRequest addBucketReplicationRequest = new AddBucketReplicationRequest(bucketName);
+        addBucketReplicationRequest.setTargetBucketName(targetBucketName);
+        addBucketReplicationRequest.setTargetCloud(targetCloud);
+        addBucketReplicationRequest.setTargetCloudLocation(targetCloudLocation);
+        addBucketReplicationRequest.setSyncRole(syncRole);
+        addBucketReplicationRequest.setSourceBucketLocation(sourceLocation);
+
+        FixedLengthInputStream is = addBucketReplicationRequestMarshaller.marshall(addBucketReplicationRequest);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Element root = doc.getRootElement();
+        Element ruleElems = root.getChild("Rule");
+        Element destination = ruleElems.getChild("Destination");
+        String aTargetBucketName = destination.getChildText("Bucket");
+        String aTargetLocation = destination.getChildText("Location");
+        String aTargetCloud = destination.getChildText("Cloud");
+        String aTargetCloudLocation = destination.getChildText("CloudLocation");
+        String aSyncRole = ruleElems.getChildText("SyncRole");
+        String aSourceLocation = ruleElems.getChild("Source").getChildText("Location");
+
+        Assert.assertEquals(targetBucketName, aTargetBucketName);
+        Assert.assertNull(aTargetLocation);
+        Assert.assertEquals(targetCloud, aTargetCloud);
+        Assert.assertEquals(targetCloudLocation, aTargetCloudLocation);
+        Assert.assertEquals(syncRole, aSyncRole);
+        Assert.assertEquals(sourceLocation, aSourceLocation);
+
+
+        addBucketReplicationRequest = new AddBucketReplicationRequest(bucketName);
+        addBucketReplicationRequest.setTargetBucketName(targetBucketName);
+        addBucketReplicationRequest.setTargetCloud(targetCloud);
+        addBucketReplicationRequest.setTargetCloudLocation(targetCloudLocation);
+        addBucketReplicationRequest.setSyncRole(syncRole);
+
+        is = addBucketReplicationRequestMarshaller.marshall(addBucketReplicationRequest);
+
+        builder = new SAXBuilder();
+        doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        root = doc.getRootElement();
+        ruleElems = root.getChild("Rule");
+        Element sourceElems = ruleElems.getChild("Source");
+        Assert.assertNull(sourceElems);
+    }
+
+    @Test
     public void testPutImageStyleRequestMarshaller() {
         String bucketName = "alicloud-bucket";
         PutImageStyleRequest request = new PutImageStyleRequest();

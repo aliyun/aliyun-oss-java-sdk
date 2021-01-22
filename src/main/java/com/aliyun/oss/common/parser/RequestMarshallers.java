@@ -803,6 +803,12 @@ public final class RequestMarshallers {
                 xmlBody.append("</SseKmsEncryptedObjects></SourceSelectionCriteria>");
             }
 
+            if (request.getSourceBucketLocation() != null) {
+                xmlBody.append("<Source>");
+                xmlBody.append("<Location>" + request.getSourceBucketLocation() + "</Location>");
+                xmlBody.append("</Source>");
+            }
+
             xmlBody.append("</Rule>");
             xmlBody.append("</ReplicationConfiguration>");
             return stringMarshaller.marshall(xmlBody.toString());

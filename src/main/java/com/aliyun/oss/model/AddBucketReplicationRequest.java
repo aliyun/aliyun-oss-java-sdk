@@ -176,6 +176,14 @@ public class AddBucketReplicationRequest extends GenericRequest {
         return this.sseKmsEncryptedObjectsStatus;
     }
 
+    public String getSourceBucketLocation() {
+        return sourceBucketLocation;
+    }
+
+    public void setSourceBucketLocation(String sourceBucketLocation) {
+        this.sourceBucketLocation = sourceBucketLocation;
+    }
+
     public static final String DISABLED = "Disabled";
     public static final String ENABLED = "Enabled";
 
@@ -190,4 +198,6 @@ public class AddBucketReplicationRequest extends GenericRequest {
     private String syncRole;
     private String replicaKmsKeyID;
     private String sseKmsEncryptedObjectsStatus;
+    private String sourceBucketLocation;
+
 }

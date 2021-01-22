@@ -2433,6 +2433,10 @@ public final class ResponseParsers {
                             getChild("SseKmsEncryptedObjects").getChildText("Status"));
                 }
 
+                if (ruleElem.getChild("Source") != null){
+                    repRule.setSourceBucketLocation(ruleElem.getChild("Source").getChildText("Location"));
+                }
+
                 repRules.add(repRule);
             }
 
