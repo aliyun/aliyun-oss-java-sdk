@@ -79,9 +79,12 @@ public class EcsRamRoleCredentialsFetcherMock extends EcsRamRoleCredentialsFetch
             + "\"SecurityToken\" : \"CAISigJ1q6Ft5B2yfSjIpKTbGYjatahPg6CtQ0CIkXUkZsd/14HPljz2IHBE****AOEetfs2lW1T6P0TlrRtTtpfTEmBbI569s1WqQW+Z5fT5JHo4LZfhoGoRzB9keMGTIyADd/iRfbxJ92PCTmd5AIRrJ****K9JS/HVbSClZ9gaPkOQwC8dkAoLdxKJwxk2qR4XDmrQp****PxhXfKB0dFoxd1jXgFiZ6y2cqB8BHT/jaYo603392ofsj1NJE1ZMglD4nlhbxMG/CfgHIK2X9j77xriaFIwzDDs+yGDkNZixf8aLqEqIM/dV4hPfdjSvMf8qOtj5t1sffJnoHtzBJAIexOT****FVtcH5xchqAAXp1d/dYv+2L+dJDW+2pm1vACD/UlRk93prPkyuU3zH2wnvXBxEi26QnoQSCA+T1yE2wo41V2mS+LSGYN/PC+2Ml1q+JX5DzKgfGrUPt7kU4FeXJDzGh2YaXRGpO7yERKgAc/NukkDNqthMaHntyTeix08DYBuTT6gd3V8XmN8vF\","
             + "\"Code\" : \"Success\"" + "}";
 
+    private String extrnalData = "";
+
     public enum ResponseCategory {
         Normal, NormalWithoutExpiration, NormalWithoutToken, Expired, FormatInvalid, ServerHalt, Exceptional,
-        ExceptionalWithoutStatus, ExceptionalFailStatus, ExceptionalWithoutAK, ExceptionalWithoutSK
+        ExceptionalWithoutStatus, ExceptionalFailStatus, ExceptionalWithoutAK, ExceptionalWithoutSK,
+        FromExternal
     };
 
     @Override
@@ -136,6 +139,10 @@ public class EcsRamRoleCredentialsFetcherMock extends EcsRamRoleCredentialsFetch
             response.setStatus(200);
             response.setHttpContent(FORMAT_INVALID_WITHOUT_SK_METADATA.getBytes(), "UTF-8", FormatType.JSON);
             break;
+        case FromExternal:
+            response.setStatus(200);
+            response.setHttpContent(extrnalData.getBytes(), "UTF-8", FormatType.JSON);
+            break;
         default:
             break;
         }
@@ -146,6 +153,10 @@ public class EcsRamRoleCredentialsFetcherMock extends EcsRamRoleCredentialsFetch
     public EcsRamRoleCredentialsFetcherMock withResponseCategory(ResponseCategory responseCategory) {
         this.responseCategory = responseCategory;
         return this;
+    }
+
+    public void setExternalData(String extrnalData) {
+        this.extrnalData = extrnalData;
     }
 
     private ResponseCategory responseCategory;
