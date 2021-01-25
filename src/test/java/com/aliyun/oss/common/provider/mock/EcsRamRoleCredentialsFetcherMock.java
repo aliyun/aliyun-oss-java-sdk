@@ -35,7 +35,7 @@ public class EcsRamRoleCredentialsFetcherMock extends EcsRamRoleCredentialsFetch
 
     private static final String NORMAL_METADATA = "{" + "\"AccessKeyId\" : \"STS.EgnR2nX****FAf9uuqjHS8Ddt\","
             + "\"AccessKeySecret\" : \"CJ7G63EhuZuN8rfSg2Rd****qAgHMhmDuMkp****NPUV\","
-            + "\"Expiration\" : \"2020-11-11T16:10:03Z\","
+            + "\"Expiration\" : \"2022-11-11T16:10:03Z\","
             + "\"SecurityToken\" : \"CAISigJ1q6Ft5B2yfSjIpKTbGYjatahPg6CtQ0CIkXUkZsd/14HPljz2IHBE****AOEetfs2lW1T6P0TlrRtTtpfTEmBbI569s1WqQW+Z5fT5JHo4LZfhoGoRzB9keMGTIyADd/iRfbxJ92PCTmd5AIRrJ****K9JS/HVbSClZ9gaPkOQwC8dkAoLdxKJwxk2qR4XDmrQp****PxhXfKB0dFoxd1jXgFiZ6y2cqB8BHT/jaYo603392ofsj1NJE1ZMglD4nlhbxMG/CfgHIK2X9j77xriaFIwzDDs+yGDkNZixf8aLqEqIM/dV4hPfdjSvMf8qOtj5t1sffJnoHtzBJAIexOT****FVtcH5xchqAAXp1d/dYv+2L+dJDW+2pm1vACD/UlRk93prPkyuU3zH2wnvXBxEi26QnoQSCA+T1yE2wo41V2mS+LSGYN/PC+2Ml1q+JX5DzKgfGrUPt7kU4FeXJDzGh2YaXRGpO7yERKgAc/NukkDNqthMaHntyTeix08DYBuTT6gd3V8XmN8vF\","
             + "\"Code\" : \"Success\"" + "}";
     private static final String NORMAL_WITHOUT_EXPIRATION_METADATA = "{"
@@ -45,7 +45,7 @@ public class EcsRamRoleCredentialsFetcherMock extends EcsRamRoleCredentialsFetch
     private static final String NORMAL_WITHOUT_TOKEN_METADATA = "{"
             + "\"AccessKeyId\" : \"STS.EgnR2nX****FAf9uuqjHS8Ddt\","
             + "\"AccessKeySecret\" : \"CJ7G63EhuZuN8rfSg2Rd****qAgHMhmDuMkp****NPUV\","
-            + "\"Expiration\" : \"2020-11-11T16:10:03Z\"," + "\"Code\" : \"Success\"" + "}";
+            + "\"Expiration\" : \"2022-11-11T16:10:03Z\"," + "\"Code\" : \"Success\"" + "}";
     private static final String EXPIRED_METADATA = "{" + "\"AccessKeyId\" : \"STS.EgnR2nX****FAf9uuqjHS8Ddt\","
             + "\"AccessKeySecret\" : \"CJ7G63EhuZuN8rfSg2Rd****qAgHMhmDuMkp****NPUV\","
             + "\"Expiration\" : \"2016-11-11T16:10:03Z\","
