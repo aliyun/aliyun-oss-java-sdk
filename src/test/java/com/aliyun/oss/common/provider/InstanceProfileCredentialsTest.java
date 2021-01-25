@@ -20,8 +20,11 @@
 package com.aliyun.oss.common.provider;
 
 import com.aliyun.oss.common.auth.InstanceProfileCredentials;
+import com.aliyun.oss.common.utils.DateUtil;
 import junit.framework.Assert;
 import org.junit.Test;
+
+import java.util.Date;
 
 public class InstanceProfileCredentialsTest extends TestBase {
 
@@ -49,9 +52,15 @@ public class InstanceProfileCredentialsTest extends TestBase {
             Assert.assertTrue(credentials.isExpired());
             Assert.assertTrue(credentials.shouldRefresh());
 
-            credentials = new InstanceProfileCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, null, "2020-11-11T11:11:11Z");
-            Assert.assertFalse(credentials.willSoonExpire());
+            long currTime = new Date().getTime() + 100 * 1000;
+            credentials = new InstanceProfileCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, null, DateUtil.formatAlternativeIso8601Date(new Date(currTime)));
+            Assert.assertTrue(credentials.willSoonExpire());
             Assert.assertFalse(credentials.isExpired());
+            Assert.assertTrue(credentials.shouldRefresh());
+
+            credentials.setLastFailedRefreshTime();
+            Assert.assertFalse(credentials.shouldRefresh());
+            Thread.sleep(11000);
             Assert.assertTrue(credentials.shouldRefresh());
 
         } catch (Exception e) {
@@ -68,7 +77,8 @@ public class InstanceProfileCredentialsTest extends TestBase {
             Thread.sleep(1000);
             Assert.assertTrue(credentials.willSoonExpire());
 
-             credentials = new InstanceProfileCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, null, "2020-11-11T11:11:11Z")
+            long currTime = new Date().getTime() + (3600*6*8/10 + 100)*1000;
+            credentials = new InstanceProfileCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, null, DateUtil.formatAlternativeIso8601Date(new Date(currTime)))
                     .withExpiredFactor(0.8);
             Thread.sleep(1000);
             Assert.assertFalse(credentials.willSoonExpire());
