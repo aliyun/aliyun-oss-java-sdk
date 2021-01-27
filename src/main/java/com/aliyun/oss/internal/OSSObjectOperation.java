@@ -48,12 +48,14 @@ import static com.aliyun.oss.internal.OSSUtils.removeHeader;
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
 import static com.aliyun.oss.internal.RequestParameters.ENCODING_TYPE;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_ACL;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_COPY;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_DELETE;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_OBJECTMETA;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_SYMLINK;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_TAGGING;
 import static com.aliyun.oss.internal.ResponseParsers.appendObjectResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.copyObjectResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.copyObjectsResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.deleteObjectsResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getTaggingResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getObjectAclResponseParser;
@@ -494,6 +496,22 @@ public class OSSObjectOperation extends OSSOperation {
 
         return doOperation(request, copyObjectResponseParser, copyObjectRequest.getDestinationBucketName(),
                 copyObjectRequest.getDestinationKey(), true);
+    }
+
+    /**
+     * Copy existing objects to targets.
+     */
+    public CopyObjectsResult copyObjects(CopyObjectsRequest copyObjectsRequest) throws OSSException, ClientException {
+        assertParameterNotNull(copyObjectsRequest, "copyObjectsRequest");
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_COPY, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.POST).setBucket(copyObjectsRequest.getBucketName())
+                .setInputStreamWithLength(copyObjectsRequestMarshaller.marshall(copyObjectsRequest))
+                .setParameters(params).setOriginalRequest(copyObjectsRequest).build();
+        return doOperation(request, copyObjectsResponseParser, copyObjectsRequest.getBucketName(), null, true);
     }
 
     /**

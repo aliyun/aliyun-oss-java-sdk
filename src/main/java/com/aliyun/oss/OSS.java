@@ -1099,6 +1099,19 @@ public interface OSS {
     public CopyObjectResult copyObject(CopyObjectRequest copyObjectRequest) throws OSSException, ClientException;
 
     /**
+     * Copies existing keys to target keys in an OSS bucket.
+     * If target key exist, it would be overwritten by the source key.
+     *
+     * @param copyObjectsRequest
+     *              A {@link CopyObjectsRequest} instance that specifies bucket,
+     *              source keys and target keys.
+     * @return A {@link CopyObjectsResult} instance.
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public CopyObjectsResult copyObjects(CopyObjectsRequest copyObjectsRequest) throws OSSException, ClientException;
+
+    /**
      * Gets a {@link OSSObject} from {@link Bucket}.
      * 
      * @param bucketName

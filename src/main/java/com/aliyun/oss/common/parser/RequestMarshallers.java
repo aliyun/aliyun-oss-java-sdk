@@ -94,12 +94,34 @@ public final class RequestMarshallers {
     public static final DeleteVpcipRequestMarshaller deleteVpcipRequestMarshaller = new DeleteVpcipRequestMarshaller();
     public static final DeleteBucketVpcipRequestMarshaller deleteBucketVpcipRequestMarshaller = new DeleteBucketVpcipRequestMarshaller();
 
+    public static final CopyObjectsRequestMarshaller copyObjectsRequestMarshaller = new CopyObjectsRequestMarshaller();
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
 
     }
 
     public interface RequestMarshaller2<R> extends Marshaller<byte[], R> {
 
+    }
+
+    public static final class CopyObjectsRequestMarshaller implements RequestMarshaller<CopyObjectsRequest> {
+
+        @Override
+        public FixedLengthInputStream marshall(CopyObjectsRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<Copy>");
+            for (CopyObjectEntity entity : request.getCopyObjectEntities()) {
+                xmlBody.append("<Object>");
+                xmlBody.append("<SourceKey>");
+                xmlBody.append(entity.getSourceKey());
+                xmlBody.append("</SourceKey>");
+                xmlBody.append("<TargetKey>");
+                xmlBody.append(entity.getTargetKey());
+                xmlBody.append("</TargetKey>");
+                xmlBody.append("</Object>");
+            }
+            xmlBody.append("</Copy>");
+            return stringMarshaller.marshall(xmlBody.toString());
+        }
     }
 
     public static final class StringMarshaller implements Marshaller<FixedLengthInputStream, String> {

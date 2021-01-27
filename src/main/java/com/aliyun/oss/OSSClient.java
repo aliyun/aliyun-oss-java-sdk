@@ -593,6 +593,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public CopyObjectsResult copyObjects(CopyObjectsRequest copyObjectsRequest) throws OSSException, ClientException {
+        return objectOperation.copyObjects(copyObjectsRequest);
+    }
+
+    @Override
     public OSSObject getObject(String bucketName, String key) throws OSSException, ClientException {
         return this.getObject(new GetObjectRequest(bucketName, key));
     }
