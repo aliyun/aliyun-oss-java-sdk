@@ -2435,12 +2435,13 @@ public interface OSS {
      * @param addBucketCnameRequest
      *            The request specifies the bucket name and the Cname
      *            information.
+     * @return certificate ID if exist.
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void addBucketCname(AddBucketCnameRequest addBucketCnameRequest) throws OSSException, ClientException;
+    public AddBucketCnameResult addBucketCname(AddBucketCnameRequest addBucketCnameRequest) throws OSSException, ClientException;
 
     /**
      * Gets the {@link Bucket}'s Cnames.

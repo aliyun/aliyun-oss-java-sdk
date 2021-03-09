@@ -716,6 +716,43 @@ public class RequestMarshallersTest {
     }
 
     @Test
+    public void testAddBucketCnameWithCertificateRequestMarshaller() {
+        String bucketName = "alicloud-bucket";
+        AddBucketCnameRequest request = new AddBucketCnameRequest(bucketName);
+        request.setDomain("domain");
+        request.setCertificateConfiguration(
+            new CertificateConfiguration()
+                .withPublicKey("pubkey")
+                .withPrivateKey("prikey")
+                .withPreviousId("previd")
+                .withId("id")
+                .withForceOverwriteCert(true));
+
+        byte[] data = addBucketCnameRequestMarshaller.marshall(request);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Element root = doc.getRootElement();
+        Element cname = root.getChild("Cname");
+        String domain = cname.getChildText("Domain");
+        Assert.assertEquals("domain", domain);
+        Element certificate = cname.getChild("CertificateConfiguration");
+        Assert.assertEquals("pubkey", certificate.getChildText("Certificate"));
+        Assert.assertEquals("prikey", certificate.getChildText("PrivateKey"));
+        Assert.assertEquals("previd", certificate.getChildText("PreviousCertId"));
+        Assert.assertEquals("id", certificate.getChildText("CertId"));
+        Assert.assertEquals("true", certificate.getChildText("Force"));
+    }
+
+    @Test
     public void testDeleteBucketCnameRequestMarshaller() {
         String bucketName = "alicloud-bucket";
         DeleteBucketCnameRequest request = new DeleteBucketCnameRequest(bucketName);
