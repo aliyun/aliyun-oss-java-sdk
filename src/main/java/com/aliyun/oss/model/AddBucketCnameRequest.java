@@ -22,6 +22,7 @@ package com.aliyun.oss.model;
 public class AddBucketCnameRequest extends GenericRequest {
 
     private String domain;
+    CertificateConfiguration certificateConfiguration;
 
     public AddBucketCnameRequest(String bucketName) {
         super(bucketName);
@@ -40,4 +41,16 @@ public class AddBucketCnameRequest extends GenericRequest {
         return this;
     }
 
+    public CertificateConfiguration getCertificateConfiguration() {
+        return certificateConfiguration;
+    }
+
+    public void setCertificateConfiguration(CertificateConfiguration certificateConfiguration) {
+        this.certificateConfiguration = certificateConfiguration;
+    }
+
+    public AddBucketCnameRequest withCertificateConfiguration(CertificateConfiguration certificateConfiguration) {
+        setCertificateConfiguration(certificateConfiguration);
+        return this;
+    }
 }

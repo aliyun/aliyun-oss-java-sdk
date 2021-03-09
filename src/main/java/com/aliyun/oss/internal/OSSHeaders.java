@@ -101,4 +101,5 @@ public interface OSSHeaders extends HttpHeaders {
 
     static final String OSS_HEADER_WORM_ID = "x-oss-worm-id";
 
+    static final String OSS_HEADER_CERT_ID = "x-oss-yundun-certificate-id";
 }

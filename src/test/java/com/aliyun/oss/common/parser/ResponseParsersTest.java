@@ -749,7 +749,7 @@ public class ResponseParsersTest {
     }
 
     @Test
-    public void testparseGetBucketCname() {
+    public void testParseGetBucketCname() throws Exception {
         String respBody = "" +
                 "<CnameConfiguration>\n" +
                 "  <Cname>\n" +
@@ -762,6 +762,25 @@ public class ResponseParsersTest {
                 "    <Domain>Domain2</Domain>\n" +
                 "    <Status>Disabled</Status>\n" +
                 "    <LastModified>2019-09-30T01:53:45.000Z</LastModified>\n" +
+                "  </Cname>\n" +
+                "  <Cname>\n" +
+                "    <Domain>Domain3</Domain>\n" +
+                "    <Status>Enabled</Status>\n" +
+                "    <LastModified>2019-09-30T01:53:45.000Z</LastModified>\n" +
+                "    <Certificate>\n" +
+                "        <Type>CAS</Type>\n" +
+                "        <CertId>hangzhou-01</CertId>\n" +
+                "        <Status>Enabled</Status>\n" +
+                "    </Certificate>\n" +
+                "  </Cname>\n" +
+                "  <Cname>\n" +
+                "    <Domain>Domain4</Domain>\n" +
+                "    <Status>Enabled</Status>\n" +
+                "    <LastModified>2019-09-30T01:53:45.000Z</LastModified>\n" +
+                "    <Certificate>\n" +
+                "        <Type>Upload</Type>\n" +
+                "        <Status>Disabled</Status>\n" +
+                "    </Certificate>\n" +
                 "  </Cname>\n" +
                 "</CnameConfiguration>";
 
@@ -779,9 +798,37 @@ public class ResponseParsersTest {
             Assert.fail("parse bucket replication response body fail!");
         }
 
-        Assert.assertEquals(2, result.size());
+        Date date = DateUtil.parseIso8601Date("2019-09-30T01:53:45.000Z");
+
+        Assert.assertEquals(4, result.size());
+
+        Assert.assertEquals("Domain1", result.get(0).getDomain());
+        Assert.assertEquals(CnameConfiguration.CnameStatus.Enabled, result.get(0).getStatus());
+        Assert.assertEquals(date, result.get(0).getLastMofiedTime());
         Assert.assertEquals(new Boolean(true), result.get(0).getPurgeCdnCache());
-        Assert.assertEquals(null, result.get(1).getPurgeCdnCache());
+        Assert.assertNull(result.get(0).getCertType());
+
+        Assert.assertEquals("Domain2", result.get(1).getDomain());
+        Assert.assertEquals(CnameConfiguration.CnameStatus.Disabled, result.get(1).getStatus());
+        Assert.assertEquals(date, result.get(1).getLastMofiedTime());
+        Assert.assertNull(result.get(1).getPurgeCdnCache());
+        Assert.assertNull(result.get(1).getCertType());
+
+        Assert.assertEquals("Domain3", result.get(2).getDomain());
+        Assert.assertEquals(CnameConfiguration.CnameStatus.Enabled, result.get(2).getStatus());
+        Assert.assertEquals(date, result.get(2).getLastMofiedTime());
+        Assert.assertNull(result.get(2).getPurgeCdnCache());
+        Assert.assertEquals(CnameConfiguration.CertType.CAS, result.get(2).getCertType());
+        Assert.assertEquals("hangzhou-01", result.get(2).getCertId());
+        Assert.assertEquals(CnameConfiguration.CertStatus.Enabled, result.get(2).getCertStatus());
+
+        Assert.assertEquals("Domain4", result.get(3).getDomain());
+        Assert.assertEquals(CnameConfiguration.CnameStatus.Enabled, result.get(3).getStatus());
+        Assert.assertEquals(date, result.get(3).getLastMofiedTime());
+        Assert.assertNull(result.get(3).getPurgeCdnCache());
+        Assert.assertEquals(CnameConfiguration.CertType.Upload, result.get(3).getCertType());
+        Assert.assertNull(result.get(3).getCertId());
+        Assert.assertEquals(CnameConfiguration.CertStatus.Disabled, result.get(3).getCertStatus());
     }
 
     @Test

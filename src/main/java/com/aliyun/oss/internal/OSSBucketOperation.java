@@ -52,6 +52,7 @@ import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameCreationValid;
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
 import static com.aliyun.oss.internal.RequestParameters.*;
+import static com.aliyun.oss.internal.ResponseParsers.addBucketCnameResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketAclResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketLifecycleResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketLocationResponseParser;
@@ -111,6 +112,7 @@ import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.ExceptionFactory;
 import com.aliyun.oss.common.utils.HttpHeaders;
 import com.aliyun.oss.model.AccessControlList;
+import com.aliyun.oss.model.AddBucketCnameResult;
 import com.aliyun.oss.model.Bucket;
 import com.aliyun.oss.model.BucketInfo;
 import com.aliyun.oss.model.BucketList;
@@ -1128,7 +1130,7 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, getBucketReplicationLocationResponseParser, bucketName, null, true);
     }
 
-    public void addBucketCname(AddBucketCnameRequest addBucketCnameRequest) throws OSSException, ClientException {
+    public AddBucketCnameResult addBucketCname(AddBucketCnameRequest addBucketCnameRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(addBucketCnameRequest, "addBucketCnameRequest");
         assertParameterNotNull(addBucketCnameRequest.getDomain(), "addBucketCnameRequest.domain");
@@ -1150,7 +1152,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
                 .setOriginalRequest(addBucketCnameRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, addBucketCnameResponseParser, bucketName, null);
     }
 
     public List<CnameConfiguration> getBucketCname(GenericRequest genericRequest) throws OSSException, ClientException {

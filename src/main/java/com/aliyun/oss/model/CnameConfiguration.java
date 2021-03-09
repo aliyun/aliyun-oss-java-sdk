@@ -22,11 +22,113 @@ package com.aliyun.oss.model;
 import java.util.Date;
 
 public class CnameConfiguration {
-    public static enum CnameStatus {
-        Unknown, // initial state.
-        Enabled, // Enable the CName
-        Disabled // Disable the CName
+    public enum CnameStatus {
+        /**
+         * Unknown status
+         */
+        Unknown("Unknown"),
+
+        /**
+         * Enabled
+         */
+        Enabled("Enabled"),
+
+        /**
+         * Disabled
+         */
+        Disabled("Disabled"),
+
+        /**
+         * Blocked
+         */
+        Blocked("Blocked"),
+
+        /**
+         * Forbidden
+         */
+        Forbidden("Forbidden");
+
+        private String cnameStatusString;
+        private CnameStatus(String cnameStatusString) { this.cnameStatusString = cnameStatusString; }
+
+        @Override
+        public String toString() { return this.cnameStatusString; }
+
+        public static CnameStatus parse(String cnameStatusString) {
+            for (CnameStatus st : CnameStatus.values()) {
+                if (st.toString().equalsIgnoreCase(cnameStatusString)) {
+                    return st;
+                }
+            }
+            throw new IllegalArgumentException("Unable to parse " + cnameStatusString);
+        }
     };
+
+    public enum CertStatus {
+        /**
+         * Unknown status
+         */
+        Unknown("Unknown"),
+
+        /**
+         * Enabled
+         */
+        Enabled("Enabled"),
+
+        /**
+         * Disabled
+         */
+        Disabled("Disabled");
+
+        private String certStatusString;
+        private CertStatus(String certStatusString) { this.certStatusString = certStatusString; }
+
+        @Override
+        public String toString() {
+            return this.certStatusString;
+        }
+
+        public static CertStatus parse(String certStatusString) {
+            for (CertStatus st : CertStatus.values()) {
+                if (st.toString().equalsIgnoreCase(certStatusString)) {
+                    return st;
+                }
+            }
+            throw new IllegalArgumentException("Unable to parse " + certStatusString);
+        }
+    };
+
+    public enum CertType {
+        /**
+         * Unknown type
+         */
+        Unknown("Unknown"),
+
+        /**
+         * Indicate the certificate is stored in CAS.
+         */
+        CAS("CAS"),
+
+        /**
+         * Indicate the certificate is uploaded by user
+         */
+        Upload("Upload");
+
+        private String certTypeString;
+        private CertType(String certTypeString) { this.certTypeString = certTypeString; }
+
+        @Override
+        public String toString() { return this.certTypeString; }
+
+        public static CertType parse(String certTypeString) {
+            for (CertType ct : CertType.values()) {
+                if (ct.toString().equalsIgnoreCase(certTypeString)) {
+                    return ct;
+                }
+            }
+            throw new IllegalArgumentException("Unable to parse " + certTypeString);
+        }
+    }
 
     public CnameConfiguration() {
         status = CnameStatus.Unknown;
@@ -64,9 +166,22 @@ public class CnameConfiguration {
         this.purgeCdnCache = purgeCdnCache;
     }
 
+    public CertStatus getCertStatus() { return certStatus; }
+
+    public void setCertStatus(CertStatus certStatus) { this.certStatus = certStatus; }
+
+    public CertType getCertType() { return certType; }
+
+    public void setCertType(CertType certType) { this.certType = certType; }
+
+    public String getCertId() { return certId; }
+
+    public void setCertId(String certId) { this.certId = certId; }
+
     @Override
     public String toString() {
         return "CnameConfiguration [domain=" + domain + ", status=" + status + ", lastMofiedTime=" + lastMofiedTime
+                + ", certType=" + certType + ", certId=" + certId + ", certStatus" + certStatus
                 + "]";
     }
 
@@ -74,4 +189,7 @@ public class CnameConfiguration {
     private CnameStatus status;
     private Date lastMofiedTime;
     private Boolean purgeCdnCache;
+    private CertStatus certStatus;
+    private CertType certType;
+    private String certId;
 }

@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.CheckedInputStream;
 
+import com.aliyun.oss.model.AddBucketCnameResult;
 import com.aliyun.oss.model.GetBucketInventoryConfigurationResult;
 import com.aliyun.oss.model.GetBucketWormResult;
 import com.aliyun.oss.model.InitiateBucketWormResult;
@@ -168,6 +169,7 @@ public final class ResponseParsers {
     public static final GetBucketReplicationResponseParser getBucketReplicationResponseParser = new GetBucketReplicationResponseParser();
     public static final GetBucketReplicationProgressResponseParser getBucketReplicationProgressResponseParser = new GetBucketReplicationProgressResponseParser();
     public static final GetBucketReplicationLocationResponseParser getBucketReplicationLocationResponseParser = new GetBucketReplicationLocationResponseParser();
+    public static final AddBucketCnameResponseParser addBucketCnameResponseParser = new AddBucketCnameResponseParser();
     public static final GetBucketCnameResponseParser getBucketCnameResponseParser = new GetBucketCnameResponseParser();
     public static final GetBucketInfoResponseParser getBucketInfoResponseParser = new GetBucketInfoResponseParser();
     public static final GetBucketStatResponseParser getBucketStatResponseParser = new GetBucketStatResponseParser();
@@ -389,6 +391,21 @@ public final class ResponseParsers {
             }
         }
 
+    }
+
+    public static final class AddBucketCnameResponseParser implements ResponseParser<AddBucketCnameResult> {
+        @Override
+        public AddBucketCnameResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                AddBucketCnameResult result = new AddBucketCnameResult();
+                result.setCertId(response.getHeaders().get(OSSHeaders.OSS_HEADER_CERT_ID));
+                result.setRequestId(response.getRequestId());
+                result.setResponse(response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
     }
 
     public static final class GetBucketCnameResponseParser implements ResponseParser<List<CnameConfiguration>> {
@@ -3289,6 +3306,13 @@ public final class ResponseParsers {
                 if (cnameElem.getChildText("IsPurgeCdnCache") != null) {
                     boolean purgeCdnCache = Boolean.valueOf(cnameElem.getChildText("IsPurgeCdnCache"));
                     cname.setPurgeCdnCache(purgeCdnCache);
+                }
+
+                Element certElem = cnameElem.getChild("Certificate");
+                if (certElem != null) {
+                    cname.setCertType(CnameConfiguration.CertType.parse(certElem.getChildText("Type")));
+                    cname.setCertStatus(CnameConfiguration.CertStatus.parse(certElem.getChildText("Status")));
+                    cname.setCertId(certElem.getChildText("CertId"));
                 }
 
                 cnames.add(cname);
