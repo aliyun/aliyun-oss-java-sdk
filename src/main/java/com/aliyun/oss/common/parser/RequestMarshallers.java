@@ -845,6 +845,36 @@ public final class RequestMarshallers {
             xmlBody.append("<BucketCnameConfiguration>");
             xmlBody.append("<Cname>");
             xmlBody.append("<Domain>" + request.getDomain() + "</Domain>");
+
+            if (request.getCertificateConfiguration() != null) {
+                CertificateConfiguration certConf = request.getCertificateConfiguration();
+                xmlBody.append("<CertificateConfiguration>");
+                if (certConf.getId() != null) {
+                    xmlBody.append("<CertId>");
+                    xmlBody.append(certConf.getId());
+                    xmlBody.append("</CertId>");
+                }
+                if (certConf.getPreviousId() != null) {
+                    xmlBody.append("<PreviousCertId>");
+                    xmlBody.append(escapeKey(certConf.getPreviousId()));
+                    xmlBody.append("</PreviousCertId>");
+                }
+                if (certConf.getPublicKey() != null) {
+                    xmlBody.append("<Certificate>");
+                    xmlBody.append(escapeKey(certConf.getPublicKey()));
+                    xmlBody.append("</Certificate>");
+                }
+                if (certConf.getPrivateKey() != null) {
+                    xmlBody.append("<PrivateKey>");
+                    xmlBody.append(escapeKey(certConf.getPrivateKey()));
+                    xmlBody.append("</PrivateKey>");
+                }
+                if (certConf.isForceOverwriteCert()) {
+                    xmlBody.append("<Force>true</Force>");
+                }
+                xmlBody.append("</CertificateConfiguration>");
+            }
+
             xmlBody.append("</Cname>");
             xmlBody.append("</BucketCnameConfiguration>");
 

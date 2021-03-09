@@ -1209,8 +1209,8 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void addBucketCname(AddBucketCnameRequest addBucketCnameRequest) throws OSSException, ClientException {
-        this.bucketOperation.addBucketCname(addBucketCnameRequest);
+    public AddBucketCnameResult addBucketCname(AddBucketCnameRequest addBucketCnameRequest) throws OSSException, ClientException {
+        return this.bucketOperation.addBucketCname(addBucketCnameRequest);
     }
 
     @Override
