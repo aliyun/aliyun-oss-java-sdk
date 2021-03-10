@@ -100,8 +100,11 @@ public interface OSS {
      * 
      * @param bucketName
      *            bucket name to delete.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void deleteBucket(String bucketName) throws OSSException, ClientException;
+    public VoidResult deleteBucket(String bucketName) throws OSSException, ClientException;
 
     /**
      * Deletes the {@link Bucket} instance.
@@ -109,8 +112,11 @@ public interface OSS {
      * @param genericRequest
      *            the generic request instance that has the bucket name
      *            information.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void deleteBucket(GenericRequest genericRequest) throws OSSException, ClientException;
+    public VoidResult deleteBucket(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
      * Returns all {@link Bucket} instances of the current account.
@@ -161,8 +167,11 @@ public interface OSS {
      *            {@link CannedAccessControlList} instance. If the instance is
      *            null, no ACL change on the bucket (but the request is still
      *            sent).
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void setBucketAcl(String bucketName, CannedAccessControlList acl) throws OSSException, ClientException;
+    public VoidResult setBucketAcl(String bucketName, CannedAccessControlList acl) throws OSSException, ClientException;
 
     /**
      * Sends the request to apply ACL on a {@link Bucket} instance.
@@ -170,8 +179,11 @@ public interface OSS {
      * @param setBucketAclRequest
      *            SetBucketAclRequest instance which specifies the ACL and the
      *            bucket information.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void setBucketAcl(SetBucketAclRequest setBucketAclRequest) throws OSSException, ClientException;
+    public VoidResult setBucketAcl(SetBucketAclRequest setBucketAclRequest) throws OSSException, ClientException;
 
     /**
      * Returns the Access control List (ACL) of the {@link Bucket} instance.
@@ -222,8 +234,11 @@ public interface OSS {
      * @param referer
      *            The {@link BucketReferer} instance. If null, it would create a
      *            {@link BucketReferer} instance from default constructor.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void setBucketReferer(String bucketName, BucketReferer referer) throws OSSException, ClientException;
+    public VoidResult setBucketReferer(String bucketName, BucketReferer referer) throws OSSException, ClientException;
 
     /**
      * Sets the http referer on the {@link Bucket} instance in the parameter
@@ -232,8 +247,11 @@ public interface OSS {
      * @param setBucketRefererRequest
      *            {@link SetBucketRefererRequest} instance that specify the
      *            bucket name and the {@link BucketReferer} instance.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void setBucketReferer(SetBucketRefererRequest setBucketRefererRequest) throws OSSException, ClientException;
+    public VoidResult setBucketReferer(SetBucketRefererRequest setBucketRefererRequest) throws OSSException, ClientException;
 
     /**
      * Returns http referer information of the {@link Bucket} specified by
@@ -287,8 +305,11 @@ public interface OSS {
      * @param tags
      *            The dictionary that contains the tags in the form of &lt;key,
      *            value&gt; pairs
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void setBucketTagging(String bucketName, Map<String, String> tags) throws OSSException, ClientException;
+    public VoidResult setBucketTagging(String bucketName, Map<String, String> tags) throws OSSException, ClientException;
 
     /**
      * Sets the tags on the {@link Bucket} instance.
@@ -298,8 +319,11 @@ public interface OSS {
      * @param tagSet
      *            {@link TagSet} instance that has the tags in the form of &lt;key,
      *            value&gt; paris.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void setBucketTagging(String bucketName, TagSet tagSet) throws OSSException, ClientException;
+    public VoidResult setBucketTagging(String bucketName, TagSet tagSet) throws OSSException, ClientException;
 
     /**
      * Sets the tags on the {@link Bucket} instance in
@@ -308,8 +332,11 @@ public interface OSS {
      * @param setBucketTaggingRequest
      *            {@link SetBucketTaggingRequest} instance that has bucket
      *            information as well as tagging information.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void setBucketTagging(SetBucketTaggingRequest setBucketTaggingRequest) throws OSSException, ClientException;
+    public VoidResult setBucketTagging(SetBucketTaggingRequest setBucketTaggingRequest) throws OSSException, ClientException;
 
     /**
      * Gets all tags of the {@link Bucket} instance.
@@ -335,16 +362,22 @@ public interface OSS {
      * 
      * @param bucketName
      *            Bucket name
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void deleteBucketTagging(String bucketName) throws OSSException, ClientException;
+    public VoidResult deleteBucketTagging(String bucketName) throws OSSException, ClientException;
 
     /**
      * Clears all the tags of the {@link Bucket} instance.
      * 
      * @param genericRequest
      *            {@link GenericRequest} instance that has the bucket name
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void deleteBucketTagging(GenericRequest genericRequest) throws OSSException, ClientException;
+    public VoidResult deleteBucketTagging(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
      * <p>
@@ -500,6 +533,9 @@ public interface OSS {
      *            The request object containing all options for setting the
      *            bucket versioning configuration.
      *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws ClientException
      *             If any errors are encountered in the client while making the
      *             request or handling the response.
@@ -508,7 +544,7 @@ public interface OSS {
      *
      * @see OSS#getBucketVersioning(String)
      */
-    public void setBucketVersioning(SetBucketVersioningRequest setBucketVersioningRequest)
+    public VoidResult setBucketVersioning(SetBucketVersioningRequest setBucketVersioningRequest)
         throws OSSException, ClientException;
     
     /**
@@ -1270,8 +1306,11 @@ public interface OSS {
      *            Bucket name.
      * @param key
      *            Object key.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void deleteObject(String bucketName, String key) throws OSSException, ClientException;
+    public VoidResult deleteObject(String bucketName, String key) throws OSSException, ClientException;
 
     /**
      * Deletes the specified {@link OSSObject} by the {@link GenericRequest}
@@ -1280,8 +1319,11 @@ public interface OSS {
      * @param genericRequest
      *            The {@link GenericRequest} instance that specfies the bucket
      *            name and object key.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void deleteObject(GenericRequest genericRequest) throws OSSException, ClientException;
+    public VoidResult deleteObject(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
      * Batch deletes the specified files under a specific bucket. If the files
@@ -1328,13 +1370,16 @@ public interface OSS {
      * @param versionId
      *            The version of the object to delete.
      *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws ClientException
      *             If any errors are encountered in the client while making the
      *             request or handling the response.
      * @throws OSSException
      *             If any errors occurred in OSS while processing the request.
      */
-    public void deleteVersion(String bucketName, String key, String versionId) throws OSSException, ClientException;
+    public VoidResult deleteVersion(String bucketName, String key, String versionId) throws OSSException, ClientException;
 
     /**
      * <p>
@@ -1364,13 +1409,16 @@ public interface OSS {
      *            The request object containing all options for deleting a
      *            specific version of an OSS object.
      *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws ClientException
      *             If any errors are encountered in the client while making the
      *             request or handling the response.
      * @throws OSSException
      *             If any errors occurred in OSS while processing the request.
      */
-    public void deleteVersion(DeleteVersionRequest deleteVersionRequest) throws OSSException, ClientException;
+    public VoidResult deleteVersion(DeleteVersionRequest deleteVersionRequest) throws OSSException, ClientException;
     
     /**
      * Batch deletes the specified object versions under a specific bucket. If the versions
@@ -1467,8 +1515,11 @@ public interface OSS {
      * @param cannedAcl
      *            One of the three values: Private, PublicRead or
      *            PublicReadWrite.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void setObjectAcl(String bucketName, String key, CannedAccessControlList cannedAcl)
+    public VoidResult setObjectAcl(String bucketName, String key, CannedAccessControlList cannedAcl)
             throws OSSException, ClientException;
 
     /**
@@ -1477,8 +1528,11 @@ public interface OSS {
      * @param setObjectAclRequest
      *            A {@link SetObjectAclRequest} instance which specifies the
      *            object's bucket name and key as well as the ACL information.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void setObjectAcl(SetObjectAclRequest setObjectAclRequest) throws OSSException, ClientException;
+    public VoidResult setObjectAcl(SetObjectAclRequest setObjectAclRequest) throws OSSException, ClientException;
 
     /**
      * Gets the Access Control List (ACL) of the OSS object.
@@ -1568,8 +1622,11 @@ public interface OSS {
      * @param tags
      *            The dictionary that contains the tags in the form of &lt;key,
      *            value&gt; pairs.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void setObjectTagging(String bucketName, String key, Map<String, String> tags) throws OSSException, ClientException;
+    public VoidResult setObjectTagging(String bucketName, String key, Map<String, String> tags) throws OSSException, ClientException;
 
     /**
      * Sets the tags on the OSS object.
@@ -1581,8 +1638,11 @@ public interface OSS {
      * @param tagSet
      *            {@link TagSet} instance that has the tags in the form of &lt;key,
      *            value&gt; pairs.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void setObjectTagging(String bucketName, String key, TagSet tagSet) throws OSSException, ClientException;
+    public VoidResult setObjectTagging(String bucketName, String key, TagSet tagSet) throws OSSException, ClientException;
 
     /**
      * Sets the tags on the OSS object.
@@ -1590,8 +1650,11 @@ public interface OSS {
      * @param setObjectTaggingRequest
      *            {@link SetObjectTaggingRequest} instance that has object
      *            information as well as tagging information.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void setObjectTagging(SetObjectTaggingRequest setObjectTaggingRequest) throws OSSException, ClientException;
+    public VoidResult setObjectTagging(SetObjectTaggingRequest setObjectTaggingRequest) throws OSSException, ClientException;
 
     /**
      * Gets all tags of the OSS object.
@@ -1622,8 +1685,11 @@ public interface OSS {
      *            Bucket name.
      * @param key
      *            Object name.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void deleteObjectTagging(String bucketName, String key) throws OSSException, ClientException;
+    public VoidResult deleteObjectTagging(String bucketName, String key) throws OSSException, ClientException;
 
     /**
      *  Clears all the tags of the OSS object.
@@ -1631,8 +1697,11 @@ public interface OSS {
      * @param genericRequest
      *            A {@link GenericRequest} instance that specifies the bucket
      *            name and object name.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void deleteObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException;
+    public VoidResult deleteObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
      * Generates a signed url for accessing the {@link OSSObject} with HTTP GET
@@ -1690,10 +1759,14 @@ public interface OSS {
      * @param request
      *            A {@link PutBucketImageRequest} instances which specifies some
      *            attributes of image processing.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      * @throws ClientException
      */
-    public void putBucketImage(PutBucketImageRequest request) throws OSSException, ClientException;
+    public VoidResult putBucketImage(PutBucketImageRequest request) throws OSSException, ClientException;
 
     /**
      * Gets the image processing attributes on the specific {@link Bucket}.
@@ -1727,10 +1800,14 @@ public interface OSS {
      * 
      * @param bucketName
      *            Bucket name
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      * @throws ClientException
      */
-    public void deleteBucketImage(String bucketName) throws OSSException, ClientException;
+    public VoidResult deleteBucketImage(String bucketName) throws OSSException, ClientException;
 
     /**
      * Deletes the image processing attributes on the specific {@link Bucket}.
@@ -1739,10 +1816,14 @@ public interface OSS {
      *            Bucket name
      * @param genericRequest
      *            The origin request
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      * @throws ClientException
      */
-    public void deleteBucketImage(String bucketName, GenericRequest genericRequest)
+    public VoidResult deleteBucketImage(String bucketName, GenericRequest genericRequest)
             throws OSSException, ClientException;
 
     /**
@@ -1752,10 +1833,14 @@ public interface OSS {
      *            Bucket name
      * @param styleName
      *            Style name
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      * @throws ClientException
      */
-    public void deleteImageStyle(String bucketName, String styleName) throws OSSException, ClientException;
+    public VoidResult deleteImageStyle(String bucketName, String styleName) throws OSSException, ClientException;
 
     /**
      * Deletes a style named by parameter styleName under {@link Bucket}
@@ -1766,10 +1851,14 @@ public interface OSS {
      *            Style name
      * @param genericRequest
      *            The origin request
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      * @throws ClientException
      */
-    public void deleteImageStyle(String bucketName, String styleName, GenericRequest genericRequest)
+    public VoidResult deleteImageStyle(String bucketName, String styleName, GenericRequest genericRequest)
             throws OSSException, ClientException;
 
     /**
@@ -1778,10 +1867,14 @@ public interface OSS {
      * @param putImageStyleRequest
      *            A {@link PutImageStyleRequest} instance that has bucket name
      *            and style information
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      * @throws ClientException
      */
-    public void putImageStyle(PutImageStyleRequest putImageStyleRequest) throws OSSException, ClientException;
+    public VoidResult putImageStyle(PutImageStyleRequest putImageStyleRequest) throws OSSException, ClientException;
 
     /**
      * Gets a style named by parameter styleName under {@link Bucket}
@@ -1851,12 +1944,16 @@ public interface OSS {
      *            A {@link SetBucketTaggingRequest} instance that contains the
      *            image accessing configuration such as enable original picture
      *            protection, etc.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void setBucketProcess(SetBucketProcessRequest setBucketProcessRequest) throws OSSException, ClientException;
+    public VoidResult setBucketProcess(SetBucketProcessRequest setBucketProcessRequest) throws OSSException, ClientException;
 
     /**
      * Gets the bucket's image accessing configuration.
@@ -1982,9 +2079,13 @@ public interface OSS {
      * @param request
      *            A {@link AbortMultipartUploadRequest} instance which specifies
      *            the file name and the upload Id to abort.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws ClientException
      */
-    public void abortMultipartUpload(AbortMultipartUploadRequest request) throws OSSException, ClientException;
+    public VoidResult abortMultipartUpload(AbortMultipartUploadRequest request) throws OSSException, ClientException;
 
     /**
      * Complete a multiple parts upload.
@@ -2021,10 +2122,14 @@ public interface OSS {
      * @param request
      *            A {@link SetBucketCORSRequest} object that has defined all
      *            CORS rules.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      * @throws ClientException
      */
-    public void setBucketCORS(SetBucketCORSRequest request) throws OSSException, ClientException;
+    public VoidResult setBucketCORS(SetBucketCORSRequest request) throws OSSException, ClientException;
 
     /**
      * Lists all CORS rules from the bucket.
@@ -2066,10 +2171,14 @@ public interface OSS {
      * 
      * @param bucketName
      *            The bucket name.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      * @throws ClientException
      */
-    public void deleteBucketCORSRules(String bucketName) throws OSSException, ClientException;
+    public VoidResult deleteBucketCORSRules(String bucketName) throws OSSException, ClientException;
 
     /**
      * Deletes all CORS rules under the bucket.
@@ -2077,10 +2186,14 @@ public interface OSS {
      * @param genericRequest
      *            The {@link GenericRequest} instance that specifies the bucket
      *            name.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      * @throws ClientException
      */
-    public void deleteBucketCORSRules(GenericRequest genericRequest) throws OSSException, ClientException;
+    public VoidResult deleteBucketCORSRules(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
      * Deprecated method.
@@ -2099,8 +2212,11 @@ public interface OSS {
      *            A {@link SetBucketLoggingRequest} instance which specifies the
      *            bucket name to set the logging, the target bucket to store the
      *            logging data and the prefix of the logging file.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void setBucketLogging(SetBucketLoggingRequest request) throws OSSException, ClientException;
+    public VoidResult setBucketLogging(SetBucketLoggingRequest request) throws OSSException, ClientException;
 
     /**
      * Gets the {@link Bucket}'s logging setting.
@@ -2132,10 +2248,14 @@ public interface OSS {
      * 
      * @param bucketName
      *            Bucket Name
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      * @throws ClientException
      */
-    public void deleteBucketLogging(String bucketName) throws OSSException, ClientException;
+    public VoidResult deleteBucketLogging(String bucketName) throws OSSException, ClientException;
 
     /**
      * Disables the logging on {@link Bucket}.
@@ -2143,10 +2263,14 @@ public interface OSS {
      * @param genericRequest
      *            The {@link GenericRequest} instance which specifies the bucket
      *            name.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      * @throws ClientException
      */
-    public void deleteBucketLogging(GenericRequest genericRequest) throws OSSException, ClientException;
+    public VoidResult deleteBucketLogging(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
      * Sets the static website settings for the {@link Bucket}. The settings
@@ -2156,10 +2280,14 @@ public interface OSS {
      * 
      * @param setBucketWebSiteRequest
      *            A {@link SetBucketWebsiteRequest} instance to set with.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      * @throws ClientException
      */
-    public void setBucketWebsite(SetBucketWebsiteRequest setBucketWebSiteRequest) throws OSSException, ClientException;
+    public VoidResult setBucketWebsite(SetBucketWebsiteRequest setBucketWebSiteRequest) throws OSSException, ClientException;
 
     /**
      * Gets the {@link Bucket}'s static website settings.
@@ -2190,10 +2318,14 @@ public interface OSS {
      * 
      * @param bucketName
      *            Bucket name
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      * @throws ClientException
      */
-    public void deleteBucketWebsite(String bucketName) throws OSSException, ClientException;
+    public VoidResult deleteBucketWebsite(String bucketName) throws OSSException, ClientException;
 
     /**
      * Deletes the {@link Bucket}'s static website configuration, which means
@@ -2202,10 +2334,14 @@ public interface OSS {
      * @param genericRequest
      *            The {@link GenericRequest} instance which specifies the bucket
      *            name.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      * @throws ClientException
      */
-    public void deleteBucketWebsite(GenericRequest genericRequest) throws OSSException, ClientException;
+    public VoidResult deleteBucketWebsite(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
      * Generates the post policy form field in JSON format.
@@ -2234,12 +2370,16 @@ public interface OSS {
      * @param setBucketLifecycleRequest
      *            A {@link SetBucketWebsiteRequest} instance which specifies the
      *            lifecycle rules
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void setBucketLifecycle(SetBucketLifecycleRequest setBucketLifecycleRequest)
+    public VoidResult setBucketLifecycle(SetBucketLifecycleRequest setBucketLifecycleRequest)
             throws OSSException, ClientException;
 
     /**
@@ -2274,12 +2414,16 @@ public interface OSS {
      * 
      * @param bucketName
      *            The bucket name to operate on.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void deleteBucketLifecycle(String bucketName) throws OSSException, ClientException;
+    public VoidResult deleteBucketLifecycle(String bucketName) throws OSSException, ClientException;
 
     /**
      * Deletes all the {@link Bucket}'s Lifecycle rules.
@@ -2287,12 +2431,16 @@ public interface OSS {
      * @param genericRequest
      *            The {@link GenericRequest} instance which specifies the bucket
      *            name.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void deleteBucketLifecycle(GenericRequest genericRequest) throws OSSException, ClientException;
+    public VoidResult deleteBucketLifecycle(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
      * Adds a {@link Bucket}'s cross-region replication rule.
@@ -2300,12 +2448,16 @@ public interface OSS {
      * @param addBucketReplicationRequest
      *            A {@link AddBucketReplicationRequest} instance which specifies
      *            a replication rule.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void addBucketReplication(AddBucketReplicationRequest addBucketReplicationRequest)
+    public VoidResult addBucketReplication(AddBucketReplicationRequest addBucketReplicationRequest)
             throws OSSException, ClientException;
 
     /**
@@ -2343,12 +2495,16 @@ public interface OSS {
      *            Bucket name.
      * @param replicationRuleID
      *            Replication Id to delete.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void deleteBucketReplication(String bucketName, String replicationRuleID)
+    public VoidResult deleteBucketReplication(String bucketName, String replicationRuleID)
             throws OSSException, ClientException;
 
     /**
@@ -2357,12 +2513,16 @@ public interface OSS {
      * @param deleteBucketReplicationRequest
      *            The {@link DeleteBucketReplicationRequest} instance which
      *            specifies the replication rule Id to delete.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void deleteBucketReplication(DeleteBucketReplicationRequest deleteBucketReplicationRequest)
+    public VoidResult deleteBucketReplication(DeleteBucketReplicationRequest deleteBucketReplicationRequest)
             throws OSSException, ClientException;
 
     /**
@@ -2435,7 +2595,10 @@ public interface OSS {
      * @param addBucketCnameRequest
      *            The request specifies the bucket name and the Cname
      *            information.
-     * @return certificate ID if exist.
+     *
+     * @return A {@link AddBucketCnameResult} instance wrapped certificate ID if exist and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
@@ -2477,12 +2640,16 @@ public interface OSS {
      *            The bucket name。
      * @param domain
      *            cname。
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void deleteBucketCname(String bucketName, String domain) throws OSSException, ClientException;
+    public VoidResult deleteBucketCname(String bucketName, String domain) throws OSSException, ClientException;
 
     /**
      * Deletes one {@link Bucket}'s specific Cname specified by the parameter
@@ -2491,12 +2658,16 @@ public interface OSS {
      * @param deleteBucketCnameRequest
      *            A {@link DeleteBucketCnameRequest} instance that specifies the
      *            bucket name and the domain name to delete
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void deleteBucketCname(DeleteBucketCnameRequest deleteBucketCnameRequest)
+    public VoidResult deleteBucketCname(DeleteBucketCnameRequest deleteBucketCnameRequest)
             throws OSSException, ClientException;
 
     /**
@@ -2562,12 +2733,16 @@ public interface OSS {
      *            The bucket name。
      * @param userQos
      *            A {@link UserQos} instance which specifies the capacity in GB
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void setBucketStorageCapacity(String bucketName, UserQos userQos) throws OSSException, ClientException;
+    public VoidResult setBucketStorageCapacity(String bucketName, UserQos userQos) throws OSSException, ClientException;
 
     /**
      * Sets the capacity of the {@link Bucket}.
@@ -2575,12 +2750,16 @@ public interface OSS {
      * @param setBucketStorageCapacityRequest
      *            A {@link SetBucketStorageCapacityRequest} instance which
      *            specifies the bucket name as well as a UserQos instance
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void setBucketStorageCapacity(SetBucketStorageCapacityRequest setBucketStorageCapacityRequest)
+    public VoidResult setBucketStorageCapacity(SetBucketStorageCapacityRequest setBucketStorageCapacityRequest)
             throws OSSException, ClientException;
 
     /**
@@ -2615,12 +2794,15 @@ public interface OSS {
      *
      * @param setBucketEncryptionRequest The request object for setting the bucket encryption configuration.
      *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void setBucketEncryption(SetBucketEncryptionRequest setBucketEncryptionRequest) 
+    public VoidResult setBucketEncryption(SetBucketEncryptionRequest setBucketEncryptionRequest)
     		throws OSSException, ClientException;
 
     /**
@@ -2659,13 +2841,16 @@ public interface OSS {
      *
      * @param bucketName
      *            The bucket name.
-     * 
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void deleteBucketEncryption(String bucketName) throws OSSException, ClientException;
+    public VoidResult deleteBucketEncryption(String bucketName) throws OSSException, ClientException;
 
     /**
      * Deletes the server-side encryption configuration from the bucket.
@@ -2673,13 +2858,16 @@ public interface OSS {
      * @param genericRequest
      *            The {@link GenericRequest} instance which specifies the bucket
      *            name.
-     *            
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void deleteBucketEncryption(GenericRequest genericRequest) throws OSSException, ClientException;
+    public VoidResult deleteBucketEncryption(GenericRequest genericRequest) throws OSSException, ClientException;
     
     /**
      * Sets the policy on the {@link Bucket} instance.
@@ -2688,12 +2876,16 @@ public interface OSS {
      *            Bucket name.
      * @param policyText
      *            Policy JSON text, please refer to the policy writing rules of Aliyun
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.           
      */
-    public void setBucketPolicy(String bucketName,  String policyText) throws OSSException, ClientException;
+    public VoidResult setBucketPolicy(String bucketName,  String policyText) throws OSSException, ClientException;
 
     /**
      * Sets the policy on the {@link Bucket} instance.
@@ -2701,12 +2893,16 @@ public interface OSS {
      * @param setBucketPolicyRequest
      *            {@link SetBucketPolicyRequest} instance that has bucket
      *            information as well as policy information.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.        
      */
-    public void setBucketPolicy(SetBucketPolicyRequest setBucketPolicyRequest) throws OSSException, ClientException;
+    public VoidResult setBucketPolicy(SetBucketPolicyRequest setBucketPolicyRequest) throws OSSException, ClientException;
     
     /**
      * Gets policy text of the {@link Bucket} instance.
@@ -2739,24 +2935,32 @@ public interface OSS {
      * 
      * @param genericRequest
      *            {@link GenericRequest} instance that has the bucket name.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void deleteBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException;
+    public VoidResult deleteBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException;
     
     /**
      * Delete policy of the {@link Bucket} instance.
      * 
      * @param bucketName
      *            Bucket name
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.           
      */
-    public void deleteBucketPolicy(String bucketName) throws OSSException, ClientException;
+    public VoidResult deleteBucketPolicy(String bucketName) throws OSSException, ClientException;
 
     /**
      * File upload
@@ -2834,12 +3038,16 @@ public interface OSS {
      *            Live Channel name.
      * @param status
      *            Live Channel status: "Enabled" or "Disabled".
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void setLiveChannelStatus(String bucketName, String liveChannel, LiveChannelStatus status)
+    public VoidResult setLiveChannelStatus(String bucketName, String liveChannel, LiveChannelStatus status)
             throws OSSException, ClientException;
 
     /**
@@ -2850,12 +3058,16 @@ public interface OSS {
      * @param setLiveChannelRequest
      *            A {@link SetLiveChannelRequest} instance that specifies the
      *            bucket name, the channel name and the Live Channel status.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void setLiveChannelStatus(SetLiveChannelRequest setLiveChannelRequest) throws OSSException, ClientException;
+    public VoidResult setLiveChannelStatus(SetLiveChannelRequest setLiveChannelRequest) throws OSSException, ClientException;
 
     /**
      * Gets the Live Channel's configuration.
@@ -2932,12 +3144,16 @@ public interface OSS {
      *            Bucket name.
      * @param liveChannel
      *            Live Channel name.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void deleteLiveChannel(String bucketName, String liveChannel) throws OSSException, ClientException;
+    public VoidResult deleteLiveChannel(String bucketName, String liveChannel) throws OSSException, ClientException;
 
     /**
      * Deletes the Live Channel。
@@ -2948,12 +3164,16 @@ public interface OSS {
      * @param liveChannelGenericRequest
      *            A {@link LiveChannelGenericRequest} instance that specifies
      *            the
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void deleteLiveChannel(LiveChannelGenericRequest liveChannelGenericRequest)
+    public VoidResult deleteLiveChannel(LiveChannelGenericRequest liveChannelGenericRequest)
             throws OSSException, ClientException;
 
     /**
@@ -3038,12 +3258,16 @@ public interface OSS {
      * @param endTime
      *            The end time of the playlist in epoch time(means *.ts files
      *            time is no later than it).
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void generateVodPlaylist(String bucketName, String liveChannelName, String PlaylistName, long startTime,
+    public VoidResult generateVodPlaylist(String bucketName, String liveChannelName, String PlaylistName, long startTime,
             long endTime) throws OSSException, ClientException;
 
     /**
@@ -3053,12 +3277,16 @@ public interface OSS {
      * @param generateVodPlaylistRequest
      *            A {@link GenerateVodPlaylistRequest} instance the specifies
      *            the bucket name and the Live Channel name.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void generateVodPlaylist(GenerateVodPlaylistRequest generateVodPlaylistRequest)
+    public VoidResult generateVodPlaylist(GenerateVodPlaylistRequest generateVodPlaylistRequest)
             throws OSSException, ClientException;
 
     /**
@@ -3145,12 +3373,16 @@ public interface OSS {
      *            symlink name.
      * @param target
      *            target file key.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void createSymlink(String bucketName, String symlink, String target) throws OSSException, ClientException;
+    public VoidResult createSymlink(String bucketName, String symlink, String target) throws OSSException, ClientException;
 
     /**
      * Creates a symbol link to a target file under the bucket---this is not
@@ -3159,12 +3391,16 @@ public interface OSS {
      * @param createSymlinkRequest
      *            A {@link CreateSymlinkRequest} instance that specifies the
      *            bucket name, symlink name.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void createSymlink(CreateSymlinkRequest createSymlinkRequest) throws OSSException, ClientException;
+    public VoidResult createSymlink(CreateSymlinkRequest createSymlinkRequest) throws OSSException, ClientException;
 
     /**
      * Gets the symlink information for the given symlink name.
@@ -3226,12 +3462,16 @@ public interface OSS {
      *             The bucket name.
      * @param payer
      *             The request payer setting
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void setBucketRequestPayment(String bucketName, Payer payer) throws OSSException, ClientException;
+    public VoidResult setBucketRequestPayment(String bucketName, Payer payer) throws OSSException, ClientException;
 
     /**
      * Sets the request payment of the {@link Bucket}.
@@ -3239,12 +3479,16 @@ public interface OSS {
      * @param setBucketRequestPaymentRequest
      *             A {@link SetBucketRequestPaymentRequest} instance  that has 
      *             the bucket name and payer setting.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void setBucketRequestPayment(SetBucketRequestPaymentRequest setBucketRequestPaymentRequest) throws OSSException, ClientException;
+    public VoidResult setBucketRequestPayment(SetBucketRequestPaymentRequest setBucketRequestPaymentRequest) throws OSSException, ClientException;
 
     /**
      * Gets the request payment of the {@link Bucket}.
@@ -3277,24 +3521,32 @@ public interface OSS {
      *             The bucket name.
      * @param bucketQosInfo
      *             The bucket qos info setting
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void setBucketQosInfo(String bucketName, BucketQosInfo bucketQosInfo) throws OSSException, ClientException;
+    public VoidResult setBucketQosInfo(String bucketName, BucketQosInfo bucketQosInfo) throws OSSException, ClientException;
 
     /**
      * sets the qos info for the {@link Bucket}.
      * 
      * @param setBucketQosInfoRequest
      *             {@link SetBucketQosInfoRequest} instance that has the bucket name and bucket qos info.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void setBucketQosInfo(SetBucketQosInfoRequest setBucketQosInfoRequest) throws OSSException, ClientException;
+    public VoidResult setBucketQosInfo(SetBucketQosInfoRequest setBucketQosInfoRequest) throws OSSException, ClientException;
 
     /**
      * Gets the bucket qos info of the {@link Bucket}.
@@ -3326,23 +3578,31 @@ public interface OSS {
      * Deletes the bucket qos info.
      * @param bucketName
      *            The bucket name
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void deleteBucketQosInfo(String bucketName) throws OSSException, ClientException;
+    public VoidResult deleteBucketQosInfo(String bucketName) throws OSSException, ClientException;
  
     /**
      * Deletes the bucket qos info.
      * @param genericRequest
      *            A {@link GenericRequest} instance that has the bucket name
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void deleteBucketQosInfo(GenericRequest genericRequest) throws OSSException, ClientException;
+    public VoidResult deleteBucketQosInfo(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
      * Gets the User qos info.
@@ -3447,23 +3707,31 @@ public interface OSS {
      *
      * @param deleteVpcipRequest
      *          A {@link DeleteVpcipRequest} that specified the vpc policy.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void deleteVpcip(DeleteVpcipRequest deleteVpcipRequest) throws OSSException, ClientException;
+    public VoidResult deleteVpcip(DeleteVpcipRequest deleteVpcipRequest) throws OSSException, ClientException;
 
     /**
      * Bind a Vpcip to a bucket.
      * @param createBucketVpcipRequest
      *          A {@link CreateBucketVpcipRequest} instance that specified the bucketName and the {@link VpcPolicy} instance.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void createBucketVpcip(CreateBucketVpcipRequest createBucketVpcipRequest) throws OSSException, ClientException;
+    public VoidResult createBucketVpcip(CreateBucketVpcipRequest createBucketVpcipRequest) throws OSSException, ClientException;
 
     /**
      * Returns all {@link VpcPolicy} instances of the Bucket.
@@ -3482,12 +3750,16 @@ public interface OSS {
      *
      * @param deleteBucketVpcipRequest
      *          A {@link DeleteBucketVpcipRequest} instance that has specified the bucketName and the {@link VpcPolicy} instance.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void deleteBucketVpcip(DeleteBucketVpcipRequest deleteBucketVpcipRequest) throws OSSException, ClientException;
+    public VoidResult deleteBucketVpcip(DeleteBucketVpcipRequest deleteBucketVpcipRequest) throws OSSException, ClientException;
 
     /**
      * Sets the bucket inventory configuration.
@@ -3496,12 +3768,16 @@ public interface OSS {
      *              The bucket name.
      * @param inventoryConfiguration
      *              The inventory configuration.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void setBucketInventoryConfiguration(String bucketName, InventoryConfiguration inventoryConfiguration)
+    public VoidResult setBucketInventoryConfiguration(String bucketName, InventoryConfiguration inventoryConfiguration)
             throws OSSException, ClientException;
 
     /**
@@ -3509,12 +3785,16 @@ public interface OSS {
      *
      * @param setBucketInventoryConfigurationRequest
      *              The {@link SetBucketInventoryConfigurationRequest} instance that has the inventory configuration.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void setBucketInventoryConfiguration(SetBucketInventoryConfigurationRequest
+    public VoidResult setBucketInventoryConfiguration(SetBucketInventoryConfigurationRequest
             setBucketInventoryConfigurationRequest) throws OSSException, ClientException;
 
     /**
@@ -3591,16 +3871,24 @@ public interface OSS {
      *              The name of the bucket.
      * @param id
      *              The id of the inventory configuration.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      */
-    public void deleteBucketInventoryConfiguration(String bucketName, String id) throws OSSException, ClientException;
+    public VoidResult deleteBucketInventoryConfiguration(String bucketName, String id) throws OSSException, ClientException;
 
     /**
      * Deletes an inventory configuration of the bucket.
      *
      * @param deleteBucketInventoryConfigurationRequest
      *              The request object for deleting an inventory configuration.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      */
-    public void deleteBucketInventoryConfiguration(
+    public VoidResult deleteBucketInventoryConfiguration(
             DeleteBucketInventoryConfigurationRequest deleteBucketInventoryConfigurationRequest)
             throws OSSException, ClientException;
 
@@ -3645,16 +3933,24 @@ public interface OSS {
      *
      * @param bucketName
      *              The name of the bucket.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      */
-    public void abortBucketWorm(String bucketName) throws OSSException, ClientException;
+    public VoidResult abortBucketWorm(String bucketName) throws OSSException, ClientException;
 
     /**
      * Abort the bucket worm configuration
      *
      * @param genericRequest
      *              A {@link GenericRequest} instance that include the bucket name.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      */
-    public void abortBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException;
+    public VoidResult abortBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
      * Complete the bucket worm configuration
@@ -3663,16 +3959,24 @@ public interface OSS {
      *              The name of the bucket.
      * @param wormId
      *              The id of the worm configuration you want to complete.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      */
-    public void completeBucketWorm(String bucketName, String wormId) throws OSSException, ClientException;
+    public VoidResult completeBucketWorm(String bucketName, String wormId) throws OSSException, ClientException;
 
     /**
      * Complete the bucket worm configuration
      *
      * @param completeBucketWormRequest
      *              A {@link CompleteBucketWormRequest} instance that includes bucket name and worm id.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      */
-    public void completeBucketWorm(CompleteBucketWormRequest completeBucketWormRequest) throws OSSException, ClientException;
+    public VoidResult completeBucketWorm(CompleteBucketWormRequest completeBucketWormRequest) throws OSSException, ClientException;
 
     /**
      * Extend the bucket worm configuration
@@ -3685,16 +3989,22 @@ public interface OSS {
      * @param retentionPeriodInDays
      *              The object's retention days.
      *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      */
-    public void extendBucketWorm(String bucketName, String wormId, int retentionPeriodInDays) throws OSSException, ClientException;
+    public VoidResult extendBucketWorm(String bucketName, String wormId, int retentionPeriodInDays) throws OSSException, ClientException;
 
     /**
      * Extend the bucket worm configuration
      *
      * @param extendBucketWormRequest
      *              A {@link ExtendBucketWormRequest} instance that includes bucket name, worm id and retention days.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      */
-    public void extendBucketWorm(ExtendBucketWormRequest extendBucketWormRequest) throws OSSException, ClientException;
+    public VoidResult extendBucketWorm(ExtendBucketWormRequest extendBucketWormRequest) throws OSSException, ClientException;
 
     /**
      * Get the bucket worm configuration
@@ -3721,26 +4031,30 @@ public interface OSS {
      * 
      * @param createUdfRequest
      *            A {@link CreateUdfRequest} instance.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
      *             OSS Client side exception.
      */
-    public void createUdf(CreateUdfRequest createUdfRequest) throws OSSException, ClientException;
+    public VoidResult createUdf(CreateUdfRequest createUdfRequest) throws OSSException, ClientException;
 
     public UdfInfo getUdfInfo(UdfGenericRequest genericRequest) throws OSSException, ClientException;
 
     public List<UdfInfo> listUdfs() throws OSSException, ClientException;
 
-    public void deleteUdf(UdfGenericRequest genericRequest) throws OSSException, ClientException;
+    public VoidResult deleteUdf(UdfGenericRequest genericRequest) throws OSSException, ClientException;
 
-    public void uploadUdfImage(UploadUdfImageRequest uploadUdfImageRequest) throws OSSException, ClientException;
+    public VoidResult uploadUdfImage(UploadUdfImageRequest uploadUdfImageRequest) throws OSSException, ClientException;
 
     public List<UdfImageInfo> getUdfImageInfo(UdfGenericRequest genericRequest) throws OSSException, ClientException;
 
-    public void deleteUdfImage(UdfGenericRequest genericRequest) throws OSSException, ClientException;
+    public VoidResult deleteUdfImage(UdfGenericRequest genericRequest) throws OSSException, ClientException;
 
-    public void createUdfApplication(CreateUdfApplicationRequest createUdfApplicationRequest)
+    public VoidResult createUdfApplication(CreateUdfApplicationRequest createUdfApplicationRequest)
             throws OSSException, ClientException;
 
     public UdfApplicationInfo getUdfApplicationInfo(UdfGenericRequest genericRequest)
@@ -3748,12 +4062,12 @@ public interface OSS {
 
     public List<UdfApplicationInfo> listUdfApplications() throws OSSException, ClientException;
 
-    public void deleteUdfApplication(UdfGenericRequest genericRequest) throws OSSException, ClientException;
+    public VoidResult deleteUdfApplication(UdfGenericRequest genericRequest) throws OSSException, ClientException;
 
-    public void upgradeUdfApplication(UpgradeUdfApplicationRequest upgradeUdfApplicationRequest)
+    public VoidResult upgradeUdfApplication(UpgradeUdfApplicationRequest upgradeUdfApplicationRequest)
             throws OSSException, ClientException;
 
-    public void resizeUdfApplication(ResizeUdfApplicationRequest resizeUdfApplicationRequest)
+    public VoidResult resizeUdfApplication(ResizeUdfApplicationRequest resizeUdfApplicationRequest)
             throws OSSException, ClientException;
 
     public UdfApplicationLog getUdfApplicationLog(GetUdfApplicationLogRequest getUdfApplicationLogRequest)

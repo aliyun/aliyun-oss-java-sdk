@@ -39,6 +39,7 @@ import com.aliyun.oss.common.parser.ResponseParseException;
 import com.aliyun.oss.common.parser.ResponseParser;
 import com.aliyun.oss.common.utils.ExceptionFactory;
 import com.aliyun.oss.internal.ResponseParsers.EmptyResponseParser;
+import com.aliyun.oss.internal.ResponseParsers.RequestIdResponseParser;
 import com.aliyun.oss.model.WebServiceRequest;
 
 /**
@@ -53,6 +54,7 @@ public abstract class OSSOperation {
 
     protected static OSSErrorResponseHandler errorResponseHandler = new OSSErrorResponseHandler();
     protected static EmptyResponseParser emptyResponseParser = new EmptyResponseParser();
+    protected static RequestIdResponseParser requestIdResponseParser = new RequestIdResponseParser();
     protected static RetryStrategy noRetryStrategy = new NoRetryStrategy();
 
     protected OSSOperation(ServiceClient client, CredentialsProvider credsProvider) {
