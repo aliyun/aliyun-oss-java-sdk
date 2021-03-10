@@ -40,6 +40,7 @@ import com.aliyun.oss.model.CORSConfiguration;
 import com.aliyun.oss.model.OptionsRequest;
 import com.aliyun.oss.model.SetBucketCORSRequest;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
+import com.aliyun.oss.model.VoidResult;
 
 /**
  * CORS operation.
@@ -55,7 +56,7 @@ public class CORSOperation extends OSSOperation {
     /**
      * Set bucket cors.
      */
-    public void setBucketCORS(SetBucketCORSRequest setBucketCORSRequest) {
+    public VoidResult setBucketCORS(SetBucketCORSRequest setBucketCORSRequest) {
 
         checkSetBucketCORSRequestValidity(setBucketCORSRequest);
 
@@ -67,7 +68,7 @@ public class CORSOperation extends OSSOperation {
                 .setInputStreamWithLength(setBucketCORSRequestMarshaller.marshall(setBucketCORSRequest))
                 .setOriginalRequest(setBucketCORSRequest).build();
 
-        doOperation(request, emptyResponseParser, setBucketCORSRequest.getBucketName(), null);
+        return doOperation(request, requestIdResponseParser, setBucketCORSRequest.getBucketName(), null);
     }
 
     /**
@@ -94,7 +95,7 @@ public class CORSOperation extends OSSOperation {
     /**
      * Delete bucket cors.
      */
-    public void deleteBucketCORS(GenericRequest genericRequest) {
+    public VoidResult deleteBucketCORS(GenericRequest genericRequest) {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
@@ -109,7 +110,7 @@ public class CORSOperation extends OSSOperation {
                 .setMethod(HttpMethod.DELETE).setParameters(parameters).setBucket(bucketName)
                 .setOriginalRequest(genericRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     /**

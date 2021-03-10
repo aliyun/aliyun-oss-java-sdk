@@ -50,6 +50,7 @@ import com.aliyun.oss.model.InventoryOSSBucketDestination;
 import com.aliyun.oss.model.InventorySchedule;
 import com.aliyun.oss.model.InventoryServerSideEncryptionKMS;
 import com.aliyun.oss.model.ListObjectsV2Result;
+import com.aliyun.oss.model.VoidResult;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.JDOMParseException;
@@ -227,6 +228,22 @@ public final class ResponseParsers {
             // Close response and return it directly without parsing.
             safeCloseResponse(response);
             return response;
+        }
+
+    }
+
+    public static final class RequestIdResponseParser implements ResponseParser<VoidResult> {
+
+        @Override
+        public VoidResult parse(ResponseMessage response) throws ResponseParseException {
+            try{
+                VoidResult result = new VoidResult();
+                result.setResponse(response);
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
         }
 
     }

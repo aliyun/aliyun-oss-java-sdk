@@ -85,6 +85,7 @@ import com.aliyun.oss.model.UploadPartCopyResult;
 import com.aliyun.oss.model.UploadPartRequest;
 import com.aliyun.oss.model.UploadPartResult;
 import com.aliyun.oss.model.Payer;
+import com.aliyun.oss.model.VoidResult;
 
 /**
  * Multipart operation.
@@ -102,7 +103,7 @@ public class OSSMultipartOperation extends OSSOperation {
     /**
      * Abort multipart upload.
      */
-    public void abortMultipartUpload(AbortMultipartUploadRequest abortMultipartUploadRequest)
+    public VoidResult abortMultipartUpload(AbortMultipartUploadRequest abortMultipartUploadRequest)
             throws OSSException, ClientException {
 
         assertParameterNotNull(abortMultipartUploadRequest, "abortMultipartUploadRequest");
@@ -127,7 +128,7 @@ public class OSSMultipartOperation extends OSSOperation {
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(parameters)
                 .setOriginalRequest(abortMultipartUploadRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, key);
+        return doOperation(request, requestIdResponseParser, bucketName, key);
     }
 
     /**

@@ -345,13 +345,13 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteBucket(String bucketName) throws OSSException, ClientException {
-        this.deleteBucket(new GenericRequest(bucketName));
+    public VoidResult deleteBucket(String bucketName) throws OSSException, ClientException {
+        return this.deleteBucket(new GenericRequest(bucketName));
     }
 
     @Override
-    public void deleteBucket(GenericRequest genericRequest) throws OSSException, ClientException {
-        bucketOperation.deleteBucket(genericRequest);
+    public VoidResult deleteBucket(GenericRequest genericRequest) throws OSSException, ClientException {
+        return bucketOperation.deleteBucket(genericRequest);
     }
 
     @Override
@@ -370,14 +370,14 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void setBucketAcl(String bucketName, CannedAccessControlList cannedACL)
+    public VoidResult setBucketAcl(String bucketName, CannedAccessControlList cannedACL)
             throws OSSException, ClientException {
-        this.setBucketAcl(new SetBucketAclRequest(bucketName, cannedACL));
+        return this.setBucketAcl(new SetBucketAclRequest(bucketName, cannedACL));
     }
 
     @Override
-    public void setBucketAcl(SetBucketAclRequest setBucketAclRequest) throws OSSException, ClientException {
-        bucketOperation.setBucketAcl(setBucketAclRequest);
+    public VoidResult setBucketAcl(SetBucketAclRequest setBucketAclRequest) throws OSSException, ClientException {
+        return bucketOperation.setBucketAcl(setBucketAclRequest);
     }
 
     @Override
@@ -401,13 +401,13 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void setBucketReferer(String bucketName, BucketReferer referer) throws OSSException, ClientException {
-        this.setBucketReferer(new SetBucketRefererRequest(bucketName, referer));
+    public VoidResult setBucketReferer(String bucketName, BucketReferer referer) throws OSSException, ClientException {
+        return this.setBucketReferer(new SetBucketRefererRequest(bucketName, referer));
     }
 
     @Override
-    public void setBucketReferer(SetBucketRefererRequest setBucketRefererRequest) throws OSSException, ClientException {
-        bucketOperation.setBucketReferer(setBucketRefererRequest);
+    public VoidResult setBucketReferer(SetBucketRefererRequest setBucketRefererRequest) throws OSSException, ClientException {
+        return bucketOperation.setBucketReferer(setBucketRefererRequest);
     }
 
     @Override
@@ -662,23 +662,23 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteObject(String bucketName, String key) throws OSSException, ClientException {
-        this.deleteObject(new GenericRequest(bucketName, key));
+    public VoidResult deleteObject(String bucketName, String key) throws OSSException, ClientException {
+        return this.deleteObject(new GenericRequest(bucketName, key));
     }
 
     @Override
-    public void deleteObject(GenericRequest genericRequest) throws OSSException, ClientException {
-        objectOperation.deleteObject(genericRequest);
+    public VoidResult deleteObject(GenericRequest genericRequest) throws OSSException, ClientException {
+        return objectOperation.deleteObject(genericRequest);
     }
     
     @Override
-    public void deleteVersion(String bucketName, String key, String versionId) throws OSSException, ClientException {
-        deleteVersion(new DeleteVersionRequest(bucketName, key, versionId));
+    public VoidResult deleteVersion(String bucketName, String key, String versionId) throws OSSException, ClientException {
+        return deleteVersion(new DeleteVersionRequest(bucketName, key, versionId));
     }
 
     @Override
-    public void deleteVersion(DeleteVersionRequest deleteVersionRequest) throws OSSException, ClientException {
-        objectOperation.deleteVersion(deleteVersionRequest);
+    public VoidResult deleteVersion(DeleteVersionRequest deleteVersionRequest) throws OSSException, ClientException {
+        return objectOperation.deleteVersion(deleteVersionRequest);
     }
 
     @Override
@@ -728,14 +728,14 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void setObjectAcl(String bucketName, String key, CannedAccessControlList cannedACL)
+    public VoidResult setObjectAcl(String bucketName, String key, CannedAccessControlList cannedACL)
             throws OSSException, ClientException {
-        this.setObjectAcl(new SetObjectAclRequest(bucketName, key, cannedACL));
+        return this.setObjectAcl(new SetObjectAclRequest(bucketName, key, cannedACL));
     }
 
     @Override
-    public void setObjectAcl(SetObjectAclRequest setObjectAclRequest) throws OSSException, ClientException {
-        objectOperation.setObjectAcl(setObjectAclRequest);
+    public VoidResult setObjectAcl(SetObjectAclRequest setObjectAclRequest) throws OSSException, ClientException {
+        return objectOperation.setObjectAcl(setObjectAclRequest);
     }
 
     @Override
@@ -771,19 +771,19 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void setObjectTagging(String bucketName, String key, Map<String, String> tags)
+    public VoidResult setObjectTagging(String bucketName, String key, Map<String, String> tags)
         throws OSSException, ClientException {
-        this.setObjectTagging(new SetObjectTaggingRequest(bucketName, key, tags));
+        return this.setObjectTagging(new SetObjectTaggingRequest(bucketName, key, tags));
     }
 
     @Override
-    public void setObjectTagging(String bucketName, String key, TagSet tagSet) throws OSSException, ClientException {
-        this.setObjectTagging(new SetObjectTaggingRequest(bucketName, key, tagSet));
+    public VoidResult setObjectTagging(String bucketName, String key, TagSet tagSet) throws OSSException, ClientException {
+        return this.setObjectTagging(new SetObjectTaggingRequest(bucketName, key, tagSet));
     }
 
     @Override
-    public void setObjectTagging(SetObjectTaggingRequest setObjectTaggingRequest) throws OSSException, ClientException {
-        objectOperation.setObjectTagging(setObjectTaggingRequest);
+    public VoidResult setObjectTagging(SetObjectTaggingRequest setObjectTaggingRequest) throws OSSException, ClientException {
+        return objectOperation.setObjectTagging(setObjectTaggingRequest);
     }
 
     @Override
@@ -797,13 +797,13 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteObjectTagging(String bucketName, String key) throws OSSException, ClientException {
-        this.deleteObjectTagging(new GenericRequest(bucketName, key));
+    public VoidResult deleteObjectTagging(String bucketName, String key) throws OSSException, ClientException {
+        return this.deleteObjectTagging(new GenericRequest(bucketName, key));
     }
 
     @Override
-    public void deleteObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException {
-        objectOperation.deleteObjectTagging(genericRequest);
+    public VoidResult deleteObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException {
+        return objectOperation.deleteObjectTagging(genericRequest);
     }
 
     @Override
@@ -850,8 +850,8 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void abortMultipartUpload(AbortMultipartUploadRequest request) throws OSSException, ClientException {
-        multipartOperation.abortMultipartUpload(request);
+    public VoidResult abortMultipartUpload(AbortMultipartUploadRequest request) throws OSSException, ClientException {
+        return multipartOperation.abortMultipartUpload(request);
     }
 
     @Override
@@ -888,8 +888,8 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void setBucketCORS(SetBucketCORSRequest request) throws OSSException, ClientException {
-        corsOperation.setBucketCORS(request);
+    public VoidResult setBucketCORS(SetBucketCORSRequest request) throws OSSException, ClientException {
+        return corsOperation.setBucketCORS(request);
     }
 
     @Override
@@ -908,13 +908,13 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteBucketCORSRules(String bucketName) throws OSSException, ClientException {
-        this.deleteBucketCORSRules(new GenericRequest(bucketName));
+    public VoidResult deleteBucketCORSRules(String bucketName) throws OSSException, ClientException {
+        return this.deleteBucketCORSRules(new GenericRequest(bucketName));
     }
 
     @Override
-    public void deleteBucketCORSRules(GenericRequest genericRequest) throws OSSException, ClientException {
-        corsOperation.deleteBucketCORS(genericRequest);
+    public VoidResult deleteBucketCORSRules(GenericRequest genericRequest) throws OSSException, ClientException {
+        return corsOperation.deleteBucketCORS(genericRequest);
     }
 
     @Override
@@ -923,8 +923,8 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void setBucketLogging(SetBucketLoggingRequest request) throws OSSException, ClientException {
-        bucketOperation.setBucketLogging(request);
+    public VoidResult setBucketLogging(SetBucketLoggingRequest request) throws OSSException, ClientException {
+        return bucketOperation.setBucketLogging(request);
     }
 
     @Override
@@ -938,18 +938,18 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteBucketLogging(String bucketName) throws OSSException, ClientException {
-        this.deleteBucketLogging(new GenericRequest(bucketName));
+    public VoidResult deleteBucketLogging(String bucketName) throws OSSException, ClientException {
+        return this.deleteBucketLogging(new GenericRequest(bucketName));
     }
 
     @Override
-    public void deleteBucketLogging(GenericRequest genericRequest) throws OSSException, ClientException {
-        bucketOperation.deleteBucketLogging(genericRequest);
+    public VoidResult deleteBucketLogging(GenericRequest genericRequest) throws OSSException, ClientException {
+        return bucketOperation.deleteBucketLogging(genericRequest);
     }
 
     @Override
-    public void putBucketImage(PutBucketImageRequest request) throws OSSException, ClientException {
-        bucketOperation.putBucketImage(request);
+    public VoidResult putBucketImage(PutBucketImageRequest request) throws OSSException, ClientException {
+        return bucketOperation.putBucketImage(request);
     }
 
     @Override
@@ -964,30 +964,30 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteBucketImage(String bucketName) throws OSSException, ClientException {
-        bucketOperation.deleteBucketImage(bucketName, new GenericRequest());
+    public VoidResult deleteBucketImage(String bucketName) throws OSSException, ClientException {
+        return bucketOperation.deleteBucketImage(bucketName, new GenericRequest());
     }
 
     @Override
-    public void deleteBucketImage(String bucketName, GenericRequest genericRequest)
+    public VoidResult deleteBucketImage(String bucketName, GenericRequest genericRequest)
             throws OSSException, ClientException {
-        bucketOperation.deleteBucketImage(bucketName, genericRequest);
+        return bucketOperation.deleteBucketImage(bucketName, genericRequest);
     }
 
     @Override
-    public void putImageStyle(PutImageStyleRequest putImageStyleRequest) throws OSSException, ClientException {
-        bucketOperation.putImageStyle(putImageStyleRequest);
+    public VoidResult putImageStyle(PutImageStyleRequest putImageStyleRequest) throws OSSException, ClientException {
+        return bucketOperation.putImageStyle(putImageStyleRequest);
     }
 
     @Override
-    public void deleteImageStyle(String bucketName, String styleName) throws OSSException, ClientException {
-        bucketOperation.deleteImageStyle(bucketName, styleName, new GenericRequest());
+    public VoidResult deleteImageStyle(String bucketName, String styleName) throws OSSException, ClientException {
+        return bucketOperation.deleteImageStyle(bucketName, styleName, new GenericRequest());
     }
 
     @Override
-    public void deleteImageStyle(String bucketName, String styleName, GenericRequest genericRequest)
+    public VoidResult deleteImageStyle(String bucketName, String styleName, GenericRequest genericRequest)
             throws OSSException, ClientException {
-        bucketOperation.deleteImageStyle(bucketName, styleName, genericRequest);
+        return bucketOperation.deleteImageStyle(bucketName, styleName, genericRequest);
     }
 
     @Override
@@ -1013,8 +1013,8 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void setBucketProcess(SetBucketProcessRequest setBucketProcessRequest) throws OSSException, ClientException {
-        bucketOperation.setBucketProcess(setBucketProcessRequest);
+    public VoidResult setBucketProcess(SetBucketProcessRequest setBucketProcessRequest) throws OSSException, ClientException {
+        return bucketOperation.setBucketProcess(setBucketProcessRequest);
     }
 
     @Override
@@ -1028,8 +1028,8 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void setBucketWebsite(SetBucketWebsiteRequest setBucketWebSiteRequest) throws OSSException, ClientException {
-        bucketOperation.setBucketWebsite(setBucketWebSiteRequest);
+    public VoidResult setBucketWebsite(SetBucketWebsiteRequest setBucketWebSiteRequest) throws OSSException, ClientException {
+        return bucketOperation.setBucketWebsite(setBucketWebSiteRequest);
     }
 
     @Override
@@ -1043,13 +1043,13 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteBucketWebsite(String bucketName) throws OSSException, ClientException {
-        this.deleteBucketWebsite(new GenericRequest(bucketName));
+    public VoidResult deleteBucketWebsite(String bucketName) throws OSSException, ClientException {
+        return this.deleteBucketWebsite(new GenericRequest(bucketName));
     }
 
     @Override
-    public void deleteBucketWebsite(GenericRequest genericRequest) throws OSSException, ClientException {
-        bucketOperation.deleteBucketWebsite(genericRequest);
+    public VoidResult deleteBucketWebsite(GenericRequest genericRequest) throws OSSException, ClientException {
+        return bucketOperation.deleteBucketWebsite(genericRequest);
     }
     
     @Override
@@ -1064,9 +1064,9 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void setBucketVersioning(SetBucketVersioningRequest setBucketVersioningRequest)
+    public VoidResult setBucketVersioning(SetBucketVersioningRequest setBucketVersioningRequest)
         throws OSSException, ClientException {
-        bucketOperation.setBucketVersioning(setBucketVersioningRequest);
+        return bucketOperation.setBucketVersioning(setBucketVersioningRequest);
     }
 
     @Override
@@ -1094,9 +1094,9 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void setBucketLifecycle(SetBucketLifecycleRequest setBucketLifecycleRequest)
+    public VoidResult setBucketLifecycle(SetBucketLifecycleRequest setBucketLifecycleRequest)
             throws OSSException, ClientException {
-        bucketOperation.setBucketLifecycle(setBucketLifecycleRequest);
+        return bucketOperation.setBucketLifecycle(setBucketLifecycleRequest);
     }
 
     @Override
@@ -1110,28 +1110,28 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteBucketLifecycle(String bucketName) throws OSSException, ClientException {
-        this.deleteBucketLifecycle(new GenericRequest(bucketName));
+    public VoidResult deleteBucketLifecycle(String bucketName) throws OSSException, ClientException {
+        return this.deleteBucketLifecycle(new GenericRequest(bucketName));
     }
 
     @Override
-    public void deleteBucketLifecycle(GenericRequest genericRequest) throws OSSException, ClientException {
-        bucketOperation.deleteBucketLifecycle(genericRequest);
+    public VoidResult deleteBucketLifecycle(GenericRequest genericRequest) throws OSSException, ClientException {
+        return bucketOperation.deleteBucketLifecycle(genericRequest);
     }
 
     @Override
-    public void setBucketTagging(String bucketName, Map<String, String> tags) throws OSSException, ClientException {
-        this.setBucketTagging(new SetBucketTaggingRequest(bucketName, tags));
+    public VoidResult setBucketTagging(String bucketName, Map<String, String> tags) throws OSSException, ClientException {
+        return this.setBucketTagging(new SetBucketTaggingRequest(bucketName, tags));
     }
 
     @Override
-    public void setBucketTagging(String bucketName, TagSet tagSet) throws OSSException, ClientException {
-        this.setBucketTagging(new SetBucketTaggingRequest(bucketName, tagSet));
+    public VoidResult setBucketTagging(String bucketName, TagSet tagSet) throws OSSException, ClientException {
+        return this.setBucketTagging(new SetBucketTaggingRequest(bucketName, tagSet));
     }
 
     @Override
-    public void setBucketTagging(SetBucketTaggingRequest setBucketTaggingRequest) throws OSSException, ClientException {
-        this.bucketOperation.setBucketTagging(setBucketTaggingRequest);
+    public VoidResult setBucketTagging(SetBucketTaggingRequest setBucketTaggingRequest) throws OSSException, ClientException {
+        return this.bucketOperation.setBucketTagging(setBucketTaggingRequest);
     }
 
     @Override
@@ -1145,19 +1145,19 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteBucketTagging(String bucketName) throws OSSException, ClientException {
-        this.deleteBucketTagging(new GenericRequest(bucketName));
+    public VoidResult deleteBucketTagging(String bucketName) throws OSSException, ClientException {
+        return this.deleteBucketTagging(new GenericRequest(bucketName));
     }
 
     @Override
-    public void deleteBucketTagging(GenericRequest genericRequest) throws OSSException, ClientException {
-        this.bucketOperation.deleteBucketTagging(genericRequest);
+    public VoidResult deleteBucketTagging(GenericRequest genericRequest) throws OSSException, ClientException {
+        return this.bucketOperation.deleteBucketTagging(genericRequest);
     }
 
     @Override
-    public void addBucketReplication(AddBucketReplicationRequest addBucketReplicationRequest)
+    public VoidResult addBucketReplication(AddBucketReplicationRequest addBucketReplicationRequest)
             throws OSSException, ClientException {
-        this.bucketOperation.addBucketReplication(addBucketReplicationRequest);
+        return this.bucketOperation.addBucketReplication(addBucketReplicationRequest);
     }
 
     @Override
@@ -1172,15 +1172,15 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteBucketReplication(String bucketName, String replicationRuleID)
+    public VoidResult deleteBucketReplication(String bucketName, String replicationRuleID)
             throws OSSException, ClientException {
-        this.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, replicationRuleID));
+        return this.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, replicationRuleID));
     }
 
     @Override
-    public void deleteBucketReplication(DeleteBucketReplicationRequest deleteBucketReplicationRequest)
+    public VoidResult deleteBucketReplication(DeleteBucketReplicationRequest deleteBucketReplicationRequest)
             throws OSSException, ClientException {
-        this.bucketOperation.deleteBucketReplication(deleteBucketReplicationRequest);
+        return this.bucketOperation.deleteBucketReplication(deleteBucketReplicationRequest);
     }
 
     @Override
@@ -1224,14 +1224,14 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteBucketCname(String bucketName, String domain) throws OSSException, ClientException {
-        this.deleteBucketCname(new DeleteBucketCnameRequest(bucketName, domain));
+    public VoidResult deleteBucketCname(String bucketName, String domain) throws OSSException, ClientException {
+        return this.deleteBucketCname(new DeleteBucketCnameRequest(bucketName, domain));
     }
 
     @Override
-    public void deleteBucketCname(DeleteBucketCnameRequest deleteBucketCnameRequest)
+    public VoidResult deleteBucketCname(DeleteBucketCnameRequest deleteBucketCnameRequest)
             throws OSSException, ClientException {
-        this.bucketOperation.deleteBucketCname(deleteBucketCnameRequest);
+        return this.bucketOperation.deleteBucketCname(deleteBucketCnameRequest);
     }
 
     @Override
@@ -1255,14 +1255,14 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void setBucketStorageCapacity(String bucketName, UserQos userQos) throws OSSException, ClientException {
-        this.setBucketStorageCapacity(new SetBucketStorageCapacityRequest(bucketName).withUserQos(userQos));
+    public VoidResult setBucketStorageCapacity(String bucketName, UserQos userQos) throws OSSException, ClientException {
+        return this.setBucketStorageCapacity(new SetBucketStorageCapacityRequest(bucketName).withUserQos(userQos));
     }
 
     @Override
-    public void setBucketStorageCapacity(SetBucketStorageCapacityRequest setBucketStorageCapacityRequest)
+    public VoidResult setBucketStorageCapacity(SetBucketStorageCapacityRequest setBucketStorageCapacityRequest)
             throws OSSException, ClientException {
-        this.bucketOperation.setBucketStorageCapacity(setBucketStorageCapacityRequest);
+        return this.bucketOperation.setBucketStorageCapacity(setBucketStorageCapacityRequest);
     }
 
     @Override
@@ -1276,9 +1276,9 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void setBucketEncryption(SetBucketEncryptionRequest setBucketEncryptionRequest)
+    public VoidResult setBucketEncryption(SetBucketEncryptionRequest setBucketEncryptionRequest)
         throws OSSException, ClientException {
-        this.bucketOperation.setBucketEncryption(setBucketEncryptionRequest);
+        return this.bucketOperation.setBucketEncryption(setBucketEncryptionRequest);
     }
 
     @Override
@@ -1294,23 +1294,23 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteBucketEncryption(String bucketName) throws OSSException, ClientException {
-        this.deleteBucketEncryption(new GenericRequest(bucketName));
+    public VoidResult deleteBucketEncryption(String bucketName) throws OSSException, ClientException {
+        return this.deleteBucketEncryption(new GenericRequest(bucketName));
     }
 
     @Override
-    public void deleteBucketEncryption(GenericRequest genericRequest) throws OSSException, ClientException {
-        this.bucketOperation.deleteBucketEncryption(genericRequest);
+    public VoidResult deleteBucketEncryption(GenericRequest genericRequest) throws OSSException, ClientException {
+        return this.bucketOperation.deleteBucketEncryption(genericRequest);
     }
 
     @Override
-    public void setBucketPolicy(String bucketName,  String policyText) throws OSSException, ClientException {
-        this.setBucketPolicy(new SetBucketPolicyRequest(bucketName, policyText));
+    public VoidResult setBucketPolicy(String bucketName,  String policyText) throws OSSException, ClientException {
+        return this.setBucketPolicy(new SetBucketPolicyRequest(bucketName, policyText));
     }
 
     @Override
-    public void setBucketPolicy(SetBucketPolicyRequest setBucketPolicyRequest) throws OSSException, ClientException {
-        this.bucketOperation.setBucketPolicy(setBucketPolicyRequest);
+    public VoidResult setBucketPolicy(SetBucketPolicyRequest setBucketPolicyRequest) throws OSSException, ClientException {
+        return this.bucketOperation.setBucketPolicy(setBucketPolicyRequest);
     }
 
     @Override
@@ -1324,13 +1324,13 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException {
-        this.bucketOperation.deleteBucketPolicy(genericRequest);
+    public VoidResult deleteBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException {
+        return this.bucketOperation.deleteBucketPolicy(genericRequest);
     }
 
     @Override
-    public void deleteBucketPolicy(String bucketName) throws OSSException, ClientException {
-        this.deleteBucketPolicy(new GenericRequest(bucketName));
+    public VoidResult deleteBucketPolicy(String bucketName) throws OSSException, ClientException {
+        return this.deleteBucketPolicy(new GenericRequest(bucketName));
     }
 
     @Override
@@ -1350,14 +1350,14 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void setLiveChannelStatus(String bucketName, String liveChannel, LiveChannelStatus status)
+    public VoidResult setLiveChannelStatus(String bucketName, String liveChannel, LiveChannelStatus status)
             throws OSSException, ClientException {
-        this.setLiveChannelStatus(new SetLiveChannelRequest(bucketName, liveChannel, status));
+        return this.setLiveChannelStatus(new SetLiveChannelRequest(bucketName, liveChannel, status));
     }
 
     @Override
-    public void setLiveChannelStatus(SetLiveChannelRequest setLiveChannelRequest) throws OSSException, ClientException {
-        liveChannelOperation.setLiveChannelStatus(setLiveChannelRequest);
+    public VoidResult setLiveChannelStatus(SetLiveChannelRequest setLiveChannelRequest) throws OSSException, ClientException {
+        return liveChannelOperation.setLiveChannelStatus(setLiveChannelRequest);
     }
 
     @Override
@@ -1385,14 +1385,14 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteLiveChannel(String bucketName, String liveChannel) throws OSSException, ClientException {
-        this.deleteLiveChannel(new LiveChannelGenericRequest(bucketName, liveChannel));
+    public VoidResult deleteLiveChannel(String bucketName, String liveChannel) throws OSSException, ClientException {
+        return this.deleteLiveChannel(new LiveChannelGenericRequest(bucketName, liveChannel));
     }
 
     @Override
-    public void deleteLiveChannel(LiveChannelGenericRequest liveChannelGenericRequest)
+    public VoidResult deleteLiveChannel(LiveChannelGenericRequest liveChannelGenericRequest)
             throws OSSException, ClientException {
-        liveChannelOperation.deleteLiveChannel(liveChannelGenericRequest);
+        return liveChannelOperation.deleteLiveChannel(liveChannelGenericRequest);
     }
 
     @Override
@@ -1419,16 +1419,16 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void generateVodPlaylist(String bucketName, String liveChannelName, String PlaylistName, long startTime,
+    public VoidResult generateVodPlaylist(String bucketName, String liveChannelName, String PlaylistName, long startTime,
             long endTime) throws OSSException, ClientException {
-        this.generateVodPlaylist(
+        return this.generateVodPlaylist(
                 new GenerateVodPlaylistRequest(bucketName, liveChannelName, PlaylistName, startTime, endTime));
     }
 
     @Override
-    public void generateVodPlaylist(GenerateVodPlaylistRequest generateVodPlaylistRequest)
+    public VoidResult generateVodPlaylist(GenerateVodPlaylistRequest generateVodPlaylistRequest)
             throws OSSException, ClientException {
-        liveChannelOperation.generateVodPlaylist(generateVodPlaylistRequest);
+        return liveChannelOperation.generateVodPlaylist(generateVodPlaylistRequest);
     }
 
     @Override
@@ -1456,14 +1456,14 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void createSymlink(String bucketName, String symLink, String targetObject)
+    public VoidResult createSymlink(String bucketName, String symLink, String targetObject)
             throws OSSException, ClientException {
-        this.createSymlink(new CreateSymlinkRequest(bucketName, symLink, targetObject));
+        return this.createSymlink(new CreateSymlinkRequest(bucketName, symLink, targetObject));
     }
 
     @Override
-    public void createSymlink(CreateSymlinkRequest createSymlinkRequest) throws OSSException, ClientException {
-        objectOperation.createSymlink(createSymlinkRequest);
+    public VoidResult createSymlink(CreateSymlinkRequest createSymlinkRequest) throws OSSException, ClientException {
+        return objectOperation.createSymlink(createSymlinkRequest);
     }
 
     @Override
@@ -1482,13 +1482,13 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void setBucketRequestPayment(String bucketName, Payer payer) throws OSSException, ClientException {
-        this.setBucketRequestPayment(new SetBucketRequestPaymentRequest(bucketName, payer));
+    public VoidResult setBucketRequestPayment(String bucketName, Payer payer) throws OSSException, ClientException {
+        return this.setBucketRequestPayment(new SetBucketRequestPaymentRequest(bucketName, payer));
     }
 
     @Override
-    public void setBucketRequestPayment(SetBucketRequestPaymentRequest setBucketRequestPaymentRequest) throws OSSException, ClientException {
-        this.bucketOperation.setBucketRequestPayment(setBucketRequestPaymentRequest);
+    public VoidResult setBucketRequestPayment(SetBucketRequestPaymentRequest setBucketRequestPaymentRequest) throws OSSException, ClientException {
+        return this.bucketOperation.setBucketRequestPayment(setBucketRequestPaymentRequest);
     }
 
     @Override
@@ -1502,13 +1502,13 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void setBucketQosInfo(String bucketName, BucketQosInfo bucketQosInfo) throws OSSException, ClientException {
-        this.setBucketQosInfo(new SetBucketQosInfoRequest(bucketName, bucketQosInfo));
+    public VoidResult setBucketQosInfo(String bucketName, BucketQosInfo bucketQosInfo) throws OSSException, ClientException {
+        return this.setBucketQosInfo(new SetBucketQosInfoRequest(bucketName, bucketQosInfo));
     }
 
     @Override
-    public void setBucketQosInfo(SetBucketQosInfoRequest setBucketQosInfoRequest) throws OSSException, ClientException {
-        this.bucketOperation.setBucketQosInfo(setBucketQosInfoRequest);
+    public VoidResult setBucketQosInfo(SetBucketQosInfoRequest setBucketQosInfoRequest) throws OSSException, ClientException {
+        return this.bucketOperation.setBucketQosInfo(setBucketQosInfoRequest);
     }
 
     @Override
@@ -1522,13 +1522,13 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteBucketQosInfo(String bucketName) throws OSSException, ClientException {
-        this.deleteBucketQosInfo(new GenericRequest(bucketName));
+    public VoidResult deleteBucketQosInfo(String bucketName) throws OSSException, ClientException {
+        return this.deleteBucketQosInfo(new GenericRequest(bucketName));
     }
  
     @Override
-    public void deleteBucketQosInfo(GenericRequest genericRequest) throws OSSException, ClientException {
-        this.bucketOperation.deleteBucketQosInfo(genericRequest);
+    public VoidResult deleteBucketQosInfo(GenericRequest genericRequest) throws OSSException, ClientException {
+        return this.bucketOperation.deleteBucketQosInfo(genericRequest);
     }
 
     @Override
@@ -1571,18 +1571,18 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteVpcip(DeleteVpcipRequest deleteVpcipRequest) throws OSSException, ClientException {
-        bucketOperation.deleteVpcip(deleteVpcipRequest);
+    public VoidResult deleteVpcip(DeleteVpcipRequest deleteVpcipRequest) throws OSSException, ClientException {
+        return bucketOperation.deleteVpcip(deleteVpcipRequest);
     }
 
     @Override
-    public void createBucketVpcip(CreateBucketVpcipRequest createBucketVpcipRequest) throws OSSException, ClientException {
-        bucketOperation.createBucketVpcip(createBucketVpcipRequest);
+    public VoidResult createBucketVpcip(CreateBucketVpcipRequest createBucketVpcipRequest) throws OSSException, ClientException {
+        return bucketOperation.createBucketVpcip(createBucketVpcipRequest);
     }
 
     @Override
-    public void deleteBucketVpcip(DeleteBucketVpcipRequest deleteBucketVpcipRequest) throws OSSException, ClientException {
-        bucketOperation.deleteBucketVpcip(deleteBucketVpcipRequest);
+    public VoidResult deleteBucketVpcip(DeleteBucketVpcipRequest deleteBucketVpcipRequest) throws OSSException, ClientException {
+        return bucketOperation.deleteBucketVpcip(deleteBucketVpcipRequest);
     }
 
     @Override
@@ -1591,15 +1591,15 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void setBucketInventoryConfiguration(String bucketName, InventoryConfiguration inventoryConfiguration)
+    public VoidResult setBucketInventoryConfiguration(String bucketName, InventoryConfiguration inventoryConfiguration)
             throws OSSException, ClientException {
-        this.setBucketInventoryConfiguration(new SetBucketInventoryConfigurationRequest(bucketName, inventoryConfiguration));
+        return this.setBucketInventoryConfiguration(new SetBucketInventoryConfigurationRequest(bucketName, inventoryConfiguration));
     }
 
     @Override
-    public void setBucketInventoryConfiguration(SetBucketInventoryConfigurationRequest
+    public VoidResult setBucketInventoryConfiguration(SetBucketInventoryConfigurationRequest
             setBucketInventoryConfigurationRequest) throws OSSException, ClientException {
-        this.bucketOperation.setBucketInventoryConfiguration(setBucketInventoryConfigurationRequest);
+        return this.bucketOperation.setBucketInventoryConfiguration(setBucketInventoryConfigurationRequest);
     }
 
     @Override
@@ -1634,15 +1634,15 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteBucketInventoryConfiguration(String bucketName, String inventoryId) throws OSSException, ClientException {
-        this.deleteBucketInventoryConfiguration(new DeleteBucketInventoryConfigurationRequest(bucketName, inventoryId));
+    public VoidResult deleteBucketInventoryConfiguration(String bucketName, String inventoryId) throws OSSException, ClientException {
+        return this.deleteBucketInventoryConfiguration(new DeleteBucketInventoryConfigurationRequest(bucketName, inventoryId));
     }
 
     @Override
-    public void deleteBucketInventoryConfiguration(
+    public VoidResult deleteBucketInventoryConfiguration(
             DeleteBucketInventoryConfigurationRequest deleteBucketInventoryConfigurationRequest)
             throws OSSException, ClientException {
-        this.bucketOperation.deleteBucketInventoryConfiguration(deleteBucketInventoryConfigurationRequest);
+        return this.bucketOperation.deleteBucketInventoryConfiguration(deleteBucketInventoryConfigurationRequest);
     }
 
     @Override
@@ -1656,33 +1656,33 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void abortBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException {
-        this.bucketOperation.abortBucketWorm(genericRequest);
+    public VoidResult abortBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException {
+        return this.bucketOperation.abortBucketWorm(genericRequest);
     }
 
     @Override
-    public void abortBucketWorm(String bucketName) throws OSSException, ClientException {
-        this.abortBucketWorm(new GenericRequest(bucketName));
+    public VoidResult abortBucketWorm(String bucketName) throws OSSException, ClientException {
+        return this.abortBucketWorm(new GenericRequest(bucketName));
     }
 
     @Override
-    public void completeBucketWorm(CompleteBucketWormRequest completeBucketWormRequest) throws OSSException, ClientException {
-        this.bucketOperation.completeBucketWorm(completeBucketWormRequest);
+    public VoidResult completeBucketWorm(CompleteBucketWormRequest completeBucketWormRequest) throws OSSException, ClientException {
+        return this.bucketOperation.completeBucketWorm(completeBucketWormRequest);
     }
 
     @Override
-    public void completeBucketWorm(String bucketName, String wormId) throws OSSException, ClientException {
-        this.completeBucketWorm(new CompleteBucketWormRequest(bucketName, wormId));
+    public VoidResult completeBucketWorm(String bucketName, String wormId) throws OSSException, ClientException {
+        return this.completeBucketWorm(new CompleteBucketWormRequest(bucketName, wormId));
     }
 
     @Override
-    public void extendBucketWorm(ExtendBucketWormRequest extendBucketWormRequest) throws OSSException, ClientException {
-        this.bucketOperation.extendBucketWorm(extendBucketWormRequest);
+    public VoidResult extendBucketWorm(ExtendBucketWormRequest extendBucketWormRequest) throws OSSException, ClientException {
+        return this.bucketOperation.extendBucketWorm(extendBucketWormRequest);
     }
 
     @Override
-    public void extendBucketWorm(String bucketName, String wormId, int retentionPeriodInDays) throws OSSException, ClientException {
-        this.extendBucketWorm(new ExtendBucketWormRequest(bucketName, wormId, retentionPeriodInDays));
+    public VoidResult extendBucketWorm(String bucketName, String wormId, int retentionPeriodInDays) throws OSSException, ClientException {
+        return this.extendBucketWorm(new ExtendBucketWormRequest(bucketName, wormId, retentionPeriodInDays));
     }
 
     @Override
@@ -1696,7 +1696,7 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void createUdf(CreateUdfRequest createUdfRequest) throws OSSException, ClientException {
+    public VoidResult createUdf(CreateUdfRequest createUdfRequest) throws OSSException, ClientException {
         throw new ClientException("Not supported.");
     }
 
@@ -1711,12 +1711,12 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteUdf(UdfGenericRequest genericRequest) throws OSSException, ClientException {
+    public VoidResult deleteUdf(UdfGenericRequest genericRequest) throws OSSException, ClientException {
         throw new ClientException("Not supported.");
     }
 
     @Override
-    public void uploadUdfImage(UploadUdfImageRequest uploadUdfImageRequest) throws OSSException, ClientException {
+    public VoidResult uploadUdfImage(UploadUdfImageRequest uploadUdfImageRequest) throws OSSException, ClientException {
         throw new ClientException("Not supported.");
     }
 
@@ -1726,12 +1726,12 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteUdfImage(UdfGenericRequest genericRequest) throws OSSException, ClientException {
+    public VoidResult deleteUdfImage(UdfGenericRequest genericRequest) throws OSSException, ClientException {
         throw new ClientException("Not supported.");
     }
 
     @Override
-    public void createUdfApplication(CreateUdfApplicationRequest createUdfApplicationRequest)
+    public VoidResult createUdfApplication(CreateUdfApplicationRequest createUdfApplicationRequest)
             throws OSSException, ClientException {
         throw new ClientException("Not supported.");
     }
@@ -1748,18 +1748,18 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public void deleteUdfApplication(UdfGenericRequest genericRequest) throws OSSException, ClientException {
+    public VoidResult deleteUdfApplication(UdfGenericRequest genericRequest) throws OSSException, ClientException {
         throw new ClientException("Not supported.");
     }
 
     @Override
-    public void upgradeUdfApplication(UpgradeUdfApplicationRequest upgradeUdfApplicationRequest)
+    public VoidResult upgradeUdfApplication(UpgradeUdfApplicationRequest upgradeUdfApplicationRequest)
             throws OSSException, ClientException {
         throw new ClientException("Not supported.");
     }
 
     @Override
-    public void resizeUdfApplication(ResizeUdfApplicationRequest resizeUdfApplicationRequest)
+    public VoidResult resizeUdfApplication(ResizeUdfApplicationRequest resizeUdfApplicationRequest)
             throws OSSException, ClientException {
         throw new ClientException("Not supported.");
     }

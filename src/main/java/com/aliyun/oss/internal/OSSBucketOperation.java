@@ -169,6 +169,7 @@ import com.aliyun.oss.model.Style;
 import com.aliyun.oss.model.UserQos;
 import com.aliyun.oss.model.UserQosInfo;
 import com.aliyun.oss.model.VersionListing;
+import com.aliyun.oss.model.VoidResult;
 import org.apache.http.HttpStatus;
 import com.aliyun.oss.model.SetAsyncFetchTaskRequest;
 import com.aliyun.oss.model.SetAsyncFetchTaskResult;
@@ -229,7 +230,7 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Delete a bucket.
      */
-    public void deleteBucket(GenericRequest genericRequest) throws OSSException, ClientException {
+    public VoidResult deleteBucket(GenericRequest genericRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
@@ -240,7 +241,7 @@ public class OSSBucketOperation extends OSSOperation {
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setOriginalRequest(genericRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     /**
@@ -291,7 +292,7 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Set bucket's canned ACL.
      */
-    public void setBucketAcl(SetBucketAclRequest setBucketAclRequest) throws OSSException, ClientException {
+    public VoidResult setBucketAcl(SetBucketAclRequest setBucketAclRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(setBucketAclRequest, "setBucketAclRequest");
 
@@ -309,7 +310,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setMethod(HttpMethod.PUT).setBucket(bucketName).setHeaders(headers).setParameters(params)
                 .setOriginalRequest(setBucketAclRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     /**
@@ -364,7 +365,7 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Set bucket referer.
      */
-    public void setBucketReferer(SetBucketRefererRequest setBucketRefererRequest) throws OSSException, ClientException {
+    public VoidResult setBucketReferer(SetBucketRefererRequest setBucketRefererRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(setBucketRefererRequest, "setBucketRefererRequest");
 
@@ -385,7 +386,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputStreamWithLength(bucketRefererMarshaller.marshall(referer))
                 .setOriginalRequest(setBucketRefererRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     /**
@@ -526,7 +527,7 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Set bucket logging.
      */
-    public void setBucketLogging(SetBucketLoggingRequest setBucketLoggingRequest) throws OSSException, ClientException {
+    public VoidResult setBucketLogging(SetBucketLoggingRequest setBucketLoggingRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(setBucketLoggingRequest, "setBucketLoggingRequest");
 
@@ -542,13 +543,13 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputStreamWithLength(setBucketLoggingRequestMarshaller.marshall(setBucketLoggingRequest))
                 .setOriginalRequest(setBucketLoggingRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     /**
      * Put bucket image
      */
-    public void putBucketImage(PutBucketImageRequest putBucketImageRequest) {
+    public VoidResult putBucketImage(PutBucketImageRequest putBucketImageRequest) {
         assertParameterNotNull(putBucketImageRequest, "putBucketImageRequest");
         String bucketName = putBucketImageRequest.GetBucketName();
         assertParameterNotNull(bucketName, "bucketName");
@@ -561,7 +562,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setOriginalRequest(putBucketImageRequest)
                 .setInputStreamWithLength(putBucketImageRequestMarshaller.marshall(putBucketImageRequest)).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     /**
@@ -582,7 +583,7 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Delete bucket image attributes.
      */
-    public void deleteBucketImage(String bucketName, GenericRequest genericRequest)
+    public VoidResult deleteBucketImage(String bucketName, GenericRequest genericRequest)
             throws OSSException, ClientException {
         assertParameterNotNull(bucketName, "bucketName");
         ensureBucketNameValid(bucketName);
@@ -594,13 +595,13 @@ public class OSSBucketOperation extends OSSOperation {
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
                 .setOriginalRequest(genericRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     /**
      * put image style
      */
-    public void putImageStyle(PutImageStyleRequest putImageStyleRequest) throws OSSException, ClientException {
+    public VoidResult putImageStyle(PutImageStyleRequest putImageStyleRequest) throws OSSException, ClientException {
         assertParameterNotNull(putImageStyleRequest, "putImageStyleRequest");
         String bucketName = putImageStyleRequest.GetBucketName();
         String styleName = putImageStyleRequest.GetStyleName();
@@ -616,10 +617,10 @@ public class OSSBucketOperation extends OSSOperation {
                 .setOriginalRequest(putImageStyleRequest)
                 .setInputStreamWithLength(putImageStyleRequestMarshaller.marshall(putImageStyleRequest)).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
-    public void deleteImageStyle(String bucketName, String styleName, GenericRequest genericRequest)
+    public VoidResult deleteImageStyle(String bucketName, String styleName, GenericRequest genericRequest)
             throws OSSException, ClientException {
         assertParameterNotNull(bucketName, "bucketName");
         assertParameterNotNull(styleName, "styleName");
@@ -632,7 +633,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
                 .setOriginalRequest(genericRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     public GetImageStyleResult getImageStyle(String bucketName, String styleName, GenericRequest genericRequest)
@@ -670,7 +671,7 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, listImageStyleResponseParser, bucketName, null, true);
     }
 
-    public void setBucketProcess(SetBucketProcessRequest setBucketProcessRequest) throws OSSException, ClientException {
+    public VoidResult setBucketProcess(SetBucketProcessRequest setBucketProcessRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(setBucketProcessRequest, "setBucketProcessRequest");
 
@@ -689,7 +690,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputStreamWithLength(bucketImageProcessConfMarshaller.marshall(imageProcessConf))
                 .setOriginalRequest(setBucketProcessRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     public BucketProcess getBucketProcess(GenericRequest genericRequest) throws OSSException, ClientException {
@@ -734,7 +735,7 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Delete bucket logging.
      */
-    public void deleteBucketLogging(GenericRequest genericRequest) throws OSSException, ClientException {
+    public VoidResult deleteBucketLogging(GenericRequest genericRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
@@ -749,13 +750,13 @@ public class OSSBucketOperation extends OSSOperation {
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
                 .setOriginalRequest(genericRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     /**
      * Set bucket website.
      */
-    public void setBucketWebsite(SetBucketWebsiteRequest setBucketWebSiteRequest) throws OSSException, ClientException {
+    public VoidResult setBucketWebsite(SetBucketWebsiteRequest setBucketWebSiteRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(setBucketWebSiteRequest, "setBucketWebSiteRequest");
 
@@ -776,7 +777,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputStreamWithLength(setBucketWebsiteRequestMarshaller.marshall(setBucketWebSiteRequest))
                 .setOriginalRequest(setBucketWebSiteRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     /**
@@ -803,7 +804,7 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Delete bucket website.
      */
-    public void deleteBucketWebsite(GenericRequest genericRequest) throws OSSException, ClientException {
+    public VoidResult deleteBucketWebsite(GenericRequest genericRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
@@ -818,13 +819,13 @@ public class OSSBucketOperation extends OSSOperation {
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
                 .setOriginalRequest(genericRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     /**
      * Set bucket lifecycle.
      */
-    public void setBucketLifecycle(SetBucketLifecycleRequest setBucketLifecycleRequest)
+    public VoidResult setBucketLifecycle(SetBucketLifecycleRequest setBucketLifecycleRequest)
             throws OSSException, ClientException {
 
         assertParameterNotNull(setBucketLifecycleRequest, "setBucketLifecycleRequest");
@@ -841,7 +842,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputStreamWithLength(setBucketLifecycleRequestMarshaller.marshall(setBucketLifecycleRequest))
                 .setOriginalRequest(setBucketLifecycleRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     /**
@@ -868,7 +869,7 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Delete bucket lifecycle.
      */
-    public void deleteBucketLifecycle(GenericRequest genericRequest) throws OSSException, ClientException {
+    public VoidResult deleteBucketLifecycle(GenericRequest genericRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
@@ -883,13 +884,13 @@ public class OSSBucketOperation extends OSSOperation {
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
                 .setOriginalRequest(genericRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     /**
      * Set bucket tagging.
      */
-    public void setBucketTagging(SetBucketTaggingRequest setBucketTaggingRequest) throws OSSException, ClientException {
+    public VoidResult setBucketTagging(SetBucketTaggingRequest setBucketTaggingRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(setBucketTaggingRequest, "setBucketTaggingRequest");
 
@@ -905,7 +906,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputStreamWithLength(setBucketTaggingRequestMarshaller.marshall(setBucketTaggingRequest))
                 .setOriginalRequest(setBucketTaggingRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     /**
@@ -932,7 +933,7 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Delete bucket tagging.
      */
-    public void deleteBucketTagging(GenericRequest genericRequest) throws OSSException, ClientException {
+    public VoidResult deleteBucketTagging(GenericRequest genericRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
@@ -947,7 +948,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
                 .setOriginalRequest(genericRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     /**
@@ -975,7 +976,7 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Set bucket versioning.
      */
-    public void setBucketVersioning(SetBucketVersioningRequest setBucketVersioningRequest)
+    public VoidResult setBucketVersioning(SetBucketVersioningRequest setBucketVersioningRequest)
         throws OSSException, ClientException {
         assertParameterNotNull(setBucketVersioningRequest, "setBucketVersioningRequest");
         assertParameterNotNull(setBucketVersioningRequest.getVersioningConfiguration(), "versioningConfiguration");
@@ -996,13 +997,13 @@ public class OSSBucketOperation extends OSSOperation {
             .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
             .setOriginalRequest(setBucketVersioningRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     /**
      * Add bucket replication.
      */
-    public void addBucketReplication(AddBucketReplicationRequest addBucketReplicationRequest)
+    public VoidResult addBucketReplication(AddBucketReplicationRequest addBucketReplicationRequest)
             throws OSSException, ClientException {
 
         assertParameterNotNull(addBucketReplicationRequest, "addBucketReplicationRequest");
@@ -1021,7 +1022,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputStreamWithLength(addBucketReplicationRequestMarshaller.marshall(addBucketReplicationRequest))
                 .setOriginalRequest(addBucketReplicationRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     /**
@@ -1049,7 +1050,7 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Delete bucket replication.
      */
-    public void deleteBucketReplication(DeleteBucketReplicationRequest deleteBucketReplicationRequest)
+    public VoidResult deleteBucketReplication(DeleteBucketReplicationRequest deleteBucketReplicationRequest)
             throws OSSException, ClientException {
 
         assertParameterNotNull(deleteBucketReplicationRequest, "deleteBucketReplicationRequest");
@@ -1072,7 +1073,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
                 .setOriginalRequest(deleteBucketReplicationRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     private static void addRequestRequiredHeaders(Map<String, String> headers, byte[] rawContent) {
@@ -1173,7 +1174,7 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, getBucketCnameResponseParser, bucketName, null, true);
     }
 
-    public void deleteBucketCname(DeleteBucketCnameRequest deleteBucketCnameRequest)
+    public VoidResult deleteBucketCname(DeleteBucketCnameRequest deleteBucketCnameRequest)
             throws OSSException, ClientException {
 
         assertParameterNotNull(deleteBucketCnameRequest, "deleteBucketCnameRequest");
@@ -1196,7 +1197,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
                 .setOriginalRequest(deleteBucketCnameRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     public BucketInfo getBucketInfo(GenericRequest genericRequest) throws OSSException, ClientException {
@@ -1235,7 +1236,7 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, getBucketStatResponseParser, bucketName, null, true);
     }
 
-    public void setBucketStorageCapacity(SetBucketStorageCapacityRequest setBucketStorageCapacityRequest)
+    public VoidResult setBucketStorageCapacity(SetBucketStorageCapacityRequest setBucketStorageCapacityRequest)
             throws OSSException, ClientException {
 
         assertParameterNotNull(setBucketStorageCapacityRequest, "setBucketStorageCapacityRequest");
@@ -1260,7 +1261,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
                 .setOriginalRequest(setBucketStorageCapacityRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     public UserQos getBucketStorageCapacity(GenericRequest genericRequest) throws OSSException, ClientException {
@@ -1285,7 +1286,7 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Set bucket encryption.
      */
-    public void setBucketEncryption(SetBucketEncryptionRequest setBucketEncryptionRequest)
+    public VoidResult setBucketEncryption(SetBucketEncryptionRequest setBucketEncryptionRequest)
         throws OSSException, ClientException {
 
         assertParameterNotNull(setBucketEncryptionRequest, "setBucketEncryptionRequest");
@@ -1306,7 +1307,7 @@ public class OSSBucketOperation extends OSSOperation {
             .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
             .setOriginalRequest(setBucketEncryptionRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     /**
@@ -1334,7 +1335,7 @@ public class OSSBucketOperation extends OSSOperation {
     /**
      * Delete bucket encryption.
      */
-    public void deleteBucketEncryption(GenericRequest genericRequest) throws OSSException, ClientException {
+    public VoidResult deleteBucketEncryption(GenericRequest genericRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
@@ -1349,10 +1350,10 @@ public class OSSBucketOperation extends OSSOperation {
             .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
             .setOriginalRequest(genericRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
-    public void setBucketPolicy(SetBucketPolicyRequest setBucketPolicyRequest) throws OSSException, ClientException {
+    public VoidResult setBucketPolicy(SetBucketPolicyRequest setBucketPolicyRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(setBucketPolicyRequest, "setBucketPolicyRequest");
 
@@ -1371,7 +1372,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
                 .setOriginalRequest(setBucketPolicyRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     public GetBucketPolicyResult getBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException {
@@ -1388,7 +1389,7 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, getBucketPolicyResponseParser, bucketName, null, true);
     }
     
-    public void deleteBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException {
+    public VoidResult deleteBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
@@ -1403,10 +1404,10 @@ public class OSSBucketOperation extends OSSOperation {
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
                 .setOriginalRequest(genericRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
-    public void setBucketRequestPayment(SetBucketRequestPaymentRequest setBucketRequestPaymentRequest)
+    public VoidResult setBucketRequestPayment(SetBucketRequestPaymentRequest setBucketRequestPaymentRequest)
             throws OSSException, ClientException {
 
         assertParameterNotNull(setBucketRequestPaymentRequest, "setBucketRequestPaymentRequest");
@@ -1429,7 +1430,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
                 .setOriginalRequest(setBucketRequestPaymentRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     public GetBucketRequestPaymentResult getBucketRequestPayment(GenericRequest genericRequest) throws OSSException, ClientException {
@@ -1450,7 +1451,7 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, getBucketRequestPaymentResponseParser, bucketName, null, true);
     }
 
-    public void setBucketQosInfo(SetBucketQosInfoRequest setBucketQosInfoRequest) throws OSSException, ClientException {
+    public VoidResult setBucketQosInfo(SetBucketQosInfoRequest setBucketQosInfoRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(setBucketQosInfoRequest, "setBucketQosInfoRequest");
         assertParameterNotNull(setBucketQosInfoRequest.getBucketQosInfo(), "setBucketQosInfoRequest.getBucketQosInfo");
@@ -1471,7 +1472,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
                 .setOriginalRequest(setBucketQosInfoRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     public BucketQosInfo getBucketQosInfo(GenericRequest genericRequest) throws OSSException, ClientException {
@@ -1492,7 +1493,7 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, getBucketQosInfoResponseParser, bucketName, null, true);
     }
 
-    public void deleteBucketQosInfo(GenericRequest genericRequest) throws OSSException, ClientException {
+    public VoidResult deleteBucketQosInfo(GenericRequest genericRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
@@ -1507,7 +1508,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
                 .setOriginalRequest(genericRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     public UserQosInfo getUserQosInfo() throws OSSException, ClientException {
@@ -1606,7 +1607,7 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, listVpcipResultResponseParser, null, null,true);
     }
 
-    public void deleteVpcip(DeleteVpcipRequest deleteVpcipRequest) {
+    public VoidResult deleteVpcip(DeleteVpcipRequest deleteVpcipRequest) {
 
         assertParameterNotNull(deleteVpcipRequest, "deleteVpcipRequest");
         VpcPolicy vpcPolicy = deleteVpcipRequest.getVpcPolicy();
@@ -1626,10 +1627,10 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputStreamWithLength(deleteVpcipRequestMarshaller.marshall(deleteVpcipRequest))
                 .setOriginalRequest(deleteVpcipRequest).build();
 
-        doOperation(request, emptyResponseParser, null, null);
+        return doOperation(request, requestIdResponseParser, null, null);
     }
 
-    public void createBucketVpcip(CreateBucketVpcipRequest createBucketVpcipRequest) {
+    public VoidResult createBucketVpcip(CreateBucketVpcipRequest createBucketVpcipRequest) {
 
         String bucketName = createBucketVpcipRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
@@ -1653,10 +1654,10 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputStreamWithLength(createBucketVpcipRequestMarshaller.marshall(createBucketVpcipRequest))
                 .setOriginalRequest(createBucketVpcipRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
-    public void deleteBucketVpcip(DeleteBucketVpcipRequest deleteBucketVpcipRequest) {
+    public VoidResult deleteBucketVpcip(DeleteBucketVpcipRequest deleteBucketVpcipRequest) {
 
         String bucketName = deleteBucketVpcipRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
@@ -1679,7 +1680,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputStreamWithLength(deleteBucketVpcipRequestMarshaller.marshall(vpcPolicy))
                 .setOriginalRequest(vpcPolicy).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     public List<VpcPolicy> getBucketVpcip(GenericRequest genericRequest) {
@@ -1696,7 +1697,7 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, listVpcPolicyResultResponseParser, bucketName, null,true);
     }
 
-    public void setBucketInventoryConfiguration(SetBucketInventoryConfigurationRequest
+    public VoidResult setBucketInventoryConfiguration(SetBucketInventoryConfigurationRequest
             setBucketInventoryConfigurationRequest) throws OSSException, ClientException {
         assertParameterNotNull(setBucketInventoryConfigurationRequest, "SetBucketInventoryConfigurationRequest");
         String bucketName = setBucketInventoryConfigurationRequest.getBucketName();
@@ -1720,7 +1721,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
                 .build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     public GetBucketInventoryConfigurationResult getBucketInventoryConfiguration(GetBucketInventoryConfigurationRequest
@@ -1766,7 +1767,7 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, listBucketInventoryConfigurationsParser, bucketName, null, true);
     }
 
-    public void deleteBucketInventoryConfiguration(DeleteBucketInventoryConfigurationRequest
+    public VoidResult deleteBucketInventoryConfiguration(DeleteBucketInventoryConfigurationRequest
             deleteBucketInventoryConfigurationRequest) throws OSSException, ClientException {
         assertParameterNotNull(deleteBucketInventoryConfigurationRequest, "deleteBucketInventoryConfigurationRequest");
         String bucketName = deleteBucketInventoryConfigurationRequest.getBucketName();
@@ -1783,7 +1784,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
                 .setOriginalRequest(deleteBucketInventoryConfigurationRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     public InitiateBucketWormResult initiateBucketWorm(InitiateBucketWormRequest initiateBucketWormRequest) throws OSSException, ClientException {
@@ -1808,7 +1809,7 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, initiateBucketWormResponseParser, bucketName, null);
     }
 
-    public void abortBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException {
+    public VoidResult abortBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException {
         assertParameterNotNull(genericRequest, "genericRequest");
         String bucketName = genericRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
@@ -1822,10 +1823,10 @@ public class OSSBucketOperation extends OSSOperation {
                 .setOriginalRequest(genericRequest)
                 .build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
-    public void completeBucketWorm(CompleteBucketWormRequest completeBucketWormRequest) throws OSSException, ClientException {
+    public VoidResult completeBucketWorm(CompleteBucketWormRequest completeBucketWormRequest) throws OSSException, ClientException {
         assertParameterNotNull(completeBucketWormRequest, "completeBucketWormRequest");
         String bucketName = completeBucketWormRequest.getBucketName();
         String wormId = completeBucketWormRequest.getWormId();
@@ -1842,10 +1843,10 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputSize(0).setInputStream(new ByteArrayInputStream(new byte[0]))
                 .build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
-    public void extendBucketWorm(ExtendBucketWormRequest extendBucketWormRequest) throws OSSException, ClientException {
+    public VoidResult extendBucketWorm(ExtendBucketWormRequest extendBucketWormRequest) throws OSSException, ClientException {
         assertParameterNotNull(extendBucketWormRequest, "extendBucketWormRequest");
         String bucketName = extendBucketWormRequest.getBucketName();
         String wormId = extendBucketWormRequest.getWormId();
@@ -1867,7 +1868,7 @@ public class OSSBucketOperation extends OSSOperation {
                 .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
                 .build();
 
-        doOperation(request, emptyResponseParser, bucketName, null);
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     public GetBucketWormResult getBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException {
