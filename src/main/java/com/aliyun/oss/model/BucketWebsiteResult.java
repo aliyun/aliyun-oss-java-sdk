@@ -25,6 +25,8 @@ import java.util.List;
 public class BucketWebsiteResult extends GenericResult {
     private String indexDocument;
     private String errorDocument;
+    private boolean supportSubDir;
+    private String subDirType;
     private List<RoutingRule> routingRules;
 
     public String getIndexDocument() {
@@ -53,5 +55,21 @@ public class BucketWebsiteResult extends GenericResult {
             routingRules = new ArrayList<RoutingRule>();
         }
         this.routingRules.add(routingRule);
+    }
+
+    public boolean isSupportSubDir() {
+        return supportSubDir;
+    }
+
+    public void setSupportSubDir(boolean supportSubDir) {
+        this.supportSubDir = supportSubDir;
+    }
+
+    public String getSubDirType() {
+        return subDirType;
+    }
+
+    public void setSubDirType(String subDirType) {
+        this.subDirType = subDirType;
     }
 }
