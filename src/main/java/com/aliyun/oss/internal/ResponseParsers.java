@@ -31,6 +31,7 @@ import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -2155,8 +2156,16 @@ public final class ResponseParsers {
             Element root = getXmlRootElement(responseBody);
 
             BucketWebsiteResult result = new BucketWebsiteResult();
-            if (root.getChild("IndexDocument") != null) {
+            Element indexDocument = root.getChild("IndexDocument");
+            if (indexDocument != null) {
                 result.setIndexDocument(root.getChild("IndexDocument").getChildText("Suffix"));
+                if (indexDocument.getChild("SupportSubDir") != null) {
+                    result.setSupportSubDir(Boolean.valueOf(indexDocument.getChildText("SupportSubDir")));
+                }
+
+                if (indexDocument.getChild("Type") != null) {
+                    result.setSubDirType(indexDocument.getChildText("Type"));
+                }
             }
             if (root.getChild("ErrorDocument") != null) {
                 result.setErrorDocument(root.getChild("ErrorDocument").getChildText("Key"));
@@ -2171,9 +2180,26 @@ public final class ResponseParsers {
                     Element condElem = ruleElem.getChild("Condition");
                     if (condElem != null) {
                         rule.getCondition().setKeyPrefixEquals(condElem.getChildText("KeyPrefixEquals"));
+                        //rule set KeySuffixEquals
+                        if (condElem.getChild("KeySuffixEquals") != null) {
+                            rule.getCondition().setKeySuffixEquals(condElem.getChildText("KeySuffixEquals"));
+                        }
                         if (condElem.getChild("HttpErrorCodeReturnedEquals") != null) {
                             rule.getCondition().setHttpErrorCodeReturnedEquals(
                                     Integer.parseInt(condElem.getChildText("HttpErrorCodeReturnedEquals")));
+                        }
+                        List<Element> includeHeadersElem = condElem.getChildren("IncludeHeader");
+                        if (includeHeadersElem != null && includeHeadersElem.size() > 0) {
+                            List<RoutingRule.IncludeHeader> includeHeaders = new ArrayList<RoutingRule.IncludeHeader>();
+                            for (Element includeHeaderElem : includeHeadersElem) {
+                                RoutingRule.IncludeHeader includeHeader = new RoutingRule.IncludeHeader();
+                                includeHeader.setKey(includeHeaderElem.getChildText("Key"));
+                                includeHeader.setEquals(includeHeaderElem.getChildText("Equals"));
+                                includeHeader.setStartsWith(includeHeaderElem.getChildText("StartsWith"));
+                                includeHeader.setEndsWith(includeHeaderElem.getChildText("EndsWith"));
+                                includeHeaders.add(includeHeader);
+                            }
+                            rule.getCondition().setIncludeHeaders(includeHeaders);
                         }
                     }
 
@@ -2194,15 +2220,99 @@ public final class ResponseParsers {
                                 .setHttpRedirectCode(Integer.parseInt(redirectElem.getChildText("HttpRedirectCode")));
                     }
                     rule.getRedirect().setMirrorURL(redirectElem.getChildText("MirrorURL"));
+                    if (redirectElem.getChildText("MirrorTunnelId") != null) {
+                        rule.getRedirect().setMirrorTunnelId(redirectElem.getChildText("MirrorTunnelId"));
+                    }
                     rule.getRedirect().setMirrorSecondaryURL(redirectElem.getChildText("MirrorURLSlave"));
                     rule.getRedirect().setMirrorProbeURL(redirectElem.getChildText("MirrorURLProbe"));
                     if (redirectElem.getChildText("MirrorPassQueryString") != null) {
-                        rule.getRedirect().setPassQueryString(
+                        rule.getRedirect().setMirrorPassQueryString(
                                 Boolean.valueOf(redirectElem.getChildText("MirrorPassQueryString")));
                     }
                     if (redirectElem.getChildText("MirrorPassOriginalSlashes") != null) {
                         rule.getRedirect().setPassOriginalSlashes(
                                 Boolean.valueOf(redirectElem.getChildText("MirrorPassOriginalSlashes")));
+                    }
+
+                    if (redirectElem.getChildText("PassQueryString") != null) {
+                        rule.getRedirect().setPassQueryString(
+                                Boolean.valueOf(redirectElem.getChildText("PassQueryString")));
+                    }
+                    if (redirectElem.getChildText("MirrorFollowRedirect") != null) {
+                        rule.getRedirect().setMirrorFollowRedirect(
+                                Boolean.valueOf(redirectElem.getChildText("MirrorFollowRedirect")));
+                    }
+                    if (redirectElem.getChildText("MirrorUserLastModified") != null) {
+                        rule.getRedirect().setMirrorUserLastModified(
+                                Boolean.valueOf(redirectElem.getChildText("MirrorUserLastModified")));
+                    }
+                    if (redirectElem.getChildText("MirrorIsExpressTunnel") != null) {
+                        rule.getRedirect().setMirrorIsExpressTunnel(
+                                Boolean.valueOf(redirectElem.getChildText("MirrorIsExpressTunnel")));
+                    }
+                    if (redirectElem.getChildText("MirrorDstRegion") != null) {
+                        rule.getRedirect().setMirrorDstRegion(
+                                redirectElem.getChildText("MirrorDstRegion"));
+                    }
+                    if (redirectElem.getChildText("MirrorDstVpcId") != null) {
+                        rule.getRedirect().setMirrorDstVpcId(
+                                redirectElem.getChildText("MirrorDstVpcId"));
+                    }
+                    if (redirectElem.getChildText("MirrorUsingRole") != null) {
+                        rule.getRedirect().setMirrorUsingRole(Boolean.valueOf(redirectElem.getChildText("MirrorUsingRole")));
+                    }
+
+                    if (redirectElem.getChildText("MirrorRole") != null) {
+                        rule.getRedirect().setMirrorRole(redirectElem.getChildText("MirrorRole"));
+                    }
+
+                    // EnableReplacePrefix and MirrorSwitchAllErrors
+                    if (redirectElem.getChild("EnableReplacePrefix") != null) {
+                        rule.getRedirect().setEnableReplacePrefix(Boolean.valueOf(redirectElem.getChildText("EnableReplacePrefix")));
+                    }
+
+                    if (redirectElem.getChild("MirrorSwitchAllErrors") != null) {
+                        rule.getRedirect().setMirrorSwitchAllErrors(Boolean.valueOf(redirectElem.getChildText("MirrorSwitchAllErrors")));
+                    }
+
+                    if (redirectElem.getChild("MirrorCheckMd5") != null) {
+                        rule.getRedirect().setMirrorCheckMd5(Boolean.valueOf(redirectElem.getChildText("MirrorCheckMd5")));
+                    }
+
+                    Element mirrorURLsElem = redirectElem.getChild("MirrorMultiAlternates");
+                    if (mirrorURLsElem != null) {
+                        List<Element> mirrorURLElementList = mirrorURLsElem.getChildren("MirrorMultiAlternate");
+                        if (mirrorURLElementList != null && mirrorURLElementList.size() > 0) {
+                            List<RoutingRule.Redirect.MirrorMultiAlternate> mirrorURLsList = new ArrayList<RoutingRule.Redirect.MirrorMultiAlternate>();
+                            for (Element setElement : mirrorURLElementList) {
+                                RoutingRule.Redirect.MirrorMultiAlternate mirrorMultiAlternate = new RoutingRule.Redirect.MirrorMultiAlternate();
+                                mirrorMultiAlternate.setPrior(Integer.parseInt(setElement.getChildText("MirrorMultiAlternateNumber")));
+                                mirrorMultiAlternate.setUrl(setElement.getChildText("MirrorMultiAlternateURL"));
+                                mirrorURLsList.add(mirrorMultiAlternate);
+                            }
+                            rule.getRedirect().setMirrorMultiAlternates(mirrorURLsList);
+                        }
+                    }
+
+                    Element mirrorHeadersElem = redirectElem.getChild("MirrorHeaders");
+                    if (mirrorHeadersElem != null) {
+                        RoutingRule.MirrorHeaders mirrorHeaders = new RoutingRule.MirrorHeaders();
+                        mirrorHeaders.setPassAll(Boolean.valueOf(mirrorHeadersElem.getChildText("PassAll")));
+                        mirrorHeaders.setPass(parseStringListFromElemet(mirrorHeadersElem.getChildren("Pass")));
+                        mirrorHeaders.setRemove(parseStringListFromElemet(mirrorHeadersElem.getChildren("Remove")));
+                        List<Element> setElementList = mirrorHeadersElem.getChildren("Set");
+                        if (setElementList != null && setElementList.size() > 0) {
+                            List<Map<String, String>> setList = new ArrayList<Map<String, String>>();
+                            for (Element setElement : setElementList) {
+                                Map<String, String> map = new HashMap<String, String>();
+                                map.put("Key", setElement.getChildText("Key"));
+                                map.put("Value", setElement.getChildText("Value"));
+                                setList.add(map);
+                            }
+                            mirrorHeaders.setSet(setList);
+                        }
+
+                        rule.getRedirect().setMirrorHeaders(mirrorHeaders);
                     }
 
                     result.AddRoutingRule(rule);
@@ -2217,6 +2327,22 @@ public final class ResponseParsers {
         }
     }
 
+    /**
+     * 转换ElementList to StringList
+     *
+     * @param elementList
+     * @return
+     */
+    private static List<String> parseStringListFromElemet(List<Element> elementList) {
+        if (elementList != null && elementList.size() > 0) {
+            List<String> list = new ArrayList<String>();
+            for (Element element : elementList) {
+                list.add(element.getText());
+            }
+            return list;
+        }
+        return null;
+    }
     /**
      * Unmarshall copy object response body to corresponding result.
      */

@@ -285,6 +285,12 @@ public final class RequestMarshallers {
             if (request.getIndexDocument() != null) {
                 xmlBody.append("<IndexDocument>");
                 xmlBody.append("<Suffix>" + request.getIndexDocument() + "</Suffix>");
+                if(request.isSupportSubDir()) {
+                    xmlBody.append("<SupportSubDir>" + request.isSupportSubDir() + "</SupportSubDir>");
+                    if (request.getSubDirType() != null) {
+                        xmlBody.append("<Type>" + request.getSubDirType().toString() + "</Type>");
+                    }
+                }
                 xmlBody.append("</IndexDocument>");
             }
             if (request.getErrorDocument() != null) {
@@ -308,9 +314,33 @@ public final class RequestMarshallers {
                             xmlBody.append("<KeyPrefixEquals>" + escapeKey(condition.getKeyPrefixEquals())
                                     + "</KeyPrefixEquals>");
                         }
+                        // add KeySuffixEquals
+                        if (condition.getKeySuffixEquals() != null) {
+                            xmlBody.append("<KeySuffixEquals>" + escapeKey(condition.getKeySuffixEquals())
+                                    + "</KeySuffixEquals>");
+                        }
+
                         if (condition.getHttpErrorCodeReturnedEquals() != null) {
                             xmlBody.append("<HttpErrorCodeReturnedEquals>" + condition.getHttpErrorCodeReturnedEquals()
                                     + "</HttpErrorCodeReturnedEquals>");
+                        }
+                        if (condition.getIncludeHeaders() != null && condition.getIncludeHeaders().size() > 0) {
+                            for (RoutingRule.IncludeHeader includeHeader : condition.getIncludeHeaders()) {
+                                xmlBody.append("<IncludeHeader>");
+                                if (includeHeader.getKey() != null) {
+                                    xmlBody.append("<Key>" + includeHeader.getKey() + "</Key>");
+                                }
+                                if (includeHeader.getEquals() != null) {
+                                    xmlBody.append("<Equals>" + includeHeader.getEquals() + "</Equals>");
+                                }
+                                if (includeHeader.getStartsWith() != null) {
+                                    xmlBody.append("<StartsWith>" + includeHeader.getStartsWith() + "</StartsWith>");
+                                }
+                                if (includeHeader.getEndsWith() != null) {
+                                    xmlBody.append("<EndsWith>" + includeHeader.getEndsWith() + "</EndsWith>");
+                                }
+                                xmlBody.append("</IncludeHeader>");
+                            }
                         }
                         xmlBody.append("</Condition>");
                     }
@@ -341,20 +371,120 @@ public final class RequestMarshallers {
                     if (redirect.getMirrorURL() != null) {
                         xmlBody.append("<MirrorURL>" + redirect.getMirrorURL() + "</MirrorURL>");
                     }
+                    if(redirect.getMirrorTunnelId() != null) {
+                        xmlBody.append("<MirrorTunnelId>" + redirect.getMirrorTunnelId() + "</MirrorTunnelId>");
+                    }
+                    if (redirect.getMirrorMultiAlternates() != null && redirect.getMirrorMultiAlternates().size() > 0) {
+                        xmlBody.append("<MirrorMultiAlternates>");
+
+                        for (int i = 0; i < redirect.getMirrorMultiAlternates().size(); i++) {
+                            RoutingRule.Redirect.MirrorMultiAlternate mirrorMultiAlternate = redirect.getMirrorMultiAlternates().get(i);
+                            if (mirrorMultiAlternate != null && mirrorMultiAlternate.getUrl() != null) {
+                                xmlBody.append("<MirrorMultiAlternate>");
+                                xmlBody.append("<MirrorMultiAlternateNumber>");
+                                xmlBody.append(mirrorMultiAlternate.getPrior());
+                                xmlBody.append("</MirrorMultiAlternateNumber>");
+                                xmlBody.append("<MirrorMultiAlternateURL>");
+                                xmlBody.append(mirrorMultiAlternate.getUrl());
+                                xmlBody.append("</MirrorMultiAlternateURL>");
+                                xmlBody.append("</MirrorMultiAlternate>");
+                            }
+                        }
+
+                        xmlBody.append("</MirrorMultiAlternates>");
+                    }
+
                     if (redirect.getMirrorSecondaryURL() != null) {
                         xmlBody.append("<MirrorURLSlave>" + redirect.getMirrorSecondaryURL() + "</MirrorURLSlave>");
                     }
                     if (redirect.getMirrorProbeURL() != null) {
                         xmlBody.append("<MirrorURLProbe>" + redirect.getMirrorProbeURL() + "</MirrorURLProbe>");
                     }
-                    if (redirect.isPassQueryString() != null) {
+                    if (redirect.isMirrorPassQueryString() != null) {
                         xmlBody.append(
-                                "<MirrorPassQueryString>" + redirect.isPassQueryString() + "</MirrorPassQueryString>");
+                                "<MirrorPassQueryString>" + redirect.isMirrorPassQueryString() + "</MirrorPassQueryString>");
                     }
                     if (redirect.isPassOriginalSlashes() != null) {
                         xmlBody.append("<MirrorPassOriginalSlashes>" + redirect.isPassOriginalSlashes()
                                 + "</MirrorPassOriginalSlashes>");
                     }
+
+                    if (redirect.isPassQueryString() != null) {
+                        xmlBody.append("<PassQueryString>" + redirect.isPassQueryString()
+                                + "</PassQueryString>");
+                    }
+
+                    // add EnableReplacePrefix and  MirrorSwitchAllErrors
+
+                    if (redirect.isEnableReplacePrefix() != null) {
+                        xmlBody.append("<EnableReplacePrefix>" + redirect.isEnableReplacePrefix()
+                                + "</EnableReplacePrefix>");
+                    }
+
+                    if (redirect.isMirrorSwitchAllErrors() != null) {
+                        xmlBody.append("<MirrorSwitchAllErrors>" + redirect.isMirrorSwitchAllErrors()
+                                + "</MirrorSwitchAllErrors>");
+                    }
+
+                    if (redirect.isMirrorCheckMd5() != null) {
+                        xmlBody.append("<MirrorCheckMd5>" + redirect.isMirrorCheckMd5()
+                                + "</MirrorCheckMd5>");
+                    }
+
+                    if (redirect.isMirrorFollowRedirect() != null) {
+                        xmlBody.append("<MirrorFollowRedirect>" + redirect.isMirrorFollowRedirect()
+                                + "</MirrorFollowRedirect>");
+                    }
+                    if (redirect.isMirrorUserLastModified() != null) {
+                        xmlBody.append("<MirrorUserLastModified>" + redirect.isMirrorUserLastModified()
+                                + "</MirrorUserLastModified>");
+                    }
+                    if (redirect.isMirrorIsExpressTunnel() != null) {
+                        xmlBody.append("<MirrorIsExpressTunnel>" + redirect.isMirrorIsExpressTunnel()
+                                + "</MirrorIsExpressTunnel>");
+                    }
+                    if (redirect.getMirrorDstRegion() != null) {
+                        xmlBody.append("<MirrorDstRegion>" + redirect.getMirrorDstRegion()
+                                + "</MirrorDstRegion>");
+                    }
+                    if (redirect.getMirrorDstVpcId() != null) {
+                        xmlBody.append("<MirrorDstVpcId>" + redirect.getMirrorDstVpcId()
+                                + "</MirrorDstVpcId>");
+                    }
+
+                    if (redirect.isMirrorUsingRole() != null) {
+                        xmlBody.append("<MirrorUsingRole>" + redirect.isMirrorUsingRole() + "</MirrorUsingRole>");
+                    }
+
+                    if (redirect.getMirrorRole() != null) {
+                        xmlBody.append("<MirrorRole>" + redirect.getMirrorRole() + "</MirrorRole>");
+                    }
+
+                    if (redirect.getMirrorHeaders() != null) {
+                        xmlBody.append("<MirrorHeaders>");
+                        RoutingRule.MirrorHeaders mirrorHeaders = redirect.getMirrorHeaders();
+                        xmlBody.append("<PassAll>" + mirrorHeaders.isPassAll() + "</PassAll>");
+                        if (mirrorHeaders.getPass() != null && mirrorHeaders.getPass().size() > 0) {
+                            for (String pass : mirrorHeaders.getPass()) {
+                                xmlBody.append("<Pass>" + pass + "</Pass>");
+                            }
+                        }
+                        if (mirrorHeaders.getRemove() != null && mirrorHeaders.getRemove().size() > 0) {
+                            for (String remove : mirrorHeaders.getRemove()) {
+                                xmlBody.append("<Remove>" + remove + "</Remove>");
+                            }
+                        }
+                        if (mirrorHeaders.getSet() != null && mirrorHeaders.getSet().size() > 0) {
+                            for (Map<String, String> setMap : mirrorHeaders.getSet()) {
+                                xmlBody.append("<Set>");
+                                xmlBody.append("<Key>" + setMap.get("Key") + "</Key>");
+                                xmlBody.append("<Value>" + setMap.get("Value") + "</Value>");
+                                xmlBody.append("</Set>");
+                            }
+                        }
+                        xmlBody.append("</MirrorHeaders>");
+                    }
+
                     xmlBody.append("</Redirect>");
                     xmlBody.append("</RoutingRule>");
                 }
