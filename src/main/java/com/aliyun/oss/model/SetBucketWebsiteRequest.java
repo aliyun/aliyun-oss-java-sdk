@@ -26,6 +26,8 @@ public class SetBucketWebsiteRequest extends GenericRequest {
 
     private String indexDocument;
     private String errorDocument;
+    private boolean supportSubDir;
+    private SubDirType subDirType;
 
     private List<RoutingRule> routingRules = new ArrayList<RoutingRule>();
 
@@ -71,4 +73,19 @@ public class SetBucketWebsiteRequest extends GenericRequest {
         this.routingRules.add(routingRule);
     }
 
+    public boolean isSupportSubDir() {
+        return supportSubDir;
+    }
+
+    public void setSupportSubDir(boolean supportSubDir) {
+        this.supportSubDir = supportSubDir;
+    }
+
+    public SubDirType getSubDirType() {
+        return subDirType;
+    }
+
+    public void setSubDirType(SubDirType subDirType) {
+        this.subDirType = subDirType;
+    }
 }
