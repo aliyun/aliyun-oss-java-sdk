@@ -499,7 +499,7 @@ public class OSSObjectOperation extends OSSOperation {
     /**
      * Delete an object.
      */
-    public void deleteObject(GenericRequest genericRequest) throws OSSException, ClientException {
+    public VoidResult deleteObject(GenericRequest genericRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(genericRequest, "genericRequest");
 
@@ -518,13 +518,13 @@ public class OSSObjectOperation extends OSSOperation {
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(key).setHeaders(headers).setOriginalRequest(genericRequest)
                 .build();
 
-        doOperation(request, emptyResponseParser, bucketName, key);
+        return doOperation(request, requestIdResponseParser, bucketName, key);
     }
 
     /**
      * Delete an object version.
      */
-    public void deleteVersion(DeleteVersionRequest deleteVersionRequest) throws OSSException, ClientException {
+    public VoidResult deleteVersion(DeleteVersionRequest deleteVersionRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(deleteVersionRequest, "deleteVersionRequest");
 
@@ -548,7 +548,7 @@ public class OSSObjectOperation extends OSSOperation {
             .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(params)
             .setOriginalRequest(deleteVersionRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, key);
+        return doOperation(request, requestIdResponseParser, bucketName, key);
     }
 
     /**
@@ -646,7 +646,7 @@ public class OSSObjectOperation extends OSSOperation {
         return doOperation(request, headObjectResponseParser, bucketName, key);
     }
 
-    public void setObjectAcl(SetObjectAclRequest setObjectAclRequest) throws OSSException, ClientException {
+    public VoidResult setObjectAcl(SetObjectAclRequest setObjectAclRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(setObjectAclRequest, "setObjectAclRequest");
 
@@ -675,7 +675,7 @@ public class OSSObjectOperation extends OSSOperation {
                 .setMethod(HttpMethod.PUT).setBucket(bucketName).setKey(key).setParameters(params).setHeaders(headers)
                 .setOriginalRequest(setObjectAclRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, key);
+        return doOperation(request, requestIdResponseParser, bucketName, key);
     }
 
     public ObjectAcl getObjectAcl(GenericRequest genericRequest) throws OSSException, ClientException {
@@ -744,7 +744,7 @@ public class OSSObjectOperation extends OSSOperation {
         return doOperation(request, ResponseParsers.restoreObjectResponseParser, bucketName, key);
     }
     
-    public void setObjectTagging(SetObjectTaggingRequest setObjectTaggingRequest) throws OSSException, ClientException {
+    public VoidResult setObjectTagging(SetObjectTaggingRequest setObjectTaggingRequest) throws OSSException, ClientException {
         assertParameterNotNull(setObjectTaggingRequest, "setBucketTaggingRequest");
 
         String bucketName = setObjectTaggingRequest.getBucketName();
@@ -770,7 +770,7 @@ public class OSSObjectOperation extends OSSOperation {
                 .setInputStreamWithLength(setBucketTaggingRequestMarshaller.marshall(setObjectTaggingRequest))
                 .setOriginalRequest(setObjectTaggingRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, key);
+        return doOperation(request, requestIdResponseParser, bucketName, key);
     }
 
     public TagSet getObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException {
@@ -801,7 +801,7 @@ public class OSSObjectOperation extends OSSOperation {
         return doOperation(request, getTaggingResponseParser, bucketName, key, true);
     }
 
-    public void deleteObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException {
+    public VoidResult deleteObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException {
         assertParameterNotNull(genericRequest, "genericRequest");
 
         String bucketName = genericRequest.getBucketName();
@@ -826,7 +826,7 @@ public class OSSObjectOperation extends OSSOperation {
             .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(params)
             .setOriginalRequest(genericRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, key);
+        return doOperation(request, requestIdResponseParser, bucketName, key);
     }
 
     public OSSSymlink getSymlink(GenericRequest genericRequest) throws OSSException, ClientException {
@@ -859,7 +859,7 @@ public class OSSObjectOperation extends OSSOperation {
         return symbolicLink;
     }
 
-    public void createSymlink(CreateSymlinkRequest createSymlinkRequest) throws OSSException, ClientException {
+    public VoidResult createSymlink(CreateSymlinkRequest createSymlinkRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(createSymlinkRequest, "createSymlinkRequest");
 
@@ -899,7 +899,7 @@ public class OSSObjectOperation extends OSSOperation {
                 .setMethod(HttpMethod.PUT).setBucket(bucketName).setKey(symlink).setHeaders(headers)
                 .setParameters(params).setOriginalRequest(createSymlinkRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, symlink);
+        return doOperation(request, requestIdResponseParser, bucketName, symlink);
     }
 
     public GenericResult processObject(ProcessObjectRequest processObjectRequest) throws OSSException, ClientException {

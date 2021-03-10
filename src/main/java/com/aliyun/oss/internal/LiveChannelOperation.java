@@ -68,6 +68,7 @@ import com.aliyun.oss.model.LiveRecord;
 import com.aliyun.oss.model.SetLiveChannelRequest;
 import com.aliyun.oss.model.GetVodPlaylistRequest;
 import com.aliyun.oss.model.OSSObject;
+import com.aliyun.oss.model.VoidResult;
 
 /**
  * Live channel operation.
@@ -109,7 +110,7 @@ public class LiveChannelOperation extends OSSOperation {
         return doOperation(request, createLiveChannelResponseParser, bucketName, liveChannelName, true);
     }
 
-    public void setLiveChannelStatus(SetLiveChannelRequest setLiveChannelRequest) throws OSSException, ClientException {
+    public VoidResult setLiveChannelStatus(SetLiveChannelRequest setLiveChannelRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(setLiveChannelRequest, "setLiveChannelRequest");
 
@@ -129,7 +130,7 @@ public class LiveChannelOperation extends OSSOperation {
                 .setMethod(HttpMethod.PUT).setBucket(bucketName).setKey(liveChannelName).setParameters(parameters)
                 .setOriginalRequest(setLiveChannelRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, liveChannelName);
+        return doOperation(request, requestIdResponseParser, bucketName, liveChannelName);
     }
 
     public LiveChannelInfo getLiveChannelInfo(LiveChannelGenericRequest liveChannelGenericRequest)
@@ -179,7 +180,7 @@ public class LiveChannelOperation extends OSSOperation {
         return doOperation(request, getLiveChannelStatResponseParser, bucketName, liveChannelName, true);
     }
 
-    public void deleteLiveChannel(LiveChannelGenericRequest liveChannelGenericRequest)
+    public VoidResult deleteLiveChannel(LiveChannelGenericRequest liveChannelGenericRequest)
             throws OSSException, ClientException {
 
         assertParameterNotNull(liveChannelGenericRequest, "liveChannelGenericRequest");
@@ -199,7 +200,7 @@ public class LiveChannelOperation extends OSSOperation {
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(liveChannelName).setParameters(parameters)
                 .setOriginalRequest(liveChannelGenericRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, liveChannelName);
+        return doOperation(request, requestIdResponseParser, bucketName, liveChannelName);
     }
 
     /**
@@ -263,7 +264,7 @@ public class LiveChannelOperation extends OSSOperation {
         return doOperation(request, getLiveChannelHistoryResponseParser, bucketName, liveChannelName, true);
     }
 
-    public void generateVodPlaylist(GenerateVodPlaylistRequest generateVodPlaylistRequest)
+    public VoidResult generateVodPlaylist(GenerateVodPlaylistRequest generateVodPlaylistRequest)
             throws OSSException, ClientException {
 
         assertParameterNotNull(generateVodPlaylistRequest, "generateVodPlaylistRequest");
@@ -293,7 +294,7 @@ public class LiveChannelOperation extends OSSOperation {
                 .setInputStream(new ByteArrayInputStream(new byte[0])).setInputSize(0)
                 .setOriginalRequest(generateVodPlaylistRequest).build();
 
-        doOperation(request, emptyResponseParser, bucketName, key);
+        return doOperation(request, requestIdResponseParser, bucketName, key);
     }
 
     public OSSObject getVodPlaylist(GetVodPlaylistRequest getVodPlaylistRequest) throws OSSException, ClientException {
