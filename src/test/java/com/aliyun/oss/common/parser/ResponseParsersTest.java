@@ -32,6 +32,7 @@ public class ResponseParsersTest {
                 "            <Bucket>testBucketName</Bucket>\n" +
                 "            <Cloud>testCloud</Cloud>\n" +
                 "            <CloudLocation>testCloudLocation</CloudLocation>\n" +
+                "            <TransferType>oss_acc</TransferType>\n" +
                 "        </Destination>\n" +
                 "    <Status>doing</Status>\n" +
                 "    <HistoricalObjectReplication>enabled</HistoricalObjectReplication>\n" +
@@ -56,6 +57,7 @@ public class ResponseParsersTest {
         Assert.assertEquals("12345678", rule.getReplicationRuleID());
         Assert.assertEquals("testBucketName", rule.getTargetBucketName());
         Assert.assertNull(rule.getTargetBucketLocation());
+        Assert.assertEquals("oss_acc", rule.getTransferType());
         Assert.assertEquals("testCloud", rule.getTargetCloud());
         Assert.assertEquals("testCloudLocation", rule.getTargetCloudLocation());
         Assert.assertEquals(true, rule.isEnableHistoricalObjectReplication());

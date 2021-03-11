@@ -4073,4 +4073,6 @@ public interface OSS {
     public UdfApplicationLog getUdfApplicationLog(GetUdfApplicationLogRequest getUdfApplicationLogRequest)
             throws OSSException, ClientException;
 
+    public GetBucketReplicationNumberResult getBucketReplicationNumber() throws OSSException, ClientException;
+
 }

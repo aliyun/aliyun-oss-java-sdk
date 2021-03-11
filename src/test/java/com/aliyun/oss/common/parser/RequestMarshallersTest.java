@@ -439,12 +439,21 @@ public class RequestMarshallersTest {
         String targetCloudLocation = "testTargetCloudLocation";
         String syncRole = "syncRole";
         String sourceLocation = "sourceLocation";
+        String transferType = "oss_acc";
+        List list = new ArrayList<Tag>();
+        Tag tag1 = new Tag("key1", "value1");
+        Tag tag2 = new Tag("key2", "value2");
+        list.add(tag1);
+        list.add(tag2);
+        ObjectTagging objectTagging = new ObjectTagging(list);
         AddBucketReplicationRequest addBucketReplicationRequest = new AddBucketReplicationRequest(bucketName);
         addBucketReplicationRequest.setTargetBucketName(targetBucketName);
         addBucketReplicationRequest.setTargetCloud(targetCloud);
         addBucketReplicationRequest.setTargetCloudLocation(targetCloudLocation);
         addBucketReplicationRequest.setSyncRole(syncRole);
         addBucketReplicationRequest.setSourceBucketLocation(sourceLocation);
+        addBucketReplicationRequest.setTransferType(transferType);
+        addBucketReplicationRequest.setSyncTagging(objectTagging);
 
         FixedLengthInputStream is = addBucketReplicationRequestMarshaller.marshall(addBucketReplicationRequest);
 
@@ -463,17 +472,36 @@ public class RequestMarshallersTest {
         String aTargetBucketName = destination.getChildText("Bucket");
         String aTargetLocation = destination.getChildText("Location");
         String aTargetCloud = destination.getChildText("Cloud");
+        String aTransferType = destination.getChildText("TransferType");
         String aTargetCloudLocation = destination.getChildText("CloudLocation");
         String aSyncRole = ruleElems.getChildText("SyncRole");
         String aSourceLocation = ruleElems.getChild("Source").getChildText("Location");
+        List tagSet = new ArrayList<Tag>();
+        if (ruleElems.getChild("UserTaggings") != null) {
+            List<Element> tagElems = ruleElems.getChild("UserTaggings").getChildren("UserTagging");
+            if (tagElems != null) {
+                for (Element e : tagElems) {
+                    Tag tag = new Tag(e.getChildText("Key"), e.getChildText("Value"));
+                    tagSet.add(tag);
+                }
+            }
+        }
+        ObjectTagging aObjectTagging = new ObjectTagging(tagSet);
 
         Assert.assertEquals(targetBucketName, aTargetBucketName);
         Assert.assertNull(aTargetLocation);
         Assert.assertEquals(targetCloud, aTargetCloud);
         Assert.assertEquals(targetCloudLocation, aTargetCloudLocation);
+        Assert.assertEquals(transferType, aTransferType);
         Assert.assertEquals(syncRole, aSyncRole);
         Assert.assertEquals(sourceLocation, aSourceLocation);
-
+        Assert.assertEquals(2, aObjectTagging.getTagSet().size());
+        if (aObjectTagging.getTagSet().get(0).equals(tag1)) {
+            Assert.assertTrue(aObjectTagging.getTagSet().get(1).equals(tag2));
+        } else {
+            Assert.assertTrue(aObjectTagging.getTagSet().get(0).equals(tag2));
+            Assert.assertTrue(aObjectTagging.getTagSet().get(1).equals(tag1));
+        }
 
         addBucketReplicationRequest = new AddBucketReplicationRequest(bucketName);
         addBucketReplicationRequest.setTargetBucketName(targetBucketName);

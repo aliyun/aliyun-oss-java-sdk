@@ -39,6 +39,7 @@ import java.util.zip.CheckedInputStream;
 
 import com.aliyun.oss.model.AddBucketCnameResult;
 import com.aliyun.oss.model.GetBucketInventoryConfigurationResult;
+import com.aliyun.oss.model.GetBucketReplicationNumberResult;
 import com.aliyun.oss.model.GetBucketWormResult;
 import com.aliyun.oss.model.InitiateBucketWormResult;
 import com.aliyun.oss.model.InventoryServerSideEncryptionOSS;
@@ -51,6 +52,8 @@ import com.aliyun.oss.model.InventoryOSSBucketDestination;
 import com.aliyun.oss.model.InventorySchedule;
 import com.aliyun.oss.model.InventoryServerSideEncryptionKMS;
 import com.aliyun.oss.model.ListObjectsV2Result;
+import com.aliyun.oss.model.ObjectTagging;
+import com.aliyun.oss.model.Tag;
 import com.aliyun.oss.model.VoidResult;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -221,6 +224,7 @@ public final class ResponseParsers {
     public static final ListLiveChannelsReponseParser listLiveChannelsReponseParser = new ListLiveChannelsReponseParser();
 
     public static final GetSymbolicLinkResponseParser getSymbolicLinkResponseParser = new GetSymbolicLinkResponseParser();
+    public static final GetBucketReplicationNumberResponseParser getBucketReplicationNumberResponseParser = new GetBucketReplicationNumberResponseParser();
 
     public static final class EmptyResponseParser implements ResponseParser<ResponseMessage> {
 
@@ -2539,7 +2543,7 @@ public final class ResponseParsers {
 
         try {
             List<ReplicationRule> repRules = new ArrayList<ReplicationRule>();
-
+            List<Tag> tagSet = new ArrayList<Tag>();
             Element root = getXmlRootElement(responseBody);
             List<Element> ruleElems = root.getChildren("Rule");
 
@@ -2551,6 +2555,10 @@ public final class ResponseParsers {
                 Element destination = ruleElem.getChild("Destination");
                 repRule.setTargetBucketName(destination.getChildText("Bucket"));
                 repRule.setTargetBucketLocation(destination.getChildText("Location"));
+
+                if (destination.getChild("TransferType") != null) {
+                    repRule.setTransferType(destination.getChildText("TransferType"));
+                }
 
                 repRule.setTargetCloud(destination.getChildText("Cloud"));
                 repRule.setTargetCloudLocation(destination.getChildText("CloudLocation"));
@@ -2587,6 +2595,16 @@ public final class ResponseParsers {
                     repRule.setReplicaKmsKeyID(ruleElem.getChild("EncryptionConfiguration").getChildText("ReplicaKmsKeyID"));
                 }
 
+                if (ruleElem.getChild("UserTaggings") != null) {
+                    List<Element> tagElems = ruleElem.getChild("UserTaggings").getChildren("UserTagging");
+                    if (tagElems != null) {
+                        for (Element e : tagElems) {
+                            Tag tag = new Tag(e.getChildText("Key"), e.getChildText("Value"));
+                            tagSet.add(tag);
+                        }
+                    }
+                }
+
                 if (ruleElem.getChild("SourceSelectionCriteria") != null &&
                     ruleElem.getChild("SourceSelectionCriteria").getChild("SseKmsEncryptedObjects") != null) {
                     repRule.setSseKmsEncryptedObjectsStatus(ruleElem.getChild("SourceSelectionCriteria").
@@ -2596,6 +2614,10 @@ public final class ResponseParsers {
                 if (ruleElem.getChild("Source") != null){
                     repRule.setSourceBucketLocation(ruleElem.getChild("Source").getChildText("Location"));
                 }
+
+                ObjectTagging syncTagging = new ObjectTagging(tagSet);
+
+                repRule.setSyncTagging(syncTagging);
 
                 repRules.add(repRule);
             }
@@ -3689,6 +3711,36 @@ public final class ResponseParsers {
             throw new ResponseParseException(e.getMessage(), e);
         }
 
+    }
+
+    public static final class GetBucketReplicationNumberResponseParser implements ResponseParser<GetBucketReplicationNumberResult> {
+
+        @Override
+        public GetBucketReplicationNumberResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetBucketReplicationNumberResult result = parseGetBucketReplicationNumber(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private  GetBucketReplicationNumberResult parseGetBucketReplicationNumber(InputStream responseBody) throws ResponseParseException {
+            GetBucketReplicationNumberResult result = new GetBucketReplicationNumberResult();
+            try {
+                Element root = getXmlRootElement(responseBody);
+                if (root.getChild("SyncLimit") != null) {
+                    result.setNumber(Integer.valueOf(root.getChildText("SyncLimit")));
+                }
+                return result;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+
+        }
     }
 
 }

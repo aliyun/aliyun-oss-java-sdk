@@ -900,6 +900,10 @@ public final class RequestMarshallers {
                 xmlBody.append("<CloudLocation>" + request.getTargetCloudLocation() + "</CloudLocation>");
             }
 
+            if (request.getTransferType() != null) {
+                xmlBody.append("<TransferType>" + request.getTransferType() + "</TransferType>");
+            }
+
             xmlBody.append("</Destination>");
             if (request.isEnableHistoricalObjectReplication()) {
                 xmlBody.append("<HistoricalObjectReplication>" + "enabled" + "</HistoricalObjectReplication>");
@@ -937,6 +941,13 @@ public final class RequestMarshallers {
                 xmlBody.append("<Source>");
                 xmlBody.append("<Location>" + request.getSourceBucketLocation() + "</Location>");
                 xmlBody.append("</Source>");
+            }
+            if (request.getSyncTagging() != null && request.getSyncTagging().getTagSet() != null) {
+                xmlBody.append("<UserTaggings>");
+                for (Tag tag: request.getSyncTagging().getTagSet()) {
+                    xmlBody.append("<UserTagging><Key>" + tag.getKey() + "</Key><Value>" + tag.getValue() + "</Value></UserTagging>");
+                }
+                xmlBody.append("</UserTaggings>");
             }
 
             xmlBody.append("</Rule>");

@@ -1771,6 +1771,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public GetBucketReplicationNumberResult getBucketReplicationNumber() throws OSSException, ClientException {
+        return this.bucketOperation.getBucketReplicationNumber();
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();

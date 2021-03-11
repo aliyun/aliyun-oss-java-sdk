@@ -90,6 +90,7 @@ import static com.aliyun.oss.internal.ResponseParsers.getBucketInventoryConfigur
 import static com.aliyun.oss.internal.ResponseParsers.listBucketInventoryConfigurationsParser;
 import static com.aliyun.oss.internal.ResponseParsers.initiateBucketWormResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketWormResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getBucketReplicationNumberResponseParser;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -132,6 +133,7 @@ import com.aliyun.oss.model.DeleteBucketCnameRequest;
 import com.aliyun.oss.model.DeleteBucketReplicationRequest;
 import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.GetBucketImageResult;
+import com.aliyun.oss.model.GetBucketReplicationNumberResult;
 import com.aliyun.oss.model.GetBucketReplicationProgressRequest;
 import com.aliyun.oss.model.GetBucketRequestPaymentResult;
 import com.aliyun.oss.model.ImageProcess;
@@ -1988,5 +1990,14 @@ public class OSSBucketOperation extends OSSOperation {
         if (payer != null && payer.equals(Payer.Requester)) {
             headers.put(OSSHeaders.OSS_REQUEST_PAYER, payer.toString().toLowerCase());
         }
+    }
+
+    public GetBucketReplicationNumberResult getBucketReplicationNumber() throws OSSException, ClientException {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_USER_LIMIT, null);
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setParameters(params).build();
+
+        return doOperation(request, getBucketReplicationNumberResponseParser, null, null, true);
     }
 }

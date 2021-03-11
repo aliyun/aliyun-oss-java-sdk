@@ -136,6 +136,22 @@ public class ReplicationRule {
         this.sourceBucketLocation = sourceBucketLocation;
     }
 
+    public String getTransferType() {
+        return transferType;
+    }
+
+    public void setTransferType(String transferType) {
+        this.transferType = transferType;
+    }
+
+    public ObjectTagging getSyncTagging() {
+        return syncTagging;
+    }
+
+    public void setSyncTagging(ObjectTagging syncTagging) {
+        this.syncTagging = syncTagging;
+    }
+
     private String replicationRuleID;
     private ReplicationStatus replicationStatus;
     private String targetBucketName;
@@ -149,5 +165,8 @@ public class ReplicationRule {
     private String replicaKmsKeyID;
     private String sseKmsEncryptedObjectsStatus;
     private String sourceBucketLocation;
+    private String transferType;
+    // tagging
+    private ObjectTagging syncTagging;
 
 }
