@@ -95,14 +95,15 @@ public class DefaultServiceClient extends ServiceClient {
         requestConfigBuilder.setConnectionRequestTimeout(config.getConnectionRequestTimeout());
         requestConfigBuilder.setRedirectsEnabled(config.isRedirectEnable());
 
-        String proxyHost = config.getProxyHost();
-        int proxyPort = config.getProxyPort();
+        String proxyHost = resolveStringValue(config.getProxyHost(), "http.proxyHost", config.isUseSystemPropertyValues());
+        int proxyPort = resolveIntValue(config.getProxyPort(), "http.proxyPort", config.isUseSystemPropertyValues());
+
         if (proxyHost != null && proxyPort > 0) {
             this.proxyHttpHost = new HttpHost(proxyHost, proxyPort);
             requestConfigBuilder.setProxy(proxyHttpHost);
 
-            String proxyUsername = config.getProxyUsername();
-            String proxyPassword = config.getProxyPassword();
+            String proxyUsername = resolveStringValue(config.getProxyUsername(),"http.proxyUser", config.isUseSystemPropertyValues());
+            String proxyPassword = resolveStringValue(config.getProxyPassword(),"http.proxyPassword", config.isUseSystemPropertyValues());
             String proxyDomain = config.getProxyDomain();
             String proxyWorkstation = config.getProxyWorkstation();
             if (proxyUsername != null && proxyPassword != null) {
@@ -403,5 +404,27 @@ public class DefaultServiceClient extends ServiceClient {
             X509Certificate[] certificatesArray = new X509Certificate[certificates.size()];
             return certificates.toArray(certificatesArray);
         }
+    }
+
+    protected static String resolveStringValue(String value, String key, boolean flag) {
+        if (value == null && flag) {
+            try {
+                return System.getProperty(key);
+            } catch (Exception e) {
+            }
+            return null;
+        }
+        return value;
+    }
+
+    protected static int resolveIntValue(int value, String key, boolean flag) {
+        if (value == -1 && flag) {
+            try {
+                return Integer.parseInt(System.getProperty(key));
+            } catch (Exception e) {
+            }
+            return -1;
+        }
+        return value;
     }
 }

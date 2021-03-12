@@ -34,6 +34,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
+import org.apache.http.client.AuthCache;
+import org.apache.http.client.CredentialsProvider;
 import org.junit.Test;
 
 import com.aliyun.oss.ClientConfiguration;
@@ -86,6 +91,26 @@ public class ServiceClientTest {
             response.setStatusCode(statusCode);
 
             return response;
+        }
+
+        public static String testResolveStringValue(String value, String key, boolean flag) {
+            return resolveStringValue(value, key, flag);
+        }
+
+        protected static int testResolveIntValue(int value, String key, boolean flag) {
+            return resolveIntValue(value, key, flag);
+        }
+
+        public CredentialsProvider getCredentialsProvider(){
+            return this.credentialsProvider;
+        }
+
+        public HttpHost getProxyHttpHost(){
+            return this.proxyHttpHost;
+        }
+
+        public AuthCache getAuthCache(){
+            return this.authCache;
         }
     }
     
@@ -292,6 +317,249 @@ public class ServiceClientTest {
         } catch (ServiceException e){
             assertEquals(2, client.getRequestAttempts());
         }
+    }
+
+    @Test
+    public void testResolveString() {
+        String value;
+        //no system property
+        value = ServiceClientImpl.testResolveStringValue(null, "http.proxyHost", false);
+        assertEquals(null, value);
+
+        value = ServiceClientImpl.testResolveStringValue("test.com", "http.proxyHost", false);
+        assertEquals("test.com", value);
+
+        value = ServiceClientImpl.testResolveStringValue("test.com", "http.proxyHost", true);
+        assertEquals("test.com", value);
+
+        System.setProperty("http.proxyHost", "123.com");
+
+        value = ServiceClientImpl.testResolveStringValue(null, "http.proxyHost", true);
+        assertEquals("123.com", value);
+
+        value = ServiceClientImpl.testResolveStringValue("test.com", "http.proxyHost", true);
+        assertEquals("test.com", value);
+
+        value = ServiceClientImpl.testResolveStringValue("test.com", "http.proxyHost", false);
+        assertEquals("test.com", value);
+
+        System.clearProperty("http.proxyHost");
+
+
+        int intValue;
+        //no system property
+        intValue = ServiceClientImpl.testResolveIntValue(-1, "http.proxyPort", false);
+        assertEquals(-1, intValue);
+
+        intValue = ServiceClientImpl.testResolveIntValue(123, "http.proxyPort", false);
+        assertEquals(123, intValue);
+
+        intValue = ServiceClientImpl.testResolveIntValue(456, "http.proxyPort", true);
+        assertEquals(456, intValue);
+
+        System.setProperty("http.proxyPort", "789");
+
+        intValue = ServiceClientImpl.testResolveIntValue(-1, "http.proxyPort", true);
+        assertEquals(789, intValue);
+
+        intValue = ServiceClientImpl.testResolveIntValue(123, "http.proxyPort", true);
+        assertEquals(123, intValue);
+
+        intValue = ServiceClientImpl.testResolveIntValue(123, "http.proxyHost", false);
+        assertEquals(123, intValue);
+
+
+        System.setProperty("http.proxyPort", "abc");
+        intValue = ServiceClientImpl.testResolveIntValue(-1, "http.proxyPort", true);
+        assertEquals(-1, intValue);
+
+        System.clearProperty("http.proxyHost");
+    }
+
+    @Test
+    public void testResolveStringInClient() {
+        ClientConfiguration config = new ClientConfiguration();
+        ClientException exceptionToThrown = createRetryableException();
+        ServiceClientImpl client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
+
+        HttpHost httpHost = client.getProxyHttpHost();
+        CredentialsProvider credProvider = client.getCredentialsProvider();
+        assertEquals(null, httpHost);
+        assertEquals(null, credProvider);
+
+        config = new ClientConfiguration();
+        config.setProxyHost("test.com");
+        client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
+        httpHost = client.getProxyHttpHost();
+        credProvider = client.getCredentialsProvider();
+        assertEquals(null, httpHost);
+        assertEquals(null, credProvider);
+
+        config = new ClientConfiguration();
+        config.setProxyHost("123.com");
+        config.setProxyPort(1234);
+        client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
+        httpHost = client.getProxyHttpHost();
+        credProvider = client.getCredentialsProvider();
+        assertEquals("123.com", httpHost.getHostName());
+        assertEquals(1234, httpHost.getPort());
+        assertEquals(null, credProvider);
+
+        config = new ClientConfiguration();
+        config.setProxyHost("123.com");
+        config.setProxyPort(1234);
+        config.setProxyUsername("user");
+        client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
+        httpHost = client.getProxyHttpHost();
+        credProvider = client.getCredentialsProvider();
+        assertEquals("123.com", httpHost.getHostName());
+        assertEquals(1234, httpHost.getPort());
+        assertEquals(null, credProvider);
+
+        config = new ClientConfiguration();
+        config.setProxyHost("123.com");
+        config.setProxyPort(1234);
+        config.setProxyUsername("user");
+        config.setProxyPassword("pw");
+        client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
+        httpHost = client.getProxyHttpHost();
+        credProvider = client.getCredentialsProvider();
+        Credentials cred = credProvider.getCredentials(new AuthScope(config.getProxyHost(), config.getProxyPort()));
+        assertEquals("123.com", httpHost.getHostName());
+        assertEquals(1234, httpHost.getPort());
+        assertEquals("user", cred.getUserPrincipal().getName());
+        assertEquals("pw", cred.getPassword());
+
+        System.setProperty("http.proxyHost", "test.com");
+        System.setProperty("http.proxyPort", "789");
+        System.setProperty("http.proxyUser", "root");
+        System.setProperty("http.proxyPassword", "admin");
+
+        config = new ClientConfiguration();
+        config.setProxyHost("test.com");
+        client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
+        httpHost = client.getProxyHttpHost();
+        credProvider = client.getCredentialsProvider();
+        assertEquals(null, httpHost);
+        assertEquals(null, credProvider);
+
+        config = new ClientConfiguration();
+        config.setProxyHost("123.com");
+        config.setProxyPort(1234);
+        client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
+        httpHost = client.getProxyHttpHost();
+        credProvider = client.getCredentialsProvider();
+        assertEquals("123.com", httpHost.getHostName());
+        assertEquals(1234, httpHost.getPort());
+        assertEquals(null, credProvider);
+
+        config = new ClientConfiguration();
+        config.setProxyHost("123.com");
+        config.setProxyPort(1234);
+        config.setProxyUsername("user");
+        client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
+        httpHost = client.getProxyHttpHost();
+        credProvider = client.getCredentialsProvider();
+        assertEquals("123.com", httpHost.getHostName());
+        assertEquals(1234, httpHost.getPort());
+        assertEquals(null, credProvider);
+
+        config = new ClientConfiguration();
+        config.setProxyHost("123.com");
+        config.setProxyPort(1234);
+        config.setProxyUsername("user");
+        config.setProxyPassword("pw");
+        client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
+        httpHost = client.getProxyHttpHost();
+        credProvider = client.getCredentialsProvider();
+        cred = credProvider.getCredentials(new AuthScope(config.getProxyHost(), config.getProxyPort()));
+        assertEquals("123.com", httpHost.getHostName());
+        assertEquals(1234, httpHost.getPort());
+        assertEquals("user", cred.getUserPrincipal().getName());
+        assertEquals("pw", cred.getPassword());
+
+        //use SystemValue with setting from config
+        config = new ClientConfiguration();
+        config.setUseSystemPropertyValues(true);
+        config.setProxyHost("test.com");
+        client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
+        httpHost = client.getProxyHttpHost();
+        credProvider = client.getCredentialsProvider();
+        cred = credProvider.getCredentials(new AuthScope(config.getProxyHost(), config.getProxyPort()));
+        assertEquals("test.com", httpHost.getHostName());
+        assertEquals(789, httpHost.getPort());
+        assertEquals("root", cred.getUserPrincipal().getName());
+        assertEquals("admin", cred.getPassword());
+
+        config = new ClientConfiguration();
+        config.setUseSystemPropertyValues(true);
+        config.setProxyHost("123.com");
+        config.setProxyPort(1234);
+        client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
+        httpHost = client.getProxyHttpHost();
+        credProvider = client.getCredentialsProvider();
+        cred = credProvider.getCredentials(new AuthScope(config.getProxyHost(), config.getProxyPort()));
+        assertEquals("123.com", httpHost.getHostName());
+        assertEquals(1234, httpHost.getPort());
+        assertEquals("root", cred.getUserPrincipal().getName());
+        assertEquals("admin", cred.getPassword());
+
+        config = new ClientConfiguration();
+        config.setUseSystemPropertyValues(true);
+        config.setProxyHost("123.com");
+        config.setProxyPort(1234);
+        config.setProxyUsername("user");
+        client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
+        httpHost = client.getProxyHttpHost();
+        credProvider = client.getCredentialsProvider();
+        cred = credProvider.getCredentials(new AuthScope(config.getProxyHost(), config.getProxyPort()));
+        assertEquals("123.com", httpHost.getHostName());
+        assertEquals(1234, httpHost.getPort());
+        assertEquals("user", cred.getUserPrincipal().getName());
+        assertEquals("admin", cred.getPassword());
+
+        config = new ClientConfiguration();
+        config.setUseSystemPropertyValues(true);
+        config.setProxyHost("123.com");
+        config.setProxyPort(1234);
+        config.setProxyUsername("user");
+        config.setProxyPassword("pw");
+        client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
+        httpHost = client.getProxyHttpHost();
+        credProvider = client.getCredentialsProvider();
+        cred = credProvider.getCredentials(new AuthScope(config.getProxyHost(), config.getProxyPort()));
+        assertEquals("123.com", httpHost.getHostName());
+        assertEquals(1234, httpHost.getPort());
+        assertEquals("user", cred.getUserPrincipal().getName());
+        assertEquals("pw", cred.getPassword());
+
+        //use SystemValue without setting from config
+        config = new ClientConfiguration();
+        config.setUseSystemPropertyValues(true);
+        client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
+        httpHost = client.getProxyHttpHost();
+        credProvider = client.getCredentialsProvider();
+        cred = credProvider.getCredentials(new AuthScope(config.getProxyHost(), config.getProxyPort()));
+        assertEquals("test.com", httpHost.getHostName());
+        assertEquals(789, httpHost.getPort());
+        assertEquals("root", cred.getUserPrincipal().getName());
+        assertEquals("admin", cred.getPassword());
+
+        System.setProperty("http.proxyPort", "adb");
+        config = new ClientConfiguration();
+        config.setUseSystemPropertyValues(true);
+        config.setProxyHost("123.com");
+        client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
+        httpHost = client.getProxyHttpHost();
+        credProvider = client.getCredentialsProvider();
+        assertEquals(null, httpHost);
+        assertEquals(null, credProvider);
+
+
+        System.clearProperty("http.proxyHost");
+        System.clearProperty("http.proxyPort");
+        System.clearProperty("http.proxyUser");
+        System.clearProperty("http.proxyPassword");
     }
 
 }
