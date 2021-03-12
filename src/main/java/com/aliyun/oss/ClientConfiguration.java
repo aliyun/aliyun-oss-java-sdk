@@ -119,6 +119,8 @@ public class ClientConfiguration {
 
     protected boolean logConnectionPoolStats = false;
 
+    protected boolean useSystemPropertyValues = false;
+
     public ClientConfiguration() {
         super();
         AppendDefaultExcludeList(this.cnameExcludeList);
@@ -875,6 +877,26 @@ public class ClientConfiguration {
      */
     public boolean isLogConnectionPoolStatsEnable() {
         return logConnectionPoolStats;
+    }
+
+    /**
+     * Sets the flag of using system property values if any of the config options are missing.
+     * The properties currently supported are http.proxyHost, http.proxyPort, http.proxyUser
+     * and http.proxyPassword.
+     *
+     * @param enabled True if it's enabled; False if it's disabled.
+     */
+    public void setUseSystemPropertyValues(boolean enabled) {
+        this.useSystemPropertyValues = enabled;
+    }
+
+    /**
+     * Gets the flag of using system property values. By default it's disabled.
+     *
+     * @return true enabled; false disabled.
+     */
+    public boolean isUseSystemPropertyValues() {
+        return useSystemPropertyValues;
     }
 
 }
