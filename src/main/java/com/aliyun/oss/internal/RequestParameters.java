@@ -73,6 +73,9 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_WORM_EXTEND = "wormExtend";
     public static final String SUBRESOURCE_CALLBACK = "callback";
     public static final String SUBRESOURCE_CALLBACK_VAR = "callback-var";
+    public static final String SUBRESOURCE_DIR_DELETE = "x-oss-delete";
+    public static final String SUBRESOURCE_RENAME = "x-oss-rename";
+    public static final String SUBRESOURCE_DIR = "x-oss-dir";
 
     public static final String SUBRESOURCE_UDF = "udf";
     public static final String SUBRESOURCE_UDF_NAME = "udfName";

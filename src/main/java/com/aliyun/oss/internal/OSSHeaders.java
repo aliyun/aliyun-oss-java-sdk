@@ -102,4 +102,11 @@ public interface OSSHeaders extends HttpHeaders {
     static final String OSS_HEADER_WORM_ID = "x-oss-worm-id";
 
     static final String OSS_HEADER_CERT_ID = "x-oss-yundun-certificate-id";
+
+    static final String OSS_HNS_STATUS = "x-oss-hns-status";
+
+    static final String OSS_DELETE_RECURSIVE = "x-oss-delete-recursive";
+    static final String OSS_DELETE_TOKEN = "x-oss-delete-token";
+
+    static final String OSS_RENAME_SOURCE = "x-oss-rename-source";
 }

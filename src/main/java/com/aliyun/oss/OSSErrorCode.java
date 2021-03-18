@@ -296,4 +296,10 @@ public interface OSSErrorCode {
      * The worm configuration is invalid.
      */
     static final String INVALID_WORM_CONFIGURATION = "InvalidWORMConfiguration";
+
+    /**
+     * The file already exists.
+     */
+    static final String FILE_ALREADY_EXISTS = "FileAlreadyExists";
+
 }

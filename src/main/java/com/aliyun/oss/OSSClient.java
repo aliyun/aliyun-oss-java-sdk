@@ -1696,6 +1696,46 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public GetBucketReplicationNumberResult getBucketReplicationNumber() throws OSSException, ClientException {
+        return this.bucketOperation.getBucketReplicationNumber();
+    }
+
+    @Override
+    public VoidResult createDirectory(String bucketName, String dirName) throws OSSException, ClientException {
+        return this.createDirectory(new CreateDirectoryRequest(bucketName, dirName));
+    }
+
+    @Override
+    public VoidResult createDirectory(CreateDirectoryRequest createDirectoryRequest) throws OSSException, ClientException {
+        return this.objectOperation.createDirectory(createDirectoryRequest);
+    }
+
+
+    @Override
+    public DeleteDirectoryResult deleteDirectory(String bucketName, String dirName) throws OSSException, ClientException {
+        return this.deleteDirectory(bucketName, dirName, false, null);
+    }
+
+    @Override
+    public DeleteDirectoryResult deleteDirectory(String bucketName, String dirName,
+                        boolean deleteRecursive, String nextDeleteToken) throws OSSException, ClientException {
+        return this.deleteDirectory(new DeleteDirectoryRequest(bucketName, dirName, deleteRecursive, nextDeleteToken));
+    }
+
+    @Override
+    public DeleteDirectoryResult deleteDirectory(DeleteDirectoryRequest deleteDirectoryRequest) throws OSSException, ClientException {
+        return this.objectOperation.deleteDirectory(deleteDirectoryRequest);
+    }
+
+    public VoidResult renameObject(String bucketName, String sourceObjectName, String destinationObject) throws OSSException, ClientException {
+        return this.renameObject(new RenameObjectRequest(bucketName, sourceObjectName, destinationObject));
+    }
+
+    public VoidResult renameObject(RenameObjectRequest renameObjectRequest) throws OSSException, ClientException {
+        return this.objectOperation.renameObject(renameObjectRequest);
+    }
+
+    @Override
     public VoidResult createUdf(CreateUdfRequest createUdfRequest) throws OSSException, ClientException {
         throw new ClientException("Not supported.");
     }
@@ -1768,11 +1808,6 @@ public class OSSClient implements OSS {
     public UdfApplicationLog getUdfApplicationLog(GetUdfApplicationLogRequest getUdfApplicationLogRequest)
             throws OSSException, ClientException {
         throw new ClientException("Not supported.");
-    }
-
-    @Override
-    public GetBucketReplicationNumberResult getBucketReplicationNumber() throws OSSException, ClientException {
-        return this.bucketOperation.getBucketReplicationNumber();
     }
 
     @Override

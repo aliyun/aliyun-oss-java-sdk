@@ -52,6 +52,9 @@ import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_DELETE;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_OBJECTMETA;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_SYMLINK;
 import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_TAGGING;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_DIR;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_RENAME;
+import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_DIR_DELETE;
 import static com.aliyun.oss.internal.ResponseParsers.appendObjectResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.copyObjectResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.deleteObjectsResponseParser;
@@ -64,6 +67,7 @@ import static com.aliyun.oss.internal.ResponseParsers.getSimplifiedObjectMetaRes
 import static com.aliyun.oss.internal.ResponseParsers.getSymbolicLinkResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.headObjectResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.deleteVersionsResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.deleteDirectoryResponseParser;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -959,7 +963,7 @@ public class OSSObjectOperation extends OSSOperation {
             ossObject = this.getObject(getObjectRequest);
             return true;
         } catch (OSSException e) {
-            if (e.getErrorCode() == OSSErrorCode.NO_SUCH_BUCKET || e.getErrorCode() == OSSErrorCode.NO_SUCH_KEY) {
+            if (e.getErrorCode().equals(OSSErrorCode.NO_SUCH_BUCKET) || e.getErrorCode().equals(OSSErrorCode.NO_SUCH_KEY)) {
                 return false;
             }
             throw e;
@@ -972,6 +976,83 @@ public class OSSObjectOperation extends OSSOperation {
                 }
             }
         }
+    }
+
+    public VoidResult createDirectory(CreateDirectoryRequest createDirectoryRequest) throws OSSException, ClientException {
+        assertParameterNotNull(createDirectoryRequest, "createDirectoryRequest");
+        String bucketName = createDirectoryRequest.getBucketName();
+        String directory = createDirectoryRequest.getDirectoryName();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        assertParameterNotNull(directory, "directory");
+        ensureObjectKeyValid(directory);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_DIR, null);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        populateRequestPayerHeader(headers, createDirectoryRequest.getRequestPayer());
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.POST).setBucket(bucketName).setKey(directory).setParameters(params).setHeaders(headers)
+                .setInputStream(new ByteArrayInputStream(new byte[0])).setInputSize(0)
+                .setOriginalRequest(createDirectoryRequest).build();
+
+        return doOperation(request, requestIdResponseParser, bucketName, directory);
+    }
+
+    public DeleteDirectoryResult deleteDirectory(DeleteDirectoryRequest deleteDirectoryRequest) throws OSSException, ClientException {
+        assertParameterNotNull(deleteDirectoryRequest, "deleteDirectoryRequest");
+        String bucketName = deleteDirectoryRequest.getBucketName();
+        String directoryName = deleteDirectoryRequest.getDirectoryName();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        assertParameterNotNull(directoryName, "directoryName");
+        ensureObjectKeyValid(directoryName);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        populateDeleteDirectoryRequestHeaders(headers, deleteDirectoryRequest);
+        populateRequestPayerHeader(headers, deleteDirectoryRequest.getRequestPayer());
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_DIR_DELETE, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.POST).setBucket(bucketName).setKey(directoryName).setParameters(params).setHeaders(headers)
+                .setInputStream(new ByteArrayInputStream(new byte[0])).setInputSize(0)
+                .setOriginalRequest(deleteDirectoryRequest).build();
+
+         return doOperation(request, deleteDirectoryResponseParser, bucketName, directoryName, true);
+    }
+
+    public VoidResult renameObject(RenameObjectRequest renameObjectRequest) throws OSSException, ClientException {
+        assertParameterNotNull(renameObjectRequest, "renameObjectRequest");
+        String bucketName = renameObjectRequest.getBucketName();
+        String destObject = renameObjectRequest.getDestinationObjectName();
+        String srcObject = renameObjectRequest.getSourceObjectName();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        assertParameterNotNull(destObject, "dstObject");
+        assertParameterNotNull(srcObject, "srcObject");
+        ensureObjectKeyValid(destObject);
+        ensureObjectKeyValid(srcObject);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put(OSSHeaders.OSS_RENAME_SOURCE, srcObject);
+        populateRequestPayerHeader(headers, renameObjectRequest.getRequestPayer());
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_RENAME, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.POST).setBucket(bucketName).setKey(destObject).setParameters(params).setHeaders(headers)
+                .setInputStream(new ByteArrayInputStream(new byte[0])).setInputSize(0)
+                .setOriginalRequest(renameObjectRequest).build();
+
+        return doOperation(request, requestIdResponseParser, bucketName, destObject);
     }
 
     private static enum MetadataDirective {
@@ -1258,6 +1339,15 @@ public class OSSObjectOperation extends OSSOperation {
             return true;
         }
         return false;
+    }
+
+    private static void populateDeleteDirectoryRequestHeaders(Map<String, String> headers, DeleteDirectoryRequest deleteDirectoryRequest) {
+        if (deleteDirectoryRequest.isDeleteRecursive()) {
+            headers.put(OSSHeaders.OSS_DELETE_RECURSIVE, deleteDirectoryRequest.isDeleteRecursive().toString());
+        }
+        if (deleteDirectoryRequest.getNextDeleteToken() != null && !deleteDirectoryRequest.getNextDeleteToken().isEmpty()) {
+            headers.put(OSSHeaders.OSS_DELETE_TOKEN, deleteDirectoryRequest.getNextDeleteToken());
+        }
     }
 
 }

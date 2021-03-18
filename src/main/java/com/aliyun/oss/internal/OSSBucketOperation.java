@@ -219,6 +219,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         Map<String, String> headers = new HashMap<String, String>();
         addOptionalACLHeader(headers, createBucketRequest.getCannedACL());
+        addOptionalHnsHeader(headers, createBucketRequest.getHnsStatus());
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.PUT).setBucket(bucketName).setHeaders(headers)
@@ -1890,6 +1891,15 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, getBucketWormResponseParser, bucketName, null, true);
     }
 
+    public GetBucketReplicationNumberResult getBucketReplicationNumber() throws OSSException, ClientException {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_USER_LIMIT, null);
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setParameters(params).build();
+
+        return doOperation(request, getBucketReplicationNumberResponseParser, null, null, true);
+    }
+
     private static void populateListObjectsRequestParameters(ListObjectsRequest listObjectsRequest,
             Map<String, String> params) {
 
@@ -1986,18 +1996,15 @@ public class OSSBucketOperation extends OSSOperation {
         }
     }
 
+    private static void addOptionalHnsHeader(Map<String, String> headers, String hnsStatus) {
+        if (hnsStatus != null ) {
+            headers.put(OSSHeaders.OSS_HNS_STATUS, hnsStatus.toLowerCase());
+        }
+    }
+
     private static void populateRequestPayerHeader (Map<String, String> headers, Payer payer) {
         if (payer != null && payer.equals(Payer.Requester)) {
             headers.put(OSSHeaders.OSS_REQUEST_PAYER, payer.toString().toLowerCase());
         }
-    }
-
-    public GetBucketReplicationNumberResult getBucketReplicationNumber() throws OSSException, ClientException {
-        Map<String, String> params = new HashMap<String, String>();
-        params.put(SUBRESOURCE_USER_LIMIT, null);
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.GET).setParameters(params).build();
-
-        return doOperation(request, getBucketReplicationNumberResponseParser, null, null, true);
     }
 }

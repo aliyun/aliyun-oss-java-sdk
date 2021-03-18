@@ -879,6 +879,7 @@ public class ResponseParsersTest {
                 "  <Bucket>\n" +
                 "           <CreationDate>2013-07-31T10:56:21.000Z</CreationDate>\n" +
                 "            <ExtranetEndpoint>oss-cn-hangzhou.aliyuncs.com</ExtranetEndpoint>\n" +
+                "            <HierarchicalNamespace>Enabled</HierarchicalNamespace>\n" +
                 "            <IntranetEndpoint>oss-cn-hangzhou-internal.aliyuncs.com</IntranetEndpoint>\n" +
                 "            <Location>oss-cn-hangzhou</Location>\n" +
                 "            <Name>oss-example</Name>\n" +
@@ -913,6 +914,7 @@ public class ResponseParsersTest {
         Assert.assertEquals(CannedAccessControlList.Private, result.getCannedACL());
         Assert.assertEquals("oss-cn-hangzhou", result.getBucket().getLocation());
         Assert.assertEquals("oss-example", result.getBucket().getName());
+        Assert.assertEquals(HnsStatus.Enabled.toString(), result.getBucket().getHnsStatus());
     }
 
     @Test
@@ -4087,4 +4089,61 @@ public class ResponseParsersTest {
             Assert.assertTrue(false);
         }
     }
+
+
+    @Test
+    public void testParseDeleteDirectory() {
+        String respBody = "" +
+                "<DeleteDirectoryResult>\n" +
+                "    <DirectoryName>a/b/c</DirectoryName>\n" +
+                "    <DeleteNumber>1</DeleteNumber>\n" +
+                "</DeleteDirectoryResult>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        DeleteDirectoryResult result = null;
+        try {
+            result = ResponseParsers.parseDeleteDirectoryResult(instream);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+
+        Assert.assertEquals("a/b/c", result.getDirectoryName());
+        Assert.assertEquals(1, result.getDeleteNumber());
+        Assert.assertNull(result.getNextDeleteToken());
+
+        respBody = "" +
+                "<DeleteDirectoryResult>\n" +
+                "    <DirectoryName>a/b/c</DirectoryName>\n" +
+                "    <DeleteNumber>1</DeleteNumber>\n" +
+                "    <NextDeleteToken>CgJiYw--</NextDeleteToken>\n" +
+                "</DeleteDirectoryResult>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        result = null;
+        try {
+            result = ResponseParsers.parseDeleteDirectoryResult(instream);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+
+        Assert.assertEquals("a/b/c", result.getDirectoryName());
+        Assert.assertEquals(1, result.getDeleteNumber());
+        Assert.assertEquals("CgJiYw--", result.getNextDeleteToken());
+    }
+
+
+
+
+
 }

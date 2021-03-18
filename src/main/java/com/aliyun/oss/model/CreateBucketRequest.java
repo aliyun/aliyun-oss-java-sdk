@@ -25,6 +25,7 @@ public class CreateBucketRequest extends GenericRequest {
     private CannedAccessControlList cannedACL;
     private StorageClass storageClass;
     private DataRedundancyType dataRedundancyType;
+    private String hnsStatus;
 
     public CreateBucketRequest(String bucketName) {
         super(bucketName);
@@ -116,5 +117,42 @@ public class CreateBucketRequest extends GenericRequest {
      */
     public DataRedundancyType getDataRedundancyType() {
         return dataRedundancyType;
+    }
+
+    /**
+     * Gets hierarchical namespace status.
+     */
+    public String getHnsStatus() {
+        return hnsStatus;
+    }
+
+    /**
+     * Sets hierarchical namespace status.
+     */
+    public void setHnsStatus(String hnsStatus) {
+        this.hnsStatus = hnsStatus;
+    }
+
+    /**
+     * Sets hierarchical namespace status.
+     */
+    public void setHnsStatus(HnsStatus hnsStatus) {
+        this.hnsStatus = hnsStatus.toString();
+    }
+
+    /**
+     * Sets hierarchical namespace status and return this instance.
+     */
+    public CreateBucketRequest withHnsStatus(String hnsStatus) {
+        this.setHnsStatus(hnsStatus);
+        return this;
+    }
+
+    /**
+     * Sets hierarchical namespace status and return this instance.
+     */
+    public CreateBucketRequest withHnsStatus(HnsStatus hnsStatus) {
+        this.setHnsStatus(hnsStatus);
+        return this;
     }
 }

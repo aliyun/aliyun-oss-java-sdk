@@ -4026,6 +4026,101 @@ public interface OSS {
      */
     public GetBucketWormResult getBucketWorm(GenericRequest genericRequest) throws OSSException, ClientException;
 
+
+    public GetBucketReplicationNumberResult getBucketReplicationNumber() throws OSSException, ClientException;
+
+    /**
+     * Creates a directory to the Bucket
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param dirName
+     *            Directory name
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     */
+    public VoidResult createDirectory(String bucketName, String dirName)
+            throws OSSException, ClientException;
+
+    /**
+     * Creates a directory to the Bucket
+     *
+     * @param createDirectoryRequest
+     *              A {@link CreateDirectoryRequest} instance that includes bucket name and directory name.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     */
+    public VoidResult createDirectory(CreateDirectoryRequest createDirectoryRequest)
+            throws OSSException, ClientException;
+
+    /**
+     * Delete a directory
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param dirName
+     *            Directory name
+     *
+     * @return A {@link DeleteDirectoryResult} instance contains delete number and next delete token.
+     */
+    public DeleteDirectoryResult deleteDirectory(String bucketName, String dirName) throws OSSException, ClientException;
+
+    /**
+     * Delete a directory
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param dirName
+     *            Directory name.
+     * @param deleteRecursive
+     *            Whether delete recursively? true or false, default is false.
+     * @param nextDeleteToken
+     *            Next delete token.
+     *
+     * @return A {@link DeleteDirectoryResult} instance contains delete number and next delete token.
+     */
+    public DeleteDirectoryResult deleteDirectory(String bucketName, String dirName,
+                        boolean deleteRecursive, String nextDeleteToken) throws OSSException, ClientException;
+
+    /**
+     * Delete a directory
+     *
+     * @param deleteDirectoryRequest
+     *              A {@link DeleteDirectoryRequest} instance that includes bucket, directory name and other configurations.
+     *
+     * @return A {@link DeleteDirectoryResult} instance contains delete number and next delete token.
+     */
+    public DeleteDirectoryResult deleteDirectory(DeleteDirectoryRequest deleteDirectoryRequest) throws OSSException, ClientException;
+
+    /**
+     * Rename an object, it can be a file or directory.
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param sourceObjectName
+     *            The source of the object.
+     * @param destinationObjectName
+     *            The destination of the object.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     */
+    public VoidResult renameObject(String bucketName, String sourceObjectName, String destinationObjectName) throws OSSException, ClientException;
+
+    /**
+     * Rename an object
+     *
+     * @param renameObjectRequest
+     *            A {@link RenameObjectRequest} instance that includes bucketName, source object name
+     *            and destination object name.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     */
+    public VoidResult renameObject(RenameObjectRequest renameObjectRequest) throws OSSException, ClientException;
+
     /**
      * Creates UDF
      * 
@@ -4072,7 +4167,4 @@ public interface OSS {
 
     public UdfApplicationLog getUdfApplicationLog(GetUdfApplicationLogRequest getUdfApplicationLogRequest)
             throws OSSException, ClientException;
-
-    public GetBucketReplicationNumberResult getBucketReplicationNumber() throws OSSException, ClientException;
-
 }

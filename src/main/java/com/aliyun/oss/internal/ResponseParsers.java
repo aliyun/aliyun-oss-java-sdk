@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.zip.CheckedInputStream;
 
 import com.aliyun.oss.model.AddBucketCnameResult;
+import com.aliyun.oss.model.DeleteDirectoryResult;
 import com.aliyun.oss.model.GetBucketInventoryConfigurationResult;
 import com.aliyun.oss.model.GetBucketReplicationNumberResult;
 import com.aliyun.oss.model.GetBucketWormResult;
@@ -225,7 +226,7 @@ public final class ResponseParsers {
 
     public static final GetSymbolicLinkResponseParser getSymbolicLinkResponseParser = new GetSymbolicLinkResponseParser();
     public static final GetBucketReplicationNumberResponseParser getBucketReplicationNumberResponseParser = new GetBucketReplicationNumberResponseParser();
-
+    public static final DeleteDirectoryResponseParser deleteDirectoryResponseParser = new DeleteDirectoryResponseParser();
     public static final class EmptyResponseParser implements ResponseParser<ResponseMessage> {
 
         @Override
@@ -2720,6 +2721,12 @@ public final class ResponseParsers {
             bucket.setExtranetEndpoint(bucketElem.getChildText("ExtranetEndpoint"));
             bucket.setIntranetEndpoint(bucketElem.getChildText("IntranetEndpoint"));
             bucket.setCreationDate(DateUtil.parseIso8601Date(bucketElem.getChildText("CreationDate")));
+
+            if (bucketElem.getChild("HierarchicalNamespace") != null) {
+                String hnsStatus = bucketElem.getChildText("HierarchicalNamespace");
+                bucket.setHnsStatus(hnsStatus);
+            }
+
             if (bucketElem.getChild("StorageClass") != null) {
                 bucket.setStorageClass(StorageClass.parse(bucketElem.getChildText("StorageClass")));
             }
@@ -3741,6 +3748,42 @@ public final class ResponseParsers {
             }
 
         }
+    }
+
+    public static final class DeleteDirectoryResponseParser implements ResponseParser<DeleteDirectoryResult> {
+
+        @Override
+        public DeleteDirectoryResult parse(ResponseMessage response) throws ResponseParseException {
+            try{
+                DeleteDirectoryResult result =  parseDeleteDirectoryResult(response.getContent());
+                result.setResponse(response);
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+    }
+
+    /**
+     * Unmarshall delete directory result.
+     */
+    public static DeleteDirectoryResult parseDeleteDirectoryResult(InputStream responseBody) throws ResponseParseException {
+        try {
+            Element root = getXmlRootElement(responseBody);
+            DeleteDirectoryResult result = new DeleteDirectoryResult();
+            result.setDeleteNumber(Integer.valueOf(root.getChildText("DeleteNumber")).intValue());
+            result.setDirectoryName(root.getChildText("DirectoryName"));
+            if(root.getChild("NextDeleteToken") != null) {
+                result.setNextDeleteToken(root.getChildText("NextDeleteToken"));
+            }
+            return result;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
     }
 
 }
