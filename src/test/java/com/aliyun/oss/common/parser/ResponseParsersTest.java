@@ -911,6 +911,49 @@ public class ResponseParsersTest {
         Assert.assertEquals(CannedAccessControlList.Private, result.getCannedACL());
         Assert.assertEquals("oss-cn-hangzhou", result.getBucket().getLocation());
         Assert.assertEquals("oss-example", result.getBucket().getName());
+        Assert.assertEquals(null, result.getBucket().getHnsStatus());
+
+        respBody = "" +
+                "<BucketInfo>\n" +
+                "  <Bucket>\n" +
+                "           <CreationDate>2013-07-31T10:56:21.000Z</CreationDate>\n" +
+                "            <ExtranetEndpoint>oss-cn-hangzhou.aliyuncs.com</ExtranetEndpoint>\n" +
+                "            <HierarchicalNamespace>Enabled</HierarchicalNamespace>\n" +
+                "            <IntranetEndpoint>oss-cn-hangzhou-internal.aliyuncs.com</IntranetEndpoint>\n" +
+                "            <Location>oss-cn-hangzhou</Location>\n" +
+                "            <Name>oss-example</Name>\n" +
+                "            <Owner>\n" +
+                "              <DisplayName>username</DisplayName>\n" +
+                "              <ID>27183473914****</ID>\n" +
+                "            </Owner>\n" +
+                "            <AccessControlList>\n" +
+                "              <Grant>private</Grant>\n" +
+                "            </AccessControlList>\n" +
+                "            <Comment>test</Comment>\n" +
+                "            <DataRedundancyType>LRS</DataRedundancyType>\n" +
+                "          </Bucket>\n" +
+                " </BucketInfo>";
+
+        instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        result = null;
+        try {
+            result = ResponseParsers.parseGetBucketInfo(instream);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse bucket replication response body fail!");
+        }
+
+        Assert.assertEquals("test", result.getComment());
+        Assert.assertEquals(DataRedundancyType.LRS, result.getDataRedundancyType());
+        Assert.assertEquals(CannedAccessControlList.Private, result.getCannedACL());
+        Assert.assertEquals("oss-cn-hangzhou", result.getBucket().getLocation());
+        Assert.assertEquals("oss-example", result.getBucket().getName());
+        Assert.assertEquals(HnsStatus.Enabled.toString(), result.getBucket().getHnsStatus());
     }
 
     @Test
@@ -2130,6 +2173,7 @@ public class ResponseParsersTest {
             Assert.assertEquals(result.getBucketList().size(), 1);
             Assert.assertEquals(result.getBucketList().get(0).getLocation(), "oss-cn-hangzhou");
             Assert.assertEquals(result.getBucketList().get(0).getRegion(), "cn-hangzhou");
+            Assert.assertEquals(result.getBucketList().get(0).getHnsStatus(), null);
         } catch (ResponseParseException e) {
             Assert.assertTrue(false);
         } catch (Exception e) {
@@ -2154,6 +2198,7 @@ public class ResponseParsersTest {
                 "      <IntranetEndpoint>oss-cn-hangzhou-internal.aliyuncs.com</IntranetEndpoint>\n" +
                 "      <Location>oss-cn-hangzhou</Location>\n" +
                 "      <Name>oss-bucket</Name>\n" +
+                "      <HierarchicalNamespace>status</HierarchicalNamespace>\n" +
                 "      <StorageClass>Standard</StorageClass>\n" +
                 "    </Bucket>\n" +
                 "  </Buckets>\n" +
@@ -2170,6 +2215,7 @@ public class ResponseParsersTest {
             Assert.assertEquals(result.getBucketList().size(), 1);
             Assert.assertEquals(result.getBucketList().get(0).getLocation(), "oss-cn-hangzhou");
             Assert.assertEquals(result.getBucketList().get(0).getRegion(), null);
+            Assert.assertEquals(result.getBucketList().get(0).getHnsStatus(), "status");
         } catch (ResponseParseException e) {
             Assert.assertTrue(false);
         } catch (Exception e) {
@@ -4084,5 +4130,56 @@ public class ResponseParsersTest {
         } catch (Exception e) {
             Assert.assertTrue(false);
         }
+    }
+
+    @Test
+    public void testParseDeleteDirectory() {
+        String respBody = "" +
+                "<DeleteDirectoryResult>\n" +
+                "    <DirectoryName>a/b/c</DirectoryName>\n" +
+                "    <DeleteNumber>1</DeleteNumber>\n" +
+                "</DeleteDirectoryResult>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        DeleteDirectoryResult result = null;
+        try {
+            result = ResponseParsers.parseDeleteDirectoryResult(instream);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+
+        Assert.assertEquals("a/b/c", result.getDirectoryName());
+        Assert.assertEquals(1, result.getDeleteNumber());
+        Assert.assertNull(result.getNextDeleteToken());
+
+        respBody = "" +
+                "<DeleteDirectoryResult>\n" +
+                "    <DirectoryName>a/b/c</DirectoryName>\n" +
+                "    <DeleteNumber>1</DeleteNumber>\n" +
+                "    <NextDeleteToken>CgJiYw--</NextDeleteToken>\n" +
+                "</DeleteDirectoryResult>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        result = null;
+        try {
+            result = ResponseParsers.parseDeleteDirectoryResult(instream);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+
+        Assert.assertEquals("a/b/c", result.getDirectoryName());
+        Assert.assertEquals(1, result.getDeleteNumber());
+        Assert.assertEquals("CgJiYw--", result.getNextDeleteToken());
     }
 }

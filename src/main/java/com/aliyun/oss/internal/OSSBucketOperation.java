@@ -217,6 +217,7 @@ public class OSSBucketOperation extends OSSOperation {
 
         Map<String, String> headers = new HashMap<String, String>();
         addOptionalACLHeader(headers, createBucketRequest.getCannedACL());
+        addOptionalHnsHeader(headers, createBucketRequest.getHnsStatus());
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.PUT).setBucket(bucketName).setHeaders(headers)
@@ -1981,6 +1982,12 @@ public class OSSBucketOperation extends OSSOperation {
     private static void addOptionalACLHeader(Map<String, String> headers, CannedAccessControlList cannedAcl) {
         if (cannedAcl != null) {
             headers.put(OSSHeaders.OSS_CANNED_ACL, cannedAcl.toString());
+        }
+    }
+
+    private static void addOptionalHnsHeader(Map<String, String> headers, String hnsStatus) {
+        if (hnsStatus != null ) {
+            headers.put(OSSHeaders.OSS_HNS_STATUS, hnsStatus.toLowerCase());
         }
     }
 
