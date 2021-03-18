@@ -64,6 +64,9 @@ public class Bucket extends GenericResult {
     // Region
     private String region;
 
+    // Hierarchical namespace status, Enabled means support directory tree.
+    private String hnsStatus;
+
     /**
      * Default constructor.
      */
@@ -248,5 +251,20 @@ public class Bucket extends GenericResult {
      */
     public void setRegion(String region) {
         this.region = region;
+    }
+
+
+    /**
+     * @return hierarchical namespace status, refer to {@link HnsStatus}{@link #toString()}
+     */
+    public String getHnsStatus() {
+        return hnsStatus;
+    }
+
+    /**
+     * set hierarchical namespace status.
+     */
+    public void setHnsStatus(String hnsStatus) {
+        this.hnsStatus = hnsStatus;
     }
 }
