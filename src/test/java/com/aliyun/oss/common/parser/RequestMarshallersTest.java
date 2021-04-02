@@ -1191,4 +1191,27 @@ public class RequestMarshallersTest {
 
     }
 
+    @Test
+    public void testSetBucketResourceGroupRequestMarshaller() {
+
+        String id = "xxx-id-123";
+
+        byte[] data = setBucketResourceGroupRequestMarshaller.marshall(id);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        Assert.assertNotNull(root.getChild("ResourceGroupId"));
+        Assert.assertEquals(root.getChildText("ResourceGroupId"), "xxx-id-123");
+    }
+
 }

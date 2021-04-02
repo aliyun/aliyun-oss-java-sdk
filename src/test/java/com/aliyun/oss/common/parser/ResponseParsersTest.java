@@ -912,6 +912,7 @@ public class ResponseParsersTest {
         Assert.assertEquals("oss-cn-hangzhou", result.getBucket().getLocation());
         Assert.assertEquals("oss-example", result.getBucket().getName());
         Assert.assertEquals(null, result.getBucket().getHnsStatus());
+        Assert.assertEquals(null, result.getBucket().getResourceGroupId());
 
         respBody = "" +
                 "<BucketInfo>\n" +
@@ -921,6 +922,7 @@ public class ResponseParsersTest {
                 "            <HierarchicalNamespace>Enabled</HierarchicalNamespace>\n" +
                 "            <IntranetEndpoint>oss-cn-hangzhou-internal.aliyuncs.com</IntranetEndpoint>\n" +
                 "            <Location>oss-cn-hangzhou</Location>\n" +
+                "            <ResourceGroupId>xxx-id-123</ResourceGroupId>\n" +
                 "            <Name>oss-example</Name>\n" +
                 "            <Owner>\n" +
                 "              <DisplayName>username</DisplayName>\n" +
@@ -954,6 +956,7 @@ public class ResponseParsersTest {
         Assert.assertEquals("oss-cn-hangzhou", result.getBucket().getLocation());
         Assert.assertEquals("oss-example", result.getBucket().getName());
         Assert.assertEquals(HnsStatus.Enabled.toString(), result.getBucket().getHnsStatus());
+        Assert.assertEquals("xxx-id-123", result.getBucket().getResourceGroupId());
     }
 
     @Test
@@ -2174,6 +2177,7 @@ public class ResponseParsersTest {
             Assert.assertEquals(result.getBucketList().get(0).getLocation(), "oss-cn-hangzhou");
             Assert.assertEquals(result.getBucketList().get(0).getRegion(), "cn-hangzhou");
             Assert.assertEquals(result.getBucketList().get(0).getHnsStatus(), null);
+            Assert.assertEquals(result.getBucketList().get(0).getResourceGroupId(), null);
         } catch (ResponseParseException e) {
             Assert.assertTrue(false);
         } catch (Exception e) {
@@ -2199,6 +2203,7 @@ public class ResponseParsersTest {
                 "      <Location>oss-cn-hangzhou</Location>\n" +
                 "      <Name>oss-bucket</Name>\n" +
                 "      <HierarchicalNamespace>status</HierarchicalNamespace>\n" +
+                "      <ResourceGroupId>xxx-id-123</ResourceGroupId>\n" +
                 "      <StorageClass>Standard</StorageClass>\n" +
                 "    </Bucket>\n" +
                 "  </Buckets>\n" +
@@ -2216,6 +2221,7 @@ public class ResponseParsersTest {
             Assert.assertEquals(result.getBucketList().get(0).getLocation(), "oss-cn-hangzhou");
             Assert.assertEquals(result.getBucketList().get(0).getRegion(), null);
             Assert.assertEquals(result.getBucketList().get(0).getHnsStatus(), "status");
+            Assert.assertEquals(result.getBucketList().get(0).getResourceGroupId(), "xxx-id-123");
         } catch (ResponseParseException e) {
             Assert.assertTrue(false);
         } catch (Exception e) {
@@ -4181,5 +4187,55 @@ public class ResponseParsersTest {
         Assert.assertEquals("a/b/c", result.getDirectoryName());
         Assert.assertEquals(1, result.getDeleteNumber());
         Assert.assertEquals("CgJiYw--", result.getNextDeleteToken());
+    }
+
+    @Test
+    public void testParseBucketResourceGroup() {
+        String respBody = "" +
+                "<BucketResourceGroupConfiguration>\n" +
+                "    <ResourceGroupId>xxx-id-123</ResourceGroupId>\n" +
+                "</BucketResourceGroupConfiguration>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        GetBucketResourceGroupResult result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketResourceGroupResponseParser parser = new ResponseParsers.GetBucketResourceGroupResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+
+        Assert.assertEquals("xxx-id-123", result.getResourceGroupId());
+
+
+        respBody = "" +
+                "<BucketResourceGroupConfiguration>\n" +
+                "</BucketResourceGroupConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketResourceGroupResponseParser parser = new ResponseParsers.GetBucketResourceGroupResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+
+        Assert.assertEquals(null, result.getResourceGroupId());
     }
 }

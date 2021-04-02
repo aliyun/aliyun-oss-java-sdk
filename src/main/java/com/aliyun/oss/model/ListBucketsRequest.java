@@ -46,6 +46,9 @@ public class ListBucketsRequest extends WebServiceRequest {
     // The tag value.
     private String tagValue;
 
+    // The resouce group id
+    private String resouceGroupId;
+
     /**
      * Constructor.
      */
@@ -216,6 +219,37 @@ public class ListBucketsRequest extends WebServiceRequest {
      */
     public String getTagValue() {
         return this.tagValue;
+    }
+
+    /**
+     * Gets the resouce group id.
+     *
+     * @return The resouce group id.
+     */
+    public String getResourceGroupId() {
+        return resouceGroupId;
+    }
+
+    /**
+     * Sets the resouce group id.
+     *
+     * @param resouceGroupId
+     *            The resouce group id.
+     */
+    public void setResourceGroupId(String resouceGroupId) {
+        this.resouceGroupId = resouceGroupId;
+    }
+
+    /**
+     * Sets the resouce group id and return the current ListBucketRequest instance
+     * (this).
+     *
+     * @param resouceGroupId
+     *            The resouce group id.
+     */
+    public ListBucketsRequest withResourceGroupId(String resouceGroupId) {
+        setResourceGroupId(resouceGroupId);
+        return this;
     }
 
 }

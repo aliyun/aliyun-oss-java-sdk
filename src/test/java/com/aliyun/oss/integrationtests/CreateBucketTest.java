@@ -31,24 +31,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.aliyun.oss.*;
+import com.aliyun.oss.common.auth.Credentials;
+import com.aliyun.oss.common.auth.DefaultCredentialProvider;
+import com.aliyun.oss.common.auth.DefaultCredentials;
+import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.aliyun.oss.OSSErrorCode;
-import com.aliyun.oss.OSSException;
-import com.aliyun.oss.model.AccessControlList;
-import com.aliyun.oss.model.Bucket;
-import com.aliyun.oss.model.BucketInfo;
-import com.aliyun.oss.model.BucketList;
-import com.aliyun.oss.model.CannedAccessControlList;
-import com.aliyun.oss.model.CreateBucketRequest;
-import com.aliyun.oss.model.DataRedundancyType;
-import com.aliyun.oss.model.Grant;
-import com.aliyun.oss.model.GroupGrantee;
-import com.aliyun.oss.model.Permission;
-import com.aliyun.oss.model.StorageClass;
 
 @SuppressWarnings("deprecation")
 public class CreateBucketTest extends TestBase {
@@ -466,6 +457,103 @@ public class CreateBucketTest extends TestBase {
             Assert.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
+        }
+    }
+
+    @Test
+    public void testPutWithResouceGroupId() {
+        OSS client = new OSSClientBuilder().build("oss-ap-southeast-2.aliyuncs.com", TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
+        String bucketName = super.bucketName + "-rs-with-id";
+		//repalce by correct resouce group id
+        String rsId = "rg-*********";
+
+        try {
+            CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName)
+                    .withStorageType(StorageClass.Standard).withResourceGroupId("123");
+
+            Assert.assertEquals("123", createBucketRequest.getResourceGroupId());
+            createBucketRequest.setResourceGroupId(rsId);
+            Assert.assertEquals(rsId, createBucketRequest.getResourceGroupId());
+
+            client.createBucket(createBucketRequest);
+            Thread.sleep(2000);
+            BucketInfo bucketInfo = client.getBucketInfo(bucketName);
+            Assert.assertEquals(rsId, bucketInfo.getBucket().getResourceGroupId());
+
+            ListBucketsRequest listBucketsRequest = new ListBucketsRequest(bucketName, "", 1);
+            Assert.assertEquals(null, listBucketsRequest.getResourceGroupId());
+
+            BucketList list = client.listBuckets(listBucketsRequest);
+            Assert.assertEquals(null, list.getBucketList().get(0).getResourceGroupId());
+
+            listBucketsRequest.setResourceGroupId(rsId);
+            Assert.assertEquals(rsId, listBucketsRequest.getResourceGroupId());
+            list = client.listBuckets(listBucketsRequest);
+            Assert.assertEquals(rsId, list.getBucketList().get(0).getResourceGroupId());
+
+            GetBucketResourceGroupResult result = client.getBucketResourceGroup(bucketName);
+            Assert.assertEquals(rsId, result.getResourceGroupId());
+
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        } finally {
+            client.deleteBucket(bucketName);
+        }
+
+        bucketName = super.bucketName + "-rs-without-id";
+
+        try {
+            CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName)
+                    .withStorageType(StorageClass.Standard);
+            Assert.assertEquals(null, createBucketRequest.getResourceGroupId());
+
+            client.createBucket(createBucketRequest);
+            Thread.sleep(2000);
+            BucketInfo bucketInfo = client.getBucketInfo(bucketName);
+            Assert.assertNotNull(bucketInfo.getBucket().getResourceGroupId());
+            String defaultRsId = bucketInfo.getBucket().getResourceGroupId();
+
+            ListBucketsRequest listBucketsRequest = new ListBucketsRequest(bucketName, "", 1)
+                    .withResourceGroupId(defaultRsId);
+            Assert.assertEquals(defaultRsId, listBucketsRequest.getResourceGroupId());
+
+            BucketList list = client.listBuckets(listBucketsRequest);
+            Assert.assertEquals(defaultRsId, list.getBucketList().get(0).getResourceGroupId());
+
+            /*
+            listBucketsRequest = new ListBucketsRequest(bucketName, "", 1)
+                    .withResourceGroupId("");
+            list = client.listBuckets(listBucketsRequest);
+            Assert.assertEquals(defaultRsId, list.getBucketList().get(0).getResourceGroupId());
+            */
+
+            GetBucketResourceGroupResult result = client.getBucketResourceGroup(bucketName);
+            Assert.assertEquals(defaultRsId, result.getResourceGroupId());
+
+            SetBucketResourceGroupRequest setBucketResourceGroupRequest = new SetBucketResourceGroupRequest(bucketName, rsId);
+            client.setBucketResourceGroup(setBucketResourceGroupRequest);
+
+            bucketInfo = client.getBucketInfo(bucketName);
+            Assert.assertEquals(rsId, bucketInfo.getBucket().getResourceGroupId());
+
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        } finally {
+            client.deleteBucket(bucketName);
+        }
+
+        //invalid rs id
+        bucketName = super.bucketName + "-rs-with-invalid-id";
+
+        try {
+            CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName)
+                    .withStorageType(StorageClass.Standard).withResourceGroupId("invalid-rs-id");
+            client.createBucket(createBucketRequest);
+            Assert.fail("shuold not here");
+        } catch (OSSException e) {
+            Assert.assertEquals("InvalidArgument", e.getErrorCode());
+        } catch (Exception ex) {
+            Assert.fail("shuold not here");
         }
     }
 }

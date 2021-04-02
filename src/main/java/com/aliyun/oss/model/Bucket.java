@@ -67,6 +67,9 @@ public class Bucket extends GenericResult {
     // Hierarchical namespace status, Enabled means support directory tree.
     private String hnsStatus;
 
+	// The id of resource group.
+    private String resourceGroupId;
+
     /**
      * Default constructor.
      */
@@ -266,5 +269,21 @@ public class Bucket extends GenericResult {
      */
     public void setHnsStatus(String hnsStatus) {
         this.hnsStatus = hnsStatus;
+    }
+
+    /**
+     * Gets the id of resource group.
+     * 
+     * @return the id of resource group
+     */
+    public String getResourceGroupId() {
+        return resourceGroupId;
+    }
+
+    /**
+     * set the id of resource group.
+     */
+    public void setResourceGroupId(String resourceGroupId) {
+        this.resourceGroupId = resourceGroupId;
     }
 }

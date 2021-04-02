@@ -4117,6 +4117,35 @@ public interface OSS {
      */
     public VoidResult renameObject(RenameObjectRequest renameObjectRequest) throws OSSException, ClientException;
 
+	/**
+     * Sets the resource group id of the {@link Bucket}.
+     * 
+     * @param setBucketResourceGroupRequest
+     *             A {@link SetBucketResourceGroupRequest} instance  that has 
+     *             the resource group id setting.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public VoidResult setBucketResourceGroup(SetBucketResourceGroupRequest setBucketResourceGroupRequest) throws OSSException, ClientException;
+
+    /**
+     * Gets the resource group id of the {@link Bucket}.
+     * 
+     * @param bucketName
+     *             The bucket name.
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public GetBucketResourceGroupResult getBucketResourceGroup(String bucketName) throws OSSException, ClientException;
+
     /**
      * Creates UDF
      * 
