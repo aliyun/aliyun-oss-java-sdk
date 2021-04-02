@@ -94,6 +94,8 @@ public final class RequestMarshallers {
     public static final DeleteVpcipRequestMarshaller deleteVpcipRequestMarshaller = new DeleteVpcipRequestMarshaller();
     public static final DeleteBucketVpcipRequestMarshaller deleteBucketVpcipRequestMarshaller = new DeleteBucketVpcipRequestMarshaller();
 
+    public static final SetBucketResourceGroupRequestMarshaller setBucketResourceGroupRequestMarshaller = new SetBucketResourceGroupRequestMarshaller();
+
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
 
     }
@@ -1417,6 +1419,26 @@ public final class RequestMarshallers {
             }
             return rawData;
         }
+    }
+
+    public static final class SetBucketResourceGroupRequestMarshaller implements RequestMarshaller2<String> {
+
+        @Override
+        public byte[] marshall(String resourceGroupId) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<BucketResourceGroupConfiguration>");
+            xmlBody.append("<ResourceGroupId>" + resourceGroupId + "</ResourceGroupId>");
+            xmlBody.append("</BucketResourceGroupConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+
     }
 
     public static final class CreateUdfRequestMarshaller implements RequestMarshaller2<CreateUdfRequest> {

@@ -1731,6 +1731,16 @@ public class OSSClient implements OSS {
         return this.objectOperation.renameObject(renameObjectRequest);
     }
 
+	@Override
+	public VoidResult setBucketResourceGroup(SetBucketResourceGroupRequest setBucketResourceGroupRequest) throws OSSException, ClientException {
+		return this.bucketOperation.setBucketResourceGroup(setBucketResourceGroupRequest);
+	}
+
+	@Override
+	public GetBucketResourceGroupResult getBucketResourceGroup(String bucketName) throws OSSException, ClientException {
+		return this.bucketOperation.getBucketResourceGroup(new GenericRequest(bucketName));
+	}
+
     @Override
     public VoidResult createUdf(CreateUdfRequest createUdfRequest) throws OSSException, ClientException {
         throw new ClientException("Not supported.");

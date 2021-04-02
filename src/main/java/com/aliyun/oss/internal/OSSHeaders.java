@@ -109,4 +109,7 @@ public interface OSSHeaders extends HttpHeaders {
     static final String OSS_DELETE_TOKEN = "x-oss-delete-token";
 
     static final String OSS_RENAME_SOURCE = "x-oss-rename-source";
+
+    static final String OSS_RESOURCE_GROUP_ID = "x-oss-resource-group-id";
+
 }

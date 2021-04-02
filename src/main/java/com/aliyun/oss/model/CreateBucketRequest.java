@@ -26,6 +26,7 @@ public class CreateBucketRequest extends GenericRequest {
     private StorageClass storageClass;
     private DataRedundancyType dataRedundancyType;
     private String hnsStatus;
+    private String resourceGroupId;
 
     public CreateBucketRequest(String bucketName) {
         super(bucketName);
@@ -163,6 +164,32 @@ public class CreateBucketRequest extends GenericRequest {
      */
     public CreateBucketRequest withHnsStatus(HnsStatus hnsStatus) {
         this.setHnsStatus(hnsStatus);
+        return this;
+    }
+
+    /**
+     * Gets the resouce group id.
+     */
+    public String getResourceGroupId() {
+        return resourceGroupId;
+    }
+
+    /**
+     * Sets the resouce group id.
+     * @param resourceGroupId
+     *              The id of resouce group.
+     */
+    public void setResourceGroupId(String resourceGroupId) {
+        this.resourceGroupId = resourceGroupId;
+    }
+
+    /**
+     * Creates the instance with resouce group id.
+     * @param resourceGroupId
+     *              The id of resouce group.
+     */
+    public CreateBucketRequest withResourceGroupId(String resourceGroupId) {
+        this.setResourceGroupId(resourceGroupId);
         return this;
     }
 }

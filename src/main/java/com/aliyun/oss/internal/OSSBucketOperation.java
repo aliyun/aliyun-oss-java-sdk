@@ -46,6 +46,7 @@ import static com.aliyun.oss.common.parser.RequestMarshallers.deleteBucketVpcipR
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketInventoryRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.extendBucketWormRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.initiateBucketWormRequestMarshaller;
+import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketResourceGroupRequestMarshaller;
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
@@ -90,6 +91,7 @@ import static com.aliyun.oss.internal.ResponseParsers.getBucketInventoryConfigur
 import static com.aliyun.oss.internal.ResponseParsers.listBucketInventoryConfigurationsParser;
 import static com.aliyun.oss.internal.ResponseParsers.initiateBucketWormResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketWormResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getBucketResourceGroupResponseParser;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -194,6 +196,8 @@ import com.aliyun.oss.model.GetBucketWormResult;
 import com.aliyun.oss.model.CompleteBucketWormRequest;
 import com.aliyun.oss.model.InitiateBucketWormRequest;
 import com.aliyun.oss.model.InitiateBucketWormResult;
+import com.aliyun.oss.model.SetBucketResourceGroupRequest;
+import com.aliyun.oss.model.GetBucketResourceGroupResult;
 
 /**
  * Bucket operation.
@@ -218,6 +222,7 @@ public class OSSBucketOperation extends OSSOperation {
         Map<String, String> headers = new HashMap<String, String>();
         addOptionalACLHeader(headers, createBucketRequest.getCannedACL());
         addOptionalHnsHeader(headers, createBucketRequest.getHnsStatus());
+        addOptionalResourceGroupIdHeader(headers, createBucketRequest.getResourceGroupId());
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.PUT).setBucket(bucketName).setHeaders(headers)
@@ -284,8 +289,11 @@ public class OSSBucketOperation extends OSSOperation {
             params.put(TAG_VALUE, listBucketRequest.getTagValue());
         }
 
+        Map<String, String> headers = new HashMap<String, String>();
+        addOptionalResourceGroupIdHeader(headers, listBucketRequest.getResourceGroupId());
+
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.GET).setParameters(params).setOriginalRequest(listBucketRequest).build();
+                .setMethod(HttpMethod.GET).setHeaders(headers).setParameters(params).setOriginalRequest(listBucketRequest).build();
 
         return doOperation(request, listBucketResponseParser, null, null, true);
     }
@@ -1889,6 +1897,49 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, getBucketWormResponseParser, bucketName, null, true);
     }
 
+    public VoidResult setBucketResourceGroup(SetBucketResourceGroupRequest setBucketResourceGroupRequest)
+            throws OSSException, ClientException {
+
+        assertParameterNotNull(setBucketResourceGroupRequest, "setBucketResourceGroupRequest");
+        assertParameterNotNull(setBucketResourceGroupRequest.getResourceGroupId(), "setBucketResourceGroupRequest.resourceGroupId");
+
+        String bucketName = setBucketResourceGroupRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_RESOURCE_GROUP, null);
+
+        byte[] rawContent = setBucketResourceGroupRequestMarshaller.marshall(setBucketResourceGroupRequest.getResourceGroupId());
+        Map<String, String> headers = new HashMap<String, String>();
+        addRequestRequiredHeaders(headers, rawContent);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params).setHeaders(headers)
+                .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+                .setOriginalRequest(setBucketResourceGroupRequest).build();
+
+        return doOperation(request, requestIdResponseParser, bucketName, null);
+    }
+
+    public GetBucketResourceGroupResult getBucketResourceGroup(GenericRequest genericRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_RESOURCE_GROUP, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
+
+        return doOperation(request, getBucketResourceGroupResponseParser, bucketName, null, true);
+    }
+
     private static void populateListObjectsRequestParameters(ListObjectsRequest listObjectsRequest,
             Map<String, String> params) {
 
@@ -1988,6 +2039,11 @@ public class OSSBucketOperation extends OSSOperation {
     private static void addOptionalHnsHeader(Map<String, String> headers, String hnsStatus) {
         if (hnsStatus != null ) {
             headers.put(OSSHeaders.OSS_HNS_STATUS, hnsStatus.toLowerCase());
+        }
+    }
+    private static void addOptionalResourceGroupIdHeader(Map<String, String> headers, String resourceGroupId) {
+        if (resourceGroupId != null) {
+            headers.put(OSSHeaders.OSS_RESOURCE_GROUP_ID, resourceGroupId);
         }
     }
 

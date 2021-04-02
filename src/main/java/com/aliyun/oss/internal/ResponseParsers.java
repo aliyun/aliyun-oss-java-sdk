@@ -149,7 +149,7 @@ import com.aliyun.oss.model.AsyncFetchTaskConfiguration;
 import com.aliyun.oss.model.AsyncFetchTaskState;
 import com.aliyun.oss.model.VpcPolicy;
 import com.aliyun.oss.model.Vpcip;
-
+import com.aliyun.oss.model.GetBucketResourceGroupResult;
 /*
  * A collection of parsers that parse HTTP reponses into corresponding human-readable results.
  */
@@ -190,6 +190,7 @@ public final class ResponseParsers {
     public static final ListVpcPolicyResultResponseParser listVpcPolicyResultResponseParser = new ListVpcPolicyResultResponseParser();
     public static final InitiateBucketWormResponseParser initiateBucketWormResponseParser = new InitiateBucketWormResponseParser();
     public static final GetBucketWormResponseParser getBucketWormResponseParser = new GetBucketWormResponseParser();
+    public static final GetBucketResourceGroupResponseParser getBucketResourceGroupResponseParser = new GetBucketResourceGroupResponseParser();
 
     public static final GetBucketInventoryConfigurationParser getBucketInventoryConfigurationParser = new GetBucketInventoryConfigurationParser();
     public static final ListBucketInventoryConfigurationsParser listBucketInventoryConfigurationsParser = new ListBucketInventoryConfigurationsParser();
@@ -1205,6 +1206,20 @@ public final class ResponseParsers {
 
     }
 
+    public static final class GetBucketResourceGroupResponseParser implements ResponseParser<GetBucketResourceGroupResult> {
+
+        @Override
+        public GetBucketResourceGroupResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetBucketResourceGroupResult result = parseResourceGroupConfiguration(response.getContent());
+                result.setRequestId(response.getRequestId());
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+    }
 
     public static <ResultType extends GenericResult> void setCRC(ResultType result, ResponseMessage response) {
         InputStream inputStream = response.getRequest().getContent();
@@ -1679,8 +1694,11 @@ public final class ResponseParsers {
                         bucket.setRegion(e.getChildText("Region"));
                     }
                     if (e.getChild("HierarchicalNamespace") != null) {
-                         bucket.setHnsStatus(e.getChildText("HierarchicalNamespace"));
+                        bucket.setHnsStatus(e.getChildText("HierarchicalNamespace"));
                     }
+					if (e.getChild("ResourceGroupId") != null) {
+						bucket.setResourceGroupId(e.getChildText("ResourceGroupId"));
+					}
                     buckets.add(bucket);
                 }
             }
@@ -2709,6 +2727,11 @@ public final class ResponseParsers {
                 bucket.setHnsStatus(hnsStatus);
             }
 
+			if (bucketElem.getChild("ResourceGroupId") != null) {
+                String resourceGroupId = bucketElem.getChildText("ResourceGroupId");
+                bucket.setResourceGroupId(resourceGroupId);
+            }
+
             if (bucketElem.getChild("StorageClass") != null) {
                 bucket.setStorageClass(StorageClass.parse(bucketElem.getChildText("StorageClass")));
             }
@@ -3729,6 +3752,24 @@ public final class ResponseParsers {
             if(root.getChild("NextDeleteToken") != null) {
                 result.setNextDeleteToken(root.getChildText("NextDeleteToken"));
             }
+            return result;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * Unmarshall get bucket resource group.
+     */
+    public static GetBucketResourceGroupResult parseResourceGroupConfiguration(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+            GetBucketResourceGroupResult result = new GetBucketResourceGroupResult();
+            result.setResourceGroupId(root.getChildText("ResourceGroupId"));
             return result;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
