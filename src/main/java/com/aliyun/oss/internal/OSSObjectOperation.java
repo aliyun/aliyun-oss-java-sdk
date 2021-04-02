@@ -963,7 +963,7 @@ public class OSSObjectOperation extends OSSOperation {
             ossObject = this.getObject(getObjectRequest);
             return true;
         } catch (OSSException e) {
-            if (e.getErrorCode() == OSSErrorCode.NO_SUCH_BUCKET || e.getErrorCode() == OSSErrorCode.NO_SUCH_KEY) {
+            if (e.getErrorCode().equals(OSSErrorCode.NO_SUCH_BUCKET) || e.getErrorCode().equals(OSSErrorCode.NO_SUCH_KEY)) {
                 return false;
             }
             throw e;
