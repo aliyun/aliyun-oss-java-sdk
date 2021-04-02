@@ -90,6 +90,13 @@ public class DoesObjectExistTest extends TestBase {
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
+
+        try {
+            boolean exist = ossClient.doesObjectExist(bucketName, nonexistentKey, false);
+            Assert.assertFalse(exist);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
     }
     
     @Test
