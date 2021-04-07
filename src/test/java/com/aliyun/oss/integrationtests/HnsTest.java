@@ -1,6 +1,8 @@
 package com.aliyun.oss.integrationtests;
 
 
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.BucketInfo;
@@ -21,6 +23,8 @@ import java.io.ByteArrayInputStream;
 import java.util.List;
 
 public class HnsTest extends TestBase {
+    private String testHnsBucket;
+    private OSS testClient;
 
     @Test
     public void testBucketRelatedConstructor() {
@@ -84,31 +88,30 @@ public class HnsTest extends TestBase {
         Assert.assertEquals("dst-obj", renameObjectRequest.getDestinationObjectName());
     }
 
-
     @Override
     public void setUp() throws Exception {
         super.setUp();
         this.testHnsBucket = bucketName + "-test-hns";
+        this.testClient = new OSSClientBuilder().build("oss-ap-southeast-2.aliyuncs.com", TestConfig.OSS_TEST_ACCESS_KEY_ID,
+                TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
         CreateBucketRequest createBucketRequest = new CreateBucketRequest(testHnsBucket);
         createBucketRequest.setHnsStatus(HnsStatus.Enabled);
-        ossClient.createBucket(createBucketRequest);
+        testClient.createBucket(createBucketRequest);
     }
-
-    private String testHnsBucket;
 
     @Override
     public void tearDown() throws Exception {
-        ObjectListing objectListing = ossClient.listObjects(bucketName);
+        ObjectListing objectListing = testClient.listObjects(testHnsBucket);
         List<OSSObjectSummary> sums = objectListing.getObjectSummaries();
         for (OSSObjectSummary s : sums) {
             System.out.println("\t" + s.getKey());
             if (s.getETag() == null || s.getETag().isEmpty()) {
                 try {
-                    ossClient.deleteDirectory(bucketName, s.getKey().substring(0, s.getKey().length() - 1), true, null);
+                    testClient.deleteDirectory(testHnsBucket, s.getKey().substring(0, s.getKey().length() - 1), true, null);
                 } catch (Exception e) {
                 }
             } else {
-                ossClient.deleteObject(bucketName, s.getKey());
+                testClient.deleteObject(testHnsBucket, s.getKey());
             }
         }
         super.tearDown();
@@ -116,7 +119,7 @@ public class HnsTest extends TestBase {
 
     @Test
     public void testGetHnsStatus() {
-        BucketInfo info =  ossClient.getBucketInfo(this.testHnsBucket);
+        BucketInfo info =  testClient.getBucketInfo(this.testHnsBucket);
         Assert.assertEquals(HnsStatus.Enabled.toString(), info.getBucket().getHnsStatus());
     }
 
@@ -126,24 +129,24 @@ public class HnsTest extends TestBase {
         String dirNameNew = "new-" + dirName ;
         CreateDirectoryRequest createDirectoryRequest = new CreateDirectoryRequest(testHnsBucket, dirName);
         createDirectoryRequest.setRequestPayer(Payer.Requester);
-        ossClient.createDirectory(createDirectoryRequest);
-        ObjectMetadata meta = ossClient.getObjectMetadata(testHnsBucket, dirName);
+        testClient.createDirectory(createDirectoryRequest);
+        ObjectMetadata meta = testClient.getObjectMetadata(testHnsBucket, dirName);
         Assert.assertEquals("application/x-directory", meta.getContentType());
 
         RenameObjectRequest renameObjectRequest = new RenameObjectRequest(testHnsBucket, dirName, dirNameNew);
         renameObjectRequest.setRequestPayer(Payer.Requester);
-        ossClient.renameObject(renameObjectRequest);
-        meta = ossClient.getObjectMetadata(testHnsBucket, dirNameNew);
+        testClient.renameObject(renameObjectRequest);
+        meta = testClient.getObjectMetadata(testHnsBucket, dirNameNew);
         Assert.assertEquals("application/x-directory", meta.getContentType());
         try {
-            meta = ossClient.getObjectMetadata(testHnsBucket, dirName);
+            meta = testClient.getObjectMetadata(testHnsBucket, dirName);
             Assert.fail("should be failed here");
         } catch (Exception e) {
         }
 
         DeleteDirectoryRequest deleteDirectoryRequest = new DeleteDirectoryRequest(testHnsBucket, dirNameNew);
         deleteDirectoryRequest.setRequestPayer(Payer.Requester);
-        DeleteDirectoryResult deleteDirectoryResult = ossClient.deleteDirectory(deleteDirectoryRequest);
+        DeleteDirectoryResult deleteDirectoryResult = testClient.deleteDirectory(deleteDirectoryRequest);
         Assert.assertEquals(dirNameNew, deleteDirectoryResult.getDirectoryName());
         Assert.assertEquals(1, deleteDirectoryResult.getDeleteNumber());
     }
@@ -153,31 +156,38 @@ public class HnsTest extends TestBase {
         String objectName = "test-obj";
         String objectNameNew ="new-" + objectName;
 
-        ossClient.putObject(testHnsBucket, objectName, new ByteArrayInputStream("123".getBytes()));
-        ossClient.renameObject(testHnsBucket, objectName, objectNameNew);
-        ObjectMetadata meta = ossClient.getObjectMetadata(testHnsBucket, objectNameNew);
+        testClient.putObject(testHnsBucket, objectName, new ByteArrayInputStream("123".getBytes()));
+        testClient.renameObject(testHnsBucket, objectName, objectNameNew);
+        ObjectMetadata meta = testClient.getObjectMetadata(testHnsBucket, objectNameNew);
         Assert.assertEquals(3, meta.getContentLength());
+
+
+        objectName = "test-obj-1-#+<>中文测试";
+        objectNameNew ="new-test-obj-1";
+        testClient.putObject(testHnsBucket, objectName, new ByteArrayInputStream("1234".getBytes()));
+        testClient.renameObject(testHnsBucket, objectName, objectNameNew);
+        meta = testClient.getObjectMetadata(testHnsBucket, objectNameNew);
+        Assert.assertEquals(4, meta.getContentLength());
     }
 
     @Test
     public void testDeleteDirectory() {
         String dirName = "test-dir";
         String objectName = "test-obj";
-        ossClient.createDirectory(testHnsBucket, dirName);
+        testClient.createDirectory(testHnsBucket, dirName);
 
 
         for ( int i = 0; i < 100; i ++) {
-            ossClient.putObject(testHnsBucket, dirName + "/" + objectName + "-" + i, new ByteArrayInputStream("123".getBytes()));
+            testClient.putObject(testHnsBucket, dirName + "/" + objectName + "-" + i, new ByteArrayInputStream("123".getBytes()));
         }
 
         try {
-            DeleteDirectoryResult deleteDirectoryResult = ossClient.deleteDirectory(testHnsBucket, dirName);
+            DeleteDirectoryResult deleteDirectoryResult = testClient.deleteDirectory(testHnsBucket, dirName);
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.FILE_ALREADY_EXISTS, e.getErrorCode());
         }
 
-
-        DeleteDirectoryResult deleteDirectoryResult = ossClient.deleteDirectory(testHnsBucket, dirName, true, null);
+        DeleteDirectoryResult deleteDirectoryResult = testClient.deleteDirectory(testHnsBucket, dirName, true, null);
         String nextToken = deleteDirectoryResult.getNextDeleteToken();
         Assert.assertEquals(100, deleteDirectoryResult.getDeleteNumber());
         Assert.assertEquals(dirName, deleteDirectoryResult.getDirectoryName());
@@ -186,7 +196,7 @@ public class HnsTest extends TestBase {
         DeleteDirectoryRequest deleteDirectoryRequest = new DeleteDirectoryRequest(testHnsBucket, dirName)
                 .withDeleteRecursive(true)
                 .withNextDeleteToken(nextToken);
-        deleteDirectoryResult = ossClient.deleteDirectory(deleteDirectoryRequest);
+        deleteDirectoryResult = testClient.deleteDirectory(deleteDirectoryRequest);
         Assert.assertTrue(deleteDirectoryResult.getDeleteNumber() > 0);
         Assert.assertEquals(dirName, deleteDirectoryResult.getDirectoryName());
 
