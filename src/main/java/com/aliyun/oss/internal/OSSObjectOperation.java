@@ -1041,7 +1041,7 @@ public class OSSObjectOperation extends OSSOperation {
         ensureObjectKeyValid(srcObject);
 
         Map<String, String> headers = new HashMap<String, String>();
-        headers.put(OSSHeaders.OSS_RENAME_SOURCE, srcObject);
+        headers.put(OSSHeaders.OSS_RENAME_SOURCE, HttpUtil.urlEncode(srcObject, DEFAULT_CHARSET_NAME));
         populateRequestPayerHeader(headers, renameObjectRequest.getRequestPayer());
 
         Map<String, String> params = new HashMap<String, String>();

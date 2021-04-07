@@ -81,7 +81,11 @@ public class TestBase {
    
     @BeforeClass
     public static void oneTimeSetUp() {
-        cleanUpAllBuckets(getOSSClient(), BUCKET_NAME_PREFIX);
+        try {
+            cleanUpAllBuckets(getOSSClient(), BUCKET_NAME_PREFIX);
+        } catch (Exception e) {
+
+        }
     }
     
     @Before
@@ -181,9 +185,13 @@ public class TestBase {
         }
         
         // delete live channels
-        List<LiveChannel> channels = client.listLiveChannels(bucketName);
-        for (LiveChannel channel : channels) {
-            client.deleteLiveChannel(bucketName, channel.getName());
+        try {
+            List<LiveChannel> channels = client.listLiveChannels(bucketName);
+            for (LiveChannel channel : channels) {
+                client.deleteLiveChannel(bucketName, channel.getName());
+            }
+        }
+        catch (Exception e) {
         }
 
         // delete bucket
