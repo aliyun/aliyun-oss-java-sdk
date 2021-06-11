@@ -1214,4 +1214,33 @@ public class RequestMarshallersTest {
         Assert.assertEquals(root.getChildText("ResourceGroupId"), "xxx-id-123");
     }
 
+    @Test
+    public void testPutBucketTransferAccelerationRequestMarshaller() {
+
+        SetBucketTransferAccelerationRequest request = new SetBucketTransferAccelerationRequest("bucket", true);
+        Assert.assertEquals(request.isEnabled(), true);
+        request.setEnabled(false);
+        Assert.assertEquals(request.isEnabled(), false);
+
+        request.setEnabled(true);
+        Assert.assertEquals(request.isEnabled(), true);
+
+        byte[] data = putBucketTransferAccelerationRequestMarshaller.marshall(request);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        String status = root.getChildText("Enabled");
+        Assert.assertEquals("true", status);
+    }
+
 }

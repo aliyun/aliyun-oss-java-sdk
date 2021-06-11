@@ -95,6 +95,7 @@ public final class RequestMarshallers {
     public static final DeleteBucketVpcipRequestMarshaller deleteBucketVpcipRequestMarshaller = new DeleteBucketVpcipRequestMarshaller();
 
     public static final SetBucketResourceGroupRequestMarshaller setBucketResourceGroupRequestMarshaller = new SetBucketResourceGroupRequestMarshaller();
+    public static final PutBucketTransferAccelerationRequestMarshaller putBucketTransferAccelerationRequestMarshaller = new PutBucketTransferAccelerationRequestMarshaller();
 
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
 
@@ -1691,6 +1692,24 @@ public final class RequestMarshallers {
 
     }
 
+    public static final class PutBucketTransferAccelerationRequestMarshaller implements RequestMarshaller2<SetBucketTransferAccelerationRequest> {
+        @Override
+        public byte[] marshall(SetBucketTransferAccelerationRequest input) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<TransferAccelerationConfiguration><Enabled>");
+            xmlBody.append(input.isEnabled());
+            xmlBody.append("</Enabled></TransferAccelerationConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+
+            return rawData;
+        }
+    }
 
     private static enum EscapedChar {
         // "\r"
