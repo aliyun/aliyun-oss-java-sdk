@@ -4238,4 +4238,77 @@ public class ResponseParsersTest {
 
         Assert.assertEquals(null, result.getResourceGroupId());
     }
+
+    @Test
+    public void testGetBucketTransferAccelerationResponseParser() {
+        String respBody = "" +
+                "<TransferAccelerationConfiguration>\n" +
+                "    <Enabled>true</Enabled>\n" +
+                "</TransferAccelerationConfiguration>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        TransferAcceleration result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketTransferAccelerationResponseParser parser = new ResponseParsers.GetBucketTransferAccelerationResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+
+        Assert.assertEquals(true, result.isEnabled());
+
+
+        respBody = "" +
+                "<TransferAccelerationConfiguration>\n" +
+                "    <Enabled>false</Enabled>\n" +
+                "</TransferAccelerationConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketTransferAccelerationResponseParser parser = new ResponseParsers.GetBucketTransferAccelerationResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+        Assert.assertEquals(false, result.isEnabled());
+
+
+
+        respBody = "" +
+                "<TransferAccelerationConfiguration>\n" +
+                "</TransferAccelerationConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketTransferAccelerationResponseParser parser = new ResponseParsers.GetBucketTransferAccelerationResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+        Assert.assertEquals(false, result.isEnabled());
+    }
 }

@@ -4193,4 +4193,37 @@ public interface OSS {
     public UdfApplicationLog getUdfApplicationLog(GetUdfApplicationLogRequest getUdfApplicationLogRequest)
             throws OSSException, ClientException;
 
+    /**
+     * Set transferAcceleration configuration to the OSS Server
+     * @param bucketName
+     * @param enable
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     * @throws ClientException
+     */
+    VoidResult setBucketTransferAcceleration(String bucketName, boolean enable) throws OSSException, ClientException;
+
+    /**
+     * Get transferAcceleration configuration from the OSS Server
+     * @param bucketName
+     * @return
+     * @throws OSSException
+     * @throws ClientException
+     */
+    TransferAcceleration getBucketTransferAcceleration(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Delete transferAcceleration configuration from the OSS Server
+     * @param bucketName
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     * @throws ClientException
+     */
+    VoidResult deleteBucketTransferAcceleration(String bucketName) throws OSSException, ClientException;
 }

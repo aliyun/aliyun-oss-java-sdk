@@ -1817,6 +1817,21 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public VoidResult setBucketTransferAcceleration(String bucketName, boolean enable) throws OSSException, ClientException {
+        return this.bucketOperation.setBucketTransferAcceleration(new SetBucketTransferAccelerationRequest(bucketName, enable));
+    }
+
+    @Override
+    public TransferAcceleration getBucketTransferAcceleration(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketTransferAcceleration(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public VoidResult deleteBucketTransferAcceleration(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.deleteBucketTransferAcceleration(new GenericRequest(bucketName));
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();

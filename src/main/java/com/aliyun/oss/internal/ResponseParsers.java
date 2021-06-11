@@ -150,6 +150,7 @@ import com.aliyun.oss.model.AsyncFetchTaskState;
 import com.aliyun.oss.model.VpcPolicy;
 import com.aliyun.oss.model.Vpcip;
 import com.aliyun.oss.model.GetBucketResourceGroupResult;
+import com.aliyun.oss.model.TransferAcceleration;
 /*
  * A collection of parsers that parse HTTP reponses into corresponding human-readable results.
  */
@@ -191,6 +192,7 @@ public final class ResponseParsers {
     public static final InitiateBucketWormResponseParser initiateBucketWormResponseParser = new InitiateBucketWormResponseParser();
     public static final GetBucketWormResponseParser getBucketWormResponseParser = new GetBucketWormResponseParser();
     public static final GetBucketResourceGroupResponseParser getBucketResourceGroupResponseParser = new GetBucketResourceGroupResponseParser();
+    public static final GetBucketTransferAccelerationResponseParser getBucketTransferAccelerationResponseParser = new GetBucketTransferAccelerationResponseParser();
 
     public static final GetBucketInventoryConfigurationParser getBucketInventoryConfigurationParser = new GetBucketInventoryConfigurationParser();
     public static final ListBucketInventoryConfigurationsParser listBucketInventoryConfigurationsParser = new ListBucketInventoryConfigurationsParser();
@@ -3777,6 +3779,41 @@ public final class ResponseParsers {
             throw new ResponseParseException(e.getMessage(), e);
         }
 
+    }
+
+    public static final class GetBucketTransferAccelerationResponseParser implements ResponseParser<TransferAcceleration> {
+        @Override
+        public TransferAcceleration parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                TransferAcceleration result = parseTransferAcceleration(response.getContent());
+                result.setRequestId(response.getRequestId());
+
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private TransferAcceleration parseTransferAcceleration(InputStream inputStream) throws ResponseParseException {
+            TransferAcceleration transferAcceleration = new TransferAcceleration(Boolean.FALSE);
+            if (inputStream == null) {
+                return transferAcceleration;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                if (root.getChildText("Enabled") != null) {
+                    transferAcceleration.setEnabled(Boolean.valueOf(root.getChildText("Enabled")));
+                }
+
+                return transferAcceleration;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
     }
 
 }

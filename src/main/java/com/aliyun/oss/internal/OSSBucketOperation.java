@@ -47,6 +47,7 @@ import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketInventory
 import static com.aliyun.oss.common.parser.RequestMarshallers.extendBucketWormRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.initiateBucketWormRequestMarshaller;
 import static com.aliyun.oss.common.parser.RequestMarshallers.setBucketResourceGroupRequestMarshaller;
+import static com.aliyun.oss.common.parser.RequestMarshallers.putBucketTransferAccelerationRequestMarshaller;
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
@@ -92,6 +93,7 @@ import static com.aliyun.oss.internal.ResponseParsers.listBucketInventoryConfigu
 import static com.aliyun.oss.internal.ResponseParsers.initiateBucketWormResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketWormResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.getBucketResourceGroupResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.getBucketTransferAccelerationResponseParser;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -198,6 +200,8 @@ import com.aliyun.oss.model.InitiateBucketWormRequest;
 import com.aliyun.oss.model.InitiateBucketWormResult;
 import com.aliyun.oss.model.SetBucketResourceGroupRequest;
 import com.aliyun.oss.model.GetBucketResourceGroupResult;
+import com.aliyun.oss.model.TransferAcceleration;
+import com.aliyun.oss.model.SetBucketTransferAccelerationRequest;
 
 /**
  * Bucket operation.
@@ -2034,6 +2038,58 @@ public class OSSBucketOperation extends OSSOperation {
         if (cannedAcl != null) {
             headers.put(OSSHeaders.OSS_CANNED_ACL, cannedAcl.toString());
         }
+    }
+
+    public VoidResult setBucketTransferAcceleration(SetBucketTransferAccelerationRequest setBucketTransferAccelerationRequest) throws OSSException, ClientException {
+        assertParameterNotNull(setBucketTransferAccelerationRequest, "putBucketTransferAccelerationRequest");
+
+        String bucketName = setBucketTransferAccelerationRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_TRANSFER_ACCELERATION, null);
+
+        byte[] rawContent = putBucketTransferAccelerationRequestMarshaller.marshall(setBucketTransferAccelerationRequest);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(setBucketTransferAccelerationRequest).setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent)).build();
+
+        return doOperation(request, requestIdResponseParser, bucketName, null, true);
+    }
+
+    public TransferAcceleration getBucketTransferAcceleration(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_TRANSFER_ACCELERATION, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
+
+        return doOperation(request, getBucketTransferAccelerationResponseParser, bucketName, null, true);
+    }
+
+    public VoidResult deleteBucketTransferAcceleration(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_TRANSFER_ACCELERATION, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
+
+        return doOperation(request, requestIdResponseParser, bucketName, null);
     }
 
     private static void addOptionalHnsHeader(Map<String, String> headers, String hnsStatus) {
