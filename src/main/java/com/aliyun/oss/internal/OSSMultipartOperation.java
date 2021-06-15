@@ -86,6 +86,7 @@ import com.aliyun.oss.model.UploadPartRequest;
 import com.aliyun.oss.model.UploadPartResult;
 import com.aliyun.oss.model.Payer;
 import com.aliyun.oss.model.VoidResult;
+import com.aliyun.oss.model.WebServiceRequest;
 
 /**
  * Multipart operation.
@@ -98,6 +99,14 @@ public class OSSMultipartOperation extends OSSOperation {
 
     public OSSMultipartOperation(ServiceClient client, CredentialsProvider credsProvider) {
         super(client, credsProvider);
+    }
+
+    @Override
+    protected boolean isRetryablePostRequest(WebServiceRequest request) {
+        if (request instanceof InitiateMultipartUploadRequest) {
+            return true;
+        }
+        return super.isRetryablePostRequest(request);
     }
 
     /**

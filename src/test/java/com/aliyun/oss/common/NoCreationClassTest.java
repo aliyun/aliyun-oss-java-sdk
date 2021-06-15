@@ -19,13 +19,21 @@
 
 package com.aliyun.oss.common;
 
+import com.aliyun.oss.ClientConfiguration;
+import com.aliyun.oss.HttpMethod;
+import com.aliyun.oss.common.auth.CredentialsProvider;
+import com.aliyun.oss.common.auth.DefaultCredentialProvider;
+import com.aliyun.oss.common.comm.DefaultServiceClient;
+import com.aliyun.oss.common.comm.ExecutionContext;
+import com.aliyun.oss.common.comm.NoRetryStrategy;
+import com.aliyun.oss.common.comm.ServiceClient;
 import com.aliyun.oss.common.utils.AuthUtils;
 import com.aliyun.oss.common.utils.VersionInfoUtils;
-import com.aliyun.oss.internal.Mimetypes;
-import com.aliyun.oss.internal.OSSConstants;
-import com.aliyun.oss.internal.RequestParameters;
-import com.aliyun.oss.internal.SignParameters;
+import com.aliyun.oss.internal.*;
+import com.aliyun.oss.model.AbortMultipartUploadRequest;
+import com.aliyun.oss.model.InitiateMultipartUploadRequest;
 import com.aliyun.oss.model.LocationConstraint;
+import com.aliyun.oss.model.WebServiceRequest;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -63,5 +71,87 @@ public class NoCreationClassTest {
             Assert.fail(e.getMessage());
         }
 
+    }
+
+    static class TestOSSOperation extends OSSOperation {
+        public TestOSSOperation(ServiceClient client, CredentialsProvider credsProvider) {
+            super(client, credsProvider);
+        }
+
+        @Override
+        protected boolean isRetryablePostRequest(WebServiceRequest request) {
+            return super.isRetryablePostRequest(request);
+        }
+
+        @Override
+        public ExecutionContext createDefaultContext(HttpMethod method, String bucketName, String key, WebServiceRequest originalRequest) {
+            return super.createDefaultContext(method, bucketName, key, originalRequest);
+        }
+    }
+
+    static class TestOSSMultipartOperation extends  OSSMultipartOperation {
+        public TestOSSMultipartOperation(ServiceClient client, CredentialsProvider credsProvider) {
+            super(client, credsProvider);
+        }
+
+        @Override
+        protected boolean isRetryablePostRequest(WebServiceRequest request) {
+            return super.isRetryablePostRequest(request);
+        }
+
+        @Override
+        public ExecutionContext createDefaultContext(HttpMethod method, String bucketName, String key, WebServiceRequest originalRequest) {
+            return super.createDefaultContext(method, bucketName, key, originalRequest);
+        }
+    }
+
+    @Test
+    public void testOSSOperationClass() {
+        ClientConfiguration config = new ClientConfiguration();
+        ServiceClient client = new DefaultServiceClient(config);
+        CredentialsProvider cred = new DefaultCredentialProvider("ak", "sk");
+        TestOSSOperation operation = new TestOSSOperation(client, cred);
+        InitiateMultipartUploadRequest request = new InitiateMultipartUploadRequest("bucket", "key");
+        Assert.assertEquals(operation.isRetryablePostRequest(request), false);
+
+        Assert.assertEquals(operation.isRetryablePostRequest(null), false);
+
+        ExecutionContext context = null;
+        context = operation.createDefaultContext(HttpMethod.POST, "bucket", "key", request);
+        Assert.assertTrue(context.getRetryStrategy() instanceof NoRetryStrategy);
+
+        context = operation.createDefaultContext(HttpMethod.GET, "bucket", "key", request);
+        Assert.assertEquals(context.getRetryStrategy(), null);
+        Assert.assertFalse(context.getRetryStrategy() instanceof NoRetryStrategy);
+    }
+
+    @Test
+    public void testTestOSSMultipartOperationClass() {
+        ClientConfiguration config = new ClientConfiguration();
+        ServiceClient client = new DefaultServiceClient(config);
+        CredentialsProvider cred = new DefaultCredentialProvider("ak", "sk");
+        TestOSSMultipartOperation operation = new TestOSSMultipartOperation(client, cred);
+        InitiateMultipartUploadRequest request = new InitiateMultipartUploadRequest("bucket", "key");
+        Assert.assertEquals(operation.isRetryablePostRequest(request), true);
+
+        Assert.assertEquals(operation.isRetryablePostRequest(null), false);
+
+        ExecutionContext context = null;
+        context = operation.createDefaultContext(HttpMethod.POST, "bucket", "key", request);
+        Assert.assertEquals(context.getRetryStrategy(), null);
+        Assert.assertFalse(context.getRetryStrategy() instanceof NoRetryStrategy);
+
+        context = operation.createDefaultContext(HttpMethod.POST, "bucket", "key", null);
+        Assert.assertNotNull(context.getRetryStrategy());
+        Assert.assertTrue(context.getRetryStrategy() instanceof NoRetryStrategy);
+
+        context = operation.createDefaultContext(HttpMethod.POST, "bucket", "key",
+                new AbortMultipartUploadRequest("bucket", "key", "id"));
+        Assert.assertNotNull(context.getRetryStrategy());
+        Assert.assertTrue(context.getRetryStrategy() instanceof NoRetryStrategy);
+
+        context = operation.createDefaultContext(HttpMethod.GET, "bucket", "key",
+                new AbortMultipartUploadRequest("bucket", "key", "id"));
+        Assert.assertEquals(context.getRetryStrategy(), null);
     }
 }
