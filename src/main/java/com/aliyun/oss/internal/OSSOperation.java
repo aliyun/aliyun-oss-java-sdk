@@ -114,7 +114,7 @@ public abstract class OSSOperation {
         request.getHeaders().putAll(originalRequest.getHeaders());
         request.getParameters().putAll(originalRequest.getParameters());
 
-        ExecutionContext context = createDefaultContext(request.getMethod(), bucketName, key);
+        ExecutionContext context = createDefaultContext(request.getMethod(), bucketName, key, originalRequest);
 
         if (context.getCredentials().useSecurityToken() && !request.isUseUrlSignature()) {
             request.addHeader(OSSHeaders.OSS_SECURITY_TOKEN, context.getCredentials().getSecurityToken());
@@ -163,14 +163,14 @@ public abstract class OSSOperation {
         return new OSSRequestSigner(method.toString(), resourcePath, creds, signatureVersion);
     }
 
-    protected ExecutionContext createDefaultContext(HttpMethod method, String bucketName, String key) {
+    protected ExecutionContext createDefaultContext(HttpMethod method, String bucketName, String key, WebServiceRequest originalRequest) {
         ExecutionContext context = new ExecutionContext();
 		Credentials credentials = credsProvider.getCredentials();
         assertParameterNotNull(credentials, "credentials");
         context.setCharset(DEFAULT_CHARSET_NAME);
         context.setSigner(createSigner(method, bucketName, key, credentials, client.getClientConfiguration().getSignatureVersion()));
         context.addResponseHandler(errorResponseHandler);
-        if (method == HttpMethod.POST) {
+        if (method == HttpMethod.POST && !isRetryablePostRequest(originalRequest)) {
             context.setRetryStrategy(noRetryStrategy);
         }
 
@@ -182,12 +182,19 @@ public abstract class OSSOperation {
         return context;
     }
 
+    protected ExecutionContext createDefaultContext(HttpMethod method, String bucketName, String key) {
+        return this.createDefaultContext(method, bucketName, key, null);
+    }
+
     protected ExecutionContext createDefaultContext(HttpMethod method, String bucketName) {
-        return this.createDefaultContext(method, bucketName, null);
+        return this.createDefaultContext(method, bucketName, null, null);
     }
 
     protected ExecutionContext createDefaultContext(HttpMethod method) {
-        return this.createDefaultContext(method, null, null);
+        return this.createDefaultContext(method, null, null, null);
     }
 
+    protected boolean isRetryablePostRequest(WebServiceRequest request) {
+        return false;
+    }
 }
