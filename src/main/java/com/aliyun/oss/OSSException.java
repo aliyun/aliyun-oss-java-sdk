@@ -19,6 +19,8 @@
 
 package com.aliyun.oss;
 
+import com.aliyun.oss.common.comm.ResponseMessage;
+
 /**
  * The OSSException is thrown upon error when accessing OSS.
  */
@@ -29,6 +31,7 @@ public class OSSException extends ServiceException {
     private String resourceType;
     private String header;
     private String method;
+    private ResponseMessage responseMessage;
 
     public OSSException() {
         super();
@@ -65,6 +68,15 @@ public class OSSException extends ServiceException {
         this.method = method;
     }
 
+    public OSSException(String errorMessage, String errorCode, String requestId, String hostId, String header,
+                        String resourceType, String method, String rawResponseError, Throwable cause, ResponseMessage responseMessage) {
+        super(errorMessage, errorCode, requestId, hostId, rawResponseError, cause);
+        this.resourceType = resourceType;
+        this.header = header;
+        this.method = method;
+        this.responseMessage = responseMessage;
+    }
+
     public String getResourceType() {
         return resourceType;
     }
@@ -75,6 +87,10 @@ public class OSSException extends ServiceException {
 
     public String getMethod() {
         return method;
+    }
+
+    public ResponseMessage getResponseMessage() {
+        return responseMessage;
     }
 
     @Override

@@ -26,6 +26,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+import com.aliyun.oss.common.comm.ResponseMessage;
 import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.NonRepeatableRequestException;
@@ -99,6 +100,11 @@ public class ExceptionFactory {
     public static OSSException createOSSException(OSSErrorResult errorResult, String rawResponseError) {
         return new OSSException(errorResult.Message, errorResult.Code, errorResult.RequestId, errorResult.HostId,
                 errorResult.Header, errorResult.ResourceType, errorResult.Method, rawResponseError);
+    }
+
+    public static OSSException createOSSException(OSSErrorResult errorResult, String rawResponseError, ResponseMessage responseMessage) {
+        return new OSSException(errorResult.Message, errorResult.Code, errorResult.RequestId, errorResult.HostId,
+                errorResult.Header, errorResult.ResourceType, errorResult.Method, rawResponseError, null, responseMessage);
     }
 
     public static OSSException createOSSException(String requestId, String errorCode, String message) {
