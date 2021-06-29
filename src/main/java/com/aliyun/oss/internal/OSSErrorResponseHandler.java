@@ -39,6 +39,7 @@ import com.aliyun.oss.internal.model.OSSErrorResult;
  */
 public class OSSErrorResponseHandler implements ResponseHandler {
 
+    @Override
     public void handle(ResponseMessage response) throws OSSException, ClientException {
 
         if (response.isSuccessful()) {
@@ -69,7 +70,7 @@ public class OSSErrorResponseHandler implements ResponseHandler {
         JAXBResponseParser parser = new JAXBResponseParser(OSSErrorResult.class);
         try {
             OSSErrorResult errorResult = (OSSErrorResult) parser.parse(response);
-            throw ExceptionFactory.createOSSException(errorResult, response.getErrorResponseAsString());
+            throw ExceptionFactory.createOSSException(errorResult, response.getErrorResponseAsString(), response);
         } catch (ResponseParseException e) {
             throw ExceptionFactory.createInvalidResponseException(requestId, response.getErrorResponseAsString(), e);
         } finally {
