@@ -583,24 +583,19 @@ public class BucketLifecycleTest extends TestBase {
             ossClient.createBucket(bucketName);
 
 
-            LifecycleRule rule = new LifecycleRule(ruleId1, matchPrefix1, RuleStatus.Disabled);
-            List<StorageTransition> storageTransitions = new ArrayList<StorageTransition>();
-            StorageTransition storageTransition = new StorageTransition();
-            storageTransition.setStorageClass(StorageClass.Archive);
-            storageTransition.setCreatedBeforeDate(DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z"));
-            storageTransitions.add(storageTransition);
-            rule.setStorageTransition(storageTransitions);
+            LifecycleRule rule = new LifecycleRule(ruleId1, matchPrefix1, RuleStatus.Enabled,
+                    DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z"));
             request.AddLifecycleRule(rule);
 
-            LifecycleRule rule2 = new LifecycleRule(ruleId2, matchPrefix2, RuleStatus.Disabled);
-            List<StorageTransition> storageTransitions2 = new ArrayList<StorageTransition>();
-            StorageTransition storageTransition2 = new StorageTransition();
-            storageTransition2.setStorageClass(StorageClass.Archive);
-            storageTransition2.setCreatedBeforeDate(DateUtil.parseIso8601Date("2022-10-15T00:00:00.000Z"));
-            storageTransitions2.add(storageTransition2);
-            rule2.setStorageTransition(storageTransitions2);
-            request.AddLifecycleRule(rule2);
+            rule = new LifecycleRule(ruleId2, matchPrefix2, RuleStatus.Enabled,
+                    DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z"));
+            request.AddLifecycleRule(rule);
 
+            try {
+                ossClient.setBucketLifecycle(request);
+            } catch (OSSException e){
+                Assert.assertEquals("Overlap for same action type Expiration",e.getErrorMessage());
+            }
             request.addHeader("x-oss-allow-same-action-overlap", "true");
             ossClient.setBucketLifecycle(request);
 
@@ -610,28 +605,18 @@ public class BucketLifecycleTest extends TestBase {
             LifecycleRule r1 = rules.get(0);
             Assert.assertEquals(r1.getId(), ruleId1);
             Assert.assertEquals(r1.getPrefix(), matchPrefix1);
-            Assert.assertEquals(r1.getStatus(), RuleStatus.Disabled);
+            Assert.assertEquals(r1.getStatus(), RuleStatus.Enabled);
             Assert.assertFalse(r1.hasCreatedBeforeDate());
-            Assert.assertFalse(r1.hasExpirationTime());
-            Assert.assertFalse(r1.hasExpirationDays());
-            Assert.assertFalse(r1.hasAbortMultipartUpload());
-            Assert.assertTrue(r1.hasStorageTransition());
-            Assert.assertEquals(DateUtil.formatIso8601Date(r1.getStorageTransition().get(0).getCreatedBeforeDate()),
+            Assert.assertEquals(DateUtil.formatIso8601Date(r1.getExpirationTime()),
                     "2022-10-12T00:00:00.000Z");
-            Assert.assertEquals(r1.getStorageTransition().get(0).getStorageClass(), StorageClass.Archive);
 
             LifecycleRule r2 = rules.get(1);
             Assert.assertEquals(r2.getId(), ruleId2);
             Assert.assertEquals(r2.getPrefix(), matchPrefix2);
-            Assert.assertEquals(r2.getStatus(), RuleStatus.Disabled);
+            Assert.assertEquals(r2.getStatus(), RuleStatus.Enabled);
             Assert.assertFalse(r2.hasCreatedBeforeDate());
-            Assert.assertFalse(r2.hasExpirationTime());
-            Assert.assertFalse(r2.hasExpirationDays());
-            Assert.assertFalse(r2.hasAbortMultipartUpload());
-            Assert.assertTrue(r2.hasStorageTransition());
-            Assert.assertEquals(DateUtil.formatIso8601Date(r2.getStorageTransition().get(0).getCreatedBeforeDate()),
-                    "2022-10-15T00:00:00.000Z");
-            Assert.assertEquals(r2.getStorageTransition().get(0).getStorageClass(), StorageClass.IA);
+            Assert.assertEquals(DateUtil.formatIso8601Date(r2.getExpirationTime()),
+                    "2022-10-12T00:00:00.000Z");
 
         } catch (OSSException e) {
             Assert.fail(e.getMessage());
