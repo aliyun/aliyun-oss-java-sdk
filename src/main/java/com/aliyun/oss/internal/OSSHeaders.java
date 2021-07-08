@@ -111,5 +111,5 @@ public interface OSSHeaders extends HttpHeaders {
     static final String OSS_RENAME_SOURCE = "x-oss-rename-source";
 
     static final String OSS_RESOURCE_GROUP_ID = "x-oss-resource-group-id";
-
+    static final String OSS_HEADER_LIFECYCLE_OVERLAP = "x-oss-allow-same-action-overlap";
 }

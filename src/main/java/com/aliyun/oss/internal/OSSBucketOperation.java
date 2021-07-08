@@ -96,11 +96,7 @@ import static com.aliyun.oss.internal.ResponseParsers.getBucketResourceGroupResp
 import static com.aliyun.oss.internal.ResponseParsers.getBucketTransferAccelerationResponseParser;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.HttpMethod;
@@ -854,6 +850,10 @@ public class OSSBucketOperation extends OSSOperation {
                 .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params)
                 .setInputStreamWithLength(setBucketLifecycleRequestMarshaller.marshall(setBucketLifecycleRequest))
                 .setOriginalRequest(setBucketLifecycleRequest).build();
+
+        if(!setBucketLifecycleRequest.getHeaders().isEmpty()){
+            request.addHeader(OSSHeaders.OSS_HEADER_LIFECYCLE_OVERLAP, setBucketLifecycleRequest.getHeaders().get(OSSHeaders.OSS_HEADER_LIFECYCLE_OVERLAP));
+        }
 
         return doOperation(request, requestIdResponseParser, bucketName, null);
     }
