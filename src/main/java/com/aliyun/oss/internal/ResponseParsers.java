@@ -1247,10 +1247,10 @@ public final class ResponseParsers {
 
     private static Element getXmlRootElement(InputStream responseBody) throws Exception {
         SAXBuilder builder = new SAXBuilder();
-        builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-        builder.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
         builder.setFeature("http://xml.org/sax/features/external-general-entities", false);
         builder.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        builder.setExpandEntities(false);
         Document doc = builder.build(responseBody);
         return doc.getRootElement();
     }
