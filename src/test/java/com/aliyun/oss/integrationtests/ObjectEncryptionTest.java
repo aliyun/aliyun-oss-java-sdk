@@ -45,7 +45,7 @@ public class ObjectEncryptionTest extends TestBase {
         super.setUp();
 
         bucketName = super.bucketName + "-object-encryption";
-        endpoint = "http://oss-cn-hongkong.aliyuncs.com";
+        endpoint = TestConfig.OSS_TEST_ENDPOINT;
 
         //create client
         ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);
