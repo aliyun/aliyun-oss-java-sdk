@@ -28,7 +28,7 @@ public class VersionUtilTest {
     @Test
     public void testGetDefaultUserAgent() {
         String userAgent = VersionInfoUtils.getDefaultUserAgent();
-        assertTrue(userAgent.startsWith("aliyun-sdk-java/3.13.0("));
+        assertTrue(userAgent.startsWith("aliyun-sdk-java/3.13.1("));
         assertEquals(userAgent.split("/").length, 4);
         assertEquals(userAgent.split(";").length, 2);
         assertEquals(userAgent.split("\\(").length, 2);
@@ -38,7 +38,7 @@ public class VersionUtilTest {
     @Test
     public void testGetVersion() {
         String version = VersionInfoUtils.getVersion();
-        assertEquals("3.11.3", version);
+        assertEquals("3.13.1", version);
     }
 }
 
