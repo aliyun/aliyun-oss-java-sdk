@@ -19,6 +19,7 @@
 
 package com.aliyun.oss.integrationtests;
 
+import static com.aliyun.oss.integrationtests.TestConstants.ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET;
 import static com.aliyun.oss.integrationtests.TestConstants.BUCKET_ACCESS_DENIED_ERR;
 import static com.aliyun.oss.integrationtests.TestUtils.genFixedLengthInputStream;
 import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
@@ -121,7 +122,7 @@ public class ObjectRequestPaymentVersionTest extends TestBase {
             Assert.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
+            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
          // Delete version with payer setting, should be successful.
@@ -179,7 +180,7 @@ public class ObjectRequestPaymentVersionTest extends TestBase {
             Assert.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
+            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
          // Delete versons with payer setting, should be successful.
@@ -229,7 +230,7 @@ public class ObjectRequestPaymentVersionTest extends TestBase {
             Assert.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
             Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
+            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
          // List versons with payer setting, should be successful.

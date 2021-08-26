@@ -41,7 +41,7 @@ public final class TestConstants {
     
     public static final String NO_SUCH_UPLOAD_ERR = "The specified upload does not exist. The upload ID may be invalid, or the upload may have been aborted or completed.";
 
-    public static final String BUCKET_NOT_EMPTY_ERR = "The bucket you tried to delete is not empty.";
+    public static final String BUCKET_NOT_EMPTY_ERR = "The bucket has objects. Please delete them first.";
     
     public static final String BUCKET_ALREADY_EXIST_ERR = "The requested bucket name is not available. The bucket namespace is shared by all users of the system. Please select a different name and try again.";
     
@@ -78,4 +78,7 @@ public final class TestConstants {
     public static final String MISSING_ARGUMENT_ERR = "Missing Some Required Arguments.";
     
     public static final String MODIFY_STORAGE_TYPE_ERR = "Cannot modify existing bucket's storage class.";
+
+    public static final String ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET = "Access denied for requester pay bucket";
+
 }
