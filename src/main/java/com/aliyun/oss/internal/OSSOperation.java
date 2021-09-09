@@ -66,6 +66,11 @@ public abstract class OSSOperation {
         return endpoint;
     }
 
+    public URI getEndpoint(WebServiceRequest request) {
+        URI endpointInRequest = request.getEndPoint(this.client.getClientConfiguration().getProtocol().toString());
+        return endpointInRequest != null ? endpointInRequest : endpoint;
+    }
+
     public void setEndpoint(URI endpoint) {
         this.endpoint = URI.create(endpoint.toString());
     }

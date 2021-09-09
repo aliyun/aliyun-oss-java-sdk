@@ -19,12 +19,18 @@
 
 package com.aliyun.oss.model;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.aliyun.oss.ClientConfiguration;
+import com.aliyun.oss.common.utils.StringUtils;
 import com.aliyun.oss.event.ProgressListener;
+import com.aliyun.oss.internal.OSSUtils;
 
 public abstract class WebServiceRequest {
 
@@ -37,8 +43,11 @@ public abstract class WebServiceRequest {
     //We enable INFO and WARNING logs by default.
     private boolean logEnabled = true;
 
+    //If request is set endPoint ,it will overwrite endpoint  set in ossclient
+    private String endPoint;
+
     private Map<String, String> parameters = new LinkedHashMap<String, String>();
-    private Map<String, String> headers = new LinkedHashMap<String, String>();
+    private Map<String, String> headers    = new LinkedHashMap<String, String>();
 
     private Set<String> additionalHeaderNames = new HashSet<String>();
 
@@ -99,5 +108,28 @@ public abstract class WebServiceRequest {
 
     public void setLogEnabled(boolean logEnabled) {
         this.logEnabled = logEnabled;
+    }
+
+    public URI getEndPoint(String defaultProtocol) {
+        if (com.aliyuncs.utils.StringUtils.isEmpty(endPoint)) {
+            return null;
+        }
+
+        if (!endPoint.contains("://")) {
+            endPoint = defaultProtocol + "://" + endPoint;
+        }
+
+        URI endPointURI;
+        try {
+            endPointURI = new URI(endPoint);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
+        OSSUtils.ensureEndpointValid(endPointURI.getHost());
+        return endPointURI;
+    }
+
+    public void setEndPoint(String endPoint) {
+        this.endPoint = endPoint;
     }
 }

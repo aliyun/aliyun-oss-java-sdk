@@ -98,7 +98,7 @@ public class LiveChannelOperation extends OSSOperation {
         Map<String, String> headers = new HashMap<String, String>();
         addRequestRequiredHeaders(headers, rawContent);
 
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(createLiveChannelRequest))
                 .setMethod(HttpMethod.PUT).setBucket(bucketName).setKey(liveChannelName).setParameters(parameters)
                 .setHeaders(headers).setInputSize(rawContent.length)
                 .setInputStream(new ByteArrayInputStream(rawContent)).setOriginalRequest(createLiveChannelRequest)
@@ -126,7 +126,7 @@ public class LiveChannelOperation extends OSSOperation {
         parameters.put(RequestParameters.SUBRESOURCE_LIVE, null);
         parameters.put(RequestParameters.SUBRESOURCE_STATUS, setLiveChannelRequest.getLiveChannelStatus().toString());
 
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(setLiveChannelRequest))
                 .setMethod(HttpMethod.PUT).setBucket(bucketName).setKey(liveChannelName).setParameters(parameters)
                 .setOriginalRequest(setLiveChannelRequest).build();
 
@@ -149,7 +149,7 @@ public class LiveChannelOperation extends OSSOperation {
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(RequestParameters.SUBRESOURCE_LIVE, null);
 
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(liveChannelGenericRequest))
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(liveChannelName).setParameters(parameters)
                 .setOriginalRequest(liveChannelGenericRequest).build();
 
@@ -173,7 +173,7 @@ public class LiveChannelOperation extends OSSOperation {
         parameters.put(RequestParameters.SUBRESOURCE_LIVE, null);
         parameters.put(RequestParameters.SUBRESOURCE_COMP, RequestParameters.STAT);
 
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(liveChannelGenericRequest))
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(liveChannelName).setParameters(parameters)
                 .setOriginalRequest(liveChannelGenericRequest).build();
 
@@ -196,7 +196,7 @@ public class LiveChannelOperation extends OSSOperation {
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(RequestParameters.SUBRESOURCE_LIVE, null);
 
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(liveChannelGenericRequest))
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(liveChannelName).setParameters(parameters)
                 .setOriginalRequest(liveChannelGenericRequest).build();
 
@@ -233,7 +233,7 @@ public class LiveChannelOperation extends OSSOperation {
         parameters.put(RequestParameters.SUBRESOURCE_LIVE, null);
         populateListLiveChannelsRequestParameters(listLiveChannelRequest, parameters);
 
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(listLiveChannelRequest))
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(parameters)
                 .setOriginalRequest(listLiveChannelRequest).build();
 
@@ -257,7 +257,7 @@ public class LiveChannelOperation extends OSSOperation {
         parameters.put(RequestParameters.SUBRESOURCE_LIVE, null);
         parameters.put(RequestParameters.SUBRESOURCE_COMP, RequestParameters.HISTORY);
 
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(liveChannelGenericRequest))
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(liveChannelName).setParameters(parameters)
                 .setOriginalRequest(liveChannelGenericRequest).build();
 
@@ -289,7 +289,7 @@ public class LiveChannelOperation extends OSSOperation {
         parameters.put(RequestParameters.SUBRESOURCE_END_TIME, endTime.toString());
 
         String key = liveChannelName + "/" + playlistName;
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(generateVodPlaylistRequest))
                 .setMethod(HttpMethod.POST).setBucket(bucketName).setKey(key).setParameters(parameters)
                 .setInputStream(new ByteArrayInputStream(new byte[0])).setInputSize(0)
                 .setOriginalRequest(generateVodPlaylistRequest).build();
@@ -318,7 +318,7 @@ public class LiveChannelOperation extends OSSOperation {
         parameters.put(RequestParameters.SUBRESOURCE_START_TIME, startTime.toString());
         parameters.put(RequestParameters.SUBRESOURCE_END_TIME, endTime.toString());
 
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(getVodPlaylistRequest))
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(liveChannelName).setParameters(parameters)
                 .setOriginalRequest(getVodPlaylistRequest).build();
 

@@ -133,7 +133,7 @@ public class OSSMultipartOperation extends OSSOperation {
         Map<String, String> headers = new HashMap<String, String>();
         populateRequestPayerHeader(headers, abortMultipartUploadRequest.getRequestPayer());
 
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(abortMultipartUploadRequest))
                 .setMethod(HttpMethod.DELETE).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(parameters)
                 .setOriginalRequest(abortMultipartUploadRequest).build();
 
@@ -176,7 +176,7 @@ public class OSSMultipartOperation extends OSSOperation {
             }
         });
 
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(completeMultipartUploadRequest))
                 .setMethod(HttpMethod.POST).setBucket(bucketName).setKey(key).setHeaders(headers)
                 .setParameters(parameters)
                 .setInputStreamWithLength(
@@ -241,7 +241,7 @@ public class OSSMultipartOperation extends OSSOperation {
         // parameters
         // to request body. Set HttpRequestFactory#createHttpRequest for
         // details.
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(initiateMultipartUploadRequest))
                 .setMethod(HttpMethod.POST).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(params)
                 .setInputStream(new ByteArrayInputStream(new byte[0])).setInputSize(0)
                 .setOriginalRequest(initiateMultipartUploadRequest).build();
@@ -268,7 +268,7 @@ public class OSSMultipartOperation extends OSSOperation {
         Map<String, String> headers = new HashMap<String, String>();
         populateRequestPayerHeader(headers, listMultipartUploadsRequest.getRequestPayer());
 
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(listMultipartUploadsRequest))
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setHeaders(headers).setParameters(params)
                 .setOriginalRequest(listMultipartUploadsRequest).build();
 
@@ -299,7 +299,7 @@ public class OSSMultipartOperation extends OSSOperation {
         Map<String, String> headers = new HashMap<String, String>();
         populateRequestPayerHeader(headers, listPartsRequest.getRequestPayer());
 
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(listPartsRequest))
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(params)
                 .setOriginalRequest(listPartsRequest).build();
 
@@ -351,7 +351,7 @@ public class OSSMultipartOperation extends OSSOperation {
         params.put(PART_NUMBER, Integer.toString(partNumber));
         params.put(UPLOAD_ID, uploadId);
 
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(uploadPartRequest))
                 .setMethod(HttpMethod.PUT).setBucket(bucketName).setKey(key).setParameters(params).setHeaders(headers)
                 .setInputStream(repeatableInputStream).setInputSize(uploadPartRequest.getPartSize())
                 .setUseChunkEncoding(uploadPartRequest.isUseChunkEncoding()).setOriginalRequest(uploadPartRequest)
@@ -421,7 +421,7 @@ public class OSSMultipartOperation extends OSSOperation {
         params.put(PART_NUMBER, Integer.toString(partNumber));
         params.put(UPLOAD_ID, uploadId);
 
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(uploadPartCopyRequest))
                 .setMethod(HttpMethod.PUT).setBucket(bucketName).setKey(key).setParameters(params).setHeaders(headers)
                 .setOriginalRequest(uploadPartCopyRequest).build();
 
