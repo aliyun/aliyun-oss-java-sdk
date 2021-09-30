@@ -36,7 +36,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Date;
@@ -49,6 +48,7 @@ import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.ServiceSignature;
 import com.aliyun.oss.common.comm.*;
 import com.aliyun.oss.common.utils.BinaryUtil;
+import com.aliyun.oss.common.utils.CommonUtils;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.internal.*;
 import com.aliyun.oss.model.*;
@@ -286,16 +286,7 @@ public class OSSClient implements OSS {
     }
 
     private URI toURI(String endpoint) throws IllegalArgumentException {
-        if (!endpoint.contains("://")) {
-            ClientConfiguration conf = this.serviceClient.getClientConfiguration();
-            endpoint = conf.getProtocol().toString() + "://" + endpoint;
-        }
-
-        try {
-            return new URI(endpoint);
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return CommonUtils.toURI(endpoint, this.serviceClient.getClientConfiguration().getProtocol().toString());
     }
 
     private void initOperations() {

@@ -19,18 +19,14 @@
 
 package com.aliyun.oss.model;
 
+import com.aliyun.oss.common.utils.CommonUtils;
+import com.aliyun.oss.event.ProgressListener;
+
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-
-import com.aliyun.oss.ClientConfiguration;
-import com.aliyun.oss.common.utils.StringUtils;
-import com.aliyun.oss.event.ProgressListener;
-import com.aliyun.oss.internal.OSSUtils;
 
 public abstract class WebServiceRequest {
 
@@ -111,22 +107,7 @@ public abstract class WebServiceRequest {
     }
 
     public URI getEndPoint(String defaultProtocol) {
-        if (com.aliyuncs.utils.StringUtils.isEmpty(endPoint)) {
-            return null;
-        }
-
-        if (!endPoint.contains("://")) {
-            endPoint = defaultProtocol + "://" + endPoint;
-        }
-
-        URI endPointURI;
-        try {
-            endPointURI = new URI(endPoint);
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
-        OSSUtils.ensureEndpointValid(endPointURI.getHost());
-        return endPointURI;
+        return CommonUtils.toURI(endPoint,defaultProtocol);
     }
 
     public void setEndPoint(String endPoint) {
