@@ -45,7 +45,7 @@ public class CommonUtilsTest {
         assertEquals("https://oss-cn-hangzhou.aliyuncs.com", res.toString());
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testToURI3() {
         String endpoint = "oss-cn-hangzhou.aliyuncs.com";
         String defaultProtocol = "";
@@ -54,12 +54,12 @@ public class CommonUtilsTest {
         assertEquals("https://oss-cn-hangzhou.aliyuncs.com", res.toString());
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testToURI4() {
         String endpoint = null;
         String defaultProtocol = "http";
 
         URI res = CommonUtils.toURI(endpoint, defaultProtocol);
-        assertEquals("https://oss-cn-hangzhou.aliyuncs.com", res.toString());
+        assertEquals(null, res);
     }
 }
