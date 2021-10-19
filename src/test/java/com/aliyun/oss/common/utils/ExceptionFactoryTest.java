@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import javax.net.ssl.SSLException;
 
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.internal.model.OSSErrorResult;
@@ -35,6 +36,8 @@ import org.junit.Test;
 
 import com.aliyun.oss.ClientErrorCode;
 import com.aliyun.oss.ClientException;
+
+import javax.net.ssl.SSLException;
 
 public class ExceptionFactoryTest {
 
@@ -51,6 +54,10 @@ public class ExceptionFactoryTest {
         ConnectTimeoutException cte = new ConnectTimeoutException();
         ex = ExceptionFactory.createNetworkException(cte);
         assertEquals(ex.getErrorCode(), ClientErrorCode.CONNECTION_TIMEOUT);
+
+        SSLException slle = new SSLException("");
+        ex = ExceptionFactory.createNetworkException(slle);
+        assertEquals(ex.getErrorCode(), ClientErrorCode.SSL_EXCEPTION);
 
         IOException ioe = new IOException();
         ex = ExceptionFactory.createNetworkException(ioe);

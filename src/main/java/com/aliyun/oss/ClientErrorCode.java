@@ -61,4 +61,9 @@ public interface ClientErrorCode {
      * Thread interrupted while reading the input stream.
      */
     static final String INPUTSTREAM_READING_ABORTED = "InputStreamReadingAborted";
+
+    /**
+     * Ssl exception
+     */
+    static final String SSL_EXCEPTION = "SslException";
 }
