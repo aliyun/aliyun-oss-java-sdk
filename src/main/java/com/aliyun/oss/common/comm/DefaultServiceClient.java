@@ -195,7 +195,8 @@ public class DefaultServiceClient extends ServiceClient {
                         || errorCode.equals(ClientErrorCode.SOCKET_TIMEOUT)
                         || errorCode.equals(ClientErrorCode.CONNECTION_REFUSED)
                         || errorCode.equals(ClientErrorCode.UNKNOWN_HOST)
-                        || errorCode.equals(ClientErrorCode.SOCKET_EXCEPTION)) {
+                        || errorCode.equals(ClientErrorCode.SOCKET_EXCEPTION)
+                        || errorCode.equals(ClientErrorCode.SSL_EXCEPTION)) {
                     return true;
                 }
 
