@@ -33,18 +33,9 @@ import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
-import com.aliyun.oss.model.AccessControlList;
-import com.aliyun.oss.model.BucketLoggingResult;
-import com.aliyun.oss.model.BucketReferer;
-import com.aliyun.oss.model.BucketWebsiteResult;
-import com.aliyun.oss.model.CannedAccessControlList;
-import com.aliyun.oss.model.LifecycleRule;
+import com.aliyun.oss.model.*;
 import com.aliyun.oss.model.LifecycleRule.RuleStatus;
-import com.aliyun.oss.model.SetBucketCORSRequest;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
-import com.aliyun.oss.model.SetBucketLifecycleRequest;
-import com.aliyun.oss.model.SetBucketLoggingRequest;
-import com.aliyun.oss.model.SetBucketWebsiteRequest;
 
 /**
  * This sample demonstrates how to do bucket-related operations
@@ -113,6 +104,21 @@ public class BucketOperationsSample {
              * Delete Bucket Operation
              */
             doDeleteBucketOperation();
+
+            /*
+             * 判断存储空间examplebucket是否存在。如果返回值为true，则存储空间存在，否则存储空间不存在
+             */
+            doesBucketExist();
+
+            /*
+             * 获取存储空间的信息
+             */
+            getBucketInfo();
+
+            /*
+             * See if hierarchical namespaces are turned on
+             */
+            getBucketHnsStatus();
             
         } catch (OSSException oe) {
             System.out.println("Caught an OSSException, which means your request made it to OSS, "
@@ -295,5 +301,29 @@ public class BucketOperationsSample {
         SimpleDateFormat dateFormat = new SimpleDateFormat(pattern, Locale.US);
         dateFormat.setTimeZone(new SimpleTimeZone(0, "GMT"));
         return dateFormat.format(date);
+    }
+
+    private static void doesBucketExist() {
+        boolean exists = client.doesBucketExist("examplebucket");
+        System.out.println(exists);
+    }
+
+    private static void getBucketInfo() {
+        // 填写Bucket名称，例如examplebucket。
+        BucketInfo info = client.getBucketInfo("examplebucket");
+        // 获取地域。
+        System.out.println(info.getBucket().getLocation());
+        // 获取创建日期。
+        System.out.println(info.getBucket().getCreationDate());
+        // 获取拥有者信息。
+        System.out.println(info.getBucket().getOwner());
+        // 获取容灾类型。
+        System.out.println(info.getDataRedundancyType());
+    }
+
+    private static void getBucketHnsStatus() {
+        BucketInfo info =  client.getBucketInfo(bucketName);
+        // 查看HnsStatus的值是否为Enabled。当HnsStatus的值为Enabled时，表示存储空间已开启分层命名空间。
+        System.out.println("Hnstatus:" + info.getBucket().getHnsStatus());
     }
 }
