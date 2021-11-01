@@ -1243,4 +1243,33 @@ public class RequestMarshallersTest {
         Assert.assertEquals("true", status);
     }
 
+    @Test
+    public void testPutBucketAccessMonitorRequestMarshaller() {
+
+        PutBucketAccessMonitorRequest request = new PutBucketAccessMonitorRequest("bucket", AccessMonitorStatus.Enabled);
+        Assert.assertEquals(request.getStatus().toString(), "Enabled");
+        request.setStatus(AccessMonitorStatus.Disabled);
+        Assert.assertEquals(request.getStatus().toString(), "Disabled");
+
+        request.setStatus(AccessMonitorStatus.Enabled);
+        Assert.assertEquals(request.getStatus().toString(), "Enabled");
+
+        byte[] data = putBucketAccessMonitorRequestMarshaller.marshall(request);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        String status = root.getChildText("Status");
+        Assert.assertEquals("Enabled", status);
+    }
+
 }

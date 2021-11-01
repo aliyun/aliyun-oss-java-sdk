@@ -70,6 +70,9 @@ public class Bucket extends GenericResult {
 	// The id of resource group.
     private String resourceGroupId;
 
+    // Bucket access tracking status
+    private String accessMonitor;
+
     /**
      * Default constructor.
      */
@@ -99,10 +102,10 @@ public class Bucket extends GenericResult {
     public String toString() {
         if (storageClass == null) {
             return "OSSBucket [name=" + getName() + ", creationDate=" + getCreationDate() + ", owner=" + getOwner()
-                    + ", location=" + getLocation() + "]";
+                    + ", location=" + ", accessMonitor=" + getLocation() + ", accessMonitor=" + getAccessMonitor() + "]";
         } else {
             return "OSSBucket [name=" + getName() + ", creationDate=" + getCreationDate() + ", owner=" + getOwner()
-                    + ", location=" + getLocation() + ", storageClass=" + getStorageClass() + "]";
+                    + ", location=" + getLocation() + ", storageClass=" + getStorageClass() + ", accessMonitor=" + getAccessMonitor() + "]";
         }
     }
 
@@ -285,5 +288,13 @@ public class Bucket extends GenericResult {
      */
     public void setResourceGroupId(String resourceGroupId) {
         this.resourceGroupId = resourceGroupId;
+    }
+
+    public String getAccessMonitor() {
+        return accessMonitor;
+    }
+
+    public void setAccessMonitor(String accessMonitor) {
+        this.accessMonitor = accessMonitor;
     }
 }

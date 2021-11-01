@@ -302,4 +302,19 @@ public interface OSSErrorCode {
      */
     static final String FILE_ALREADY_EXISTS = "FileAlreadyExists";
 
+    /**
+     * The Access Monitor element must be specified.  (400)
+     */
+    static final String OSS_ILLEGAL_ARGUMENT_CODE = "IllegalArgumentCode";
+
+    /**
+     * Bucket access monitor feature is not supported in this region temporarily.  (400)
+     */
+    static final String OSS_OPERATION_NOT_SUPPORTED_CODE = "OperationNotSupportedCode";
+
+    /**
+     * Bucket access monitor cannot be disabled due to existence of atime lifecycle rule.  (400)
+     */
+    static final String OSS_MALFORMED_XML_CODE = "MalformedXmlCode";
+
 }

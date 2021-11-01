@@ -37,22 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.CheckedInputStream;
 
-import com.aliyun.oss.model.AddBucketCnameResult;
-import com.aliyun.oss.model.DeleteDirectoryResult;
-import com.aliyun.oss.model.GetBucketInventoryConfigurationResult;
-import com.aliyun.oss.model.GetBucketWormResult;
-import com.aliyun.oss.model.InitiateBucketWormResult;
-import com.aliyun.oss.model.InventoryServerSideEncryptionOSS;
-import com.aliyun.oss.model.ListBucketInventoryConfigurationsResult;
-import com.aliyun.oss.model.InventoryConfiguration;
-import com.aliyun.oss.model.InventoryDestination;
-import com.aliyun.oss.model.InventoryEncryption;
-import com.aliyun.oss.model.InventoryFilter;
-import com.aliyun.oss.model.InventoryOSSBucketDestination;
-import com.aliyun.oss.model.InventorySchedule;
-import com.aliyun.oss.model.InventoryServerSideEncryptionKMS;
-import com.aliyun.oss.model.ListObjectsV2Result;
-import com.aliyun.oss.model.VoidResult;
+import com.aliyun.oss.model.*;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.JDOMParseException;
@@ -64,93 +49,16 @@ import com.aliyun.oss.common.parser.ResponseParser;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.common.utils.StringUtils;
-import com.aliyun.oss.model.AccessControlList;
 import com.aliyun.oss.model.AddBucketReplicationRequest.ReplicationAction;
 import com.aliyun.oss.model.DeleteVersionsResult.DeletedVersion;
-import com.aliyun.oss.model.AppendObjectResult;
-import com.aliyun.oss.model.Bucket;
-import com.aliyun.oss.model.BucketInfo;
-import com.aliyun.oss.model.BucketList;
-import com.aliyun.oss.model.BucketLoggingResult;
-import com.aliyun.oss.model.BucketMetadata;
-import com.aliyun.oss.model.BucketProcess;
-import com.aliyun.oss.model.BucketQosInfo;
-import com.aliyun.oss.model.BucketReferer;
-import com.aliyun.oss.model.BucketReplicationProgress;
-import com.aliyun.oss.model.BucketStat;
-import com.aliyun.oss.model.BucketVersioningConfiguration;
-import com.aliyun.oss.model.BucketWebsiteResult;
-import com.aliyun.oss.model.CannedAccessControlList;
-import com.aliyun.oss.model.CnameConfiguration;
-import com.aliyun.oss.model.CompleteMultipartUploadResult;
-import com.aliyun.oss.model.CopyObjectResult;
-import com.aliyun.oss.model.CreateLiveChannelResult;
-import com.aliyun.oss.model.DataRedundancyType;
-import com.aliyun.oss.model.DeleteObjectsResult;
-import com.aliyun.oss.model.DeleteVersionsResult;
-import com.aliyun.oss.model.GenericResult;
-import com.aliyun.oss.model.GetBucketImageResult;
-import com.aliyun.oss.model.ImageProcess;
-import com.aliyun.oss.model.LiveChannel;
-import com.aliyun.oss.model.LiveChannelInfo;
-import com.aliyun.oss.model.LiveChannelListing;
-import com.aliyun.oss.model.LiveChannelStat;
-import com.aliyun.oss.model.LiveRecord;
 import com.aliyun.oss.model.LiveChannelStat.AudioStat;
 import com.aliyun.oss.model.LiveChannelStat.VideoStat;
-import com.aliyun.oss.model.LiveChannelStatus;
-import com.aliyun.oss.model.LiveChannelTarget;
-import com.aliyun.oss.model.OSSSymlink;
-import com.aliyun.oss.model.OSSVersionSummary;
-import com.aliyun.oss.model.ReplicationRule;
-import com.aliyun.oss.model.GetImageStyleResult;
-import com.aliyun.oss.model.GroupGrantee;
-import com.aliyun.oss.model.InitiateMultipartUploadResult;
-import com.aliyun.oss.model.LifecycleRule;
-import com.aliyun.oss.model.ReplicationStatus;
-import com.aliyun.oss.model.RestoreObjectResult;
-import com.aliyun.oss.model.RoutingRule;
-import com.aliyun.oss.model.ServerSideEncryptionByDefault;
-import com.aliyun.oss.model.ServerSideEncryptionConfiguration;
-import com.aliyun.oss.model.StorageClass;
 import com.aliyun.oss.model.LifecycleRule.RuleStatus;
 import com.aliyun.oss.model.LifecycleRule.StorageTransition;
-import com.aliyun.oss.model.MultipartUpload;
-import com.aliyun.oss.model.MultipartUploadListing;
-import com.aliyun.oss.model.OSSObject;
-import com.aliyun.oss.model.OSSObjectSummary;
-import com.aliyun.oss.model.ObjectAcl;
-import com.aliyun.oss.model.ObjectListing;
-import com.aliyun.oss.model.ObjectMetadata;
-import com.aliyun.oss.model.ObjectPermission;
-import com.aliyun.oss.model.Owner;
-import com.aliyun.oss.model.PartListing;
-import com.aliyun.oss.model.PartSummary;
-import com.aliyun.oss.model.Payer;
-import com.aliyun.oss.model.Permission;
-import com.aliyun.oss.model.PutObjectResult;
-import com.aliyun.oss.model.PushflowStatus;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
-import com.aliyun.oss.model.CORSConfiguration;
-import com.aliyun.oss.model.SimplifiedObjectMeta;
-import com.aliyun.oss.model.Style;
-import com.aliyun.oss.model.TagSet;
-import com.aliyun.oss.model.UploadPartCopyResult;
-import com.aliyun.oss.model.UserQos;
-import com.aliyun.oss.model.UserQosInfo;
-import com.aliyun.oss.model.VersionListing;
-import com.aliyun.oss.model.GetBucketPolicyResult;
-import com.aliyun.oss.model.GetBucketRequestPaymentResult;
 import com.aliyun.oss.model.LifecycleRule.NoncurrentVersionStorageTransition;
 import com.aliyun.oss.model.LifecycleRule.NoncurrentVersionExpiration;
-import com.aliyun.oss.model.SetAsyncFetchTaskResult;
-import com.aliyun.oss.model.GetAsyncFetchTaskResult;
-import com.aliyun.oss.model.AsyncFetchTaskConfiguration;
-import com.aliyun.oss.model.AsyncFetchTaskState;
-import com.aliyun.oss.model.VpcPolicy;
-import com.aliyun.oss.model.Vpcip;
-import com.aliyun.oss.model.GetBucketResourceGroupResult;
-import com.aliyun.oss.model.TransferAcceleration;
+
 /*
  * A collection of parsers that parse HTTP reponses into corresponding human-readable results.
  */
@@ -227,6 +135,8 @@ public final class ResponseParsers {
     public static final GetSymbolicLinkResponseParser getSymbolicLinkResponseParser = new GetSymbolicLinkResponseParser();
 
     public static final DeleteDirectoryResponseParser deleteDirectoryResponseParser = new DeleteDirectoryResponseParser();
+    public static final GetBucketAccessMonitorResponseParser getBucketAccessMonitorResponseParser = new GetBucketAccessMonitorResponseParser();
+
     public static final class EmptyResponseParser implements ResponseParser<ResponseMessage> {
 
         @Override
@@ -2737,6 +2647,10 @@ public final class ResponseParsers {
             if (bucketElem.getChild("StorageClass") != null) {
                 bucket.setStorageClass(StorageClass.parse(bucketElem.getChildText("StorageClass")));
             }
+
+            if (bucketElem.getChild("AccessMonitor") != null) {
+                bucket.setAccessMonitor(bucketElem.getChildText("AccessMonitor"));
+            }
             bucketInfo.setBucket(bucket);
 
             // comment
@@ -3426,6 +3340,12 @@ public final class ResponseParsers {
                         storageTransition
                                 .setStorageClass(StorageClass.parse(transitionElem.getChildText("StorageClass")));
                     }
+                    if (transitionElem.getChild("IsAccessTime") != null) {
+                        storageTransition.setAccessTime(Boolean.valueOf(transitionElem.getChildText("IsAccessTime")));
+                    }
+                    if (transitionElem.getChild("ReturnToStdWhenVisit") != null) {
+                        storageTransition.setReturnToStdWhenVisit(Boolean.valueOf(transitionElem.getChildText("ReturnToStdWhenVisit")));
+                    }
                     storageTransitions.add(storageTransition);
                 }
                 rule.setStorageTransition(storageTransitions);
@@ -3447,6 +3367,12 @@ public final class ResponseParsers {
                     }
                     if (transitionElem.getChild("StorageClass") != null) {
                         transition.setStorageClass(StorageClass.parse(transitionElem.getChildText("StorageClass")));
+                    }
+                    if (transitionElem.getChild("IsAccessTime") != null) {
+                        transition.setAccessTime(Boolean.valueOf(transitionElem.getChildText("IsAccessTime")));
+                    }
+                    if (transitionElem.getChild("ReturnToStdWhenVisit") != null) {
+                        transition.setReturnToStdWhenVisit(Boolean.valueOf(transitionElem.getChildText("ReturnToStdWhenVisit")));
                     }
                     noncurrentVersionTransitions.add(transition);
                 }
@@ -3816,4 +3742,41 @@ public final class ResponseParsers {
         }
     }
 
+    /**
+     * Unmarshall get bucket access monitor.
+     */
+    public static final class GetBucketAccessMonitorResponseParser implements ResponseParser<AccessMonitor> {
+        @Override
+        public AccessMonitor parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                AccessMonitor result = parseAccessMonitor(response.getContent());
+                result.setRequestId(response.getRequestId());
+
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private AccessMonitor parseAccessMonitor(InputStream inputStream) throws ResponseParseException {
+            AccessMonitor accessMonitor = new AccessMonitor();
+            if (inputStream == null) {
+                return accessMonitor;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                if (root.getChildText("Status") != null) {
+                    accessMonitor.setStatus(root.getChildText("Status"));
+                }
+
+                return accessMonitor;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
 }

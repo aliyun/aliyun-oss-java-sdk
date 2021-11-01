@@ -880,6 +880,7 @@ public class ResponseParsersTest {
                 "            <IntranetEndpoint>oss-cn-hangzhou-internal.aliyuncs.com</IntranetEndpoint>\n" +
                 "            <Location>oss-cn-hangzhou</Location>\n" +
                 "            <Name>oss-example</Name>\n" +
+                "            <AccessMonitor>Enabled</AccessMonitor>\n" +
                 "            <Owner>\n" +
                 "              <DisplayName>username</DisplayName>\n" +
                 "              <ID>27183473914****</ID>\n" +
@@ -913,6 +914,7 @@ public class ResponseParsersTest {
         Assert.assertEquals("oss-example", result.getBucket().getName());
         Assert.assertEquals(null, result.getBucket().getHnsStatus());
         Assert.assertEquals(null, result.getBucket().getResourceGroupId());
+        Assert.assertEquals("Enabled", result.getBucket().getAccessMonitor());
 
         respBody = "" +
                 "<BucketInfo>\n" +
@@ -924,6 +926,7 @@ public class ResponseParsersTest {
                 "            <Location>oss-cn-hangzhou</Location>\n" +
                 "            <ResourceGroupId>xxx-id-123</ResourceGroupId>\n" +
                 "            <Name>oss-example</Name>\n" +
+                "            <AccessMonitor>Disabled</AccessMonitor>\n" +
                 "            <Owner>\n" +
                 "              <DisplayName>username</DisplayName>\n" +
                 "              <ID>27183473914****</ID>\n" +
@@ -957,6 +960,8 @@ public class ResponseParsersTest {
         Assert.assertEquals("oss-example", result.getBucket().getName());
         Assert.assertEquals(HnsStatus.Enabled.toString(), result.getBucket().getHnsStatus());
         Assert.assertEquals("xxx-id-123", result.getBucket().getResourceGroupId());
+        Assert.assertEquals("Disabled", result.getBucket().getAccessMonitor());
+
     }
 
     @Test
@@ -4310,5 +4315,78 @@ public class ResponseParsersTest {
             Assert.fail("parse delete directory response body fail!");
         }
         Assert.assertEquals(false, result.isEnabled());
+    }
+
+    @Test
+    public void testGetBucketAccessMonitorResponseParser() {
+        String respBody = "" +
+                "<AccessMonitorConfiguration>\n" +
+                "    <Status>Enabled</Status>\n" +
+                "</AccessMonitorConfiguration>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        AccessMonitor result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketAccessMonitorResponseParser parser = new ResponseParsers.GetBucketAccessMonitorResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+
+        Assert.assertEquals("Enabled", result.getStatus());
+
+
+        respBody = "" +
+                "<AccessMonitorConfiguration>\n" +
+                "    <Status>Disabled</Status>\n" +
+                "</AccessMonitorConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketAccessMonitorResponseParser parser = new ResponseParsers.GetBucketAccessMonitorResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+        Assert.assertEquals("Disabled", result.getStatus());
+
+
+
+        respBody = "" +
+                "<AccessMonitorConfiguration>\n" +
+                "</AccessMonitorConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketAccessMonitorResponseParser parser = new ResponseParsers.GetBucketAccessMonitorResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+        Assert.assertNull(result.getStatus());
     }
 }
