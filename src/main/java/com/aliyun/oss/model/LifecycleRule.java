@@ -89,6 +89,8 @@ public class LifecycleRule {
         private Integer expirationDays;
         private Date createdBeforeDate;
         private StorageClass storageClass;
+        private Boolean isAccessTime;
+        private Boolean returnToStdWhenVisit;
 
         public StorageTransition() {
         }
@@ -101,6 +103,20 @@ public class LifecycleRule {
         public StorageTransition(Date createdBeforeDate, StorageClass storageClass) {
             this.createdBeforeDate = createdBeforeDate;
             this.storageClass = storageClass;
+        }
+
+        public StorageTransition(Integer expirationDays, StorageClass storageClass, Boolean isAccessTime, Boolean returnToStdWhenVisit) {
+            this.expirationDays = expirationDays;
+            this.storageClass = storageClass;
+            this.isAccessTime = isAccessTime;
+            this.returnToStdWhenVisit = returnToStdWhenVisit;
+        }
+
+        public StorageTransition(Date createdBeforeDate, StorageClass storageClass, Boolean isAccessTime, Boolean returnToStdWhenVisit) {
+            this.createdBeforeDate = createdBeforeDate;
+            this.storageClass = storageClass;
+            this.isAccessTime = isAccessTime;
+            this.returnToStdWhenVisit = returnToStdWhenVisit;
         }
 
         public Integer getExpirationDays() {
@@ -149,11 +165,47 @@ public class LifecycleRule {
             setStorageClass(storageClass);
             return this;
         }
+
+        public boolean hasIsAccessTime() {
+            return this.isAccessTime != null;
+        }
+
+        public Boolean getAccessTime() {
+            return isAccessTime;
+        }
+
+        public void setAccessTime(Boolean accessTime) {
+            isAccessTime = accessTime;
+        }
+
+        public StorageTransition withIsAccessTime(Boolean isAccessTime) {
+            setAccessTime(isAccessTime);
+            return this;
+        }
+
+        public boolean hasReturnToStdWhenVisit() {
+            return this.returnToStdWhenVisit != null;
+        }
+
+        public Boolean getReturnToStdWhenVisit() {
+            return returnToStdWhenVisit;
+        }
+
+        public void setReturnToStdWhenVisit(Boolean returnToStdWhenVisit) {
+            this.returnToStdWhenVisit = returnToStdWhenVisit;
+        }
+
+        public StorageTransition withReturnToStdWhenVisit(Boolean returnToStdWhenVisit) {
+            setReturnToStdWhenVisit(returnToStdWhenVisit);
+            return this;
+        }
     }
 
     public static class NoncurrentVersionStorageTransition {
         private Integer noncurrentDays;
         private StorageClass storageClass;
+        private Boolean isAccessTime;
+        private Boolean returnToStdWhenVisit;
 
         public NoncurrentVersionStorageTransition() {
         }
@@ -161,6 +213,13 @@ public class LifecycleRule {
         public NoncurrentVersionStorageTransition(Integer noncurrentDays, StorageClass storageClass) {
             this.noncurrentDays = noncurrentDays;
             this.storageClass = storageClass;
+        }
+
+        public NoncurrentVersionStorageTransition(Integer noncurrentDays, StorageClass storageClass, Boolean isAccessTime, Boolean returnToStdWhenVisit) {
+            this.noncurrentDays = noncurrentDays;
+            this.storageClass = storageClass;
+            this.isAccessTime = isAccessTime;
+            this.returnToStdWhenVisit = returnToStdWhenVisit;
         }
 
         public Integer getNoncurrentDays() {
@@ -190,6 +249,40 @@ public class LifecycleRule {
 
         public NoncurrentVersionStorageTransition withStrorageClass(StorageClass storageClass) {
             setStorageClass(storageClass);
+            return this;
+        }
+
+        public boolean hasIsAccessTime() {
+            return this.isAccessTime != null;
+        }
+
+        public Boolean getAccessTime() {
+            return isAccessTime;
+        }
+
+        public void setAccessTime(Boolean accessTime) {
+            isAccessTime = accessTime;
+        }
+
+        public NoncurrentVersionStorageTransition withIsAccessTime(Boolean isAccessTime) {
+            setAccessTime(isAccessTime);
+            return this;
+        }
+
+        public boolean hasReturnToStdWhenVisit() {
+            return this.returnToStdWhenVisit != null;
+        }
+
+        public Boolean getReturnToStdWhenVisit() {
+            return returnToStdWhenVisit;
+        }
+
+        public void setReturnToStdWhenVisit(Boolean returnToStdWhenVisit) {
+            this.returnToStdWhenVisit = returnToStdWhenVisit;
+        }
+
+        public NoncurrentVersionStorageTransition withReturnToStdWhenVisit(Boolean returnToStdWhenVisit) {
+            setReturnToStdWhenVisit(returnToStdWhenVisit);
             return this;
         }
     }

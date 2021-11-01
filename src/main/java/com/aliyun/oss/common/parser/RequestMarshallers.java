@@ -96,6 +96,7 @@ public final class RequestMarshallers {
 
     public static final SetBucketResourceGroupRequestMarshaller setBucketResourceGroupRequestMarshaller = new SetBucketResourceGroupRequestMarshaller();
     public static final PutBucketTransferAccelerationRequestMarshaller putBucketTransferAccelerationRequestMarshaller = new PutBucketTransferAccelerationRequestMarshaller();
+    public static final PutBucketAccessMonitorRequestMarshaller putBucketAccessMonitorRequestMarshaller = new PutBucketAccessMonitorRequestMarshaller();
 
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
 
@@ -570,6 +571,12 @@ public final class RequestMarshallers {
                             String formatDate = DateUtil.formatIso8601Date(storageTransition.getCreatedBeforeDate());
                             xmlBody.append("<CreatedBeforeDate>" + formatDate + "</CreatedBeforeDate>");
                         }
+                        if (storageTransition.hasIsAccessTime()) {
+                            xmlBody.append("<IsAccessTime>" + storageTransition.getAccessTime() + "</IsAccessTime>");
+                        }
+                        if (storageTransition.hasIsAccessTime() && storageTransition.hasReturnToStdWhenVisit()) {
+                            xmlBody.append("<ReturnToStdWhenVisit>" + storageTransition.getReturnToStdWhenVisit() + "</ReturnToStdWhenVisit>");
+                        }
                         xmlBody.append("<StorageClass>" + storageTransition.getStorageClass() + "</StorageClass>");
                         xmlBody.append("</Transition>");
                     }
@@ -588,6 +595,8 @@ public final class RequestMarshallers {
                         xmlBody.append("<NoncurrentVersionTransition>");
                         xmlBody.append("<NoncurrentDays>" + transition.getNoncurrentDays() + "</NoncurrentDays>");
                         xmlBody.append("<StorageClass>" + transition.getStorageClass() + "</StorageClass>");
+                        xmlBody.append("<IsAccessTime>" + transition.getAccessTime() + "</IsAccessTime>");
+                        xmlBody.append("<ReturnToStdWhenVisit>" + transition.getReturnToStdWhenVisit() + "</ReturnToStdWhenVisit>");
                         xmlBody.append("</NoncurrentVersionTransition>");
                     }
                 }
@@ -1707,6 +1716,24 @@ public final class RequestMarshallers {
                 throw new ClientException("Unsupported encoding " + e.getMessage(), e);
             }
 
+            return rawData;
+        }
+    }
+
+    public static final class PutBucketAccessMonitorRequestMarshaller implements RequestMarshaller2<PutBucketAccessMonitorRequest> {
+        @Override
+        public byte[] marshall(PutBucketAccessMonitorRequest input) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<AccessMonitorConfiguration><Status>");
+            xmlBody.append(input.getStatus());
+            xmlBody.append("</Status></AccessMonitorConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
             return rawData;
         }
     }
