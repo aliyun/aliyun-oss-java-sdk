@@ -102,7 +102,7 @@ public class Bucket extends GenericResult {
     public String toString() {
         if (storageClass == null) {
             return "OSSBucket [name=" + getName() + ", creationDate=" + getCreationDate() + ", owner=" + getOwner()
-                    + ", location=" + ", accessMonitor=" + getLocation() + ", accessMonitor=" + getAccessMonitor() + "]";
+                    + ", location=" + getLocation() + ", accessMonitor=" + getAccessMonitor() + "]";
         } else {
             return "OSSBucket [name=" + getName() + ", creationDate=" + getCreationDate() + ", owner=" + getOwner()
                     + ", location=" + getLocation() + ", storageClass=" + getStorageClass() + ", accessMonitor=" + getAccessMonitor() + "]";
