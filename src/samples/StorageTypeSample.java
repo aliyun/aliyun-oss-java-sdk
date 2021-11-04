@@ -16,16 +16,16 @@ public class StorageTypeSample {
 
 
     public static void main(String[] args) {
-        // 创建OSSClient实例。
+        // Create an OSSClient instance.
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
         try {
-            // 转换文件存储类型
-            // 以下代码用于将Object的存储类型从标准或低频访问转换为归档类型
+            // Convert the storage class of an object
+            // The following code provides an example of how to convert the storage class of an object from Standard or IA to Archive
             changeStorageTypeObject(ossClient);
 
-            // 转换文件存储类型
-            // 以下代码用于将Object的存储类型从归档转换为低频访问类型
+            // Convert the storage class of an object
+            // The following code provides an example of how to convert the storage class of an object from Archive to IA
             changeStorageTypeObject2(ossClient);
 
         } catch (OSSException oe) {
@@ -48,55 +48,53 @@ public class StorageTypeSample {
     }
 
     private static void changeStorageTypeObject(OSS ossClient) {
-        // 本示例中的Bucket与Object需提前创建好, 且Object类型为标准或低频访问存储类型。
+        // This example requires a bucket containing an object of the Standard or IA storage class.
         String objectName = "*** Provide object name ***";
-        // 创建CopyObjectRequest对象。
+        // Create CopyObjectRequest.
         CopyObjectRequest request = new CopyObjectRequest(bucketName, objectName, bucketName, objectName) ;
 
-        // 创建ObjectMetadata对象。
+        // Create ObjectMetadata.
         ObjectMetadata objectMetadata = new ObjectMetadata();
 
-        // 封装header，此处以设置存储类型为归档类型为例。
+        // Encapsulate the header. Set the storage class to Archive.
         objectMetadata.setHeader("x-oss-storage-class", StorageClass.Archive);
         request.setNewObjectMetadata(objectMetadata);
 
-        // 更改文件存储类型。
+        // Modify the storage class of the object.
         CopyObjectResult result = ossClient.copyObject(request);
-        System.out.println(result.getResponse().getStatusCode());
     }
 
     private static void changeStorageTypeObject2(OSS ossClient) throws InterruptedException, IOException {
-        // 本示例中的Bucket与Object需提前创建好, 且Object类型为标准或低频访问存储类型。
+        // This example requires a bucket containing an object of the Archive storage class.
         String objectName = "*** Provide object name ***";
-        // 获取文件元信息。
+        // Obtain the object metadata.
         ObjectMetadata objectMetadata = ossClient.getObjectMetadata(bucketName, objectName);
 
-        // 检查目标文件是否为归档类型。如果是，则需要先解冻才能更改存储类型。
+        // Check whether the storage class of the source object is Archive. If the storage class of the source object is Archive, you must restore the object before you can modify the storage class.
         StorageClass storageClass = objectMetadata.getObjectStorageClass();
         System.out.println("storage type:" + storageClass);
         if (storageClass == StorageClass.Archive) {
-            // 解冻文件。
+            // Restore the object.
             ossClient.restoreObject(bucketName, objectName);
 
-            // 等待解冻完成。
+            // Wait until the object is restored.
             do {
                 Thread.sleep(1000);
                 objectMetadata = ossClient.getObjectMetadata(bucketName, objectName);
-            } while (!objectMetadata.isRestoreCompleted());
+            } while (! objectMetadata.isRestoreCompleted());
         }
 
-        // 创建CopyObjectRequest对象。
+        // Create CopyObjectRequest.
         CopyObjectRequest request = new CopyObjectRequest(bucketName, objectName, bucketName, objectName) ;
 
-        // 创建ObjectMetadata对象。
+        // Create ObjectMetadata.
         objectMetadata = new ObjectMetadata();
 
-        // 封装header，此处以设置存储类型为低频访问类型为例。
+        // Encapsulate the header. Set the storage class to IA.
         objectMetadata.setHeader("x-oss-storage-class", StorageClass.IA);
         request.setNewObjectMetadata(objectMetadata);
 
-        // 更改文件存储类型。
+        // Modify the storage class of the object.
         CopyObjectResult result = ossClient.copyObject(request);
-        System.out.println(result.getResponse().getStatusCode());
     }
 }

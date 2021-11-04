@@ -16,42 +16,43 @@ public class BucketWormSample {
     private static String bucketName = "*** Provide bucket name ***";
 
     public static void main(String[] args) {
-        // 创建OSSClient实例。
+        // Create an OSSClient instance.
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
         try {
-            // 新建合规保留策略
-            // 创建InitiateBucketWormRequest对象。
+            // Create a retention policy
+            // Create an InitiateBucketWormRequest object.
             InitiateBucketWormRequest initiateBucketWormRequest = new InitiateBucketWormRequest(bucketName);
-            // 指定Object保护天数为1天。
+            // Set the retention period to one day.
             initiateBucketWormRequest.setRetentionPeriodInDays(1);
 
-            // 创建合规保留策略。
+            // Create the retention policy.
             InitiateBucketWormResult initiateBucketWormResult = ossClient.initiateBucketWorm(initiateBucketWormRequest);
 
-            // 查看合规保留策略Id。
+            // Query the ID of the retention policy.
             String wormId = initiateBucketWormResult.getWormId();
             System.out.println(wormId);
 
-            // 锁定合规保留策略。
+            // Lock the retention policy.
             ossClient.completeBucketWorm(bucketName, wormId);
 
-            // 获取合规保留策略。
+            // Query the retention policy.
             GetBucketWormResult getBucketWormResult = ossClient.getBucketWorm(bucketName);
 
-            // 查看合规保留策略Id。
+            // Query the ID of the retention policy.
             System.out.println(getBucketWormResult.getWormId());
-            // 查看合规保留策略状态。未锁定状态下为"InProgress", 锁定状态下为"Locked"。
+            // Query the state of the retention policy. InProgress indicates that the retention policy is not locked. Locked indicates that the retention policy is locked.
             System.out.println(getBucketWormResult.getWormState());
-            // 查看Object的保护时间。
+            // Query the retention period of the retention policy.
             System.out.println(getBucketWormResult.getRetentionPeriodInDays());
-            // 查看合规保留策略的创建时间。
+            // Query the created time of the retention policy.
             System.out.println(getBucketWormResult.getCreationDate());
 
-            // 延长已锁定的合规保留策略中Object的保留天数。
+
+            // Extend the retention period of the locked retention policy.
             ossClient.extendBucketWorm(bucketName, wormId, 2);
 
-            // 取消合规保留策略。
+            // Cancel the retention policy.
             ossClient.abortBucketWorm(bucketName);
 
         } catch (OSSException oe) {

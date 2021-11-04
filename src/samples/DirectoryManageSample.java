@@ -14,17 +14,17 @@ public class DirectoryManageSample {
     private static String objectName = "*** Provide object name ***";
 
     public static void main(String[] args) {
-        // 创建OSSClient实例。
+        // Create an OSSClient instance.
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
         try {
-            // 创建目录
+            // Create a directory.
             createDirectory(ossClient);
 
-            // 重命名目录
+            // Rename a directory
             renameDirectory(ossClient);
 
-            // 删除目录
+            // Delete a directory
             deleteDirectory(ossClient);
 
         } catch (OSSException oe) {
@@ -43,35 +43,35 @@ public class DirectoryManageSample {
     }
 
     private static void createDirectory(OSS ossClient) {
-        // 填写目录绝对路径。目录绝对路径中不能包含Bucket名称。
+        // Specify the absolute path of the directory. The absolute path of the directory cannot contain bucket names.
         String directoryName = "exampledir";
-        // 创建目录。
+        // Create a directory.
         CreateDirectoryRequest createDirectoryRequest = new CreateDirectoryRequest(bucketName, directoryName);
         ossClient.createDirectory(createDirectoryRequest);
     }
 
     private static void renameDirectory(OSS ossClient) {
-        // 填写源目录绝对路径。目录绝对路径中不能包含Bucket名称。
+        // Specify the absolute path of the source directory. The absolute path of the directory cannot contain bucket names.
         String sourceDir = "exampledir";
-        // 填写与源目录处于同一Bucket中的目标目录绝对路径。目录绝对路径中不能包含Bucket名称。
+        // Specify the absolute path of the destination directory that is in the same bucket as the source directory. The absolute path of the directory cannot contain bucket names.
         String destnationDir = "newexampledir";
 
-        // 将存储空间中的源目录绝对路径重命名为目标目录绝对路径。
+        // Change the absolute path of the source directory to that of the destination directory.
         RenameObjectRequest renameObjectRequest = new RenameObjectRequest(bucketName, sourceDir, destnationDir);
         ossClient.renameObject(renameObjectRequest);
     }
 
     private static void deleteDirectory(OSS ossClient) {
-        // 填写目录绝对路径。目录绝对路径中不能包含Bucket名称。
+        // Specify the absolute path of the directory. The absolute path of the directory cannot contain bucket names.
         String directoryName = "exampledir";
 
-        // 删除目录, 默认为非递归删除。请确保已清空该目录下的文件和子目录。
+        // Delete the directory. By default, the non-recursive delete method is used. Make sure that all objects and subdirectories are deleted from this directory.
         DeleteDirectoryRequest deleteDirectoryRequest = new DeleteDirectoryRequest(bucketName, directoryName);
         DeleteDirectoryResult deleteDirectoryResult = ossClient.deleteDirectory(deleteDirectoryRequest);
 
-        // 删除的目录绝对路径。
+        // Display the absolute path of the deleted directory.
         System.out.println("delete dir name :" + deleteDirectoryResult.getDirectoryName());
-        // 本次删除的文件和目录的总数量。
+        // Display the total number of deleted objects and directories.
         System.out.println("delete number:" + deleteDirectoryResult.getDeleteNumber());
 
     }
