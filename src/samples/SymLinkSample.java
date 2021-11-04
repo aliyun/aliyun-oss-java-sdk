@@ -14,14 +14,14 @@ public class SymLinkSample {
     private static String objectName = "*** Provide object name ***";
 
     public static void main(String[] args) {
-        // 创建OSSClient实例。
+        // Create an OSSClient instance.
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
         try {
-            // 创建软链接
+            // Create a symbolic link
             createSymlink(ossClient);
 
-            // 获取软链接指向的目标文件名称
+            // Obtain the name of the object to which the symbolic link points
             getSymlink(ossClient);
 
         } catch (OSSException oe) {
@@ -41,9 +41,9 @@ public class SymLinkSample {
 
     private static void getSymlink(OSS ossClient) {
         String symLink = "<yourSymLink>";
-        // 获取软链接。
+        // Obtain the symbolic link.
         OSSSymlink symbolicLink = ossClient.getSymlink(bucketName, symLink);
-        // 打印软链接指向的文件内容。
+        // Obtain the content of the object to which the symbolic link points.
         System.out.println(symbolicLink.getSymlink());
         System.out.println(symbolicLink.getTarget());
         System.out.println(symbolicLink.getRequestId());
@@ -52,19 +52,19 @@ public class SymLinkSample {
     private static void createSymlink(OSS ossClient) {
         String symLink = "<yourSymLink>";
         String destinationObjectName = "<yourDestinationObjectName>";
-        // 创建上传文件元信息。
+        // Create metadata for the object to upload.
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType("text/plain");
-        // 设置自定义元信息property的值为property-value。
+        // Set the value of the property parameter for the user metadata to property-value.
         metadata.addUserMetadata("property", "property-value");
 
-        // 创建CreateSymlinkRequest。
+        // Create a request to create the symbolic link.
         CreateSymlinkRequest createSymlinkRequest = new CreateSymlinkRequest(bucketName, symLink, destinationObjectName);
 
-        // 设置元信息。
+        // Set the object metadata.
         createSymlinkRequest.setMetadata(metadata);
 
-        // 创建软链接。
+        // Create the symbolic link.
         ossClient.createSymlink(createSymlinkRequest);
     }
 }

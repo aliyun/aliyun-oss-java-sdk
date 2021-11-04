@@ -14,14 +14,14 @@ public class BucketVersioningSample {
     private static String objectName = "*** Provide object name ***";
 
     public static void main(String[] args) {
-        // 创建OSSClient实例。
+        // Create an OSSClient instance.
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
         try {
-            // 设置Bucket版本控制状态
+            // Set the versioning state of a bucket
             setBucketVersioning(ossClient);
 
-            // 获取Bucket版本控制状态信息
+            // Query the versioning state of a bucket
             getBucketVersioning(ossClient);
 
         } catch (OSSException oe) {
@@ -40,7 +40,7 @@ public class BucketVersioningSample {
     }
 
     private static void setBucketVersioning(OSS ossClient) {
-        // 设置存储空间版本控制状态为Enabled。
+        // Set the versioning state of the bucket to Enabled.
         BucketVersioningConfiguration configuration = new BucketVersioningConfiguration();
         configuration.setStatus(BucketVersioningConfiguration.ENABLED);
         SetBucketVersioningRequest request = new SetBucketVersioningRequest(bucketName, configuration);
@@ -48,7 +48,7 @@ public class BucketVersioningSample {
     }
 
     private static void getBucketVersioning(OSS ossClient) {
-        // 获取存储空间版本控制状态信息。
+        // Query the versioning status of the bucket.
         BucketVersioningConfiguration versionConfiguration = ossClient.getBucketVersioning("<yourBucketName>");
         System.out.println("bucket versioning status: " + versionConfiguration.getStatus());
 

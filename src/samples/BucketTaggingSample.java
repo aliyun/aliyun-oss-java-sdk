@@ -14,34 +14,32 @@ public class BucketTaggingSample {
     private static String bucketName = "*** Provide bucket name ***";
 
     public static void main(String[] args) {
-        // 创建OSSClient实例。
+        // Creates an OSSClient instance.
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
         try {
-            // 设置Bucket标签。
-            SetBucketTaggingRequest request = new SetBucketTaggingRequest(bucketName);
-            // 依次填写Bucket标签的键（例如owner）和值（例如John）。
-            request.setTag("owner", "John");
-            request.setTag("location", "hangzhou");
+            // Adds tags to the bucket.
+            SetBucketTaggingRequest request = new SetBucketTaggingRequest("<yourBucketName>");
+            request.setTag("<yourTagkey1>", "<yourTagValue1>");
+            request.setTag("<yourTagkey2>", "<yourTagValue2>");
             ossClient.setBucketTagging(request);
 
-            // 获取Bucket标签信息。
+            // Obtains the tags added to the bucket.
             TagSet tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
             Map<String, String> tags = tagSet.getAllTags();
             for(Map.Entry tag:tags.entrySet()){
                 System.out.println("key:"+tag.getKey()+" value:"+tag.getValue());
             }
 
-            // 列举带指定标签的Bucket。
+            // List buckets with a specified tag
             ListBucketsRequest listBucketsRequest = new ListBucketsRequest();
-            // 依次填写Bucket标签的键（例如owner）和值（例如John）。
-            listBucketsRequest.setTag("owner", "John");
+            listBucketsRequest.setTag("<yourTagKey>", "<yourTagValue>");
             BucketList bucketList = ossClient.listBuckets(listBucketsRequest);
             for (Bucket o : bucketList.getBucketList()) {
                 System.out.println("list result bucket: " + o.getName());
             }
 
-            // 删除Bucket标签。
+            // Deletes the tags added to the bucket.
             ossClient.deleteBucketTagging(new GenericRequest(bucketName));
         } catch (OSSException oe) {
             System.out.println("Error Message: " + oe.getErrorMessage());

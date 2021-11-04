@@ -13,20 +13,20 @@ public class BucketPolicySample {
     private static String bucketName = "*** Provide bucket name ***";
 
     public static void main(String[] args) {
-        // 创建OSSClient实例。
+        // Create an OSSClient instance.
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
         try {
-            // 填写policyText。
+            // Specify the policyText.
             String policyText = "{\"Statement\": [{\"Effect\": \"Allow\", \"Action\": [\"oss:GetObject\", \"oss:ListObjects\"], \"Resource\": [\"acs:oss:*:*:*/user1/*\"]}], \"Version\": \"1\"}";
-            // 设置授权策略。
+            // Configure the bucket policy.
             ossClient.setBucketPolicy(bucketName, policyText);
 
-            // 获取授权策略。
+            // Query bucket policies
             GetBucketPolicyResult result = ossClient.getBucketPolicy(bucketName);
             System.out.println("policyText:"+ result.getPolicyText());
 
-            // 删除授权策略。
+            // Delete the policies configured for the bucket.
             ossClient.deleteBucketPolicy(bucketName);
 
         } catch (OSSException oe) {

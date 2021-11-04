@@ -18,20 +18,20 @@ public class ObjectTaggingSample {
     private static String objectName = "*** Provide object name ***";
 
     public static void main(String[] args) {
-        // 创建OSSClient实例。
+        //  Create an OSSClient instance.
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
         try {
-            // 上传Object时添加对象标签
+            // Add tags to an object when you upload the object
             setObjectTagging(ossClient);
 
-            // 为已上传Object添加或更改对象标签
-            updateObjectTagging(ossClient);
+            // Add tags to or modify the tags of an existing object
+            addObjectTaggingeExisting(ossClient);
 
-            // 为Object指定版本添加或更改对象标签
+            // Add tags to or modify the tags of a specified version of an object
             setObjectTaggingByVersion(ossClient);
 
-            // 为软链接文件设置对象标签
+            // Add tags to a symbolic link
             setSymlinkTagging(ossClient);
 
         } catch (OSSException oe) {
@@ -51,35 +51,35 @@ public class ObjectTaggingSample {
 
     private static void setObjectTagging(OSS ossClient) {
         Map<String, String> tags = new HashMap<String, String>();
-        // 依次填写对象标签的键（例如owner）和值（例如John）。
+        // Specify the key and value of the object tag. For example, set the key to owner and the value to John.
         tags.put("owner", "John");
         tags.put("type", "document");
 
-        // 在HTTP header中设置标签信息。
+        // Configure the tags in the HTTP header.
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setObjectTagging(tags);
 
-        // 上传文件的同时设置标签信息。
+        // Upload the object and add tags to it.
         String content = "<yourtContent>";
         ossClient.putObject(bucketName, objectName, new ByteArrayInputStream(content.getBytes()), metadata);
 
     }
 
-    private static void updateObjectTagging(OSS ossClient) {
+    private static void addObjectTaggingeExisting(OSS ossClient) {
         Map<String, String> tags = new HashMap<String, String>();
-        // 依次填写对象标签的键（例如owner）和值（例如John）。
+        // Specify the key and value of the object tag. For example, set the key to owner and the value to John.
         tags.put("owner", "John");
         tags.put("type", "document");
 
-        // 为文件设置标签。
+        // Add tags to the object.
         ossClient.setObjectTagging(bucketName, objectName, tags);
     }
 
     private static void setObjectTaggingByVersion(OSS ossClient) {
-        // 填写Object的版本ID，例如CAEQMxiBgICAof2D0BYiIDJhMGE3N2M1YTI1NDQzOGY5NTkyNTI3MGYyMzJm****。
+        // Specify the version ID of the object. Example: CAEQMxiBgICAof2D0BYiIDJhMGE3N2M1YTI1NDQzOGY5NTkyNTI3MGYyMzJm****.
         String versionId = "CAEQMxiBgICAof2D0BYiIDJhMGE3N2M1YTI1NDQzOGY5NTkyNTI3MGYyMzJm****";
         Map<String, String> tags = new HashMap<String, String>(1);
-        // 依次填写对象标签的键（例如owner）和值（例如John）。
+        // Specify the key and value of the object tag. For example, set the key to owner and the value to John.
         tags.put("owner", "John");
         tags.put("type", "document");
 
@@ -89,30 +89,30 @@ public class ObjectTaggingSample {
     }
 
     private static void setSymlinkTagging(OSS ossClient) {
-        // 填写软链接完整路径，例如shortcut/myobject.txt。
+        // Specify the full path of the symbolic link. Example: shortcut/myobject.txt.
         String symLink = "shortcut/myobject.txt";
-        // 填写Object完整路径，例如exampledir/exampleobject.txt。Object完整路径中不能包含Bucket名称。
+        // Specify the full path of the object. Example: exampledir/exampleobject.txt. The full path of the object cannot contain the bucket name.
         String destinationObjectName = "exampledir/exampleobject.txt";
-        // 设置软链接的标签信息。
+        // Configure the tags to be added to the symbolic link.
         Map<String, String> tags = new HashMap<String, String>();
-        // 依次填写对象标签的键（例如owner）和值（例如John）。
+        // Specify the key and value of the object tag. For example, set the key to owner and the value to John.
         tags.put("owner", "John");
         tags.put("type", "document");
 
-        // 创建上传文件元信息。
+        // Create metadata for the object to upload.
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setObjectTagging(tags);
 
-        // 创建CreateSymlinkRequest。
+        // Create a request to create the symbolic link.
         CreateSymlinkRequest createSymlinkRequest = new CreateSymlinkRequest(bucketName, symLink, destinationObjectName);
 
-        // 设置元信息。
+        // Set the object metadata.
         createSymlinkRequest.setMetadata(metadata);
 
-        // 创建软链接。
+        // Create the symbolic link.
         ossClient.createSymlink(createSymlinkRequest);
 
-        // 查看软链接的标签信息。
+        //  View the tags added to the symbolic link.
         TagSet tagSet = ossClient.getObjectTagging(bucketName, symLink);
         Map<String, String> getTags = tagSet.getAllTags();
         System.out.println("symLink tagging: "+ getTags.toString());
