@@ -14,17 +14,17 @@ public class EncryptionServiceSample {
     private static String objectName = "*** Provide object name ***";
 
     public static void main(String[] args) {
-        // 创建OSSClient实例。
+        // Create an OSSClient instance.
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
         try {
-            // 配置Bucket加密
+            // Configure server-side encryption for a bucket
             setBucketEncryption(ossClient);
 
-            // 获取Bucket加密配置
+            // Query the server-side encryption configurations of a bucket
             getBucketEncryption(ossClient);
 
-            // 删除Bucket加密配置
+            // Delete the server-side encryption configurations of a bucket
             deleteBucketEncryption(ossClient);
 
         } catch (OSSException oe) {
@@ -43,7 +43,7 @@ public class EncryptionServiceSample {
     }
 
     private static void setBucketEncryption(OSS ossClient) {
-        // 设置Bucket加密。
+        // Configure server-side encryption for the bucket.
         ServerSideEncryptionByDefault applyServerSideEncryptionByDefault = new ServerSideEncryptionByDefault(SSEAlgorithm.KMS);
         applyServerSideEncryptionByDefault.setKMSMasterKeyID("<yourTestKmsId>");
         ServerSideEncryptionConfiguration sseConfig = new ServerSideEncryptionConfiguration();
@@ -53,14 +53,14 @@ public class EncryptionServiceSample {
     }
 
     private static void getBucketEncryption(OSS ossClient) {
-        // 获取Bucket加密配置。
+        // Query the server-side encryption configurations of the bucket.
         ServerSideEncryptionConfiguration sseConfig = ossClient.getBucketEncryption("<yourBucketName>");
         System.out.println("get Algorithm: " + sseConfig.getApplyServerSideEncryptionByDefault().getSSEAlgorithm());
         System.out.println("get kmsid: " + sseConfig.getApplyServerSideEncryptionByDefault().getKMSMasterKeyID());
     }
 
     private static void deleteBucketEncryption(OSS ossClient) {
-        // 删除Bucket加密配置。
+        // Delete the server-side encryption configurations of the bucket.
         ossClient.deleteBucketEncryption("<yourBucketName>");
     }
 }

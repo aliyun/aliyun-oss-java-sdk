@@ -16,14 +16,14 @@ public class RestoreObjectSample {
     private static String objectName = "*** Provide object name ***";
 
     public static void main(String[] args) {
-        // 创建OSSClient实例。
+        // Create an OSSClient instance.
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
         try {
-            // 解冻归档文件
+            // Restore archived objects
             restoreStorageObject(ossClient);
 
-            // 解冻冷归档文件
+            // Restore cold archived objects
             resotreObject(ossClient);
 
         } catch (OSSException oe) {
@@ -46,48 +46,49 @@ public class RestoreObjectSample {
     }
 
     private static void resotreObject(OSS ossClient) {
-        // 如需创建冷归档类型的文件，请参考以下代码。
-        // 创建PutObjectRequest对象。
+        // Refer to the following code if you set the storage class of the object to upload to Cold Archive.
+        // Create a PutObjectRequest object.
         // PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectName, new ByteArrayInputStream("<yourContent>".getBytes()));
-        // 在metadata中指定文件的存储类型为冷归档类型。
+        // Set the storage class of the object to Cold Archive in the object metadata.
         // ObjectMetadata metadata = new ObjectMetadata();
         // metadata.setHeader(OSSHeaders.OSS_STORAGE_CLASS, StorageClass.ColdArchive.toString());
         // putObjectRequest.setMetadata(metadata);
-        // 上传文件的同时设置文件的存储类型。
+        // Configure the storage class of the object to upload.
         // ossClient.putObject(putObjectRequest);
 
-        // 设置解冻冷归档文件的优先级。
-        // RestoreTier.RESTORE_TIER_EXPEDITED 表示1小时内完成解冻。
-        // RestoreTier.RESTORE_TIER_STANDARD 表示2~5小时内完成解冻。
-        // RestoreTier.RESTORE_TIER_BULK 表示5~12小时内完成解冻。
-        RestoreJobParameters jobParameters = new RestoreJobParameters(RestoreTier.RESTORE_TIER_EXPEDITED);
+        // Configure the restore mode for the cold archived object.
+        // RestoreTier.RESTORE_TIER_EXPEDITED: The object is restored within an hour.
+        // RestoreTier.RESTORE_TIER_STANDARD: The object is restored within two to five hours.
+        // RestoreTier.RESTORE_TIER_BULK: The object is restored within five to twelve hours.
+        RestoreJobParameters jobParameters = new RestoreJobParameters(restoreTier);
 
-        // 配置解冻参数，以设置5小时内解冻完成，解冻状态保持2天为例。
-        // 第一个参数表示保持解冻状态的天数，默认是1天，此参数适用于解冻Archive（归档）与ColdArchive（冷归档）类型文件。
-        // 第二个参数jobParameters表示解冻优先级，只适用于解冻ColdArchive类型文件。
+        // Configure parameters. For example, set the restore mode for the object to Standard, and set the duration for which the object can remain in the restored state to two days.
+        // The first parameter indicates the validity period of the restored state. The default value is one day. This parameter applies to archived and cold archived objects.
+        // The jobParameters indicates the restore mode of the object and applies only to cold archived objects.
         RestoreConfiguration configuration = new RestoreConfiguration(2, jobParameters);
 
-        // 发起解冻请求。
+        // Initiate a restore request.
         ossClient.restoreObject(bucketName, objectName, configuration);
+
     }
 
     private static void restoreStorageObject(OSS ossClient) throws InterruptedException, IOException {
         ObjectMetadata objectMetadata = ossClient.getObjectMetadata(bucketName, objectName);
 
-        // 校验文件是否为归档文件。
+        // Verify whether the object is an archived object.
         StorageClass storageClass = objectMetadata.getObjectStorageClass();
         if (storageClass == StorageClass.Archive) {
-            // 解冻文件。
+            // Restore the object.
             ossClient.restoreObject(bucketName, objectName);
 
-            // 等待解冻完成。
+            // Wait until the object is restored.
             do {
                 Thread.sleep(1000);
                 objectMetadata = ossClient.getObjectMetadata(bucketName, objectName);
-            } while (!objectMetadata.isRestoreCompleted());
+            } while (! objectMetadata.isRestoreCompleted());
         }
 
-        // 获取解冻文件。
+        // Obtain the restored object.
         OSSObject ossObject = ossClient.getObject(bucketName, objectName);
         ossObject.getObjectContent().close();
     }

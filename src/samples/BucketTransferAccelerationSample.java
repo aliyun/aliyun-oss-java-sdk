@@ -13,17 +13,17 @@ public class BucketTransferAccelerationSample {
     private static String bucketName = "*** Provide bucket name ***";
 
     public static void main(String[] args) {
-        // 创建OSSClient实例。
+        // Create an OSSClient instance.
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
         try {
-            // 设置Bucket的传输加速状态。
-            // 当设置enabled为true时，表示开启传输加速；当设置enabled为false时，表示关闭传输加速。
+            // Configure transfer acceleration for the bucket.
+            // If enabled is set to true, transfer acceleration is enabled. If enabled is set to false, transfer acceleration is disabled.
             boolean enabled = true;
             ossClient.setBucketTransferAcceleration(bucketName, enabled);
 
-            // 查询Bucket的传输加速状态。
-            // 如果返回值为true，则Bucket已开启传输加速功能；如果返回值为false，则Bucket的传输加速功能为关闭状态。
+            // Query the transfer acceleration status of the bucket.
+            // If the returned value is true, the transfer acceleration feature is enabled for the bucket. If the returned value is false, the transfer acceleration feature is disabled for the bucket.
             TransferAcceleration result = ossClient.getBucketTransferAcceleration(bucketName);
             System.out.println("Is transfer acceleration enabled:"+ result.isEnabled());
 

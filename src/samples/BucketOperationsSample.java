@@ -106,12 +106,12 @@ public class BucketOperationsSample {
             doDeleteBucketOperation();
 
             /*
-             * 判断存储空间examplebucket是否存在。如果返回值为true，则存储空间存在，否则存储空间不存在
+             * Determine whether buckets exist
              */
             doesBucketExist();
 
             /*
-             * 获取存储空间的信息
+             * Query bucket information
              */
             getBucketInfo();
 
@@ -304,26 +304,34 @@ public class BucketOperationsSample {
     }
 
     private static void doesBucketExist() {
-        boolean exists = client.doesBucketExist("examplebucket");
+        // Determine whether the bucket named examplebucket exists. If the value of true is returned, the bucket exists. Otherwise, the bucket does not exist.
+        boolean exists = ossClient.doesBucketExist("examplebucket");
         System.out.println(exists);
+
+        // Shut down the OSSClient instance.
+        ossClient.shutdown();
     }
 
     private static void getBucketInfo() {
-        // 填写Bucket名称，例如examplebucket。
-        BucketInfo info = client.getBucketInfo("examplebucket");
-        // 获取地域。
-        System.out.println(info.getBucket().getLocation());
-        // 获取创建日期。
-        System.out.println(info.getBucket().getCreationDate());
-        // 获取拥有者信息。
-        System.out.println(info.getBucket().getOwner());
-        // 获取容灾类型。
-        System.out.println(info.getDataRedundancyType());
+        // Information about a bucket includes the region (Region or Location), creation date (CreationDate), and owner (Owner) of the bucket.
+        // Specify the name of the bucket. Example: examplebucket.
+        BucketInfo info = ossClient.getBucketInfo("examplebucket");
+        // Query the region.
+        info.getBucket().getLocation();
+        // Query the creation date of the bucket.
+        info.getBucket().getCreationDate();
+        // Query the information about the owner of the bucket.
+        info.getBucket().getOwner();
+        // Query the redundancy option for the bucket.
+        info.getDataRedundancyType();
+
+        // Shut down the OSSClient instance.
+        ossClient.shutdown();
     }
 
     private static void getBucketHnsStatus() {
         BucketInfo info =  client.getBucketInfo(bucketName);
-        // 查看HnsStatus的值是否为Enabled。当HnsStatus的值为Enabled时，表示存储空间已开启分层命名空间。
+        // View whether the value of HnsStatus is Enabled. When the value of HnsStatus is Enabled, the hierarchical namespace feature is enabled for the bucket.
         System.out.println("Hnstatus:" + info.getBucket().getHnsStatus());
     }
 }

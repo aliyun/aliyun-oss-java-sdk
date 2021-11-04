@@ -21,16 +21,16 @@ public class ObjectOperationSample {
     private static OSS ossClient = null;
 
     public static void main(String[] args) {
-        // 创建OSSClient实例。
+        // Create an OSSClient instance.
         ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
         try {
-            // 禁止覆盖同名文件-上传文件。
+            // Disable overwrite for objects with the same name - Simple upload
             putObject();
 
-            // 禁止覆盖同名文件-拷贝文件。
+            // Disable overwrite for objects with the same name - Copy objects。
             copyObject();
 
-            // 重命名文件。
+            // Rename objects
             renameObject();
         } catch (OSSException oe) {
             System.out.println("Error Message: " + oe.getErrorMessage());
@@ -49,47 +49,47 @@ public class ObjectOperationSample {
 
     public static void putObject() {
         String content = "Hello OSS!";
-        // 创建PutObjectRequest对象。
+        // Create a PutObjectRequest object.
         PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectName, new ByteArrayInputStream(content.getBytes()));
 
-        // 指定上传文件操作时是否覆盖同名Object。
-        // 不指定x-oss-forbid-overwrite时，默认覆盖同名Object。
-        // 指定x-oss-forbid-overwrite为false时，表示允许覆盖同名Object。
-        // 指定x-oss-forbid-overwrite为true时，表示禁止覆盖同名Object，如果同名Object已存在，程序将报错。
+        // Specify whether to overwrite the object with the same name.
+        // By default, if x-oss-forbid-overwrite is not specified, the object with the same name is overwritten.
+        // If x-oss-forbid-overwrite is set to false, the object with the same name is overwritten.
+        // If x-oss-forbid-overwrite is set to true, the object with the same name is not overwritten. If an object with the same name already exists, an error is reported.
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setHeader("x-oss-forbid-overwrite", "true");
         putObjectRequest.setMetadata(metadata);
 
-        // 上传文件。
+        // Upload the object.
         ossClient.putObject(putObjectRequest);
     }
 
     public static void copyObject() {
-        // 创建CopyObjectRequest对象。
+        // Create an OSSClient instance.
         CopyObjectRequest copyObjectRequest = new CopyObjectRequest(sourceBucketName, sourceObjectName, destinationBucketName, destinationObjectName);
 
-        // 设置新的文件元信息。
+        // Configure new object metadata.
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType("text/html");
-        // 指定拷贝文件操作时是否覆盖同名Object。
-        // 不指定x-oss-forbid-overwrite时，默认覆盖同名Object
-        // 指定x-oss-forbid-overwrite为false时，表示允许覆盖同名Object。
-        // 指定x-oss-forbid-overwrite为true时，表示禁止覆盖同名Object，如果同名Object已存在，程序将报错。
+        // Specify whether to overwrite the object with the same name.
+        // By default, if x-oss-forbid-overwrite is not specified, the object with the same name is overwritten.
+        // If x-oss-forbid-overwrite is set to false, the object with the same name is overwritten.
+        // If x-oss-forbid-overwrite is set to true, the object with the same name is not overwritten. If an object with the same name already exists, an error is reported.
         metadata.setHeader("x-oss-forbid-overwrite", "true");
         copyObjectRequest.setNewObjectMetadata(metadata);
 
-        // 拷贝文件。
+        // Copy the object.
         CopyObjectResult result = ossClient.copyObject(copyObjectRequest);
         System.out.println("ETag: " + result.getETag() + " LastModified: " + result.getLastModified());
     }
 
     public static void renameObject() {
-        // 填写源Object绝对路径。Object绝对路径中不能包含Bucket名称。
+        // Set the absolute path of the source object. The absolute path of the directory cannot contain the bucket name.
         String sourceObject = "exampleobject.txt";
-        // 填写与源Object处于同一Bucket中的目标Object绝对路径。Object绝对路径中不能包含Bucket名称。
+        // Set the absolute path of the destination object in the same bucket as that of the source object. The absolute path of the object cannot contain the bucket name.
         String destnationObject = "newexampleobject.txt";
 
-        // 将存储空间中的源Object绝对路径重命名为目标Object绝对路径。
+        // Change the absolute path of the source object in the bucket to the absolute path of the destination object.
         RenameObjectRequest renameObjectRequest = new RenameObjectRequest(bucketName, sourceObject, destnationObject);
         ossClient.renameObject(renameObjectRequest);
     }

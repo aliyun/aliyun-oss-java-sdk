@@ -14,26 +14,16 @@ import static com.aliyun.oss.internal.OSSHeaders.OSS_USER_METADATA_PREFIX;
 
 public class AuthorizedAccessSample {
 
-    private static String endpoint = "*** Provide OSS endpoint ***";
-    private static String accessKeyId = "*** Provide your AccessKeyId ***";
-    private static String accessKeySecret = "*** Provide your AccessKeySecret ***";
-    private static String bucketName = "*** Provide bucket name ***";
-    private static String objectName = "*** Provide object name ***";
-    // 从STS服务获取的安全令牌（SecurityToken）。
-    private static String securityToken = "yourSecurityToken";
-
     public static void main(String[] args) {
-        // 创建OSSClient实例。
-        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret, securityToken);
 
         try {
-            // 使用STS进行临时授权
+            // Use STS to authorize temporary access
             createSTSAuthorization(ossClient);
 
-            // 使用签名url进行临时授权
+            // Use a signed URL to authorize temporary access
             createSignedUrl(ossClient);
 
-            // 生成单个以其他HTTP方法访问的签名URL
+            // Generate a signed URL that allows other HTTP requests
             createSignedUrlWithParamer(ossClient);
 
         } catch (OSSException oe) {
@@ -52,86 +42,101 @@ public class AuthorizedAccessSample {
     }
 
     private static void createSTSAuthorization(OSS ossClient) {
-        // 执行OSS相关操作，例如上传、下载文件等。
-        // 上传文件，此处以上传本地文件为例介绍。
-        // 填写本地文件的完整路径。如果未指定本地路径，则默认从示例程序所属项目对应本地路径中上传文件。
-        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectName, new File("D:\\localpath\\examplefile.txt"));
-        ossClient.putObject(putObjectRequest);
+        // Set yourEndpoint to the endpoint of the region in which the bucket is located. For example, if the bucket is located in the China (Hangzhou) region, set yourEndpoint to https://oss-cn-hangzhou.aliyuncs.com.
+        String endpoint = "yourEndpoint";
+        // Specify the temporary AccessKey pair obtained from STS.
+        String accessKeyId = "yourAccessKeyId";
+        String accessKeySecret = "yourAccessKeySecret";
+        // Specify the security token obtained from STS.
+        String securityToken = "yourSecurityToken";
+        // Specify the name of the bucket in which the object you want to access is stored. Example: examplebucket.
+        //String bucketName = "examplebucket";
+        // Specify the full path of the object. Example: exampleobject.txt. The full path of the object cannot contain bucket names.
+        //String objectName = "exampleobject.txt";
 
-        // 下载OSS文件到本地文件。如果指定的本地文件存在则覆盖，不存在则新建。
-        // 如果未指定本地路径，则下载后的文件默认保存到示例程序所属项目对应本地路径中。
+        // You can use the AccessKey pair and security token contained in the temporary access credential obtained from STS to create an OSSClient.
+        // Create an OSSClient instance.
+        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret, securityToken);
+
+        // Perform operations on OSS resources, such as upload or download objects.
+        // Upload an object. In this example, a local file is uploaded to OSS as an object.
+        // Specify the full path of the local file to upload. If the path of the local file is not specified, the file is uploaded to the path of the project to which the sample program belongs.
+        //PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectName, new File("D:\\localpath\\examplefile.txt"));
+        //ossClient.putObject(putObjectRequest);
+
+        // Download an object to your local computer. If the specified local file already exists, the file is replaced by the downloaded object. If the specified local file does not exist, the local file is created.
+        // If the path for the object is not specified, the downloaded object is saved to the path of the project to which the sample program belongs.
         //ossClient.getObject(new GetObjectRequest(bucketName, objectName), new File("D:\\localpath\\examplefile.txt"));
+
+        // Shut down the OSSClient instance.
+        ossClient.shutdown();
     }
 
     private static void createSignedUrl(OSS ossClient) {
+        // Set yourEndpoint to the endpoint of the region in which the bucket is located. For example, if the bucket is located in the China (Hangzhou) region, set yourEndpoint to https://oss-cn-hangzhou.aliyuncs.com.
+        String endpoint = "yourEndpoint";
+        // Specify the temporary AccessKey pair obtained from STS.
+        String accessKeyId = "yourAccessKeyId";
+        String accessKeySecret = "yourAccessKeySecret";
+        // Specify the security token obtained from STS.
+        String securityToken = "yourSecurityToken";
+        // Specify the name of the bucket in which the object you want to access is stored. Example: examplebucket.
+        String bucketName = "examplebucket";
+        // Specify the full path of the object. Example: exampleobject.txt. The full path of the object cannot contain bucket names.
+        String objectName = "exampleobject.txt";
+
+        // Create an OSSClient instance.
+        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret, securityToken);
+
+        // Set the validity period of the signed URL to 3,600 seconds (1 hour).
+        Date expiration = new Date(new Date().getTime() + 3600 * 1000);
+        // Generate the signed URL that allows HTTP GET requests. Visitors can enter the URL in a browser to access specified OSS resources.
+        URL url = ossClient.generatePresignedUrl(bucketName, objectName, expiration);
+        System.out.println(url);
+        // Shut down the OSSClient instance.
+        ossClient.shutdown();
+    }
+
+    private static void createSignedUrlWithParamer(OSS ossClient) {
+        // Set yourEndpoint to the endpoint of the region in which the bucket is located. For example, if the bucket is located in the China (Hangzhou) region, set yourEndpoint to https://oss-cn-hangzhou.aliyuncs.com.
+        String endpoint = "yourEndpoint";
+        // Specify the temporary AccessKey pair obtained from STS.
+        String accessKeyId = "yourAccessKeyId";
+        String accessKeySecret = "yourAccessKeySecret";
+        // Specify the security token obtained from STS.
+        String securityToken = "yourSecurityToken";
+        // Specify the name of the bucket in which the object you want to access is stored. Example: examplebucket.
+        String bucketName = "examplebucket";
+        // Specify the full path of the object. Example: exampleobject.txt. The full path of the object cannot contain bucket names.
+        String objectName = "exampleobject.txt";
+
+        // You can use the AccessKey pair and security token contained in the temporary access credential obtained from STS to create an OSSClient.
+        // Create an OSSClient instance.
+        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret, securityToken);
+
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, objectName, HttpMethod.PUT);
-        // 设置签名URL过期时间为3600秒（1小时）。
+        // Set the validity period of the signed URL to 3,600 seconds (1 hour).
         Date expiration = new Date(new Date().getTime() + 3600 * 1000);
         request.setExpiration(expiration);
-        // 设置ContentType。
+        // Set ContentType.
         request.setContentType("text/plain");
-        // 设置自定义元信息。
+        // Set user metadata.
         request.addUserMetadata("author", "aliy");
 
-        // 生成签名URL。
+        // Generate the signed URL.
         URL signedUrl = ossClient.generatePresignedUrl(request);
         System.out.println(signedUrl);
 
         Map<String, String> requestHeaders = new HashMap<String, String>();
-        // 设置ContentType，必须和生成签名URL时设置的ContentType一致。
+        // Set ContentType. Make sure that the ContentType value must be the same as the content type specified when you generate the signed URL.
         requestHeaders.put(HttpHeaders.CONTENT_TYPE, "text/plain");
-        // 设置自定义元信息。
+        // Set user metadata.
         requestHeaders.put(OSS_USER_METADATA_PREFIX + "author", "aliy");
 
-        // 使用签名URL上传文件。
+        // Use the signed URL to upload an object.
         ossClient.putObject(signedUrl, new ByteArrayInputStream("Hello OSS".getBytes()), -1, requestHeaders, true);
 
-    }
-
-    private static void createSignedUrlWithParamer(OSS ossClient) {
-        // 创建请求。
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, objectName);
-        // 设置HttpMethod为PUT。
-        generatePresignedUrlRequest.setMethod(HttpMethod.PUT);
-        // 添加用户自定义元信息。
-        generatePresignedUrlRequest.addUserMetadata("author", "baymax");
-        // 设置ContentType。
-        generatePresignedUrlRequest.setContentType("application/txt");
-        // 设置签名URL过期时间为3600秒（1小时）。
-        Date expiration = new Date(new Date().getTime() + 3600 * 1000);
-        generatePresignedUrlRequest.setExpiration(expiration);
-        // 生成签名URL。
-        URL url = ossClient.generatePresignedUrl(generatePresignedUrlRequest);
-        System.out.println(url);
-    }
-
-    private static void setSymlinkTagging(OSS ossClient) {
-        // 填写软链接完整路径，例如shortcut/myobject.txt。
-        String symLink = "shortcut/myobject.txt";
-        // 填写Object完整路径，例如exampledir/exampleobject.txt。Object完整路径中不能包含Bucket名称。
-        String destinationObjectName = "exampledir/exampleobject.txt";
-        // 设置软链接的标签信息。
-        Map<String, String> tags = new HashMap<String, String>();
-        // 依次填写对象标签的键（例如owner）和值（例如John）。
-        tags.put("owner", "John");
-        tags.put("type", "document");
-
-        // 创建上传文件元信息。
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setObjectTagging(tags);
-
-        // 创建CreateSymlinkRequest。
-        CreateSymlinkRequest createSymlinkRequest = new CreateSymlinkRequest(bucketName, symLink, destinationObjectName);
-
-        // 设置元信息。
-        createSymlinkRequest.setMetadata(metadata);
-
-        // 创建软链接。
-        ossClient.createSymlink(createSymlinkRequest);
-
-        // 查看软链接的标签信息。
-        TagSet tagSet = ossClient.getObjectTagging(bucketName, symLink);
-        Map<String, String> getTags = tagSet.getAllTags();
-        System.out.println("symLink tagging: "+ getTags.toString());
+        // Shut down the OSSClient instance.
+        ossClient.shutdown();
     }
 }

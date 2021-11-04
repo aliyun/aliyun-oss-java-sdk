@@ -17,20 +17,20 @@ public class BucketReplicationSample {
     private static String bucketName = "*** Provide bucket name ***";
 
     public static void main(String[] args) {
-        // 创建OSSClient实例。
+        // Create an OSSClient instance.
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
         try {
             AddBucketReplicationRequest request = new AddBucketReplicationRequest(bucketName);
             request.setReplicationRuleID("<yourRuleId>");
             request.setTargetBucketName("<yourTargetBucketName>");
-            // 目标Endpoint以北京为例。
+            // This example uses the target endpoint China (Beijing).
             request.setTargetBucketLocation("oss-cn-beijing");
-            // 设置禁止同步历史数据。默认会同步历史数据。
+            // Disable historical data replication. Historical data replication is enabled by default.
             request.setEnableHistoricalObjectReplication(false);
             ossClient.addBucketReplication(request);
 
-            // 查看跨区域复制。
+            // View cross-region replication configurations
             List<ReplicationRule> rules = ossClient.getBucketReplication(bucketName);
             for (ReplicationRule rule : rules) {
                 System.out.println(rule.getReplicationRuleID());
@@ -38,23 +38,23 @@ public class BucketReplicationSample {
                 System.out.println(rule.getTargetBucketName());
             }
 
-            // 查看跨区域复制进度。
+            // View cross-region replication progress
             BucketReplicationProgress process = ossClient.getBucketReplicationProgress(bucketName, "<yourRuleId>");
             System.out.println(process.getReplicationRuleID());
-            // 是否开启了历史数据同步。
+            // Check whether historical data synchronization is enabled.
             System.out.println(process.isEnableHistoricalObjectReplication());
-            // 历史数据同步进度。
+            // Print historical data synchronization progress.
             System.out.println(process.getHistoricalObjectProgress());
-            // 实时数据同步进度。
+            // Print real-time data synchronization progress.
             System.out.println(process.getNewObjectProgress());
 
-            // 查看可同步的目标地域。
+            // View the target regions for synchronization
             List<String> locations = ossClient.getBucketReplicationLocation(bucketName);
             for (String loc : locations) {
                 System.out.println(loc);
             }
 
-            // 关闭跨区域复制。关闭后目标存储空间内的文件依然存在，只是不再同步源存储空间内文件的所有改动。
+            // Disable cross-region replication. After this function is disabled, objects in the target bucket exist and all changes in the source objects cannot be synchronized.
             ossClient.deleteBucketReplication(bucketName, "<yourRuleId>");
 
 
