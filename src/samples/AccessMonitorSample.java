@@ -13,14 +13,12 @@ public class AccessMonitorSample {
     private static String bucketName = "*** Provide bucket name ***";
 
     public static void main(String[] args) {
-        // 创建OSSClient实例。
+        // Create an OSSClient instance
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
         try {
-            // 更新 Bucket 访问跟踪状态。
             putBucketAccessMonitor(ossClient);
 
-            // 获取当前Bucket的访问跟踪的状态。
             getBucketAccessMonitor(ossClient);
 
         } catch (OSSException oe) {
@@ -43,10 +41,7 @@ public class AccessMonitorSample {
     }
 
     private static void getBucketAccessMonitor(OSS ossClient) {
-        // 获取当前Bucket的访问跟踪的状态。
         AccessMonitor config = ossClient.getBucketAccessMonitor(bucketName);
-
-        // 打印Bucket的访问跟踪的状态。
         System.out.println("status: " + config.getStatus());
     }
 }
