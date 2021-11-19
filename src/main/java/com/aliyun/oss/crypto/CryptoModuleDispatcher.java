@@ -35,13 +35,18 @@ import com.aliyun.oss.model.UploadPartResult;
  * underlying cryptographic module depending on the current configuration.
  */
 public class CryptoModuleDispatcher implements CryptoModule {
-    private final CryptoModuleAesCtr cryptoMouble;
+    private CryptoModuleBase cryptoMouble;
     public CryptoModuleDispatcher(OSSDirect ossDirect,
                                   EncryptionMaterials encryptionMaterials,
                                   CryptoConfiguration cryptoConfig) {
-        cryptoConfig = cryptoConfig.clone(); 
-        this.cryptoMouble = new CryptoModuleAesCtr(ossDirect,
-                                   encryptionMaterials, cryptoConfig);
+        cryptoConfig = cryptoConfig.clone();
+        if(ContentCryptoMode.SM4_CTR_MODE.equals(cryptoConfig.getContentCryptoMode())){
+            this.cryptoMouble = new CryptoModuleSm4Ctr(ossDirect,
+                    encryptionMaterials, cryptoConfig);
+        } else {
+            this.cryptoMouble = new CryptoModuleAesCtr(ossDirect,
+                    encryptionMaterials, cryptoConfig);
+        }
     }
 
     @Override

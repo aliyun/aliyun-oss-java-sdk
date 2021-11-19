@@ -73,9 +73,11 @@ public abstract class CryptoModuleBase implements CryptoModule {
 
     private final static CryptoScheme getCryptoScheme(ContentCryptoMode contentCryptoMode) {
         switch (contentCryptoMode) {
-        case AES_CTR_MODE:
-        default:
-            return CryptoScheme.AES_CTR;
+            case AES_CTR_MODE:
+            case SM4_CTR_MODE:
+                return CryptoScheme.SM4_CTR;
+            default:
+                return CryptoScheme.AES_CTR;
         }
     }
 

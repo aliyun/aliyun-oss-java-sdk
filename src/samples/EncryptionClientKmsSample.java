@@ -62,6 +62,12 @@ public class EncryptionClientKmsSample {
             // Create encryption client.
             ossEncryptionClient = new OSSEncryptionClientBuilder().
                                 build(endpoint, accessKeyId, accessKeySecret, encryptionMaterials);
+            // Use SM4 encryption
+//            CryptoConfiguration cryptoConfiguration = new CryptoConfiguration();
+//            cryptoConfiguration.setContentCryptoMode(ContentCryptoMode.SM4_CTR_MODE);
+//            OSSEncryptionClient ossEncryptionClient = new OSSEncryptionClientBuilder().
+//                    build(endpoint,new DefaultCredentialProvider(accessKeyId, accessKeySecret), encryptionMaterials,null,cryptoConfiguration);
+
             // Put Object
             ossEncryptionClient.putObject(bucketName, key, new ByteArrayInputStream(content.getBytes()));
 
