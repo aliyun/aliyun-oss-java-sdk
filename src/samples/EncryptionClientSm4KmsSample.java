@@ -1,44 +1,16 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
-package samples;
-
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
-
+package com.aliyun.oss.crypto;
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSSEncryptionClient;
 import com.aliyun.oss.OSSEncryptionClientBuilder;
 import com.aliyun.oss.OSSException;
-import com.aliyun.oss.crypto.KmsEncryptionMaterials;
+import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.OSSObject;
 
-/**
- * This sample demonstrates how to upload an object by append mode 
- * to Aliyun OSS using the OSS SDK for Java.
- */
-public class EncryptionClientKmsSample {
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+public class EncryptionClientSm4KmsSample {
     private static String endpoint = "*** Provide OSS endpoint ***";
     private static String accessKeyId = "*** Provide your AccessKeyId ***";
     private static String accessKeySecret = "*** Provide your AccessKeySecret ***";
@@ -49,22 +21,26 @@ public class EncryptionClientKmsSample {
     private static String cmk = "<yourCmkId>";
     private static String region = "<yourKmsRegion>";
 
-    public static void main(String[] args) throws IOException {  
+    public static void main(String[] args) throws IOException {
         OSSEncryptionClient ossEncryptionClient = null;
-        try {            
+        try {
             // Create encryption materials description.
             Map<String, String> matDesc = new HashMap<String, String>();
             matDesc.put("desc-key", "desc-value");
 
             // Create encryption materials.
-            KmsEncryptionMaterials encryptionMaterials = new KmsEncryptionMaterials(region, cmk, matDesc);        
+            KmsEncryptionMaterials encryptionMaterials = new KmsEncryptionMaterials(region, cmk, matDesc);
 
             // Create encryption client.
+            // Use SM4 encryption
+            CryptoConfiguration cryptoConfiguration = new CryptoConfiguration();
+            cryptoConfiguration.setContentCryptoMode(ContentCryptoMode.SM4_CTR_MODE);
             ossEncryptionClient = new OSSEncryptionClientBuilder().
-                                build(endpoint, accessKeyId, accessKeySecret, encryptionMaterials);
+                    build(endpoint,new DefaultCredentialProvider(accessKeyId, accessKeySecret), encryptionMaterials,null,cryptoConfiguration);
 
             // Put Object
             ossEncryptionClient.putObject(bucketName, key, new ByteArrayInputStream(content.getBytes()));
+            GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
 
             // Get Object
             OSSObject ossObject = ossEncryptionClient.getObject(bucketName, key);
@@ -81,8 +57,7 @@ public class EncryptionClientKmsSample {
 
             // range-get
             int start = 17;
-            int end = 35;
-            GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
+            int end = 25;
             getObjectRequest.setRange(start, end);
             ossObject = ossEncryptionClient.getObject(getObjectRequest);
             reader = new BufferedReader(new InputStreamReader(ossObject.getObjectContent()));

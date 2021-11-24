@@ -40,13 +40,8 @@ public class CryptoModuleDispatcher implements CryptoModule {
                                   EncryptionMaterials encryptionMaterials,
                                   CryptoConfiguration cryptoConfig) {
         cryptoConfig = cryptoConfig.clone();
-        if(ContentCryptoMode.SM4_CTR_MODE.equals(cryptoConfig.getContentCryptoMode())){
-            this.cryptoMouble = new CryptoModuleSm4Ctr(ossDirect,
-                    encryptionMaterials, cryptoConfig);
-        } else {
-            this.cryptoMouble = new CryptoModuleAesCtr(ossDirect,
-                    encryptionMaterials, cryptoConfig);
-        }
+        CryptoSchemeBaseFactory cryptoSchemeBaseFactory = new CryptoSchemeBaseFactory(ossDirect, encryptionMaterials, cryptoConfig);
+        this.cryptoMouble = cryptoSchemeBaseFactory.buildCryptoSchemeBase(cryptoConfig.getContentCryptoMode());
     }
 
     @Override

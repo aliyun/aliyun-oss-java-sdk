@@ -71,7 +71,13 @@ class CryptoModuleSm4Ctr extends CryptoModuleBase {
         SecretKey cek = cekMaterial.getCEK();
         String cekAlgo = cekMaterial.getContentCryptoAlgorithm();
         CryptoScheme tmpContentCryptoScheme = CryptoScheme.fromCEKAlgo(cekAlgo);
-
+        // Adjust the IV if needed
+        boolean isRangeGet = (cryptoRange != null);
+        if (isRangeGet) {
+            iv = tmpContentCryptoScheme.adjustIV(iv, cryptoRange[0]);
+        } else if (skipBlock > 0) {
+            iv = CryptoScheme.incrementBlocks(iv, skipBlock);
+        }
         return tmpContentCryptoScheme.createCryptoCipher(cek, iv, cipherMode, cryptoConfig.getContentCryptoProvider());
     }
 }
