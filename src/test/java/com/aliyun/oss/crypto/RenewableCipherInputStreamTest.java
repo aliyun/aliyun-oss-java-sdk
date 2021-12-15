@@ -191,4 +191,124 @@ public class RenewableCipherInputStreamTest {
         return iv;
     }
 
+    @Test
+    public void testSm4MarkAndRest() {
+        String content = "hdfyqlmrwbdskfnsdkfbs9hmgdr61axlodfsklfjkslvmdklu0whdfyqlmrwbdskfnsdkfbskfh"
+                + "isfdfsklfjkslvmdklu0wrwurjjdnksh098j62kfgjsdfbsj4427gc1sfbjsfsj123y214y2hujnhdfyq";
+
+        InputStream isOrig = new ByteArrayInputStream(content.getBytes());
+        SecretKey cek = generateSm4CEK();
+        byte[] iv = generateIV();
+        CryptoCipher cryptoCipher = CryptoScheme.SM4_CTR.createCryptoCipher(cek, iv, Cipher.ENCRYPT_MODE, null);
+
+        CipherInputStream isCurr = new RenewableCipherInputStream(isOrig, cryptoCipher, 2048);
+        try {
+            isCurr.mark(100);
+            byte[] buffer = new byte[50];
+            int len = isCurr.read(buffer, 0, 50);
+
+            isCurr.reset();
+            byte[] buffer2 = new byte[50];
+            int len2 = isCurr.read(buffer2, 0, 50);
+            Assert.assertEquals(len, len2);
+            Assert.assertTrue(Arrays.equals(buffer, buffer2));
+
+            isCurr.reset();
+            byte[] buffer3 = new byte[50];
+            int len3 = isCurr.read(buffer3);
+            Assert.assertEquals(50, len3);
+            Assert.assertTrue(Arrays.equals(buffer, buffer3));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testSm4MarkUnnromal() {
+        String content = "hdfyqlmrwbdskfnsdkfbs9hmgdr61axlodfsklfjkslvmdklu0whdfyqlmrwbdskfnsdkfbskfh"
+                + "isfdfsklfjkslvmdklu0wrwurjjdnksh098j62kfgjsdfbsj4427gc1sfbjsfsj123y214y2hujnhdfyq";
+
+        InputStream isOrig = new ByteArrayInputStream(content.getBytes());
+        SecretKey cek = generateSm4CEK();
+        byte[] iv = generateSm4IV();
+        CryptoCipher cryptoCipher = CryptoScheme.SM4_CTR.createCryptoCipher(cek, iv, Cipher.ENCRYPT_MODE, null);
+
+        CipherInputStream isCurr = new RenewableCipherInputStream(isOrig, cryptoCipher, 2048);
+
+        try {
+            isCurr.mark(50);
+            byte[] buffer = new byte[40];
+            isCurr.read();
+            isCurr.mark(50);
+            Assert.fail("The RenewableCipherInputStream marking only supported for first call to read or skip.");
+        } catch (UnsupportedOperationException e) {
+            // Expected exception.
+        } catch (IOException e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        try {
+            isCurr.reset();
+            isCurr.skip(10);
+            isCurr.mark(50);
+            Assert.fail("The RenewableCipherInputStream marking only supported for first call to read or skip.");
+        } catch (UnsupportedOperationException e) {
+            // Expected exception.
+        } catch (IOException e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testSm4CipherInputStream() {
+        String content = "hdfyqlmrwbdskfnsdkfbs9hmgdr61axlodfsklfjkslvmdklu0whdfyqlmrwbdskfnsdkfbskfh"
+                + "isfdfsklfjkslvmdklu0wrwurjjdnksh098j62kfgjsdfbsj4427gc1sfbjsfsj123y214y2hujnhdfyq";
+
+        InputStream isOrig = new ByteArrayInputStream(content.getBytes());
+        SecretKey cek = generateSm4CEK();
+        byte[] iv = generateSm4IV();
+        CryptoCipher cryptoCipher = CryptoScheme.SM4_CTR.createCryptoCipher(cek, iv, Cipher.ENCRYPT_MODE, null);
+
+        CipherInputStream isCurr = new CipherInputStream(isOrig, cryptoCipher, 2048);
+        Assert.assertEquals(isCurr.markSupported(), false);
+        try {
+            isCurr.mark(10);
+            isCurr.reset();
+            Assert.fail("{@link CipherInputStream} instance not support mark and reset.");
+        } catch (Exception e) {
+            // Expected excpetion.
+        }
+    }
+
+
+    private SecretKey generateSm4CEK() {
+        KeyGenerator generator;
+        final String keygenAlgo = CryptoScheme.SM4_CTR.getKeyGeneratorAlgorithm();
+        final int keyLength = CryptoScheme.SM4_CTR.getKeyLengthInBits();
+        try {
+            generator = KeyGenerator.getInstance(keygenAlgo);
+            generator.init(keyLength, new SecureRandom());
+            SecretKey secretKey = generator.generateKey();
+            for (int retry = 0; retry < 9; retry++) {
+                secretKey = generator.generateKey();
+                if (secretKey.getEncoded()[0] != 0)
+                    return secretKey;
+            }
+            throw new ClientException("Failed to generate secret key");
+        } catch (NoSuchAlgorithmException e) {
+            throw new ClientException("No such algorithm:" + keygenAlgo + ", " + e.getMessage(), e);
+        }
+    }
+
+    private byte[] generateSm4IV() {
+        final byte[] iv = new byte[CryptoScheme.SM4_CTR.getContentChiperIVLength()];
+        new SecureRandom().nextBytes(iv);
+        for (int i = 8; i < 12; i++) {
+            iv[i] = 0;
+        }
+        return iv;
+    }
 }

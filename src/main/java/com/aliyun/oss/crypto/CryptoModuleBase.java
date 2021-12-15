@@ -19,14 +19,7 @@
 
 package com.aliyun.oss.crypto;
 
-import java.io.BufferedOutputStream;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -73,9 +66,11 @@ public abstract class CryptoModuleBase implements CryptoModule {
 
     private final static CryptoScheme getCryptoScheme(ContentCryptoMode contentCryptoMode) {
         switch (contentCryptoMode) {
-        case AES_CTR_MODE:
-        default:
-            return CryptoScheme.AES_CTR;
+            case SM4_CTR_MODE:
+                return CryptoScheme.SM4_CTR;
+            case AES_CTR_MODE:
+            default:
+                return CryptoScheme.AES_CTR;
         }
     }
 

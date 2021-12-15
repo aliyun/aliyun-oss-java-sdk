@@ -25,5 +25,6 @@ package com.aliyun.oss.crypto;
  * {@link CryptoConfiguration} when the OSS encryption client is constructed.
  */
 public enum ContentCryptoMode {
-    AES_CTR_MODE;
+    AES_CTR_MODE,
+    SM4_CTR_MODE;
 }

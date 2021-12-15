@@ -45,6 +45,13 @@ public class CryptoConfigurationTest {
         Assert.assertEquals(CryptoStorageMethod.ObjectMetadata, cryptoConfig.getStorageMethod());
         Assert.assertEquals(SecureRandom.class.getName(), cryptoConfig.getSecureRandom().getClass().getName());
         Assert.assertEquals("BC", cryptoConfig.getContentCryptoProvider().getName());
+
+        cryptoConfig = new CryptoConfiguration(
+                ContentCryptoMode.SM4_CTR_MODE,
+                CryptoStorageMethod.ObjectMetadata,
+                new SecureRandom(),
+                getBouncyCastleProvider());
+        Assert.assertEquals(ContentCryptoMode.SM4_CTR_MODE, cryptoConfig.getContentCryptoMode());
     }
 
     @Test

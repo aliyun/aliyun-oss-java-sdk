@@ -22,6 +22,7 @@ package com.aliyun.oss.internal;
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.common.utils.LogUtils.logException;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_BUFFER_SIZE;
+import static com.aliyun.oss.internal.OSSConstants.KB;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
 import static com.aliyun.oss.internal.OSSUtils.ensureObjectKeyValid;
 
@@ -478,7 +479,7 @@ public class OSSDownloadOperation {
         long downloadSize;
         if (downloadCheckPoint.objectStat.size > 0) {
             long[] slice = getSlice(downloadFileRequest.getRange(), downloadCheckPoint.objectStat.size);
-            downloadCheckPoint.downloadParts = splitFile(slice[0], slice[1], downloadFileRequest.getPartSize());
+            downloadCheckPoint.downloadParts = splitFile(slice[0], slice[1], downloadFileRequest.getPartSize(), downloadFileRequest.getSupportFourAlignment());
             downloadSize = slice[1];
         } else {
             //download whole file
@@ -645,9 +646,15 @@ public class OSSDownloadOperation {
 
                 byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
                 int bytesRead = 0;
+                int bytesReadTemp = 0;
+                StringBuffer stringBuffer = new StringBuffer();
                 while ((bytesRead = content.read(buffer)) != -1) {
-                    output.write(buffer, 0, bytesRead);
+                    String bufferStr = new String(buffer,0,bytesRead, "ISO-8859-1");
+                    stringBuffer.append(bufferStr);
+                    bytesReadTemp = bytesReadTemp + bytesRead;
                 }
+                output.write(stringBuffer.toString().getBytes("ISO-8859-1"), 0, bytesReadTemp);
+
 
                 if (objectOperation.getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
                     Long clientCRC = getInputStreamCRCWrap(content);
@@ -694,8 +701,15 @@ public class OSSDownloadOperation {
         private ProgressListener progressListener;
     }
 
-    private ArrayList<DownloadPart> splitFile(long start, long objectSize, long partSize) {
+    private ArrayList<DownloadPart> splitFile(long start, long objectSize, long partSize, boolean supportFourAlignment) {
         ArrayList<DownloadPart> parts = new ArrayList<DownloadPart>();
+
+        if(supportFourAlignment){
+            long fourAlignment = partSize % 4 * KB;
+            if(fourAlignment != 0 ){
+                partSize = partSize - fourAlignment;
+            }
+        }
 
         long partNum = objectSize / partSize;
         if (partNum >= 10000) {

@@ -127,4 +127,74 @@ public class CryptoSchemeTest {
         }
         return iv;
     }
+
+    @Test
+    public void testSm4AdjustIvNormal() {
+        try {
+            byte[] iv = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+            CryptoScheme cryptScheme = CryptoScheme.SM4_CTR;
+            byte[] adjustIV = cryptScheme.adjustIV(iv, 16);
+            Assert.assertEquals(iv[15] + 1, adjustIV[15]);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testSm4AdjustIvUnnormal() {
+        try {
+            byte[] iv = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 };
+            CryptoScheme cryptScheme = CryptoScheme.SM4_CTR;
+            byte[] adjustIV = cryptScheme.adjustIV(iv, 16);
+            Assert.fail("IV length should be 16.");
+        } catch (UnsupportedOperationException e) {
+            // Expected exception.
+        }
+
+        try {
+            byte[] iv = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+            CryptoScheme cryptScheme = CryptoScheme.SM4_CTR;
+            cryptScheme.adjustIV(iv, 17);
+            Assert.fail("start pos should allgned with 16 bytes.");
+        } catch (IllegalArgumentException e) {
+            // Expected exception.
+        }
+    }
+
+    @Test
+    public void testSm4GetSchemeFromCEKAlgo() {
+        try {
+            CryptoScheme scheme = CryptoScheme.fromCEKAlgo("SM4/CTR/NoPadding");
+            scheme.getContentChiperAlgorithm().equals(CryptoScheme.SM4_CTR.getContentChiperAlgorithm());
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+
+        try {
+            CryptoScheme scheme = CryptoScheme.fromCEKAlgo("illegal-algo");
+            Assert.fail("get crypto scheme from illeagel algoritm name get should be failed.");
+        } catch (UnsupportedOperationException e) {
+            // Expected exception.
+        }
+    }
+
+    @Test
+    public void testSm4CreateCipherUnnormal() {
+        try {
+            SecretKey cek = null;
+            byte[] iv = generateSm4IV();
+            CryptoCipher cryptoCipher = CryptoScheme.SM4_CTR.createCryptoCipher(cek, iv, Cipher.ENCRYPT_MODE, null);
+        } catch (Exception e) {
+            // Expected exception.
+        }
+    }
+
+    private byte[] generateSm4IV() {
+        final byte[] iv = new byte[CryptoScheme.SM4_CTR.getContentChiperIVLength()];
+        new SecureRandom().nextBytes(iv);
+        for (int i = 8; i < 12; i++) {
+            iv[i] = 0;
+        }
+        return iv;
+    }
 }

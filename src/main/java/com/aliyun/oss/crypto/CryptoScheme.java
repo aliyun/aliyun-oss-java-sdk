@@ -1,19 +1,13 @@
 package com.aliyun.oss.crypto;
 
 import java.nio.ByteBuffer;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.Provider;
 
 import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
 import com.aliyun.oss.ClientException;
-import com.aliyun.oss.crypto.CryptoCipher;
 
 public abstract class CryptoScheme {
     // Enable bouncy castle provider
@@ -23,6 +17,7 @@ public abstract class CryptoScheme {
 
     public static final int BLOCK_SIZE = 16;
     public static final CryptoScheme AES_CTR = new AesCtr();
+    public static final CryptoScheme SM4_CTR = new Sm4Ctr();
 
     public abstract String getKeyGeneratorAlgorithm();
 
@@ -87,6 +82,8 @@ public abstract class CryptoScheme {
     public static CryptoScheme fromCEKAlgo(String cekAlgo) {
         if (AES_CTR.getContentChiperAlgorithm().equals(cekAlgo)) {
             return AES_CTR;
+        } else if(SM4_CTR.getContentChiperAlgorithm().equals(cekAlgo)){
+            return SM4_CTR;
         }
         throw new UnsupportedOperationException("Unsupported content encryption scheme: " + cekAlgo);
     }
