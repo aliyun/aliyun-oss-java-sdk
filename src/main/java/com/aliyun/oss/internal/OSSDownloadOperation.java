@@ -64,7 +64,6 @@ import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.Payer;
 import com.aliyun.oss.model.SimplifiedObjectMeta;
-import com.aliyun.oss.model.HeadObjectRequest;
 
 /**
  * OSSDownloadOperation
@@ -479,7 +478,7 @@ public class OSSDownloadOperation {
         long downloadSize;
         if (downloadCheckPoint.objectStat.size > 0) {
             long[] slice = getSlice(downloadFileRequest.getRange(), downloadCheckPoint.objectStat.size);
-            downloadCheckPoint.downloadParts = splitFile(slice[0], slice[1], downloadFileRequest.getPartSize(), downloadFileRequest.getSupportFourAlignment());
+            downloadCheckPoint.downloadParts = splitFile(slice[0], slice[1], downloadFileRequest.getPartSize());
             downloadSize = slice[1];
         } else {
             //download whole file
@@ -646,15 +645,9 @@ public class OSSDownloadOperation {
 
                 byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
                 int bytesRead = 0;
-                int bytesReadTemp = 0;
-                StringBuffer stringBuffer = new StringBuffer();
-                while ((bytesRead = content.read(buffer)) != -1) {
-                    String bufferStr = new String(buffer,0,bytesRead, "ISO-8859-1");
-                    stringBuffer.append(bufferStr);
-                    bytesReadTemp = bytesReadTemp + bytesRead;
+                while ((bytesRead = IOUtils.readNBytes(content, buffer, 0, buffer.length)) > 0) {
+                    output.write(buffer, 0, bytesRead);
                 }
-                output.write(stringBuffer.toString().getBytes("ISO-8859-1"), 0, bytesReadTemp);
-
 
                 if (objectOperation.getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
                     Long clientCRC = getInputStreamCRCWrap(content);
@@ -701,15 +694,11 @@ public class OSSDownloadOperation {
         private ProgressListener progressListener;
     }
 
-    private ArrayList<DownloadPart> splitFile(long start, long objectSize, long partSize, boolean supportFourAlignment) {
+    private ArrayList<DownloadPart> splitFile(long start, long objectSize, long partSize) {
         ArrayList<DownloadPart> parts = new ArrayList<DownloadPart>();
 
-        if(supportFourAlignment){
-            long fourAlignment = partSize % 4 * KB;
-            if(fourAlignment != 0 ){
-                partSize = partSize - fourAlignment;
-            }
-        }
+        long alignSize = 4 * KB;
+        partSize = (((partSize + alignSize -1)/alignSize) * alignSize);
 
         long partNum = objectSize / partSize;
         if (partNum >= 10000) {

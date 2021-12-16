@@ -104,13 +104,6 @@ public class DownloadFileRequest extends GenericRequest {
         this.checkpointFile = checkpointFile;
     }
 
-    public boolean getSupportFourAlignment() {
-        return supportFourAlignment;
-    }
-
-    public void setSupportFourAlignment(boolean supportFourAlignment) {
-        this.supportFourAlignment = supportFourAlignment;
-    }
 
     /**
      * Gets the ETag matching constraints. The download only happens if the
@@ -316,6 +309,4 @@ public class DownloadFileRequest extends GenericRequest {
 
     private long[] range;
 
-    // Support 4K alignment
-    private boolean supportFourAlignment;
 }
