@@ -161,4 +161,17 @@ public class IOUtils {
         return null;
     }
 
+    public static int readNBytes(InputStream inputStream, byte[] b, int off, int len) throws IOException {
+        int n;
+        int count;
+        for(n = 0; n < len; n += count) {
+            count = inputStream.read(b, off + n, len - n);
+            if (count < 0) {
+                break;
+            }
+        }
+
+        return n;
+    }
+
 }
