@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.aliyun.oss.common.utils.IOUtils;
 import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.entity.ContentType;
@@ -147,7 +148,7 @@ public class ChunkedInputStreamEntity extends BasicHttpEntity {
                 int l;
                 if (this.length < 0) {
                     // consume until EOF
-                    while ((l = instream.read(buffer)) != -1) {
+                    while ((l = IOUtils.readNBytes(instream, buffer, 0, buffer.length)) > 0) {
                         outstream.write(buffer, 0, l);
                     }
                 } else {

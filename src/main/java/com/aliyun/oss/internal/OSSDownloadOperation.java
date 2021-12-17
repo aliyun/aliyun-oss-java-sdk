@@ -697,12 +697,10 @@ public class OSSDownloadOperation {
     private ArrayList<DownloadPart> splitFile(long start, long objectSize, long partSize) {
         ArrayList<DownloadPart> parts = new ArrayList<DownloadPart>();
 
-        long alignSize = 4 * KB;
-        partSize = (((partSize + alignSize -1)/alignSize) * alignSize);
-
         long partNum = objectSize / partSize;
+        long alignSize = 4 * KB;
         if (partNum >= 10000) {
-            partSize = objectSize / (10000 - 1);
+            partSize = (((partSize + alignSize -1)/alignSize) * alignSize);
         }
 
         long offset = 0L;
