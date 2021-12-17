@@ -70,6 +70,9 @@ public class Bucket extends GenericResult {
 	// The id of resource group.
     private String resourceGroupId;
 
+    // Bucket access tracking status
+    private String accessMonitor;
+
     /**
      * Default constructor.
      */
@@ -285,5 +288,13 @@ public class Bucket extends GenericResult {
      */
     public void setResourceGroupId(String resourceGroupId) {
         this.resourceGroupId = resourceGroupId;
+    }
+
+    public String getAccessMonitor() {
+        return accessMonitor;
+    }
+
+    public void setAccessMonitor(String accessMonitor) {
+        this.accessMonitor = accessMonitor;
     }
 }

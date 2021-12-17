@@ -108,9 +108,25 @@ public class SetBucketLifecycleRequest extends GenericRequest {
                     throw new IllegalArgumentException(
                             "Only one expiration property for StorageTransition should be specified.");
                 }
+                Boolean isAccessTime = storageTransition.getAccessTime();
+                Boolean returnToStdWhenVisit = storageTransition.getReturnToStdWhenVisit();
+                if(returnToStdWhenVisit != null && !isAccessTime ){
+                    throw new IllegalArgumentException(
+                            "ReturnToStdWhenVisit can exist only when isAccessTime is true.");
+                }
             }
         }
 
+        if (lifecycleRule.hasNoncurrentVersionStorageTransitions()) {
+            for (LifecycleRule.NoncurrentVersionStorageTransition noncurrentVersionStorageTransition : lifecycleRule.getNoncurrentVersionStorageTransitions()) {
+                Boolean isAccessTime = noncurrentVersionStorageTransition.getAccessTime();
+                Boolean returnToStdWhenVisit = noncurrentVersionStorageTransition.getReturnToStdWhenVisit();
+                if(returnToStdWhenVisit != null && !isAccessTime){
+                    throw new IllegalArgumentException(
+                            "ReturnToStdWhenVisit can exist only when isAccessTime is true.");
+                }
+            }
+        }
         this.lifecycleRules.add(lifecycleRule);
     }
 }

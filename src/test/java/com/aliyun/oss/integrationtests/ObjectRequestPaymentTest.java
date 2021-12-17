@@ -545,6 +545,24 @@ public class ObjectRequestPaymentTest extends TestBase {
 
         prepareObject(key);
 
+        // Verify x-oss-last-access-time response header
+        try {
+            Payer payer = Payer.Requester;
+            GenericRequest genericRequest = new GenericRequest(bucketName, key);
+            genericRequest.setRequestPayer(payer);
+            ObjectMetadata objectMetadata = ossPayerClient.getObjectMetadata(genericRequest);
+            Object accessTime = objectMetadata.getRawMetadata().get("x-oss-last-access-time");
+            Assert.assertNull(accessTime);
+
+            ossClient.putBucketAccessMonitor(bucketName, AccessMonitorStatus.Enabled);
+
+            ObjectMetadata objectMetadata2 = ossPayerClient.getObjectMetadata(genericRequest);
+            Object accessTime2 = objectMetadata2.getRawMetadata().get("x-oss-last-access-time");
+            Assert.assertNotNull(accessTime2);
+        } catch (OSSException e) {
+            System.out.println("Accessmonitor execution failed.");
+        }
+
         // Get object meta data without payer setting, should be failed.
         try {            
             GenericRequest genericRequest = new GenericRequest(bucketName, key);  
