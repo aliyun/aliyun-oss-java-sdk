@@ -168,20 +168,23 @@ public class OSSMultipartOperation extends OSSOperation {
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(UPLOAD_ID, uploadId);
 
-        List<PartETag> partETags = completeMultipartUploadRequest.getPartETags();
-        Collections.sort(partETags, new Comparator<PartETag>() {
-            @Override
-            public int compare(PartETag p1, PartETag p2) {
-                return p1.getPartNumber() - p2.getPartNumber();
-            }
-        });
-
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.POST).setBucket(bucketName).setKey(key).setHeaders(headers)
                 .setParameters(parameters)
-                .setInputStreamWithLength(
-                        completeMultipartUploadRequestMarshaller.marshall(completeMultipartUploadRequest))
+                .setInputStream(new ByteArrayInputStream(new byte[0])).setInputSize(0)
                 .setOriginalRequest(completeMultipartUploadRequest).build();
+
+        List<PartETag> partETags = completeMultipartUploadRequest.getPartETags();
+        if(partETags != null && !partETags.isEmpty()){
+            Collections.sort(partETags, new Comparator<PartETag>() {
+                @Override
+                public int compare(PartETag p1, PartETag p2) {
+                    return p1.getPartNumber() - p2.getPartNumber();
+                }
+            });
+            request.setContent(completeMultipartUploadRequestMarshaller.marshall(completeMultipartUploadRequest));
+            request.setContentLength(completeMultipartUploadRequestMarshaller.marshall(completeMultipartUploadRequest).getLength());
+        }
 
         List<ResponseHandler> reponseHandlers = new ArrayList<ResponseHandler>();
         reponseHandlers.add(new OSSCallbackErrorResponseHandler());
@@ -193,10 +196,11 @@ public class OSSMultipartOperation extends OSSOperation {
             result = doOperation(request, completeMultipartUploadProcessResponseParser, bucketName, key, true, null,
                     reponseHandlers);
         }
-
-        result.setClientCRC(calcObjectCRCFromParts(completeMultipartUploadRequest.getPartETags()));
-        if (getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
-            OSSUtils.checkChecksum(result.getClientCRC(), result.getServerCRC(), result.getRequestId());
+        if(partETags != null && !partETags.isEmpty()){
+            result.setClientCRC(calcObjectCRCFromParts(completeMultipartUploadRequest.getPartETags()));
+            if (getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
+                OSSUtils.checkChecksum(result.getClientCRC(), result.getServerCRC(), result.getRequestId());
+            }
         }
 
         return result;
