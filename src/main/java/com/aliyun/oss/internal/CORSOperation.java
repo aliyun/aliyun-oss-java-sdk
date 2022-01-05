@@ -63,7 +63,7 @@ public class CORSOperation extends OSSOperation {
         Map<String, String> parameters = new LinkedHashMap<String, String>();
         parameters.put(SUBRESOURCE_CORS, null);
 
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(setBucketCORSRequest))
                 .setMethod(HttpMethod.PUT).setBucket(setBucketCORSRequest.getBucketName()).setParameters(parameters)
                 .setInputStreamWithLength(setBucketCORSRequestMarshaller.marshall(setBucketCORSRequest))
                 .setOriginalRequest(setBucketCORSRequest).build();
@@ -85,7 +85,7 @@ public class CORSOperation extends OSSOperation {
         Map<String, String> parameters = new LinkedHashMap<String, String>();
         parameters.put(SUBRESOURCE_CORS, null);
 
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(genericRequest))
                 .setMethod(HttpMethod.GET).setParameters(parameters).setBucket(bucketName)
                 .setOriginalRequest(genericRequest).build();
 
@@ -106,7 +106,7 @@ public class CORSOperation extends OSSOperation {
         Map<String, String> parameters = new LinkedHashMap<String, String>();
         parameters.put(SUBRESOURCE_CORS, null);
 
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(genericRequest))
                 .setMethod(HttpMethod.DELETE).setParameters(parameters).setBucket(bucketName)
                 .setOriginalRequest(genericRequest).build();
 
@@ -125,7 +125,7 @@ public class CORSOperation extends OSSOperation {
         ensureBucketNameValid(bucketName);
 
         @SuppressWarnings("deprecation")
-        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(optionsRequest))
                 .setMethod(HttpMethod.OPTIONS).setBucket(bucketName).setKey(optionsRequest.getObjectName())
                 .addHeader(OSSHeaders.ORIGIN, optionsRequest.getOrigin())
                 .addHeader(OSSHeaders.ACCESS_CONTROL_REQUEST_METHOD, optionsRequest.getRequestMethod().name())

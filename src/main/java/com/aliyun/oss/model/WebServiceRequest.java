@@ -19,12 +19,14 @@
 
 package com.aliyun.oss.model;
 
+import com.aliyun.oss.common.utils.CommonUtils;
+import com.aliyun.oss.event.ProgressListener;
+
+import java.net.URI;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-
-import com.aliyun.oss.event.ProgressListener;
 
 public abstract class WebServiceRequest {
 
@@ -37,8 +39,11 @@ public abstract class WebServiceRequest {
     //We enable INFO and WARNING logs by default.
     private boolean logEnabled = true;
 
+    //If request is set endPoint ,it will overwrite endpoint  set in ossclient
+    private String endPoint;
+
     private Map<String, String> parameters = new LinkedHashMap<String, String>();
-    private Map<String, String> headers = new LinkedHashMap<String, String>();
+    private Map<String, String> headers    = new LinkedHashMap<String, String>();
 
     private Set<String> additionalHeaderNames = new HashSet<String>();
 
@@ -99,5 +104,13 @@ public abstract class WebServiceRequest {
 
     public void setLogEnabled(boolean logEnabled) {
         this.logEnabled = logEnabled;
+    }
+
+    public URI getEndPoint(String defaultProtocol) {
+        return CommonUtils.toURI(endPoint,defaultProtocol);
+    }
+
+    public void setEndPoint(String endPoint) {
+        this.endPoint = endPoint;
     }
 }
