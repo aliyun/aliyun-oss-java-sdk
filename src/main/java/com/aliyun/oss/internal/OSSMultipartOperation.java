@@ -64,6 +64,7 @@ import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.comm.ResponseHandler;
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.comm.ServiceClient;
+import com.aliyun.oss.common.comm.io.FixedLengthInputStream;
 import com.aliyun.oss.common.utils.CRC64;
 import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.event.ProgressEventType;
@@ -169,18 +170,23 @@ public class OSSMultipartOperation extends OSSOperation {
         parameters.put(UPLOAD_ID, uploadId);
 
         List<PartETag> partETags = completeMultipartUploadRequest.getPartETags();
-        Collections.sort(partETags, new Comparator<PartETag>() {
-            @Override
-            public int compare(PartETag p1, PartETag p2) {
-                return p1.getPartNumber() - p2.getPartNumber();
-            }
-        });
+        FixedLengthInputStream requestInstream;
+        if (partETags != null) {
+            Collections.sort(partETags, new Comparator<PartETag>() {
+                @Override
+                public int compare(PartETag p1, PartETag p2) {
+                    return p1.getPartNumber() - p2.getPartNumber();
+                }
+            });
+            requestInstream = completeMultipartUploadRequestMarshaller.marshall(completeMultipartUploadRequest);
+        } else {
+            requestInstream = new FixedLengthInputStream(new ByteArrayInputStream("".getBytes()), 0);
+        }
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(completeMultipartUploadRequest))
                 .setMethod(HttpMethod.POST).setBucket(bucketName).setKey(key).setHeaders(headers)
                 .setParameters(parameters)
-                .setInputStreamWithLength(
-                        completeMultipartUploadRequestMarshaller.marshall(completeMultipartUploadRequest))
+                .setInputStreamWithLength(requestInstream)
                 .setOriginalRequest(completeMultipartUploadRequest).build();
 
         List<ResponseHandler> reponseHandlers = new ArrayList<ResponseHandler>();
@@ -194,7 +200,9 @@ public class OSSMultipartOperation extends OSSOperation {
                     reponseHandlers);
         }
 
-        result.setClientCRC(calcObjectCRCFromParts(completeMultipartUploadRequest.getPartETags()));
+        if (partETags != null) {
+            result.setClientCRC(calcObjectCRCFromParts(partETags));
+        }
         if (getInnerClient().getClientConfiguration().isCrcCheckEnabled()) {
             OSSUtils.checkChecksum(result.getClientCRC(), result.getServerCRC(), result.getRequestId());
         }

@@ -39,6 +39,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 
 import org.junit.Ignore;
@@ -46,20 +47,6 @@ import org.junit.Test;
 
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
-import com.aliyun.oss.model.AbortMultipartUploadRequest;
-import com.aliyun.oss.model.Bucket;
-import com.aliyun.oss.model.CompleteMultipartUploadRequest;
-import com.aliyun.oss.model.CompleteMultipartUploadResult;
-import com.aliyun.oss.model.ListMultipartUploadsRequest;
-import com.aliyun.oss.model.ListPartsRequest;
-import com.aliyun.oss.model.MultipartUpload;
-import com.aliyun.oss.model.MultipartUploadListing;
-import com.aliyun.oss.model.OSSObject;
-import com.aliyun.oss.model.PartETag;
-import com.aliyun.oss.model.PartListing;
-import com.aliyun.oss.model.PartSummary;
-import com.aliyun.oss.model.UploadPartRequest;
-import com.aliyun.oss.model.UploadPartResult;
 
 public class UploadPartTest extends TestBase {
 
@@ -1116,6 +1103,105 @@ public class UploadPartTest extends TestBase {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testNormalUploadWithEmptyPart() {
+        final String key = "normal-upload-empty-part-object";
+        final int partSize = 128 * 1024;     //128KB
+
+        try {
+            String uploadId = claimUploadId(ossClient, bucketName, key);
+            List<PartETag> partETags = new ArrayList();
+
+            // Complete multipart upload
+            CompleteMultipartUploadRequest completeMultipartUploadRequest = new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
+            CompleteMultipartUploadResult completeMultipartUploadResult =
+                    ossClient.completeMultipartUpload(completeMultipartUploadRequest);
+
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testNormalUploadWithCompleteAllFlag() {
+        final String key1 = "normal-upload-empty-part-object-1";
+        final String key2 = "normal-upload-empty-part-object-2";
+        final int partSize1 = 128 * 1024;     //128KB
+        final int partSize2 = 63 * 1024;     //128KB
+
+        try {
+            String uploadId = claimUploadId(ossClient, bucketName, key1);
+
+            List<PartETag> partETags = new ArrayList<PartETag>();
+
+            // Upload part1 part
+            InputStream instream = genFixedLengthInputStream(partSize1);
+            UploadPartRequest uploadPartRequest = new UploadPartRequest();
+            uploadPartRequest.setBucketName(bucketName);
+            uploadPartRequest.setKey(key1);
+            uploadPartRequest.setInputStream(instream);
+            uploadPartRequest.setPartNumber(1);
+            uploadPartRequest.setPartSize(partSize1);
+            uploadPartRequest.setUploadId(uploadId);
+            UploadPartResult uploadPartResult =  ossClient.uploadPart(uploadPartRequest);
+            partETags.add(uploadPartResult.getPartETag());
+
+            // Upload part2 part
+            instream = genFixedLengthInputStream(partSize2);
+            uploadPartRequest = new UploadPartRequest();
+            uploadPartRequest.setBucketName(bucketName);
+            uploadPartRequest.setKey(key1);
+            uploadPartRequest.setInputStream(instream);
+            uploadPartRequest.setPartNumber(2);
+            uploadPartRequest.setPartSize(partSize2);
+            uploadPartRequest.setUploadId(uploadId);
+            uploadPartResult =   ossClient.uploadPart(uploadPartRequest);
+            partETags.add(uploadPartResult.getPartETag());
+
+            // Complete multipart upload
+            CompleteMultipartUploadRequest completeMultipartUploadRequest = new CompleteMultipartUploadRequest(bucketName, key1, uploadId, partETags);
+            CompleteMultipartUploadResult completeMultipartUploadResult1 = ossClient.completeMultipartUpload(completeMultipartUploadRequest);
+
+
+            uploadId = claimUploadId(ossClient, bucketName, key2);
+            instream = genFixedLengthInputStream(partSize1);
+            uploadPartRequest = new UploadPartRequest();
+            uploadPartRequest.setBucketName(bucketName);
+            uploadPartRequest.setKey(key2);
+            uploadPartRequest.setInputStream(instream);
+            uploadPartRequest.setPartNumber(1);
+            uploadPartRequest.setPartSize(partSize1);
+            uploadPartRequest.setUploadId(uploadId);
+            ossClient.uploadPart(uploadPartRequest);
+
+            // Upload part2 part
+            instream = genFixedLengthInputStream(partSize2);
+            uploadPartRequest = new UploadPartRequest();
+            uploadPartRequest.setBucketName(bucketName);
+            uploadPartRequest.setKey(key2);
+            uploadPartRequest.setInputStream(instream);
+            uploadPartRequest.setPartNumber(2);
+            uploadPartRequest.setPartSize(partSize2);
+            uploadPartRequest.setUploadId(uploadId);
+            ossClient.uploadPart(uploadPartRequest);
+
+            completeMultipartUploadRequest = new CompleteMultipartUploadRequest(bucketName, key2, uploadId, null);
+            completeMultipartUploadRequest.addHeader("x-oss-complete-all", "yes");
+            CompleteMultipartUploadResult completeMultipartUploadResult2 = ossClient.completeMultipartUpload(completeMultipartUploadRequest);
+
+            ObjectMetadata meta1 = ossClient.getObjectMetadata(bucketName, key1);
+            ObjectMetadata meta2 = ossClient.getObjectMetadata(bucketName, key2);
+
+            Assert.assertEquals(meta1.getContentLength(), meta2.getContentLength());
+            Assert.assertEquals(meta1.getServerCRC(), meta2.getServerCRC());
+            Assert.assertEquals(meta1.getETag(), meta2.getETag());
+
+
+        } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
     }
