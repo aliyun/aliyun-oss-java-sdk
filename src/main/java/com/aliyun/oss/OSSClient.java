@@ -48,7 +48,6 @@ import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.ServiceSignature;
 import com.aliyun.oss.common.comm.*;
 import com.aliyun.oss.common.utils.BinaryUtil;
-import com.aliyun.oss.common.utils.CommonUtils;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.internal.*;
 import com.aliyun.oss.model.*;
@@ -286,7 +285,7 @@ public class OSSClient implements OSS {
     }
 
     private URI toURI(String endpoint) throws IllegalArgumentException {
-        return CommonUtils.toURI(endpoint, this.serviceClient.getClientConfiguration().getProtocol().toString());
+        return OSSUtils.toEndpointURI(endpoint, this.serviceClient.getClientConfiguration().getProtocol().toString());
     }
 
     private void initOperations() {

@@ -42,6 +42,7 @@ import com.aliyun.oss.common.utils.CodingUtils;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.common.utils.ResourceManager;
+import com.aliyun.oss.common.utils.StringUtils;
 import com.aliyun.oss.model.Callback;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.ResponseHeaderOverrides;
@@ -519,6 +520,18 @@ public class OSSUtils {
     public static void checkChecksum(Long clientChecksum, Long serverChecksum, String requestId) {
         if (clientChecksum != null && serverChecksum != null && !clientChecksum.equals(serverChecksum)) {
             throw new InconsistentException(clientChecksum, serverChecksum, requestId);
+        }
+    }
+
+    public static URI toEndpointURI(String endpoint, String defaultProtocol) throws IllegalArgumentException {
+        if (endpoint != null && !endpoint.contains("://")) {
+            endpoint = defaultProtocol + "://" + endpoint;
+        }
+
+        try {
+            return new URI(endpoint);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e);
         }
     }
 }

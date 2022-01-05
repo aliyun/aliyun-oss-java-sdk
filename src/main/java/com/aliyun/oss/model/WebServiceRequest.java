@@ -19,7 +19,6 @@
 
 package com.aliyun.oss.model;
 
-import com.aliyun.oss.common.utils.CommonUtils;
 import com.aliyun.oss.event.ProgressListener;
 
 import java.net.URI;
@@ -40,7 +39,7 @@ public abstract class WebServiceRequest {
     private boolean logEnabled = true;
 
     //If request is set endPoint ,it will overwrite endpoint  set in ossclient
-    private String endPoint;
+    private String endpoint;
 
     private Map<String, String> parameters = new LinkedHashMap<String, String>();
     private Map<String, String> headers    = new LinkedHashMap<String, String>();
@@ -106,11 +105,11 @@ public abstract class WebServiceRequest {
         this.logEnabled = logEnabled;
     }
 
-    public URI getEndPoint(String defaultProtocol) {
-        return CommonUtils.toURI(endPoint,defaultProtocol);
+    public String getEndpoint() {
+        return endpoint;
     }
 
-    public void setEndPoint(String endPoint) {
-        this.endPoint = endPoint;
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
     }
 }

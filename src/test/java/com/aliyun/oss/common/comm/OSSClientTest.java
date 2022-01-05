@@ -370,30 +370,5 @@ public class OSSClientTest {
             Assert.fail("should be failed here.");
         }
     }
-
-    @Test
-    public void testEndpoint2() {
-        String endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
-        String endpoint2 = "http://oss-cn-shanghai.aliyuncs.com";
-
-        String accessKeyId = "accessKeyId";
-        String accessKeySecret = "accessKeySecret";
-
-        ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
-        conf.setProxyHost(endpoint);
-        conf.setProxyPort(80);
-        conf.setProxyUsername("user");
-        conf.setProxyPassword("passwd");
-
-        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret, conf);
-
-        GetObjectRequest request= new GetObjectRequest("bucket","objedct");
-        request.setEndPoint(endpoint2);
-        ossClient.getObject(request);
-        ossClient.shutdown();
-
-
-
-    }
 }
 

@@ -40,6 +40,7 @@ import com.aliyun.oss.common.parser.ResponseParser;
 import com.aliyun.oss.common.utils.ExceptionFactory;
 import com.aliyun.oss.internal.ResponseParsers.EmptyResponseParser;
 import com.aliyun.oss.internal.ResponseParsers.RequestIdResponseParser;
+import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.WebServiceRequest;
 
 /**
@@ -67,8 +68,14 @@ public abstract class OSSOperation {
     }
 
     public URI getEndpoint(WebServiceRequest request) {
-        URI endpointInRequest = request.getEndPoint(this.client.getClientConfiguration().getProtocol().toString());
-        return endpointInRequest != null ? endpointInRequest : endpoint;
+        String reqEndpoint = request.getEndpoint();
+        if (reqEndpoint == null) {
+            return getEndpoint();
+        }
+        String defaultProto = this.client.getClientConfiguration().getProtocol().toString();
+        URI ret =  OSSUtils.toEndpointURI(reqEndpoint, defaultProto);
+        OSSUtils.ensureEndpointValid(ret.getHost());
+        return ret;
     }
 
     public void setEndpoint(URI endpoint) {

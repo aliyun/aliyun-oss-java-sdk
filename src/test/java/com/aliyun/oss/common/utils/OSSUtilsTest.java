@@ -69,4 +69,44 @@ public class OSSUtilsTest {
         assertEquals(OSSUtils.trimQuotes("test"),"test");
         assertEquals(OSSUtils.trimQuotes("\"test\""),"test");
     }
+
+    @Test
+    public void testToURI() {
+        String endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
+        String defaultProtocol = "https";
+
+        URI res = OSSUtils.toEndpointURI(endpoint, defaultProtocol);
+        assertEquals(endpoint, res.toString());
+    }
+
+    @Test
+    public void testToURI2() {
+        String endpoint = "oss-cn-hangzhou.aliyuncs.com";
+        String defaultProtocol = "https";
+
+        URI res = OSSUtils.toEndpointURI(endpoint, defaultProtocol);
+        assertEquals("https://oss-cn-hangzhou.aliyuncs.com", res.toString());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testToURI3() {
+        String endpoint = "oss-cn-hangzhou.aliyuncs.com";
+        String defaultProtocol = "";
+
+        URI res = OSSUtils.toEndpointURI(endpoint, defaultProtocol);
+        assertEquals("https://oss-cn-hangzhou.aliyuncs.com", res.toString());
+    }
+
+    @Test
+    public void testToURI4() {
+        String endpoint = null;
+        String defaultProtocol = "http";
+
+        try {
+            URI res = OSSUtils.toEndpointURI(endpoint, defaultProtocol);
+            assertEquals(null, res);
+        } catch (Exception e) {
+            assertTrue(e instanceof  NullPointerException);
+        }
+    }
 }
