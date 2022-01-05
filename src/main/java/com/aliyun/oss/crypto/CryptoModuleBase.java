@@ -301,7 +301,7 @@ public abstract class CryptoModuleBase implements CryptoModule {
             outputStream = new BufferedOutputStream(new FileOutputStream(file));
             byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
             int bytesRead;
-            while ((bytesRead = ossObject.getObjectContent().read(buffer)) != -1) {
+            while ((bytesRead = IOUtils.readNBytes(ossObject.getObjectContent(), buffer, 0, buffer.length)) > 0) {
                 outputStream.write(buffer, 0, bytesRead);
             }
 

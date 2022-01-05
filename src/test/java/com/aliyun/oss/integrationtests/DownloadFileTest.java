@@ -458,6 +458,49 @@ public class DownloadFileTest extends TestBase {
     }
 
 
+    @Test
+    public void testDownloadNot4KAlignment() {
+        final String key = "obj-download-empty-file-wcp";
+
+        try {
+            // download file
+            String filePathNew = key + "-new.txt";
+            DownloadFileRequest downloadFileRequest = new DownloadFileRequest(bucketName, key);
+            downloadFileRequest.setDownloadFile(filePathNew);
+            downloadFileRequest.setTaskNum(10);
+            downloadFileRequest.setPartSize(1024 * 6);
+            downloadFileRequest.setEnableCheckpoint(true);
+            ossClient.downloadFile(downloadFileRequest);
+
+        } catch (Throwable e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+            ossClient.deleteBucket(bucketName);
+        }
+    }
+
+    @Test
+    public void testDownload4KAlignment() {
+        final String key = "obj-download-empty-file-wcp";
+
+        try {
+            // download file
+            String filePathNew = key + "-new.txt";
+            DownloadFileRequest downloadFileRequest = new DownloadFileRequest(bucketName, key);
+            downloadFileRequest.setDownloadFile(filePathNew);
+            downloadFileRequest.setTaskNum(10);
+            downloadFileRequest.setPartSize(1024 * 4);
+            downloadFileRequest.setEnableCheckpoint(true);
+            ossClient.downloadFile(downloadFileRequest);
+
+        } catch (Throwable e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+            ossClient.deleteBucket(bucketName);
+        }
+    }
+
+
     class DownloadObjectProgressListener implements ProgressListener {
         private long bytesRead = 0;
         private long totalBytes = -1;

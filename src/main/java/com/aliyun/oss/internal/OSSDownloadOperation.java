@@ -22,6 +22,7 @@ package com.aliyun.oss.internal;
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.common.utils.LogUtils.logException;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_BUFFER_SIZE;
+import static com.aliyun.oss.internal.OSSConstants.KB;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
 import static com.aliyun.oss.internal.OSSUtils.ensureObjectKeyValid;
 
@@ -63,7 +64,6 @@ import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.Payer;
 import com.aliyun.oss.model.SimplifiedObjectMeta;
-import com.aliyun.oss.model.HeadObjectRequest;
 
 /**
  * OSSDownloadOperation
@@ -645,7 +645,7 @@ public class OSSDownloadOperation {
 
                 byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
                 int bytesRead = 0;
-                while ((bytesRead = content.read(buffer)) != -1) {
+                while ((bytesRead = IOUtils.readNBytes(content, buffer, 0, buffer.length)) > 0) {
                     output.write(buffer, 0, bytesRead);
                 }
 
@@ -698,8 +698,10 @@ public class OSSDownloadOperation {
         ArrayList<DownloadPart> parts = new ArrayList<DownloadPart>();
 
         long partNum = objectSize / partSize;
+        long alignSize = 4 * KB;
         if (partNum >= 10000) {
             partSize = objectSize / (10000 - 1);
+            partSize = (((partSize + alignSize -1)/alignSize) * alignSize);
         }
 
         long offset = 0L;
