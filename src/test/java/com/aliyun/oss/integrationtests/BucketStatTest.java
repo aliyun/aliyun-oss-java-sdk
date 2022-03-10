@@ -67,6 +67,19 @@ public class BucketStatTest extends TestBase {
             Assert.assertTrue(stat.getStorageSize() >= 1024 * 300);
             Assert.assertTrue(stat.getObjectCount() >= 1);
             Assert.assertTrue(stat.getMultipartUploadCount() >= 1);
+            Assert.assertTrue(stat.getStandardStorage() >= 1024 * 300);
+            Assert.assertTrue(stat.getStandardObjectCount() >= 1);
+            Assert.assertTrue(stat.getLiveChannelCount() >= 0);
+            Assert.assertTrue(stat.getLastModifiedTime() >= 0);
+            Assert.assertTrue(stat.getInfrequentAccessStorage() >= 0);
+            Assert.assertTrue(stat.getInfrequentAccessRealStorage() >= 0);
+            Assert.assertTrue(stat.getInfrequentAccessObjectCount() >= 0);
+            Assert.assertTrue(stat.getArchiveStorage() >= 0);
+            Assert.assertTrue(stat.getArchiveRealStorage() >= 0);
+            Assert.assertTrue(stat.getArchiveObjectCount() >= 0);
+            Assert.assertTrue(stat.getColdArchiveStorage() >= 0);
+            Assert.assertTrue(stat.getColdArchiveRealStorage() >= 0);
+            Assert.assertTrue(stat.getColdArchiveObjectCount() >= 0);
             Assert.assertEquals(stat.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
         	e.printStackTrace();

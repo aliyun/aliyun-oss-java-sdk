@@ -2804,7 +2804,37 @@ public final class ResponseParsers {
             Long storage = Long.parseLong(root.getChildText("Storage"));
             Long objectCount = Long.parseLong(root.getChildText("ObjectCount"));
             Long multipartUploadCount = Long.parseLong(root.getChildText("MultipartUploadCount"));
-            BucketStat bucketStat = new BucketStat(storage, objectCount, multipartUploadCount);
+            Long liveChannelCount = Long.parseLong(root.getChildText("LiveChannelCount"));
+            Long lastModifiedTime = Long.parseLong(root.getChildText("LastModifiedTime"));
+            Long standardStorage = Long.parseLong(root.getChildText("StandardStorage"));
+            Long standardObjectCount = Long.parseLong(root.getChildText("StandardObjectCount"));
+            Long infrequentAccessStorage = Long.parseLong(root.getChildText("InfrequentAccessStorage"));
+            Long infrequentAccessRealStorage = Long.parseLong(root.getChildText("InfrequentAccessRealStorage"));
+            Long infrequentAccessObjectCount = Long.parseLong(root.getChildText("InfrequentAccessObjectCount"));
+            Long archiveStorage = Long.parseLong(root.getChildText("ArchiveStorage"));
+            Long archiveRealStorage = Long.parseLong(root.getChildText("ArchiveRealStorage"));
+            Long archiveObjectCount = Long.parseLong(root.getChildText("ArchiveObjectCount"));
+            Long coldArchiveStorage = Long.parseLong(root.getChildText("ColdArchiveStorage"));
+            Long coldArchiveRealStorage = Long.parseLong(root.getChildText("ColdArchiveRealStorage"));
+            Long coldArchiveObjectCount = Long.parseLong(root.getChildText("ColdArchiveObjectCount"));
+            BucketStat bucketStat = new BucketStat()
+                    .withStorageSize(storage)
+                    .withObjectCount(objectCount)
+                    .withMultipartUploadCount(multipartUploadCount)
+                    .withLiveChannelCount(liveChannelCount)
+                    .withLastModifiedTime(lastModifiedTime)
+                    .withStandardStorage(standardStorage)
+                    .withStandardObjectCount(standardObjectCount)
+                    .withInfrequentAccessStorage(infrequentAccessStorage)
+                    .withInfrequentAccessRealStorage(infrequentAccessRealStorage)
+                    .withInfrequentAccessObjectCount(infrequentAccessObjectCount)
+                    .withArchiveStorage(archiveStorage)
+                    .withArchiveRealStorage(archiveRealStorage)
+                    .withArchiveObjectCount(archiveObjectCount)
+                    .withColdArchiveStorage(coldArchiveStorage)
+                    .withColdArchiveRealStorage(coldArchiveRealStorage)
+                    .withColdArchiveObjectCount(coldArchiveObjectCount);
+
             return bucketStat;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
