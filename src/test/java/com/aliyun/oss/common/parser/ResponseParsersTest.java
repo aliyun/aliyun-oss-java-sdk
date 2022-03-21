@@ -3126,8 +3126,13 @@ public class ResponseParsersTest {
         } catch (Exception e) {
             Assert.assertTrue(false);
         }
+    }
 
-        respBody = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+    @Test
+    public void testParseGetBucketStat() {
+        InputStream instream = null;
+
+        String respBody = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<BucketStat>\n" +
                 "  <Storage>1600</Storage>\n" +
                 "  <ObjectCount>230</ObjectCount>\n" +
@@ -3166,8 +3171,42 @@ public class ResponseParsersTest {
             Assert.assertEquals(Long.valueOf(2359296), result.getColdArchiveStorage());
             Assert.assertEquals(Long.valueOf(360), result.getColdArchiveRealStorage());
             Assert.assertEquals(Long.valueOf(36), result.getColdArchiveObjectCount());
-        } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+    }
+
+    @Test
+    public void testParseGetBucketStatReturnEmpty() {
+        InputStream instream = null;
+
+        String respBody = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<BucketStat>\n" +
+                "  <Storage>1600</Storage>\n" +
+                "  <ObjectCount>230</ObjectCount>\n" +
+                "  <MultipartUploadCount>40</MultipartUploadCount>\n" +
+                "  <LiveChannelCount></LiveChannelCount>\n" +
+                "</BucketStat>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+            BucketStat result = ResponseParsers.parseGetBucketStat(instream);
+            Assert.assertEquals(Long.valueOf(1600), result.getStorageSize());
+            Assert.assertEquals(Long.valueOf(230), result.getObjectCount());
+            Assert.assertEquals(Long.valueOf(40), result.getMultipartUploadCount());
+            Assert.assertEquals(Long.valueOf(0), result.getLiveChannelCount());
+            Assert.assertEquals(Long.valueOf(0), result.getLastModifiedTime());
+            Assert.assertEquals(Long.valueOf(0), result.getStandardStorage());
+            Assert.assertEquals(Long.valueOf(0), result.getStandardObjectCount());
+            Assert.assertEquals(Long.valueOf(0), result.getInfrequentAccessStorage());
+            Assert.assertEquals(Long.valueOf(0), result.getInfrequentAccessRealStorage());
+            Assert.assertEquals(Long.valueOf(0), result.getInfrequentAccessObjectCount());
+            Assert.assertEquals(Long.valueOf(0), result.getArchiveStorage());
+            Assert.assertEquals(Long.valueOf(0), result.getArchiveRealStorage());
+            Assert.assertEquals(Long.valueOf(0), result.getArchiveObjectCount());
+            Assert.assertEquals(Long.valueOf(0), result.getColdArchiveStorage());
+            Assert.assertEquals(Long.valueOf(0), result.getColdArchiveRealStorage());
+            Assert.assertEquals(Long.valueOf(0), result.getColdArchiveObjectCount());
         } catch (Exception e) {
             Assert.assertTrue(false);
         }

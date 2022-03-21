@@ -227,6 +227,14 @@ public final class ResponseParsers {
     public static final GetSymbolicLinkResponseParser getSymbolicLinkResponseParser = new GetSymbolicLinkResponseParser();
 
     public static final DeleteDirectoryResponseParser deleteDirectoryResponseParser = new DeleteDirectoryResponseParser();
+
+    public static Long parseLongWithDefault(String defaultValue){
+        if(defaultValue == null || "".equals(defaultValue)){
+            return 0L;
+        }
+        return Long.parseLong(defaultValue);
+    }
+
     public static final class EmptyResponseParser implements ResponseParser<ResponseMessage> {
 
         @Override
@@ -2804,19 +2812,19 @@ public final class ResponseParsers {
             Long storage = Long.parseLong(root.getChildText("Storage"));
             Long objectCount = Long.parseLong(root.getChildText("ObjectCount"));
             Long multipartUploadCount = Long.parseLong(root.getChildText("MultipartUploadCount"));
-            Long liveChannelCount = Long.parseLong(root.getChildText("LiveChannelCount"));
-            Long lastModifiedTime = Long.parseLong(root.getChildText("LastModifiedTime"));
-            Long standardStorage = Long.parseLong(root.getChildText("StandardStorage"));
-            Long standardObjectCount = Long.parseLong(root.getChildText("StandardObjectCount"));
-            Long infrequentAccessStorage = Long.parseLong(root.getChildText("InfrequentAccessStorage"));
-            Long infrequentAccessRealStorage = Long.parseLong(root.getChildText("InfrequentAccessRealStorage"));
-            Long infrequentAccessObjectCount = Long.parseLong(root.getChildText("InfrequentAccessObjectCount"));
-            Long archiveStorage = Long.parseLong(root.getChildText("ArchiveStorage"));
-            Long archiveRealStorage = Long.parseLong(root.getChildText("ArchiveRealStorage"));
-            Long archiveObjectCount = Long.parseLong(root.getChildText("ArchiveObjectCount"));
-            Long coldArchiveStorage = Long.parseLong(root.getChildText("ColdArchiveStorage"));
-            Long coldArchiveRealStorage = Long.parseLong(root.getChildText("ColdArchiveRealStorage"));
-            Long coldArchiveObjectCount = Long.parseLong(root.getChildText("ColdArchiveObjectCount"));
+            Long liveChannelCount = parseLongWithDefault(root.getChildText("LiveChannelCount"));
+            Long lastModifiedTime = parseLongWithDefault(root.getChildText("LastModifiedTime"));
+            Long standardStorage = parseLongWithDefault(root.getChildText("StandardStorage"));
+            Long standardObjectCount = parseLongWithDefault(root.getChildText("StandardObjectCount"));
+            Long infrequentAccessStorage = parseLongWithDefault(root.getChildText("InfrequentAccessStorage"));
+            Long infrequentAccessRealStorage = parseLongWithDefault(root.getChildText("InfrequentAccessRealStorage"));
+            Long infrequentAccessObjectCount = parseLongWithDefault(root.getChildText("InfrequentAccessObjectCount"));
+            Long archiveStorage = parseLongWithDefault(root.getChildText("ArchiveStorage"));
+            Long archiveRealStorage = parseLongWithDefault(root.getChildText("ArchiveRealStorage"));
+            Long archiveObjectCount = parseLongWithDefault(root.getChildText("ArchiveObjectCount"));
+            Long coldArchiveStorage = parseLongWithDefault(root.getChildText("ColdArchiveStorage"));
+            Long coldArchiveRealStorage = parseLongWithDefault(root.getChildText("ColdArchiveRealStorage"));
+            Long coldArchiveObjectCount = parseLongWithDefault(root.getChildText("ColdArchiveObjectCount"));
             BucketStat bucketStat = new BucketStat()
                     .withStorageSize(storage)
                     .withObjectCount(objectCount)

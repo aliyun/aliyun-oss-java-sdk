@@ -67,19 +67,6 @@ public class BucketStatTest extends TestBase {
             Assert.assertTrue(stat.getStorageSize() >= 1024 * 300);
             Assert.assertTrue(stat.getObjectCount() >= 1);
             Assert.assertTrue(stat.getMultipartUploadCount() >= 1);
-            Assert.assertTrue(stat.getStandardStorage() >= 1024 * 300);
-            Assert.assertTrue(stat.getStandardObjectCount() >= 1);
-            Assert.assertTrue(stat.getLiveChannelCount() >= 0);
-            Assert.assertTrue(stat.getLastModifiedTime() >= 0);
-            Assert.assertTrue(stat.getInfrequentAccessStorage() >= 0);
-            Assert.assertTrue(stat.getInfrequentAccessRealStorage() >= 0);
-            Assert.assertTrue(stat.getInfrequentAccessObjectCount() >= 0);
-            Assert.assertTrue(stat.getArchiveStorage() >= 0);
-            Assert.assertTrue(stat.getArchiveRealStorage() >= 0);
-            Assert.assertTrue(stat.getArchiveObjectCount() >= 0);
-            Assert.assertTrue(stat.getColdArchiveStorage() >= 0);
-            Assert.assertTrue(stat.getColdArchiveRealStorage() >= 0);
-            Assert.assertTrue(stat.getColdArchiveObjectCount() >= 0);
             Assert.assertEquals(stat.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
         	e.printStackTrace();
@@ -109,5 +96,64 @@ public class BucketStatTest extends TestBase {
         }
 
     }
-    
+
+    @Test
+    public void testGetBucketStatForStorageInfo() {
+        String key = "obj-upload-file-storage-stat.txt";
+        String uploadId = null;
+
+        try {
+
+            File file = createSampleFile(key, 1024 * 500);
+
+            // upload a file
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
+            uploadFileRequest.setUploadFile(file.getAbsolutePath());
+            uploadFileRequest.setTaskNum(10);
+
+            UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
+
+            // init upload
+            InitiateMultipartUploadRequest initiateMultipartUploadRequest =
+                    new InitiateMultipartUploadRequest(bucketName, key);
+            InitiateMultipartUploadResult initiateMultipartUploadResult =
+                    ossClient.initiateMultipartUpload(initiateMultipartUploadRequest);
+            Assert.assertEquals(initiateMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
+            uploadId = initiateMultipartUploadResult.getUploadId();
+
+            BucketStat stat = ossClient.getBucketStat(bucketName);
+            System.out.println(stat.getStorageSize() + "," + stat.getObjectCount() + "," + stat.getMultipartUploadCount());
+            Assert.assertTrue(stat.getStorageSize() >= 1024 * 300);
+            Assert.assertTrue(stat.getObjectCount() >= 1);
+            Assert.assertTrue(stat.getMultipartUploadCount() >= 1);
+            Assert.assertTrue(stat.getStandardStorage() >= 1024 * 300);
+            Assert.assertTrue(stat.getStandardObjectCount() >= 1);
+            Assert.assertTrue(stat.getLiveChannelCount() >= 0);
+            Assert.assertTrue(stat.getLastModifiedTime() >= 0);
+            Assert.assertTrue(stat.getInfrequentAccessStorage() >= 0);
+            Assert.assertTrue(stat.getInfrequentAccessRealStorage() >= 0);
+            Assert.assertTrue(stat.getInfrequentAccessObjectCount() >= 0);
+            Assert.assertTrue(stat.getArchiveStorage() >= 0);
+            Assert.assertTrue(stat.getArchiveRealStorage() >= 0);
+            Assert.assertTrue(stat.getArchiveObjectCount() >= 0);
+            Assert.assertTrue(stat.getColdArchiveStorage() >= 0);
+            Assert.assertTrue(stat.getColdArchiveRealStorage() >= 0);
+            Assert.assertTrue(stat.getColdArchiveObjectCount() >= 0);
+            Assert.assertEquals(stat.getRequestId().length(), REQUEST_ID_LEN);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        } catch (Throwable e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        } finally {
+            if (uploadId != null) {
+                AbortMultipartUploadRequest AbortMultipartUploadRequest =
+                        new AbortMultipartUploadRequest(bucketName, key, uploadId);
+                ossClient.abortMultipartUpload(AbortMultipartUploadRequest);
+            }
+        }
+    }
 }
