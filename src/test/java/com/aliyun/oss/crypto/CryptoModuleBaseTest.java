@@ -21,7 +21,7 @@ package com.aliyun.oss.crypto;
 
 import com.aliyun.oss.*;
 import com.aliyun.oss.model.*;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;
 
@@ -110,13 +110,13 @@ public class CryptoModuleBaseTest {
     public void testHasEncryptionInfo() {
 
         ObjectMetadata metadata = new ObjectMetadata();
-        Assert.assertEquals(CryptoModuleBase.hasEncryptionInfo(metadata), false);
+        Assertions.assertEquals(CryptoModuleBase.hasEncryptionInfo(metadata), false);
 
         metadata.addUserMetadata(CryptoHeaders.CRYPTO_KEY, "key");
-        Assert.assertEquals(CryptoModuleBase.hasEncryptionInfo(metadata), false);
+        Assertions.assertEquals(CryptoModuleBase.hasEncryptionInfo(metadata), false);
 
         metadata.addUserMetadata(CryptoHeaders.CRYPTO_IV, "iv");
-        Assert.assertEquals(CryptoModuleBase.hasEncryptionInfo(metadata), true);
+        Assertions.assertEquals(CryptoModuleBase.hasEncryptionInfo(metadata), true);
     }
 
     @Test
@@ -133,50 +133,50 @@ public class CryptoModuleBaseTest {
 
         try {
             wrap.TestCreateContentMaterialFromMetadata(meta);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
         catch (ClientException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             meta.addUserMetadata(CryptoHeaders.CRYPTO_KEY, "key");
             wrap.TestCreateContentMaterialFromMetadata(meta);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
         catch (ClientException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             meta.addUserMetadata(CryptoHeaders.CRYPTO_IV, "iv");
             wrap.TestCreateContentMaterialFromMetadata(meta);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
         catch (ClientException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             meta.addUserMetadata(CryptoHeaders.CRYPTO_WRAP_ALG, "alg");
             wrap.TestCreateContentMaterialFromMetadata(meta);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
         catch (ClientException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
 
         //getDescFromJsonString
         wrap.TestGetDescFromJsonString(null);
-        Assert.assertTrue(true);
+        Assertions.assertTrue(true);
 
         try {
             wrap.TestGetDescFromJsonString("xxx");
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
         catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
 
@@ -186,10 +186,10 @@ public class CryptoModuleBaseTest {
             range[0] = 1;
             range[1] = 0;
             wrap.TestGetAdjustedCryptoRange(range);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
         catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
@@ -197,10 +197,10 @@ public class CryptoModuleBaseTest {
             range[0] = -1;
             range[1] = 0;
             wrap.TestGetAdjustedCryptoRange(range);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
         catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
@@ -208,10 +208,10 @@ public class CryptoModuleBaseTest {
             range[0] = 0;
             range[1] = 0;
             wrap.TestGetAdjustedCryptoRange(range);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
         catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 }

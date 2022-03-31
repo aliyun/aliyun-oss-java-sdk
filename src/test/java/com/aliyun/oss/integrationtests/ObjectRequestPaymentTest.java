@@ -29,7 +29,7 @@ import java.util.*;
 
 import com.aliyun.oss.*;
 import com.aliyun.oss.internal.RequestParameters;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
@@ -82,7 +82,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, instream);
             ossClient.putObject(putObjectRequest);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }  
     }
 
@@ -92,7 +92,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, instream);
             ossClient.putObject(putObjectRequest);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }  
     }
 
@@ -106,10 +106,10 @@ public class ObjectRequestPaymentTest extends TestBase {
         try {
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, instream);
             PutObjectResult putResult = ossPayerClient.putObject(putObjectRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
         // Put object with payer setting, should be successful.
@@ -120,9 +120,9 @@ public class ObjectRequestPaymentTest extends TestBase {
             ossPayerClient.putObject(putObjectRequest);
 
             //Check by ossClient            
-            Assert.assertTrue(ossClient.doesObjectExist(bucketName, key));
+            Assertions.assertTrue(ossClient.doesObjectExist(bucketName, key));
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, key);
         }
@@ -139,10 +139,10 @@ public class ObjectRequestPaymentTest extends TestBase {
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             OSSObject ossObject = ossPayerClient.getObject(getObjectRequest);
             ossObject.close();
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
         // Get object with payer setting, should be successful.
@@ -153,7 +153,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             OSSObject ossObject = ossPayerClient.getObject(getObjectRequest);
             ossObject.close();
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, key);
         }
@@ -169,10 +169,10 @@ public class ObjectRequestPaymentTest extends TestBase {
         try {
             GenericRequest genericRequest = new GenericRequest(bucketName, key);
             ossPayerClient.deleteObject(genericRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
         // Delete object with payer setting, should be successful.
@@ -181,7 +181,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             GenericRequest genericRequest = new GenericRequest(bucketName, key).withRequestPayer(payer);
             ossPayerClient.deleteObject(genericRequest);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -202,10 +202,10 @@ public class ObjectRequestPaymentTest extends TestBase {
             DeleteObjectsRequest deleteObjectsRequest = new DeleteObjectsRequest(bucketName);
             deleteObjectsRequest.setKeys(keys);
             ossPayerClient.deleteObjects(deleteObjectsRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
         // Delete objects with payer setting, should be successful.
@@ -216,7 +216,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             deleteObjectsRequest.setRequestPayer(payer);
             ossPayerClient.deleteObjects(deleteObjectsRequest);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -232,10 +232,10 @@ public class ObjectRequestPaymentTest extends TestBase {
         try {
             ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucketName);
             ossPayerClient.listObjects(listObjectsRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
         // List objects with payer setting, should be successful.
@@ -244,9 +244,9 @@ public class ObjectRequestPaymentTest extends TestBase {
             ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucketName);
             listObjectsRequest.setRequestPayer(payer);
             ObjectListing objectListing = ossClient.listObjects(listObjectsRequest);
-            Assert.assertEquals(objectListing.getObjectSummaries().size(), 2);
+            Assertions.assertEquals(objectListing.getObjectSummaries().size(), 2);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, key1);
             ossClient.deleteObject(bucketName, key2);
@@ -263,10 +263,10 @@ public class ObjectRequestPaymentTest extends TestBase {
         try {
             SetObjectAclRequest setObjectAclRequest  = new SetObjectAclRequest(bucketName, key, CannedAccessControlList.PublicRead);
             ossPayerClient.setObjectAcl(setObjectAclRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
         // Set object acl with payer setting, should be successful.
@@ -279,9 +279,9 @@ public class ObjectRequestPaymentTest extends TestBase {
 
             // Check by ossClient
             ObjectAcl returnedAcl = ossClient.getObjectAcl(bucketName, key);
-            Assert.assertEquals(acl.toString(), returnedAcl.getPermission().toString());
+            Assertions.assertEquals(acl.toString(), returnedAcl.getPermission().toString());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, key);
         }
@@ -297,10 +297,10 @@ public class ObjectRequestPaymentTest extends TestBase {
         try {
             GenericRequest genericRequest = new GenericRequest(bucketName, key);
             ossPayerClient.getObjectAcl(genericRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
         // Get object acl with payer setting, should be successful.
@@ -310,7 +310,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             genericRequest.setRequestPayer(payer);
             ossPayerClient.getObjectAcl(genericRequest);   
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, key);
         }
@@ -333,10 +333,10 @@ public class ObjectRequestPaymentTest extends TestBase {
             appendObjectRequest = new AppendObjectRequest(bucketName, key, instream);
             appendObjectRequest.setPosition(inputStreamLength);
             ossPayerClient.appendObject(appendObjectRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
         // Append object with payer setting, should be successful.
@@ -348,7 +348,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             appendObjectRequest.setRequestPayer(payer);
             ossPayerClient.appendObject(appendObjectRequest);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, key);
         }
@@ -365,10 +365,10 @@ public class ObjectRequestPaymentTest extends TestBase {
         try {
             CopyObjectRequest copyObjectRequest = new CopyObjectRequest(bucketName, srcObject, bucketName, destObject);
             ossPayerClient.copyObject(copyObjectRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
          // Copy object with payer setting payer setting, should be successful.
@@ -381,9 +381,9 @@ public class ObjectRequestPaymentTest extends TestBase {
             // Check by bucket owner
             SimplifiedObjectMeta srcMeta = ossClient.getSimplifiedObjectMeta(bucketName, srcObject);
             SimplifiedObjectMeta destMeta = ossClient.getSimplifiedObjectMeta(bucketName, destObject);
-            Assert.assertEquals(srcMeta.getSize(), destMeta.getSize());
+            Assertions.assertEquals(srcMeta.getSize(), destMeta.getSize());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, srcObject);
             ossClient.deleteObject(bucketName, destObject);
@@ -401,10 +401,10 @@ public class ObjectRequestPaymentTest extends TestBase {
         try {
             CreateSymlinkRequest createSymlinkRequest = new CreateSymlinkRequest(bucketName, symLink, targetObjectName);
             ossPayerClient.createSymlink(createSymlinkRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
          // Create symlink with payer setting payer setting, should be successful.
@@ -414,7 +414,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             createSymlinkRequest.setRequestPayer(payer);
             ossPayerClient.createSymlink(createSymlinkRequest);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, targetObjectName);
             ossClient.deleteObject(bucketName, symLink);
@@ -436,10 +436,10 @@ public class ObjectRequestPaymentTest extends TestBase {
         try {
             GenericRequest genericRequest = new GenericRequest(bucketName, symLink);  
             ossPayerClient.getSymlink(genericRequest); 
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
          // Get symlink with payer setting payer setting, should be successful.
@@ -449,10 +449,10 @@ public class ObjectRequestPaymentTest extends TestBase {
             genericRequest.setRequestPayer(payer);
             OSSSymlink symbolicLink = ossPayerClient.getSymlink(genericRequest);
 
-            Assert.assertEquals(symbolicLink.getSymlink(), symLink);
-            Assert.assertEquals(symbolicLink.getTarget(), targetObjectName);
+            Assertions.assertEquals(symbolicLink.getSymlink(), symLink);
+            Assertions.assertEquals(symbolicLink.getTarget(), targetObjectName);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, targetObjectName);
             ossClient.deleteObject(bucketName, symLink);
@@ -471,10 +471,10 @@ public class ObjectRequestPaymentTest extends TestBase {
             boolean isOnlyInOSS = true;
             GenericRequest genericRequest = new GenericRequest(bucketName, key);  
             boolean isExist = ossPayerClient.doesObjectExist(genericRequest, isOnlyInOSS);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, e.getErrorCode());
-            //Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, e.getErrorCode());
+            //Assertions.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         }
 
         // Put request without payer setting
@@ -483,10 +483,10 @@ public class ObjectRequestPaymentTest extends TestBase {
             boolean isOnlyInOSS = false;
             GenericRequest genericRequest = new GenericRequest(bucketName, key);  
             boolean isExist = ossPayerClient.doesObjectExist(genericRequest, isOnlyInOSS);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            //Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            //Assertions.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         }
 
         // Put request with payer setting, should be successful.
@@ -498,13 +498,13 @@ public class ObjectRequestPaymentTest extends TestBase {
             genericRequest.setRequestPayer(payer);
 
             boolean isExist = ossPayerClient.doesObjectExist(genericRequest, isOnlyInOSS);
-            Assert.assertEquals(isExist, true);
+            Assertions.assertEquals(isExist, true);
 
             isOnlyInOSS = true;
             isExist = ossPayerClient.doesObjectExist(genericRequest, isOnlyInOSS);
-            Assert.assertEquals(isExist, true);
+            Assertions.assertEquals(isExist, true);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, key);
         }
@@ -520,10 +520,10 @@ public class ObjectRequestPaymentTest extends TestBase {
         try {
             GenericRequest genericRequest = new GenericRequest(bucketName, key);  
             ossPayerClient.getSimplifiedObjectMeta(genericRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, e.getErrorCode());
-            //Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, e.getErrorCode());
+            //Assertions.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         }
 
          // Get simplified meta with payer setting, should be successful.
@@ -533,7 +533,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             genericRequest.setRequestPayer(payer);
             ossPayerClient.getSimplifiedObjectMeta(genericRequest);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, key);
         }
@@ -549,7 +549,7 @@ public class ObjectRequestPaymentTest extends TestBase {
         try {            
             GenericRequest genericRequest = new GenericRequest(bucketName, key);  
             ossPayerClient.getObjectMetadata(genericRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
             System.out.println("Expected OSSException.");
         }
@@ -561,7 +561,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             genericRequest.setRequestPayer(payer);
             ossPayerClient.getObjectMetadata(genericRequest);  
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, key);
         }
@@ -577,7 +577,7 @@ public class ObjectRequestPaymentTest extends TestBase {
         try {            
             HeadObjectRequest headObjectRequest = new HeadObjectRequest(bucketName, key);  
             ossPayerClient.headObject(headObjectRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
             System.out.println("Expected OSSException.");
         }
@@ -589,7 +589,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             headObjectRequest.setRequestPayer(payer);
             ossPayerClient.headObject(headObjectRequest);  
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, key);
         }
@@ -608,10 +608,10 @@ public class ObjectRequestPaymentTest extends TestBase {
             uploadFileRequest.setUploadFile(file.getAbsolutePath());
             uploadFileRequest.setTaskNum(10);          
             ossPayerClient.uploadFile(uploadFileRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
          // Upload file with payer setting, should be successful.
@@ -623,7 +623,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             uploadFileRequest.setRequestPayer(payer);
             ossPayerClient.uploadFile(uploadFileRequest);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, key);
         }
@@ -643,10 +643,10 @@ public class ObjectRequestPaymentTest extends TestBase {
             downloadFileRequest.setDownloadFile(downFileName);
             ossPayerClient.downloadFile(downloadFileRequest);
 
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, e.getErrorCode());
-            //Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, e.getErrorCode());
+            //Assertions.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         }
 
          // Upload file with payer setting, should be successful.
@@ -660,7 +660,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             File downFile = new File(downFileName);
             downFile.delete();
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, key);
         }
@@ -676,10 +676,10 @@ public class ObjectRequestPaymentTest extends TestBase {
             // Set initiateMultipartUploadRequest without payer setting, should be failed.
             InitiateMultipartUploadRequest initiateMultipartUploadRequest = new InitiateMultipartUploadRequest(bucketName, key);
             ossPayerClient.initiateMultipartUpload(initiateMultipartUploadRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
         // Upload part with payer setting, should be successful.
@@ -730,7 +730,7 @@ public class ObjectRequestPaymentTest extends TestBase {
 
             ossPayerClient.completeMultipartUpload(completeMultipartUploadRequest);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, key);
         }
@@ -748,10 +748,10 @@ public class ObjectRequestPaymentTest extends TestBase {
             // Set initiateMultipartUploadRequest without payer setting, should be failed.
             InitiateMultipartUploadRequest initiateMultipartUploadRequest = new InitiateMultipartUploadRequest(bucketName, destinationObjectName);
             ossPayerClient.initiateMultipartUpload(initiateMultipartUploadRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
         // Upload part with payer setting, should be successful.
@@ -802,7 +802,7 @@ public class ObjectRequestPaymentTest extends TestBase {
 
             ossPayerClient.completeMultipartUpload(completeMultipartUploadRequest);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, sourceObjectName);
             ossClient.deleteObject(bucketName, destinationObjectName);
@@ -822,10 +822,10 @@ public class ObjectRequestPaymentTest extends TestBase {
         try {
             ListPartsRequest listPartsRequest = new ListPartsRequest(bucketName, key, uploadId);
             ossPayerClient.listParts(listPartsRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
          // List parts with payer setting, should be successful.
@@ -835,7 +835,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             listPartsRequest.setRequestPayer(payer);
             ossPayerClient.listParts(listPartsRequest);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -852,10 +852,10 @@ public class ObjectRequestPaymentTest extends TestBase {
         try {
             AbortMultipartUploadRequest abortMultipartUploadRequest =new AbortMultipartUploadRequest(bucketName, key, uploadId);
             ossPayerClient.abortMultipartUpload(abortMultipartUploadRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
          //  Abort multi part with payer setting, should be successful.
@@ -866,7 +866,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             abortMultipartUploadRequest.setRequestPayer(payer);
             ossPayerClient.abortMultipartUpload(abortMultipartUploadRequest);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, key);
         }
@@ -878,10 +878,10 @@ public class ObjectRequestPaymentTest extends TestBase {
         try {
             ListMultipartUploadsRequest listMultipartUploadsRequest = new ListMultipartUploadsRequest(bucketName);
             ossPayerClient.listMultipartUploads(listMultipartUploadsRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
          // List multi uploads with payer setting, should be successful.
@@ -891,7 +891,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             listMultipartUploadsRequest.setRequestPayer(payer);
             ossPayerClient.listMultipartUploads(listMultipartUploadsRequest);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -917,10 +917,10 @@ public class ObjectRequestPaymentTest extends TestBase {
                 // Restore object without payer setting
                 ossPayerClient.restoreObject(bucketName, achiveObject);
             }
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
          // Restore object with payer setting, should be successful.
@@ -936,10 +936,10 @@ public class ObjectRequestPaymentTest extends TestBase {
                 // restore object with payer setting
                 ossPayerClient.restoreObject(generirequest);
             } else {
-                Assert.fail("test restore object has some wrong, should be archive class.");
+                Assertions.fail("test restore object has some wrong, should be archive class.");
             }
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, achiveObject);
         }
@@ -963,10 +963,10 @@ public class ObjectRequestPaymentTest extends TestBase {
         try {
             ProcessObjectRequest request = new ProcessObjectRequest(bucketName, originalImage, styleBuilder.toString());
             ossPayerClient.processObject(request);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
          // Process object with payer setting, should be successful.
@@ -976,7 +976,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             request.setRequestPayer(payer);
             ossPayerClient.processObject(request);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, originalImage);
         }
@@ -996,10 +996,10 @@ public class ObjectRequestPaymentTest extends TestBase {
         try {
             SetObjectTaggingRequest setObjectTaggingRequest = new SetObjectTaggingRequest(bucketName, key, tags);
             ossPayerClient.setObjectTagging(setObjectTaggingRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
          // Set object tagging with payer setting, should be successful.
@@ -1011,9 +1011,9 @@ public class ObjectRequestPaymentTest extends TestBase {
 
             // Check result
             TagSet tagSet = ossClient.getObjectTagging(bucketName, key);
-            Assert.assertEquals(tagSet.getAllTags().size(), tags.size());
+            Assertions.assertEquals(tagSet.getAllTags().size(), tags.size());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, key);
         }
@@ -1037,10 +1037,10 @@ public class ObjectRequestPaymentTest extends TestBase {
         try {
             GenericRequest genericRequest = new GenericRequest(bucketName, key);
             ossPayerClient.getObjectTagging(genericRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
          // Set object tagging with payer setting, should be successful.
@@ -1049,9 +1049,9 @@ public class ObjectRequestPaymentTest extends TestBase {
             Payer payer = Payer.Requester;
             genericRequest.setRequestPayer(payer);
             TagSet tagSet2 = ossPayerClient.getObjectTagging(genericRequest);
-            Assert.assertEquals(tagSet2.getAllTags().size(), tags.size());
+            Assertions.assertEquals(tagSet2.getAllTags().size(), tags.size());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, key);
         }
@@ -1071,15 +1071,15 @@ public class ObjectRequestPaymentTest extends TestBase {
 
         GenericRequest genericRequest = new GenericRequest(bucketName, key);
         TagSet tagSet = ossClient.getObjectTagging(genericRequest);
-        Assert.assertEquals(tagSet.getAllTags().size(), tags.size());
+        Assertions.assertEquals(tagSet.getAllTags().size(), tags.size());
 
         // Delete object tagging without payer setting, should be failed.
         try {
             ossPayerClient.deleteObjectTagging(genericRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
          // Delete object tagging with payer setting, should be successful.
@@ -1089,9 +1089,9 @@ public class ObjectRequestPaymentTest extends TestBase {
             ossPayerClient.deleteObjectTagging(genericRequest);
 
             TagSet tagSet2 = ossPayerClient.getObjectTagging(genericRequest);
-            Assert.assertEquals(tagSet2.getAllTags().size(), 0);
+            Assertions.assertEquals(tagSet2.getAllTags().size(), 0);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, key);
         }
@@ -1118,7 +1118,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             ossPayerClient.putObject(signedUrl, instream, -1, null, true);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -1131,7 +1131,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             ossClient.putObject(putObjectRequest);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         Date date = new Date();
@@ -1149,7 +1149,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             ossPayerClient.getObject(signedUrl, null);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
     }

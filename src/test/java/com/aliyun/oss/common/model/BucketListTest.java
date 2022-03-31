@@ -19,8 +19,7 @@
 
 package com.aliyun.oss.common.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,48 +47,48 @@ public class BucketListTest {
        buckets.add(bucket);
        bucketList.clearBucketList();
        bucketList.setBucketList(buckets);
-       assertEquals("prefix", bucketList.getPrefix());
-       assertEquals("marker", bucketList.getMarker());
-       assertEquals(6, bucketList.getMaxKeys().intValue());
-       assertEquals("nextMarker", bucketList.getNextMarker());
-       assertEquals(true, bucketList.isTruncated());
-       assertEquals(1, bucketList.getBucketList().size());
+       Assertions.assertEquals("prefix", bucketList.getPrefix());
+       Assertions.assertEquals("marker", bucketList.getMarker());
+       Assertions.assertEquals(6, bucketList.getMaxKeys().intValue());
+       Assertions.assertEquals("nextMarker", bucketList.getNextMarker());
+       Assertions.assertEquals(true, bucketList.isTruncated());
+       Assertions.assertEquals(1, bucketList.getBucketList().size());
        buckets = bucketList.getBucketList();
        bucket = buckets.get(0);
-       assertEquals("name", bucket.getName());
-       assertEquals("osslocation", bucket.getLocation());
+       Assertions.assertEquals("name", bucket.getName());
+       Assertions.assertEquals("osslocation", bucket.getLocation());
 
        bucketList.setBucketList(null);
-       assertEquals(0, bucketList.getBucketList().size());
+       Assertions.assertEquals(0, bucketList.getBucketList().size());
 
        buckets.clear();
        bucketList.setBucketList(buckets);
-       assertEquals(0, bucketList.getBucketList().size());
+       Assertions.assertEquals(0, bucketList.getBucketList().size());
    }
 
    @Test
    public void testListBucketRequest() {
        ListBucketsRequest request = new ListBucketsRequest("prefix", "marker", Integer.valueOf(1000));
-       assertEquals("prefix", request.getPrefix());
-       assertEquals("marker", request.getMarker());
-       assertEquals(Integer.valueOf(1000), request.getMaxKeys());
+       Assertions.assertEquals("prefix", request.getPrefix());
+       Assertions.assertEquals("marker", request.getMarker());
+       Assertions.assertEquals(Integer.valueOf(1000), request.getMaxKeys());
 
        request = request.withPrefix("prefix0").withMarker("marker20").withMaxKeys(20);
 
        request.setPrefix("prefix2");
        request.setMarker("marker2");
        request.setMaxKeys(Integer.valueOf(1));
-       assertEquals("prefix2", request.getPrefix());
-       assertEquals("marker2", request.getMarker());
-       assertEquals(Integer.valueOf(1), request.getMaxKeys());
+       Assertions.assertEquals("prefix2", request.getPrefix());
+       Assertions.assertEquals("marker2", request.getMarker());
+       Assertions.assertEquals(Integer.valueOf(1), request.getMaxKeys());
        try {
            request.setMaxKeys(Integer.valueOf(1001));
-           assertTrue(false);
+           Assertions.assertTrue(false);
        } catch (IllegalArgumentException e) {
        }
        try {
            request.setMaxKeys(Integer.valueOf(-1));
-           assertTrue(false);
+           Assertions.assertTrue(false);
        } catch (IllegalArgumentException e) {
        }
    }

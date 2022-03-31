@@ -19,8 +19,7 @@
 
 package com.aliyun.oss.common.auth;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.Assertions;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -29,7 +28,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.aliyun.oss.common.auth.ServiceSignature;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.internal.OSSConstants;
@@ -50,7 +48,7 @@ public class ServiceSignatureTest {
         String expected = "3mAoxRc8hd7WdaFB5Ii7dGNcwx0=";
 
         String signature = sign.computeSignature(key, data);
-        assertEquals(expected, signature);
+        Assertions.assertEquals(expected, signature);
 
         Map<String, String> parameters = new LinkedHashMap<String, String>();
         Date dt;
@@ -59,7 +57,7 @@ public class ServiceSignatureTest {
             parameters.put("Date", DateUtil.formatRfc822Date(dt));
         } catch (ParseException e) {
             e.printStackTrace();
-            fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
         parameters.put("OTSAccessKeyId", "csdev");
         parameters.put("APIVersion", "1");
@@ -67,6 +65,6 @@ public class ServiceSignatureTest {
         parameters.put("SignatureVersion", "1");
         data = "/ListTable\n" + HttpUtil.paramToQueryString(parameters, OSSConstants.DEFAULT_CHARSET_NAME);
         signature = sign.computeSignature("csdev", data);
-        assertEquals(expected, signature);
+        Assertions.assertEquals(expected, signature);
     }
 }

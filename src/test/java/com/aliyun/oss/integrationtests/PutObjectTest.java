@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -82,7 +82,7 @@ public class PutObjectTest extends TestBase {
                                     new File(filePath));
                             completedCount.incrementAndGet();
                         } catch (Exception ex) {
-                            Assert.fail(ex.getMessage());
+                            Assertions.fail(ex.getMessage());
                         } 
                     }
                 };
@@ -92,11 +92,11 @@ public class PutObjectTest extends TestBase {
             
             waitAll(putThreads);
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             removeFile(filePath);
             int totalCompleted = completedCount.get();
-            Assert.assertEquals(threadCount, totalCompleted);
+            Assertions.assertEquals(threadCount, totalCompleted);
         }
     }
     
@@ -120,7 +120,7 @@ public class PutObjectTest extends TestBase {
                                     new File(filePath));
                             completedCount.incrementAndGet();
                         } catch (Exception e) {
-                            Assert.fail(e.getMessage());
+                            Assertions.fail(e.getMessage());
                         } 
                     }
                 };
@@ -130,10 +130,10 @@ public class PutObjectTest extends TestBase {
             
             waitAll(putThreads);
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             int totalCompleted = completedCount.get();
-            Assert.assertEquals(threadCount, totalCompleted);
+            Assertions.assertEquals(threadCount, totalCompleted);
             removeFile(filePath);
         }
     }
@@ -158,7 +158,7 @@ public class PutObjectTest extends TestBase {
                                     new File(filePath));
                             completedCount.incrementAndGet();
                         } catch (Exception e) {
-                            Assert.fail(e.getMessage());
+                            Assertions.fail(e.getMessage());
                         } 
                     }
                 };
@@ -168,10 +168,10 @@ public class PutObjectTest extends TestBase {
             
             waitAll(putThreads);
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             int totalCompleted = completedCount.get();
-            Assert.assertEquals(threadCount, totalCompleted);
+            Assertions.assertEquals(threadCount, totalCompleted);
             removeFile(filePath);
         }
     }
@@ -198,7 +198,7 @@ public class PutObjectTest extends TestBase {
                                     randomFile);
                             completedCount.incrementAndGet();
                         } catch (Exception ex) {
-                            Assert.fail(ex.getMessage());
+                            Assertions.fail(ex.getMessage());
                         } 
                     }
                 };
@@ -208,10 +208,10 @@ public class PutObjectTest extends TestBase {
             
             waitAll(putThreads);
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             int totalCompleted = completedCount.get();
-            Assert.assertEquals(threadCount, totalCompleted);
+            Assertions.assertEquals(threadCount, totalCompleted);
             removeFiles(fileList);
         }
     }
@@ -224,11 +224,11 @@ public class PutObjectTest extends TestBase {
         try {
             ossClient.putObject(bucketName, keyWithCLRF, new File(filePath));
             OSSObject o = ossClient.getObject(bucketName, keyWithCLRF);
-            Assert.assertEquals(keyWithCLRF, o.getKey());
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(keyWithCLRF, o.getKey());
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
         } catch (OSSException ex) {
-            Assert.assertEquals(OSSErrorCode.INVALID_OBJECT_NAME, ex.getErrorCode());
-            Assert.assertTrue(ex.getMessage().startsWith(INVALID_OBJECT_NAME_ERR));
+            Assertions.assertEquals(OSSErrorCode.INVALID_OBJECT_NAME, ex.getErrorCode());
+            Assertions.assertTrue(ex.getMessage().startsWith(INVALID_OBJECT_NAME_ERR));
         } finally {
             ossClient.deleteObject(bucketName, keyWithCLRF);
             removeFile(filePath);
@@ -243,19 +243,19 @@ public class PutObjectTest extends TestBase {
         final String nonexistentBucket = "nonexistent-bucket";
         try {
             ossClient.putObject(nonexistentBucket, key, genFixedLengthInputStream(128));
-            Assert.fail("Put object should not be successful");
+            Assertions.fail("Put object should not be successful");
         } catch (OSSException ex) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, ex.getErrorCode());
-            Assert.assertTrue(ex.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, ex.getErrorCode());
+            Assertions.assertTrue(ex.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         } 
         
         // Try to put object into bucket without ownership
         final String bucketWithoutOwnership = "oss";
         try {
             ossClient.putObject(bucketWithoutOwnership, key, genFixedLengthInputStream(128));
-            Assert.fail("Put object should not be successful");
+            Assertions.fail("Put object should not be successful");
         } catch (OSSException ex) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, ex.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, ex.getErrorCode());
         } 
         
         // Try to put object with length exceeding max limit(5GB)
@@ -264,9 +264,9 @@ public class PutObjectTest extends TestBase {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(contentLength);
             ossClient.putObject(bucketName, key, genFixedLengthInputStream(128), metadata);
-            Assert.fail("Put object should not be successful");
+            Assertions.fail("Put object should not be successful");
         } catch (Exception ex) {
-            Assert.assertTrue(ex instanceof IllegalArgumentException);
+            Assertions.assertTrue(ex instanceof IllegalArgumentException);
         }
         
         // Set invalid server side encryption
@@ -275,10 +275,10 @@ public class PutObjectTest extends TestBase {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setServerSideEncryption(invalidServerSideEncryption);
             ossClient.putObject(bucketName, key, genFixedLengthInputStream(128), metadata);
-            Assert.fail("Put object should not be successful");
+            Assertions.fail("Put object should not be successful");
         } catch (OSSException ex) {
-            Assert.assertEquals(OSSErrorCode.INVALID_ENCRYPTION_ALGORITHM_ERROR, ex.getErrorCode());
-            Assert.assertTrue(ex.getMessage().startsWith(INVALID_ENCRYPTION_ALGO_ERR));
+            Assertions.assertEquals(OSSErrorCode.INVALID_ENCRYPTION_ALGORITHM_ERROR, ex.getErrorCode());
+            Assertions.assertTrue(ex.getMessage().startsWith(INVALID_ENCRYPTION_ALGO_ERR));
         }
         
         // Set invalid Content-MD5
@@ -287,10 +287,10 @@ public class PutObjectTest extends TestBase {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentMD5(invalidContentMD5);
             ossClient.putObject(bucketName, key, genFixedLengthInputStream(128), metadata);
-            Assert.fail("Put object should not be successful");
+            Assertions.fail("Put object should not be successful");
         } catch (OSSException ex) {
-            Assert.assertEquals(OSSErrorCode.INVALID_DIGEST, ex.getErrorCode());
-            Assert.assertTrue(ex.getMessage().startsWith(INVALID_DIGEST_ERR));
+            Assertions.assertEquals(OSSErrorCode.INVALID_DIGEST, ex.getErrorCode());
+            Assertions.assertTrue(ex.getMessage().startsWith(INVALID_DIGEST_ERR));
         }
     }
     
@@ -304,11 +304,11 @@ public class PutObjectTest extends TestBase {
             instream = genFixedLengthInputStream(instreamLength);
             ossClient.putObject(bucketName, key, instream, null);
             OSSObject o = ossClient.getObject(bucketName, key);
-            Assert.assertEquals(key, o.getKey());
-            Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(key, o.getKey());
+            Assertions.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
     }
     
@@ -323,25 +323,25 @@ public class PutObjectTest extends TestBase {
             instream = genFixedLengthInputStream(instreamLength);
             ossClient.putObject(bucketName, key, instream);
             OSSObject o = ossClient.getObject(bucketName, key);
-            Assert.assertEquals(key, o.getKey());
-            Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(key, o.getKey());
+            Assertions.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
 
             // Override 2
             final String filePath = genFixedLengthFile(instreamLength);
             ossClient.putObject(bucketName, key, new File(filePath));
-            Assert.assertEquals(instreamLength, new File(filePath).length());
+            Assertions.assertEquals(instreamLength, new File(filePath).length());
 
             // Override 3
             ossClient.putObject(new PutObjectRequest(bucketName, key, new File(filePath)));
             o = ossClient.getObject(bucketName, key);
-            Assert.assertEquals(key, o.getKey());
-            Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(key, o.getKey());
+            Assertions.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
 
             new File(filePath).delete();
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
     }
     
@@ -371,15 +371,15 @@ public class PutObjectTest extends TestBase {
             // Using url signature & chunked encoding to upload specified inputstream.
             ossClient.putObject(signedUrl, instream, -1, requestHeaders, true);
             OSSObject o = ossClient.getObject(bucketName, key);
-            Assert.assertEquals(key, o.getKey());
-            Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(key, o.getKey());
+            Assertions.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
             
             ObjectMetadata metadata = o.getObjectMetadata();
-            Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
-            Assert.assertTrue(metadata.getUserMetadata().containsKey(metaKey0));
+            Assertions.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
+            Assertions.assertTrue(metadata.getUserMetadata().containsKey(metaKey0));
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
         
         // Override 2
@@ -388,15 +388,15 @@ public class PutObjectTest extends TestBase {
             // Using url signature encoding to upload specified inputstream.
             ossClient.putObject(signedUrl, instream, -1, requestHeaders);
             OSSObject o = ossClient.getObject(bucketName, key);
-            Assert.assertEquals(key, o.getKey());
-            Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(key, o.getKey());
+            Assertions.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
             
             ObjectMetadata metadata = o.getObjectMetadata();
-            Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
-            Assert.assertTrue(metadata.getUserMetadata().containsKey(metaKey0));
+            Assertions.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
+            Assertions.assertTrue(metadata.getUserMetadata().containsKey(metaKey0));
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } 
         
         // Override 3
@@ -405,15 +405,15 @@ public class PutObjectTest extends TestBase {
             // Using url signature encoding to upload specified inputstream.
             ossClient.putObject(signedUrl, filePath, requestHeaders);
             OSSObject o = ossClient.getObject(bucketName, key);
-            Assert.assertEquals(key, o.getKey());
-            Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(key, o.getKey());
+            Assertions.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
             
             ObjectMetadata metadata = o.getObjectMetadata();
-            Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
-            Assert.assertTrue(metadata.getUserMetadata().containsKey(metaKey0));
+            Assertions.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
+            Assertions.assertTrue(metadata.getUserMetadata().containsKey(metaKey0));
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             removeFile(filePath);
         }
@@ -424,15 +424,15 @@ public class PutObjectTest extends TestBase {
             // Using url signature encoding to upload specified inputstream.
             ossClient.putObject(signedUrl, filePath, requestHeaders, true);
             OSSObject o = ossClient.getObject(bucketName, key);
-            Assert.assertEquals(key, o.getKey());
-            Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(key, o.getKey());
+            Assertions.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
             
             ObjectMetadata metadata = o.getObjectMetadata();
-            Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
-            Assert.assertTrue(metadata.getUserMetadata().containsKey(metaKey0));
+            Assertions.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
+            Assertions.assertTrue(metadata.getUserMetadata().containsKey(metaKey0));
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             removeFile(filePath);
         }
@@ -440,9 +440,9 @@ public class PutObjectTest extends TestBase {
         //with nullpath
         try {
             ossClient.putObject(signedUrl, null, requestHeaders);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception ex) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
     
@@ -457,20 +457,20 @@ public class PutObjectTest extends TestBase {
             instream = genFixedLengthInputStream(instreamLength);
             ossClient.putObject(bucketName, keyWithSuffix, instream);
             OSSObject o = ossClient.getObject(bucketName, keyWithSuffix);
-            Assert.assertEquals(keyWithSuffix, o.getKey());
-            Assert.assertEquals(Mimetypes.getInstance().getMimetype(keyWithSuffix), 
+            Assertions.assertEquals(keyWithSuffix, o.getKey());
+            Assertions.assertEquals(Mimetypes.getInstance().getMimetype(keyWithSuffix), 
                     o.getObjectMetadata().getContentType());
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
             
             instream = genFixedLengthInputStream(instreamLength);
             ossClient.putObject(bucketName, keyWithoutSuffix, instream);
             o = ossClient.getObject(bucketName, keyWithoutSuffix);
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
-            Assert.assertEquals(keyWithoutSuffix, o.getKey());
-            Assert.assertEquals(Mimetypes.getInstance().getMimetype(keyWithoutSuffix), 
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(keyWithoutSuffix, o.getKey());
+            Assertions.assertEquals(Mimetypes.getInstance().getMimetype(keyWithoutSuffix), 
                     o.getObjectMetadata().getContentType());
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
             
             if (instream != null) {
                 instream.close();
@@ -494,10 +494,10 @@ public class PutObjectTest extends TestBase {
             metadata.addUserMetadata(metaKey, metaVal);
             ossClient.putObject(bucketName, key, instream, metadata);
             OSSObject o = ossClient.getObject(bucketName, key);
-            Assert.assertEquals(contentTypeWithBlank.trim(), o.getObjectMetadata().getContentType());
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(contentTypeWithBlank.trim(), o.getObjectMetadata().getContentType());
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
             
             if (instream != null) {
                 instream.close();
@@ -516,9 +516,9 @@ public class PutObjectTest extends TestBase {
             ossClient.putObject(bucketName, key, instream);
 
             OSSObject o = ossClient.getObject(bucketName, key);
-            Assert.assertEquals(o.getObjectMetadata().getContentType(), "text/csv");
+            Assertions.assertEquals(o.getObjectMetadata().getContentType(), "text/csv");
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
 
             if (instream != null) {
                 instream.close();
@@ -545,17 +545,17 @@ public class PutObjectTest extends TestBase {
 
             ossClient.putObject(putObjectRequest);
             OSSObject o = ossClient.getObject(bucketName, key);
-            Assert.assertEquals(key, o.getKey());
-            Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
-            Assert.assertEquals(o.getObjectMetadata().getContentType(), "text/plain");
-            Assert.assertEquals(o.getObjectMetadata().getUserMetadata().get("property"), "property-value");
-            Assert.assertEquals("process", putObjectRequest.getProcess());
+            Assertions.assertEquals(key, o.getKey());
+            Assertions.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(o.getObjectMetadata().getContentType(), "text/plain");
+            Assertions.assertEquals(o.getObjectMetadata().getUserMetadata().get("property"), "property-value");
+            Assertions.assertEquals("process", putObjectRequest.getProcess());
 
             new File(filePath).delete();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 }

@@ -28,7 +28,7 @@ import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.internal.OSSHeaders;
 import com.aliyun.oss.model.*;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 import java.io.ByteArrayInputStream;
 
@@ -76,7 +76,7 @@ public class RestoreConfigurationTest extends TestBase {
                 ossClient.putObject(putObjectRequest);
 
                 metadata = ossClient.getObjectMetadata(bucketName, objectName);
-                Assert.assertEquals(StorageClass.ColdArchive, metadata.getObjectStorageClass());
+                Assertions.assertEquals(StorageClass.ColdArchive, metadata.getObjectStorageClass());
 
                 RestoreJobParameters jobParameters = new RestoreJobParameters(restoreTier);
                 RestoreConfiguration configuration = new RestoreConfiguration(5, jobParameters);
@@ -84,7 +84,7 @@ public class RestoreConfigurationTest extends TestBase {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -101,7 +101,7 @@ public class RestoreConfigurationTest extends TestBase {
             ossClient.putObject(putObjectRequest);
 
             metadata = ossClient.getObjectMetadata(bucketName, objectName);
-            Assert.assertEquals(StorageClass.ColdArchive, metadata.getObjectStorageClass());
+            Assertions.assertEquals(StorageClass.ColdArchive, metadata.getObjectStorageClass());
 
             RestoreConfiguration configuration = new RestoreConfiguration(5);
 
@@ -110,7 +110,7 @@ public class RestoreConfigurationTest extends TestBase {
             ossClient.restoreObject(restoreObjectRequest);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
     }
@@ -128,10 +128,10 @@ public class RestoreConfigurationTest extends TestBase {
             ossClient.putObject(putObjectRequest);
 
             metadata = ossClient.getObjectMetadata(bucketName, objectName);
-            Assert.assertEquals(StorageClass.Archive, metadata.getObjectStorageClass());
+            Assertions.assertEquals(StorageClass.Archive, metadata.getObjectStorageClass());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
@@ -139,9 +139,9 @@ public class RestoreConfigurationTest extends TestBase {
             RestoreConfiguration configuration = new RestoreConfiguration(5).withRestoreJobParameters(jobParameters);
             RestoreObjectRequest restoreObjectRequest = new RestoreObjectRequest(bucketName, objectName).withRestoreConfiguration(configuration);
             ossClient.restoreObject(restoreObjectRequest);
-            Assert.fail("Restore job parameters is not math Archive storage class, should be failed.");
+            Assertions.fail("Restore job parameters is not math Archive storage class, should be failed.");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.MALFORMED_XML, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.MALFORMED_XML, e.getErrorCode());
         }
     }
 

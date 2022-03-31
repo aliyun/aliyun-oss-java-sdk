@@ -24,7 +24,7 @@ import java.util.Arrays;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import org.junit.Test;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 public class CryptoSchemeTest {
     @Test
@@ -33,9 +33,9 @@ public class CryptoSchemeTest {
             byte[] iv = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
             CryptoScheme cryptScheme = CryptoScheme.AES_CTR;
             byte[] adjustIV = cryptScheme.adjustIV(iv, 16);
-            Assert.assertEquals(iv[15] + 1, adjustIV[15]);
+            Assertions.assertEquals(iv[15] + 1, adjustIV[15]);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -45,7 +45,7 @@ public class CryptoSchemeTest {
             byte[] iv = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 };
             CryptoScheme cryptScheme = CryptoScheme.AES_CTR;
             byte[] adjustIV = cryptScheme.adjustIV(iv, 16);
-            Assert.fail("IV length should be 16.");
+            Assertions.fail("IV length should be 16.");
         } catch (UnsupportedOperationException e) {
             // Expected exception.
         }
@@ -54,7 +54,7 @@ public class CryptoSchemeTest {
             byte[] iv = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
             CryptoScheme cryptScheme = CryptoScheme.AES_CTR;
             cryptScheme.adjustIV(iv, 17);
-            Assert.fail("start pos should allgned with 16 bytes.");
+            Assertions.fail("start pos should allgned with 16 bytes.");
         } catch (IllegalArgumentException e) {
             // Expected exception.
         }
@@ -66,9 +66,9 @@ public class CryptoSchemeTest {
             byte[] iv = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 0, 0, 0, 0, 0x01, 0x02, 0x03, 0x04 };
             byte[] retIV = CryptoScheme.incrementBlocks(iv, 0X1122334400000000L);
             byte[] expectedIV = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 0x11, 0x22, 0x33, 0x44, 0x01, 0x02, 0x03, 0x04 };
-            Assert.assertTrue(Arrays.equals(retIV, expectedIV));
+            Assertions.assertTrue(Arrays.equals(retIV, expectedIV));
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -77,7 +77,7 @@ public class CryptoSchemeTest {
         try {
             byte[] iv = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 0, 0, 0, 0, 0x01, 0x02, 0x03, 0x04, 0x05 };
             CryptoScheme.incrementBlocks(iv, 0X1122334400000000L);
-            Assert.fail("iv array is not 16-bytes.");
+            Assertions.fail("iv array is not 16-bytes.");
         } catch (IllegalArgumentException e) {
             // Expected exception.
         }
@@ -85,7 +85,7 @@ public class CryptoSchemeTest {
         try {
             byte[] iv = null;
             CryptoScheme.incrementBlocks(iv, 0X1122334400000000L);
-            Assert.fail("iv should not be null.");
+            Assertions.fail("iv should not be null.");
         } catch (IllegalArgumentException e) {
             // Expected exception.
         }
@@ -97,12 +97,12 @@ public class CryptoSchemeTest {
             CryptoScheme scheme = CryptoScheme.fromCEKAlgo("AES/CTR/NoPadding");
             scheme.getContentChiperAlgorithm().equals(CryptoScheme.AES_CTR.getContentChiperAlgorithm());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
             CryptoScheme scheme = CryptoScheme.fromCEKAlgo("illegal-algo");
-            Assert.fail("get crypto scheme from illeagel algoritm name get should be failed.");
+            Assertions.fail("get crypto scheme from illeagel algoritm name get should be failed.");
         } catch (UnsupportedOperationException e) {
             // Expected exception.
         }

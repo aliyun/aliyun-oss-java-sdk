@@ -33,7 +33,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 
@@ -75,7 +75,7 @@ public class UploadPartCopyTest extends TestBase {
                 PutObjectResult result = ossClient.putObject(sourceBucket, sourceKey, instream, null);
                 eTag = result.getETag();
             } catch (Exception e) {
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             }
             
             // Claim upload id for target bucket 
@@ -90,41 +90,41 @@ public class UploadPartCopyTest extends TestBase {
             uploadPartCopyRequest.setUploadId(uploadId);
             UploadPartCopyResult uploadPartCopyResult = ossClient.uploadPartCopy(uploadPartCopyRequest);
             partETags.add(uploadPartCopyResult.getPartETag());
-            Assert.assertEquals(eTag, uploadPartCopyResult.getETag());
-            Assert.assertEquals(partNumber, uploadPartCopyResult.getPartNumber());
-            Assert.assertEquals(uploadPartCopyResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(eTag, uploadPartCopyResult.getETag());
+            Assertions.assertEquals(partNumber, uploadPartCopyResult.getPartNumber());
+            Assertions.assertEquals(uploadPartCopyResult.getRequestId().length(), REQUEST_ID_LEN);
             
             ListPartsRequest listPartsRequest = new ListPartsRequest(targetBucket, targetKey, uploadId);
             PartListing partListing = ossClient.listParts(listPartsRequest);
-            Assert.assertEquals(1, partListing.getParts().size());
-            Assert.assertEquals(targetBucket, partListing.getBucketName());
-            Assert.assertEquals(targetKey, partListing.getKey());
-            Assert.assertEquals(uploadId, partListing.getUploadId());
-            Assert.assertEquals(LIST_PART_MAX_RETURNS, partListing.getMaxParts().intValue());
-            Assert.assertNotNull(partListing.getNextPartNumberMarker());
-            Assert.assertFalse(partListing.isTruncated());
-            Assert.assertEquals(partListing.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(1, partListing.getParts().size());
+            Assertions.assertEquals(targetBucket, partListing.getBucketName());
+            Assertions.assertEquals(targetKey, partListing.getKey());
+            Assertions.assertEquals(uploadId, partListing.getUploadId());
+            Assertions.assertEquals(LIST_PART_MAX_RETURNS, partListing.getMaxParts().intValue());
+            Assertions.assertNotNull(partListing.getNextPartNumberMarker());
+            Assertions.assertFalse(partListing.isTruncated());
+            Assertions.assertEquals(partListing.getRequestId().length(), REQUEST_ID_LEN);
             
             // Complete multipart upload
             CompleteMultipartUploadRequest completeMultipartUploadRequest = 
                     new CompleteMultipartUploadRequest(targetBucket, targetKey, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-            Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, targetBucket, targetKey), 
+            Assertions.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, targetBucket, targetKey), 
                     completeMultipartUploadResult.getLocation());
-            Assert.assertEquals(targetBucket, completeMultipartUploadResult.getBucketName());
-            Assert.assertEquals(targetKey, completeMultipartUploadResult.getKey());
-            Assert.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
-            Assert.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(targetBucket, completeMultipartUploadResult.getBucketName());
+            Assertions.assertEquals(targetKey, completeMultipartUploadResult.getKey());
+            Assertions.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
+            Assertions.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
             
             // Get uploaded object
             OSSObject o = ossClient.getObject(targetBucket, targetKey);
             final long objectSize = 1 * partSize;
-            Assert.assertEquals(objectSize, o.getObjectMetadata().getContentLength());
-            Assert.assertEquals(calcMultipartsETag(partETags), o.getObjectMetadata().getETag());
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(objectSize, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(calcMultipartsETag(partETags), o.getObjectMetadata().getETag());
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             deleteBucketWithObjects(ossClient, sourceBucket);
             deleteBucketWithObjects(ossClient, targetBucket);
@@ -154,7 +154,7 @@ public class UploadPartCopyTest extends TestBase {
                 PutObjectResult result = ossClient.putObject(sourceBucket, sourceKey, instream, null);
                 eTag = result.getETag();
             } catch (Exception e) {
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             }
             
             // Claim upload id for target bucket 
@@ -169,10 +169,10 @@ public class UploadPartCopyTest extends TestBase {
                 uploadPartCopyRequest.setPartNumber(partNumber);
                 uploadPartCopyRequest.setUploadId(uploadId);
                 ossClient.uploadPartCopy(uploadPartCopyRequest);
-                Assert.fail("Upload part copy should not be successfuly");
+                Assertions.fail("Upload part copy should not be successfuly");
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+                Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+                Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
             }
             
             // Copy part from non-existent source key
@@ -183,10 +183,10 @@ public class UploadPartCopyTest extends TestBase {
                 uploadPartCopyRequest.setPartNumber(partNumber);
                 uploadPartCopyRequest.setUploadId(uploadId);
                 ossClient.uploadPartCopy(uploadPartCopyRequest);
-                Assert.fail("Upload part copy should not be successfuly");
+                Assertions.fail("Upload part copy should not be successfuly");
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_KEY_ERR));
+                Assertions.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
+                Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_KEY_ERR));
             }
             
             // Copy part to non-existent target bucket
@@ -197,10 +197,10 @@ public class UploadPartCopyTest extends TestBase {
                 uploadPartCopyRequest.setPartNumber(partNumber);
                 uploadPartCopyRequest.setUploadId(uploadId);
                 ossClient.uploadPartCopy(uploadPartCopyRequest);
-                Assert.fail("Upload part copy should not be successfuly");
+                Assertions.fail("Upload part copy should not be successfuly");
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+                Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+                Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
             }
             
             // Upload part copy
@@ -212,8 +212,8 @@ public class UploadPartCopyTest extends TestBase {
                 uploadPartCopyRequest.setUploadId(uploadId);
                 UploadPartCopyResult uploadPartCopyResult = ossClient.uploadPartCopy(uploadPartCopyRequest);
                 partETags.add(uploadPartCopyResult.getPartETag());
-                Assert.assertEquals(eTag, uploadPartCopyResult.getETag());
-                Assert.assertEquals(partNumber, uploadPartCopyResult.getPartNumber());
+                Assertions.assertEquals(eTag, uploadPartCopyResult.getETag());
+                Assertions.assertEquals(partNumber, uploadPartCopyResult.getPartNumber());
                 
                 uploadPartCopyRequest = 
                         new UploadPartCopyRequest(sourceBucket, sourceKey, targetBucket, targetKey);
@@ -221,20 +221,20 @@ public class UploadPartCopyTest extends TestBase {
                 uploadPartCopyRequest.setUploadId(uploadId);
                 uploadPartCopyResult = ossClient.uploadPartCopy(uploadPartCopyRequest);
                 partETags.add(uploadPartCopyResult.getPartETag());
-                Assert.assertEquals(eTag, uploadPartCopyResult.getETag());
-                Assert.assertEquals(partNumber + 1, uploadPartCopyResult.getPartNumber());
+                Assertions.assertEquals(eTag, uploadPartCopyResult.getETag());
+                Assertions.assertEquals(partNumber + 1, uploadPartCopyResult.getPartNumber());
                 
                 ListPartsRequest listPartsRequest = new ListPartsRequest(targetBucket, targetKey, uploadId);
                 PartListing partListing = ossClient.listParts(listPartsRequest);
-                Assert.assertEquals(2, partListing.getParts().size());
-                Assert.assertEquals(targetBucket, partListing.getBucketName());
-                Assert.assertEquals(targetKey, partListing.getKey());
-                Assert.assertEquals(uploadId, partListing.getUploadId());
-                Assert.assertEquals(LIST_PART_MAX_RETURNS, partListing.getMaxParts().intValue());
-                Assert.assertNotNull(partListing.getNextPartNumberMarker());
-                Assert.assertFalse(partListing.isTruncated());
+                Assertions.assertEquals(2, partListing.getParts().size());
+                Assertions.assertEquals(targetBucket, partListing.getBucketName());
+                Assertions.assertEquals(targetKey, partListing.getKey());
+                Assertions.assertEquals(uploadId, partListing.getUploadId());
+                Assertions.assertEquals(LIST_PART_MAX_RETURNS, partListing.getMaxParts().intValue());
+                Assertions.assertNotNull(partListing.getNextPartNumberMarker());
+                Assertions.assertFalse(partListing.isTruncated());
             } catch (Exception e) {
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             }
             
             // Try to complete multipart upload with all uploaded parts
@@ -242,10 +242,10 @@ public class UploadPartCopyTest extends TestBase {
                 CompleteMultipartUploadRequest completeMultipartUploadRequest = 
                         new CompleteMultipartUploadRequest(targetBucket, targetKey, uploadId, partETags);
                 ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-                Assert.fail("Upload part copy should not be successfuly");
+                Assertions.fail("Upload part copy should not be successfuly");
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.ENTITY_TOO_SMALL, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(ENTITY_TOO_SMALL_ERR));
+                Assertions.assertEquals(OSSErrorCode.ENTITY_TOO_SMALL, e.getErrorCode());
+                Assertions.assertTrue(e.getMessage().startsWith(ENTITY_TOO_SMALL_ERR));
             }
             
             // Abort the incompleted multipart upload
@@ -254,10 +254,10 @@ public class UploadPartCopyTest extends TestBase {
                         new AbortMultipartUploadRequest(targetBucket, targetKey, uploadId);
                 ossClient.abortMultipartUpload(abortMultipartUploadRequest);
             } catch (Exception e) {
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             }
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             deleteBucketWithObjects(ossClient, sourceBucket);
             deleteBucketWithObjects(ossClient, targetBucket);
@@ -284,7 +284,7 @@ public class UploadPartCopyTest extends TestBase {
                 InputStream instream = genFixedLengthInputStream(inputStreamLength);
                 ossClient.putObject(sourceBucket, sourceKey, instream, null);
             } catch (Exception e) {
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             }
             
             // Claim upload id for target bucket 
@@ -302,40 +302,40 @@ public class UploadPartCopyTest extends TestBase {
             uploadPartCopyRequest.setPartSize(partSize);
             UploadPartCopyResult uploadPartCopyResult = ossClient.uploadPartCopy(uploadPartCopyRequest);
             partETags.add(uploadPartCopyResult.getPartETag());
-            Assert.assertEquals(partNumber, uploadPartCopyResult.getPartNumber());
-            Assert.assertEquals(uploadPartCopyResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(partNumber, uploadPartCopyResult.getPartNumber());
+            Assertions.assertEquals(uploadPartCopyResult.getRequestId().length(), REQUEST_ID_LEN);
             
             ListPartsRequest listPartsRequest = new ListPartsRequest(targetBucket, targetKey, uploadId);
             PartListing partListing = ossClient.listParts(listPartsRequest);
-            Assert.assertEquals(1, partListing.getParts().size());
-            Assert.assertEquals(targetBucket, partListing.getBucketName());
-            Assert.assertEquals(targetKey, partListing.getKey());
-            Assert.assertEquals(uploadId, partListing.getUploadId());
-            Assert.assertEquals(LIST_PART_MAX_RETURNS, partListing.getMaxParts().intValue());
-            Assert.assertNotNull(partListing.getNextPartNumberMarker());
-            Assert.assertFalse(partListing.isTruncated());
-            Assert.assertEquals(partListing.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(1, partListing.getParts().size());
+            Assertions.assertEquals(targetBucket, partListing.getBucketName());
+            Assertions.assertEquals(targetKey, partListing.getKey());
+            Assertions.assertEquals(uploadId, partListing.getUploadId());
+            Assertions.assertEquals(LIST_PART_MAX_RETURNS, partListing.getMaxParts().intValue());
+            Assertions.assertNotNull(partListing.getNextPartNumberMarker());
+            Assertions.assertFalse(partListing.isTruncated());
+            Assertions.assertEquals(partListing.getRequestId().length(), REQUEST_ID_LEN);
             
             // Complete multipart upload
             CompleteMultipartUploadRequest completeMultipartUploadRequest = 
                     new CompleteMultipartUploadRequest(targetBucket, targetKey, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-            Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, targetBucket, targetKey), 
+            Assertions.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, targetBucket, targetKey), 
                     completeMultipartUploadResult.getLocation());
-            Assert.assertEquals(targetBucket, completeMultipartUploadResult.getBucketName());
-            Assert.assertEquals(targetKey, completeMultipartUploadResult.getKey());
-            Assert.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
-            Assert.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(targetBucket, completeMultipartUploadResult.getBucketName());
+            Assertions.assertEquals(targetKey, completeMultipartUploadResult.getKey());
+            Assertions.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
+            Assertions.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
             
             // Get uploaded object
             OSSObject o = ossClient.getObject(targetBucket, targetKey);
             final long objectSize = 1 * partSize;
-            Assert.assertEquals(objectSize, o.getObjectMetadata().getContentLength());
-            Assert.assertEquals(calcMultipartsETag(partETags), o.getObjectMetadata().getETag());
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(objectSize, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(calcMultipartsETag(partETags), o.getObjectMetadata().getETag());
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             deleteBucketWithObjects(ossClient, sourceBucket);
             deleteBucketWithObjects(ossClient, targetBucket);
@@ -360,7 +360,7 @@ public class UploadPartCopyTest extends TestBase {
                 InputStream instream = genFixedLengthInputStream(inputStreamLength);
                 ossClient.putObject(sourceBucket, sourceKey, instream, null);
             } catch (Exception e) {
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             }
             
             // Claim upload id for target bucket 
@@ -378,40 +378,40 @@ public class UploadPartCopyTest extends TestBase {
             uploadPartCopyRequest.setPartSize(partSize);
             UploadPartCopyResult uploadPartCopyResult = ossClient.uploadPartCopy(uploadPartCopyRequest);
             partETags.add(uploadPartCopyResult.getPartETag());
-            Assert.assertEquals(partNumber, uploadPartCopyResult.getPartNumber());
-            Assert.assertEquals(uploadPartCopyResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(partNumber, uploadPartCopyResult.getPartNumber());
+            Assertions.assertEquals(uploadPartCopyResult.getRequestId().length(), REQUEST_ID_LEN);
             
             ListPartsRequest listPartsRequest = new ListPartsRequest(targetBucket, targetKey, uploadId);
             PartListing partListing = ossClient.listParts(listPartsRequest);
-            Assert.assertEquals(1, partListing.getParts().size());
-            Assert.assertEquals(targetBucket, partListing.getBucketName());
-            Assert.assertEquals(targetKey, partListing.getKey());
-            Assert.assertEquals(uploadId, partListing.getUploadId());
-            Assert.assertEquals(LIST_PART_MAX_RETURNS, partListing.getMaxParts().intValue());
-            Assert.assertNotNull(partListing.getNextPartNumberMarker());
-            Assert.assertFalse(partListing.isTruncated());
-            Assert.assertEquals(partListing.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(1, partListing.getParts().size());
+            Assertions.assertEquals(targetBucket, partListing.getBucketName());
+            Assertions.assertEquals(targetKey, partListing.getKey());
+            Assertions.assertEquals(uploadId, partListing.getUploadId());
+            Assertions.assertEquals(LIST_PART_MAX_RETURNS, partListing.getMaxParts().intValue());
+            Assertions.assertNotNull(partListing.getNextPartNumberMarker());
+            Assertions.assertFalse(partListing.isTruncated());
+            Assertions.assertEquals(partListing.getRequestId().length(), REQUEST_ID_LEN);
             
             // Complete multipart upload
             CompleteMultipartUploadRequest completeMultipartUploadRequest = 
                     new CompleteMultipartUploadRequest(targetBucket, targetKey, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-            Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, targetBucket, targetKey), 
+            Assertions.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, targetBucket, targetKey), 
                     completeMultipartUploadResult.getLocation());
-            Assert.assertEquals(targetBucket, completeMultipartUploadResult.getBucketName());
-            Assert.assertEquals(targetKey, completeMultipartUploadResult.getKey());
-            Assert.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
-            Assert.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(targetBucket, completeMultipartUploadResult.getBucketName());
+            Assertions.assertEquals(targetKey, completeMultipartUploadResult.getKey());
+            Assertions.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
+            Assertions.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
             
             // Get uploaded object
             OSSObject o = ossClient.getObject(targetBucket, targetKey);
             final long objectSize = 1 * partSize;
-            Assert.assertEquals(objectSize, o.getObjectMetadata().getContentLength());
-            Assert.assertEquals(calcMultipartsETag(partETags), o.getObjectMetadata().getETag());
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(objectSize, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(calcMultipartsETag(partETags), o.getObjectMetadata().getETag());
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             deleteBucketWithObjects(ossClient, sourceBucket);
             deleteBucketWithObjects(ossClient, targetBucket);
@@ -438,7 +438,7 @@ public class UploadPartCopyTest extends TestBase {
                 PutObjectResult result = ossClient.putObject(sourceBucket, sourceKey, instream, null);
                 eTag = result.getETag();
             } catch (Exception e) {
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             }
             
             // Claim upload id for target bucket 
@@ -457,41 +457,41 @@ public class UploadPartCopyTest extends TestBase {
             uploadPartCopyRequest.setPartSize(inputStreamLength);
             UploadPartCopyResult uploadPartCopyResult = ossClient.uploadPartCopy(uploadPartCopyRequest);
             partETags.add(uploadPartCopyResult.getPartETag());
-            Assert.assertEquals(eTag, uploadPartCopyResult.getETag());
-            Assert.assertEquals(partNumber, uploadPartCopyResult.getPartNumber());
-            Assert.assertEquals(uploadPartCopyResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(eTag, uploadPartCopyResult.getETag());
+            Assertions.assertEquals(partNumber, uploadPartCopyResult.getPartNumber());
+            Assertions.assertEquals(uploadPartCopyResult.getRequestId().length(), REQUEST_ID_LEN);
             
             ListPartsRequest listPartsRequest = new ListPartsRequest(targetBucket, targetKey, uploadId);
             PartListing partListing = ossClient.listParts(listPartsRequest);
-            Assert.assertEquals(1, partListing.getParts().size());
-            Assert.assertEquals(targetBucket, partListing.getBucketName());
-            Assert.assertEquals(targetKey, partListing.getKey());
-            Assert.assertEquals(uploadId, partListing.getUploadId());
-            Assert.assertEquals(LIST_PART_MAX_RETURNS, partListing.getMaxParts().intValue());
-            Assert.assertNotNull(partListing.getNextPartNumberMarker());
-            Assert.assertFalse(partListing.isTruncated());
-            Assert.assertEquals(partListing.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(1, partListing.getParts().size());
+            Assertions.assertEquals(targetBucket, partListing.getBucketName());
+            Assertions.assertEquals(targetKey, partListing.getKey());
+            Assertions.assertEquals(uploadId, partListing.getUploadId());
+            Assertions.assertEquals(LIST_PART_MAX_RETURNS, partListing.getMaxParts().intValue());
+            Assertions.assertNotNull(partListing.getNextPartNumberMarker());
+            Assertions.assertFalse(partListing.isTruncated());
+            Assertions.assertEquals(partListing.getRequestId().length(), REQUEST_ID_LEN);
             
             // Complete multipart upload
             CompleteMultipartUploadRequest completeMultipartUploadRequest = 
                     new CompleteMultipartUploadRequest(targetBucket, targetKey, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-            Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, targetBucket, targetKey), 
+            Assertions.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, targetBucket, targetKey), 
                     completeMultipartUploadResult.getLocation());
-            Assert.assertEquals(targetBucket, completeMultipartUploadResult.getBucketName());
-            Assert.assertEquals(targetKey, completeMultipartUploadResult.getKey());
-            Assert.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
-            Assert.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(targetBucket, completeMultipartUploadResult.getBucketName());
+            Assertions.assertEquals(targetKey, completeMultipartUploadResult.getKey());
+            Assertions.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
+            Assertions.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
             
             // Get uploaded object
             OSSObject o = ossClient.getObject(targetBucket, targetKey);
             final long objectSize = inputStreamLength;
-            Assert.assertEquals(objectSize, o.getObjectMetadata().getContentLength());
-            Assert.assertEquals(calcMultipartsETag(partETags), o.getObjectMetadata().getETag());
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(objectSize, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(calcMultipartsETag(partETags), o.getObjectMetadata().getETag());
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             deleteBucketWithObjects(ossClient, sourceBucket);
             deleteBucketWithObjects(ossClient, targetBucket);

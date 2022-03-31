@@ -32,7 +32,7 @@ import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.VpcPolicy;
 import com.aliyun.oss.model.Vpcip;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 public class VpcipTest extends TestBase {
@@ -50,18 +50,18 @@ public class VpcipTest extends TestBase {
             createVpcipRequest.setLabel(VPCIP_LABEL);
             CreateVpcipResult createVpcipResult = ossClient.createVpcip(createVpcipRequest);
             Vpcip vpcipResult = createVpcipResult.getVpcip();
-            Assert.assertNotNull(vpcipResult.getRegion());
-            Assert.assertNotNull(vpcipResult.getVpcId());
-            Assert.assertNotNull(vpcipResult.getVip());
-            Assert.assertNotNull(vpcipResult.getLabel());
+            Assertions.assertNotNull(vpcipResult.getRegion());
+            Assertions.assertNotNull(vpcipResult.getVpcId());
+            Assertions.assertNotNull(vpcipResult.getVip());
+            Assertions.assertNotNull(vpcipResult.getLabel());
 
             List<Vpcip> vpcipList = ossClient.listVpcip();
 
             for (Vpcip vpcip : vpcipList) {
-                Assert.assertNotNull(vpcip.getRegion());
-                Assert.assertNotNull(vpcip.getVpcId());
-                Assert.assertNotNull(vpcip.getVip());
-                Assert.assertNotNull(vpcip.getLabel());
+                Assertions.assertNotNull(vpcip.getRegion());
+                Assertions.assertNotNull(vpcip.getVpcId());
+                Assertions.assertNotNull(vpcip.getVip());
+                Assertions.assertNotNull(vpcip.getLabel());
             }
 
             DeleteVpcipRequest deleteVpcipRequest = new DeleteVpcipRequest();
@@ -73,7 +73,7 @@ public class VpcipTest extends TestBase {
             ossClient.deleteVpcip(deleteVpcipRequest);
 
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -85,9 +85,9 @@ public class VpcipTest extends TestBase {
             createVpcipRequest.setVSwitchId(VPCIP_NAME);
             CreateVpcipResult createVpcipResult = ossClient.createVpcip(createVpcipRequest);
             Vpcip vpcipResult = createVpcipResult.getVpcip();
-            Assert.assertNotNull(vpcipResult.getRegion());
-            Assert.assertNotNull(vpcipResult.getVpcId());
-            Assert.assertNotNull(vpcipResult.getVip());
+            Assertions.assertNotNull(vpcipResult.getRegion());
+            Assertions.assertNotNull(vpcipResult.getVpcId());
+            Assertions.assertNotNull(vpcipResult.getVip());
 
             try {
                 CreateBucketVpcipRequest vpcipRequest = new CreateBucketVpcipRequest();
@@ -103,11 +103,11 @@ public class VpcipTest extends TestBase {
                 GenericRequest genericRequest = new GenericRequest();
                 genericRequest.setBucketName(bucketName);
                 List<VpcPolicy> vpcPolicys = ossClient.getBucketVpcip(genericRequest);
-                Assert.assertEquals(vpcPolicys.size(), 1);
+                Assertions.assertEquals(vpcPolicys.size(), 1);
                 for (VpcPolicy vpcPolicyBucket : vpcPolicys) {
-                    Assert.assertNotNull(vpcPolicyBucket.getRegion());
-                    Assert.assertNotNull(vpcPolicyBucket.getVpcId());
-                    Assert.assertNotNull(vpcPolicyBucket.getVip());
+                    Assertions.assertNotNull(vpcPolicyBucket.getRegion());
+                    Assertions.assertNotNull(vpcPolicyBucket.getVpcId());
+                    Assertions.assertNotNull(vpcPolicyBucket.getVip());
                     System.out.println(vpcPolicyBucket.toString());
                 }
 
@@ -119,17 +119,17 @@ public class VpcipTest extends TestBase {
                 GenericRequest genericRequest2 = new GenericRequest();
                 genericRequest.setBucketName(bucketName);
                 List<VpcPolicy> vpcPolicys2 = ossClient.getBucketVpcip(genericRequest2);
-                Assert.assertEquals(vpcPolicys2.size(), 0);
+                Assertions.assertEquals(vpcPolicys2.size(), 0);
                 for (VpcPolicy vpcPolicyBucket : vpcPolicys2) {
-                    Assert.assertNotNull(vpcPolicyBucket.getRegion());
-                    Assert.assertNotNull(vpcPolicyBucket.getVpcId());
-                    Assert.assertNotNull(vpcPolicyBucket.getVip());
+                    Assertions.assertNotNull(vpcPolicyBucket.getRegion());
+                    Assertions.assertNotNull(vpcPolicyBucket.getVpcId());
+                    Assertions.assertNotNull(vpcPolicyBucket.getVip());
                     System.out.println(vpcPolicyBucket.toString());
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             } finally {
                 if (null != vpcipResult) {
                     DeleteVpcipRequest deleteVpcipRequest = new DeleteVpcipRequest();
@@ -144,7 +144,7 @@ public class VpcipTest extends TestBase {
 
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 

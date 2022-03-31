@@ -18,7 +18,7 @@
  */
 package com.aliyun.oss.common.utils;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -32,7 +32,7 @@ public class DateUtilTest {
         String expectedRegex = "\\w{3}, \\d{2} \\w{3} \\d{4} \\d{2}:\\d{2}:\\d{2} GMT";
 
         String actual = DateUtil.formatRfc822Date(new Date());
-        assertTrue(actual.matches(expectedRegex));
+        Assertions.assertTrue(actual.matches(expectedRegex));
     }
 
     @Test
@@ -40,16 +40,16 @@ public class DateUtilTest {
         String expectedRegex = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z";
 
         String actual = DateUtil.formatAlternativeIso8601Date(new Date());
-        assertTrue(actual.matches(expectedRegex));
+        Assertions.assertTrue(actual.matches(expectedRegex));
     }
 
     @Test
     public void testParseIso8601Date() {
         try {
             DateUtil.parseIso8601Date("invalid");
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ParseException e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 }

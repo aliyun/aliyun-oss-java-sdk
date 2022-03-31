@@ -19,7 +19,7 @@
 
 package com.aliyun.oss.integrationtests;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 
@@ -34,12 +34,12 @@ public class BucketMetadataTest extends TestBase {
     public void testGetBucketMetadata() {
         try {
             BucketMetadata meta = ossClient.getBucketMetadata(bucketName);
-            Assert.assertEquals(meta.getBucketRegion(), TestConfig.OSS_TEST_REGION);
-            Assert.assertEquals(meta.getHttpMetadata().get(OSSHeaders.OSS_HEADER_REQUEST_ID).length(),
+            Assertions.assertEquals(meta.getBucketRegion(), TestConfig.OSS_TEST_REGION);
+            Assertions.assertEquals(meta.getHttpMetadata().get(OSSHeaders.OSS_HEADER_REQUEST_ID).length(),
                     "59F2AC3B349A25FA4C44BF8A".length());
         } catch (Exception e) {
         	e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } 
     }
     
@@ -50,10 +50,10 @@ public class BucketMetadataTest extends TestBase {
         // bucket non-existent 
         try {
             ossClient.getBucketMetadata(bucketName);
-            Assert.fail("Get bucket meta should not be successful");
+            Assertions.fail("Get bucket meta should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
-            Assert.assertEquals(e.getRequestId().length(), "59F2AC3B349A25FA4C44BF8A".length());
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
+            Assertions.assertEquals(e.getRequestId().length(), "59F2AC3B349A25FA4C44BF8A".length());
         }
 
     }

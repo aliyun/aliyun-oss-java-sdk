@@ -28,11 +28,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertNotNull;
+import org.junit.jupiter.api.Assertions;
 
 public class ChunkedUploadStreamTest {
     String path = ResourceUtils.getTestFilename("oss/example.jpg");
@@ -51,17 +47,17 @@ public class ChunkedUploadStreamTest {
             ret = input.read(bOut1);
             ret = input.read(bOut1);
             ret = input.read();
-            assertTrue(true);
+            Assertions.assertTrue(true);
             input.close();
         } catch (Exception e) {
-            assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ChunkedUploadStream input = new ChunkedUploadStream(null, 10 * 1024);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         }catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
@@ -70,7 +66,7 @@ public class ChunkedUploadStreamTest {
             ChunkedUploadStream input = new ChunkedUploadStream(byteInput, 10 * 1024);
             input.read(null, 0, 0);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
@@ -79,20 +75,20 @@ public class ChunkedUploadStreamTest {
         try {
             InputStream in = new ByteArrayInputStream("123".getBytes());
             ReleasableInputStreamEntity releasableInputStreamEntity = new ReleasableInputStreamEntity(in);
-            assertEquals(-1, releasableInputStreamEntity.getContentLength());
+            Assertions.assertEquals(-1, releasableInputStreamEntity.getContentLength());
             releasableInputStreamEntity.close();
             releasableInputStreamEntity.release();
 
             releasableInputStreamEntity = new ReleasableInputStreamEntity(in, ContentType.TEXT_PLAIN);
-            assertTrue(releasableInputStreamEntity.isRepeatable());
-            assertFalse(releasableInputStreamEntity.isCloseDisabled());
-            assertTrue(releasableInputStreamEntity.isStreaming());
-            assertNotNull(releasableInputStreamEntity.getContent());
-            assertFalse(releasableInputStreamEntity.isCloseDisabled());
+            Assertions.assertTrue(releasableInputStreamEntity.isRepeatable());
+            Assertions.assertFalse(releasableInputStreamEntity.isCloseDisabled());
+            Assertions.assertTrue(releasableInputStreamEntity.isStreaming());
+            Assertions.assertNotNull(releasableInputStreamEntity.getContent());
+            Assertions.assertFalse(releasableInputStreamEntity.isCloseDisabled());
             releasableInputStreamEntity.close();
             releasableInputStreamEntity.release();
         } catch (Exception e) {
-            fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 }

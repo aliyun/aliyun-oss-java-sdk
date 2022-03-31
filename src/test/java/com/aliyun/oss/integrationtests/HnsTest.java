@@ -16,7 +16,7 @@ import com.aliyun.oss.model.ObjectListing;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.Payer;
 import com.aliyun.oss.model.RenameObjectRequest;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -30,16 +30,16 @@ public class HnsTest extends TestBase {
     public void testBucketRelatedConstructor() {
         String bucketName = "tes-bucket-hns";
         CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
-        Assert.assertNull(createBucketRequest.getHnsStatus());
+        Assertions.assertNull(createBucketRequest.getHnsStatus());
         createBucketRequest.setHnsStatus(HnsStatus.Enabled);
-        Assert.assertEquals(HnsStatus.Enabled.toString(), createBucketRequest.getHnsStatus());
+        Assertions.assertEquals(HnsStatus.Enabled.toString(), createBucketRequest.getHnsStatus());
         createBucketRequest.setHnsStatus(HnsStatus.Enabled.toString());
-        Assert.assertEquals(HnsStatus.Enabled.toString(), createBucketRequest.getHnsStatus());
+        Assertions.assertEquals(HnsStatus.Enabled.toString(), createBucketRequest.getHnsStatus());
 
         createBucketRequest = new CreateBucketRequest(bucketName).withHnsStatus(HnsStatus.Enabled);
-        Assert.assertEquals(HnsStatus.Enabled.toString(), createBucketRequest.getHnsStatus());
+        Assertions.assertEquals(HnsStatus.Enabled.toString(), createBucketRequest.getHnsStatus());
         createBucketRequest = new CreateBucketRequest(bucketName).withHnsStatus(HnsStatus.Enabled.toString());
-        Assert.assertEquals(HnsStatus.Enabled.toString(), createBucketRequest.getHnsStatus());
+        Assertions.assertEquals(HnsStatus.Enabled.toString(), createBucketRequest.getHnsStatus());
     }
 
     @Test
@@ -49,43 +49,43 @@ public class HnsTest extends TestBase {
         String directory = "test-dir";
 
         CreateDirectoryRequest createDirectoryRequest = new CreateDirectoryRequest(bucketName, directory);
-        Assert.assertEquals(directory, createDirectoryRequest.getDirectoryName());
-        Assert.assertEquals(directory, createDirectoryRequest.getKey());
+        Assertions.assertEquals(directory, createDirectoryRequest.getDirectoryName());
+        Assertions.assertEquals(directory, createDirectoryRequest.getKey());
         createDirectoryRequest.setDirectoryName("123");
-        Assert.assertEquals("123", createDirectoryRequest.getDirectoryName());
+        Assertions.assertEquals("123", createDirectoryRequest.getDirectoryName());
 
         DeleteDirectoryRequest deleteDirectoryRequest = new DeleteDirectoryRequest(bucketName, directory);
-        Assert.assertEquals(bucketName, deleteDirectoryRequest.getBucketName());
-        Assert.assertEquals(directory, deleteDirectoryRequest.getDirectoryName());
-        Assert.assertEquals(directory, deleteDirectoryRequest.getKey());
-        Assert.assertFalse(deleteDirectoryRequest.isDeleteRecursive());
-        Assert.assertNull(deleteDirectoryRequest.getNextDeleteToken());
+        Assertions.assertEquals(bucketName, deleteDirectoryRequest.getBucketName());
+        Assertions.assertEquals(directory, deleteDirectoryRequest.getDirectoryName());
+        Assertions.assertEquals(directory, deleteDirectoryRequest.getKey());
+        Assertions.assertFalse(deleteDirectoryRequest.isDeleteRecursive());
+        Assertions.assertNull(deleteDirectoryRequest.getNextDeleteToken());
 
         deleteDirectoryRequest = new DeleteDirectoryRequest(bucketName, directory, true, "test-token");
-        Assert.assertEquals(bucketName, deleteDirectoryRequest.getBucketName());
-        Assert.assertEquals(directory, deleteDirectoryRequest.getDirectoryName());
-        Assert.assertEquals(directory, deleteDirectoryRequest.getKey());
-        Assert.assertTrue(deleteDirectoryRequest.isDeleteRecursive());
-        Assert.assertEquals("test-token", deleteDirectoryRequest.getNextDeleteToken());
+        Assertions.assertEquals(bucketName, deleteDirectoryRequest.getBucketName());
+        Assertions.assertEquals(directory, deleteDirectoryRequest.getDirectoryName());
+        Assertions.assertEquals(directory, deleteDirectoryRequest.getKey());
+        Assertions.assertTrue(deleteDirectoryRequest.isDeleteRecursive());
+        Assertions.assertEquals("test-token", deleteDirectoryRequest.getNextDeleteToken());
         deleteDirectoryRequest.setDirectoryName("d1");
-        Assert.assertEquals("d1", deleteDirectoryRequest.getDirectoryName());
-        Assert.assertEquals("d1", deleteDirectoryRequest.getKey());
+        Assertions.assertEquals("d1", deleteDirectoryRequest.getDirectoryName());
+        Assertions.assertEquals("d1", deleteDirectoryRequest.getKey());
         deleteDirectoryRequest = new DeleteDirectoryRequest(bucketName, directory).withDeleteRecursive(true).withNextDeleteToken("123");
-        Assert.assertEquals(directory, deleteDirectoryRequest.getDirectoryName());
-        Assert.assertTrue(deleteDirectoryRequest.isDeleteRecursive());
-        Assert.assertEquals("123", deleteDirectoryRequest.getNextDeleteToken());
+        Assertions.assertEquals(directory, deleteDirectoryRequest.getDirectoryName());
+        Assertions.assertTrue(deleteDirectoryRequest.isDeleteRecursive());
+        Assertions.assertEquals("123", deleteDirectoryRequest.getNextDeleteToken());
 
 
         String dstObjectName = objectName + "-dst";
         RenameObjectRequest renameObjectRequest = new RenameObjectRequest(bucketName, objectName, dstObjectName);
-        Assert.assertEquals(objectName, renameObjectRequest.getSourceObjectName());
-        Assert.assertEquals(dstObjectName, renameObjectRequest.getKey());
-        Assert.assertEquals(dstObjectName, renameObjectRequest.getDestinationObjectName());
+        Assertions.assertEquals(objectName, renameObjectRequest.getSourceObjectName());
+        Assertions.assertEquals(dstObjectName, renameObjectRequest.getKey());
+        Assertions.assertEquals(dstObjectName, renameObjectRequest.getDestinationObjectName());
         renameObjectRequest.setSourceObjectName("src-obj");
         renameObjectRequest.setDestinationObjectName("dst-obj");
-        Assert.assertEquals("src-obj", renameObjectRequest.getSourceObjectName());
-        Assert.assertEquals("dst-obj", renameObjectRequest.getKey());
-        Assert.assertEquals("dst-obj", renameObjectRequest.getDestinationObjectName());
+        Assertions.assertEquals("src-obj", renameObjectRequest.getSourceObjectName());
+        Assertions.assertEquals("dst-obj", renameObjectRequest.getKey());
+        Assertions.assertEquals("dst-obj", renameObjectRequest.getDestinationObjectName());
     }
 
     @Override
@@ -120,7 +120,7 @@ public class HnsTest extends TestBase {
     @Test
     public void testGetHnsStatus() {
         BucketInfo info =  testClient.getBucketInfo(this.testHnsBucket);
-        Assert.assertEquals(HnsStatus.Enabled.toString(), info.getBucket().getHnsStatus());
+        Assertions.assertEquals(HnsStatus.Enabled.toString(), info.getBucket().getHnsStatus());
     }
 
     @Test
@@ -131,24 +131,24 @@ public class HnsTest extends TestBase {
         createDirectoryRequest.setRequestPayer(Payer.Requester);
         testClient.createDirectory(createDirectoryRequest);
         ObjectMetadata meta = testClient.getObjectMetadata(testHnsBucket, dirName);
-        Assert.assertEquals("application/x-directory", meta.getContentType());
+        Assertions.assertEquals("application/x-directory", meta.getContentType());
 
         RenameObjectRequest renameObjectRequest = new RenameObjectRequest(testHnsBucket, dirName, dirNameNew);
         renameObjectRequest.setRequestPayer(Payer.Requester);
         testClient.renameObject(renameObjectRequest);
         meta = testClient.getObjectMetadata(testHnsBucket, dirNameNew);
-        Assert.assertEquals("application/x-directory", meta.getContentType());
+        Assertions.assertEquals("application/x-directory", meta.getContentType());
         try {
             meta = testClient.getObjectMetadata(testHnsBucket, dirName);
-            Assert.fail("should be failed here");
+            Assertions.fail("should be failed here");
         } catch (Exception e) {
         }
 
         DeleteDirectoryRequest deleteDirectoryRequest = new DeleteDirectoryRequest(testHnsBucket, dirNameNew);
         deleteDirectoryRequest.setRequestPayer(Payer.Requester);
         DeleteDirectoryResult deleteDirectoryResult = testClient.deleteDirectory(deleteDirectoryRequest);
-        Assert.assertEquals(dirNameNew, deleteDirectoryResult.getDirectoryName());
-        Assert.assertEquals(1, deleteDirectoryResult.getDeleteNumber());
+        Assertions.assertEquals(dirNameNew, deleteDirectoryResult.getDirectoryName());
+        Assertions.assertEquals(1, deleteDirectoryResult.getDeleteNumber());
     }
 
     @Test
@@ -159,7 +159,7 @@ public class HnsTest extends TestBase {
         testClient.putObject(testHnsBucket, objectName, new ByteArrayInputStream("123".getBytes()));
         testClient.renameObject(testHnsBucket, objectName, objectNameNew);
         ObjectMetadata meta = testClient.getObjectMetadata(testHnsBucket, objectNameNew);
-        Assert.assertEquals(3, meta.getContentLength());
+        Assertions.assertEquals(3, meta.getContentLength());
 
 
         objectName = "test-obj-1-#+<>中文测试";
@@ -167,7 +167,7 @@ public class HnsTest extends TestBase {
         testClient.putObject(testHnsBucket, objectName, new ByteArrayInputStream("1234".getBytes()));
         testClient.renameObject(testHnsBucket, objectName, objectNameNew);
         meta = testClient.getObjectMetadata(testHnsBucket, objectNameNew);
-        Assert.assertEquals(4, meta.getContentLength());
+        Assertions.assertEquals(4, meta.getContentLength());
     }
 
     @Test
@@ -184,21 +184,21 @@ public class HnsTest extends TestBase {
         try {
             DeleteDirectoryResult deleteDirectoryResult = testClient.deleteDirectory(testHnsBucket, dirName);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.FILE_ALREADY_EXISTS, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.FILE_ALREADY_EXISTS, e.getErrorCode());
         }
 
         DeleteDirectoryResult deleteDirectoryResult = testClient.deleteDirectory(testHnsBucket, dirName, true, null);
         String nextToken = deleteDirectoryResult.getNextDeleteToken();
-        Assert.assertEquals(100, deleteDirectoryResult.getDeleteNumber());
-        Assert.assertEquals(dirName, deleteDirectoryResult.getDirectoryName());
-        Assert.assertNotNull(nextToken);
+        Assertions.assertEquals(100, deleteDirectoryResult.getDeleteNumber());
+        Assertions.assertEquals(dirName, deleteDirectoryResult.getDirectoryName());
+        Assertions.assertNotNull(nextToken);
 
         DeleteDirectoryRequest deleteDirectoryRequest = new DeleteDirectoryRequest(testHnsBucket, dirName)
                 .withDeleteRecursive(true)
                 .withNextDeleteToken(nextToken);
         deleteDirectoryResult = testClient.deleteDirectory(deleteDirectoryRequest);
-        Assert.assertTrue(deleteDirectoryResult.getDeleteNumber() > 0);
-        Assert.assertEquals(dirName, deleteDirectoryResult.getDirectoryName());
+        Assertions.assertTrue(deleteDirectoryResult.getDeleteNumber() > 0);
+        Assertions.assertEquals(dirName, deleteDirectoryResult.getDirectoryName());
 
     }
 

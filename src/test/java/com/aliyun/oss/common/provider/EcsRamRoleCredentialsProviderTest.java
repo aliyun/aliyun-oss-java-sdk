@@ -25,7 +25,7 @@ import com.aliyun.oss.common.auth.*;
 import com.aliyun.oss.common.provider.mock.EcsRamRoleCredentialsFetcherMock;
 import com.aliyun.oss.common.provider.mock.EcsRamRoleCredentialsFetcherMock.ResponseCategory;
 import com.aliyun.oss.common.utils.DateUtil;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -42,14 +42,14 @@ public class EcsRamRoleCredentialsProviderTest extends TestBase {
                     TestConfig.OSS_AUTH_SERVER_HOST).withCredentialsFetcher(credentialsFetcher);
 
             BasicCredentials credentials = (BasicCredentials) credentialsProvider.getCredentials();
-            Assert.assertEquals(credentials.getAccessKeyId().length(), 29);
-            Assert.assertEquals(credentials.getSecretAccessKey().length(), 44);
-            Assert.assertEquals(credentials.getSecurityToken().length(), 536);
-            Assert.assertTrue(credentials.useSecurityToken());
-            Assert.assertFalse(credentials.willSoonExpire());
+            Assertions.assertEquals(credentials.getAccessKeyId().length(), 29);
+            Assertions.assertEquals(credentials.getSecretAccessKey().length(), 44);
+            Assertions.assertEquals(credentials.getSecurityToken().length(), 536);
+            Assertions.assertTrue(credentials.useSecurityToken());
+            Assertions.assertFalse(credentials.willSoonExpire());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -62,13 +62,13 @@ public class EcsRamRoleCredentialsProviderTest extends TestBase {
                     TestConfig.OSS_AUTH_SERVER_HOST).withCredentialsFetcher(credentialsFetcher);
 
             BasicCredentials credentials = (BasicCredentials) credentialsProvider.getCredentials();
-            Assert.assertEquals(credentials.getAccessKeyId().length(), 29);
-            Assert.assertEquals(credentials.getSecretAccessKey().length(), 44);
-            Assert.assertFalse(credentials.useSecurityToken());
-            Assert.assertFalse(credentials.willSoonExpire());
+            Assertions.assertEquals(credentials.getAccessKeyId().length(), 29);
+            Assertions.assertEquals(credentials.getSecretAccessKey().length(), 44);
+            Assertions.assertFalse(credentials.useSecurityToken());
+            Assertions.assertFalse(credentials.willSoonExpire());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -81,13 +81,13 @@ public class EcsRamRoleCredentialsProviderTest extends TestBase {
                     TestConfig.OSS_AUTH_SERVER_HOST).withCredentialsFetcher(credentialsFetcher);
 
             BasicCredentials credentials = (BasicCredentials) credentialsProvider.getCredentials();
-            Assert.assertEquals(credentials.getAccessKeyId().length(), 29);
-            Assert.assertEquals(credentials.getSecretAccessKey().length(), 44);
-            Assert.assertFalse(credentials.useSecurityToken());
-            Assert.assertFalse(credentials.willSoonExpire());
+            Assertions.assertEquals(credentials.getAccessKeyId().length(), 29);
+            Assertions.assertEquals(credentials.getSecretAccessKey().length(), 44);
+            Assertions.assertFalse(credentials.useSecurityToken());
+            Assertions.assertFalse(credentials.willSoonExpire());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -100,14 +100,14 @@ public class EcsRamRoleCredentialsProviderTest extends TestBase {
                     TestConfig.OSS_AUTH_SERVER_HOST).withCredentialsFetcher(credentialsFetcher);
 
             BasicCredentials credentials = (BasicCredentials) credentialsProvider.getCredentials();
-            Assert.assertEquals(credentials.getAccessKeyId().length(), 29);
-            Assert.assertEquals(credentials.getSecretAccessKey().length(), 44);
-            Assert.assertEquals(credentials.getSecurityToken().length(), 536);
-            Assert.assertTrue(credentials.useSecurityToken());
-            Assert.assertTrue(credentials.willSoonExpire());
+            Assertions.assertEquals(credentials.getAccessKeyId().length(), 29);
+            Assertions.assertEquals(credentials.getSecretAccessKey().length(), 44);
+            Assertions.assertEquals(credentials.getSecurityToken().length(), 536);
+            Assertions.assertTrue(credentials.useSecurityToken());
+            Assertions.assertTrue(credentials.willSoonExpire());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -120,10 +120,10 @@ public class EcsRamRoleCredentialsProviderTest extends TestBase {
                     TestConfig.OSS_AUTH_SERVER_HOST).withCredentialsFetcher(credentialsFetcher);
 
             Credentials credentials = credentialsProvider.getCredentials();
-            Assert.assertNull(credentials);
+            Assertions.assertNull(credentials);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -136,10 +136,10 @@ public class EcsRamRoleCredentialsProviderTest extends TestBase {
                     TestConfig.OSS_AUTH_SERVER_HOST).withCredentialsFetcher(credentialsFetcher);
 
             Credentials credentials = credentialsProvider.getCredentials();
-            Assert.assertNull(credentials);
+            Assertions.assertNull(credentials);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
@@ -149,10 +149,10 @@ public class EcsRamRoleCredentialsProviderTest extends TestBase {
                     TestConfig.OSS_AUTH_SERVER_HOST).withCredentialsFetcher(credentialsFetcher);
 
             Credentials credentials = credentialsProvider.getCredentials();
-            Assert.assertNull(credentials);
+            Assertions.assertNull(credentials);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
@@ -162,10 +162,10 @@ public class EcsRamRoleCredentialsProviderTest extends TestBase {
                     TestConfig.OSS_AUTH_SERVER_HOST).withCredentialsFetcher(credentialsFetcher);
 
             Credentials credentials = credentialsProvider.getCredentials();
-            Assert.assertNull(credentials);
+            Assertions.assertNull(credentials);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
@@ -175,10 +175,10 @@ public class EcsRamRoleCredentialsProviderTest extends TestBase {
                     TestConfig.OSS_AUTH_SERVER_HOST).withCredentialsFetcher(credentialsFetcher);
 
             Credentials credentials = credentialsProvider.getCredentials();
-            Assert.assertNull(credentials);
+            Assertions.assertNull(credentials);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
@@ -188,10 +188,10 @@ public class EcsRamRoleCredentialsProviderTest extends TestBase {
                     TestConfig.OSS_AUTH_SERVER_HOST).withCredentialsFetcher(credentialsFetcher);
 
             Credentials credentials = credentialsProvider.getCredentials();
-            Assert.assertNull(credentials);
+            Assertions.assertNull(credentials);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -204,7 +204,7 @@ public class EcsRamRoleCredentialsProviderTest extends TestBase {
                     TestConfig.OSS_AUTH_SERVER_HOST).withCredentialsFetcher(credentialsFetcher);
 
             BasicCredentials credentials = (BasicCredentials) credentialsProvider.getCredentials();
-            Assert.assertTrue(credentials.willSoonExpire());
+            Assertions.assertTrue(credentials.willSoonExpire());
 
             credentialsFetcher = new EcsRamRoleCredentialsFetcherMock(TestConfig.OSS_AUTH_SERVER_HOST)
                     .withResponseCategory(ResponseCategory.Normal);
@@ -212,10 +212,10 @@ public class EcsRamRoleCredentialsProviderTest extends TestBase {
                     .withCredentialsFetcher(credentialsFetcher);
 
             credentials = (BasicCredentials) credentialsProvider.getCredentials();
-            Assert.assertFalse(credentials.willSoonExpire());
+            Assertions.assertFalse(credentials.willSoonExpire());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -225,10 +225,10 @@ public class EcsRamRoleCredentialsProviderTest extends TestBase {
             EcsRamRoleCredentialsProvider credentialsProvider = new EcsRamRoleCredentialsProvider(
                     TestConfig.OSS_AUTH_SERVER_HOST + "/noteixst");
             Credentials credentials = credentialsProvider.getCredentials();
-            Assert.assertNull(credentials);
+            Assertions.assertNull(credentials);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -237,10 +237,10 @@ public class EcsRamRoleCredentialsProviderTest extends TestBase {
             EcsRamRoleCredentialsProvider credentialsProvider = new EcsRamRoleCredentialsProvider(
                     TestConfig.OSS_AUTH_SERVER_HOST);
             Credentials credentials = credentialsProvider.getCredentials();
-            Assert.assertEquals(credentials.getAccessKeyId().length(), 29);
-            Assert.assertEquals(credentials.getSecretAccessKey().length(), 44);
-            Assert.assertEquals(credentials.getSecurityToken().length(), 516);
-            Assert.assertTrue(credentials.useSecurityToken());
+            Assertions.assertEquals(credentials.getAccessKeyId().length(), 29);
+            Assertions.assertEquals(credentials.getSecretAccessKey().length(), 44);
+            Assertions.assertEquals(credentials.getSecurityToken().length(), 516);
+            Assertions.assertTrue(credentials.useSecurityToken());
 
             String key = "test.txt";
             String content = "HelloOSS";
@@ -256,7 +256,7 @@ public class EcsRamRoleCredentialsProviderTest extends TestBase {
             ossClient.shutdown();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -287,41 +287,41 @@ public class EcsRamRoleCredentialsProviderTest extends TestBase {
                     TestConfig.OSS_AUTH_SERVER_HOST).withCredentialsFetcher(credentialsFetcher);
 
             BasicCredentials credentials = (BasicCredentials) credentialsProvider.getCredentials();
-            Assert.assertEquals(credentials.getAccessKeyId(), "STS.EgnR2nX****FAf9uuqjHS8Ddt");
-            Assert.assertEquals(credentials.getSecretAccessKey(), "CJ7G63EhuZuN8rfSg2Rd****qAgHMhmDuMkp****NPUV");
-            Assert.assertTrue(credentials.useSecurityToken());
-            Assert.assertTrue(credentials.willSoonExpire());
+            Assertions.assertEquals(credentials.getAccessKeyId(), "STS.EgnR2nX****FAf9uuqjHS8Ddt");
+            Assertions.assertEquals(credentials.getSecretAccessKey(), "CJ7G63EhuZuN8rfSg2Rd****qAgHMhmDuMkp****NPUV");
+            Assertions.assertTrue(credentials.useSecurityToken());
+            Assertions.assertTrue(credentials.willSoonExpire());
 
             meta = NORMAL_METADATA_2 + "\"" + DateUtil.formatAlternativeIso8601Date(new Date()) + "\"}";
             credentialsFetcher.setExternalData(meta);
 
             credentials = (BasicCredentials) credentialsProvider.getCredentials();
-            Assert.assertEquals(credentials.getAccessKeyId(), "STS.AgnR2nX****FAf9uuqjHS8Ddt");
-            Assert.assertEquals(credentials.getSecretAccessKey(), "AJ7G63EhuZuN8rfSg2Rd****qAgHMhmDuMkp****NPUV");
-            Assert.assertTrue(credentials.useSecurityToken());
-            Assert.assertTrue(credentials.willSoonExpire());
+            Assertions.assertEquals(credentials.getAccessKeyId(), "STS.AgnR2nX****FAf9uuqjHS8Ddt");
+            Assertions.assertEquals(credentials.getSecretAccessKey(), "AJ7G63EhuZuN8rfSg2Rd****qAgHMhmDuMkp****NPUV");
+            Assertions.assertTrue(credentials.useSecurityToken());
+            Assertions.assertTrue(credentials.willSoonExpire());
 
             long currTime = new Date().getTime() + (3600 * 6 * 15/100 - 100) * 1000;
             meta = NORMAL_METADATA_1 + "\"" + DateUtil.formatAlternativeIso8601Date(new Date(currTime)) + "\"}";
             credentialsFetcher.setExternalData(meta);
             credentials = (BasicCredentials) credentialsProvider.getCredentials();
-            Assert.assertEquals(credentials.getAccessKeyId(), "STS.EgnR2nX****FAf9uuqjHS8Ddt");
-            Assert.assertEquals(credentials.getSecretAccessKey(), "CJ7G63EhuZuN8rfSg2Rd****qAgHMhmDuMkp****NPUV");
-            Assert.assertTrue(credentials.useSecurityToken());
-            Assert.assertTrue(credentials.willSoonExpire());
+            Assertions.assertEquals(credentials.getAccessKeyId(), "STS.EgnR2nX****FAf9uuqjHS8Ddt");
+            Assertions.assertEquals(credentials.getSecretAccessKey(), "CJ7G63EhuZuN8rfSg2Rd****qAgHMhmDuMkp****NPUV");
+            Assertions.assertTrue(credentials.useSecurityToken());
+            Assertions.assertTrue(credentials.willSoonExpire());
 
             currTime = new Date().getTime() + (3600 * 6 * 15/100 + 100) * 1000;
             meta = NORMAL_METADATA_1 + "\"" + DateUtil.formatAlternativeIso8601Date(new Date(currTime)) + "\"}";
             credentialsFetcher.setExternalData(meta);
             credentials = (BasicCredentials) credentialsProvider.getCredentials();
-            Assert.assertEquals(credentials.getAccessKeyId(), "STS.EgnR2nX****FAf9uuqjHS8Ddt");
-            Assert.assertEquals(credentials.getSecretAccessKey(), "CJ7G63EhuZuN8rfSg2Rd****qAgHMhmDuMkp****NPUV");
-            Assert.assertTrue(credentials.useSecurityToken());
-            Assert.assertFalse(credentials.willSoonExpire());
+            Assertions.assertEquals(credentials.getAccessKeyId(), "STS.EgnR2nX****FAf9uuqjHS8Ddt");
+            Assertions.assertEquals(credentials.getSecretAccessKey(), "CJ7G63EhuZuN8rfSg2Rd****qAgHMhmDuMkp****NPUV");
+            Assertions.assertTrue(credentials.useSecurityToken());
+            Assertions.assertFalse(credentials.willSoonExpire());
 
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 }

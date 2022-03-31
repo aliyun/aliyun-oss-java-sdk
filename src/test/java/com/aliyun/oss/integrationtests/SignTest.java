@@ -11,7 +11,7 @@ import com.aliyun.oss.common.utils.HttpHeaders;
 import com.aliyun.oss.common.utils.IOUtils;
 import com.aliyun.oss.model.*;
 import com.aliyun.oss.utils.ResourceUtils;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -60,7 +60,7 @@ public class SignTest extends  TestBase{
 
             ossClient.putObject(request);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             if (filePath != null) {
                 removeFile(filePath);
@@ -98,13 +98,13 @@ public class SignTest extends  TestBase{
             expectedUrlPrefix.append(endpointURI.getScheme()).append("://").append(bucket).append(".").append(endpointURI.getHost()).append("/")
                     .append(key).append("?x-oss-");
 
-            Assert.assertTrue(url.toString().startsWith(expectedUrlPrefix.toString()));
-            Assert.assertTrue(url.toString().contains("x-oss-signature"));
-            Assert.assertTrue(url.toString().contains("x-oss-signature-version"));
-            Assert.assertTrue(url.toString().contains("x-oss-expires"));
-            Assert.assertTrue(url.toString().contains("x-oss-access-key-id"));
+            Assertions.assertTrue(url.toString().startsWith(expectedUrlPrefix.toString()));
+            Assertions.assertTrue(url.toString().contains("x-oss-signature"));
+            Assertions.assertTrue(url.toString().contains("x-oss-signature-version"));
+            Assertions.assertTrue(url.toString().contains("x-oss-expires"));
+            Assertions.assertTrue(url.toString().contains("x-oss-access-key-id"));
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -128,7 +128,7 @@ public class SignTest extends  TestBase{
 
             ossClient.putObject(bucket, key, new File(filePath));
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -171,10 +171,10 @@ public class SignTest extends  TestBase{
             // Using url signature & chunked encoding to upload specified inputstream.
             ossClient.putObject(signedUrl, instream, -1, requestHeaders, true);
             OSSObject o = ossClient.getObject(bucket, key);
-            Assert.assertEquals(key, o.getKey());
-            Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(key, o.getKey());
+            Assertions.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
     }
 
@@ -230,14 +230,14 @@ public class SignTest extends  TestBase{
                     totalBytes += bytesRead;
                 }
 
-                Assert.assertEquals((lastByte - firstByte + 1), totalBytes);
+                Assertions.assertEquals((lastByte - firstByte + 1), totalBytes);
             } catch (IOException e) {
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             } finally {
                 IOUtils.safeClose(o.getObjectContent());
             }
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
     }
 
@@ -256,9 +256,9 @@ public class SignTest extends  TestBase{
 
         try {
             ossClient.putObject(bucket, key, new ByteArrayInputStream(content.getBytes()), null);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
 
         //get without metadata ok case
@@ -273,7 +273,7 @@ public class SignTest extends  TestBase{
             URL signedUrl = ossClient.generatePresignedUrl(request);
 
             OSSObject o = ossClient.getObject(signedUrl, headers);
-            Assert.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
+            Assertions.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
             IOUtils.safeClose(o.getObjectContent());
 
             //set content-type to null
@@ -283,7 +283,7 @@ public class SignTest extends  TestBase{
             signedUrl = ossClient.generatePresignedUrl(request);
 
             o = ossClient.getObject(signedUrl, headers);
-            Assert.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
+            Assertions.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
             IOUtils.safeClose(o.getObjectContent());
 
             //set content-type to ""
@@ -293,11 +293,11 @@ public class SignTest extends  TestBase{
             signedUrl = ossClient.generatePresignedUrl(request);
 
             o = ossClient.getObject(signedUrl, headers);
-            Assert.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
+            Assertions.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
             IOUtils.safeClose(o.getObjectContent());
 
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
 
         //put with content-md5 OK case
@@ -314,7 +314,7 @@ public class SignTest extends  TestBase{
 
             headers.put(HttpHeaders.CONTENT_MD5, md5);
             PutObjectResult result = ossClient.putObject(signedUrl, new ByteArrayInputStream(content.getBytes()), content.length(), headers);
-            Assert.assertEquals(result.getETag().isEmpty(), false);
+            Assertions.assertEquals(result.getETag().isEmpty(), false);
 
             //with md5 null
             request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.PUT);
@@ -322,7 +322,7 @@ public class SignTest extends  TestBase{
             signedUrl = ossClient.generatePresignedUrl(request);
 
             result = ossClient.putObject(signedUrl, new ByteArrayInputStream(content.getBytes()), content.length(), null);
-            Assert.assertEquals(result.getETag().isEmpty(), false);
+            Assertions.assertEquals(result.getETag().isEmpty(), false);
 
             //with md5 ""
             request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.PUT);
@@ -331,9 +331,9 @@ public class SignTest extends  TestBase{
             signedUrl = ossClient.generatePresignedUrl(request);
 
             result = ossClient.putObject(signedUrl, new ByteArrayInputStream(content.getBytes()), content.length(), null);
-            Assert.assertEquals(result.getETag().isEmpty(), false);
+            Assertions.assertEquals(result.getETag().isEmpty(), false);
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
 
         //put with userMetadata
@@ -351,7 +351,7 @@ public class SignTest extends  TestBase{
 
             headers.put("x-oss-meta-user", "test");
             PutObjectResult result = ossClient.putObject(signedUrl, new ByteArrayInputStream(content.getBytes()), content.length(), headers);
-            Assert.assertEquals(result.getETag().isEmpty(), false);
+            Assertions.assertEquals(result.getETag().isEmpty(), false);
 
             //
             ResponseHeaderOverrides responseHeaders = new ResponseHeaderOverrides();
@@ -362,10 +362,10 @@ public class SignTest extends  TestBase{
             signedUrl = ossClient.generatePresignedUrl(request);
 
             OSSObject o = ossClient.getObject(signedUrl, null);
-            Assert.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
+            Assertions.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
             IOUtils.safeClose(o.getObjectContent());
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
 
         //process
@@ -384,10 +384,10 @@ public class SignTest extends  TestBase{
             request.setProcess(style);
             URL signedUrl = ossClient.generatePresignedUrl(request);
             OSSObject o = ossClient.getObject(signedUrl, null);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
             IOUtils.safeClose(o.getObjectContent());
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
 
         //sts token
@@ -399,9 +399,9 @@ public class SignTest extends  TestBase{
             GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.GET);
             request.setExpiration(expirationDate);
             URL signedUrl = stsClient.generatePresignedUrl(request);
-            Assert.assertTrue(signedUrl.toString().indexOf("security-token=test-sts-token") != -1);
+            Assertions.assertTrue(signedUrl.toString().indexOf("security-token=test-sts-token") != -1);
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
 
         TestBase.deleteBucket(bucket);
@@ -421,9 +421,9 @@ public class SignTest extends  TestBase{
 
         try {
             ossClient.putObject(bucket, key, new ByteArrayInputStream(content.getBytes()), null);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
 
         //get without metadata ok case
@@ -438,7 +438,7 @@ public class SignTest extends  TestBase{
             URL signedUrl = ossClient.generatePresignedUrl(request);
 
             OSSObject o = ossClient.getObject(signedUrl, headers);
-            Assert.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
+            Assertions.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
             IOUtils.safeClose(o.getObjectContent());
 
             //set content-type to null
@@ -448,7 +448,7 @@ public class SignTest extends  TestBase{
             signedUrl = ossClient.generatePresignedUrl(request);
 
             o = ossClient.getObject(signedUrl, headers);
-            Assert.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
+            Assertions.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
             IOUtils.safeClose(o.getObjectContent());
 
             //set content-type to ""
@@ -458,11 +458,11 @@ public class SignTest extends  TestBase{
             signedUrl = ossClient.generatePresignedUrl(request);
 
             o = ossClient.getObject(signedUrl, headers);
-            Assert.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
+            Assertions.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
             IOUtils.safeClose(o.getObjectContent());
 
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
 
         //put with content-md5 OK case
@@ -479,7 +479,7 @@ public class SignTest extends  TestBase{
 
             headers.put(HttpHeaders.CONTENT_MD5, md5);
             PutObjectResult result = ossClient.putObject(signedUrl, new ByteArrayInputStream(content.getBytes()), content.length(), headers);
-            Assert.assertEquals(result.getETag().isEmpty(), false);
+            Assertions.assertEquals(result.getETag().isEmpty(), false);
 
             //with md5 null
             request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.PUT);
@@ -487,7 +487,7 @@ public class SignTest extends  TestBase{
             signedUrl = ossClient.generatePresignedUrl(request);
 
             result = ossClient.putObject(signedUrl, new ByteArrayInputStream(content.getBytes()), content.length(), null);
-            Assert.assertEquals(result.getETag().isEmpty(), false);
+            Assertions.assertEquals(result.getETag().isEmpty(), false);
 
             //with md5 ""
             request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.PUT);
@@ -496,9 +496,9 @@ public class SignTest extends  TestBase{
             signedUrl = ossClient.generatePresignedUrl(request);
 
             result = ossClient.putObject(signedUrl, new ByteArrayInputStream(content.getBytes()), content.length(), null);
-            Assert.assertEquals(result.getETag().isEmpty(), false);
+            Assertions.assertEquals(result.getETag().isEmpty(), false);
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
 
         //put with userMetadata
@@ -516,7 +516,7 @@ public class SignTest extends  TestBase{
 
             headers.put("x-oss-meta-user", "test");
             PutObjectResult result = ossClient.putObject(signedUrl, new ByteArrayInputStream(content.getBytes()), content.length(), headers);
-            Assert.assertEquals(result.getETag().isEmpty(), false);
+            Assertions.assertEquals(result.getETag().isEmpty(), false);
 
             //
             ResponseHeaderOverrides responseHeaders = new ResponseHeaderOverrides();
@@ -527,10 +527,10 @@ public class SignTest extends  TestBase{
             signedUrl = ossClient.generatePresignedUrl(request);
 
             OSSObject o = ossClient.getObject(signedUrl, null);
-            Assert.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
+            Assertions.assertEquals(o.getObjectMetadata().getContentMD5(), md5);
             IOUtils.safeClose(o.getObjectContent());
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
 
         //process
@@ -549,10 +549,10 @@ public class SignTest extends  TestBase{
             request.setProcess(style);
             URL signedUrl = ossClient.generatePresignedUrl(request);
             OSSObject o = ossClient.getObject(signedUrl, null);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
             IOUtils.safeClose(o.getObjectContent());
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
 
         //sts token
@@ -564,9 +564,9 @@ public class SignTest extends  TestBase{
             GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.GET);
             request.setExpiration(expirationDate);
             URL signedUrl = stsClient.generatePresignedUrl(request);
-            Assert.assertTrue(signedUrl.toString().indexOf("security-token=test-sts-token") != -1);
+            Assertions.assertTrue(signedUrl.toString().indexOf("security-token=test-sts-token") != -1);
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
 
         TestBase.deleteBucket(bucket);

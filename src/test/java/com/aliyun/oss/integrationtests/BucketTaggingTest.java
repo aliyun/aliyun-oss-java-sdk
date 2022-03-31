@@ -24,7 +24,7 @@ import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 import java.util.Map;
 
 import com.aliyun.oss.model.*;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 
@@ -39,49 +39,49 @@ public class BucketTaggingTest extends TestBase {
             ossClient.setBucketTagging(request);
             
             TagSet tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
-            Assert.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
             Map<String, String> tags = tagSet.getAllTags();
-            Assert.assertEquals(2, tags.size());
-            Assert.assertTrue(tags.containsKey("tk1"));
-            Assert.assertTrue(tags.containsKey("tk2"));
-            Assert.assertEquals("tv1", tagSet.getTag("tk1"));
+            Assertions.assertEquals(2, tags.size());
+            Assertions.assertTrue(tags.containsKey("tk1"));
+            Assertions.assertTrue(tags.containsKey("tk2"));
+            Assertions.assertEquals("tv1", tagSet.getTag("tk1"));
             tagSet.toString();
             tagSet.clear();
             //
             request = new SetBucketTaggingRequest(bucketName,tagSet);
             tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
-            Assert.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
             tags = tagSet.getAllTags();
-            Assert.assertEquals(2, tags.size());
-            Assert.assertTrue(tags.containsKey("tk1"));
-            Assert.assertTrue(tags.containsKey("tk2"));
+            Assertions.assertEquals(2, tags.size());
+            Assertions.assertTrue(tags.containsKey("tk1"));
+            Assertions.assertTrue(tags.containsKey("tk2"));
 
             request = new SetBucketTaggingRequest(bucketName).withTagSet(tagSet);
             tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
-            Assert.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
             tags = tagSet.getAllTags();
-            Assert.assertEquals(2, tags.size());
-            Assert.assertTrue(tags.containsKey("tk1"));
-            Assert.assertTrue(tags.containsKey("tk2"));
+            Assertions.assertEquals(2, tags.size());
+            Assertions.assertTrue(tags.containsKey("tk1"));
+            Assertions.assertTrue(tags.containsKey("tk2"));
 
             request = new SetBucketTaggingRequest(bucketName, tags);
             tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
-            Assert.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
             tags = tagSet.getAllTags();
-            Assert.assertEquals(2, tags.size());
-            Assert.assertTrue(tags.containsKey("tk1"));
-            Assert.assertTrue(tags.containsKey("tk2"));
+            Assertions.assertEquals(2, tags.size());
+            Assertions.assertTrue(tags.containsKey("tk1"));
+            Assertions.assertTrue(tags.containsKey("tk2"));
 
             ossClient.deleteBucketTagging(new GenericRequest(bucketName));
           
             waitForCacheExpiration(5);
             
             tagSet = ossClient.getBucketTagging(new GenericRequest(bucketName));
-            Assert.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(tagSet.getRequestId().length(), REQUEST_ID_LEN);
             tags = tagSet.getAllTags();
-            Assert.assertTrue(tags.isEmpty());
+            Assertions.assertTrue(tags.isEmpty());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -107,10 +107,10 @@ public class BucketTaggingTest extends TestBase {
             listBucketsRequest.setTag("tk1", "tv1");
 
             BucketList bucketList = ossClient.listBuckets(listBucketsRequest);
-            Assert.assertEquals(1, bucketList.getBucketList().size());
-            Assert.assertEquals(bucketName1, bucketList.getBucketList().get(0).getName());
+            Assertions.assertEquals(1, bucketList.getBucketList().size());
+            Assertions.assertEquals(bucketName1, bucketList.getBucketList().get(0).getName());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.getBucketTagging(bucketName1);
             ossClient.deleteBucketTagging(bucketName1);

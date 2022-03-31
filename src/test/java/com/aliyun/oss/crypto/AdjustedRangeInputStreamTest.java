@@ -26,7 +26,7 @@ import java.io.InputStreamReader;
 import org.junit.Test;
 import com.aliyun.oss.ClientErrorCode;
 import com.aliyun.oss.ClientException;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 public class AdjustedRangeInputStreamTest {
     @Test
@@ -36,12 +36,12 @@ public class AdjustedRangeInputStreamTest {
             int begin = 0;
             int end = 37;
             AdjustedRangeInputStream adjIs = new AdjustedRangeInputStream(new ByteArrayInputStream(content.getBytes()), begin, end);
-            Assert.assertEquals(adjIs.available(), end - begin + 1);
+            Assertions.assertEquals(adjIs.available(), end - begin + 1);
             String str = readInputStream(adjIs);
-            Assert.assertEquals(content.substring(begin, end + 1), str);
+            Assertions.assertEquals(content.substring(begin, end + 1), str);
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
@@ -49,10 +49,10 @@ public class AdjustedRangeInputStreamTest {
             int end = 37;
             AdjustedRangeInputStream adjIs = new AdjustedRangeInputStream(new ByteArrayInputStream(content.getBytes()), begin, end);
             String str = readInputStream(adjIs);
-            Assert.assertEquals(content.substring(begin, end + 1), str);
+            Assertions.assertEquals(content.substring(begin, end + 1), str);
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
@@ -63,10 +63,10 @@ public class AdjustedRangeInputStreamTest {
             in.skip(16);
             AdjustedRangeInputStream adjIs = new AdjustedRangeInputStream(in, begin, end);
             String str = readInputStream(adjIs);
-            Assert.assertEquals(content.substring(begin, end + 1), str);
+            Assertions.assertEquals(content.substring(begin, end + 1), str);
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -78,11 +78,11 @@ public class AdjustedRangeInputStreamTest {
             int end = 37;
             AdjustedRangeInputStream in = new AdjustedRangeInputStream(new ByteArrayInputStream(content.getBytes()), begin, end);
             int ret = in.read();
-            Assert.assertEquals(ret, content.charAt(begin));
+            Assertions.assertEquals(ret, content.charAt(begin));
 
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -105,10 +105,10 @@ public class AdjustedRangeInputStreamTest {
                         }
                     }
                     // During the inputStream reading, this thread would not responds the interrupt request.
-                    Assert.assertEquals(1000, i);
+                    Assertions.assertEquals(1000, i);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Assert.fail(e.getMessage());
+                    Assertions.fail(e.getMessage());
                 }
             }
         }, "thread1");
@@ -125,14 +125,14 @@ public class AdjustedRangeInputStreamTest {
                         while (in.read() != -1) {
                         }
                     }
-                    Assert.fail("This thread should be abort during read inputStream...");
+                    Assertions.fail("This thread should be abort during read inputStream...");
                 } catch (Exception e) {
                     if (e instanceof ClientException) {
                         // Expected exception.
-                        Assert.assertEquals(((ClientException)e).getErrorCode(), ClientErrorCode.INPUTSTREAM_READING_ABORTED);
+                        Assertions.assertEquals(((ClientException)e).getErrorCode(), ClientErrorCode.INPUTSTREAM_READING_ABORTED);
                     } else {
                         e.printStackTrace();
-                        Assert.fail(e.getMessage());
+                        Assertions.fail(e.getMessage());
                     }
                 }
             }

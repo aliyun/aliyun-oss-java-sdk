@@ -44,7 +44,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -85,7 +85,7 @@ public class GetObjectTest extends TestBase {
                                     new File(filePath));
                             completedCounter.incrementAndGet();
                         } catch (Exception ex) {
-                            Assert.fail(ex.getMessage());
+                            Assertions.fail(ex.getMessage());
                         } 
                     }
                 };
@@ -95,11 +95,11 @@ public class GetObjectTest extends TestBase {
             
             waitAll(putThreads);
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             removeFile(filePath);
             int totalCompleted = completedCounter.get();
-            Assert.assertEquals(threadCount, totalCompleted);
+            Assertions.assertEquals(threadCount, totalCompleted);
         }
         
         // Reset completed counter.
@@ -131,7 +131,7 @@ public class GetObjectTest extends TestBase {
                             ossClient.getObject(request, file);
                             completedCounter.incrementAndGet();
                         } catch (Exception ex) {
-                            Assert.fail(ex.getMessage());
+                            Assertions.fail(ex.getMessage());
                         } 
                     }
                 };
@@ -141,11 +141,11 @@ public class GetObjectTest extends TestBase {
             
             waitAll(getThreads);
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             removeFiles(downloadFiles);
             int totalCompleted = completedCounter.get();
-            Assert.assertEquals(threadCount, totalCompleted);
+            Assertions.assertEquals(threadCount, totalCompleted);
         }
     }
     
@@ -170,7 +170,7 @@ public class GetObjectTest extends TestBase {
                                     new File(filePath));
                             completedCounter.incrementAndGet();
                         } catch (Exception ex) {
-                            Assert.fail(ex.getMessage());
+                            Assertions.fail(ex.getMessage());
                         } 
                     }
                 };
@@ -180,11 +180,11 @@ public class GetObjectTest extends TestBase {
             
             waitAll(putThreads);
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             removeFile(filePath);
             int totalCompleted = completedCounter.get();
-            Assert.assertEquals(threadCount, totalCompleted);
+            Assertions.assertEquals(threadCount, totalCompleted);
         }
         
         // Reset completed counter.
@@ -216,7 +216,7 @@ public class GetObjectTest extends TestBase {
                             ossClient.getObject(request, file);
                             completedCounter.incrementAndGet();
                         } catch (Exception ex) {
-                            Assert.fail(ex.getMessage());
+                            Assertions.fail(ex.getMessage());
                         } 
                     }
                 };
@@ -226,11 +226,11 @@ public class GetObjectTest extends TestBase {
             
             waitAll(getThreads);
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             removeFiles(downloadFiles);
             int totalCompleted = completedCounter.get();
-            Assert.assertEquals(threadCount, totalCompleted);
+            Assertions.assertEquals(threadCount, totalCompleted);
         }
     }
     
@@ -255,7 +255,7 @@ public class GetObjectTest extends TestBase {
                                     new File(filePath));
                             completedCounter.incrementAndGet();
                         } catch (Exception ex) {
-                            Assert.fail(ex.getMessage());
+                            Assertions.fail(ex.getMessage());
                         } 
                     }
                 };
@@ -265,11 +265,11 @@ public class GetObjectTest extends TestBase {
             
             waitAll(putThreads);
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             removeFile(filePath);
             int totalCompleted = completedCounter.get();
-            Assert.assertEquals(threadCount, totalCompleted);
+            Assertions.assertEquals(threadCount, totalCompleted);
         }
         
         // Reset completed counter
@@ -301,7 +301,7 @@ public class GetObjectTest extends TestBase {
                             ossClient.getObject(request, file);
                             completedCounter.incrementAndGet();
                         } catch (Exception ex) {
-                            Assert.fail(ex.getMessage());
+                            Assertions.fail(ex.getMessage());
                         } 
                     }
                 };
@@ -311,11 +311,11 @@ public class GetObjectTest extends TestBase {
             
             waitAll(getThreads);
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             removeFiles(downloadFiles);
             int totalCompleted = completedCounter.get();
-            Assert.assertEquals(threadCount, totalCompleted);
+            Assertions.assertEquals(threadCount, totalCompleted);
         }
     }
     
@@ -342,7 +342,7 @@ public class GetObjectTest extends TestBase {
                                     randomFile);
                             completedCounter.incrementAndGet();
                         } catch (Exception ex) {
-                            Assert.fail(ex.getMessage());
+                            Assertions.fail(ex.getMessage());
                         } 
                     }
                 };
@@ -352,10 +352,10 @@ public class GetObjectTest extends TestBase {
             
             waitAll(putThreads);
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             int totalCompleted = completedCounter.get();
-            Assert.assertEquals(threadCount, totalCompleted);
+            Assertions.assertEquals(threadCount, totalCompleted);
             removeFiles(fileList);
         }
         
@@ -388,7 +388,7 @@ public class GetObjectTest extends TestBase {
                             ossClient.getObject(request, file);
                             completedCounter.incrementAndGet();
                         } catch (Exception ex) {
-                            Assert.fail(ex.getMessage());
+                            Assertions.fail(ex.getMessage());
                         } 
                     }
                 };
@@ -398,11 +398,11 @@ public class GetObjectTest extends TestBase {
             
             waitAll(getThreads);
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             removeFiles(downloadFiles);
             int totalCompleted = completedCounter.get();
-            Assert.assertEquals(threadCount, totalCompleted);
+            Assertions.assertEquals(threadCount, totalCompleted);
         }
     }
     
@@ -418,43 +418,43 @@ public class GetObjectTest extends TestBase {
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             getObjectRequest.setRange(0, inputStreamLength / 2 - 1);
             OSSObject o = ossClient.getObject(getObjectRequest);
-            Assert.assertEquals(inputStreamLength / 2, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(inputStreamLength / 2, o.getObjectMetadata().getContentLength());
             
             // Start to [a-]
             getObjectRequest.setRange(inputStreamLength / 2, -1);
             o = ossClient.getObject(getObjectRequest);
-            Assert.assertEquals(inputStreamLength / 2, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(inputStreamLength / 2, o.getObjectMetadata().getContentLength());
             
             // To end [-b]
             getObjectRequest.setRange(-1, inputStreamLength / 4);
             o = ossClient.getObject(getObjectRequest);
-            Assert.assertEquals(inputStreamLength / 4, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(inputStreamLength / 4, o.getObjectMetadata().getContentLength());
             
             // To end [-b] (b = 0)
             try {
                 getObjectRequest.setRange(-1, 0);
                 o = ossClient.getObject(getObjectRequest);
-                Assert.fail("Get object should not be successful");
+                Assertions.fail("Get object should not be successful");
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.INVALID_RANGE, e.getErrorCode());
+                Assertions.assertEquals(OSSErrorCode.INVALID_RANGE, e.getErrorCode());
             }
             
             // Invalid range [-1, -1]
             getObjectRequest.setRange(-1, -1);
             o = ossClient.getObject(getObjectRequest);
-            Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
             
             // Invalid range start > end, ignore it and just get entire object
             getObjectRequest.setRange(inputStreamLength / 2, inputStreamLength / 4);
             o = ossClient.getObject(getObjectRequest);
-            Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
             
             // Invalid range exceeding object's max length, ignore it and just get entire object
             getObjectRequest.setRange(0, inputStreamLength * 2 - 1);
             o = ossClient.getObject(getObjectRequest);
-            Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -471,27 +471,27 @@ public class GetObjectTest extends TestBase {
             // Override 1
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             OSSObject o = ossClient.getObject(getObjectRequest);
-            Assert.assertEquals(bucketName, o.getBucketName());
-            Assert.assertEquals(key, o.getKey());
-            Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(bucketName, o.getBucketName());
+            Assertions.assertEquals(key, o.getKey());
+            Assertions.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
             
             // Override 2
             o = ossClient.getObject(bucketName, key);
-            Assert.assertEquals(bucketName, o.getBucketName());
-            Assert.assertEquals(key, o.getKey());
-            Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(bucketName, o.getBucketName());
+            Assertions.assertEquals(key, o.getKey());
+            Assertions.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
             
             // Override 3
             final String filePath = genFixedLengthFile(0);
             ObjectMetadata metadata = ossClient.getObject(getObjectRequest, new File(filePath));
-            Assert.assertEquals(inputStreamLength, metadata.getContentLength());
-            Assert.assertEquals(inputStreamLength, new File(filePath).length());
+            Assertions.assertEquals(inputStreamLength, metadata.getContentLength());
+            Assertions.assertEquals(inputStreamLength, new File(filePath).length());
             
             metadata = ossClient.getObjectMetadata(bucketName, key);
-            Assert.assertEquals(inputStreamLength, metadata.getContentLength());
+            Assertions.assertEquals(inputStreamLength, metadata.getContentLength());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -514,15 +514,15 @@ public class GetObjectTest extends TestBase {
             // Override 1
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             OSSObject o = ossClient.getObject(getObjectRequest);
-            Assert.assertEquals(bucketName, o.getBucketName());
-            Assert.assertEquals(key, o.getKey());
+            Assertions.assertEquals(bucketName, o.getBucketName());
+            Assertions.assertEquals(key, o.getKey());
             metadata = o.getObjectMetadata();
-            Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
-            Assert.assertEquals(metaValue0, metadata.getUserMetadata().get(metaKey0));
-            Assert.assertEquals(inputStreamLength, metadata.getContentLength());
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, metadata.getContentType());
+            Assertions.assertEquals(metaValue0, metadata.getUserMetadata().get(metaKey0));
+            Assertions.assertEquals(inputStreamLength, metadata.getContentLength());
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -556,14 +556,14 @@ public class GetObjectTest extends TestBase {
                     totalBytes += bytesRead;
                 }
               
-                Assert.assertEquals((lastByte - firstByte + 1), totalBytes);
+                Assertions.assertEquals((lastByte - firstByte + 1), totalBytes);
             } catch (IOException e) {
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             } finally {
                 IOUtils.safeClose(o.getObjectContent());
             }
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -577,20 +577,20 @@ public class GetObjectTest extends TestBase {
         final String nonexistentBucket = "nonexistent-bukcet";
         try {
             ossClient.getObject(nonexistentBucket, key);
-            Assert.fail("Get object should not be successful");
+            Assertions.fail("Get object should not be successful");
         } catch (OSSException ex) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, ex.getErrorCode());
-            Assert.assertTrue(ex.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, ex.getErrorCode());
+            Assertions.assertTrue(ex.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         }
         
         // Try to get nonexistent object
         final String nonexistentKey = "nonexistent-object";
         try {
             ossClient.getObject(bucketName, nonexistentKey);
-            Assert.fail("Get object should not be successful");
+            Assertions.fail("Get object should not be successful");
         } catch (OSSException ex) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, ex.getErrorCode());
-            Assert.assertTrue(ex.getMessage().startsWith(NO_SUCH_KEY_ERR));
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_KEY, ex.getErrorCode());
+            Assertions.assertTrue(ex.getMessage().startsWith(NO_SUCH_KEY_ERR));
         }
         
         String eTag = null;
@@ -598,7 +598,7 @@ public class GetObjectTest extends TestBase {
             PutObjectResult result = ossClient.putObject(bucketName, key, genFixedLengthInputStream(1024), null);
             eTag = result.getETag();
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
         Thread.sleep(2000);
 
@@ -610,9 +610,9 @@ public class GetObjectTest extends TestBase {
         getObjectRequest.setMatchingETagConstraints(matchingETagConstraints);
         try {
             o = ossClient.getObject(getObjectRequest);
-            Assert.assertEquals(eTag, o.getObjectMetadata().getETag());
+            Assertions.assertEquals(eTag, o.getObjectMetadata().getETag());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             getObjectRequest.setMatchingETagConstraints(null);
         }
@@ -622,9 +622,9 @@ public class GetObjectTest extends TestBase {
         getObjectRequest.setMatchingETagConstraints(matchingETagConstraints);
         try {
             o = ossClient.getObject(getObjectRequest);
-            Assert.fail("Get object should not be successful.");
+            Assertions.fail("Get object should not be successful.");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.PRECONDITION_FAILED, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.PRECONDITION_FAILED, e.getErrorCode());
         } finally {
             getObjectRequest.setMatchingETagConstraints(null);
         }
@@ -635,9 +635,9 @@ public class GetObjectTest extends TestBase {
         getObjectRequest.setNonmatchingETagConstraints(nonmatchingETagConstraints);
         try {
             o = ossClient.getObject(getObjectRequest);
-            Assert.assertEquals(eTag, o.getObjectMetadata().getETag());
+            Assertions.assertEquals(eTag, o.getObjectMetadata().getETag());
         } catch (OSSException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             getObjectRequest.setNonmatchingETagConstraints(null);
         }
@@ -647,10 +647,10 @@ public class GetObjectTest extends TestBase {
         getObjectRequest.setNonmatchingETagConstraints(nonmatchingETagConstraints);
         try {
             o = ossClient.getObject(getObjectRequest);
-            Assert.fail("Get object should not be successful.");
+            Assertions.fail("Get object should not be successful.");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NOT_MODIFIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(NOT_MODIFIED_ERR));
+            Assertions.assertEquals(OSSErrorCode.NOT_MODIFIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(NOT_MODIFIED_ERR));
         } finally {
             getObjectRequest.setNonmatchingETagConstraints(null);
         }
@@ -660,9 +660,9 @@ public class GetObjectTest extends TestBase {
         getObjectRequest.setUnmodifiedSinceConstraint(unmodifiedSinceConstraint);
         try {
             o = ossClient.getObject(getObjectRequest);
-            Assert.assertEquals(eTag, o.getObjectMetadata().getETag());
+            Assertions.assertEquals(eTag, o.getObjectMetadata().getETag());
         } catch (OSSException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             getObjectRequest.setUnmodifiedSinceConstraint(null);
         }
@@ -671,9 +671,9 @@ public class GetObjectTest extends TestBase {
         getObjectRequest.setUnmodifiedSinceConstraint(unmodifiedSinceConstraint);
         try {
             o = ossClient.getObject(getObjectRequest);
-            Assert.fail("Get object should not be successful.");
+            Assertions.fail("Get object should not be successful.");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.PRECONDITION_FAILED, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.PRECONDITION_FAILED, e.getErrorCode());
         } finally {
             getObjectRequest.setUnmodifiedSinceConstraint(null);
         }
@@ -683,9 +683,9 @@ public class GetObjectTest extends TestBase {
         getObjectRequest.setModifiedSinceConstraint(modifiedSinceConstraint);
         try {
             o = ossClient.getObject(getObjectRequest);
-            Assert.assertEquals(eTag, o.getObjectMetadata().getETag());
+            Assertions.assertEquals(eTag, o.getObjectMetadata().getETag());
         } catch (OSSException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             getObjectRequest.setModifiedSinceConstraint(null);
         }
@@ -694,10 +694,10 @@ public class GetObjectTest extends TestBase {
         getObjectRequest.setModifiedSinceConstraint(modifiedSinceConstraint);
         try {
             o = ossClient.getObject(getObjectRequest);
-            Assert.fail("Get object should not be successful.");
+            Assertions.fail("Get object should not be successful.");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NOT_MODIFIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(NOT_MODIFIED_ERR));
+            Assertions.assertEquals(OSSErrorCode.NOT_MODIFIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(NOT_MODIFIED_ERR));
         } finally {
             getObjectRequest.setModifiedSinceConstraint(null);
         }
@@ -720,28 +720,28 @@ public class GetObjectTest extends TestBase {
             OSSObject o = ossClient.getObject(getObjectRequest);
             try {
                 o.getObjectMetadata().getExpirationTime();
-                Assert.fail("Get expiration time should not be successful.");
+                Assertions.fail("Get expiration time should not be successful.");
             } catch (Exception e) {
-                Assert.assertTrue(e instanceof ParseException);
-                Assert.assertEquals("Unparseable date: \"2015-10-01 00:00:00\"", e.getMessage());
+                Assertions.assertTrue(e instanceof ParseException);
+                Assertions.assertEquals("Unparseable date: \"2015-10-01 00:00:00\"", e.getMessage());
             }
             
             String rawExpiresValue = o.getObjectMetadata().getRawExpiresValue();
-            Assert.assertEquals(illegalExpires, rawExpiresValue);
+            Assertions.assertEquals(illegalExpires, rawExpiresValue);
             
             metadata = ossClient.getObjectMetadata(bucketName, key);
             try {
                 metadata.getExpirationTime();
-                Assert.fail("Get expiration time should not be successful.");
+                Assertions.fail("Get expiration time should not be successful.");
             } catch (Exception e) {
-                Assert.assertTrue(e instanceof ParseException);
-                Assert.assertEquals("Unparseable date: \"2015-10-01 00:00:00\"", e.getMessage());
+                Assertions.assertTrue(e instanceof ParseException);
+                Assertions.assertEquals("Unparseable date: \"2015-10-01 00:00:00\"", e.getMessage());
             }
             
             rawExpiresValue = o.getObjectMetadata().getRawExpiresValue();
-            Assert.assertEquals(illegalExpires, rawExpiresValue);
+            Assertions.assertEquals(illegalExpires, rawExpiresValue);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 }

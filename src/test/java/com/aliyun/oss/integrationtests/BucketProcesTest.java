@@ -19,7 +19,7 @@
 
 package com.aliyun.oss.integrationtests;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 
@@ -39,13 +39,13 @@ public class BucketProcesTest extends TestBase {
         try {      
             // get default
             BucketProcess bucketProcess = ossClient.getBucketProcess(bucketName);
-            Assert.assertEquals(bucketProcess.getImageProcess().getCompliedHost(), "Both");
-            Assert.assertFalse(bucketProcess.getImageProcess().isSourceFileProtect());
-            Assert.assertEquals(bucketProcess.getImageProcess().getSourceFileProtectSuffix(), "");
-            Assert.assertEquals(bucketProcess.getImageProcess().getStyleDelimiters(), "");
-            Assert.assertEquals(bucketProcess.getImageProcess().getVersion().intValue(), 2);
-            Assert.assertEquals(bucketProcess.getImageProcess().isSupportAtStyle(), null);
-            Assert.assertEquals(bucketProcess.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(bucketProcess.getImageProcess().getCompliedHost(), "Both");
+            Assertions.assertFalse(bucketProcess.getImageProcess().isSourceFileProtect());
+            Assertions.assertEquals(bucketProcess.getImageProcess().getSourceFileProtectSuffix(), "");
+            Assertions.assertEquals(bucketProcess.getImageProcess().getStyleDelimiters(), "");
+            Assertions.assertEquals(bucketProcess.getImageProcess().getVersion().intValue(), 2);
+            Assertions.assertEquals(bucketProcess.getImageProcess().isSupportAtStyle(), null);
+            Assertions.assertEquals(bucketProcess.getRequestId().length(), REQUEST_ID_LEN);
             
             // put 1
             ImageProcess imageProcess = new ImageProcess("Img", true, "jpg,png", "/,-");
@@ -57,13 +57,13 @@ public class BucketProcesTest extends TestBase {
 
             // get 1
             bucketProcess = ossClient.getBucketProcess(new GenericRequest(bucketName));
-            Assert.assertEquals(bucketProcess.getImageProcess().getCompliedHost(), "Img");
-            Assert.assertTrue(bucketProcess.getImageProcess().isSourceFileProtect());
-            Assert.assertEquals(bucketProcess.getImageProcess().getSourceFileProtectSuffix(), "jpg,png");
-            Assert.assertEquals(bucketProcess.getImageProcess().getStyleDelimiters(), "-,/");
-            Assert.assertEquals(bucketProcess.getImageProcess().getVersion().intValue(), 2);
-            Assert.assertEquals(bucketProcess.getImageProcess().isSupportAtStyle(), null);
-            Assert.assertEquals(bucketProcess.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(bucketProcess.getImageProcess().getCompliedHost(), "Img");
+            Assertions.assertTrue(bucketProcess.getImageProcess().isSourceFileProtect());
+            Assertions.assertEquals(bucketProcess.getImageProcess().getSourceFileProtectSuffix(), "jpg,png");
+            Assertions.assertEquals(bucketProcess.getImageProcess().getStyleDelimiters(), "-,/");
+            Assertions.assertEquals(bucketProcess.getImageProcess().getVersion().intValue(), 2);
+            Assertions.assertEquals(bucketProcess.getImageProcess().isSupportAtStyle(), null);
+            Assertions.assertEquals(bucketProcess.getRequestId().length(), REQUEST_ID_LEN);
             
             // put 2
             imageProcess = new ImageProcess("Both", false, "gif", "-");
@@ -74,13 +74,13 @@ public class BucketProcesTest extends TestBase {
 
             // get 2
             bucketProcess = ossClient.getBucketProcess(new GenericRequest(bucketName));
-            Assert.assertEquals(bucketProcess.getImageProcess().getCompliedHost(), "Both");
-            Assert.assertFalse(bucketProcess.getImageProcess().isSourceFileProtect());
-            Assert.assertEquals(bucketProcess.getImageProcess().getSourceFileProtectSuffix(), "");
-            Assert.assertEquals(bucketProcess.getImageProcess().getStyleDelimiters(), "-");
-            Assert.assertEquals(bucketProcess.getImageProcess().getVersion().intValue(), 2);
-            Assert.assertEquals(bucketProcess.getImageProcess().isSupportAtStyle(), null);
-            Assert.assertEquals(bucketProcess.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(bucketProcess.getImageProcess().getCompliedHost(), "Both");
+            Assertions.assertFalse(bucketProcess.getImageProcess().isSourceFileProtect());
+            Assertions.assertEquals(bucketProcess.getImageProcess().getSourceFileProtectSuffix(), "");
+            Assertions.assertEquals(bucketProcess.getImageProcess().getStyleDelimiters(), "-");
+            Assertions.assertEquals(bucketProcess.getImageProcess().getVersion().intValue(), 2);
+            Assertions.assertEquals(bucketProcess.getImageProcess().isSupportAtStyle(), null);
+            Assertions.assertEquals(bucketProcess.getRequestId().length(), REQUEST_ID_LEN);
             
             // put 3
             imageProcess = new ImageProcess("Img", true, "*", "/", true);
@@ -91,16 +91,16 @@ public class BucketProcesTest extends TestBase {
 
             // get 3
             bucketProcess = ossClient.getBucketProcess(new GenericRequest(bucketName));
-            Assert.assertEquals(bucketProcess.getImageProcess().getCompliedHost(), "Img");
-            Assert.assertTrue(bucketProcess.getImageProcess().isSourceFileProtect());
-            Assert.assertEquals(bucketProcess.getImageProcess().getSourceFileProtectSuffix(), "*");
-            Assert.assertEquals(bucketProcess.getImageProcess().getStyleDelimiters(), "/");
-            Assert.assertEquals(bucketProcess.getImageProcess().getVersion().intValue(), 2);
-            Assert.assertEquals(bucketProcess.getImageProcess().isSupportAtStyle(), null);
-            Assert.assertEquals(bucketProcess.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(bucketProcess.getImageProcess().getCompliedHost(), "Img");
+            Assertions.assertTrue(bucketProcess.getImageProcess().isSourceFileProtect());
+            Assertions.assertEquals(bucketProcess.getImageProcess().getSourceFileProtectSuffix(), "*");
+            Assertions.assertEquals(bucketProcess.getImageProcess().getStyleDelimiters(), "/");
+            Assertions.assertEquals(bucketProcess.getImageProcess().getVersion().intValue(), 2);
+            Assertions.assertEquals(bucketProcess.getImageProcess().isSupportAtStyle(), null);
+            Assertions.assertEquals(bucketProcess.getRequestId().length(), REQUEST_ID_LEN);
             
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -109,18 +109,18 @@ public class BucketProcesTest extends TestBase {
         // bucket not exist
         try {
             ossClient.getBucketProcess("bucket-not-exist");
-            Assert.fail("GetBucketImageProcessConf should not be successful.");
+            Assertions.fail("GetBucketImageProcessConf should not be successful.");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
         }
         
         try {
             ImageProcess conf = new ImageProcess("img", false, "*", "/,-");
             SetBucketProcessRequest request = new SetBucketProcessRequest("bucket-not-exist", conf);
             ossClient.setBucketProcess(request);
-            Assert.fail("PutBucketImageProcessConf should not be successful.");
+            Assertions.fail("PutBucketImageProcessConf should not be successful.");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
         }
         
         // parameter invalid
@@ -128,27 +128,27 @@ public class BucketProcesTest extends TestBase {
             ImageProcess conf = null;
             SetBucketProcessRequest request = new SetBucketProcessRequest(bucketName, conf);
             ossClient.setBucketProcess(request);
-            Assert.fail("PutBucketImageProcessConf should not be successful.");
+            Assertions.fail("PutBucketImageProcessConf should not be successful.");
         } catch (Exception e) {
-            Assert.assertTrue(e instanceof NullPointerException);
+            Assertions.assertTrue(e instanceof NullPointerException);
         }
         
         try {
             ImageProcess conf = new ImageProcess(null, false, "*", "/,-");
             SetBucketProcessRequest request = new SetBucketProcessRequest(bucketName, conf);
             ossClient.setBucketProcess(request);
-            Assert.fail("PutBucketImageProcessConf should not be successful.");
+            Assertions.fail("PutBucketImageProcessConf should not be successful.");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         }
         
         try {
             ImageProcess conf = new ImageProcess("xxx", false, "*", "/,-");
             SetBucketProcessRequest request = new SetBucketProcessRequest(bucketName, conf);
             ossClient.setBucketProcess(request);
-            Assert.fail("PutBucketImageProcessConf should not be successful.");
+            Assertions.fail("PutBucketImageProcessConf should not be successful.");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         }
     }
 
@@ -159,9 +159,9 @@ public class BucketProcesTest extends TestBase {
         imageProcess.setSourceFileProtectSuffix("*");
         imageProcess.setStyleDelimiters("_");
 
-        Assert.assertEquals("123", imageProcess.getCompliedHost());
-        Assert.assertEquals("*", imageProcess.getSourceFileProtectSuffix());
-        Assert.assertEquals("_", imageProcess.getStyleDelimiters());
+        Assertions.assertEquals("123", imageProcess.getCompliedHost());
+        Assertions.assertEquals("*", imageProcess.getSourceFileProtectSuffix());
+        Assertions.assertEquals("_", imageProcess.getStyleDelimiters());
     }
 
 }

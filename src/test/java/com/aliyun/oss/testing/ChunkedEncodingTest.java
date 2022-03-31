@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.Ignore;
 
 import com.aliyun.oss.HttpMethod;
@@ -73,9 +73,9 @@ public class ChunkedEncodingTest {
             byte[] binaryData = IOUtils.readStreamAsByteArray(fin);
             String actualETag = BinaryUtil.encodeMD5(binaryData);
             String expectedETag = result.getETag();
-            Assert.assertEquals(expectedETag, actualETag);
+            Assertions.assertEquals(expectedETag, actualETag);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -98,9 +98,9 @@ public class ChunkedEncodingTest {
             byte[] binaryData = IOUtils.readStreamAsByteArray(fin);
             String expectedETag = BinaryUtil.encodeMD5(binaryData);
             String actualETag = result.getETag();
-            Assert.assertEquals(expectedETag, actualETag);
+            Assertions.assertEquals(expectedETag, actualETag);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } 
     }
     
@@ -145,9 +145,9 @@ public class ChunkedEncodingTest {
                     client.completeMultipartUpload(completeMultipartUploadRequest);
             
             String actualETag = completeMultipartUploadResult.getETag();
-            Assert.assertEquals(expectedETag, actualETag);
+            Assertions.assertEquals(expectedETag, actualETag);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } 
     }    
     

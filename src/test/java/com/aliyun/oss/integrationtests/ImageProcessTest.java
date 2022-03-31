@@ -25,7 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Date;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -72,17 +72,17 @@ public class ImageProcessTest extends TestBase {
             request.setProcess(style);
 
             OSSObject ossObject = ossClient.getObject(request);
-            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
 
             ImageInfo imageInfo = getImageInfo(bucketName, newImage);
-            Assert.assertEquals(imageInfo.getHeight(), 100);
-            Assert.assertEquals(imageInfo.getWidth(), 100);
-            Assert.assertEquals(imageInfo.getFormat(), "jpg");
+            Assertions.assertEquals(imageInfo.getHeight(), 100);
+            Assertions.assertEquals(imageInfo.getWidth(), 100);
+            Assertions.assertEquals(imageInfo.getFormat(), "jpg");
 
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -95,17 +95,17 @@ public class ImageProcessTest extends TestBase {
             request.setProcess(style);
 
             OSSObject ossObject = ossClient.getObject(request);
-            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
 
             ImageInfo imageInfo = getImageInfo(bucketName, newImage);
-            Assert.assertEquals(imageInfo.getHeight(), 100);
-            Assert.assertEquals(imageInfo.getWidth(), 100);
-            Assert.assertEquals(imageInfo.getFormat(), "jpg");
+            Assertions.assertEquals(imageInfo.getHeight(), 100);
+            Assertions.assertEquals(imageInfo.getWidth(), 100);
+            Assertions.assertEquals(imageInfo.getFormat(), "jpg");
 
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -119,23 +119,23 @@ public class ImageProcessTest extends TestBase {
             request.setProcess(style);
 
             OSSObject ossObject = ossClient.getObject(request);
-            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
 
             ImageInfo imageInfo = getImageInfo(bucketName, originalImage);
-            Assert.assertEquals(imageInfo.getHeight(), 267);
-            Assert.assertEquals(imageInfo.getWidth(), 400);
-            Assert.assertEquals(imageInfo.getSize(), 21839);
-            Assert.assertEquals(imageInfo.getFormat(), "jpg");
+            Assertions.assertEquals(imageInfo.getHeight(), 267);
+            Assertions.assertEquals(imageInfo.getWidth(), 400);
+            Assertions.assertEquals(imageInfo.getSize(), 21839);
+            Assertions.assertEquals(imageInfo.getFormat(), "jpg");
 
             imageInfo = getImageInfo(bucketName, newImage);
-            Assert.assertEquals(imageInfo.getHeight(), 400);
-            Assert.assertEquals(imageInfo.getWidth(), 267);
-            Assert.assertEquals(imageInfo.getFormat(), "jpg");
+            Assertions.assertEquals(imageInfo.getHeight(), 400);
+            Assertions.assertEquals(imageInfo.getWidth(), 267);
+            Assertions.assertEquals(imageInfo.getFormat(), "jpg");
 
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -148,17 +148,17 @@ public class ImageProcessTest extends TestBase {
             request.setProcess(style);
 
             OSSObject ossObject = ossClient.getObject(request);
-            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
 
             ImageInfo imageInfo = getImageInfo(bucketName, newImage);
-            Assert.assertEquals(imageInfo.getHeight(), 267);
-            Assert.assertEquals(imageInfo.getWidth(), 400);
-            Assert.assertEquals(imageInfo.getFormat(), "jpg");
+            Assertions.assertEquals(imageInfo.getHeight(), 267);
+            Assertions.assertEquals(imageInfo.getWidth(), 400);
+            Assertions.assertEquals(imageInfo.getFormat(), "jpg");
 
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -171,17 +171,17 @@ public class ImageProcessTest extends TestBase {
             request.setProcess(style);
 
             OSSObject ossObject = ossClient.getObject(request);
-            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
 
             ImageInfo imageInfo = getImageInfo(bucketName, newImage);
-            Assert.assertEquals(imageInfo.getHeight(), 267);
-            Assert.assertEquals(imageInfo.getWidth(), 400);
-            Assert.assertEquals(imageInfo.getFormat(), "jpg");
+            Assertions.assertEquals(imageInfo.getHeight(), 267);
+            Assertions.assertEquals(imageInfo.getWidth(), 400);
+            Assertions.assertEquals(imageInfo.getFormat(), "jpg");
 
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -194,17 +194,17 @@ public class ImageProcessTest extends TestBase {
             request.setProcess(style);
 
             OSSObject ossObject = ossClient.getObject(request);
-            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
 
             ImageInfo imageInfo = getImageInfo(bucketName, newImage);
-            Assert.assertEquals(imageInfo.getHeight(), 267);
-            Assert.assertEquals(imageInfo.getWidth(), 400);
-            Assert.assertEquals(imageInfo.getFormat(), "png");
+            Assertions.assertEquals(imageInfo.getHeight(), 267);
+            Assertions.assertEquals(imageInfo.getWidth(), 400);
+            Assertions.assertEquals(imageInfo.getFormat(), "png");
 
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -223,19 +223,19 @@ public class ImageProcessTest extends TestBase {
             ProcessObjectRequest request = new ProcessObjectRequest(bucketName, originalImage, "");
             request.setProcess(styleBuilder.toString());
             GenericResult processResult = ossClient.processObject(request);
-            Assert.assertEquals(processResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(processResult.getRequestId().length(), REQUEST_ID_LEN);
             String json = IOUtils.readStreamAsString(processResult.getResponse().getContent(), "UTF-8");
             processResult.getResponse().getContent().close();
             System.out.println(json);
-            Assert.assertTrue(json.indexOf("\"status\": \"OK\"") > 0);
+            Assertions.assertTrue(json.indexOf("\"status\": \"OK\"") > 0);
 
             ImageInfo imageInfo = getImageInfo(bucketName, saveAsKey);
-            Assert.assertEquals(imageInfo.getHeight(), 100);
-            Assert.assertEquals(imageInfo.getWidth(), 100);
-            Assert.assertEquals(imageInfo.getFormat(), "jpg");
+            Assertions.assertEquals(imageInfo.getHeight(), 100);
+            Assertions.assertEquals(imageInfo.getWidth(), 100);
+            Assertions.assertEquals(imageInfo.getFormat(), "jpg");
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -256,12 +256,12 @@ public class ImageProcessTest extends TestBase {
             ossClient.putObject(bucketName, newImage, ossObject.getObjectContent());
 
             ImageInfo imageInfo = getImageInfo(bucketName, newImage);
-            Assert.assertEquals(imageInfo.getHeight(), 100);
-            Assert.assertEquals(imageInfo.getWidth(), 100);
-            Assert.assertEquals(imageInfo.getFormat(), "jpg");
+            Assertions.assertEquals(imageInfo.getHeight(), 100);
+            Assertions.assertEquals(imageInfo.getWidth(), 100);
+            Assertions.assertEquals(imageInfo.getFormat(), "jpg");
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 

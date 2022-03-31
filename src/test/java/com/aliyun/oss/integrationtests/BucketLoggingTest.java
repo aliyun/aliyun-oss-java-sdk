@@ -23,7 +23,7 @@ import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_BUCKET_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.INVALID_TARGET_BUCKET_FOR_LOGGING_ERR;
 import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 
@@ -51,9 +51,9 @@ public class BucketLoggingTest extends TestBase {
             ossClient.setBucketLogging(request);
 
             BucketLoggingResult result = ossClient.getBucketLogging(sourceBucket);
-            Assert.assertEquals(targetBucket, result.getTargetBucket());
-            Assert.assertEquals(targetPrefix, result.getTargetPrefix());
-            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(targetBucket, result.getTargetBucket());
+            Assertions.assertEquals(targetPrefix, result.getTargetPrefix());
+            Assertions.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
 
             ossClient.deleteBucketLogging(sourceBucket);
 
@@ -65,9 +65,9 @@ public class BucketLoggingTest extends TestBase {
             waitForCacheExpiration(5);
 
             result = ossClient.getBucketLogging(sourceBucket);
-            Assert.assertEquals(sourceBucket, result.getTargetBucket());
-            Assert.assertEquals(targetPrefix, result.getTargetPrefix());
-            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(sourceBucket, result.getTargetBucket());
+            Assertions.assertEquals(targetPrefix, result.getTargetPrefix());
+            Assertions.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
 
             ossClient.deleteBucketLogging(sourceBucket);
 
@@ -77,9 +77,9 @@ public class BucketLoggingTest extends TestBase {
             ossClient.setBucketLogging(request);
 
             result = ossClient.getBucketLogging(sourceBucket);
-            Assert.assertEquals(targetBucket, result.getTargetBucket());
-            Assert.assertTrue(result.getTargetPrefix().isEmpty());
-            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(targetBucket, result.getTargetBucket());
+            Assertions.assertTrue(result.getTargetPrefix().isEmpty());
+            Assertions.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
 
             ossClient.deleteBucketLogging(sourceBucket);
 
@@ -89,12 +89,12 @@ public class BucketLoggingTest extends TestBase {
             ossClient.setBucketLogging(request);
 
             result = ossClient.getBucketLogging(sourceBucket);
-            Assert.assertTrue(result.getTargetBucket() == null);
-            Assert.assertTrue(result.getTargetPrefix() == null);
-            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertTrue(result.getTargetBucket() == null);
+            Assertions.assertTrue(result.getTargetPrefix() == null);
+            Assertions.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
 
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(sourceBucket);
             ossClient.deleteBucket(targetBucket);
@@ -121,10 +121,10 @@ public class BucketLoggingTest extends TestBase {
                 request.setTargetPrefix(targetPrefix);
                 ossClient.setBucketLogging(request);
 
-                Assert.fail("Set bucket logging should not be successful");
+                Assertions.fail("Set bucket logging should not be successful");
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+                Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+                Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
             }
 
             // Set non-existent target bucket 
@@ -135,10 +135,10 @@ public class BucketLoggingTest extends TestBase {
                 request.setTargetPrefix(targetPrefix);
                 ossClient.setBucketLogging(request);
 
-                Assert.fail("Set bucket logging should not be successful");
+                Assertions.fail("Set bucket logging should not be successful");
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.INVALID_TARGET_BUCKET_FOR_LOGGING, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(INVALID_TARGET_BUCKET_FOR_LOGGING_ERR));
+                Assertions.assertEquals(OSSErrorCode.INVALID_TARGET_BUCKET_FOR_LOGGING, e.getErrorCode());
+                Assertions.assertTrue(e.getMessage().startsWith(INVALID_TARGET_BUCKET_FOR_LOGGING_ERR));
             }
 
         } finally {
@@ -153,19 +153,19 @@ public class BucketLoggingTest extends TestBase {
         final String nonexistentBucket = "unormal-get-bucket-logging";
         try {
             ossClient.getBucketLogging(nonexistentBucket);
-            Assert.fail("Get bucket logging should not be successful");
+            Assertions.fail("Get bucket logging should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         }
 
         // Get bucket without ownership
         final String bucketWithoutOwnership = "oss";
         try {
             ossClient.getBucketLogging(bucketWithoutOwnership);
-            Assert.fail("Get bucket logging should not be successful");
+            Assertions.fail("Get bucket logging should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
         }
 
         // Get bucket without setting logging rule
@@ -174,10 +174,10 @@ public class BucketLoggingTest extends TestBase {
             ossClient.createBucket(bucketWithoutLoggingRule);
 
             BucketLoggingResult result = ossClient.getBucketLogging(bucketWithoutLoggingRule);
-            Assert.assertTrue(result.getTargetBucket() == null);
-            Assert.assertTrue(result.getTargetPrefix() == null);
+            Assertions.assertTrue(result.getTargetBucket() == null);
+            Assertions.assertTrue(result.getTargetPrefix() == null);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketWithoutLoggingRule);
         }
@@ -189,19 +189,19 @@ public class BucketLoggingTest extends TestBase {
         final String nonexistentBucket = "unormal-delete-bucket-logging";
         try {
             ossClient.deleteBucketLogging(nonexistentBucket);
-            Assert.fail("Delete bucket logging should not be successful");
+            Assertions.fail("Delete bucket logging should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         }
 
         // Delete bucket without ownership
         final String bucketWithoutOwnership = "oss";
         try {
             ossClient.deleteBucketLogging(bucketWithoutOwnership);
-            Assert.fail("Delete bucket logging should not be successful");
+            Assertions.fail("Delete bucket logging should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
         }
 
         // Delete bucket without setting logging rule
@@ -211,7 +211,7 @@ public class BucketLoggingTest extends TestBase {
 
             ossClient.deleteBucketLogging(bucketWithoutLoggingRule);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketWithoutLoggingRule);
         }

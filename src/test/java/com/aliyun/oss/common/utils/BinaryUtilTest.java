@@ -19,7 +19,7 @@
 
 package com.aliyun.oss.common.utils;
 
-import static org.junit.Assert.assertArrayEquals;
+import org.junit.jupiter.api.Assertions;
 
 import org.junit.Test;
 
@@ -28,7 +28,7 @@ public class BinaryUtilTest {
     public void testBase64String() {
         String binaryString = "OssService";
         byte[] binaryData = binaryString.getBytes();
-        assertArrayEquals(BinaryUtil.fromBase64String(BinaryUtil.toBase64String(binaryData)), binaryData);
+        Assertions.assertArrayEquals(BinaryUtil.fromBase64String(BinaryUtil.toBase64String(binaryData)), binaryData);
     }
 
     @Test

@@ -24,7 +24,7 @@ import com.aliyun.oss.model.UploadPartCopyRequest;
 import com.aliyun.oss.model.UploadPartCopyResult;
 import com.aliyun.oss.model.UploadPartRequest;
 import com.aliyun.oss.model.UploadPartResult;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 import java.io.File;
@@ -90,15 +90,15 @@ public class ObjectEncryptionTest extends TestBase {
                 request.setProcess("");
                 PutObjectResult result = ossClient.putObject(request);
                 Map<String, String> headers = result.getResponse().getHeaders();
-                Assert.assertEquals(algorithm != null,
+                Assertions.assertEquals(algorithm != null,
                         headers.containsKey(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION));
                 if (algorithm != null) {
-                    Assert.assertEquals(headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION), algorithm.toString());
+                    Assertions.assertEquals(headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION), algorithm.toString());
                 }
-                Assert.assertEquals(dataEncryptionAlgorithm != null,
+                Assertions.assertEquals(dataEncryptionAlgorithm != null,
                         headers.containsKey(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
                 if (dataEncryptionAlgorithm != null) {
-                    Assert.assertEquals(dataEncryptionAlgorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
+                    Assertions.assertEquals(dataEncryptionAlgorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
                 }
                 // 2. get
                 byte[] target = InputStream2ByteArray(filePath);
@@ -116,7 +116,7 @@ public class ObjectEncryptionTest extends TestBase {
                     copyObject(target, buildObjectKey(keyPrefix, i), buildObjectKey(keyPrefix + "copy-", i), SSEAlgorithm.AES256, null);
                 }
             } catch (Exception ex) {
-                Assert.fail(ex.getMessage());
+                Assertions.fail(ex.getMessage());
             } finally {
                 removeFile(filePath);
             }
@@ -136,37 +136,37 @@ public class ObjectEncryptionTest extends TestBase {
         CopyObjectResult copyObjectResult = ossClient.copyObject(copyObjectRequest);
         checkObjectContent(target, dstKey, algorithm, dataEncryptionAlgorithm);
         Map<String, String> headers = copyObjectResult.getResponse().getHeaders();
-        Assert.assertEquals(algorithm != null,
+        Assertions.assertEquals(algorithm != null,
                 headers.containsKey(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION));
         if (algorithm != null) {
-            Assert.assertEquals(headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION), algorithm.toString());
+            Assertions.assertEquals(headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION), algorithm.toString());
         }
-        Assert.assertEquals(dataEncryptionAlgorithm != null,
+        Assertions.assertEquals(dataEncryptionAlgorithm != null,
                 headers.containsKey(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
         if (dataEncryptionAlgorithm != null) {
-            Assert.assertEquals(dataEncryptionAlgorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
+            Assertions.assertEquals(dataEncryptionAlgorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
         }
     }
 
     private void checkObjectContent(byte[] target, String key, SSEAlgorithm algorithm, DataEncryptionAlgorithm dataEncryptionAlgorithm) throws Exception {
         OSSObject ossObject = ossClient.getObject(bucketName, key);
-        Assert.assertEquals(target.length, ossObject.getObjectMetadata().getContentLength());
+        Assertions.assertEquals(target.length, ossObject.getObjectMetadata().getContentLength());
         byte[] source = new byte[target.length];
         int read;
         int len = 0;
         while ((read = ossObject.getObjectContent().read(source, len, 1024 * 1024)) != -1) {
             len += read;
         }
-        Assert.assertEquals(new String(target), new String(source));
-        Assert.assertEquals(algorithm != null,
+        Assertions.assertEquals(new String(target), new String(source));
+        Assertions.assertEquals(algorithm != null,
                 ossObject.getResponse().getHeaders().containsKey(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION));
         if (algorithm != null) {
-            Assert.assertEquals(ossObject.getResponse().getHeaders().get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION), algorithm.toString());
+            Assertions.assertEquals(ossObject.getResponse().getHeaders().get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION), algorithm.toString());
         }
-        Assert.assertEquals(dataEncryptionAlgorithm != null,
+        Assertions.assertEquals(dataEncryptionAlgorithm != null,
                 ossObject.getResponse().getHeaders().containsKey(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
         if (dataEncryptionAlgorithm != null) {
-            Assert.assertEquals(dataEncryptionAlgorithm.toString(), ossObject.getResponse().getHeaders().get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
+            Assertions.assertEquals(dataEncryptionAlgorithm.toString(), ossObject.getResponse().getHeaders().get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
         }
     }
 
@@ -196,15 +196,15 @@ public class ObjectEncryptionTest extends TestBase {
                 request.setPosition(0L);
                 AppendObjectResult result = ossClient.appendObject(request);
                 Map<String, String> headers = result.getResponse().getHeaders();
-                Assert.assertEquals(algorithm != null,
+                Assertions.assertEquals(algorithm != null,
                         headers.containsKey(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION));
                 if (algorithm != null) {
-                    Assert.assertEquals(headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION), algorithm.toString());
+                    Assertions.assertEquals(headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION), algorithm.toString());
                 }
-                Assert.assertEquals(dataEncryptionAlgorithm != null,
+                Assertions.assertEquals(dataEncryptionAlgorithm != null,
                         headers.containsKey(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
                 if (dataEncryptionAlgorithm != null) {
-                    Assert.assertEquals(dataEncryptionAlgorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
+                    Assertions.assertEquals(dataEncryptionAlgorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
                 }
 
                 // second append with different encryption
@@ -219,15 +219,15 @@ public class ObjectEncryptionTest extends TestBase {
                 request.setPosition(i * 1024 * 100 + 1024L);
                 result = ossClient.appendObject(request);
                 headers = result.getResponse().getHeaders();
-                Assert.assertEquals(algorithm != null,
+                Assertions.assertEquals(algorithm != null,
                         headers.containsKey(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION));
                 if (algorithm != null) {
-                    Assert.assertEquals(headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION), algorithm.toString());
+                    Assertions.assertEquals(headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION), algorithm.toString());
                 }
-                Assert.assertEquals(dataEncryptionAlgorithm != null,
+                Assertions.assertEquals(dataEncryptionAlgorithm != null,
                         headers.containsKey(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
                 if (dataEncryptionAlgorithm != null) {
-                    Assert.assertEquals(dataEncryptionAlgorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
+                    Assertions.assertEquals(dataEncryptionAlgorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
                 }
 
                 // third append with the same encryption
@@ -241,15 +241,15 @@ public class ObjectEncryptionTest extends TestBase {
                 request.setPosition(2 * (i * 1024 * 100 + 1024L));
                 result = ossClient.appendObject(request);
                 headers = result.getResponse().getHeaders();
-                Assert.assertEquals(algorithm != null,
+                Assertions.assertEquals(algorithm != null,
                         headers.containsKey(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION));
                 if (algorithm != null) {
-                    Assert.assertEquals(headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION), algorithm.toString());
+                    Assertions.assertEquals(headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION), algorithm.toString());
                 }
-                Assert.assertEquals(dataEncryptionAlgorithm != null,
+                Assertions.assertEquals(dataEncryptionAlgorithm != null,
                         headers.containsKey(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
                 if (dataEncryptionAlgorithm != null) {
-                    Assert.assertEquals(dataEncryptionAlgorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
+                    Assertions.assertEquals(dataEncryptionAlgorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
                 }
 
                 // 2. get
@@ -272,7 +272,7 @@ public class ObjectEncryptionTest extends TestBase {
                     copyObject(target, buildObjectKey(keyPrefix, i), buildObjectKey(keyPrefix + "copy-", i), SSEAlgorithm.AES256, null);
                 }
             } catch (Exception ex) {
-                Assert.fail(ex.getMessage());
+                Assertions.fail(ex.getMessage());
             } finally {
                 ossClient.deleteObject(bucketName, buildObjectKey(keyPrefix, i));
                 removeFile(filePath);
@@ -304,30 +304,30 @@ public class ObjectEncryptionTest extends TestBase {
                 InitiateMultipartUploadRequest request = new InitiateMultipartUploadRequest(bucketName, buildObjectKey(keyPrefix, i), metadata);
                 InitiateMultipartUploadResult result = ossClient.initiateMultipartUpload(request);
                 Map<String, String> headers = result.getResponse().getHeaders();
-                Assert.assertEquals(algorithm != null,
+                Assertions.assertEquals(algorithm != null,
                         headers.containsKey(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION));
                 if (algorithm != null) {
-                    Assert.assertEquals(headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION), algorithm.toString());
+                    Assertions.assertEquals(headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION), algorithm.toString());
                 }
-                Assert.assertEquals(dataEncryptionAlgorithm != null,
+                Assertions.assertEquals(dataEncryptionAlgorithm != null,
                         headers.containsKey(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
                 if (dataEncryptionAlgorithm != null) {
-                    Assert.assertEquals(dataEncryptionAlgorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
+                    Assertions.assertEquals(dataEncryptionAlgorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
                 }
 
                 UploadPartRequest uploadPartRequest = new UploadPartRequest(bucketName, buildObjectKey(keyPrefix, i),
                         result.getUploadId(), 1, new FileInputStream(new File(filePath)), i * 1024 * 100 + 102400);
                 UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
                 headers = uploadPartResult.getResponse().getHeaders();
-                Assert.assertEquals(algorithm != null,
+                Assertions.assertEquals(algorithm != null,
                         headers.containsKey(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION));
                 if (algorithm != null) {
-                    Assert.assertEquals(headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION), algorithm.toString());
+                    Assertions.assertEquals(headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION), algorithm.toString());
                 }
-                Assert.assertEquals(dataEncryptionAlgorithm != null,
+                Assertions.assertEquals(dataEncryptionAlgorithm != null,
                         headers.containsKey(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
                 if (dataEncryptionAlgorithm != null) {
-                    Assert.assertEquals(dataEncryptionAlgorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
+                    Assertions.assertEquals(dataEncryptionAlgorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
                 }
 
                 //String sourceBucketName, String sourceKey, String targetBucketName, String targetKey,
@@ -337,15 +337,15 @@ public class ObjectEncryptionTest extends TestBase {
                         result.getUploadId(), 2, 0L, i * 1024 * 100 + 102400L);
                 UploadPartCopyResult uploadPartCopyResult = ossClient.uploadPartCopy(uploadPartCopyRequest);
                 headers = uploadPartCopyResult.getResponse().getHeaders();
-                Assert.assertEquals(algorithm != null,
+                Assertions.assertEquals(algorithm != null,
                         headers.containsKey(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION));
                 if (algorithm != null) {
-                    Assert.assertEquals(headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION), algorithm.toString());
+                    Assertions.assertEquals(headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION), algorithm.toString());
                 }
-                Assert.assertEquals(dataEncryptionAlgorithm != null,
+                Assertions.assertEquals(dataEncryptionAlgorithm != null,
                         headers.containsKey(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
                 if (dataEncryptionAlgorithm != null) {
-                    Assert.assertEquals(dataEncryptionAlgorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
+                    Assertions.assertEquals(dataEncryptionAlgorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
                 }
 
                 CompleteMultipartUploadRequest completeMultipartUploadRequest = new CompleteMultipartUploadRequest(bucketName, buildObjectKey(keyPrefix, i), result.getUploadId(),
@@ -353,15 +353,15 @@ public class ObjectEncryptionTest extends TestBase {
                 completeMultipartUploadRequest.setProcess("");
                 CompleteMultipartUploadResult completeMultipartUploadResult = ossClient.completeMultipartUpload(completeMultipartUploadRequest);
                 headers = completeMultipartUploadResult.getResponse().getHeaders();
-                Assert.assertEquals(algorithm != null,
+                Assertions.assertEquals(algorithm != null,
                         headers.containsKey(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION));
                 if (algorithm != null) {
-                    Assert.assertEquals(headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION), algorithm.toString());
+                    Assertions.assertEquals(headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION), algorithm.toString());
                 }
-                Assert.assertEquals(dataEncryptionAlgorithm != null,
+                Assertions.assertEquals(dataEncryptionAlgorithm != null,
                         headers.containsKey(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
                 if (dataEncryptionAlgorithm != null) {
-                    Assert.assertEquals(dataEncryptionAlgorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
+                    Assertions.assertEquals(dataEncryptionAlgorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
                 }
 
                 // 2. get
@@ -383,7 +383,7 @@ public class ObjectEncryptionTest extends TestBase {
                     copyObject(target, buildObjectKey(keyPrefix, i), buildObjectKey(keyPrefix + "copy-", i), SSEAlgorithm.AES256, null);
                 }
             } catch (Exception ex) {
-                Assert.fail(ex.getMessage());
+                Assertions.fail(ex.getMessage());
             } finally {
                 ossClient.deleteObject(bucketName, buildObjectKey(keyPrefix, i));
                 removeFile(filePath);

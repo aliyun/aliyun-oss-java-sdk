@@ -30,7 +30,7 @@ import com.aliyun.oss.common.auth.CredentialsProviderFactory;
 import com.aliyun.oss.common.auth.PublicKey;
 import com.aliyun.oss.common.utils.AuthUtils;
 import com.aliyuncs.exceptions.ClientException;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 public class STSKeyPairSessionCredentialsProviderTest extends TestBase {
@@ -49,14 +49,14 @@ public class STSKeyPairSessionCredentialsProviderTest extends TestBase {
             Thread.sleep(2000);
 
             BasicCredentials credentials = (BasicCredentials) credentialsProvider.getCredentials();
-            Assert.assertFalse(credentials.useSecurityToken());
-            Assert.assertFalse(credentials.willSoonExpire());
-            Assert.assertTrue(credentials.getAccessKeyId().startsWith("TMPSK."));
-            Assert.assertEquals(credentials.getAccessKeyId().length(), 130);
-            Assert.assertEquals(credentials.getSecretAccessKey().length(), 44);
+            Assertions.assertFalse(credentials.useSecurityToken());
+            Assertions.assertFalse(credentials.willSoonExpire());
+            Assertions.assertTrue(credentials.getAccessKeyId().startsWith("TMPSK."));
+            Assertions.assertEquals(credentials.getAccessKeyId().length(), 130);
+            Assertions.assertEquals(credentials.getSecretAccessKey().length(), 44);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -72,14 +72,14 @@ public class STSKeyPairSessionCredentialsProviderTest extends TestBase {
                     .withExpiredFactor(0.001).withExpiredDuration(2000);
 
             BasicCredentials credentials = (BasicCredentials) credentialsProvider.getCredentials();
-            Assert.assertFalse(credentials.willSoonExpire());
+            Assertions.assertFalse(credentials.willSoonExpire());
 
             Thread.sleep(3000);
 
-            Assert.assertTrue(credentials.willSoonExpire());
+            Assertions.assertTrue(credentials.willSoonExpire());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -94,17 +94,17 @@ public class STSKeyPairSessionCredentialsProviderTest extends TestBase {
                             AuthUtils.loadPrivateKeyFromFile(TestConfig.PRIVATE_KEY_PATH))
                     .withExpiredDuration(899);
 
-            Assert.assertNull(credentialsProvider.getCredentials());
+            Assertions.assertNull(credentialsProvider.getCredentials());
 
             credentialsProvider = CredentialsProviderFactory.newSTSKeyPairSessionCredentialsProvider(TestConfig.RAM_REGION_ID,
                     publicKey.getPublicKeyId(), AuthUtils.loadPrivateKeyFromFile(TestConfig.PRIVATE_KEY_PATH))
                     .withExpiredDuration(100);
 
-            Assert.assertNull(credentialsProvider.getCredentials());
+            Assertions.assertNull(credentialsProvider.getCredentials());
 
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -126,7 +126,7 @@ public class STSKeyPairSessionCredentialsProviderTest extends TestBase {
             ossClient.shutdown();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 

@@ -19,6 +19,7 @@
 package com.aliyun.oss.common.utils;
 
 import junit.framework.*;
+import org.junit.jupiter.api.Assertions;
 
 import java.io.*;
 import java.util.*;
@@ -35,19 +36,19 @@ public class IniSectionTest extends TestCase {
     public void testAddSectionIllegal() {
         try {
             new IniEditor.Section("[hallo");
-            fail("Should throw IllegalArgumentException.");
+            Assertions.fail("Should throw IllegalArgumentException.");
         } catch (IllegalArgumentException ex) { /* ok, this should happen */ }
         try {
             new IniEditor.Section("hallo]");
-            fail("Should throw IllegalArgumentException.");
+            Assertions.fail("Should throw IllegalArgumentException.");
         } catch (IllegalArgumentException ex) { /* ok, this should happen */ }
         try {
             new IniEditor.Section("  \t ");
-            fail("Should throw IllegalArgumentException.");
+            Assertions.fail("Should throw IllegalArgumentException.");
         } catch (IllegalArgumentException ex) { /* ok, this should happen */ }
         try {
             new IniEditor.Section("");
-            fail("Should throw IllegalArgumentException.");
+            Assertions.fail("Should throw IllegalArgumentException.");
         } catch (IllegalArgumentException ex) {/* ok, this should happen */ }
     }
 
@@ -88,15 +89,15 @@ public class IniSectionTest extends TestCase {
         IniEditor.Section s = new IniEditor.Section("test");
         try {
             s.set("hallo=", "velo");
-            fail("Should throw IllegalArgumentException");
+            Assertions.fail("Should throw IllegalArgumentException");
         } catch (IllegalArgumentException ex) { /* ok, this should happen */ }
         try {
             s.set(" \t\t ", "velo");
-            fail("Should throw IllegalArgumentException");
+            Assertions.fail("Should throw IllegalArgumentException");
         } catch (IllegalArgumentException ex) { /* ok, this should happen */ }
         try {
             s.set("", "velo");
-            fail("Should throw IllegalArgumentException");
+            Assertions.fail("Should throw IllegalArgumentException");
         } catch (IllegalArgumentException ex) { /* ok, this should happen */ }
     }
 
@@ -107,12 +108,12 @@ public class IniSectionTest extends TestCase {
         IniEditor.Section s = new IniEditor.Section("test");
         try {
             s.set(null, "velo");
-            fail("Should throw NullPointerException");
+            Assertions.fail("Should throw NullPointerException");
         } catch (NullPointerException ex) { /* ok, this should happen */ }
         s.set("hallo", null);
         try {
             s.get(null);
-            fail("Should throw NullPointerException");
+            Assertions.fail("Should throw NullPointerException");
         } catch (NullPointerException ex) { /* ok, this should happen */ }
     }
 
@@ -215,7 +216,7 @@ public class IniSectionTest extends TestCase {
         for (int i = 0; i < formats.length; i++) {
             try {
                 s.setOptionFormatString(formats[i]);
-                fail("Should throw IllegalArgumentException");
+                Assertions.fail("Should throw IllegalArgumentException");
             } catch (IllegalArgumentException ex) { /* ok, this should happen */ }
         }
     }

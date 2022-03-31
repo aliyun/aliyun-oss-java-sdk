@@ -6,7 +6,7 @@ package com.aliyun.oss.common.parser;
 
 import com.aliyun.oss.common.comm.io.FixedLengthInputStream;
 import com.aliyun.oss.model.*;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -50,10 +50,10 @@ public class RequestMarshallersTest {
         String aTargetCloud = destination.getChildText("Cloud");
         String aTargetCloudLocation = destination.getChildText("CloudLocation");
 
-        Assert.assertEquals(targetBucketName, aTargetBucketName);
-        Assert.assertNull(aTargetLocation);
-        Assert.assertEquals(targetCloud, aTargetCloud);
-        Assert.assertEquals(targetCloudLocation, aTargetCloudLocation);
+        Assertions.assertEquals(targetBucketName, aTargetBucketName);
+        Assertions.assertNull(aTargetLocation);
+        Assertions.assertEquals(targetCloud, aTargetCloud);
+        Assertions.assertEquals(targetCloudLocation, aTargetCloudLocation);
 
         //without Cloud & CloudLocation
         //isEnableHistoricalObjectReplication = false
@@ -91,13 +91,13 @@ public class RequestMarshallersTest {
         String aHistoricalObjectReplication = ruleElems.getChildText("HistoricalObjectReplication");
         Element aPrefixSet = ruleElems.getChild("PrefixSet");
         Element aAction = ruleElems.getChild("Action");
-        Assert.assertEquals(targetBucketName, aTargetBucketName);
-        Assert.assertNull(aTargetLocation);
-        Assert.assertNull(aTargetCloud);
-        Assert.assertNull(aTargetCloudLocation);
-        Assert.assertEquals("disabled", aHistoricalObjectReplication);
-        Assert.assertNotNull(aPrefixSet);
-        Assert.assertNotNull(aAction);
+        Assertions.assertEquals(targetBucketName, aTargetBucketName);
+        Assertions.assertNull(aTargetLocation);
+        Assertions.assertNull(aTargetCloud);
+        Assertions.assertNull(aTargetCloudLocation);
+        Assertions.assertEquals("disabled", aHistoricalObjectReplication);
+        Assertions.assertNotNull(aPrefixSet);
+        Assertions.assertNotNull(aAction);
     }
 
     @Test
@@ -132,10 +132,10 @@ public class RequestMarshallersTest {
         String aTargetCloud = destination.getChildText("Cloud");
         String aTargetCloudLocation = destination.getChildText("CloudLocation");
 
-        Assert.assertEquals(targetBucketName, aTargetBucketName);
-        Assert.assertEquals(targetBucketLocation, aTargetLocation);
-        Assert.assertNull(aTargetCloud);
-        Assert.assertNull(aTargetCloudLocation);
+        Assertions.assertEquals(targetBucketName, aTargetBucketName);
+        Assertions.assertEquals(targetBucketLocation, aTargetLocation);
+        Assertions.assertNull(aTargetCloud);
+        Assertions.assertNull(aTargetCloudLocation);
     }
 
     @Test
@@ -171,11 +171,11 @@ public class RequestMarshallersTest {
         String aTargetCloudLocation = destination.getChildText("CloudLocation");
         String aSyncRole = ruleElems.getChildText("SyncRole");
 
-        Assert.assertEquals(targetBucketName, aTargetBucketName);
-        Assert.assertNull(aTargetLocation);
-        Assert.assertEquals(targetCloud, aTargetCloud);
-        Assert.assertEquals(targetCloudLocation, aTargetCloudLocation);
-        Assert.assertEquals(syncRole, aSyncRole);
+        Assertions.assertEquals(targetBucketName, aTargetBucketName);
+        Assertions.assertNull(aTargetLocation);
+        Assertions.assertEquals(targetCloud, aTargetCloud);
+        Assertions.assertEquals(targetCloudLocation, aTargetCloudLocation);
+        Assertions.assertEquals(syncRole, aSyncRole);
     }
 
     @Test
@@ -209,11 +209,11 @@ public class RequestMarshallersTest {
         String aTargetCloudLocation = destination.getChildText("CloudLocation");
         String aSyncRole = ruleElems.getChildText("SyncRole");
 
-        Assert.assertEquals(targetBucketName, aTargetBucketName);
-        Assert.assertNull(aTargetLocation);
-        Assert.assertEquals(targetCloud, aTargetCloud);
-        Assert.assertEquals(targetCloudLocation, aTargetCloudLocation);
-        Assert.assertNull(aSyncRole);
+        Assertions.assertEquals(targetBucketName, aTargetBucketName);
+        Assertions.assertNull(aTargetLocation);
+        Assertions.assertEquals(targetCloud, aTargetCloud);
+        Assertions.assertEquals(targetCloudLocation, aTargetCloudLocation);
+        Assertions.assertNull(aSyncRole);
     }
 
     @Test
@@ -249,11 +249,11 @@ public class RequestMarshallersTest {
         String aTargetCloudLocation = destination.getChildText("CloudLocation");
         String aReplicaKmsKeyID = ruleElems.getChild("EncryptionConfiguration").getChildText("ReplicaKmsKeyID");
 
-        Assert.assertEquals(targetBucketName, aTargetBucketName);
-        Assert.assertNull(aTargetLocation);
-        Assert.assertEquals(targetCloud, aTargetCloud);
-        Assert.assertEquals(targetCloudLocation, aTargetCloudLocation);
-        Assert.assertEquals(replicaKmsKeyID, aReplicaKmsKeyID);
+        Assertions.assertEquals(targetBucketName, aTargetBucketName);
+        Assertions.assertNull(aTargetLocation);
+        Assertions.assertEquals(targetCloud, aTargetCloud);
+        Assertions.assertEquals(targetCloudLocation, aTargetCloudLocation);
+        Assertions.assertEquals(replicaKmsKeyID, aReplicaKmsKeyID);
     }
 
     @Test
@@ -287,11 +287,11 @@ public class RequestMarshallersTest {
         String aTargetCloudLocation = destination.getChildText("CloudLocation");
         Element encryptionConfiguration = ruleElems.getChild("EncryptionConfiguration");
 
-        Assert.assertEquals(targetBucketName, aTargetBucketName);
-        Assert.assertNull(aTargetLocation);
-        Assert.assertEquals(targetCloud, aTargetCloud);
-        Assert.assertEquals(targetCloudLocation, aTargetCloudLocation);
-        Assert.assertNull(encryptionConfiguration);
+        Assertions.assertEquals(targetBucketName, aTargetBucketName);
+        Assertions.assertNull(aTargetLocation);
+        Assertions.assertEquals(targetCloud, aTargetCloud);
+        Assertions.assertEquals(targetCloudLocation, aTargetCloudLocation);
+        Assertions.assertNull(encryptionConfiguration);
     }
 
     @Test
@@ -328,11 +328,11 @@ public class RequestMarshallersTest {
         String aSSEStatus = ruleElems.getChild("SourceSelectionCriteria").
                 getChild("SseKmsEncryptedObjects").getChildText("Status");
 
-        Assert.assertEquals(targetBucketName, aTargetBucketName);
-        Assert.assertNull(aTargetLocation);
-        Assert.assertEquals(targetCloud, aTargetCloud);
-        Assert.assertEquals(targetCloudLocation, aTargetCloudLocation);
-        Assert.assertEquals(SSEStatus, aSSEStatus);
+        Assertions.assertEquals(targetBucketName, aTargetBucketName);
+        Assertions.assertNull(aTargetLocation);
+        Assertions.assertEquals(targetCloud, aTargetCloud);
+        Assertions.assertEquals(targetCloudLocation, aTargetCloudLocation);
+        Assertions.assertEquals(SSEStatus, aSSEStatus);
 
         //set disable
         SSEStatus = AddBucketReplicationRequest.DISABLED;
@@ -358,11 +358,11 @@ public class RequestMarshallersTest {
         aSSEStatus = ruleElems.getChild("SourceSelectionCriteria").
                 getChild("SseKmsEncryptedObjects").getChildText("Status");
 
-        Assert.assertEquals(targetBucketName, aTargetBucketName);
-        Assert.assertNull(aTargetLocation);
-        Assert.assertEquals(targetCloud, aTargetCloud);
-        Assert.assertEquals(targetCloudLocation, aTargetCloudLocation);
-        Assert.assertEquals(SSEStatus, aSSEStatus);
+        Assertions.assertEquals(targetBucketName, aTargetBucketName);
+        Assertions.assertNull(aTargetLocation);
+        Assertions.assertEquals(targetCloud, aTargetCloud);
+        Assertions.assertEquals(targetCloudLocation, aTargetCloudLocation);
+        Assertions.assertEquals(SSEStatus, aSSEStatus);
 
         //set other value
         addBucketReplicationRequest.setSseKmsEncryptedObjectsStatus("invalid");
@@ -385,11 +385,11 @@ public class RequestMarshallersTest {
         aTargetCloud = destination.getChildText("Cloud");
         aTargetCloudLocation = destination.getChildText("CloudLocation");
 
-        Assert.assertEquals(targetBucketName, aTargetBucketName);
-        Assert.assertNull(aTargetLocation);
-        Assert.assertEquals(targetCloud, aTargetCloud);
-        Assert.assertEquals(targetCloudLocation, aTargetCloudLocation);
-        Assert.assertNull(ruleElems.getChild("SourceSelectionCriteria"));
+        Assertions.assertEquals(targetBucketName, aTargetBucketName);
+        Assertions.assertNull(aTargetLocation);
+        Assertions.assertEquals(targetCloud, aTargetCloud);
+        Assertions.assertEquals(targetCloudLocation, aTargetCloudLocation);
+        Assertions.assertNull(ruleElems.getChild("SourceSelectionCriteria"));
 
     }
 
@@ -424,11 +424,11 @@ public class RequestMarshallersTest {
         String aTargetCloudLocation = destination.getChildText("CloudLocation");
         Element sourceSelectionCriteria = ruleElems.getChild("SourceSelectionCriteria");
 
-        Assert.assertEquals(targetBucketName, aTargetBucketName);
-        Assert.assertNull(aTargetLocation);
-        Assert.assertEquals(targetCloud, aTargetCloud);
-        Assert.assertEquals(targetCloudLocation, aTargetCloudLocation);
-        Assert.assertNull(sourceSelectionCriteria);
+        Assertions.assertEquals(targetBucketName, aTargetBucketName);
+        Assertions.assertNull(aTargetLocation);
+        Assertions.assertEquals(targetCloud, aTargetCloud);
+        Assertions.assertEquals(targetCloudLocation, aTargetCloudLocation);
+        Assertions.assertNull(sourceSelectionCriteria);
     }
 
     @Test
@@ -467,12 +467,12 @@ public class RequestMarshallersTest {
         String aSyncRole = ruleElems.getChildText("SyncRole");
         String aSourceLocation = ruleElems.getChild("Source").getChildText("Location");
 
-        Assert.assertEquals(targetBucketName, aTargetBucketName);
-        Assert.assertNull(aTargetLocation);
-        Assert.assertEquals(targetCloud, aTargetCloud);
-        Assert.assertEquals(targetCloudLocation, aTargetCloudLocation);
-        Assert.assertEquals(syncRole, aSyncRole);
-        Assert.assertEquals(sourceLocation, aSourceLocation);
+        Assertions.assertEquals(targetBucketName, aTargetBucketName);
+        Assertions.assertNull(aTargetLocation);
+        Assertions.assertEquals(targetCloud, aTargetCloud);
+        Assertions.assertEquals(targetCloudLocation, aTargetCloudLocation);
+        Assertions.assertEquals(syncRole, aSyncRole);
+        Assertions.assertEquals(sourceLocation, aSourceLocation);
 
 
         addBucketReplicationRequest = new AddBucketReplicationRequest(bucketName);
@@ -495,7 +495,7 @@ public class RequestMarshallersTest {
         root = doc.getRootElement();
         ruleElems = root.getChild("Rule");
         Element sourceElems = ruleElems.getChild("Source");
-        Assert.assertNull(sourceElems);
+        Assertions.assertNull(sourceElems);
     }
 
     @Test
@@ -517,7 +517,7 @@ public class RequestMarshallersTest {
         }
         Element root = doc.getRootElement();
         String Content = root.getChildText("Content");
-        Assert.assertEquals("style", Content);
+        Assertions.assertEquals("style", Content);
     }
 
     @Test
@@ -541,8 +541,8 @@ public class RequestMarshallersTest {
         Element root = doc.getRootElement();
         String SourceFileProtect = root.getChildText("SourceFileProtect");
         String OssDomainSupportAtProcess = root.getChildText("OssDomainSupportAtProcess");
-        Assert.assertEquals("Disabled", SourceFileProtect);
-        Assert.assertEquals("Disabled", OssDomainSupportAtProcess);
+        Assertions.assertEquals("Disabled", SourceFileProtect);
+        Assertions.assertEquals("Disabled", OssDomainSupportAtProcess);
     }
 
     @Test
@@ -577,13 +577,13 @@ public class RequestMarshallersTest {
         String Default404Pic = root.getChildText("Default404Pic");
         String StyleDelimiters = root.getChildText("StyleDelimiters");
 
-        Assert.assertEquals("true", OrigPicForbidden);
-        Assert.assertEquals("true", UseStyleOnly);
-        Assert.assertEquals("true", AutoSetContentType);
-        Assert.assertEquals("true", UseSrcFormat);
-        Assert.assertEquals("true", SetAttachName);
-        Assert.assertEquals("Default404Pic", Default404Pic);
-        Assert.assertEquals("StyleDelimiters", StyleDelimiters);
+        Assertions.assertEquals("true", OrigPicForbidden);
+        Assertions.assertEquals("true", UseStyleOnly);
+        Assertions.assertEquals("true", AutoSetContentType);
+        Assertions.assertEquals("true", UseSrcFormat);
+        Assertions.assertEquals("true", SetAttachName);
+        Assertions.assertEquals("Default404Pic", Default404Pic);
+        Assertions.assertEquals("StyleDelimiters", StyleDelimiters);
 
         //
         request.SetIsForbidOrigPicAccess(false);
@@ -614,13 +614,13 @@ public class RequestMarshallersTest {
         Default404Pic = root.getChildText("Default404Pic");
         StyleDelimiters = root.getChildText("StyleDelimiters");
 
-        Assert.assertEquals("false", OrigPicForbidden);
-        Assert.assertEquals("false", UseStyleOnly);
-        Assert.assertEquals("false", AutoSetContentType);
-        Assert.assertEquals("false", UseSrcFormat);
-        Assert.assertEquals("false", SetAttachName);
-        Assert.assertEquals("Default404Pic", Default404Pic);
-        Assert.assertEquals("StyleDelimiters", StyleDelimiters);
+        Assertions.assertEquals("false", OrigPicForbidden);
+        Assertions.assertEquals("false", UseStyleOnly);
+        Assertions.assertEquals("false", AutoSetContentType);
+        Assertions.assertEquals("false", UseSrcFormat);
+        Assertions.assertEquals("false", SetAttachName);
+        Assertions.assertEquals("Default404Pic", Default404Pic);
+        Assertions.assertEquals("StyleDelimiters", StyleDelimiters);
     }
 
     @Test
@@ -662,10 +662,10 @@ public class RequestMarshallersTest {
         Element Condition = RoutingRule.getChild("Condition");
         Element KeyPrefixEquals = Condition.getChild("KeyPrefixEquals");
 
-        Assert.assertNull(IndexDocument);
-        Assert.assertNotNull(RoutingRule);
-        Assert.assertNotNull(Condition);
-        Assert.assertNull(KeyPrefixEquals);
+        Assertions.assertNull(IndexDocument);
+        Assertions.assertNotNull(RoutingRule);
+        Assertions.assertNotNull(Condition);
+        Assertions.assertNull(KeyPrefixEquals);
     }
 
     @Test
@@ -688,7 +688,7 @@ public class RequestMarshallersTest {
         }
         Element root = doc.getRootElement();
         String ID = root.getChildText("ID");
-        Assert.assertEquals("ID", ID);
+        Assertions.assertEquals("ID", ID);
     }
 
     @Test
@@ -712,7 +712,7 @@ public class RequestMarshallersTest {
         Element root = doc.getRootElement();
         Element Cname = root.getChild("Cname");
         String Domain = Cname.getChildText("Domain");
-        Assert.assertEquals("domain", Domain);
+        Assertions.assertEquals("domain", Domain);
     }
 
     @Test
@@ -743,13 +743,13 @@ public class RequestMarshallersTest {
         Element root = doc.getRootElement();
         Element cname = root.getChild("Cname");
         String domain = cname.getChildText("Domain");
-        Assert.assertEquals("domain", domain);
+        Assertions.assertEquals("domain", domain);
         Element certificate = cname.getChild("CertificateConfiguration");
-        Assert.assertEquals("pubkey", certificate.getChildText("Certificate"));
-        Assert.assertEquals("prikey", certificate.getChildText("PrivateKey"));
-        Assert.assertEquals("previd", certificate.getChildText("PreviousCertId"));
-        Assert.assertEquals("id", certificate.getChildText("CertId"));
-        Assert.assertEquals("true", certificate.getChildText("Force"));
+        Assertions.assertEquals("pubkey", certificate.getChildText("Certificate"));
+        Assertions.assertEquals("prikey", certificate.getChildText("PrivateKey"));
+        Assertions.assertEquals("previd", certificate.getChildText("PreviousCertId"));
+        Assertions.assertEquals("id", certificate.getChildText("CertId"));
+        Assertions.assertEquals("true", certificate.getChildText("Force"));
     }
 
     @Test
@@ -773,7 +773,7 @@ public class RequestMarshallersTest {
         Element root = doc.getRootElement();
         Element Cname = root.getChild("Cname");
         String Domain = Cname.getChildText("Domain");
-        Assert.assertEquals("domain", Domain);
+        Assertions.assertEquals("domain", Domain);
     }
 
     @Test
@@ -800,9 +800,9 @@ public class RequestMarshallersTest {
         String Name = root.getChildText("Name");
         String ID = root.getChildText("ID");
         String Description = root.getChildText("Description");
-        Assert.assertEquals("name", Name);
-        Assert.assertEquals("id", ID);
-        Assert.assertEquals("desc", Description);
+        Assertions.assertEquals("name", Name);
+        Assertions.assertEquals("id", ID);
+        Assertions.assertEquals("desc", Description);
 
 
         request.setId(null);
@@ -823,9 +823,9 @@ public class RequestMarshallersTest {
         Name = root.getChildText("Name");
         Element eID = root.getChild("ID");
         Element eDescription = root.getChild("Description");
-        Assert.assertEquals("name", Name);
-        Assert.assertEquals(null, eID);
-        Assert.assertEquals(null, eDescription);
+        Assertions.assertEquals("name", Name);
+        Assertions.assertEquals(null, eID);
+        Assertions.assertEquals(null, eDescription);
     }
 
     @Test
@@ -849,8 +849,8 @@ public class RequestMarshallersTest {
         Element root = doc.getRootElement();
         String ImageVersion = root.getChildText("ImageVersion");
         String InstanceNum = root.getChildText("InstanceNum");
-        Assert.assertEquals("1", ImageVersion);
-        Assert.assertEquals("2", InstanceNum);
+        Assertions.assertEquals("1", ImageVersion);
+        Assertions.assertEquals("2", InstanceNum);
     }
 
     @Test
@@ -872,7 +872,7 @@ public class RequestMarshallersTest {
         }
         Element root = doc.getRootElement();
         String ImageVersion = root.getChildText("ImageVersion");
-        Assert.assertEquals("1", ImageVersion);
+        Assertions.assertEquals("1", ImageVersion);
     }
 
     @Test
@@ -894,16 +894,16 @@ public class RequestMarshallersTest {
         }
         Element root = doc.getRootElement();
         String InstanceNum = root.getChildText("InstanceNum");
-        Assert.assertEquals("1", InstanceNum);
+        Assertions.assertEquals("1", InstanceNum);
     }
 
     @Test
     public void testStringMarshaller() {
         try {
             FixedLengthInputStream is = stringMarshaller.marshall(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
@@ -925,8 +925,8 @@ public class RequestMarshallersTest {
         Element root = doc.getRootElement();
         Element TagSet = root.getChild("TagSet");
         Element Tag = TagSet.getChild("Tag");
-        Assert.assertNotNull(TagSet);
-        Assert.assertNull(Tag);
+        Assertions.assertNotNull(TagSet);
+        Assertions.assertNull(Tag);
     }
 
     @Test
@@ -952,8 +952,8 @@ public class RequestMarshallersTest {
         Element root = doc.getRootElement();
         Element Object = root.getChild("Object");
         Element VersionId = Object.getChild("VersionId");
-        Assert.assertNotNull(Object);
-        Assert.assertNotNull(VersionId);
+        Assertions.assertNotNull(Object);
+        Assertions.assertNotNull(VersionId);
     }
 
     @Test
@@ -978,7 +978,7 @@ public class RequestMarshallersTest {
         Element root = doc.getRootElement();
         Element Options = root.getChild("Options");
         Element allowed = Options.getChild("MaxSkippedRecordsAllowed");
-        Assert.assertNotNull(allowed);
+        Assertions.assertNotNull(allowed);
     }
 
     @Test
@@ -1006,7 +1006,7 @@ public class RequestMarshallersTest {
         Element root = doc.getRootElement();
         Element CORSRule = root.getChild("CORSRule");
         Element AllowedHeader = CORSRule.getChild("AllowedHeader");
-        Assert.assertNotNull(AllowedHeader);
+        Assertions.assertNotNull(AllowedHeader);
     }
 
     @Test
@@ -1033,9 +1033,9 @@ public class RequestMarshallersTest {
         String region = root.getChildText("Region");
         String switchid = root.getChildText("VSwitchId");
         String label = root.getChildText("Label");
-        Assert.assertEquals("test-region", region);
-        Assert.assertEquals("test-vpcip-name", switchid);
-        Assert.assertEquals("test-vpcip-label", label);
+        Assertions.assertEquals("test-region", region);
+        Assertions.assertEquals("test-vpcip-name", switchid);
+        Assertions.assertEquals("test-vpcip-label", label);
     }
 
     @Test
@@ -1066,9 +1066,9 @@ public class RequestMarshallersTest {
         String region = root.getChildText("Region");
         String vpcid = root.getChildText("VpcId");
         String vip = root.getChildText("Vip");
-        Assert.assertEquals("test-region", region);
-        Assert.assertEquals("test-vpc-id", vpcid);
-        Assert.assertEquals("test-vip", vip);
+        Assertions.assertEquals("test-region", region);
+        Assertions.assertEquals("test-vpc-id", vpcid);
+        Assertions.assertEquals("test-vip", vip);
     }
 
 
@@ -1101,9 +1101,9 @@ public class RequestMarshallersTest {
         String region = root.getChildText("Region");
         String vpcid = root.getChildText("VpcId");
         String vip = root.getChildText("Vip");
-        Assert.assertEquals("test-region", region);
-        Assert.assertEquals("test-vpc-id", vpcid);
-        Assert.assertEquals("test-vip", vip);
+        Assertions.assertEquals("test-region", region);
+        Assertions.assertEquals("test-vpc-id", vpcid);
+        Assertions.assertEquals("test-vip", vip);
     }
 
     @Test
@@ -1133,9 +1133,9 @@ public class RequestMarshallersTest {
         String region = root.getChildText("Region");
         String vpcid = root.getChildText("VpcId");
         String vip = root.getChildText("Vip");
-        Assert.assertEquals("test-region", region);
-        Assert.assertEquals("test-vpc-id", vpcid);
-        Assert.assertEquals("test-vip", vip);
+        Assertions.assertEquals("test-region", region);
+        Assertions.assertEquals("test-vpc-id", vpcid);
+        Assertions.assertEquals("test-vip", vip);
     }
 
     @Test
@@ -1157,13 +1157,13 @@ public class RequestMarshallersTest {
         }
 
         Element root = doc.getRootElement();
-        Assert.assertEquals(root.getChild("Id"), null);
-        Assert.assertEquals(root.getChild("IsEnabled"), null);
-        Assert.assertEquals(root.getChild("IncludedObjectVersions"), null);
-        Assert.assertEquals(root.getChild("Filter"), null);
-        Assert.assertEquals(root.getChild("Schedule"), null);
-        Assert.assertEquals(root.getChild("OptionalFields"), null);
-        Assert.assertEquals(root.getChild("Destination"), null);
+        Assertions.assertEquals(root.getChild("Id"), null);
+        Assertions.assertEquals(root.getChild("IsEnabled"), null);
+        Assertions.assertEquals(root.getChild("IncludedObjectVersions"), null);
+        Assertions.assertEquals(root.getChild("Filter"), null);
+        Assertions.assertEquals(root.getChild("Schedule"), null);
+        Assertions.assertEquals(root.getChild("OptionalFields"), null);
+        Assertions.assertEquals(root.getChild("Destination"), null);
 
         config = new InventoryConfiguration();
         config.setOptionalFields(new ArrayList<String>());
@@ -1181,13 +1181,13 @@ public class RequestMarshallersTest {
         }
 
         root = doc.getRootElement();
-        Assert.assertEquals(root.getChild("Id"), null);
-        Assert.assertEquals(root.getChild("IsEnabled"), null);
-        Assert.assertEquals(root.getChild("IncludedObjectVersions"), null);
-        Assert.assertEquals(root.getChild("Filter"), null);
-        Assert.assertEquals(root.getChild("Schedule"), null);
-        Assert.assertEquals(root.getChild("OptionalFields"), null);
-        Assert.assertNotNull(root.getChild("Destination"));
+        Assertions.assertEquals(root.getChild("Id"), null);
+        Assertions.assertEquals(root.getChild("IsEnabled"), null);
+        Assertions.assertEquals(root.getChild("IncludedObjectVersions"), null);
+        Assertions.assertEquals(root.getChild("Filter"), null);
+        Assertions.assertEquals(root.getChild("Schedule"), null);
+        Assertions.assertEquals(root.getChild("OptionalFields"), null);
+        Assertions.assertNotNull(root.getChild("Destination"));
 
     }
 
@@ -1210,20 +1210,20 @@ public class RequestMarshallersTest {
         }
 
         Element root = doc.getRootElement();
-        Assert.assertNotNull(root.getChild("ResourceGroupId"));
-        Assert.assertEquals(root.getChildText("ResourceGroupId"), "xxx-id-123");
+        Assertions.assertNotNull(root.getChild("ResourceGroupId"));
+        Assertions.assertEquals(root.getChildText("ResourceGroupId"), "xxx-id-123");
     }
 
     @Test
     public void testPutBucketTransferAccelerationRequestMarshaller() {
 
         SetBucketTransferAccelerationRequest request = new SetBucketTransferAccelerationRequest("bucket", true);
-        Assert.assertEquals(request.isEnabled(), true);
+        Assertions.assertEquals(request.isEnabled(), true);
         request.setEnabled(false);
-        Assert.assertEquals(request.isEnabled(), false);
+        Assertions.assertEquals(request.isEnabled(), false);
 
         request.setEnabled(true);
-        Assert.assertEquals(request.isEnabled(), true);
+        Assertions.assertEquals(request.isEnabled(), true);
 
         byte[] data = putBucketTransferAccelerationRequestMarshaller.marshall(request);
         ByteArrayInputStream is = new ByteArrayInputStream(data);
@@ -1240,7 +1240,7 @@ public class RequestMarshallersTest {
 
         Element root = doc.getRootElement();
         String status = root.getChildText("Enabled");
-        Assert.assertEquals("true", status);
+        Assertions.assertEquals("true", status);
     }
 
 }

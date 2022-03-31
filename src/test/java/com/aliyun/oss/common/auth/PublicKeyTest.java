@@ -19,7 +19,7 @@
 
 package com.aliyun.oss.common.auth;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.Test;
 
 public class PublicKeyTest {
@@ -27,17 +27,17 @@ public class PublicKeyTest {
     public void testPublicKey() {
         com.aliyuncs.ram.model.v20150501.ListPublicKeysResponse.PublicKey listPublicKey =  new com.aliyuncs.ram.model.v20150501.ListPublicKeysResponse.PublicKey();
         PublicKey publicKey = new PublicKey(listPublicKey);
-        Assert.assertNull(publicKey.getPublicKeyId());
-        Assert.assertNull(publicKey.getPublicKeySpec());
-        Assert.assertNull(publicKey.getStatus());
-        Assert.assertNull(publicKey.getCreateDate());
+        Assertions.assertNull(publicKey.getPublicKeyId());
+        Assertions.assertNull(publicKey.getPublicKeySpec());
+        Assertions.assertNull(publicKey.getStatus());
+        Assertions.assertNull(publicKey.getCreateDate());
 
         com.aliyuncs.ram.model.v20150501.UploadPublicKeyResponse.PublicKey uploadPublicKey =  new com.aliyuncs.ram.model.v20150501.UploadPublicKeyResponse.PublicKey();
         publicKey = new PublicKey(uploadPublicKey);
-        Assert.assertNull(publicKey.getPublicKeyId());
-        Assert.assertNull(publicKey.getPublicKeySpec());
-        Assert.assertNull(publicKey.getStatus());
-        Assert.assertNull(publicKey.getCreateDate());
+        Assertions.assertNull(publicKey.getPublicKeyId());
+        Assertions.assertNull(publicKey.getPublicKeySpec());
+        Assertions.assertNull(publicKey.getStatus());
+        Assertions.assertNull(publicKey.getCreateDate());
     }
 
 }

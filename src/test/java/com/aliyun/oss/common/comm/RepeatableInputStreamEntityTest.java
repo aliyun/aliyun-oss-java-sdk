@@ -19,7 +19,7 @@
 
 package com.aliyun.oss.common.comm;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 import com.aliyun.oss.common.comm.RepeatableInputStreamEntity.NoAutoClosedInputStreamEntity;
 
@@ -42,13 +42,13 @@ public class RepeatableInputStreamEntityTest {
 
         try {
             inputStreamEntity = new NoAutoClosedInputStreamEntity(in, 3);
-            Assert.assertTrue(inputStreamEntity.isStreaming());
-            Assert.assertFalse(inputStreamEntity.isRepeatable());
-            Assert.assertEquals(3, inputStreamEntity.getContentLength());
-            Assert.assertNotNull(inputStreamEntity.getContent());
+            Assertions.assertTrue(inputStreamEntity.isStreaming());
+            Assertions.assertFalse(inputStreamEntity.isRepeatable());
+            Assertions.assertEquals(3, inputStreamEntity.getContentLength());
+            Assertions.assertNotNull(inputStreamEntity.getContent());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {

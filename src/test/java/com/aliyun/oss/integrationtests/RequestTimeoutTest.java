@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.Random;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.After;
 import org.junit.Before;
@@ -127,9 +127,9 @@ public class RequestTimeoutTest extends TestBase {
             file.delete();
             
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } catch (Throwable t) {
-            Assert.fail(t.getMessage());
+            Assertions.fail(t.getMessage());
         }
     }
     
@@ -144,9 +144,9 @@ public class RequestTimeoutTest extends TestBase {
         try {
             ossClient.getClientConfiguration().setRequestTimeout(1);
             ossClient.getObject(bucketName, key);
-            Assert.fail("Get object should not be successful");
+            Assertions.fail("Get object should not be successful");
         } catch (ClientException e) {
-            Assert.assertEquals(OSSErrorCode.REQUEST_TIMEOUT, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.REQUEST_TIMEOUT, e.getErrorCode());
         } finally {
             ossClient.getClientConfiguration().setRequestTimeout(requestTimeout);
         }
@@ -166,32 +166,32 @@ public class RequestTimeoutTest extends TestBase {
 
         try {            
             ossClient.getBucketInfo(bucket);
-            Assert.fail("Get bucket info should not be successful");
+            Assertions.fail("Get bucket info should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
         }
         
         try {  
             ossClient.getObject(bucketName, key);
-            Assert.fail("Get object should not be successful");
+            Assertions.fail("Get object should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
         }
         
         try {
             InputStream inputStream = null;
             ossClient.putObject(bucket, key, inputStream);
-            Assert.fail("Put object should not be successful");
+            Assertions.fail("Put object should not be successful");
         } catch (Exception e) {
-            Assert.assertTrue(e instanceof IllegalArgumentException);
+            Assertions.assertTrue(e instanceof IllegalArgumentException);
         }
         
         try {
             ossClient.getClientConfiguration().setRequestTimeout(1);
             ossClient.getObject(bucketName, key);
-            Assert.fail("Get object should not be successful");
+            Assertions.fail("Get object should not be successful");
         } catch (ClientException e) {
-            Assert.assertEquals(OSSErrorCode.REQUEST_TIMEOUT, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.REQUEST_TIMEOUT, e.getErrorCode());
         } finally {
             ossClient.getClientConfiguration().setRequestTimeout(requestTimeout);
         }
@@ -210,9 +210,9 @@ public class RequestTimeoutTest extends TestBase {
             try {
                 ossClient.getClientConfiguration().setRequestTimeout(1);
                 ossClient.putObject(bucketName, key, TestUtils.genFixedLengthInputStream(64));
-                Assert.fail("Get object should not be successful");
+                Assertions.fail("Get object should not be successful");
             } catch (ClientException e) {
-                Assert.assertEquals(OSSErrorCode.REQUEST_TIMEOUT, e.getErrorCode());
+                Assertions.assertEquals(OSSErrorCode.REQUEST_TIMEOUT, e.getErrorCode());
             } finally {
                 ossClient.getClientConfiguration().setRequestTimeout(requestTimeout);
             }
@@ -224,7 +224,7 @@ public class RequestTimeoutTest extends TestBase {
             
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
     }
@@ -245,21 +245,21 @@ public class RequestTimeoutTest extends TestBase {
             
             try {
                 ossClient.putObject(bucketName, key, file);
-                Assert.fail("Get object should not be successful");
+                Assertions.fail("Get object should not be successful");
             } catch (ClientException e) {
-                Assert.assertEquals(OSSErrorCode.REQUEST_TIMEOUT, e.getErrorCode());
+                Assertions.assertEquals(OSSErrorCode.REQUEST_TIMEOUT, e.getErrorCode());
             } finally {
                 ossClient.getClientConfiguration().setRequestTimeout(requestTimeout);
             }
 
             ObjectListing objectListing = ossClient.listObjects(bucketName, key);
-            Assert.assertEquals(objectListing.getObjectSummaries().size(), 1);
+            Assertions.assertEquals(objectListing.getObjectSummaries().size(), 1);
             
             ossClient.deleteObject(bucketName, key);
             
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
     }
@@ -289,7 +289,7 @@ public class RequestTimeoutTest extends TestBase {
             
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
     }
@@ -310,7 +310,7 @@ public class RequestTimeoutTest extends TestBase {
                     ossClient.deleteObject(bucketName, key);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Assert.fail(e.getMessage());
+                    Assertions.fail(e.getMessage());
                 }
 
             }
@@ -354,7 +354,7 @@ public class RequestTimeoutTest extends TestBase {
             
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
     }
@@ -372,23 +372,23 @@ public class RequestTimeoutTest extends TestBase {
             for (int i = 0; i < 100; i++) {
                 try {
                     client.putObject(bucketName, key, TestUtils.genFixedLengthInputStream(1024 * 10));
-                    Assert.fail("Put object should not be successful");
+                    Assertions.fail("Put object should not be successful");
                 } catch (ClientException e) {
-                    Assert.assertEquals(OSSErrorCode.REQUEST_TIMEOUT, e.getErrorCode());
+                    Assertions.assertEquals(OSSErrorCode.REQUEST_TIMEOUT, e.getErrorCode());
                 } 
                 
                 try {
                     client.getObject(bucketName, key);
-                    Assert.fail("Get object should not be successful");
+                    Assertions.fail("Get object should not be successful");
                 } catch (ClientException e) {
-                    Assert.assertEquals(OSSErrorCode.REQUEST_TIMEOUT, e.getErrorCode());
+                    Assertions.assertEquals(OSSErrorCode.REQUEST_TIMEOUT, e.getErrorCode());
                 } 
                 
                 try {
                     client.deleteObject(bucketName, key);
-                    Assert.fail("Delete object should not be successful");
+                    Assertions.fail("Delete object should not be successful");
                 } catch (ClientException e) {
-                    Assert.assertEquals(OSSErrorCode.REQUEST_TIMEOUT, e.getErrorCode());
+                    Assertions.assertEquals(OSSErrorCode.REQUEST_TIMEOUT, e.getErrorCode());
                 }
             }
         }
@@ -410,9 +410,9 @@ public class RequestTimeoutTest extends TestBase {
 
         try {
             client.putObject(bucketName, key, TestUtils.genFixedLengthInputStream(1024));
-            Assert.fail("Put object should not be successful");
+            Assertions.fail("Put object should not be successful");
         } catch (ClientException e) {
-            Assert.assertEquals(ClientErrorCode.CONNECTION_TIMEOUT, e.getErrorCode());
+            Assertions.assertEquals(ClientErrorCode.CONNECTION_TIMEOUT, e.getErrorCode());
         } finally {
             client.shutdown();
         }
@@ -435,9 +435,9 @@ public class RequestTimeoutTest extends TestBase {
 
         try {
             client.putObject(bucketName, key, TestUtils.genFixedLengthInputStream(1024 * 10));
-            Assert.fail("Put object should not be successful");
+            Assertions.fail("Put object should not be successful");
         } catch (ClientException e) {
-            Assert.assertEquals(OSSErrorCode.REQUEST_TIMEOUT, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.REQUEST_TIMEOUT, e.getErrorCode());
         }
     }
     

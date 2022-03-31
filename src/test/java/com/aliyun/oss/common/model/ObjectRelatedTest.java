@@ -27,7 +27,7 @@ import org.junit.Test;
 import java.net.URL;
 import java.util.*;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
 
 
 public class ObjectRelatedTest {
@@ -35,20 +35,20 @@ public class ObjectRelatedTest {
     @Test
     public void testCallback() {
         Callback callback = new Callback();
-        assertEquals(false, callback.hasCallbackVar());
+        Assertions.assertEquals(false, callback.hasCallbackVar());
 
         Map<String, String> callbackVar = new HashMap<String, String>();
         callback.setCallbackVar(callbackVar);
-        assertEquals(false, callback.hasCallbackVar());
+        Assertions.assertEquals(false, callback.hasCallbackVar());
 
         callbackVar.put("key1", "value1");
         callback.setCallbackVar(callbackVar);
-        assertEquals(true, callback.hasCallbackVar());
+        Assertions.assertEquals(true, callback.hasCallbackVar());
 
         callback.setCallbackVar(null);
-        assertEquals(false, callback.hasCallbackVar());
+        Assertions.assertEquals(false, callback.hasCallbackVar());
 
-        assertEquals("2", Callback.CalbackBodyType.JSON.toString());
+        Assertions.assertEquals("2", Callback.CalbackBodyType.JSON.toString());
     }
 
     @Test
@@ -56,28 +56,28 @@ public class ObjectRelatedTest {
         CopyObjectRequest request = new CopyObjectRequest("src-bucket", "src-key", "dst-bucket", "dst-key");
 
         List<String> matchingETagConstraints = new ArrayList<String>();
-        assertEquals(0, request.getMatchingETagConstraints().size());
+        Assertions.assertEquals(0, request.getMatchingETagConstraints().size());
         request.setMatchingETagConstraints(matchingETagConstraints);
-        assertEquals(0, request.getMatchingETagConstraints().size());
+        Assertions.assertEquals(0, request.getMatchingETagConstraints().size());
         matchingETagConstraints.add("123");
         request.setMatchingETagConstraints(matchingETagConstraints);
-        assertEquals(matchingETagConstraints, request.getMatchingETagConstraints());
+        Assertions.assertEquals(matchingETagConstraints, request.getMatchingETagConstraints());
         request.setMatchingETagConstraints(null);
-        assertEquals(0, request.getMatchingETagConstraints().size());
+        Assertions.assertEquals(0, request.getMatchingETagConstraints().size());
 
         List<String> nonmatchingEtagConstraints = new ArrayList<String>();
-        assertEquals(0, request.getNonmatchingEtagConstraints().size());
+        Assertions.assertEquals(0, request.getNonmatchingEtagConstraints().size());
         request.setNonmatchingETagConstraints(nonmatchingEtagConstraints);
-        assertEquals(0, request.getNonmatchingEtagConstraints().size());
+        Assertions.assertEquals(0, request.getNonmatchingEtagConstraints().size());
         nonmatchingEtagConstraints.add("123");
         request.setNonmatchingETagConstraints(nonmatchingEtagConstraints);
-        assertEquals(nonmatchingEtagConstraints, request.getNonmatchingEtagConstraints());
+        Assertions.assertEquals(nonmatchingEtagConstraints, request.getNonmatchingEtagConstraints());
         request.setNonmatchingETagConstraints(null);
-        assertEquals(0, request.getNonmatchingEtagConstraints().size());
+        Assertions.assertEquals(0, request.getNonmatchingEtagConstraints().size());
 
         request.setNonmatchingETagConstraints(nonmatchingEtagConstraints);
         request.clearNonmatchingETagConstraints();
-        assertEquals(0, request.getNonmatchingEtagConstraints().size());
+        Assertions.assertEquals(0, request.getNonmatchingEtagConstraints().size());
 
         request = new CopyObjectRequest("src-bucket", "src-key", "id", "dst-bucket", "dst-key");
         request.clearMatchingETagConstraints();
@@ -91,50 +91,50 @@ public class ObjectRelatedTest {
 
         DeleteObjectsRequest request = new DeleteObjectsRequest("bucket")
                 .withQuiet(true).withEncodingType("type").withKeys(keys);
-        assertTrue(request.isQuiet());
-        assertEquals("type", request.getEncodingType());
-        assertEquals(keys, request.getKeys());
+        Assertions.assertTrue(request.isQuiet());
+        Assertions.assertEquals("type", request.getEncodingType());
+        Assertions.assertEquals(keys, request.getKeys());
 
         try {
             request.setKeys(null);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             keys = new ArrayList<String>();
             request.setKeys(keys);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             keys = new ArrayList<String>();
             keys.add(null);
             request.setKeys(keys);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             keys = new ArrayList<String>();
             keys.add("");
             request.setKeys(keys);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             keys = new ArrayList<String>();
             keys.add("//aaaa");
             request.setKeys(keys);
-            assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -149,38 +149,38 @@ public class ObjectRelatedTest {
         List<String> eTagList = new ArrayList<String>();
         eTagList.add("item1");
         request.setMatchingETagConstraints(eTagList);
-        assertEquals(eTagList, request.getMatchingETagConstraints());
+        Assertions.assertEquals(eTagList, request.getMatchingETagConstraints());
         request.clearMatchingETagConstraints();
-        assertEquals(0, request.getMatchingETagConstraints().size());
+        Assertions.assertEquals(0, request.getMatchingETagConstraints().size());
 
         request.setMatchingETagConstraints(eTagList);
-        assertEquals(eTagList, request.getMatchingETagConstraints());
+        Assertions.assertEquals(eTagList, request.getMatchingETagConstraints());
         request.setMatchingETagConstraints(null);
-        assertEquals(0, request.getMatchingETagConstraints().size());
+        Assertions.assertEquals(0, request.getMatchingETagConstraints().size());
 
         request.setMatchingETagConstraints(eTagList);
-        assertEquals(eTagList, request.getMatchingETagConstraints());
+        Assertions.assertEquals(eTagList, request.getMatchingETagConstraints());
         eTagList.clear();
         request.setMatchingETagConstraints(eTagList);
-        assertEquals(0, request.getMatchingETagConstraints().size());
+        Assertions.assertEquals(0, request.getMatchingETagConstraints().size());
 
         eTagList.clear();
         eTagList.add("item1");
         request.setNonmatchingETagConstraints(eTagList);
-        assertEquals(eTagList, request.getNonmatchingETagConstraints());
+        Assertions.assertEquals(eTagList, request.getNonmatchingETagConstraints());
         request.clearNonmatchingETagConstraints();
-        assertEquals(0, request.getNonmatchingETagConstraints().size());
+        Assertions.assertEquals(0, request.getNonmatchingETagConstraints().size());
 
         request.setNonmatchingETagConstraints(eTagList);
-        assertEquals(eTagList, request.getNonmatchingETagConstraints());
+        Assertions.assertEquals(eTagList, request.getNonmatchingETagConstraints());
         request.setNonmatchingETagConstraints(null);
-        assertEquals(0, request.getNonmatchingETagConstraints().size());
+        Assertions.assertEquals(0, request.getNonmatchingETagConstraints().size());
 
         request.setNonmatchingETagConstraints(eTagList);
-        assertEquals(eTagList, request.getNonmatchingETagConstraints());
+        Assertions.assertEquals(eTagList, request.getNonmatchingETagConstraints());
         eTagList.clear();
         request.setNonmatchingETagConstraints(eTagList);
-        assertEquals(0, request.getNonmatchingETagConstraints().size());
+        Assertions.assertEquals(0, request.getNonmatchingETagConstraints().size());
 
         request.setUnmodifiedSinceConstraint(null);
         request.setModifiedSinceConstraint(null);
@@ -190,32 +190,32 @@ public class ObjectRelatedTest {
     @Test
     public void testGetObjectRequest() {
         GetObjectRequest request = new GetObjectRequest("bucket", "key").withRange(10, 20);
-        assertEquals(10, request.getRange()[0]);
-        assertEquals(20, request.getRange()[1]);
+        Assertions.assertEquals(10, request.getRange()[0]);
+        Assertions.assertEquals(20, request.getRange()[1]);
 
         request.setUseUrlSignature(true);
-        assertEquals(true, request.isUseUrlSignature());
+        Assertions.assertEquals(true, request.isUseUrlSignature());
 
         List<String> eTagList = new ArrayList<String>();
         eTagList.add("tag1");
         request.setNonmatchingETagConstraints(eTagList);
-        assertEquals(eTagList, request.getNonmatchingETagConstraints());
+        Assertions.assertEquals(eTagList, request.getNonmatchingETagConstraints());
         request.clearNonmatchingETagConstraints();
-        assertEquals(0, request.getNonmatchingETagConstraints().size());
+        Assertions.assertEquals(0, request.getNonmatchingETagConstraints().size());
 
         eTagList = new ArrayList<String>();
         eTagList.add("tag2");
         request.setMatchingETagConstraints(eTagList);
-        assertEquals(eTagList, request.getMatchingETagConstraints());
+        Assertions.assertEquals(eTagList, request.getMatchingETagConstraints());
         request.clearMatchingETagConstraints();
-        assertEquals(0, request.getMatchingETagConstraints().size());
+        Assertions.assertEquals(0, request.getMatchingETagConstraints().size());
 
         request = new GetObjectRequest((URL) null, null);
-        assertEquals(null, request.getAbsoluteUri());
+        Assertions.assertEquals(null, request.getAbsoluteUri());
 
         Map<String, String> requestHeaders = new HashMap<String, String>();
         request = new GetObjectRequest((URL) null, requestHeaders);
-        assertEquals(null, request.getAbsoluteUri());
+        Assertions.assertEquals(null, request.getAbsoluteUri());
     }
 
     @Test
@@ -224,9 +224,9 @@ public class ObjectRelatedTest {
         request.setBucketName("new-bucket");
         request.setKey("new-key");
         request.setVersionId("new-id");
-        assertEquals("new-bucket", request.getBucketName());
-        assertEquals("new-key", request.getKey());
-        assertEquals("new-id", request.getVersionId());
+        Assertions.assertEquals("new-bucket", request.getBucketName());
+        Assertions.assertEquals("new-key", request.getKey());
+        Assertions.assertEquals("new-id", request.getVersionId());
 
         List<String> eTagList = new ArrayList<String>();
         request.setMatchingETagConstraints(null);
@@ -245,10 +245,10 @@ public class ObjectRelatedTest {
         meta.setUserMetadata(userMetadata);
         meta.setLastModified(date);
 
-        assertEquals(date, meta.getLastModified());
-        assertNull(meta.getContentMD5());
-        assertNull(meta.getContentDisposition());
-        assertNull(meta.getServerSideEncryptionKeyId());
+        Assertions.assertEquals(date, meta.getLastModified());
+        Assertions.assertNull(meta.getContentMD5());
+        Assertions.assertNull(meta.getContentDisposition());
+        Assertions.assertNull(meta.getServerSideEncryptionKeyId());
 
         try {
             meta.getExpirationTime();
@@ -271,20 +271,20 @@ public class ObjectRelatedTest {
         } catch (Exception e) {
         }
         meta.setHeader(OSSHeaders.OSS_RESTORE, "");
-        assertEquals(true, meta.isRestoreCompleted());
+        Assertions.assertEquals(true, meta.isRestoreCompleted());
 
         meta.setHeader(OSSHeaders.OSS_RESTORE, OSSHeaders.OSS_ONGOING_RESTORE);
-        assertEquals(false, meta.isRestoreCompleted());
+        Assertions.assertEquals(false, meta.isRestoreCompleted());
 
         meta.setContentDisposition("disposition");
-        assertEquals("disposition", meta.getContentDisposition());
+        Assertions.assertEquals("disposition", meta.getContentDisposition());
 
         Map<String, String> tags = new HashMap<String, String>();
         meta.setObjectTagging(null);
-        assertEquals(null, meta.getRawMetadata().get(OSSHeaders.OSS_TAGGING));
+        Assertions.assertEquals(null, meta.getRawMetadata().get(OSSHeaders.OSS_TAGGING));
 
         meta.setObjectTagging(tags);
-        assertEquals(null, meta.getRawMetadata().get(OSSHeaders.OSS_TAGGING));
+        Assertions.assertEquals(null, meta.getRawMetadata().get(OSSHeaders.OSS_TAGGING));
 
         try {
             tags.clear();
@@ -320,8 +320,8 @@ public class ObjectRelatedTest {
         ListObjectsRequest request = new ListObjectsRequest().withDelimiter("#").withEncodingType("url").withMarker("marker")
                 .withPrefix("prefix").withMaxKeys(30);
         request.setBucketName("bucket");
-        assertEquals("#", request.getDelimiter());
-        assertEquals("prefix", request.getPrefix());
+        Assertions.assertEquals("#", request.getDelimiter());
+        Assertions.assertEquals("prefix", request.getPrefix());
 
         ObjectListing list = new ObjectListing();
         List<OSSObjectSummary> objectSummaries = new ArrayList<OSSObjectSummary>();
@@ -340,41 +340,41 @@ public class ObjectRelatedTest {
     @Test
     public void testPayer() {
         Payer payer = Payer.parse("BucketOwner");
-        assertEquals(Payer.BucketOwner, payer);
+        Assertions.assertEquals(Payer.BucketOwner, payer);
         try {
             payer = Payer.parse("UN");
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
     @Test
     public void testDeleteVersionRequest() {
         DeleteVersionRequest reqeust = new DeleteVersionRequest("bucket", "key", "id");
-        assertEquals("id", reqeust.getVersionId());
+        Assertions.assertEquals("id", reqeust.getVersionId());
 
         reqeust.setVersionId("new id");
-        assertEquals("new id", reqeust.getVersionId());
+        Assertions.assertEquals("new id", reqeust.getVersionId());
 
         reqeust = new DeleteVersionRequest("bucket", "key", "id").withVersionId("new id1");
-        assertEquals("new id1", reqeust.getVersionId());
+        Assertions.assertEquals("new id1", reqeust.getVersionId());
     }
 
     @Test
     public void testDeleteVersionsRequest() {
         DeleteVersionsRequest reqeust = new DeleteVersionsRequest("bucket").withQuiet(true);
-        assertEquals(true, reqeust.getQuiet());
+        Assertions.assertEquals(true, reqeust.getQuiet());
 
         reqeust.setQuiet(false);
-        assertEquals(false, reqeust.getQuiet());
+        Assertions.assertEquals(false, reqeust.getQuiet());
 
         reqeust = reqeust.withBucketName("new-bucket");
-        assertEquals("new-bucket", reqeust.getBucketName());
+        Assertions.assertEquals("new-bucket", reqeust.getBucketName());
 
         DeleteVersionsRequest.KeyVersion keyVersion = new DeleteVersionsRequest.KeyVersion("key");
-        assertEquals(null, keyVersion.getVersion());
-        assertEquals("key", keyVersion.getKey());
+        Assertions.assertEquals(null, keyVersion.getVersion());
+        Assertions.assertEquals("key", keyVersion.getKey());
     }
 
     @Test
@@ -385,10 +385,10 @@ public class ObjectRelatedTest {
         version.setKey("key");
         version.setVersionId("versionid");
 
-        assertEquals(false, version.isDeleteMarker());
-        assertEquals("markerId", version.getDeleteMarkerVersionId());
-        assertEquals("key", version.getKey());
-        assertEquals("versionid", version.getVersionId());
+        Assertions.assertEquals(false, version.isDeleteMarker());
+        Assertions.assertEquals("markerId", version.getDeleteMarkerVersionId());
+        Assertions.assertEquals("key", version.getKey());
+        Assertions.assertEquals("versionid", version.getVersionId());
     }
 
     @Test
@@ -401,71 +401,71 @@ public class ObjectRelatedTest {
         summary.setSize(100);
         summary.setStorageClass("IA");
 
-        assertEquals("bucket", summary.getBucketName());
-        assertEquals("etag", summary.getETag());
-        assertEquals(true, summary.isLatest());
-        assertEquals(true, summary.isDeleteMarker());
-        assertEquals(100, summary.getSize());
-        assertEquals("IA", summary.getStorageClass());
+        Assertions.assertEquals("bucket", summary.getBucketName());
+        Assertions.assertEquals("etag", summary.getETag());
+        Assertions.assertEquals(true, summary.isLatest());
+        Assertions.assertEquals(true, summary.isDeleteMarker());
+        Assertions.assertEquals(100, summary.getSize());
+        Assertions.assertEquals("IA", summary.getStorageClass());
     }
 
     @Test
     public void testOptionsRequest() {
         OptionsRequest request = new OptionsRequest().withOrigin("origin").withRequestMethod(HttpMethod.DELETE).withRequestHeaders("header");
-        assertEquals("origin", request.getOrigin());
-        assertEquals(HttpMethod.DELETE, request.getRequestMethod());
-        assertEquals("header", request.getRequestHeaders());
+        Assertions.assertEquals("origin", request.getOrigin());
+        Assertions.assertEquals(HttpMethod.DELETE, request.getRequestMethod());
+        Assertions.assertEquals("header", request.getRequestHeaders());
     }
 
     @Test
     public void testCSVFormat() {
         CSVFormat format = new CSVFormat();
         format.setAllowQuotedRecordDelimiter(false);
-        assertEquals(false, format.isAllowQuotedRecordDelimiter());
+        Assertions.assertEquals(false, format.isAllowQuotedRecordDelimiter());
 
         format = new CSVFormat().withAllowQuotedRecordDelimiter(false);
-        assertEquals(false, format.isAllowQuotedRecordDelimiter());
+        Assertions.assertEquals(false, format.isAllowQuotedRecordDelimiter());
 
         format.setCommentChar(null);
-        assertEquals(null, format.getCommentChar());
+        Assertions.assertEquals(null, format.getCommentChar());
         format.setCommentChar("");
-        assertEquals(null, format.getCommentChar());
+        Assertions.assertEquals(null, format.getCommentChar());
 
         format.setFieldDelimiter(null);
-        assertEquals(null, format.getFieldDelimiter());
+        Assertions.assertEquals(null, format.getFieldDelimiter());
         format.setFieldDelimiter("");
-        assertEquals(null, format.getFieldDelimiter());
+        Assertions.assertEquals(null, format.getFieldDelimiter());
 
         format.setQuoteChar(null);
-        assertEquals(null, format.getQuoteChar());
+        Assertions.assertEquals(null, format.getQuoteChar());
         format.setQuoteChar("");
-        assertEquals(null, format.getQuoteChar());
+        Assertions.assertEquals(null, format.getQuoteChar());
     }
 
     @Test
     public void testCreateSelectObjectMetadataRequest() {
         CreateSelectObjectMetadataRequest request =
                 new CreateSelectObjectMetadataRequest("bucket", "key").withProcess("process");
-        assertEquals("process", request.getProcess());
+        Assertions.assertEquals("process", request.getProcess());
 
         SelectObjectMetadata meta = new SelectObjectMetadata();
         meta.setContentType("type");
-        assertEquals("type", meta.getContentType());
+        Assertions.assertEquals("type", meta.getContentType());
     }
 
     @Test
     public void testJsonFormat() {
         JsonFormat format = new JsonFormat();
         format.setRecordDelimiter("#");
-        assertEquals("#", format.getRecordDelimiter());
+        Assertions.assertEquals("#", format.getRecordDelimiter());
     }
 
     @Test
     public void testSelectObjectException() {
         SelectObjectException e = new SelectObjectException("error", "message", "id");
-        assertEquals("error", e.getErrorCode());
-        assertEquals("id", e.getRequestId());
-        assertFalse(e.toString().isEmpty());
+        Assertions.assertEquals("error", e.getErrorCode());
+        Assertions.assertEquals("id", e.getRequestId());
+        Assertions.assertFalse(e.toString().isEmpty());
     }
 
     @Test
@@ -477,19 +477,19 @@ public class ObjectRelatedTest {
         range[1] = 20;
         String value = request.splitRangeToString(range);
         System.out.println(value);
-        assertEquals("split-range=10-20", value);
+        Assertions.assertEquals("split-range=10-20", value);
 
         range[0] = -1;
         range[1] = 10;
         value = request.splitRangeToString(range);
         System.out.println(value);
-        assertEquals("split-range=-10", value);
+        Assertions.assertEquals("split-range=-10", value);
 
         range[0] = 10;
         range[1] = -1;
         value = request.splitRangeToString(range);
         System.out.println(value);
-        assertEquals("split-range=10-", value);
+        Assertions.assertEquals("split-range=10-", value);
     }
 
     @Test
@@ -501,9 +501,9 @@ public class ObjectRelatedTest {
 
         try {
             request.setMethod(HttpMethod.DELETE);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         request.setKey("new-key");
@@ -514,75 +514,75 @@ public class ObjectRelatedTest {
         request.setHeaders(headers);
         request.setAdditionalHeaderNames(null);
 
-        assertEquals("new-key", request.getKey());
-        assertEquals("new-bucket", request.getBucketName());
-        assertEquals("md5", request.getContentMD5());
-        assertEquals(userMetadata, request.getUserMetadata());
-        assertEquals(queryParam, request.getQueryParameter());
-        assertEquals(headers, request.getHeaders());
-        assertEquals(null, request.getAdditionalHeaderNames());
+        Assertions.assertEquals("new-key", request.getKey());
+        Assertions.assertEquals("new-bucket", request.getBucketName());
+        Assertions.assertEquals("md5", request.getContentMD5());
+        Assertions.assertEquals(userMetadata, request.getUserMetadata());
+        Assertions.assertEquals(queryParam, request.getQueryParameter());
+        Assertions.assertEquals(headers, request.getHeaders());
+        Assertions.assertEquals(null, request.getAdditionalHeaderNames());
 
         try {
             request.setUserMetadata(null);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             request.setQueryParameter(null);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             request.setHeaders(null);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
     @Test
     public void testCreateSymlinkRequest() {
         CreateSymlinkRequest request = new CreateSymlinkRequest("bucket", "symlink", "target");
-        assertEquals("symlink", request.getSymlink());
-        assertEquals("target", request.getTarget());
+        Assertions.assertEquals("symlink", request.getSymlink());
+        Assertions.assertEquals("target", request.getTarget());
 
         request.setSymlink("new symlink");
         request.setTarget("new target");
-        assertEquals("new symlink", request.getSymlink());
-        assertEquals("new target", request.getTarget());
+        Assertions.assertEquals("new symlink", request.getSymlink());
+        Assertions.assertEquals("new target", request.getTarget());
 
         OSSSymlink symlink = new OSSSymlink("symlink", "target");
         symlink.setTarget("new target");
-        assertEquals("new target", symlink.getTarget());
-        assertFalse(symlink.toString().isEmpty());
+        Assertions.assertEquals("new target", symlink.getTarget());
+        Assertions.assertFalse(symlink.toString().isEmpty());
     }
 
     @Test
     public void testDeleteObjectsResult() {
         List<String> deletedObjects = new ArrayList<String>();
         DeleteObjectsResult resutl = new DeleteObjectsResult(null);
-        assertEquals(null, resutl.getEncodingType());
+        Assertions.assertEquals(null, resutl.getEncodingType());
 
         resutl = new DeleteObjectsResult(deletedObjects);
-        assertEquals(null, resutl.getEncodingType());
+        Assertions.assertEquals(null, resutl.getEncodingType());
 
         deletedObjects.add("key");
         resutl = new DeleteObjectsResult(deletedObjects);
-        assertEquals(1, resutl.getDeletedObjects().size());
+        Assertions.assertEquals(1, resutl.getDeletedObjects().size());
     }
 
     @Test
     public void testOSSObject() {
         OSSObject object = new OSSObject();
         object.setKey("");
-        assertEquals(true, object.toString().contains("Unknown"));
+        Assertions.assertEquals(true, object.toString().contains("Unknown"));
 
         object.setBucketName("test-bucket");
-        assertEquals(true, object.toString().contains("test-bucket"));
+        Assertions.assertEquals(true, object.toString().contains("test-bucket"));
 
         try {
             object.close();
@@ -593,33 +593,33 @@ public class ObjectRelatedTest {
     public void testResponseHeaderOverrides() {
         ResponseHeaderOverrides overides = new ResponseHeaderOverrides();
         overides.setContentType("content");
-        assertEquals("content", overides.getContentType());
+        Assertions.assertEquals("content", overides.getContentType());
 
         overides.setContentLangauge("lang");
-        assertEquals("lang", overides.getContentLangauge());
+        Assertions.assertEquals("lang", overides.getContentLangauge());
 
         overides.setExpires("expire");
-        assertEquals("expire", overides.getExpires());
+        Assertions.assertEquals("expire", overides.getExpires());
 
         overides.setContentDisposition("contentDisposition");
-        assertEquals("contentDisposition", overides.getContentDisposition());
+        Assertions.assertEquals("contentDisposition", overides.getContentDisposition());
 
         overides.setContentEncoding("contentEncoding");
-        assertEquals("contentEncoding", overides.getContentEncoding());
+        Assertions.assertEquals("contentEncoding", overides.getContentEncoding());
     }
 
     @Test
     public void testVersionListing() {
         VersionListing list = new VersionListing();
-        assertEquals(0, list.getVersionSummaries().size());
+        Assertions.assertEquals(0, list.getVersionSummaries().size());
 
         list.setVersionSummaries(null);
-        assertEquals(null, list.getVersionSummaries());
+        Assertions.assertEquals(null, list.getVersionSummaries());
 
         list.setKeyMarker("marker");
-        assertEquals("marker", list.getKeyMarker());
+        Assertions.assertEquals("marker", list.getKeyMarker());
 
         list.setVersionIdMarker("idmarker");
-        assertEquals("idmarker", list.getVersionIdMarker());
+        Assertions.assertEquals("idmarker", list.getVersionIdMarker());
     }
 }

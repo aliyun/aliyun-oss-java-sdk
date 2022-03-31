@@ -19,8 +19,7 @@
 
 package com.aliyun.oss.common.utils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.junit.jupiter.api.Assertions;
 
 import java.io.IOException;
 import java.net.SocketException;
@@ -45,33 +44,33 @@ public class ExceptionFactoryTest {
     public void testCreateNetworkException() {
         SocketTimeoutException ste = new SocketTimeoutException();
         ClientException ex = ExceptionFactory.createNetworkException(ste);
-        assertEquals(ex.getErrorCode(), ClientErrorCode.SOCKET_TIMEOUT);
+        Assertions.assertEquals(ex.getErrorCode(), ClientErrorCode.SOCKET_TIMEOUT);
 
         SocketException se = new SocketException();
         ex = ExceptionFactory.createNetworkException(se);
-        assertEquals(ex.getErrorCode(), ClientErrorCode.SOCKET_EXCEPTION);
+        Assertions.assertEquals(ex.getErrorCode(), ClientErrorCode.SOCKET_EXCEPTION);
 
         ConnectTimeoutException cte = new ConnectTimeoutException();
         ex = ExceptionFactory.createNetworkException(cte);
-        assertEquals(ex.getErrorCode(), ClientErrorCode.CONNECTION_TIMEOUT);
+        Assertions.assertEquals(ex.getErrorCode(), ClientErrorCode.CONNECTION_TIMEOUT);
 
         SSLException slle = new SSLException("");
         ex = ExceptionFactory.createNetworkException(slle);
-        assertEquals(ex.getErrorCode(), ClientErrorCode.SSL_EXCEPTION);
+        Assertions.assertEquals(ex.getErrorCode(), ClientErrorCode.SSL_EXCEPTION);
 
         IOException ioe = new IOException();
         ex = ExceptionFactory.createNetworkException(ioe);
-        assertEquals(ex.getErrorCode(), ClientErrorCode.UNKNOWN);
+        Assertions.assertEquals(ex.getErrorCode(), ClientErrorCode.UNKNOWN);
 
         ClientProtocolException cpe = new ClientProtocolException(new NonRepeatableRequestException());
         ex = ExceptionFactory.createNetworkException(cpe);
-        assertEquals(ex.getErrorCode(), ClientErrorCode.NONREPEATABLE_REQUEST);
+        Assertions.assertEquals(ex.getErrorCode(), ClientErrorCode.NONREPEATABLE_REQUEST);
 
         OSSException ose = ExceptionFactory.createInvalidResponseException("request id", new ConnectTimeoutException());
-        assertNotNull(ose);
+        Assertions.assertNotNull(ose);
         ose = ExceptionFactory.createInvalidResponseException("request id", new ConnectTimeoutException());
-        assertNotNull(ose);
+        Assertions.assertNotNull(ose);
         ose = ExceptionFactory.createOSSException(new OSSErrorResult());
-        assertNotNull(ose);
+        Assertions.assertNotNull(ose);
     }
 }

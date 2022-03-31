@@ -29,7 +29,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 
@@ -88,7 +88,7 @@ public class CRCChecksumTest extends TestBase {
             
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -123,7 +123,7 @@ public class CRCChecksumTest extends TestBase {
             ossClient.deleteObject(bucketName, key);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -139,9 +139,9 @@ public class CRCChecksumTest extends TestBase {
             
             ossClient.appendObject(appendObjectRequest);
             
-            Assert.fail("Append object should not be successful.");
+            Assertions.fail("Append object should not be successful.");
         } catch (Exception e) {
-        	Assert.assertTrue(e instanceof InconsistentException);
+        	Assertions.assertTrue(e instanceof InconsistentException);
         	ossClient.deleteObject(bucketName, key);
         	System.out.println(e);
         }
@@ -159,7 +159,7 @@ public class CRCChecksumTest extends TestBase {
                     new InitiateMultipartUploadRequest(bucketName, key);
             InitiateMultipartUploadResult initiateMultipartUploadResult = 
                     ossClient.initiateMultipartUpload(initiateMultipartUploadRequest);
-            Assert.assertEquals(initiateMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(initiateMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
             String uploadId = initiateMultipartUploadResult.getUploadId();
 
             // 上传分片
@@ -169,7 +169,7 @@ public class CRCChecksumTest extends TestBase {
                 UploadPartRequest request = new UploadPartRequest(bucketName, key, uploadId, i + 1, 
                         new FileInputStream(filePath), fileLen);
                 UploadPartResult uploadPartResult = ossClient.uploadPart(request);
-                Assert.assertEquals(uploadPartResult.getRequestId().length(), REQUEST_ID_LEN);
+                Assertions.assertEquals(uploadPartResult.getRequestId().length(), REQUEST_ID_LEN);
                 partETags.add(uploadPartResult.getPartETag());
                 checkCRC(uploadPartResult);
             }
@@ -179,13 +179,13 @@ public class CRCChecksumTest extends TestBase {
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags); 
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(CompleteMultipartUploadRequest);
-            Assert.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
             checkCRC(completeMultipartUploadResult);
             
             ossClient.deleteObject(bucketName, key);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -202,9 +202,9 @@ public class CRCChecksumTest extends TestBase {
             uploadFileRequest.setEnableCheckpoint(true);
 
             UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
-            Assert.assertEquals(uploadRes.getMultipartUploadResult().getClientCRC(), uploadRes.getMultipartUploadResult().getServerCRC());
+            Assertions.assertEquals(uploadRes.getMultipartUploadResult().getClientCRC(), uploadRes.getMultipartUploadResult().getServerCRC());
         } catch (Throwable e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -218,9 +218,9 @@ public class CRCChecksumTest extends TestBase {
             checkCRC(putObjectResult);
             
             OSSObject ossObject = ossClient.getObject(bucketName, key);
-            Assert.assertNull(ossObject.getClientCRC());
-            Assert.assertNotNull(ossObject.getServerCRC());
-            Assert.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertNull(ossObject.getClientCRC());
+            Assertions.assertNotNull(ossObject.getServerCRC());
+            Assertions.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
             
             InputStream content = ossObject.getObjectContent();
             while (content.read() != -1) {
@@ -234,15 +234,15 @@ public class CRCChecksumTest extends TestBase {
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             getObjectRequest.setRange(100, 10000);
             OSSObject ossRangeObject = ossClient.getObject(getObjectRequest);
-            Assert.assertNull(ossRangeObject.getClientCRC());
-            Assert.assertNotNull(ossRangeObject.getServerCRC());
-            Assert.assertEquals(ossObject.getServerCRC(), ossRangeObject.getServerCRC());
-            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertNull(ossRangeObject.getClientCRC());
+            Assertions.assertNotNull(ossRangeObject.getServerCRC());
+            Assertions.assertEquals(ossObject.getServerCRC(), ossRangeObject.getServerCRC());
+            Assertions.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
                         
             ossClient.deleteObject(bucketName, key);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
     }
@@ -254,7 +254,7 @@ public class CRCChecksumTest extends TestBase {
         try {
             InputStream inputStream = TestUtils.genFixedLengthInputStream(1024 * 100);
             PutObjectResult putObjectResult = ossClient.putObject(bucketName, key, inputStream);
-            Assert.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
             checkCRC(putObjectResult);
             
             String filePath = genFixedLengthFile(0);
@@ -269,7 +269,7 @@ public class CRCChecksumTest extends TestBase {
             ossClient.deleteObject(bucketName, key);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
     }
@@ -282,54 +282,54 @@ public class CRCChecksumTest extends TestBase {
             // put
             PutObjectResult putObjectResult = ossClient.putObject(bucketName, key,
                     new ByteArrayInputStream(new String("").getBytes()));
-            Assert.assertTrue(putObjectResult.getClientCRC() == 0L);
-            Assert.assertTrue(putObjectResult.getServerCRC() == 0L);
-            Assert.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertTrue(putObjectResult.getClientCRC() == 0L);
+            Assertions.assertTrue(putObjectResult.getServerCRC() == 0L);
+            Assertions.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
             
             String localFile = TestUtils.genFixedLengthFile(0);
             putObjectResult = ossClient.putObject(bucketName, key, new FileInputStream(localFile));
-            Assert.assertEquals(putObjectResult.getClientCRC(), putObjectResult.getServerCRC());
-            Assert.assertTrue(putObjectResult.getClientCRC() == 0L);
-            Assert.assertTrue(putObjectResult.getServerCRC() == 0L);
-            Assert.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(putObjectResult.getClientCRC(), putObjectResult.getServerCRC());
+            Assertions.assertTrue(putObjectResult.getClientCRC() == 0L);
+            Assertions.assertTrue(putObjectResult.getServerCRC() == 0L);
+            Assertions.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
             
             putObjectResult = ossClient.putObject(bucketName, key, new File(localFile));
-            Assert.assertEquals(putObjectResult.getClientCRC(), putObjectResult.getServerCRC());
-            Assert.assertTrue(putObjectResult.getClientCRC() == 0L);
-            Assert.assertTrue(putObjectResult.getServerCRC() == 0L);
-            Assert.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(putObjectResult.getClientCRC(), putObjectResult.getServerCRC());
+            Assertions.assertTrue(putObjectResult.getClientCRC() == 0L);
+            Assertions.assertTrue(putObjectResult.getServerCRC() == 0L);
+            Assertions.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
 
             // get
             OSSObject ossObject = ossClient.getObject(bucketName, key);
-            Assert.assertNull(ossObject.getClientCRC());
-            Assert.assertNotNull(ossObject.getServerCRC());
-            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertNull(ossObject.getClientCRC());
+            Assertions.assertNotNull(ossObject.getServerCRC());
+            Assertions.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
             
-            Assert.assertTrue(IOUtils.getCRCValue(ossObject.getObjectContent()) == 0L);
+            Assertions.assertTrue(IOUtils.getCRCValue(ossObject.getObjectContent()) == 0L);
             
             InputStream content = ossObject.getObjectContent();
             while (content.read() != -1) {
             }
 
             ossObject.setClientCRC(IOUtils.getCRCValue(content));
-            Assert.assertTrue(putObjectResult.getClientCRC() == 0L);
-            Assert.assertTrue(putObjectResult.getServerCRC() == 0L);
+            Assertions.assertTrue(putObjectResult.getClientCRC() == 0L);
+            Assertions.assertTrue(putObjectResult.getServerCRC() == 0L);
             content.close();
             
             ossClient.deleteObject(bucketName, key);
             TestUtils.removeFile(localFile);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
     private static <Result extends GenericResult>  void checkCRC(final Result result) {
-        Assert.assertNotNull(result.getClientCRC());
-        Assert.assertNotNull(result.getServerCRC());
-        Assert.assertTrue(result.getClientCRC() != 0L);
-        Assert.assertTrue(result.getServerCRC() != 0L);
-        Assert.assertEquals(result.getClientCRC(), result.getServerCRC());
+        Assertions.assertNotNull(result.getClientCRC());
+        Assertions.assertNotNull(result.getServerCRC());
+        Assertions.assertTrue(result.getClientCRC() != 0L);
+        Assertions.assertTrue(result.getServerCRC() != 0L);
+        Assertions.assertEquals(result.getClientCRC(), result.getServerCRC());
     }
     
 }

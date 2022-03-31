@@ -19,10 +19,7 @@
 
 package com.aliyun.oss.common.comm;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertNull;
+import org.junit.jupiter.api.Assertions;
 
 
 import java.io.ByteArrayInputStream;
@@ -78,8 +75,8 @@ public class ServiceClientTest {
                 ExecutionContext context) throws IOException {            
             // verify content stream
             if (this.expectedContent != null){
-                assertTrue(request.getContent() != null);
-                assertEquals(expectedContent, StreamUtils.readContent(request.getContent(), OSSConstants.DEFAULT_CHARSET_NAME));
+                Assertions.assertTrue(request.getContent() != null);
+                Assertions.assertEquals(expectedContent, StreamUtils.readContent(request.getContent(), OSSConstants.DEFAULT_CHARSET_NAME));
             }
 
             if (++requestAttemps <= maxFailureCount){
@@ -147,21 +144,21 @@ public class ServiceClientTest {
         ServiceClientImpl client =
                 new ServiceClientImpl(config, maxFailures, exceptionToThrow, 200, content.substring((int)skipBeforeSend));
         client.sendRequest(request, context);
-        assertEquals(MAX_RETRIES + 1, client.getRequestAttempts());
+        Assertions.assertEquals(MAX_RETRIES + 1, client.getRequestAttempts());
     }
     
     @Test
-    public void testRetryWillFail() throws Exception{
+    public void testRetryWillfall() throws Exception{
 
-        retryButFail(3);
+        retryButfail(3);
     }
 
     @Test
     public void testNoRetry() throws Exception{
-        retryButFail(0);
+        retryButfail(0);
     }
 
-    private void retryButFail(final int maxRetries)
+    private void retryButfail(final int maxRetries)
             throws UnsupportedEncodingException, URISyntaxException,
             ServiceException {
         // This request will fail after 3 retries
@@ -187,10 +184,10 @@ public class ServiceClientTest {
 
         try{
             client.sendRequest(request, context);
-            fail("ClientException has not been thrown.");
+            Assertions.fail("ClientException has not been thrown.");
         } catch (ClientException e){
-            assertEquals(exceptionToThrown, e);
-            assertEquals(maxRetries + 1, client.getRequestAttempts());
+            Assertions.assertEquals(exceptionToThrown, e);
+            Assertions.assertEquals(maxRetries + 1, client.getRequestAttempts());
         }
     }
 
@@ -226,9 +223,9 @@ public class ServiceClientTest {
         // Fix the max error retry count to 3
         try{
             client.sendRequest(request, context);
-            fail("ServiceException has not been thrown.");
+            Assertions.fail("ServiceException has not been thrown.");
         } catch (ServiceException e){
-            assertEquals(2, client.getRequestAttempts());
+            Assertions.assertEquals(2, client.getRequestAttempts());
         }
     }
 
@@ -261,10 +258,10 @@ public class ServiceClientTest {
         // Fix the max error retry count to 3
         try{
             client.sendRequest(request, context);
-            fail("ClientException has not been thrown.");
+            Assertions.fail("ClientException has not been thrown.");
         } catch (ClientException e){
-            assertEquals(exceptionToThrown, e);
-            assertEquals(1, client.getRequestAttempts());
+            Assertions.assertEquals(exceptionToThrown, e);
+            Assertions.assertEquals(1, client.getRequestAttempts());
         }
     }
 
@@ -272,10 +269,10 @@ public class ServiceClientTest {
     public void testResponseMessageAbort()  {
         try {
             ResponseMessage responseMessage = new ResponseMessage(new ServiceClient.Request());
-            assertNull(responseMessage.getHttpResponse());
+            Assertions.assertNull(responseMessage.getHttpResponse());
             responseMessage.abort();
         } catch (Exception e) {
-            fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -313,9 +310,9 @@ public class ServiceClientTest {
         // Fix the max error retry count to 3
         try{
             client.sendRequest(request, context);
-            fail("ServiceException has not been thrown.");
+            Assertions.fail("ServiceException has not been thrown.");
         } catch (ServiceException e){
-            assertEquals(2, client.getRequestAttempts());
+            Assertions.assertEquals(2, client.getRequestAttempts());
         }
     }
 
@@ -324,24 +321,24 @@ public class ServiceClientTest {
         String value;
         //no system property
         value = ServiceClientImpl.testResolveStringValue(null, "http.proxyHost", false);
-        assertEquals(null, value);
+        Assertions.assertEquals(null, value);
 
         value = ServiceClientImpl.testResolveStringValue("test.com", "http.proxyHost", false);
-        assertEquals("test.com", value);
+        Assertions.assertEquals("test.com", value);
 
         value = ServiceClientImpl.testResolveStringValue("test.com", "http.proxyHost", true);
-        assertEquals("test.com", value);
+        Assertions.assertEquals("test.com", value);
 
         System.setProperty("http.proxyHost", "123.com");
 
         value = ServiceClientImpl.testResolveStringValue(null, "http.proxyHost", true);
-        assertEquals("123.com", value);
+        Assertions.assertEquals("123.com", value);
 
         value = ServiceClientImpl.testResolveStringValue("test.com", "http.proxyHost", true);
-        assertEquals("test.com", value);
+        Assertions.assertEquals("test.com", value);
 
         value = ServiceClientImpl.testResolveStringValue("test.com", "http.proxyHost", false);
-        assertEquals("test.com", value);
+        Assertions.assertEquals("test.com", value);
 
         System.clearProperty("http.proxyHost");
 
@@ -349,29 +346,29 @@ public class ServiceClientTest {
         int intValue;
         //no system property
         intValue = ServiceClientImpl.testResolveIntValue(-1, "http.proxyPort", false);
-        assertEquals(-1, intValue);
+        Assertions.assertEquals(-1, intValue);
 
         intValue = ServiceClientImpl.testResolveIntValue(123, "http.proxyPort", false);
-        assertEquals(123, intValue);
+        Assertions.assertEquals(123, intValue);
 
         intValue = ServiceClientImpl.testResolveIntValue(456, "http.proxyPort", true);
-        assertEquals(456, intValue);
+        Assertions.assertEquals(456, intValue);
 
         System.setProperty("http.proxyPort", "789");
 
         intValue = ServiceClientImpl.testResolveIntValue(-1, "http.proxyPort", true);
-        assertEquals(789, intValue);
+        Assertions.assertEquals(789, intValue);
 
         intValue = ServiceClientImpl.testResolveIntValue(123, "http.proxyPort", true);
-        assertEquals(123, intValue);
+        Assertions.assertEquals(123, intValue);
 
         intValue = ServiceClientImpl.testResolveIntValue(123, "http.proxyHost", false);
-        assertEquals(123, intValue);
+        Assertions.assertEquals(123, intValue);
 
 
         System.setProperty("http.proxyPort", "abc");
         intValue = ServiceClientImpl.testResolveIntValue(-1, "http.proxyPort", true);
-        assertEquals(-1, intValue);
+        Assertions.assertEquals(-1, intValue);
 
         System.clearProperty("http.proxyHost");
     }
@@ -384,16 +381,16 @@ public class ServiceClientTest {
 
         HttpHost httpHost = client.getProxyHttpHost();
         CredentialsProvider credProvider = client.getCredentialsProvider();
-        assertEquals(null, httpHost);
-        assertEquals(null, credProvider);
+        Assertions.assertEquals(null, httpHost);
+        Assertions.assertEquals(null, credProvider);
 
         config = new ClientConfiguration();
         config.setProxyHost("test.com");
         client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
         httpHost = client.getProxyHttpHost();
         credProvider = client.getCredentialsProvider();
-        assertEquals(null, httpHost);
-        assertEquals(null, credProvider);
+        Assertions.assertEquals(null, httpHost);
+        Assertions.assertEquals(null, credProvider);
 
         config = new ClientConfiguration();
         config.setProxyHost("123.com");
@@ -401,9 +398,9 @@ public class ServiceClientTest {
         client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
         httpHost = client.getProxyHttpHost();
         credProvider = client.getCredentialsProvider();
-        assertEquals("123.com", httpHost.getHostName());
-        assertEquals(1234, httpHost.getPort());
-        assertEquals(null, credProvider);
+        Assertions.assertEquals("123.com", httpHost.getHostName());
+        Assertions.assertEquals(1234, httpHost.getPort());
+        Assertions.assertEquals(null, credProvider);
 
         config = new ClientConfiguration();
         config.setProxyHost("123.com");
@@ -412,9 +409,9 @@ public class ServiceClientTest {
         client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
         httpHost = client.getProxyHttpHost();
         credProvider = client.getCredentialsProvider();
-        assertEquals("123.com", httpHost.getHostName());
-        assertEquals(1234, httpHost.getPort());
-        assertEquals(null, credProvider);
+        Assertions.assertEquals("123.com", httpHost.getHostName());
+        Assertions.assertEquals(1234, httpHost.getPort());
+        Assertions.assertEquals(null, credProvider);
 
         config = new ClientConfiguration();
         config.setProxyHost("123.com");
@@ -425,10 +422,10 @@ public class ServiceClientTest {
         httpHost = client.getProxyHttpHost();
         credProvider = client.getCredentialsProvider();
         Credentials cred = credProvider.getCredentials(new AuthScope(config.getProxyHost(), config.getProxyPort()));
-        assertEquals("123.com", httpHost.getHostName());
-        assertEquals(1234, httpHost.getPort());
-        assertEquals("user", cred.getUserPrincipal().getName());
-        assertEquals("pw", cred.getPassword());
+        Assertions.assertEquals("123.com", httpHost.getHostName());
+        Assertions.assertEquals(1234, httpHost.getPort());
+        Assertions.assertEquals("user", cred.getUserPrincipal().getName());
+        Assertions.assertEquals("pw", cred.getPassword());
 
         System.setProperty("http.proxyHost", "test.com");
         System.setProperty("http.proxyPort", "789");
@@ -440,8 +437,8 @@ public class ServiceClientTest {
         client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
         httpHost = client.getProxyHttpHost();
         credProvider = client.getCredentialsProvider();
-        assertEquals(null, httpHost);
-        assertEquals(null, credProvider);
+        Assertions.assertEquals(null, httpHost);
+        Assertions.assertEquals(null, credProvider);
 
         config = new ClientConfiguration();
         config.setProxyHost("123.com");
@@ -449,9 +446,9 @@ public class ServiceClientTest {
         client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
         httpHost = client.getProxyHttpHost();
         credProvider = client.getCredentialsProvider();
-        assertEquals("123.com", httpHost.getHostName());
-        assertEquals(1234, httpHost.getPort());
-        assertEquals(null, credProvider);
+        Assertions.assertEquals("123.com", httpHost.getHostName());
+        Assertions.assertEquals(1234, httpHost.getPort());
+        Assertions.assertEquals(null, credProvider);
 
         config = new ClientConfiguration();
         config.setProxyHost("123.com");
@@ -460,9 +457,9 @@ public class ServiceClientTest {
         client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
         httpHost = client.getProxyHttpHost();
         credProvider = client.getCredentialsProvider();
-        assertEquals("123.com", httpHost.getHostName());
-        assertEquals(1234, httpHost.getPort());
-        assertEquals(null, credProvider);
+        Assertions.assertEquals("123.com", httpHost.getHostName());
+        Assertions.assertEquals(1234, httpHost.getPort());
+        Assertions.assertEquals(null, credProvider);
 
         config = new ClientConfiguration();
         config.setProxyHost("123.com");
@@ -473,10 +470,10 @@ public class ServiceClientTest {
         httpHost = client.getProxyHttpHost();
         credProvider = client.getCredentialsProvider();
         cred = credProvider.getCredentials(new AuthScope(config.getProxyHost(), config.getProxyPort()));
-        assertEquals("123.com", httpHost.getHostName());
-        assertEquals(1234, httpHost.getPort());
-        assertEquals("user", cred.getUserPrincipal().getName());
-        assertEquals("pw", cred.getPassword());
+        Assertions.assertEquals("123.com", httpHost.getHostName());
+        Assertions.assertEquals(1234, httpHost.getPort());
+        Assertions.assertEquals("user", cred.getUserPrincipal().getName());
+        Assertions.assertEquals("pw", cred.getPassword());
 
         //use SystemValue with setting from config
         config = new ClientConfiguration();
@@ -486,10 +483,10 @@ public class ServiceClientTest {
         httpHost = client.getProxyHttpHost();
         credProvider = client.getCredentialsProvider();
         cred = credProvider.getCredentials(new AuthScope(config.getProxyHost(), config.getProxyPort()));
-        assertEquals("test.com", httpHost.getHostName());
-        assertEquals(789, httpHost.getPort());
-        assertEquals("root", cred.getUserPrincipal().getName());
-        assertEquals("admin", cred.getPassword());
+        Assertions.assertEquals("test.com", httpHost.getHostName());
+        Assertions.assertEquals(789, httpHost.getPort());
+        Assertions.assertEquals("root", cred.getUserPrincipal().getName());
+        Assertions.assertEquals("admin", cred.getPassword());
 
         config = new ClientConfiguration();
         config.setUseSystemPropertyValues(true);
@@ -499,10 +496,10 @@ public class ServiceClientTest {
         httpHost = client.getProxyHttpHost();
         credProvider = client.getCredentialsProvider();
         cred = credProvider.getCredentials(new AuthScope(config.getProxyHost(), config.getProxyPort()));
-        assertEquals("123.com", httpHost.getHostName());
-        assertEquals(1234, httpHost.getPort());
-        assertEquals("root", cred.getUserPrincipal().getName());
-        assertEquals("admin", cred.getPassword());
+        Assertions.assertEquals("123.com", httpHost.getHostName());
+        Assertions.assertEquals(1234, httpHost.getPort());
+        Assertions.assertEquals("root", cred.getUserPrincipal().getName());
+        Assertions.assertEquals("admin", cred.getPassword());
 
         config = new ClientConfiguration();
         config.setUseSystemPropertyValues(true);
@@ -513,10 +510,10 @@ public class ServiceClientTest {
         httpHost = client.getProxyHttpHost();
         credProvider = client.getCredentialsProvider();
         cred = credProvider.getCredentials(new AuthScope(config.getProxyHost(), config.getProxyPort()));
-        assertEquals("123.com", httpHost.getHostName());
-        assertEquals(1234, httpHost.getPort());
-        assertEquals("user", cred.getUserPrincipal().getName());
-        assertEquals("admin", cred.getPassword());
+        Assertions.assertEquals("123.com", httpHost.getHostName());
+        Assertions.assertEquals(1234, httpHost.getPort());
+        Assertions.assertEquals("user", cred.getUserPrincipal().getName());
+        Assertions.assertEquals("admin", cred.getPassword());
 
         config = new ClientConfiguration();
         config.setUseSystemPropertyValues(true);
@@ -528,10 +525,10 @@ public class ServiceClientTest {
         httpHost = client.getProxyHttpHost();
         credProvider = client.getCredentialsProvider();
         cred = credProvider.getCredentials(new AuthScope(config.getProxyHost(), config.getProxyPort()));
-        assertEquals("123.com", httpHost.getHostName());
-        assertEquals(1234, httpHost.getPort());
-        assertEquals("user", cred.getUserPrincipal().getName());
-        assertEquals("pw", cred.getPassword());
+        Assertions.assertEquals("123.com", httpHost.getHostName());
+        Assertions.assertEquals(1234, httpHost.getPort());
+        Assertions.assertEquals("user", cred.getUserPrincipal().getName());
+        Assertions.assertEquals("pw", cred.getPassword());
 
         //use SystemValue without setting from config
         config = new ClientConfiguration();
@@ -540,10 +537,10 @@ public class ServiceClientTest {
         httpHost = client.getProxyHttpHost();
         credProvider = client.getCredentialsProvider();
         cred = credProvider.getCredentials(new AuthScope(config.getProxyHost(), config.getProxyPort()));
-        assertEquals("test.com", httpHost.getHostName());
-        assertEquals(789, httpHost.getPort());
-        assertEquals("root", cred.getUserPrincipal().getName());
-        assertEquals("admin", cred.getPassword());
+        Assertions.assertEquals("test.com", httpHost.getHostName());
+        Assertions.assertEquals(789, httpHost.getPort());
+        Assertions.assertEquals("root", cred.getUserPrincipal().getName());
+        Assertions.assertEquals("admin", cred.getPassword());
 
         System.setProperty("http.proxyPort", "adb");
         config = new ClientConfiguration();
@@ -552,8 +549,8 @@ public class ServiceClientTest {
         client = new ServiceClientImpl(config, 3,  exceptionToThrown, 400, "");
         httpHost = client.getProxyHttpHost();
         credProvider = client.getCredentialsProvider();
-        assertEquals(null, httpHost);
-        assertEquals(null, credProvider);
+        Assertions.assertEquals(null, httpHost);
+        Assertions.assertEquals(null, credProvider);
 
 
         System.clearProperty("http.proxyHost");

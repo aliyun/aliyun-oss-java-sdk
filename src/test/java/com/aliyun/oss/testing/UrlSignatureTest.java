@@ -28,7 +28,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Ignore;
 
@@ -83,7 +83,7 @@ public class UrlSignatureTest {
                 
                 expectedETag = BinaryUtil.encodeMD5(outputStream.toByteArray());
             } catch (IOException e) {
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             } finally {
                 IOUtils.safeClose(outputStream);
                 IOUtils.safeClose(object.getObjectContent());
@@ -92,9 +92,9 @@ public class UrlSignatureTest {
             ObjectMetadata metadata = client.getObjectMetadata(bucketName, key);
             String actualETag = metadata.getETag();
             
-            Assert.assertEquals(expectedETag, actualETag);
+            Assertions.assertEquals(expectedETag, actualETag);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -121,9 +121,9 @@ public class UrlSignatureTest {
             byte[] binaryData = IOUtils.readStreamAsByteArray(fin);
             String expectedETag = BinaryUtil.encodeMD5(binaryData);
             String actualETag = result.getETag();
-            Assert.assertEquals(expectedETag, actualETag);
+            Assertions.assertEquals(expectedETag, actualETag);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } 
     }
 }

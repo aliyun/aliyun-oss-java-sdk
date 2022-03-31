@@ -25,7 +25,7 @@ import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectRequest;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -43,13 +43,13 @@ public class GetObjectMetadataTest extends TestBase {
         ossClient.putObject(request);
 
         ObjectMetadata metaResult = ossClient.getObjectMetadata(bucketName, objectName);
-        Assert.assertEquals(3, metaResult.getContentLength());
-        Assert.assertNotNull(metaResult.getContentMD5());
-        Assert.assertNotNull(metaResult.getETag());
-        Assert.assertNotNull(metaResult.getObjectStorageClass());
-        Assert.assertNotNull(metaResult.getLastModified());
-        Assert.assertNotNull(metaResult.getRequestId());
-        Assert.assertEquals("my-value", metaResult.getUserMetadata().get("my-key"));
+        Assertions.assertEquals(3, metaResult.getContentLength());
+        Assertions.assertNotNull(metaResult.getContentMD5());
+        Assertions.assertNotNull(metaResult.getETag());
+        Assertions.assertNotNull(metaResult.getObjectStorageClass());
+        Assertions.assertNotNull(metaResult.getLastModified());
+        Assertions.assertNotNull(metaResult.getRequestId());
+        Assertions.assertEquals("my-value", metaResult.getUserMetadata().get("my-key"));
     }
 
     @Test
@@ -62,13 +62,13 @@ public class GetObjectMetadataTest extends TestBase {
         try {
             ossClient.getObjectMetadata(bucketName + "non-exist", objectName);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
         }
 
         try {
             ossClient.getObjectMetadata(bucketName, objectName + "non-exist");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
         }
 
         // Forbidden
@@ -76,9 +76,9 @@ public class GetObjectMetadataTest extends TestBase {
                 TestConfig.OSS_TEST_ACCESS_KEY_SECRET + " ");
         try {
             client.getObjectMetadata(bucketName, objectName + "non-exist");
-            junit.framework.Assert.fail("Get simplified object meta should not be successful");
+            Assertions.fail("Get simplified object meta should not be successful");
         } catch (OSSException ex) {
-            junit.framework.Assert.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, ex.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, ex.getErrorCode());
         } finally {
             client.shutdown();
         }

@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 import com.aliyun.oss.model.AppendObjectRequest;
@@ -62,24 +62,24 @@ public class ObjectTaggingTest extends TestBase {
             ossClient.setObjectTagging(bucketName, key, tags);
 
             TagSet tagSet = ossClient.getObjectTagging(bucketName, key);
-            Assert.assertEquals(tagSet.getAllTags().size(), 2);
+            Assertions.assertEquals(tagSet.getAllTags().size(), 2);
 
             ossClient.deleteObjectTagging(bucketName, key);
             tagSet = ossClient.getObjectTagging(bucketName, key);
-            Assert.assertEquals(tagSet.getAllTags().size(), 0);
+            Assertions.assertEquals(tagSet.getAllTags().size(), 0);
 
             tagSet = new TagSet();
             tagSet.setTag("tag1", "balabala");
             SetObjectTaggingRequest request = new SetObjectTaggingRequest(bucketName, key)
                     .withTagSet(tagSet);
-            Assert.assertEquals("balabala", request.getTag("tag1"));
+            Assertions.assertEquals("balabala", request.getTag("tag1"));
             ossClient.setObjectTagging(request);
             tagSet = ossClient.getObjectTagging(bucketName, key);
-            Assert.assertEquals(tagSet.getAllTags().size(), 1);
+            Assertions.assertEquals(tagSet.getAllTags().size(), 1);
 
             ossClient.deleteObjectTagging(bucketName, key);
             tagSet = ossClient.getObjectTagging(bucketName, key);
-            Assert.assertEquals(tagSet.getAllTags().size(), 0);
+            Assertions.assertEquals(tagSet.getAllTags().size(), 0);
 
             tagSet = new TagSet();
             tagSet.setTag("tag1", "balabala");
@@ -87,11 +87,11 @@ public class ObjectTaggingTest extends TestBase {
             //request = new SetObjectTaggingRequest(bucketName, key, tagSet);
             ossClient.setObjectTagging(bucketName, key, tagSet);
             tagSet = ossClient.getObjectTagging(bucketName, key);
-            Assert.assertEquals(tagSet.getAllTags().size(), 2);
+            Assertions.assertEquals(tagSet.getAllTags().size(), 2);
             ossClient.deleteObject(bucketName, key);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -111,12 +111,12 @@ public class ObjectTaggingTest extends TestBase {
             ossClient.putObject(bucketName, key, instream, metadata);
 
             TagSet tagSet = ossClient.getObjectTagging(bucketName, key);
-            Assert.assertEquals(tagSet.getAllTags().size(), 2);
+            Assertions.assertEquals(tagSet.getAllTags().size(), 2);
 
             ossClient.deleteObject(bucketName, key);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -138,12 +138,12 @@ public class ObjectTaggingTest extends TestBase {
             ossClient.appendObject(appendObjectRequest);
 
             TagSet tagSet = ossClient.getObjectTagging(bucketName, key);
-            Assert.assertEquals(tagSet.getAllTags().size(), 2);
+            Assertions.assertEquals(tagSet.getAllTags().size(), 2);
 
             ossClient.deleteObject(bucketName, key);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -175,12 +175,12 @@ public class ObjectTaggingTest extends TestBase {
             ossClient.completeMultipartUpload(completeRequest);
 
             TagSet tagSet = ossClient.getObjectTagging(bucketName, key);
-            Assert.assertEquals(tagSet.getAllTags().size(), 2);
+            Assertions.assertEquals(tagSet.getAllTags().size(), 2);
 
             ossClient.deleteObject(bucketName, key);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -204,12 +204,12 @@ public class ObjectTaggingTest extends TestBase {
             ossClient.copyObject(copyObjectRequest);
 
             TagSet tagSet = ossClient.getObjectTagging(bucketName, key);
-            Assert.assertEquals(tagSet.getAllTags().size(), 2);
+            Assertions.assertEquals(tagSet.getAllTags().size(), 2);
 
             ossClient.deleteObject(bucketName, key);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -233,12 +233,12 @@ public class ObjectTaggingTest extends TestBase {
             ossClient.createSymlink(createSymlinkRequest);
 
             TagSet tagSet = ossClient.getObjectTagging(bucketName, key);
-            Assert.assertEquals(tagSet.getAllTags().size(), 2);
+            Assertions.assertEquals(tagSet.getAllTags().size(), 2);
 
             ossClient.deleteObject(bucketName, key);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -262,13 +262,13 @@ public class ObjectTaggingTest extends TestBase {
             ossClient.uploadFile(uploadFileRequest);
 
             TagSet tagSet = ossClient.getObjectTagging(bucketName, key);
-            Assert.assertEquals(tagSet.getAllTags().size(), 2);
+            Assertions.assertEquals(tagSet.getAllTags().size(), 2);
 
             file.delete();
             ossClient.deleteObject(bucketName, key);
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 

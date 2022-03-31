@@ -25,7 +25,7 @@ import com.aliyun.oss.model.ExtendBucketWormRequest;
 import com.aliyun.oss.model.GetBucketWormResult;
 import com.aliyun.oss.model.InitiateBucketWormRequest;
 import com.aliyun.oss.model.InitiateBucketWormResult;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 
@@ -44,26 +44,26 @@ public class BucketWormTest extends TestBase {
             String wormId = initiateBucketWormResult.getWormId();
 
             GetBucketWormResult getBucketWormResult = ossClient.getBucketWorm(bucketName);
-            Assert.assertEquals(wormId, getBucketWormResult.getWormId());
-            Assert.assertEquals("InProgress", getBucketWormResult.getWormState());
-            Assert.assertEquals(1, getBucketWormResult.getRetentionPeriodInDays());
-            Assert.assertNotNull(getBucketWormResult.getCreationDate());
+            Assertions.assertEquals(wormId, getBucketWormResult.getWormId());
+            Assertions.assertEquals("InProgress", getBucketWormResult.getWormState());
+            Assertions.assertEquals(1, getBucketWormResult.getRetentionPeriodInDays());
+            Assertions.assertNotNull(getBucketWormResult.getCreationDate());
 
             ossClient.completeBucketWorm(bucketName, wormId);
             getBucketWormResult = ossClient.getBucketWorm(bucketName);
-            Assert.assertEquals(wormId, getBucketWormResult.getWormId());
-            Assert.assertEquals("Locked", getBucketWormResult.getWormState());
-            Assert.assertEquals(1, getBucketWormResult.getRetentionPeriodInDays());
-            Assert.assertNotNull(getBucketWormResult.getCreationDate());
+            Assertions.assertEquals(wormId, getBucketWormResult.getWormId());
+            Assertions.assertEquals("Locked", getBucketWormResult.getWormState());
+            Assertions.assertEquals(1, getBucketWormResult.getRetentionPeriodInDays());
+            Assertions.assertNotNull(getBucketWormResult.getCreationDate());
 
             ossClient.extendBucketWorm(bucketName, wormId, 2);
             getBucketWormResult = ossClient.getBucketWorm(bucketName);
-            Assert.assertEquals(wormId, getBucketWormResult.getWormId());
-            Assert.assertEquals("Locked", getBucketWormResult.getWormState());
-            Assert.assertEquals(2, getBucketWormResult.getRetentionPeriodInDays());
-            Assert.assertNotNull(getBucketWormResult.getCreationDate());
+            Assertions.assertEquals(wormId, getBucketWormResult.getWormId());
+            Assertions.assertEquals("Locked", getBucketWormResult.getWormState());
+            Assertions.assertEquals(2, getBucketWormResult.getRetentionPeriodInDays());
+            Assertions.assertNotNull(getBucketWormResult.getCreationDate());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -80,7 +80,7 @@ public class BucketWormTest extends TestBase {
             ossClient.initiateBucketWorm(initiateBucketWormRequest);
             ossClient.abortBucketWorm(bucketName);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
@@ -89,7 +89,7 @@ public class BucketWormTest extends TestBase {
             ossClient.completeBucketWorm(bucketName, result.getWormId());
             ossClient.abortBucketWorm(bucketName);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.WORM_CONFIGURATION_LOCKED, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.WORM_CONFIGURATION_LOCKED, e.getErrorCode());
         }
         ossClient.deleteBucket(bucketName);
     }
@@ -110,7 +110,7 @@ public class BucketWormTest extends TestBase {
                     .withWormId(result.getWormId());
             ossClient.extendBucketWorm(extendBucketWormRequest);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.INVALID_WORM_CONFIGURATION, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.INVALID_WORM_CONFIGURATION, e.getErrorCode());
         }
 
         ossClient.deleteBucket(bucketName);

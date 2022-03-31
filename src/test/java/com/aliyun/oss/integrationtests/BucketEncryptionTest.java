@@ -26,7 +26,7 @@ import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.internal.OSSHeaders;
 import com.aliyun.oss.model.*;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 
@@ -83,23 +83,23 @@ public class BucketEncryptionTest extends TestBase {
 
             // get
             ServerSideEncryptionConfiguration getConfiguration = ossClient.getBucketEncryption(bucketName);
-            Assert.assertEquals(algorithm.toString(),
+            Assertions.assertEquals(algorithm.toString(),
                     getConfiguration.getApplyServerSideEncryptionByDefault().getSSEAlgorithm());
-            Assert.assertNull(getConfiguration.getApplyServerSideEncryptionByDefault().getKMSMasterKeyID());
-            Assert.assertEquals(dataEncryptionAlgorithm,
+            Assertions.assertNull(getConfiguration.getApplyServerSideEncryptionByDefault().getKMSMasterKeyID());
+            Assertions.assertEquals(dataEncryptionAlgorithm,
                 DataEncryptionAlgorithm.fromString(getConfiguration.getApplyServerSideEncryptionByDefault().getKMSDataEncryption()));
             String fileName = TestUtils.genFixedLengthFile(1024);
             String objectName = "encryption-" + TestUtils.genRandomString(10);
             ossClient.putObject(bucketName, objectName, new File(fileName));
 
             Map<String, String> headers = ossClient.getObject(bucketName, objectName).getResponse().getHeaders();
-            Assert.assertEquals(algorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION));
+            Assertions.assertEquals(algorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION));
             if (algorithm == SSEAlgorithm.KMS && dataEncryptionAlgorithm != null) {
-                Assert.assertEquals(dataEncryptionAlgorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
+                Assertions.assertEquals(dataEncryptionAlgorithm.toString(), headers.get(OSSHeaders.OSS_SERVER_SIDE_DATA_ENCRYPTION));
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -132,12 +132,12 @@ public class BucketEncryptionTest extends TestBase {
 
             // get
             ServerSideEncryptionConfiguration getConfiguration = ossClient.getBucketEncryption(bucketName);
-            Assert.assertEquals(algorithm.toString(),
+            Assertions.assertEquals(algorithm.toString(),
                     getConfiguration.getApplyServerSideEncryptionByDefault().getSSEAlgorithm());
             if (algorithm == SSEAlgorithm.KMS)
-                Assert.assertEquals("test-kms-master-key-id",
+                Assertions.assertEquals("test-kms-master-key-id",
                         getConfiguration.getApplyServerSideEncryptionByDefault().getKMSMasterKeyID());
-            Assert.assertEquals(dataEncryptionAlgorithm,
+            Assertions.assertEquals(dataEncryptionAlgorithm,
                 DataEncryptionAlgorithm.fromString(getConfiguration.getApplyServerSideEncryptionByDefault().getKMSDataEncryption()));
             // delete
             ossClient.deleteBucketEncryption(bucketName);
@@ -147,11 +147,11 @@ public class BucketEncryptionTest extends TestBase {
             try {
                 ossClient.getBucketEncryption(bucketName);
             } catch (OSSException e) {
-                Assert.assertEquals("NoSuchServerSideEncryptionRule", e.getErrorCode());
+                Assertions.assertEquals("NoSuchServerSideEncryptionRule", e.getErrorCode());
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -180,12 +180,12 @@ public class BucketEncryptionTest extends TestBase {
 
             // get
             BucketInfo bucketInfo = ossClient.getBucketInfo(bucketName);
-            Assert.assertEquals(algorithm.toString(), bucketInfo.getServerSideEncryptionConfiguration()
+            Assertions.assertEquals(algorithm.toString(), bucketInfo.getServerSideEncryptionConfiguration()
                     .getApplyServerSideEncryptionByDefault().getSSEAlgorithm());
             if (algorithm != SSEAlgorithm.KMS)
-                Assert.assertNull(bucketInfo.getServerSideEncryptionConfiguration()
+                Assertions.assertNull(bucketInfo.getServerSideEncryptionConfiguration()
                     .getApplyServerSideEncryptionByDefault().getKMSMasterKeyID());
-            Assert.assertEquals(dataEncryptionAlgorithm,
+            Assertions.assertEquals(dataEncryptionAlgorithm,
                     DataEncryptionAlgorithm.fromString(bucketInfo.getServerSideEncryptionConfiguration()
                             .getApplyServerSideEncryptionByDefault().getKMSDataEncryption()));
 
@@ -204,9 +204,9 @@ public class BucketEncryptionTest extends TestBase {
 
             // get
             bucketInfo = ossClient.getBucketInfo(bucketName);
-            Assert.assertEquals(SSEAlgorithm.KMS.toString(), bucketInfo.getServerSideEncryptionConfiguration()
+            Assertions.assertEquals(SSEAlgorithm.KMS.toString(), bucketInfo.getServerSideEncryptionConfiguration()
                     .getApplyServerSideEncryptionByDefault().getSSEAlgorithm());
-            Assert.assertEquals("test-kms-master-key-id", bucketInfo.getServerSideEncryptionConfiguration()
+            Assertions.assertEquals("test-kms-master-key-id", bucketInfo.getServerSideEncryptionConfiguration()
                     .getApplyServerSideEncryptionByDefault().getKMSMasterKeyID());
 
             // delete
@@ -215,11 +215,11 @@ public class BucketEncryptionTest extends TestBase {
 
             // get
             bucketInfo = ossClient.getBucketInfo(bucketName);
-            Assert.assertEquals("None", bucketInfo.getServerSideEncryptionConfiguration()
+            Assertions.assertEquals("None", bucketInfo.getServerSideEncryptionConfiguration()
                     .getApplyServerSideEncryptionByDefault().getSSEAlgorithm());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 

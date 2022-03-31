@@ -21,7 +21,7 @@ package com.aliyun.oss.testing;
 
 import java.util.Date;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Ignore;
 import com.aliyun.oss.OSS;
@@ -54,18 +54,18 @@ public class PostPolicyTest {
 
             String actualPostPolicy = client.generatePostPolicy(expiration, policyConds);
             String expectedPostPolicy = "{\"expiration\":\"2015-03-19T03:44:06.476Z\",\"conditions\":[{\"bucket\":\"oss-test2\"},[\"eq\",\"$key\",\"user/eric/\\${filename}\"],[\"starts-with\",\"$key\",\"user/eric\"],[\"starts-with\",\"$x-oss-meta-tag\",\"dummy_etag\"],[\"content-length-range\",1,1024]]}";
-            Assert.assertEquals(expectedPostPolicy, actualPostPolicy);
+            Assertions.assertEquals(expectedPostPolicy, actualPostPolicy);
             
             byte[] binaryData = actualPostPolicy.getBytes("utf-8");
             String actualEncodedPolicy = BinaryUtil.toBase64String(binaryData);
             String expectedEncodedPolicy = "eyJleHBpcmF0aW9uIjoiMjAxNS0wMy0xOVQwMzo0NDowNi40NzZaIiwiY29uZGl0aW9ucyI6W3siYnVja2V0Ijoib3NzLXRlc3QyIn0sWyJlcSIsIiRrZXkiLCJ1c2VyL2VyaWMvXCR7ZmlsZW5hbWV9Il0sWyJzdGFydHMtd2l0aCIsIiRrZXkiLCJ1c2VyL2VyaWMiXSxbInN0YXJ0cy13aXRoIiwiJHgtb3NzLW1ldGEtdGFnIiwiZHVtbXlfZXRhZyJdLFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLDEsMTAyNF1dfQ==";
-            Assert.assertEquals(expectedEncodedPolicy, actualEncodedPolicy);
+            Assertions.assertEquals(expectedEncodedPolicy, actualEncodedPolicy);
             
             String actualPostSignature = client.calculatePostSignature(actualPostPolicy);
             String expectedPostSignature = "+fOC13qQyIUqF+T/mSA/So2qEBw=";
-            Assert.assertEquals(expectedPostSignature, actualPostSignature);
+            Assertions.assertEquals(expectedPostSignature, actualPostSignature);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 

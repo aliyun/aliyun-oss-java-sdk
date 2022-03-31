@@ -25,7 +25,7 @@ import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_BUCKET_ERR;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 
@@ -41,17 +41,17 @@ public class DeleteObjectTest extends TestBase {
         existingKeys.add(existingKey);
         
         if (!batchPutObject(ossClient, bucketName, existingKeys)) {
-            Assert.fail("batch put object failed");
+            Assertions.fail("batch put object failed");
         }
         
         // Delete existing object
         try {
             ossClient.deleteObject(bucketName, existingKey);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
-        Assert.assertFalse(ossClient.doesObjectExist(bucketName, existingKey));
+        Assertions.assertFalse(ossClient.doesObjectExist(bucketName, existingKey));
     }
     
     @Test
@@ -61,7 +61,7 @@ public class DeleteObjectTest extends TestBase {
         try {
             ossClient.deleteObject(bucketName, nonexistentKey);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -73,8 +73,8 @@ public class DeleteObjectTest extends TestBase {
         try {
             ossClient.deleteObject(nonexistentBucketName, nonexistentKey);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         }
     }
 }

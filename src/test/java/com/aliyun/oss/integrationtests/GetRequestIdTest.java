@@ -26,7 +26,7 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 
@@ -63,17 +63,17 @@ public class GetRequestIdTest extends TestBase {
             // put object
             PutObjectResult putObjectResult = ossClient.putObject(bucketName, key, 
                     genFixedLengthInputStream(inputStreamLength));
-            Assert.assertEquals(putObjectResult.getRequestId().length(), requestIdLength);
+            Assertions.assertEquals(putObjectResult.getRequestId().length(), requestIdLength);
             
             // get object
             OSSObject ossObject = ossClient.getObject(bucketName, key);
             ossObject.getObjectContent().close();
-            Assert.assertEquals(ossObject.getRequestId().length(), requestIdLength);
+            Assertions.assertEquals(ossObject.getRequestId().length(), requestIdLength);
             
             File file = new File("tmp");
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             ObjectMetadata objectMeta = ossClient.getObject(getObjectRequest, file);
-            Assert.assertEquals(objectMeta.getRequestId().length(), requestIdLength);
+            Assertions.assertEquals(objectMeta.getRequestId().length(), requestIdLength);
             
             // delete object
             ossClient.deleteObject(bucketName, key);
@@ -82,15 +82,15 @@ public class GetRequestIdTest extends TestBase {
             AppendObjectRequest appendObjectRequest = new AppendObjectRequest(bucketName, key, file);
             appendObjectRequest.setPosition(0L);
             AppendObjectResult appendObjectResult = ossClient.appendObject(appendObjectRequest);
-            Assert.assertEquals(appendObjectResult.getRequestId().length(), requestIdLength);
+            Assertions.assertEquals(appendObjectResult.getRequestId().length(), requestIdLength);
 
             // getSimplifiedObjectMeta
             SimplifiedObjectMeta simplifiedObjectMeta = ossClient.getSimplifiedObjectMeta(bucketName, key);   
-            Assert.assertEquals(simplifiedObjectMeta.getRequestId().length(), requestIdLength);
+            Assertions.assertEquals(simplifiedObjectMeta.getRequestId().length(), requestIdLength);
             
             // getObjectMetadata
             ObjectMetadata objectMetadata = ossClient.getObjectMetadata(bucketName, key);
-            Assert.assertEquals(objectMetadata.getRequestId().length(), requestIdLength);
+            Assertions.assertEquals(objectMetadata.getRequestId().length(), requestIdLength);
             
             // delete objects
             DeleteObjectsRequest deleteObjectsRequest = new DeleteObjectsRequest(bucketName);
@@ -98,21 +98,21 @@ public class GetRequestIdTest extends TestBase {
             keys.add(key);
             deleteObjectsRequest.setKeys(keys);
             DeleteObjectsResult deleteObjectsResult = ossClient.deleteObjects(deleteObjectsRequest);
-            Assert.assertEquals(deleteObjectsResult.getRequestId().length(), requestIdLength);
+            Assertions.assertEquals(deleteObjectsResult.getRequestId().length(), requestIdLength);
             
             // initiate multipart upload
             InitiateMultipartUploadRequest initiateMultipartUploadRequest = 
                     new InitiateMultipartUploadRequest(bucketName, key);
             InitiateMultipartUploadResult initiateMultipartUploadResult = 
                     ossClient.initiateMultipartUpload(initiateMultipartUploadRequest);
-            Assert.assertEquals(initiateMultipartUploadResult.getRequestId().length(), requestIdLength);
+            Assertions.assertEquals(initiateMultipartUploadResult.getRequestId().length(), requestIdLength);
             
             // upload part
             UploadPartRequest uploadPartRequest = new UploadPartRequest(bucketName, key, 
                     initiateMultipartUploadResult.getUploadId(), 1, new FileInputStream(file),
                     inputStreamLength);
             UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
-            Assert.assertEquals(uploadPartResult.getRequestId().length(), requestIdLength);
+            Assertions.assertEquals(uploadPartResult.getRequestId().length(), requestIdLength);
             
             // complete multipart upload
             List<PartETag> partETags = new ArrayList<PartETag>();
@@ -122,24 +122,24 @@ public class GetRequestIdTest extends TestBase {
                             initiateMultipartUploadResult.getUploadId(), partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult = 
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-            Assert.assertEquals(completeMultipartUploadResult.getRequestId().length(), requestIdLength);
+            Assertions.assertEquals(completeMultipartUploadResult.getRequestId().length(), requestIdLength);
             
             // copy object
             CopyObjectResult CopyObjectResult = ossClient.copyObject(bucketName, key, bucketName, key);
-            Assert.assertEquals(CopyObjectResult.getRequestId().length(), requestIdLength);
+            Assertions.assertEquals(CopyObjectResult.getRequestId().length(), requestIdLength);
             
             // initiate multipart copy
             InitiateMultipartUploadRequest initiateMultipartCopyRequest = 
                     new InitiateMultipartUploadRequest(bucketName, key);
             InitiateMultipartUploadResult initiateMultipartCopyResult = 
                     ossClient.initiateMultipartUpload(initiateMultipartCopyRequest);
-            Assert.assertEquals(initiateMultipartCopyResult.getRequestId().length(), requestIdLength);
+            Assertions.assertEquals(initiateMultipartCopyResult.getRequestId().length(), requestIdLength);
             
             // upload part copy
             UploadPartCopyRequest uploadPartCopyRequest = new UploadPartCopyRequest(bucketName, key,
                     bucketName, key, initiateMultipartCopyResult.getUploadId(), 1, 0L, inputStreamLength);
             UploadPartCopyResult uploadPartCopyResult = ossClient.uploadPartCopy(uploadPartCopyRequest);
-            Assert.assertEquals(uploadPartCopyResult.getRequestId().length(), requestIdLength);
+            Assertions.assertEquals(uploadPartCopyResult.getRequestId().length(), requestIdLength);
             
             // abort multipart upload 
             AbortMultipartUploadRequest AbortMultipartUploadRequest = 
@@ -151,7 +151,7 @@ public class GetRequestIdTest extends TestBase {
             
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     

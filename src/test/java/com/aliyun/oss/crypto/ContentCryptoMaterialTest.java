@@ -19,7 +19,7 @@
 
 package com.aliyun.oss.crypto;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 import java.security.SecureRandom;
@@ -35,9 +35,9 @@ public class ContentCryptoMaterialTest {
         byte[] encryptedIV = new byte[2];
         Map<String, String> matDesc = new HashMap<String, String>();
         ContentCryptoMaterial material = new ContentCryptoMaterial(null, iv,null, encryptedCEK,encryptedIV,null, matDesc);
-        Assert.assertEquals(material.hashCode(), -196513505);
+        Assertions.assertEquals(material.hashCode(), -196513505);
 
         material = new ContentCryptoMaterial(null, iv,"", encryptedCEK,encryptedIV,"", matDesc);
-        Assert.assertEquals(material.hashCode(), -196513505);
+        Assertions.assertEquals(material.hashCode(), -196513505);
     }
 }

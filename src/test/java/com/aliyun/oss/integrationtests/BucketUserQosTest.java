@@ -19,7 +19,7 @@
 
 package com.aliyun.oss.integrationtests;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 
@@ -36,11 +36,11 @@ public class BucketUserQosTest extends TestBase {
             UserQos userQos = new UserQos();
             
             userQos = ossClient.getBucketStorageCapacity(bucketName);
-            Assert.assertEquals(userQos.getStorageCapacity(), -1);
-            Assert.assertEquals(userQos.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(userQos.getStorageCapacity(), -1);
+            Assertions.assertEquals(userQos.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -51,18 +51,18 @@ public class BucketUserQosTest extends TestBase {
             ossClient.setBucketStorageCapacity(bucketName, userQos);
             
             userQos = ossClient.getBucketStorageCapacity(bucketName);
-            Assert.assertEquals(userQos.getStorageCapacity(), -1);
-            Assert.assertEquals(userQos.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(userQos.getStorageCapacity(), -1);
+            Assertions.assertEquals(userQos.getRequestId().length(), REQUEST_ID_LEN);
             
             userQos.setStorageCapacity(10000);
             ossClient.setBucketStorageCapacity(new SetBucketStorageCapacityRequest(bucketName).withUserQos(userQos));
             
             userQos = ossClient.getBucketStorageCapacity(bucketName);
-            Assert.assertEquals(userQos.getStorageCapacity(), 10000);
-            Assert.assertEquals(userQos.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(userQos.getStorageCapacity(), 10000);
+            Assertions.assertEquals(userQos.getRequestId().length(), REQUEST_ID_LEN);
 
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -72,17 +72,17 @@ public class BucketUserQosTest extends TestBase {
         try {
             UserQos userQos = new UserQos(-2);
             ossClient.setBucketStorageCapacity(bucketName, userQos);
-            Assert.fail("Set bucket storage capacity should not be successful");
+            Assertions.fail("Set bucket storage capacity should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         }
         
         try {
             UserQos userQos = new UserQos(-3);
             ossClient.setBucketStorageCapacity(new SetBucketStorageCapacityRequest(bucketName).withUserQos(userQos));
-            Assert.fail("Set bucket storage capacity should not be successful");
+            Assertions.fail("Set bucket storage capacity should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         }
         
     }

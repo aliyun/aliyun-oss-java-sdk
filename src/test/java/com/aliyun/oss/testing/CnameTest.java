@@ -22,7 +22,7 @@ package com.aliyun.oss.testing;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Ignore;
 import com.aliyun.oss.ClientBuilderConfiguration;
@@ -37,10 +37,10 @@ public class CnameTest {
         ClientBuilderConfiguration cc = new ClientBuilderConfiguration();
         // Defalut CNAME Exclude List: [.aliyuncs.com, .aliyun-inc.com, localhost]
         List<String> currentExcludeList = cc.getCnameExcludeList();
-        Assert.assertEquals(currentExcludeList.size(), 3);
-        Assert.assertTrue(currentExcludeList.contains(".aliyuncs.com"));
-        Assert.assertTrue(currentExcludeList.contains(".aliyun-inc.com"));
-        Assert.assertTrue(currentExcludeList.contains("localhost"));
+        Assertions.assertEquals(currentExcludeList.size(), 3);
+        Assertions.assertTrue(currentExcludeList.contains(".aliyuncs.com"));
+        Assertions.assertTrue(currentExcludeList.contains(".aliyun-inc.com"));
+        Assertions.assertTrue(currentExcludeList.contains("localhost"));
         
         List<String> cnameExcludeList = new ArrayList<String>();
         String excludeItem = "http://oss-cn-hangzhou.aliyuncs.gd";
@@ -48,11 +48,11 @@ public class CnameTest {
         cnameExcludeList.add(excludeItem);
         cc.setCnameExcludeList(cnameExcludeList);
         currentExcludeList = cc.getCnameExcludeList();
-        Assert.assertEquals(currentExcludeList.size(), 4);
-        Assert.assertTrue(currentExcludeList.contains(excludeItem));
-        Assert.assertTrue(currentExcludeList.contains(".aliyuncs.com"));
-        Assert.assertTrue(currentExcludeList.contains(".aliyun-inc.com"));
-        Assert.assertTrue(currentExcludeList.contains("localhost"));
+        Assertions.assertEquals(currentExcludeList.size(), 4);
+        Assertions.assertTrue(currentExcludeList.contains(excludeItem));
+        Assertions.assertTrue(currentExcludeList.contains(".aliyuncs.com"));
+        Assertions.assertTrue(currentExcludeList.contains(".aliyun-inc.com"));
+        Assertions.assertTrue(currentExcludeList.contains("localhost"));
         
         OSS client = new OSSClientBuilder().build("<input your customized host name>", 
                 "<input your access id>", "<input your access key>", cc);

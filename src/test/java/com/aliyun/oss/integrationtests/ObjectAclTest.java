@@ -36,7 +36,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 
@@ -81,23 +81,23 @@ public class ObjectAclTest extends TestBase {
                 ossClient.setObjectAcl(bucketName, key, acl);
 
                 ObjectAcl returnedAcl = ossClient.getObjectAcl(bucketName, key);
-                Assert.assertEquals(acl.toString(), returnedAcl.getPermission().toString());
-                Assert.assertEquals(returnedAcl.getRequestId().length(), REQUEST_ID_LEN);
-                Assert.assertNotNull(returnedAcl.toString());
+                Assertions.assertEquals(acl.toString(), returnedAcl.getPermission().toString());
+                Assertions.assertEquals(returnedAcl.getRequestId().length(), REQUEST_ID_LEN);
+                Assertions.assertNotNull(returnedAcl.toString());
 
                 OSSObject object = ossClient.getObject(bucketName, key);
-                Assert.assertEquals(inputStreamLength, object.getObjectMetadata().getContentLength());
-                Assert.assertEquals(object.getRequestId().length(), REQUEST_ID_LEN);
+                Assertions.assertEquals(inputStreamLength, object.getObjectMetadata().getContentLength());
+                Assertions.assertEquals(object.getRequestId().length(), REQUEST_ID_LEN);
                 object.getObjectContent().close();
             }
 
             // Set to default acl again
             ossClient.setObjectAcl(bucketName, key, CannedAccessControlList.Default);
             ObjectAcl returnedAcl = ossClient.getObjectAcl(bucketName, key);
-            Assert.assertEquals(ObjectPermission.Default, returnedAcl.getPermission());
-            Assert.assertEquals(returnedAcl.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(ObjectPermission.Default, returnedAcl.getPermission());
+            Assertions.assertEquals(returnedAcl.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -111,23 +111,23 @@ public class ObjectAclTest extends TestBase {
                         .withCannedACL(CannedAccessControlList.Default);
                 request.setCannedACL(CannedAccessControlList.Private);
                 ossClient.setObjectAcl(request);
-                Assert.fail("Set object acl should not be successful");
+                Assertions.fail("Set object acl should not be successful");
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_KEY_ERR));
+                Assertions.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
+                Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_KEY_ERR));
             }
 
             // Set unknown permission
             final String unknownPermission = "UnknownPermission";
             try {
                 ObjectPermission permission = ObjectPermission.parsePermission(unknownPermission);
-                Assert.assertEquals(ObjectPermission.Unknown, permission);
+                Assertions.assertEquals(ObjectPermission.Unknown, permission);
             } catch (Exception e) {
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             }
 
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -137,10 +137,10 @@ public class ObjectAclTest extends TestBase {
         final String nonexistentObject = "unormal-get-object-acl";
         try {
             ossClient.getObjectAcl(bucketName, nonexistentObject);
-            Assert.fail("Get object acl should not be successful");
+            Assertions.fail("Get object acl should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_KEY_ERR));
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_KEY_ERR));
         }
 
         // Get object using default acl
@@ -150,9 +150,9 @@ public class ObjectAclTest extends TestBase {
             InputStream instream = genFixedLengthInputStream(inputStreamLength);
             ossClient.putObject(bucketName, objectUsingDefaultAcl, instream);
             ObjectAcl returnedACL = ossClient.getObjectAcl(bucketName, objectUsingDefaultAcl);
-            Assert.assertEquals(ObjectPermission.Default, returnedACL.getPermission());
+            Assertions.assertEquals(ObjectPermission.Default, returnedACL.getPermission());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -167,16 +167,16 @@ public class ObjectAclTest extends TestBase {
             metadata.setObjectAcl(CannedAccessControlList.PublicRead);
             ossClient.putObject(bucketName, key, instream, metadata);
             OSSObject o = ossClient.getObject(bucketName, key);
-            Assert.assertEquals(key, o.getKey());
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(key, o.getKey());
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
 
             // Verify uploaded objects acl
             ObjectAcl returnedACL = ossClient.getObjectAcl(bucketName, key);
-            Assert.assertEquals(ObjectPermission.PublicRead, returnedACL.getPermission());
-            Assert.assertEquals(returnedACL.getRequestId().length(), REQUEST_ID_LEN);
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(ObjectPermission.PublicRead, returnedACL.getPermission());
+            Assertions.assertEquals(returnedACL.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -194,12 +194,12 @@ public class ObjectAclTest extends TestBase {
             appendObjectRequest.setPosition(0L);
             AppendObjectResult appendObjectResult = ossClient.appendObject(appendObjectRequest);
             OSSObject o = ossClient.getObject(bucketName, key);
-            Assert.assertEquals(key, o.getKey());
-            Assert.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
-            Assert.assertEquals(APPENDABLE_OBJECT_TYPE, o.getObjectMetadata().getObjectType());
+            Assertions.assertEquals(key, o.getKey());
+            Assertions.assertEquals(inputStreamLength, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(APPENDABLE_OBJECT_TYPE, o.getObjectMetadata().getObjectType());
             if (appendObjectResult.getNextPosition() != null) {
-                Assert.assertEquals(inputStreamLength, appendObjectResult.getNextPosition().longValue());
+                Assertions.assertEquals(inputStreamLength, appendObjectResult.getNextPosition().longValue());
             }
 
             // Append at twice
@@ -208,19 +208,19 @@ public class ObjectAclTest extends TestBase {
             appendObjectRequest.setPosition(appendObjectResult.getNextPosition());
             appendObjectResult = ossClient.appendObject(appendObjectRequest);
             o = ossClient.getObject(bucketName, key);
-            Assert.assertEquals(inputStreamLength * 2, o.getObjectMetadata().getContentLength());
-            Assert.assertEquals(APPENDABLE_OBJECT_TYPE, o.getObjectMetadata().getObjectType());
+            Assertions.assertEquals(inputStreamLength * 2, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(APPENDABLE_OBJECT_TYPE, o.getObjectMetadata().getObjectType());
             if (appendObjectResult.getNextPosition() != null) {
-                Assert.assertEquals(inputStreamLength * 2, appendObjectResult.getNextPosition().longValue());
+                Assertions.assertEquals(inputStreamLength * 2, appendObjectResult.getNextPosition().longValue());
             }
 
             // Verify uploaded objects acl
             ObjectAcl returnedACL = ossClient.getObjectAcl(bucketName, key);
-            Assert.assertEquals(ObjectPermission.PublicReadWrite, returnedACL.getPermission());
-            Assert.assertEquals(returnedACL.getRequestId().length(), REQUEST_ID_LEN);
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(ObjectPermission.PublicReadWrite, returnedACL.getPermission());
+            Assertions.assertEquals(returnedACL.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -260,21 +260,21 @@ public class ObjectAclTest extends TestBase {
             CopyObjectResult copyObjectResult = ossClient.copyObject(copyObjectRequest);
             String sourceETag = putObjectResult.getETag();
             String targetETag = copyObjectResult.getETag();
-            Assert.assertEquals(sourceETag, targetETag);
-            Assert.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(sourceETag, targetETag);
+            Assertions.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
 
             OSSObject ossObject = ossClient.getObject(targetBucket, targetKey);
             newObjectMetadata = ossObject.getObjectMetadata();
-            Assert.assertEquals(contentType, newObjectMetadata.getContentType());
-            Assert.assertEquals(userMetaValue1, newObjectMetadata.getUserMetadata().get(userMetaKey1));
+            Assertions.assertEquals(contentType, newObjectMetadata.getContentType());
+            Assertions.assertEquals(userMetaValue1, newObjectMetadata.getUserMetadata().get(userMetaKey1));
 
             // Verify uploaded objects acl
             ObjectAcl returnedACL = ossClient.getObjectAcl(targetBucket, targetKey);
-            Assert.assertEquals(ObjectPermission.PublicRead, returnedACL.getPermission());
-            Assert.assertEquals(returnedACL.getRequestId().length(), REQUEST_ID_LEN);
-            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(ObjectPermission.PublicRead, returnedACL.getPermission());
+            Assertions.assertEquals(returnedACL.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             waitForCacheExpiration(5);
             deleteBucketWithObjects(ossClient, sourceBucket);
@@ -304,7 +304,7 @@ public class ObjectAclTest extends TestBase {
                 uploadPartRequest.setPartSize(partSize);
                 uploadPartRequest.setUploadId(uploadId);
                 UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
-                Assert.assertEquals(uploadPartResult.getRequestId().length(), REQUEST_ID_LEN);
+                Assertions.assertEquals(uploadPartResult.getRequestId().length(), REQUEST_ID_LEN);
                 partETags.add(uploadPartResult.getPartETag());
             }
 
@@ -314,26 +314,26 @@ public class ObjectAclTest extends TestBase {
             completeMultipartUploadRequest.setObjectACL(CannedAccessControlList.PublicRead);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-            Assert.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key),
+            Assertions.assertEquals(composeLocation(ossClient, OSS_TEST_ENDPOINT, bucketName, key),
                     completeMultipartUploadResult.getLocation());
-            Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
-            Assert.assertEquals(key, completeMultipartUploadResult.getKey());
-            Assert.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
-            Assert.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
+            Assertions.assertEquals(key, completeMultipartUploadResult.getKey());
+            Assertions.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
+            Assertions.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
 
             // Get uploaded object
             OSSObject o = ossClient.getObject(bucketName, key);
             final long objectSize = partCount * partSize;
-            Assert.assertEquals(objectSize, o.getObjectMetadata().getContentLength());
-            Assert.assertEquals(calcMultipartsETag(partETags), o.getObjectMetadata().getETag());
+            Assertions.assertEquals(objectSize, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(calcMultipartsETag(partETags), o.getObjectMetadata().getETag());
 
             // Verify uploaded objects acl
             ObjectAcl returnedACL = ossClient.getObjectAcl(bucketName, key);
-            Assert.assertEquals(ObjectPermission.PublicRead, returnedACL.getPermission());
-            Assert.assertEquals(returnedACL.getRequestId().length(), REQUEST_ID_LEN);
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(ObjectPermission.PublicRead, returnedACL.getPermission());
+            Assertions.assertEquals(returnedACL.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -343,7 +343,7 @@ public class ObjectAclTest extends TestBase {
         try {
             ossClient.setObjectAcl(bucketName, dummyKey, null);
         } catch (Exception e) {
-            Assert.assertTrue(e instanceof NullPointerException);
+            Assertions.assertTrue(e instanceof NullPointerException);
         }
     }
 
@@ -355,16 +355,16 @@ public class ObjectAclTest extends TestBase {
             metadata.setObjectAcl(null);
             ossClient.putObject(bucketName, dummyKey, new ByteArrayInputStream(new byte[0]), metadata);
             ObjectAcl objectAcl = ossClient.getObjectAcl(bucketName, dummyKey);
-            Assert.assertEquals(ObjectPermission.Default, objectAcl.getPermission());
-            Assert.assertEquals(objectAcl.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(ObjectPermission.Default, objectAcl.getPermission());
+            Assertions.assertEquals(objectAcl.getRequestId().length(), REQUEST_ID_LEN);
 
             metadata.setObjectAcl(CannedAccessControlList.Private);
             ossClient.putObject(bucketName, dummyKey, new ByteArrayInputStream(new byte[0]), metadata);
             objectAcl = ossClient.getObjectAcl(bucketName, dummyKey);
-            Assert.assertEquals(ObjectPermission.Private, objectAcl.getPermission());
-            Assert.assertEquals(objectAcl.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(ObjectPermission.Private, objectAcl.getPermission());
+            Assertions.assertEquals(objectAcl.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 }

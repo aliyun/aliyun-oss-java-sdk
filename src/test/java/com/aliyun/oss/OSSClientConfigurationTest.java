@@ -23,8 +23,8 @@ import com.aliyun.oss.common.auth.RequestSigner;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.comm.RetryStrategy;
-import junit.framework.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -50,33 +50,33 @@ public class OSSClientConfigurationTest {
             };
             singers.add(requestSigner);
             configuration.setSignerHandlers(singers);
-            Assert.assertEquals(1, configuration.getSignerHandlers().size());
+            Assertions.assertEquals(1, configuration.getSignerHandlers().size());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
     @Test
     public void testTimeoutClientEnable() {
         ClientBuilderConfiguration configuration = new ClientBuilderConfiguration();
-        Assert.assertFalse(configuration.isRequestTimeoutEnabled());
+        Assertions.assertFalse(configuration.isRequestTimeoutEnabled());
 
         configuration.setRequestTimeoutEnabled(true);
-        OSS ossClient = new OSSClientBuilder()
+        new OSSClientBuilder()
                 .build("test-endpoint","test-accessId", "test-accessKey", configuration);
-        Assert.assertTrue(configuration.isRequestTimeoutEnabled());
+        Assertions.assertTrue(configuration.isRequestTimeoutEnabled());
     }
 
     @Test
     public void testUserRetryStrategy() {
         ClientConfiguration configuration = new ClientConfiguration();
-        Assert.assertNull(configuration.getRetryStrategy());
+        Assertions.assertNull(configuration.getRetryStrategy());
 
         configuration.setRetryStrategy(new TestRetryStrategy());
-        Assert.assertNotNull(configuration.getRetryStrategy());
-        Assert.assertTrue(configuration.getRetryStrategy().shouldRetry(null, null, null, 1));
-        Assert.assertFalse(configuration.getRetryStrategy().shouldRetry(null, null, null, 2));
+        Assertions.assertNotNull(configuration.getRetryStrategy());
+        Assertions.assertTrue(configuration.getRetryStrategy().shouldRetry(null, null, null, 1));
+        Assertions.assertFalse(configuration.getRetryStrategy().shouldRetry(null, null, null, 2));
     }
 
 }

@@ -25,7 +25,7 @@ import java.util.Map;
 
 import com.aliyun.oss.common.auth.ProfileConfigLoader;
 import com.aliyun.oss.common.utils.AuthUtils;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 public class ProfileConfigLoaderTest extends TestBase {
@@ -47,12 +47,12 @@ public class ProfileConfigLoaderTest extends TestBase {
                     .loadProfile(new File(AuthUtils.DEFAULT_PROFILE_PATH));
 
             // check
-            Assert.assertEquals(TEST_ACCESS_KEY_ID, properties.get(AuthUtils.OSS_ACCESS_KEY_ID));
-            Assert.assertEquals(TEST_ACCESS_KEY_SECRET, properties.get(AuthUtils.OSS_SECRET_ACCESS_KEY));
-            Assert.assertEquals(TEST_SECURITY_TOKEN, properties.get(AuthUtils.OSS_SESSION_TOKEN));
+            Assertions.assertEquals(TEST_ACCESS_KEY_ID, properties.get(AuthUtils.OSS_ACCESS_KEY_ID));
+            Assertions.assertEquals(TEST_ACCESS_KEY_SECRET, properties.get(AuthUtils.OSS_SECRET_ACCESS_KEY));
+            Assertions.assertEquals(TEST_SECURITY_TOKEN, properties.get(AuthUtils.OSS_SESSION_TOKEN));
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 

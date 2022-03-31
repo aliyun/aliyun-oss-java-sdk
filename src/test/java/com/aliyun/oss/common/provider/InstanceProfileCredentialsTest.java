@@ -21,7 +21,7 @@ package com.aliyun.oss.common.provider;
 
 import com.aliyun.oss.common.auth.InstanceProfileCredentials;
 import com.aliyun.oss.common.utils.DateUtil;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 import java.util.Date;
@@ -33,13 +33,13 @@ public class InstanceProfileCredentialsTest extends TestBase {
         try {
             InstanceProfileCredentials credentials = new InstanceProfileCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, null,
                     "2017-11-03T05:10:02Z");
-            Assert.assertEquals(credentials.getAccessKeyId(), ACCESS_KEY_ID);
-            Assert.assertEquals(credentials.getSecretAccessKey(), ACCESS_KEY_SECRET);
-            Assert.assertEquals(credentials.getSecurityToken(), null);
-            Assert.assertFalse(credentials.useSecurityToken());
+            Assertions.assertEquals(credentials.getAccessKeyId(), ACCESS_KEY_ID);
+            Assertions.assertEquals(credentials.getSecretAccessKey(), ACCESS_KEY_SECRET);
+            Assertions.assertEquals(credentials.getSecurityToken(), null);
+            Assertions.assertFalse(credentials.useSecurityToken());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -48,24 +48,24 @@ public class InstanceProfileCredentialsTest extends TestBase {
         try {
             InstanceProfileCredentials credentials = new InstanceProfileCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, null,
                     "2016-11-11T11:11:11Z");
-            Assert.assertTrue(credentials.willSoonExpire());
-            Assert.assertTrue(credentials.isExpired());
-            Assert.assertTrue(credentials.shouldRefresh());
+            Assertions.assertTrue(credentials.willSoonExpire());
+            Assertions.assertTrue(credentials.isExpired());
+            Assertions.assertTrue(credentials.shouldRefresh());
 
             long currTime = new Date().getTime() + 100 * 1000;
             credentials = new InstanceProfileCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, null, DateUtil.formatAlternativeIso8601Date(new Date(currTime)));
-            Assert.assertTrue(credentials.willSoonExpire());
-            Assert.assertFalse(credentials.isExpired());
-            Assert.assertTrue(credentials.shouldRefresh());
+            Assertions.assertTrue(credentials.willSoonExpire());
+            Assertions.assertFalse(credentials.isExpired());
+            Assertions.assertTrue(credentials.shouldRefresh());
 
             credentials.setLastFailedRefreshTime();
-            Assert.assertFalse(credentials.shouldRefresh());
+            Assertions.assertFalse(credentials.shouldRefresh());
             Thread.sleep(11000);
-            Assert.assertTrue(credentials.shouldRefresh());
+            Assertions.assertTrue(credentials.shouldRefresh());
 
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -75,16 +75,16 @@ public class InstanceProfileCredentialsTest extends TestBase {
             InstanceProfileCredentials credentials = new InstanceProfileCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, null,
                     "2010-11-11T11:11:11Z").withExpiredFactor(10.0);
             Thread.sleep(1000);
-            Assert.assertTrue(credentials.willSoonExpire());
+            Assertions.assertTrue(credentials.willSoonExpire());
 
             long currTime = new Date().getTime() + (3600*6*8/10 + 100)*1000;
             credentials = new InstanceProfileCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, null, DateUtil.formatAlternativeIso8601Date(new Date(currTime)))
                     .withExpiredFactor(0.8);
             Thread.sleep(1000);
-            Assert.assertFalse(credentials.willSoonExpire());
+            Assertions.assertFalse(credentials.willSoonExpire());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 

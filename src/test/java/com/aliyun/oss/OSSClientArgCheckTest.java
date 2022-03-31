@@ -19,18 +19,13 @@
 
 package com.aliyun.oss;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 import com.aliyun.oss.internal.OSSConstants;
 import com.aliyun.oss.internal.OSSUtils;
@@ -51,43 +46,43 @@ public class OSSClientArgCheckTest {
             builder.append("o");
         }
 
-        assertTrue(OSSUtils.validateObjectKey(builder.toString()));
+        Assertions.assertTrue(OSSUtils.validateObjectKey(builder.toString()));
 
         builder.append("o");
-        assertFalse(OSSUtils.validateObjectKey(builder.toString()));
+        Assertions.assertFalse(OSSUtils.validateObjectKey(builder.toString()));
         
         // Legal key
-        assertTrue(OSSUtils.validateObjectKey((char)9 + "" + (char)0x20 + "123_.*  中文-!@#$%^&*()_+-=;'\"~`><?/':[]|\\"));
+        Assertions.assertTrue(OSSUtils.validateObjectKey((char)9 + "" + (char)0x20 + "123_.*  中文-!@#$%^&*()_+-=;'\"~`><?/':[]|\\"));
     }
 
     @Test
     public void testValidBucketName() {
         String bucketName = "123456789012345678901234567890123456789012345678901234567890123";
-        Assert.assertTrue(OSSUtils.validateBucketName(bucketName));
-        Assert.assertFalse(OSSUtils.validateBucketName(bucketName + "4"));
+        Assertions.assertTrue(OSSUtils.validateBucketName(bucketName));
+        Assertions.assertFalse(OSSUtils.validateBucketName(bucketName + "4"));
 
         bucketName = "test-bucket";
-        Assert.assertTrue(OSSUtils.validateBucketName(bucketName));
-        Assert.assertFalse(OSSUtils.validateBucketName(bucketName + "dd-"));
-        Assert.assertFalse(OSSUtils.validateBucketName(bucketName + "Ldfd"));
-        Assert.assertFalse(OSSUtils.validateBucketName(bucketName + "~dd"));
-        Assert.assertTrue(OSSUtils.validateBucketName(bucketName + "_dd"));
-        Assert.assertFalse(OSSUtils.validateBucketName(bucketName + "\\dd"));
+        Assertions.assertTrue(OSSUtils.validateBucketName(bucketName));
+        Assertions.assertFalse(OSSUtils.validateBucketName(bucketName + "dd-"));
+        Assertions.assertFalse(OSSUtils.validateBucketName(bucketName + "Ldfd"));
+        Assertions.assertFalse(OSSUtils.validateBucketName(bucketName + "~dd"));
+        Assertions.assertTrue(OSSUtils.validateBucketName(bucketName + "_dd"));
+        Assertions.assertFalse(OSSUtils.validateBucketName(bucketName + "\\dd"));
     }
 
     @Test
     public void testValidBucketNameCreation() {
         String bucketName = "123456789012345678901234567890123456789012345678901234567890123";
-        Assert.assertTrue(OSSUtils.validateBucketNameCreation(bucketName));
-        Assert.assertFalse(OSSUtils.validateBucketNameCreation(bucketName + "4"));
+        Assertions.assertTrue(OSSUtils.validateBucketNameCreation(bucketName));
+        Assertions.assertFalse(OSSUtils.validateBucketNameCreation(bucketName + "4"));
 
         bucketName = "test-bucket";
-        Assert.assertTrue(OSSUtils.validateBucketNameCreation(bucketName));
-        Assert.assertFalse(OSSUtils.validateBucketNameCreation(bucketName + "dd-"));
-        Assert.assertFalse(OSSUtils.validateBucketNameCreation(bucketName + "Ldfd"));
-        Assert.assertFalse(OSSUtils.validateBucketNameCreation(bucketName + "~dd"));
-        Assert.assertFalse(OSSUtils.validateBucketNameCreation(bucketName + "_dd"));
-        Assert.assertFalse(OSSUtils.validateBucketNameCreation(bucketName + "\\dd"));
+        Assertions.assertTrue(OSSUtils.validateBucketNameCreation(bucketName));
+        Assertions.assertFalse(OSSUtils.validateBucketNameCreation(bucketName + "dd-"));
+        Assertions.assertFalse(OSSUtils.validateBucketNameCreation(bucketName + "Ldfd"));
+        Assertions.assertFalse(OSSUtils.validateBucketNameCreation(bucketName + "~dd"));
+        Assertions.assertFalse(OSSUtils.validateBucketNameCreation(bucketName + "_dd"));
+        Assertions.assertFalse(OSSUtils.validateBucketNameCreation(bucketName + "\\dd"));
     }
 
     @Test
@@ -104,30 +99,30 @@ public class OSSClientArgCheckTest {
             e.printStackTrace();
         }
 
-        Assert.assertNotNull(url1);
-        Assert.assertNotNull(url2);
-        Assert.assertNotNull(url3);
+        Assertions.assertNotNull(url1);
+        Assertions.assertNotNull(url2);
+        Assertions.assertNotNull(url3);
 
-        Assert.assertFalse(OSSUtils.validateEndpoint(url1.getHost()));
-        Assert.assertFalse(OSSUtils.validateEndpoint(url2.getHost()));
-        Assert.assertTrue(OSSUtils.validateEndpoint(url3.getHost()));
+        Assertions.assertFalse(OSSUtils.validateEndpoint(url1.getHost()));
+        Assertions.assertFalse(OSSUtils.validateEndpoint(url2.getHost()));
+        Assertions.assertTrue(OSSUtils.validateEndpoint(url3.getHost()));
 
-        Assert.assertTrue(OSSUtils.validateEndpoint("oss-cn-shenzhen.aliyuncs.com"));
-        Assert.assertTrue(OSSUtils.validateEndpoint("abc_123"));
-        Assert.assertTrue(OSSUtils.validateEndpoint("abc_123.adf-"));
-        Assert.assertTrue(OSSUtils.validateEndpoint("192.168.1.1"));
-        Assert.assertFalse(OSSUtils.validateEndpoint("www.test.com\\www.aliyun.com"));
-        Assert.assertFalse(OSSUtils.validateEndpoint("www.test.com#www.aliyun.com"));
+        Assertions.assertTrue(OSSUtils.validateEndpoint("oss-cn-shenzhen.aliyuncs.com"));
+        Assertions.assertTrue(OSSUtils.validateEndpoint("abc_123"));
+        Assertions.assertTrue(OSSUtils.validateEndpoint("abc_123.adf-"));
+        Assertions.assertTrue(OSSUtils.validateEndpoint("192.168.1.1"));
+        Assertions.assertFalse(OSSUtils.validateEndpoint("www.test.com\\www.aliyun.com"));
+        Assertions.assertFalse(OSSUtils.validateEndpoint("www.test.com#www.aliyun.com"));
 
         try {
             OSSUtils.ensureEndpointValid("www.test.com\\www.aliyun.com");
-            Assert.fail("should not here.");
+            Assertions.fail("should not here.");
         }
         catch (IllegalArgumentException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
         catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -139,33 +134,33 @@ public class OSSClientArgCheckTest {
         // invalid bucket name
         try{
             client.createBucket(invalidBucketName);
-            fail();
+            Assertions.fail();
         } catch (IllegalArgumentException e) {}
 
         try{
             client.deleteBucket(invalidBucketName);
-            fail();
+            Assertions.fail();
         } catch (IllegalArgumentException e) {}
 
         try{
             client.setBucketAcl(invalidBucketName, CannedAccessControlList.PublicRead);
-            fail();
+            Assertions.fail();
         } catch (IllegalArgumentException e) {}
 
         try{
             client.getBucketAcl(invalidBucketName);
-            fail();
+            Assertions.fail();
         } catch (IllegalArgumentException e) {}
 
         try{
             client.listObjects(invalidBucketName);
-            fail();
+            Assertions.fail();
         } catch (IllegalArgumentException e) {}
         // max-keys exceeds
         ListObjectsRequest listObjectsRequest = new ListObjectsRequest(validBucketName);
         try{
             listObjectsRequest.setMaxKeys(1001);
-            fail();
+            Assertions.fail();
         } catch (IllegalArgumentException e) {}
 
         // valid max-keys
@@ -182,7 +177,7 @@ public class OSSClientArgCheckTest {
         try {
             contentBuffer = content.getBytes(OSSConstants.DEFAULT_CHARSET_NAME);
         } catch (UnsupportedEncodingException e) {
-            fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
         final ByteArrayInputStream input =
                 new ByteArrayInputStream(contentBuffer);
@@ -202,7 +197,7 @@ public class OSSClientArgCheckTest {
         metadata.setContentLength(contentBuffer.length);
         try{
             client.putObject(invalidBucketName, objectKey, input, metadata);
-            fail();
+            Assertions.fail();
         } catch (IllegalArgumentException e) {}
     }
     
@@ -213,15 +208,15 @@ public class OSSClientArgCheckTest {
         // invalid bucket name
         try{
             client.getObject(invalidBucketName, objectKey);
-            fail();
+            Assertions.fail();
         } catch (IllegalArgumentException e) {}
         try{
             client.getObjectMetadata(invalidBucketName, objectKey);
-            fail();
+            Assertions.fail();
         } catch (IllegalArgumentException e) {}
         try{
             client.deleteObject(invalidBucketName, objectKey);
-            fail();
+            Assertions.fail();
         } catch (IllegalArgumentException e) {}
     }
 

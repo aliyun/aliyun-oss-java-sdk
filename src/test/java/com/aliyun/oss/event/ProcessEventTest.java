@@ -19,7 +19,7 @@
 
 package com.aliyun.oss.event;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 public class ProcessEventTest {
@@ -27,14 +27,14 @@ public class ProcessEventTest {
     public void testProcessEvent() {
         try {
             ProgressEvent event = new ProgressEvent(null, 20);
-            Assert.fail("eventType not be null");
+            Assertions.fail("eventType not be null");
         } catch (Exception e) {
             // expected exception.
         }
 
         try {
             ProgressEvent event = new ProgressEvent(ProgressEventType.REQUEST_BYTE_TRANSFER_EVENT, -1);
-            Assert.fail("bytes should not be non-negative.");
+            Assertions.fail("bytes should not be non-negative.");
         } catch (Exception e) {
            // expected exception.
         }
@@ -59,27 +59,27 @@ public class ProcessEventTest {
 
         try {
             publisher.publishProgress(listener, null);
-            Assert.assertNull(listener.event);
+            Assertions.assertNull(listener.event);
 
             publisher.publishProgress(listener, ProgressEventType.REQUEST_BYTE_TRANSFER_EVENT);
-            Assert.assertEquals(ProgressEventType.REQUEST_BYTE_TRANSFER_EVENT, listener.event.getEventType());
+            Assertions.assertEquals(ProgressEventType.REQUEST_BYTE_TRANSFER_EVENT, listener.event.getEventType());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         listener.event = null;
 
         try {
             publisher.publishSelectProgress(listener, null, 100);
-            Assert.assertNull(listener.event);
+            Assertions.assertNull(listener.event);
 
             publisher.publishSelectProgress(listener, ProgressEventType.REQUEST_BYTE_TRANSFER_EVENT, 100);
-            Assert.assertEquals(ProgressEventType.REQUEST_BYTE_TRANSFER_EVENT, listener.event.getEventType());
-            Assert.assertEquals(100, listener.event.getBytes());
+            Assertions.assertEquals(ProgressEventType.REQUEST_BYTE_TRANSFER_EVENT, listener.event.getEventType());
+            Assertions.assertEquals(100, listener.event.getBytes());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 

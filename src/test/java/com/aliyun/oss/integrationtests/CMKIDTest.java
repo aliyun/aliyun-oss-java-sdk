@@ -1,7 +1,7 @@
 package com.aliyun.oss.integrationtests;
 
 import com.aliyun.oss.model.*;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 
@@ -33,9 +33,9 @@ public class CMKIDTest extends TestBase {
             metadata.setServerSideEncryptionKeyId(TestConfig.KMS_CMK_ID);
             ossClient.putObject(bucketName, key, sampleFile, metadata);
             ObjectMetadata objectMetadata = ossClient.getObject(new GetObjectRequest(bucketName, key), new File(downloadLocalFilePath));
-            Assert.assertEquals(TestConfig.KMS_CMK_ID, objectMetadata.getServerSideEncryptionKeyId());
+            Assertions.assertEquals(TestConfig.KMS_CMK_ID, objectMetadata.getServerSideEncryptionKeyId());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -146,9 +146,9 @@ public class CMKIDTest extends TestBase {
             reader.close();
 
             ObjectMetadata objectMetadata = ossClient.getObject(new GetObjectRequest(bucketName, key), new File(downloadLocalFilePath));
-            Assert.assertEquals(TestConfig.KMS_CMK_ID, objectMetadata.getServerSideEncryptionKeyId());
+            Assertions.assertEquals(TestConfig.KMS_CMK_ID, objectMetadata.getServerSideEncryptionKeyId());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             if (conn != null) {
                 conn.disconnect();
@@ -218,9 +218,9 @@ public class CMKIDTest extends TestBase {
 
             ObjectMetadata objectMetadata = ossClient.getObject(new GetObjectRequest(bucketName, key), new File(downloadLocalFilePath));
 
-            Assert.assertEquals(TestConfig.KMS_CMK_ID, objectMetadata.getServerSideEncryptionKeyId());
+            Assertions.assertEquals(TestConfig.KMS_CMK_ID, objectMetadata.getServerSideEncryptionKeyId());
         } catch (IOException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -243,9 +243,9 @@ public class CMKIDTest extends TestBase {
 
             ObjectMetadata metadataCopy = ossClient.getObject(new GetObjectRequest(bucketName, key), new File(copyLocalFilePath));
 
-            Assert.assertEquals(TestConfig.KMS_CMK_ID, metadataCopy.getServerSideEncryptionKeyId());
+            Assertions.assertEquals(TestConfig.KMS_CMK_ID, metadataCopy.getServerSideEncryptionKeyId());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -282,9 +282,9 @@ public class CMKIDTest extends TestBase {
                 sb.append(line);
             }
 
-            Assert.assertTrue(sb.toString().equals(content1 + content2));
+            Assertions.assertTrue(sb.toString().equals(content1 + content2));
         } catch (IOException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 }

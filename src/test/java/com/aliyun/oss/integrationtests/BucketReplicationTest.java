@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -78,43 +78,43 @@ public class BucketReplicationTest extends TestBase {
             ossClient.addBucketReplication(request);
                         
             List<ReplicationRule> rules = ossClient.getBucketReplication(bucketName);
-            Assert.assertEquals(rules.size(), 1);
+            Assertions.assertEquals(rules.size(), 1);
                                     
             ReplicationRule r0 = rules.get(0);
-            Assert.assertEquals(r0.getReplicationRuleID(), ruleId);
-            Assert.assertEquals(r0.getTargetBucketName(), targetBucketName);
-            Assert.assertEquals(r0.getTargetBucketLocation(), targetBucketLoc);
-            Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
-            Assert.assertNull(r0.getObjectPrefixList());
-            Assert.assertEquals(r0.getReplicationActionList().size(), 1);
-            Assert.assertEquals(r0.getReplicationActionList().get(0), ReplicationAction.parse("ALL"));
+            Assertions.assertEquals(r0.getReplicationRuleID(), ruleId);
+            Assertions.assertEquals(r0.getTargetBucketName(), targetBucketName);
+            Assertions.assertEquals(r0.getTargetBucketLocation(), targetBucketLoc);
+            Assertions.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
+            Assertions.assertNull(r0.getObjectPrefixList());
+            Assertions.assertEquals(r0.getReplicationActionList().size(), 1);
+            Assertions.assertEquals(r0.getReplicationActionList().get(0), ReplicationAction.parse("ALL"));
             
             BucketReplicationProgress progress = ossClient.getBucketReplicationProgress(bucketName, ruleId);
-            Assert.assertEquals(progress.getReplicationRuleID(), ruleId);
-            Assert.assertEquals(progress.getTargetBucketName(), targetBucketName);
-            Assert.assertEquals(progress.getTargetBucketLocation(), targetBucketLoc);
-            Assert.assertEquals(progress.getReplicationStatus(), ReplicationStatus.Starting);
-            Assert.assertEquals(progress.getHistoricalObjectProgress(), Float.valueOf(0));
-            Assert.assertEquals(progress.isEnableHistoricalObjectReplication(), true);
-            Assert.assertEquals(progress.getNewObjectProgress(), null);
+            Assertions.assertEquals(progress.getReplicationRuleID(), ruleId);
+            Assertions.assertEquals(progress.getTargetBucketName(), targetBucketName);
+            Assertions.assertEquals(progress.getTargetBucketLocation(), targetBucketLoc);
+            Assertions.assertEquals(progress.getReplicationStatus(), ReplicationStatus.Starting);
+            Assertions.assertEquals(progress.getHistoricalObjectProgress(), Float.valueOf(0));
+            Assertions.assertEquals(progress.isEnableHistoricalObjectReplication(), true);
+            Assertions.assertEquals(progress.getNewObjectProgress(), null);
                         
             ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, ruleId));
                         
             rules = ossClient.getBucketReplication(bucketName);
-            Assert.assertEquals(rules.size(), 1);
+            Assertions.assertEquals(rules.size(), 1);
             
             r0 = rules.get(0);
-            Assert.assertEquals(r0.getReplicationRuleID(), ruleId);
-            Assert.assertEquals(r0.getTargetBucketName(), targetBucketName);
-            Assert.assertEquals(r0.getTargetBucketLocation(), targetBucketLoc);
-            Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Closing);
+            Assertions.assertEquals(r0.getReplicationRuleID(), ruleId);
+            Assertions.assertEquals(r0.getTargetBucketName(), targetBucketName);
+            Assertions.assertEquals(r0.getTargetBucketLocation(), targetBucketLoc);
+            Assertions.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Closing);
             
             List <String> locations = ossClient.getBucketReplicationLocation(bucketName);
-            Assert.assertEquals(locations.size() > 0, true);
+            Assertions.assertEquals(locations.size() > 0, true);
             
         } catch (OSSException e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -132,19 +132,19 @@ public class BucketReplicationTest extends TestBase {
             ossClient.addBucketReplication(request);
                         
             List<ReplicationRule> rules = ossClient.getBucketReplication(bucketName);
-            Assert.assertEquals(rules.size(), 1);
+            Assertions.assertEquals(rules.size(), 1);
             
             ReplicationRule r0 = rules.get(0);
-            Assert.assertEquals(r0.getReplicationRuleID().length(), "d6a8bfe3-56f6-42dd-9e7f-b4301d99b0ed".length());
-            Assert.assertEquals(r0.getTargetBucketName(), targetBucketName);
-            Assert.assertEquals(r0.getTargetBucketLocation(), targetBucketLoc);
-            Assert.assertEquals(r0.isEnableHistoricalObjectReplication(), true);
-            Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
+            Assertions.assertEquals(r0.getReplicationRuleID().length(), "d6a8bfe3-56f6-42dd-9e7f-b4301d99b0ed".length());
+            Assertions.assertEquals(r0.getTargetBucketName(), targetBucketName);
+            Assertions.assertEquals(r0.getTargetBucketLocation(), targetBucketLoc);
+            Assertions.assertEquals(r0.isEnableHistoricalObjectReplication(), true);
+            Assertions.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
             
             ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, r0.getReplicationRuleID()));
                         
         } catch (OSSException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -165,26 +165,26 @@ public class BucketReplicationTest extends TestBase {
             ossClient.addBucketReplication(request);
                                     
             List<ReplicationRule> rules = ossClient.getBucketReplication(bucketName);
-            Assert.assertEquals(rules.size(), 1);
+            Assertions.assertEquals(rules.size(), 1);
                         
             ReplicationRule r0 = rules.get(0);
-            Assert.assertEquals(r0.getReplicationRuleID(), repRuleID);
-            Assert.assertEquals(r0.getTargetBucketName(), targetBucketName);
-            Assert.assertEquals(r0.getTargetBucketLocation(), targetBucketLoc);
-            Assert.assertEquals(r0.isEnableHistoricalObjectReplication(), false);
-            Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
+            Assertions.assertEquals(r0.getReplicationRuleID(), repRuleID);
+            Assertions.assertEquals(r0.getTargetBucketName(), targetBucketName);
+            Assertions.assertEquals(r0.getTargetBucketLocation(), targetBucketLoc);
+            Assertions.assertEquals(r0.isEnableHistoricalObjectReplication(), false);
+            Assertions.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
             
             BucketReplicationProgress process = ossClient.getBucketReplicationProgress(bucketName, repRuleID);
-            Assert.assertEquals(process.getReplicationRuleID(), repRuleID);
-            Assert.assertEquals(process.getTargetBucketName(), targetBucketName);
-            Assert.assertEquals(process.getTargetBucketLocation(), targetBucketLoc);
-            Assert.assertEquals(process.getReplicationStatus(), ReplicationStatus.Starting);
-            Assert.assertEquals(process.getHistoricalObjectProgress(), Float.valueOf(0));
+            Assertions.assertEquals(process.getReplicationRuleID(), repRuleID);
+            Assertions.assertEquals(process.getTargetBucketName(), targetBucketName);
+            Assertions.assertEquals(process.getTargetBucketLocation(), targetBucketLoc);
+            Assertions.assertEquals(process.getReplicationStatus(), ReplicationStatus.Starting);
+            Assertions.assertEquals(process.getHistoricalObjectProgress(), Float.valueOf(0));
             
             ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, repRuleID));
                         
         } catch (OSSException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -213,21 +213,21 @@ public class BucketReplicationTest extends TestBase {
             ossClient.addBucketReplication(request);
                         
             List<ReplicationRule> rules = ossClient.getBucketReplication(bucketName);
-            Assert.assertEquals(rules.size(), 1);
+            Assertions.assertEquals(rules.size(), 1);
             
             ReplicationRule r0 = rules.get(0);
-            Assert.assertEquals(r0.getReplicationRuleID().length(), "d6a8bfe3-56f6-42dd-9e7f-b4301d99b0ed".length());
-            Assert.assertEquals(r0.getTargetBucketName(), targetBucketName);
-            Assert.assertEquals(r0.getTargetBucketLocation(), targetBucketLoc);
-            Assert.assertEquals(r0.isEnableHistoricalObjectReplication(), true);
-            Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
-            Assert.assertEquals(r0.getObjectPrefixList().size(), 2);
-            Assert.assertEquals(r0.getReplicationActionList().size(), 2);
+            Assertions.assertEquals(r0.getReplicationRuleID().length(), "d6a8bfe3-56f6-42dd-9e7f-b4301d99b0ed".length());
+            Assertions.assertEquals(r0.getTargetBucketName(), targetBucketName);
+            Assertions.assertEquals(r0.getTargetBucketLocation(), targetBucketLoc);
+            Assertions.assertEquals(r0.isEnableHistoricalObjectReplication(), true);
+            Assertions.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
+            Assertions.assertEquals(r0.getObjectPrefixList().size(), 2);
+            Assertions.assertEquals(r0.getReplicationActionList().size(), 2);
             
             ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, r0.getReplicationRuleID()));
         } catch (OSSException e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -247,19 +247,19 @@ public class BucketReplicationTest extends TestBase {
             ossClient.addBucketReplication(request);
             
             List<ReplicationRule> rules = ossClient.getBucketReplication(bucketName);
-            Assert.assertEquals(rules.size(), 1);
+            Assertions.assertEquals(rules.size(), 1);
             ReplicationRule r0 = rules.get(0);
-            Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
+            Assertions.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
             
             ossClient.deleteBucketReplication(bucketName, repRuleID);
             
             rules = ossClient.getBucketReplication(bucketName);
-            Assert.assertEquals(rules.size(), 1);
+            Assertions.assertEquals(rules.size(), 1);
             r0 = rules.get(0);
-            Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Closing);
+            Assertions.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Closing);
             
         } catch (OSSException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -279,19 +279,19 @@ public class BucketReplicationTest extends TestBase {
             ossClient.addBucketReplication(request);
             
             List<ReplicationRule> rules = ossClient.getBucketReplication(bucketName);
-            Assert.assertEquals(rules.size(), 1);
+            Assertions.assertEquals(rules.size(), 1);
             ReplicationRule r0 = rules.get(0);
-            Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
+            Assertions.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
             
             ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName).withReplicationRuleID(repRuleID));
             
             rules = ossClient.getBucketReplication(bucketName);
-            Assert.assertEquals(rules.size(), 1);
+            Assertions.assertEquals(rules.size(), 1);
             r0 = rules.get(0);
-            Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Closing);
+            Assertions.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Closing);
             
         } catch (OSSException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -311,26 +311,26 @@ public class BucketReplicationTest extends TestBase {
             ossClient.addBucketReplication(request);
             
             List<ReplicationRule> rules = ossClient.getBucketReplication(bucketName);
-            Assert.assertEquals(rules.size(), 1);
+            Assertions.assertEquals(rules.size(), 1);
             ReplicationRule r0 = rules.get(0);
-            Assert.assertEquals(r0.getReplicationRuleID(), repRuleID);
-            Assert.assertEquals(r0.getTargetBucketName(), targetBucketName);
-            Assert.assertEquals(r0.getTargetBucketLocation(), targetBucketLoc);
-            Assert.assertEquals(r0.isEnableHistoricalObjectReplication(), true);
-            Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
+            Assertions.assertEquals(r0.getReplicationRuleID(), repRuleID);
+            Assertions.assertEquals(r0.getTargetBucketName(), targetBucketName);
+            Assertions.assertEquals(r0.getTargetBucketLocation(), targetBucketLoc);
+            Assertions.assertEquals(r0.isEnableHistoricalObjectReplication(), true);
+            Assertions.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
             
             BucketReplicationProgress process = ossClient.getBucketReplicationProgress(bucketName, repRuleID);
-            Assert.assertEquals(process.getReplicationRuleID(), repRuleID);
-            Assert.assertEquals(process.getTargetBucketName(), targetBucketName);
-            Assert.assertEquals(process.getTargetBucketLocation(), targetBucketLoc);
-            Assert.assertEquals(process.getReplicationStatus(), ReplicationStatus.Starting);
-            Assert.assertEquals(process.isEnableHistoricalObjectReplication(), true);
-            Assert.assertEquals(process.getHistoricalObjectProgress(), Float.valueOf(0));
-            Assert.assertEquals(process.getNewObjectProgress(), null);
+            Assertions.assertEquals(process.getReplicationRuleID(), repRuleID);
+            Assertions.assertEquals(process.getTargetBucketName(), targetBucketName);
+            Assertions.assertEquals(process.getTargetBucketLocation(), targetBucketLoc);
+            Assertions.assertEquals(process.getReplicationStatus(), ReplicationStatus.Starting);
+            Assertions.assertEquals(process.isEnableHistoricalObjectReplication(), true);
+            Assertions.assertEquals(process.getHistoricalObjectProgress(), Float.valueOf(0));
+            Assertions.assertEquals(process.getNewObjectProgress(), null);
                         
             ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, repRuleID));
         } catch (OSSException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -352,30 +352,30 @@ public class BucketReplicationTest extends TestBase {
             ossClient.addBucketReplication(request);
 
             List<ReplicationRule> rules = ossClient.getBucketReplication(bucketName);
-            Assert.assertEquals(rules.size(), 1);
+            Assertions.assertEquals(rules.size(), 1);
             ReplicationRule r0 = rules.get(0);
-            Assert.assertEquals(r0.getReplicationRuleID(), repRuleID);
-            Assert.assertEquals(r0.getTargetBucketName(), targetBucketName);
-            Assert.assertEquals(r0.getTargetBucketLocation(), targetBucketLoc);
-            Assert.assertEquals(r0.isEnableHistoricalObjectReplication(), false);
-            Assert.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
+            Assertions.assertEquals(r0.getReplicationRuleID(), repRuleID);
+            Assertions.assertEquals(r0.getTargetBucketName(), targetBucketName);
+            Assertions.assertEquals(r0.getTargetBucketLocation(), targetBucketLoc);
+            Assertions.assertEquals(r0.isEnableHistoricalObjectReplication(), false);
+            Assertions.assertEquals(r0.getReplicationStatus(), ReplicationStatus.Starting);
 
             BucketReplicationProgress process = ossClient
                     .getBucketReplicationProgress(new GetBucketReplicationProgressRequest(
                             bucketName).withReplicationRuleID(repRuleID));
-            Assert.assertEquals(process.getReplicationRuleID(), repRuleID);
-            Assert.assertEquals(process.getTargetBucketName(), targetBucketName);
-            Assert.assertEquals(process.getTargetBucketLocation(), targetBucketLoc);
-            Assert.assertEquals(process.getReplicationStatus(), ReplicationStatus.Starting);
-            Assert.assertEquals(process.getHistoricalObjectProgress(), Float.valueOf(0));
-            Assert.assertEquals(process.isEnableHistoricalObjectReplication(), false);
-            Assert.assertEquals(process.getNewObjectProgress(), null);
-            // Assert.assertEquals(diffSecond(process.getNewObjectProgress(), now) < 5, true);
+            Assertions.assertEquals(process.getReplicationRuleID(), repRuleID);
+            Assertions.assertEquals(process.getTargetBucketName(), targetBucketName);
+            Assertions.assertEquals(process.getTargetBucketLocation(), targetBucketLoc);
+            Assertions.assertEquals(process.getReplicationStatus(), ReplicationStatus.Starting);
+            Assertions.assertEquals(process.getHistoricalObjectProgress(), Float.valueOf(0));
+            Assertions.assertEquals(process.isEnableHistoricalObjectReplication(), false);
+            Assertions.assertEquals(process.getNewObjectProgress(), null);
+            // Assertions.assertEquals(diffSecond(process.getNewObjectProgress(), now) < 5, true);
 
             ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(
                             bucketName, repRuleID));
         } catch (OSSException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -388,14 +388,14 @@ public class BucketReplicationTest extends TestBase {
             ossClient.createBucket(bucketName);
             
             List<String> locations = ossClient.getBucketReplicationLocation(bucketName);
-            Assert.assertEquals(locations.size() > 0, true);
+            Assertions.assertEquals(locations.size() > 0, true);
             
             for (String loc : locations) {
                 System.out.println("loc:" + loc);
             }
             
         } catch (OSSException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -418,16 +418,16 @@ public class BucketReplicationTest extends TestBase {
             
             try {
                 ossClient.addBucketReplication(request);
-                Assert.fail("Set bucket replication should not be successful.");
+                Assertions.fail("Set bucket replication should not be successful.");
             } catch (OSSException e) {
-                //Assert.assertEquals(e.getErrorCode(), "InvalidArgument");
-                //Assert.assertEquals(e.getMessage().startsWith("Rule ID is not unique."), true);
+                //Assertions.assertEquals(e.getErrorCode(), "InvalidArgument");
+                //Assertions.assertEquals(e.getMessage().startsWith("Rule ID is not unique."), true);
             }
             
             ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, ruleId));
                         
         } catch (OSSException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -448,14 +448,14 @@ public class BucketReplicationTest extends TestBase {
             
             try {
                 ossClient.addBucketReplication(request);
-                Assert.fail("Set bucket replication should not be successful.");
+                Assertions.fail("Set bucket replication should not be successful.");
             } catch (OSSException e) {
-                Assert.assertEquals(e.getErrorCode(), "InvalidTargetLocation");
-                Assert.assertEquals(e.getMessage().startsWith("The target bucket you specified does not locate in the target location"), true);
+                Assertions.assertEquals(e.getErrorCode(), "InvalidTargetLocation");
+                Assertions.assertEquals(e.getMessage().startsWith("The target bucket you specified does not locate in the target location"), true);
             }
                                     
         } catch (OSSException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -470,14 +470,14 @@ public class BucketReplicationTest extends TestBase {
                      
             try {
                 ossClient.getBucketReplication(bucketName);
-                Assert.fail("Get bucket replication should not be successful.");
+                Assertions.fail("Get bucket replication should not be successful.");
             } catch (OSSException e) {
-                Assert.assertEquals(e.getErrorCode(), "NoSuchReplicationConfiguration");
-                Assert.assertEquals(e.getMessage().startsWith("The bucket you specified does not have replication configuration"), true);
+                Assertions.assertEquals(e.getErrorCode(), "NoSuchReplicationConfiguration");
+                Assertions.assertEquals(e.getMessage().startsWith("The bucket you specified does not have replication configuration"), true);
             }
               
         } catch (OSSException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -493,14 +493,14 @@ public class BucketReplicationTest extends TestBase {
             
             try {
                 ossClient.getBucketReplicationProgress(bucketName, repRuleID);
-                Assert.fail("Get bucket replication should not be successful.");
+                Assertions.fail("Get bucket replication should not be successful.");
             } catch (OSSException e) {
-                Assert.assertEquals(e.getErrorCode(), "NoSuchReplicationRule");
-                Assert.assertEquals(e.getMessage().startsWith("The BucketReplicationRule you specified does not exist"), true);
+                Assertions.assertEquals(e.getErrorCode(), "NoSuchReplicationRule");
+                Assertions.assertEquals(e.getMessage().startsWith("The BucketReplicationRule you specified does not exist"), true);
             }
             
         } catch (OSSException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -512,10 +512,10 @@ public class BucketReplicationTest extends TestBase {
 
         try {
             ossClient.getBucketReplicationLocation(bucketName);
-            Assert.fail("Get bucket replication location should not be successful.");
+            Assertions.fail("Get bucket replication location should not be successful.");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith("The specified bucket does not exist"));
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith("The specified bucket does not exist"));
         }
         
     }
@@ -531,12 +531,12 @@ public class BucketReplicationTest extends TestBase {
 
             try {
                 ossClient.addBucketReplication(request);
-                Assert.fail("Get bucket replication should not be successful.");
+                Assertions.fail("Get bucket replication should not be successful.");
             } catch (NullPointerException e) {
             }
                         
         } catch (OSSException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -558,14 +558,14 @@ public class BucketReplicationTest extends TestBase {
                 
             try {
                 ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName));
-                Assert.fail("Get bucket replication should not be successful.");
+                Assertions.fail("Get bucket replication should not be successful.");
             } catch (NullPointerException e) {
             }
             
             ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, ruleId));
             
         } catch (OSSException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -587,14 +587,14 @@ public class BucketReplicationTest extends TestBase {
                 
             try {
                 ossClient.getBucketReplicationProgress(new GetBucketReplicationProgressRequest(bucketName));
-                Assert.fail("Get bucket replication should not be successful.");
+                Assertions.fail("Get bucket replication should not be successful.");
             } catch (NullPointerException e) {
             }
             
             ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, ruleId));
             
         } catch (OSSException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }

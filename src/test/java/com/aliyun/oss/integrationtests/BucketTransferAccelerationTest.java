@@ -21,7 +21,7 @@ package com.aliyun.oss.integrationtests;
 
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.*;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 public class BucketTransferAccelerationTest extends TestBase {
@@ -31,34 +31,34 @@ public class BucketTransferAccelerationTest extends TestBase {
 
         try {
             TransferAcceleration config = ossClient.getBucketTransferAcceleration(bucketName);
-            Assert.fail("should not here");
+            Assertions.fail("should not here");
         } catch (OSSException e) {
-            Assert.assertEquals("NoSuchTransferAccelerationConfiguration", e.getErrorCode());
+            Assertions.assertEquals("NoSuchTransferAccelerationConfiguration", e.getErrorCode());
         } catch (Exception e1) {
-            Assert.fail(e1.getMessage());
+            Assertions.fail(e1.getMessage());
         }
 
         try {
             ossClient.setBucketTransferAcceleration(bucketName, true);
             TransferAcceleration config = ossClient.getBucketTransferAcceleration(bucketName);
-            Assert.assertEquals(true, config.isEnabled());
+            Assertions.assertEquals(true, config.isEnabled());
 
             ossClient.setBucketTransferAcceleration(bucketName, false);
             config = ossClient.getBucketTransferAcceleration(bucketName);
-            Assert.assertEquals(false, config.isEnabled());
+            Assertions.assertEquals(false, config.isEnabled());
 
         } catch (Exception e1) {
-            Assert.fail(e1.getMessage());
+            Assertions.fail(e1.getMessage());
         }
 
         try {
             ossClient.deleteBucketTransferAcceleration(bucketName);
             TransferAcceleration config = ossClient.getBucketTransferAcceleration(bucketName);
-            Assert.fail("should not here");
+            Assertions.fail("should not here");
         } catch (OSSException e) {
-            Assert.assertEquals("NoSuchTransferAccelerationConfiguration", e.getErrorCode());
+            Assertions.assertEquals("NoSuchTransferAccelerationConfiguration", e.getErrorCode());
         } catch (Exception e1) {
-            Assert.fail(e1.getMessage());
+            Assertions.fail(e1.getMessage());
         }
 
     }

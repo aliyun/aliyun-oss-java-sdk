@@ -20,7 +20,7 @@
 package com.aliyun.oss.integrationtests;
 
 import com.aliyun.oss.model.*;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import java.io.*;
 import java.util.Date;
@@ -43,16 +43,16 @@ public class UdfTest extends TestBase {
             // create udf
             CreateUdfRequest createUdfRequest = new CreateUdfRequest(udf);
             createUdfRequest = new CreateUdfRequest(udf, "", desc);
-            Assert.assertEquals(createUdfRequest.getId(),"");
+            Assertions.assertEquals(createUdfRequest.getId(),"");
             createUdfRequest = new CreateUdfRequest(udf, desc);
             createUdfRequest.setDesc("desc");
             createUdfRequest.setId("id");
-            Assert.assertEquals(createUdfRequest.getDesc(),"desc");
-            Assert.assertEquals(createUdfRequest.getId(),"id");
+            Assertions.assertEquals(createUdfRequest.getDesc(),"desc");
+            Assertions.assertEquals(createUdfRequest.getId(),"id");
             ossClient.createUdf(createUdfRequest);
-            Assert.fail("Udf API is removed.");
+            Assertions.fail("Udf API is removed.");
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
@@ -60,11 +60,11 @@ public class UdfTest extends TestBase {
             UdfGenericRequest genericRequest = new UdfGenericRequest(udf);
             genericRequest = new UdfGenericRequest();
             genericRequest.setName("name");
-            Assert.assertEquals(genericRequest.getName(), "name");
+            Assertions.assertEquals(genericRequest.getName(), "name");
             UdfInfo ui = ossClient.getUdfInfo(genericRequest);
-            Assert.fail("Udf API is removed.");
+            Assertions.fail("Udf API is removed.");
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
@@ -76,19 +76,19 @@ public class UdfTest extends TestBase {
             imageInfo.setDesc("new desc");
             imageInfo.setCanonicalRegion("new region");
             imageInfo.setCreationDate(date);
-            Assert.assertEquals(imageInfo.getVersion(), new Integer(2));
-            Assert.assertEquals(imageInfo.getStatus(), "new status");
-            Assert.assertEquals(imageInfo.getDesc(), "new desc");
-            Assert.assertEquals(imageInfo.getCanonicalRegion(), "new region");
-            Assert.assertEquals(imageInfo.getCreationDate(), date);
+            Assertions.assertEquals(imageInfo.getVersion(), new Integer(2));
+            Assertions.assertEquals(imageInfo.getStatus(), "new status");
+            Assertions.assertEquals(imageInfo.getDesc(), "new desc");
+            Assertions.assertEquals(imageInfo.getCanonicalRegion(), "new region");
+            Assertions.assertEquals(imageInfo.getCreationDate(), date);
             String dump = imageInfo.toString();
 
             // list image info
             UdfGenericRequest genericRequest = new UdfGenericRequest(udf);
             List<UdfImageInfo> udfImages = ossClient.getUdfImageInfo(genericRequest);
-            Assert.fail("Udf API is removed.");
+            Assertions.fail("Udf API is removed.");
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
@@ -101,33 +101,33 @@ public class UdfTest extends TestBase {
             info.setDesc("new desc");
             info.setAcl(CannedUdfAcl.parse("public"));
             info.setCreationDate(date);
-            Assert.assertEquals(info.getName(), "new name");
-            Assert.assertEquals(info.getOwner(), "new owner");
-            Assert.assertEquals(info.getId(), "new id");
-            Assert.assertEquals(info.getDesc(), "new desc");
-            Assert.assertEquals(info.getCreationDate(), date);
-            Assert.assertEquals(info.getAcl(), CannedUdfAcl.Public);
+            Assertions.assertEquals(info.getName(), "new name");
+            Assertions.assertEquals(info.getOwner(), "new owner");
+            Assertions.assertEquals(info.getId(), "new id");
+            Assertions.assertEquals(info.getDesc(), "new desc");
+            Assertions.assertEquals(info.getCreationDate(), date);
+            Assertions.assertEquals(info.getAcl(), CannedUdfAcl.Public);
             String dump = info.toString();
             // list image info
             List<UdfInfo> udfs = ossClient.listUdfs();
-            Assert.fail("Udf API is removed.");
+            Assertions.fail("Udf API is removed.");
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             UdfGenericRequest genericRequest = new UdfGenericRequest(udf);
             ossClient.deleteUdf(genericRequest);
-            Assert.fail("Udf API is removed.");
+            Assertions.fail("Udf API is removed.");
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             CannedUdfAcl.parse("UN");
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
@@ -145,21 +145,21 @@ public class UdfTest extends TestBase {
             uploadUdfImageRequest = new UploadUdfImageRequest(udf, desc,null);
             uploadUdfImageRequest.setUdfImage(input);
             uploadUdfImageRequest.setUdfImageDesc("desc");
-            Assert.assertEquals(uploadUdfImageRequest.getUdfImageDesc(),"desc");
-            Assert.assertEquals(uploadUdfImageRequest.getUdfImage(),input);
+            Assertions.assertEquals(uploadUdfImageRequest.getUdfImageDesc(),"desc");
+            Assertions.assertEquals(uploadUdfImageRequest.getUdfImage(),input);
             ossClient.uploadUdfImage(uploadUdfImageRequest);
-            Assert.fail("Udf API is removed.");
+            Assertions.fail("Udf API is removed.");
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             // upload image
             UdfGenericRequest genericRequest = new UdfGenericRequest(udf);
             ossClient.deleteUdfImage(genericRequest);
-            Assert.fail("Udf API is removed.");
+            Assertions.fail("Udf API is removed.");
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
     
@@ -174,32 +174,32 @@ public class UdfTest extends TestBase {
             for (UdfApplicationInfo app : appInfos) {
                 System.out.println(app);
             }
-            Assert.fail("Udf API is removed.");
+            Assertions.fail("Udf API is removed.");
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             // create application
             InstanceFlavor flavor = new InstanceFlavor("ecs.n1.middle");
-            Assert.assertEquals(flavor.getInstanceType(), "ecs.n1.middle");
-            Assert.assertEquals(flavor.toString(), "InstanceFlavor [instanceType=ecs.n1.middle]");
+            Assertions.assertEquals(flavor.getInstanceType(), "ecs.n1.middle");
+            Assertions.assertEquals(flavor.toString(), "InstanceFlavor [instanceType=ecs.n1.middle]");
             UdfApplicationConfiguration configuration = new UdfApplicationConfiguration(1, 1,flavor);
             configuration = new UdfApplicationConfiguration(1, 1);
             configuration.setImageVersion(2);
             configuration.setInstanceNum(2);
             InstanceFlavor flavor2 = new InstanceFlavor("ecs.n1.big");
             configuration.setFlavor(flavor2);
-            Assert.assertEquals(configuration.getImageVersion(),new Integer(2));
-            Assert.assertEquals(configuration.getInstanceNum(),new Integer(2));
-            Assert.assertEquals(configuration.getFlavor(),flavor2);
+            Assertions.assertEquals(configuration.getImageVersion(),new Integer(2));
+            Assertions.assertEquals(configuration.getInstanceNum(),new Integer(2));
+            Assertions.assertEquals(configuration.getFlavor(),flavor2);
             CreateUdfApplicationRequest createUdfApplicationRequest = new CreateUdfApplicationRequest(udf, configuration);
             configuration = createUdfApplicationRequest.getUdfApplicationConfiguration();
             createUdfApplicationRequest.setUdfApplicationConfiguration(configuration);
             ossClient.createUdfApplication(createUdfApplicationRequest);
-            Assert.fail("Udf API is removed.");
+            Assertions.fail("Udf API is removed.");
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
@@ -216,80 +216,80 @@ public class UdfTest extends TestBase {
             appInfo.setInstanceNum(3);
             appInfo.setFlavor(flavor);
             appInfo.setCreationDate(startTime);
-            Assert.assertEquals(appInfo.getName(),"new name");
-            Assert.assertEquals(appInfo.getId(),"new id");
-            Assert.assertEquals(appInfo.getRegion(),"new region");
-            Assert.assertEquals(appInfo.getStatus(),"new status");
-            Assert.assertEquals(appInfo.getImageVersion(),new Integer(2));
-            Assert.assertEquals(appInfo.getInstanceNum(),new Integer(3));
-            Assert.assertEquals(appInfo.getFlavor(),flavor);
-            Assert.assertEquals(appInfo.getCreationDate(),startTime);
+            Assertions.assertEquals(appInfo.getName(),"new name");
+            Assertions.assertEquals(appInfo.getId(),"new id");
+            Assertions.assertEquals(appInfo.getRegion(),"new region");
+            Assertions.assertEquals(appInfo.getStatus(),"new status");
+            Assertions.assertEquals(appInfo.getImageVersion(),new Integer(2));
+            Assertions.assertEquals(appInfo.getInstanceNum(),new Integer(3));
+            Assertions.assertEquals(appInfo.getFlavor(),flavor);
+            Assertions.assertEquals(appInfo.getCreationDate(),startTime);
             String dump = appInfo.toString();
             // get application info
             UdfGenericRequest genericRequest = new UdfGenericRequest(udf);
             appInfo = ossClient.getUdfApplicationInfo(genericRequest);
-            Assert.fail("Udf API is removed.");
+            Assertions.fail("Udf API is removed.");
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             // upgrade application
             UpgradeUdfApplicationRequest upgradeUdfApplicationRequest = new UpgradeUdfApplicationRequest(udf, 2);
             upgradeUdfApplicationRequest.setImageVersion(3);
-            Assert.assertEquals(upgradeUdfApplicationRequest.getImageVersion(),new Integer(3));
+            Assertions.assertEquals(upgradeUdfApplicationRequest.getImageVersion(),new Integer(3));
             ossClient.upgradeUdfApplication(upgradeUdfApplicationRequest);
-            Assert.fail("Udf API is removed.");
+            Assertions.fail("Udf API is removed.");
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             // resize application
             ResizeUdfApplicationRequest resizeUdfApplicationRequest = new ResizeUdfApplicationRequest(udf, 2);
             resizeUdfApplicationRequest.setInstanceNum(3);
-            Assert.assertEquals(resizeUdfApplicationRequest.getInstanceNum(),new Integer(3));
+            Assertions.assertEquals(resizeUdfApplicationRequest.getInstanceNum(),new Integer(3));
             ossClient.resizeUdfApplication(resizeUdfApplicationRequest);
-            Assert.fail("Udf API is removed.");
+            Assertions.fail("Udf API is removed.");
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             // get application log
             GetUdfApplicationLogRequest getUdfApplicationLogRequest = new GetUdfApplicationLogRequest(udf,
                     DateUtil.parseRfc822Date("Wed, 15 Mar 2017 02:23:45 GMT"), 200L);
-            Assert.assertEquals(getUdfApplicationLogRequest.getEndLines(),new Long(200L));
+            Assertions.assertEquals(getUdfApplicationLogRequest.getEndLines(),new Long(200L));
             getUdfApplicationLogRequest = new GetUdfApplicationLogRequest(udf, 100L);
             getUdfApplicationLogRequest = new GetUdfApplicationLogRequest(udf);
             Date startTime = DateUtil.parseRfc822Date("Wed, 15 Mar 2017 03:23:45 GMT");
             getUdfApplicationLogRequest.setStartTime(startTime);
             getUdfApplicationLogRequest.setEndLines(100L);
-            Assert.assertEquals(getUdfApplicationLogRequest.getEndLines(),new Long(100L));
-            Assert.assertEquals(getUdfApplicationLogRequest.getStartTime(),startTime);
+            Assertions.assertEquals(getUdfApplicationLogRequest.getEndLines(),new Long(100L));
+            Assertions.assertEquals(getUdfApplicationLogRequest.getStartTime(),startTime);
 
             UdfApplicationLog udfApplicationLog = new UdfApplicationLog();
             udfApplicationLog.setUdfName("name");
             udfApplicationLog.setLogContent(null);
-            Assert.assertEquals(udfApplicationLog.getUdfName(),"name");
-            Assert.assertEquals(udfApplicationLog.getLogContent(), null);
+            Assertions.assertEquals(udfApplicationLog.getUdfName(),"name");
+            Assertions.assertEquals(udfApplicationLog.getLogContent(), null);
             udfApplicationLog.close();
             udfApplicationLog = new UdfApplicationLog("name", new ByteArrayInputStream("".getBytes()));
             udfApplicationLog.close();
             udfApplicationLog = new UdfApplicationLog("name");
             udfApplicationLog = ossClient.getUdfApplicationLog(getUdfApplicationLogRequest);
-            Assert.fail("Udf API is removed.");
+            Assertions.fail("Udf API is removed.");
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             // delete application
             UdfGenericRequest genericRequest = new UdfGenericRequest(udf);
             ossClient.deleteUdfApplication(genericRequest);
-            Assert.fail("Udf API is removed.");
+            Assertions.fail("Udf API is removed.");
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 

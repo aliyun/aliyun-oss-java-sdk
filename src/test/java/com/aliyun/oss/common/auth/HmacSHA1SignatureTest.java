@@ -19,14 +19,14 @@
 
 package com.aliyun.oss.common.auth;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 public class HmacSHA1SignatureTest {
     @Test
     public void testHmacSignature() {
         HmacSHA1Signature signature = new HmacSHA1Signature();
-        Assert.assertEquals("HmacSHA1", signature.getAlgorithm());
-        Assert.assertEquals("1", signature.getVersion());
+        Assertions.assertEquals("HmacSHA1", signature.getAlgorithm());
+        Assertions.assertEquals("1", signature.getVersion());
     }
 }

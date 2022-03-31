@@ -24,7 +24,7 @@ import com.aliyun.oss.ServiceException;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.HttpHeaders;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -44,10 +44,10 @@ public class ObjectWithPrefixSlashTest extends TestBase {
         try {
             ossClient.putObject(bucketName, objectName, new ByteArrayInputStream("123".getBytes()));
         } catch (ServiceException e) {
-            Assert.assertEquals(e.getErrorCode(), "InvalidObjectName");
+            Assertions.assertEquals(e.getErrorCode(), "InvalidObjectName");
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -77,10 +77,10 @@ public class ObjectWithPrefixSlashTest extends TestBase {
             // Using url signature & chunked encoding to upload specified inputstream.
             ossClient.putObject(signedUrl, instream, -1, requestHeaders, true);
         } catch (ServiceException e) {
-            Assert.assertEquals(e.getErrorCode(), "InvalidObjectName");
+            Assertions.assertEquals(e.getErrorCode(), "InvalidObjectName");
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 

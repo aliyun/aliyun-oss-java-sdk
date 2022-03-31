@@ -4,7 +4,7 @@ import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.*;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -31,28 +31,28 @@ public class OverwriteEndpointTest  extends TestBase {
     public void testOverwriteEndpoint() {
         try {
             ObjectAcl acl = ossClient.getObjectAcl(bucketName,key);
-            Assert.assertEquals(ObjectPermission.Default, acl.getPermission());
+            Assertions.assertEquals(ObjectPermission.Default, acl.getPermission());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
             ObjectAcl acl = ossClient2.getObjectAcl(bucketName,key);
-            Assert.fail("should not here");
+            Assertions.fail("should not here");
         } catch (Exception e) {
-            Assert.assertTrue( e instanceof OSSException);
+            Assertions.assertTrue( e instanceof OSSException);
             OSSException e1 = (OSSException)e;
-            Assert.assertEquals(bucketName + "." + secondEndpoint, e1.getHostId());
+            Assertions.assertEquals(bucketName + "." + secondEndpoint, e1.getHostId());
         }
 
         try {
             GenericRequest request = new GenericRequest(bucketName, key);
-            Assert.assertEquals(null, request.getEndpoint());
+            Assertions.assertEquals(null, request.getEndpoint());
             request.setEndpoint(TestConfig.OSS_TEST_ENDPOINT);
             ObjectAcl acl = ossClient2.getObjectAcl(request);
-            Assert.assertEquals(ObjectPermission.Default, acl.getPermission());
+            Assertions.assertEquals(ObjectPermission.Default, acl.getPermission());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -63,7 +63,7 @@ public class OverwriteEndpointTest  extends TestBase {
             request.setEndpoint("?invalid");
             ObjectAcl acl = ossClient2.getObjectAcl(request);
         } catch (Exception e) {
-            Assert.assertTrue( e instanceof IllegalArgumentException);
+            Assertions.assertTrue( e instanceof IllegalArgumentException);
         }
     }
 }

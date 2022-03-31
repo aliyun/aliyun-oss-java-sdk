@@ -21,7 +21,7 @@ package com.aliyun.oss.testing;
 
 import java.util.List;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.Ignore;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
@@ -53,19 +53,19 @@ public class LifecycleConfigTest {
             
             // get bucket lifecycle
             List<LifecycleRule> rules = client.getBucketLifecycle(bucketName);
-            Assert.assertEquals(rules.size(), 2);
+            Assertions.assertEquals(rules.size(), 2);
             
             LifecycleRule r0 = rules.get(0);
-            Assert.assertEquals(r0.getId(), "delete obsoleted files");
-            Assert.assertEquals(r0.getPrefix(), "obsoleted/");
-            Assert.assertEquals(r0.getStatus(), RuleStatus.Enabled);
-            Assert.assertEquals(r0.getExpirationDays(), 3);
+            Assertions.assertEquals(r0.getId(), "delete obsoleted files");
+            Assertions.assertEquals(r0.getPrefix(), "obsoleted/");
+            Assertions.assertEquals(r0.getStatus(), RuleStatus.Enabled);
+            Assertions.assertEquals(r0.getExpirationDays(), 3);
             
             LifecycleRule r1 = rules.get(1);
-            Assert.assertEquals(r1.getId(), "delete temporary files");
-            Assert.assertEquals(r1.getPrefix(), "temporary/");
-            Assert.assertEquals(r1.getStatus(), RuleStatus.Enabled);
-            Assert.assertEquals(DateUtil.formatIso8601Date(r1.getExpirationTime()), "2022-10-12T00:00:00.000Z");
+            Assertions.assertEquals(r1.getId(), "delete temporary files");
+            Assertions.assertEquals(r1.getPrefix(), "temporary/");
+            Assertions.assertEquals(r1.getStatus(), RuleStatus.Enabled);
+            Assertions.assertEquals(DateUtil.formatIso8601Date(r1.getExpirationTime()), "2022-10-12T00:00:00.000Z");
             
             // delete bucket lifecycle
             client.deleteBucketLifecycle(bucketName);
@@ -74,11 +74,11 @@ public class LifecycleConfigTest {
             try {
                 client.getBucketLifecycle(bucketName);
             } catch (OSSException ex) {
-                Assert.assertEquals(OSSErrorCode.NO_SUCH_LIFECYCLE, ex.getErrorCode());
+                Assertions.assertEquals(OSSErrorCode.NO_SUCH_LIFECYCLE, ex.getErrorCode());
             }
             
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 }

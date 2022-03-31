@@ -25,7 +25,7 @@ import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 
@@ -69,9 +69,9 @@ public class ListBucketsTest extends TestBase {
                     newlyBuckets.add(bucketName);
                     waitForCacheExpiration(5);
                     String loc = ossClient.getBucketLocation(bucketName);
-                    Assert.assertEquals(OSS_TEST_REGION, loc);
+                    Assertions.assertEquals(OSS_TEST_REGION, loc);
                 } catch (Exception e) {
-                    Assert.fail(e.getMessage());
+                    Assertions.fail(e.getMessage());
                 }
             }
             
@@ -85,37 +85,37 @@ public class ListBucketsTest extends TestBase {
                     existingBuckets.add(bkt.getName());
                 }
             }
-            Assert.assertEquals(MAX_BUCKETS_ALLOWED, existingBuckets.size());
+            Assertions.assertEquals(MAX_BUCKETS_ALLOWED, existingBuckets.size());
             
             // List all existing buckets prefix with 'normal-list-buckets-'
             BucketList bucketList = ossClient.listBuckets(bucketNamePrefix, null, null);
-            Assert.assertEquals(remaindingAllowed, bucketList.getBucketList().size());
+            Assertions.assertEquals(remaindingAllowed, bucketList.getBucketList().size());
             for (Bucket bkt : bucketList.getBucketList()) {
-                Assert.assertTrue(bkt.getName().startsWith(bucketNamePrefix));
+                Assertions.assertTrue(bkt.getName().startsWith(bucketNamePrefix));
             }
             
             // List 'max-keys' buckets each time
             final int maxKeys = 3;
             bucketList = ossClient.listBuckets(bucketNamePrefix, null, maxKeys);
-            Assert.assertTrue(bucketList.getBucketList().size() <= 3);
+            Assertions.assertTrue(bucketList.getBucketList().size() <= 3);
             returnedBuckets.clear();
             returnedBuckets.addAll(bucketList.getBucketList());
             while (bucketList.isTruncated()) {
                 bucketList = ossClient.listBuckets(
                         new ListBucketsRequest(bucketNamePrefix, bucketList.getNextMarker(), maxKeys));                
-                Assert.assertTrue(bucketList.getBucketList().size() <= 3);
+                Assertions.assertTrue(bucketList.getBucketList().size() <= 3);
                 returnedBuckets.addAll(bucketList.getBucketList());
             }
-            Assert.assertEquals(remaindingAllowed, returnedBuckets.size());
+            Assertions.assertEquals(remaindingAllowed, returnedBuckets.size());
             for (Bucket bkt : returnedBuckets) {
-                Assert.assertTrue(bkt.getName().startsWith(bucketNamePrefix));
+                Assertions.assertTrue(bkt.getName().startsWith(bucketNamePrefix));
             }
             
             for (String bkt : newlyBuckets) {
                 ossClient.deleteBucket(bkt);
             }
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } 
     }
 
@@ -126,13 +126,13 @@ public class ListBucketsTest extends TestBase {
         try {            
             // List all existing buckets prefix with 'nonexistent-bucket-name-prefix-'
             BucketList bucketList = ossClient.listBuckets(nonexistentBucketNamePrefix, null, null);
-            Assert.assertEquals(0, bucketList.getBucketList().size());
+            Assertions.assertEquals(0, bucketList.getBucketList().size());
             
             // Set 'max-keys' equal zero(MUST be between 1 and 1000)
             bucketList = ossClient.listBuckets(null, null, 0);
-            Assert.fail("List bucket should not be successful");
+            Assertions.fail("List bucket should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         } 
     }
     

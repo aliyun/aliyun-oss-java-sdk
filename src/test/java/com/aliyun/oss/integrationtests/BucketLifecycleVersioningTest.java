@@ -11,7 +11,7 @@ import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.model.LifecycleRule;
 import com.aliyun.oss.model.SetBucketLifecycleRequest;
 import com.aliyun.oss.model.StorageClass;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 import java.text.ParseException;
@@ -57,15 +57,15 @@ public class BucketLifecycleVersioningTest extends TestBase {
 
             // NoncurrentVersionExpiration
             NoncurrentVersionExpiration noncurrentVersionExpiration = new NoncurrentVersionExpiration().withNoncurrentDays(30);
-            Assert.assertTrue(noncurrentVersionExpiration.hasNoncurrentDays());
+            Assertions.assertTrue(noncurrentVersionExpiration.hasNoncurrentDays());
 
             // NoncurrentVersionStorageTransition
             NoncurrentVersionStorageTransition noncurrentVersionStorageTransition1 =
                     new NoncurrentVersionStorageTransition().withNoncurrentDays(10).withStrorageClass(StorageClass.IA);
             NoncurrentVersionStorageTransition noncurrentVersionStorageTransition2 =
                     new NoncurrentVersionStorageTransition().withNoncurrentDays(20).withStrorageClass(StorageClass.Archive);
-            Assert.assertTrue(noncurrentVersionStorageTransition1.hasNoncurrentDays());
-            Assert.assertTrue(noncurrentVersionStorageTransition2.hasNoncurrentDays());
+            Assertions.assertTrue(noncurrentVersionStorageTransition1.hasNoncurrentDays());
+            Assertions.assertTrue(noncurrentVersionStorageTransition2.hasNoncurrentDays());
 
             List<NoncurrentVersionStorageTransition> noncurrentVersionStorageTransitions = new ArrayList<NoncurrentVersionStorageTransition>();
             noncurrentVersionStorageTransitions.add(noncurrentVersionStorageTransition1);
@@ -80,13 +80,13 @@ public class BucketLifecycleVersioningTest extends TestBase {
             ossClient.setBucketLifecycle(request);
 
             List<LifecycleRule> rules = ossClient.getBucketLifecycle(bucketName);
-            Assert.assertEquals(rules.size(), 1);
-            Assert.assertEquals(ruleId0, rules.get(0).getId());
-            Assert.assertEquals(matchPrefix0, rules.get(0).getPrefix());
-            Assert.assertEquals(LifecycleRule.RuleStatus.Enabled, rules.get(0).getStatus());
-            Assert.assertTrue(rules.get(0).getExpiredDeleteMarker());
-            Assert.assertEquals(30, rules.get(0).getNoncurrentVersionExpiration().getNoncurrentDays().intValue());
-            Assert.assertEquals(2, rules.get(0).getNoncurrentVersionStorageTransitions().size());
+            Assertions.assertEquals(rules.size(), 1);
+            Assertions.assertEquals(ruleId0, rules.get(0).getId());
+            Assertions.assertEquals(matchPrefix0, rules.get(0).getPrefix());
+            Assertions.assertEquals(LifecycleRule.RuleStatus.Enabled, rules.get(0).getStatus());
+            Assertions.assertTrue(rules.get(0).getExpiredDeleteMarker());
+            Assertions.assertEquals(30, rules.get(0).getNoncurrentVersionExpiration().getNoncurrentDays().intValue());
+            Assertions.assertEquals(2, rules.get(0).getNoncurrentVersionStorageTransitions().size());
 
             ossClient.deleteBucketLifecycle(bucketName);
 
@@ -94,11 +94,11 @@ public class BucketLifecycleVersioningTest extends TestBase {
             try {
                 ossClient.getBucketLifecycle(bucketName);
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.NO_SUCH_LIFECYCLE, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_LIFECYCLE_ERR));
+                Assertions.assertEquals(OSSErrorCode.NO_SUCH_LIFECYCLE, e.getErrorCode());
+                Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_LIFECYCLE_ERR));
             }
         } catch (OSSException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -118,7 +118,7 @@ public class BucketLifecycleVersioningTest extends TestBase {
             rule.setExpirationDays(10);
             rule.setExpiredDeleteMarker(true);
             request.AddLifecycleRule(rule);
-            Assert.fail("Only one expiration property should be specified.");
+            Assertions.fail("Only one expiration property should be specified.");
         } catch (IllegalArgumentException e) {
         }
 
@@ -145,9 +145,9 @@ public class BucketLifecycleVersioningTest extends TestBase {
             rule.setNoncurrentVersionStorageTransitions(noncurrentVersionStorageTransitions);
             request.AddLifecycleRule(rule);
             ossClient.setBucketLifecycle(request);
-            Assert.fail("NoncurrentVersionExpiration days should not later than NoncurrentVersionStorageTransition days.");
+            Assertions.fail("NoncurrentVersionExpiration days should not later than NoncurrentVersionStorageTransition days.");
         } catch (OSSException e) {
-            Assert.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
+            Assertions.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
         }
 
         // Archive transition days < IA transition days
@@ -173,9 +173,9 @@ public class BucketLifecycleVersioningTest extends TestBase {
             rule.setNoncurrentVersionStorageTransitions(noncurrentVersionStorageTransitions);
             request.AddLifecycleRule(rule);
             ossClient.setBucketLifecycle(request);
-            Assert.fail("Archive transition days should not smaller than IA transition days.");
+            Assertions.fail("Archive transition days should not smaller than IA transition days.");
         } catch (OSSException e) {
-            Assert.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
+            Assertions.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
         } finally {
             ossClient.deleteBucket(bucketName);
         }

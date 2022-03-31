@@ -30,7 +30,7 @@ import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.model.ListObjectsV2Request;
 import com.aliyun.oss.model.ListObjectsV2Result;
 import com.aliyun.oss.model.OSSObjectSummary;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.net.URLDecoder;
@@ -79,19 +79,19 @@ public class ListObjectsV2Test extends TestBase {
 
             // List objects under empty bucket
             ListObjectsV2Result result = ossClient.listObjectsV2(bucketName);
-            Assert.assertEquals(0, result.getObjectSummaries().size());
-            Assert.assertEquals(DEFAULT_MAX_RETURNED_KEYS, result.getMaxKeys());
-            Assert.assertEquals(0, result.getCommonPrefixes().size());
-            Assert.assertEquals(bucketName, result.getBucketName());
-            Assert.assertEquals(0, result.getKeyCount());
-            Assert.assertNull(result.getEncodingType());
-            Assert.assertNull(result.getContinuationToken());
-            Assert.assertNull(result.getNextContinuationToken());
-            Assert.assertNull(result.getStartAfter());
-            Assert.assertNull(result.getDelimiter());
-            Assert.assertNull(result.getPrefix());
-            Assert.assertFalse(result.isTruncated());
-            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(0, result.getObjectSummaries().size());
+            Assertions.assertEquals(DEFAULT_MAX_RETURNED_KEYS, result.getMaxKeys());
+            Assertions.assertEquals(0, result.getCommonPrefixes().size());
+            Assertions.assertEquals(bucketName, result.getBucketName());
+            Assertions.assertEquals(0, result.getKeyCount());
+            Assertions.assertNull(result.getEncodingType());
+            Assertions.assertNull(result.getContinuationToken());
+            Assertions.assertNull(result.getNextContinuationToken());
+            Assertions.assertNull(result.getStartAfter());
+            Assertions.assertNull(result.getDelimiter());
+            Assertions.assertNull(result.getPrefix());
+            Assertions.assertFalse(result.isTruncated());
+            Assertions.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
 
             // 99 files under sub-dir
             String dir1 = "test-dir/";
@@ -113,113 +113,113 @@ public class ListObjectsV2Test extends TestBase {
 
             // List objects under nonempty bucket
             result = ossClient.listObjectsV2(bucketName);
-            Assert.assertEquals(DEFAULT_MAX_RETURNED_KEYS, result.getObjectSummaries().size());
-            Assert.assertEquals(DEFAULT_MAX_RETURNED_KEYS, result.getMaxKeys());
-            Assert.assertEquals(0, result.getCommonPrefixes().size());
-            Assert.assertEquals(bucketName, result.getBucketName());
-            Assert.assertEquals(DEFAULT_MAX_RETURNED_KEYS, result.getKeyCount());
-            Assert.assertNull(result.getEncodingType());
-            Assert.assertNull(result.getContinuationToken());
-            Assert.assertNotNull(result.getNextContinuationToken());
-            Assert.assertNull(result.getStartAfter());
-            Assert.assertNull(result.getDelimiter());
-            Assert.assertNull(result.getPrefix());
-            Assert.assertTrue(result.isTruncated());
-            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(DEFAULT_MAX_RETURNED_KEYS, result.getObjectSummaries().size());
+            Assertions.assertEquals(DEFAULT_MAX_RETURNED_KEYS, result.getMaxKeys());
+            Assertions.assertEquals(0, result.getCommonPrefixes().size());
+            Assertions.assertEquals(bucketName, result.getBucketName());
+            Assertions.assertEquals(DEFAULT_MAX_RETURNED_KEYS, result.getKeyCount());
+            Assertions.assertNull(result.getEncodingType());
+            Assertions.assertNull(result.getContinuationToken());
+            Assertions.assertNotNull(result.getNextContinuationToken());
+            Assertions.assertNull(result.getStartAfter());
+            Assertions.assertNull(result.getDelimiter());
+            Assertions.assertNull(result.getPrefix());
+            Assertions.assertTrue(result.isTruncated());
+            Assertions.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
 
             // List object with continuationToken.
             String continuationToken = result.getNextContinuationToken();
             ListObjectsV2Request listObjectsV2Request = new ListObjectsV2Request(bucketName)
                     .withContinuationToken(continuationToken);
             result = ossClient.listObjectsV2(listObjectsV2Request);
-            Assert.assertEquals(3, result.getObjectSummaries().size());
-            Assert.assertEquals(DEFAULT_MAX_RETURNED_KEYS, result.getMaxKeys());
-            Assert.assertEquals(0, result.getCommonPrefixes().size());
-            Assert.assertEquals(bucketName, result.getBucketName());
-            Assert.assertEquals(3, result.getKeyCount());
-            Assert.assertNull(result.getEncodingType());
-            Assert.assertEquals(continuationToken, result.getContinuationToken());
-            Assert.assertNull(result.getNextContinuationToken());
-            Assert.assertNull(result.getDelimiter());
-            Assert.assertNull(result.getPrefix());
-            Assert.assertNull(result.getStartAfter());
-            Assert.assertFalse(result.isTruncated());
-            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(3, result.getObjectSummaries().size());
+            Assertions.assertEquals(DEFAULT_MAX_RETURNED_KEYS, result.getMaxKeys());
+            Assertions.assertEquals(0, result.getCommonPrefixes().size());
+            Assertions.assertEquals(bucketName, result.getBucketName());
+            Assertions.assertEquals(3, result.getKeyCount());
+            Assertions.assertNull(result.getEncodingType());
+            Assertions.assertEquals(continuationToken, result.getContinuationToken());
+            Assertions.assertNull(result.getNextContinuationToken());
+            Assertions.assertNull(result.getDelimiter());
+            Assertions.assertNull(result.getPrefix());
+            Assertions.assertNull(result.getStartAfter());
+            Assertions.assertFalse(result.isTruncated());
+            Assertions.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
 
             // List objects with prefix
             result = ossClient.listObjectsV2(bucketName, bigLetterPrefix);
-            Assert.assertEquals(3, result.getObjectSummaries().size());
-            Assert.assertEquals(DEFAULT_MAX_RETURNED_KEYS, result.getMaxKeys());
-            Assert.assertEquals(0, result.getCommonPrefixes().size());
-            Assert.assertEquals(bucketName, result.getBucketName());
-            Assert.assertEquals(3, result.getKeyCount());
-            Assert.assertNull(result.getEncodingType());
-            Assert.assertNull(result.getContinuationToken());
-            Assert.assertNull(result.getNextContinuationToken());
-            Assert.assertNull(result.getStartAfter());
-            Assert.assertNull(result.getDelimiter());
-            Assert.assertEquals(bigLetterPrefix, result.getPrefix());
-            Assert.assertFalse(result.isTruncated());
-            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(3, result.getObjectSummaries().size());
+            Assertions.assertEquals(DEFAULT_MAX_RETURNED_KEYS, result.getMaxKeys());
+            Assertions.assertEquals(0, result.getCommonPrefixes().size());
+            Assertions.assertEquals(bucketName, result.getBucketName());
+            Assertions.assertEquals(3, result.getKeyCount());
+            Assertions.assertNull(result.getEncodingType());
+            Assertions.assertNull(result.getContinuationToken());
+            Assertions.assertNull(result.getNextContinuationToken());
+            Assertions.assertNull(result.getStartAfter());
+            Assertions.assertNull(result.getDelimiter());
+            Assertions.assertEquals(bigLetterPrefix, result.getPrefix());
+            Assertions.assertFalse(result.isTruncated());
+            Assertions.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
 
             // List objects with prefix and delimiter
             listObjectsV2Request = new ListObjectsV2Request(bucketName, bigLetterPrefix);
             listObjectsV2Request.setDelimiter("/");
             result = ossClient.listObjectsV2(listObjectsV2Request);
-            Assert.assertEquals(3, result.getObjectSummaries().size());
-            Assert.assertEquals(DEFAULT_MAX_RETURNED_KEYS, result.getMaxKeys());
-            Assert.assertEquals(0, result.getCommonPrefixes().size());
-            Assert.assertEquals(bucketName, result.getBucketName());
-            Assert.assertEquals(3, result.getKeyCount());
-            Assert.assertNull(result.getEncodingType());
-            Assert.assertNull(result.getContinuationToken());
-            Assert.assertNull(result.getNextContinuationToken());
-            Assert.assertEquals("/", result.getDelimiter());
-            Assert.assertEquals(bigLetterPrefix, result.getPrefix());
-            Assert.assertNull(result.getStartAfter());
-            Assert.assertFalse(result.isTruncated());
-            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(3, result.getObjectSummaries().size());
+            Assertions.assertEquals(DEFAULT_MAX_RETURNED_KEYS, result.getMaxKeys());
+            Assertions.assertEquals(0, result.getCommonPrefixes().size());
+            Assertions.assertEquals(bucketName, result.getBucketName());
+            Assertions.assertEquals(3, result.getKeyCount());
+            Assertions.assertNull(result.getEncodingType());
+            Assertions.assertNull(result.getContinuationToken());
+            Assertions.assertNull(result.getNextContinuationToken());
+            Assertions.assertEquals("/", result.getDelimiter());
+            Assertions.assertEquals(bigLetterPrefix, result.getPrefix());
+            Assertions.assertNull(result.getStartAfter());
+            Assertions.assertFalse(result.isTruncated());
+            Assertions.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
 
             // List object with prefix, delimiter, encodeType
             result = ossClient.listObjectsV2(bucketName, dir1, null, null,
                     "/", null, DEFAULT_ENCODING_TYPE, false);
-            Assert.assertEquals(1, result.getObjectSummaries().size());
-            Assert.assertEquals(DEFAULT_MAX_RETURNED_KEYS, result.getMaxKeys());
-            Assert.assertEquals(1, result.getCommonPrefixes().size());
-            Assert.assertEquals(HttpUtil.urlEncode(dir1 + subDir,DEFAULT_CHARSET_NAME), result.getCommonPrefixes().get(0));
-            Assert.assertEquals(bucketName, result.getBucketName());
-            Assert.assertEquals(2, result.getKeyCount());
-            Assert.assertEquals(DEFAULT_ENCODING_TYPE, result.getEncodingType());
-            Assert.assertNull(result.getContinuationToken());
-            Assert.assertNull(result.getNextContinuationToken());
+            Assertions.assertEquals(1, result.getObjectSummaries().size());
+            Assertions.assertEquals(DEFAULT_MAX_RETURNED_KEYS, result.getMaxKeys());
+            Assertions.assertEquals(1, result.getCommonPrefixes().size());
+            Assertions.assertEquals(HttpUtil.urlEncode(dir1 + subDir,DEFAULT_CHARSET_NAME), result.getCommonPrefixes().get(0));
+            Assertions.assertEquals(bucketName, result.getBucketName());
+            Assertions.assertEquals(2, result.getKeyCount());
+            Assertions.assertEquals(DEFAULT_ENCODING_TYPE, result.getEncodingType());
+            Assertions.assertNull(result.getContinuationToken());
+            Assertions.assertNull(result.getNextContinuationToken());
             String delimiter = result.getDelimiter();
-            Assert.assertEquals(HttpUtil.urlEncode("/",DEFAULT_CHARSET_NAME), delimiter);
-            Assert.assertEquals("%2F", delimiter);
-            Assert.assertEquals(HttpUtil.urlEncode(dir1, DEFAULT_CHARSET_NAME), result.getPrefix());
-            Assert.assertNull(result.getStartAfter());
-            Assert.assertFalse(result.isTruncated());
-            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(HttpUtil.urlEncode("/",DEFAULT_CHARSET_NAME), delimiter);
+            Assertions.assertEquals("%2F", delimiter);
+            Assertions.assertEquals(HttpUtil.urlEncode(dir1, DEFAULT_CHARSET_NAME), result.getPrefix());
+            Assertions.assertNull(result.getStartAfter());
+            Assertions.assertFalse(result.isTruncated());
+            Assertions.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
 
             // List objects with startAfter
             listObjectsV2Request = new ListObjectsV2Request(bucketName);
             listObjectsV2Request.setStartAfter(bigLetterPrefix);
             result = ossClient.listObjectsV2(listObjectsV2Request);
-            Assert.assertEquals(3, result.getObjectSummaries().size());
-            Assert.assertEquals(DEFAULT_MAX_RETURNED_KEYS, result.getMaxKeys());
-            Assert.assertEquals(0, result.getCommonPrefixes().size());
-            Assert.assertEquals(bucketName, result.getBucketName());
-            Assert.assertEquals(3, result.getKeyCount());
-            Assert.assertNull(result.getEncodingType());
-            Assert.assertNull(result.getContinuationToken());
-            Assert.assertNull(result.getNextContinuationToken());
-            Assert.assertNull(result.getDelimiter());
-            Assert.assertNull(result.getPrefix());
-            Assert.assertEquals(bigLetterPrefix, result.getStartAfter());
-            Assert.assertFalse(result.isTruncated());
-            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(3, result.getObjectSummaries().size());
+            Assertions.assertEquals(DEFAULT_MAX_RETURNED_KEYS, result.getMaxKeys());
+            Assertions.assertEquals(0, result.getCommonPrefixes().size());
+            Assertions.assertEquals(bucketName, result.getBucketName());
+            Assertions.assertEquals(3, result.getKeyCount());
+            Assertions.assertNull(result.getEncodingType());
+            Assertions.assertNull(result.getContinuationToken());
+            Assertions.assertNull(result.getNextContinuationToken());
+            Assertions.assertNull(result.getDelimiter());
+            Assertions.assertNull(result.getPrefix());
+            Assertions.assertEquals(bigLetterPrefix, result.getStartAfter());
+            Assertions.assertFalse(result.isTruncated());
+            Assertions.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             deleteBucketWithObjects(ossClient, bucketName);
         }
@@ -237,41 +237,41 @@ public class ListObjectsV2Test extends TestBase {
 
             // List objects without fetch-owner
             ListObjectsV2Result result = ossClient.listObjectsV2(bucketName);
-            Assert.assertEquals(2, result.getKeyCount());
+            Assertions.assertEquals(2, result.getKeyCount());
             List<OSSObjectSummary> ossObjectSummaries = result.getObjectSummaries();
-            Assert.assertEquals(2, ossObjectSummaries.size());
+            Assertions.assertEquals(2, ossObjectSummaries.size());
             for (OSSObjectSummary obj : ossObjectSummaries) {
-                Assert.assertEquals(bucketName, obj.getBucketName());
-                Assert.assertNotNull(obj.getKey());
-                Assert.assertNotNull(obj.getType());
-                Assert.assertEquals(1, obj.getSize());
-                Assert.assertNotNull(obj.getETag());
-                Assert.assertNotNull(obj.getLastModified());
-                Assert.assertNotNull(obj.getStorageClass());
-                Assert.assertNull(obj.getOwner());
+                Assertions.assertEquals(bucketName, obj.getBucketName());
+                Assertions.assertNotNull(obj.getKey());
+                Assertions.assertNotNull(obj.getType());
+                Assertions.assertEquals(1, obj.getSize());
+                Assertions.assertNotNull(obj.getETag());
+                Assertions.assertNotNull(obj.getLastModified());
+                Assertions.assertNotNull(obj.getStorageClass());
+                Assertions.assertNull(obj.getOwner());
             }
 
             // List objects with fetch-owner
             ListObjectsV2Request listObjectsV2Request = new ListObjectsV2Request(bucketName);
             listObjectsV2Request.setFetchOwner(true);
             result = ossClient.listObjectsV2(listObjectsV2Request);
-            Assert.assertEquals(2, result.getKeyCount());
+            Assertions.assertEquals(2, result.getKeyCount());
             ossObjectSummaries = result.getObjectSummaries();
-            Assert.assertEquals(2, ossObjectSummaries.size());
+            Assertions.assertEquals(2, ossObjectSummaries.size());
             for (OSSObjectSummary obj : ossObjectSummaries) {
-                Assert.assertEquals(bucketName, obj.getBucketName());
-                Assert.assertNotNull(obj.getKey());
-                Assert.assertNotNull(obj.getType());
-                Assert.assertEquals(1, obj.getSize());
-                Assert.assertNotNull(obj.getETag());
-                Assert.assertNotNull(obj.getLastModified());
-                Assert.assertNotNull(obj.getStorageClass());
-                Assert.assertNotNull(obj.getOwner());
-                Assert.assertNotNull(obj.getOwner().getId());
-                Assert.assertNotNull(obj.getOwner().getDisplayName());
+                Assertions.assertEquals(bucketName, obj.getBucketName());
+                Assertions.assertNotNull(obj.getKey());
+                Assertions.assertNotNull(obj.getType());
+                Assertions.assertEquals(1, obj.getSize());
+                Assertions.assertNotNull(obj.getETag());
+                Assertions.assertNotNull(obj.getLastModified());
+                Assertions.assertNotNull(obj.getStorageClass());
+                Assertions.assertNotNull(obj.getOwner());
+                Assertions.assertNotNull(obj.getOwner().getId());
+                Assertions.assertNotNull(obj.getOwner().getDisplayName());
             }
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             deleteBucketWithObjects(ossClient, bucketName);
         }
@@ -292,21 +292,21 @@ public class ListObjectsV2Test extends TestBase {
             ListObjectsV2Request listObjectsV2Request = new ListObjectsV2Request(bucketName);
             listObjectsV2Request.setMaxKeys(2);
             ListObjectsV2Result result = ossClient.listObjectsV2(listObjectsV2Request);
-            Assert.assertEquals(2, result.getObjectSummaries().size());
-            Assert.assertEquals(2, result.getMaxKeys());
-            Assert.assertEquals(0, result.getCommonPrefixes().size());
-            Assert.assertEquals(bucketName, result.getBucketName());
-            Assert.assertEquals(2, result.getKeyCount());
-            Assert.assertNull(result.getEncodingType());
-            Assert.assertNull(result.getContinuationToken());
-            Assert.assertNotNull(result.getNextContinuationToken());
-            Assert.assertNull(result.getStartAfter());
-            Assert.assertNull(result.getDelimiter());
-            Assert.assertNull(result.getPrefix());
-            Assert.assertTrue(result.isTruncated());
-            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(2, result.getObjectSummaries().size());
+            Assertions.assertEquals(2, result.getMaxKeys());
+            Assertions.assertEquals(0, result.getCommonPrefixes().size());
+            Assertions.assertEquals(bucketName, result.getBucketName());
+            Assertions.assertEquals(2, result.getKeyCount());
+            Assertions.assertNull(result.getEncodingType());
+            Assertions.assertNull(result.getContinuationToken());
+            Assertions.assertNotNull(result.getNextContinuationToken());
+            Assertions.assertNull(result.getStartAfter());
+            Assertions.assertNull(result.getDelimiter());
+            Assertions.assertNull(result.getPrefix());
+            Assertions.assertTrue(result.isTruncated());
+            Assertions.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             deleteBucketWithObjects(ossClient, bucketName);
         }
@@ -323,15 +323,15 @@ public class ListObjectsV2Test extends TestBase {
             existingKeys.add(objectPrefix + "\002\007");
             
             if (!batchPutObject(ossClient, bucketName, existingKeys)) {
-                Assert.fail("batch put object failed");
+                Assertions.fail("batch put object failed");
             }
             
             ListObjectsV2Request listObjectsV2Request = new ListObjectsV2Request(bucketName);
             try {
                 ossClient.listObjectsV2(listObjectsV2Request);
             } catch (Exception e) {
-                Assert.assertTrue(e instanceof OSSException);
-                Assert.assertEquals(OSSErrorCode.INVALID_RESPONSE, ((OSSException)e).getErrorCode());
+                Assertions.assertTrue(e instanceof OSSException);
+                Assertions.assertEquals(OSSErrorCode.INVALID_RESPONSE, ((OSSException)e).getErrorCode());
             }
             
             // List objects under nonempty bucket
@@ -340,23 +340,23 @@ public class ListObjectsV2Test extends TestBase {
             ListObjectsV2Result result = ossClient.listObjectsV2(listObjectsV2Request);
             for (OSSObjectSummary s : result.getObjectSummaries()) {
                 String decodedKey = URLDecoder.decode(s.getKey(), "UTF-8");
-                Assert.assertTrue(existingKeys.contains(decodedKey));
+                Assertions.assertTrue(existingKeys.contains(decodedKey));
             }
-            Assert.assertEquals(2, result.getObjectSummaries().size());
-            Assert.assertEquals(DEFAULT_MAX_RETURNED_KEYS, result.getMaxKeys());
-            Assert.assertEquals(0, result.getCommonPrefixes().size());
-            Assert.assertEquals(bucketName, result.getBucketName());
-            Assert.assertEquals(2, result.getKeyCount());
-            Assert.assertEquals(DEFAULT_ENCODING_TYPE, result.getEncodingType());
-            Assert.assertNull(result.getContinuationToken());
-            Assert.assertNull(result.getNextContinuationToken());
-            Assert.assertNull(result.getDelimiter());
-            Assert.assertNull(result.getPrefix());
-            Assert.assertNull(result.getStartAfter());
-            Assert.assertFalse(result.isTruncated());
-            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(2, result.getObjectSummaries().size());
+            Assertions.assertEquals(DEFAULT_MAX_RETURNED_KEYS, result.getMaxKeys());
+            Assertions.assertEquals(0, result.getCommonPrefixes().size());
+            Assertions.assertEquals(bucketName, result.getBucketName());
+            Assertions.assertEquals(2, result.getKeyCount());
+            Assertions.assertEquals(DEFAULT_ENCODING_TYPE, result.getEncodingType());
+            Assertions.assertNull(result.getContinuationToken());
+            Assertions.assertNull(result.getNextContinuationToken());
+            Assertions.assertNull(result.getDelimiter());
+            Assertions.assertNull(result.getPrefix());
+            Assertions.assertNull(result.getStartAfter());
+            Assertions.assertFalse(result.isTruncated());
+            Assertions.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -371,14 +371,14 @@ public class ListObjectsV2Test extends TestBase {
                 .withMaxKeys(10)
                 .withEncodingType("url")
                 .withFetchOwner(true);
-        Assert.assertEquals(bucketName, request.getBucketName());
-        Assert.assertEquals("fun", request.getPrefix());
-        Assert.assertEquals("tokenTest", request.getContinuationToken());
-        Assert.assertEquals("A", request.getStartAfter());
-        Assert.assertEquals("/", request.getDelimiter());
-        Assert.assertEquals(Integer.valueOf(10), request.getMaxKeys());
-        Assert.assertEquals("url", request.getEncodingType());
-        Assert.assertTrue(request.isFetchOwner());
+        Assertions.assertEquals(bucketName, request.getBucketName());
+        Assertions.assertEquals("fun", request.getPrefix());
+        Assertions.assertEquals("tokenTest", request.getContinuationToken());
+        Assertions.assertEquals("A", request.getStartAfter());
+        Assertions.assertEquals("/", request.getDelimiter());
+        Assertions.assertEquals(Integer.valueOf(10), request.getMaxKeys());
+        Assertions.assertEquals("url", request.getEncodingType());
+        Assertions.assertTrue(request.isFetchOwner());
     }
 
     @Test
@@ -390,7 +390,7 @@ public class ListObjectsV2Test extends TestBase {
             ossClient.putObject(bucketName,  "1.txt", new ByteArrayInputStream("1".getBytes()));
             ossClient.putObject(bucketName, "2.txt", new ByteArrayInputStream("1".getBytes()));
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         // List object with nonexistent continueToken.
@@ -399,9 +399,9 @@ public class ListObjectsV2Test extends TestBase {
             ListObjectsV2Request request = new ListObjectsV2Request(bucketName);
             request.setContinuationToken(nonexistentContinueToken);
             ossClient.listObjectsV2(request);
-            Assert.fail("should be failed here.");
+            Assertions.fail("should be failed here.");
         } catch (OSSException e) {
-            Assert.assertEquals(e.getErrorCode(),OSSErrorCode.INVALID_ARGUMENT);
+            Assertions.assertEquals(e.getErrorCode(),OSSErrorCode.INVALID_ARGUMENT);
         }
     }
 

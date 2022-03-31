@@ -30,7 +30,7 @@ import com.aliyun.oss.common.auth.InstanceProfileCredentialsFetcher;
 import com.aliyun.oss.common.auth.InstanceProfileCredentialsProvider;
 import com.aliyun.oss.common.provider.mock.InstanceProfileCredentialsFetcherMock;
 import com.aliyun.oss.common.provider.mock.InstanceProfileCredentialsFetcherMock.ResponseCategory;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -45,20 +45,20 @@ public class InstanceProfileCredentialsProviderTest extends TestBase {
                     TestConfig.ECS_ROLE_NAME).withCredentialsFetcher(credentialsFetcher);
 
             InstanceProfileCredentials credentials = credentialsProvider.getCredentials();
-            Assert.assertEquals(credentials.getAccessKeyId().length(), 29);
-            Assert.assertEquals(credentials.getSecretAccessKey().length(), 44);
-            Assert.assertEquals(credentials.getSecurityToken().length(), 536);
-            Assert.assertTrue(credentials.useSecurityToken());
-            Assert.assertFalse(credentials.willSoonExpire());
-            Assert.assertFalse(credentials.isExpired());
-            Assert.assertTrue(credentials.shouldRefresh());
+            Assertions.assertEquals(credentials.getAccessKeyId().length(), 29);
+            Assertions.assertEquals(credentials.getSecretAccessKey().length(), 44);
+            Assertions.assertEquals(credentials.getSecurityToken().length(), 536);
+            Assertions.assertTrue(credentials.useSecurityToken());
+            Assertions.assertFalse(credentials.willSoonExpire());
+            Assertions.assertFalse(credentials.isExpired());
+            Assertions.assertTrue(credentials.shouldRefresh());
 
             credentials.setLastFailedRefreshTime();
-            Assert.assertFalse(credentials.isExpired());
-            Assert.assertFalse(credentials.shouldRefresh());
+            Assertions.assertFalse(credentials.isExpired());
+            Assertions.assertFalse(credentials.shouldRefresh());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -71,23 +71,23 @@ public class InstanceProfileCredentialsProviderTest extends TestBase {
                     TestConfig.ECS_ROLE_NAME).withCredentialsFetcher(credentialsFetcher);
 
             InstanceProfileCredentials credentials = credentialsProvider.getCredentials();
-            Assert.assertEquals(credentials.getAccessKeyId().length(), 29);
-            Assert.assertEquals(credentials.getSecretAccessKey().length(), 44);
-            Assert.assertEquals(credentials.getSecurityToken().length(), 536);
-            Assert.assertTrue(credentials.useSecurityToken());
-            Assert.assertTrue(credentials.willSoonExpire());
-            Assert.assertTrue(credentials.isExpired());
-            Assert.assertTrue(credentials.shouldRefresh());
+            Assertions.assertEquals(credentials.getAccessKeyId().length(), 29);
+            Assertions.assertEquals(credentials.getSecretAccessKey().length(), 44);
+            Assertions.assertEquals(credentials.getSecurityToken().length(), 536);
+            Assertions.assertTrue(credentials.useSecurityToken());
+            Assertions.assertTrue(credentials.willSoonExpire());
+            Assertions.assertTrue(credentials.isExpired());
+            Assertions.assertTrue(credentials.shouldRefresh());
 
             credentials.setLastFailedRefreshTime();
-            Assert.assertTrue(credentials.isExpired());
-            Assert.assertFalse(credentials.shouldRefresh());
+            Assertions.assertTrue(credentials.isExpired());
+            Assertions.assertFalse(credentials.shouldRefresh());
 
             credentials = credentialsProvider.getCredentials();
-            Assert.assertNotNull(credentials);
+            Assertions.assertNotNull(credentials);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -100,10 +100,10 @@ public class InstanceProfileCredentialsProviderTest extends TestBase {
                     TestConfig.ECS_ROLE_NAME).withCredentialsFetcher(credentialsFetcher);
 
             InstanceProfileCredentials credentials = credentialsProvider.getCredentials();
-            Assert.assertNull(credentials);
+            Assertions.assertNull(credentials);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -116,10 +116,10 @@ public class InstanceProfileCredentialsProviderTest extends TestBase {
                     TestConfig.ECS_ROLE_NAME).withCredentialsFetcher(credentialsFetcher);
 
             InstanceProfileCredentials credentials = credentialsProvider.getCredentials();
-            Assert.assertNull(credentials);
+            Assertions.assertNull(credentials);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -132,17 +132,17 @@ public class InstanceProfileCredentialsProviderTest extends TestBase {
                     TestConfig.ECS_ROLE_NAME).withCredentialsFetcher(credentialsFetcher);
 
             InstanceProfileCredentials credentials = credentialsProvider.getCredentials();
-            Assert.assertTrue(credentials.willSoonExpire());
+            Assertions.assertTrue(credentials.willSoonExpire());
 
             InstanceProfileCredentialsFetcher credentialsFetcher2 = new InstanceProfileCredentialsFetcherMock()
                     .withResponseCategory(ResponseCategory.Normal).withRoleName(TestConfig.ECS_ROLE_NAME);
             credentialsProvider.withCredentialsFetcher(credentialsFetcher2);
 
             credentials = credentialsProvider.getCredentials();
-            Assert.assertFalse(credentials.willSoonExpire());
+            Assertions.assertFalse(credentials.willSoonExpire());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -152,10 +152,10 @@ public class InstanceProfileCredentialsProviderTest extends TestBase {
             InstanceProfileCredentialsProvider credentialsProvider = new InstanceProfileCredentialsProvider(
                     "NotExistRoleName");
             InstanceProfileCredentials credentials = credentialsProvider.getCredentials();
-            Assert.assertNull(credentials);
+            Assertions.assertNull(credentials);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -169,16 +169,16 @@ public class InstanceProfileCredentialsProviderTest extends TestBase {
             InstanceProfileCredentialsProvider credentialsProvider = new InstanceProfileCredentialsProvider(
                     TestConfig.ECS_ROLE_NAME);
             InstanceProfileCredentials credentials = credentialsProvider.getCredentials();
-            Assert.assertEquals(credentials.getAccessKeyId().length(), 29);
-            Assert.assertEquals(credentials.getSecretAccessKey().length(), 44);
-            Assert.assertEquals(credentials.getSecurityToken().length(), 536);
-            Assert.assertTrue(credentials.useSecurityToken());
-            Assert.assertFalse(credentials.willSoonExpire());
-            Assert.assertFalse(credentials.isExpired());
-            Assert.assertTrue(credentials.shouldRefresh());
+            Assertions.assertEquals(credentials.getAccessKeyId().length(), 29);
+            Assertions.assertEquals(credentials.getSecretAccessKey().length(), 44);
+            Assertions.assertEquals(credentials.getSecurityToken().length(), 536);
+            Assertions.assertTrue(credentials.useSecurityToken());
+            Assertions.assertFalse(credentials.willSoonExpire());
+            Assertions.assertFalse(credentials.isExpired());
+            Assertions.assertTrue(credentials.shouldRefresh());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -200,7 +200,7 @@ public class InstanceProfileCredentialsProviderTest extends TestBase {
             ossClient.shutdown();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 

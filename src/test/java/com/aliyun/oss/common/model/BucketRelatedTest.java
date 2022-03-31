@@ -20,7 +20,7 @@
 package com.aliyun.oss.common.model;
 
 import com.aliyun.oss.model.*;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 import java.util.*;
@@ -28,9 +28,7 @@ import java.util.*;
 
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
 
 public class BucketRelatedTest {
     final private String bucketName = "test-bucket-name";
@@ -38,22 +36,22 @@ public class BucketRelatedTest {
     @Test
     public void testAddBucketCnameRequest() {
         AddBucketCnameRequest request = new AddBucketCnameRequest(bucketName).withDomain("domain");
-        assertEquals("domain", request.getDomain());
+        Assertions.assertEquals("domain", request.getDomain());
 
         request.setDomain("new domain");
-        assertEquals("new domain", request.getDomain());
+        Assertions.assertEquals("new domain", request.getDomain());
     }
 
     @Test
     public void testDeleteBucketCnameRequest() {
         DeleteBucketCnameRequest request = new DeleteBucketCnameRequest(bucketName).withDomain("domain");
-        assertEquals("domain", request.getDomain());
+        Assertions.assertEquals("domain", request.getDomain());
 
         request.setDomain("new domain");
-        assertEquals("new domain", request.getDomain());
+        Assertions.assertEquals("new domain", request.getDomain());
 
         request = new DeleteBucketCnameRequest(bucketName);
-        assertEquals(null, request.getDomain());
+        Assertions.assertEquals(null, request.getDomain());
     }
 
     @Test
@@ -61,66 +59,66 @@ public class BucketRelatedTest {
         AddBucketReplicationRequest request = new AddBucketReplicationRequest(bucketName);
 
         request.setReplicationRuleID("id");
-        assertEquals("id", request.getReplicationRuleID());
+        Assertions.assertEquals("id", request.getReplicationRuleID());
 
         request.setEnableHistoricalObjectReplication(false);
-        assertEquals(false, request.isEnableHistoricalObjectReplication());
+        Assertions.assertEquals(false, request.isEnableHistoricalObjectReplication());
         request.setEnableHistoricalObjectReplication(true);
-        assertEquals(true, request.isEnableHistoricalObjectReplication());
+        Assertions.assertEquals(true, request.isEnableHistoricalObjectReplication());
 
         List<String> prefixes = new ArrayList<String>();
         prefixes.add("prefix 1");
         prefixes.add("prefix 2");
-        assertEquals(0, request.getObjectPrefixList().size());
+        Assertions.assertEquals(0, request.getObjectPrefixList().size());
         request.setObjectPrefixList(prefixes);
-        assertEquals(prefixes, request.getObjectPrefixList());
+        Assertions.assertEquals(prefixes, request.getObjectPrefixList());
         request.setObjectPrefixList(null);
-        assertEquals(0, request.getObjectPrefixList().size());
+        Assertions.assertEquals(0, request.getObjectPrefixList().size());
         request.setObjectPrefixList(prefixes);
         prefixes = new ArrayList<String>();
         request.setObjectPrefixList(prefixes);
-        assertEquals(0, request.getObjectPrefixList().size());
+        Assertions.assertEquals(0, request.getObjectPrefixList().size());
 
         List<AddBucketReplicationRequest.ReplicationAction> replicationActionList =
                 new ArrayList<AddBucketReplicationRequest.ReplicationAction>();
-        assertEquals(0, request.getReplicationActionList().size());
+        Assertions.assertEquals(0, request.getReplicationActionList().size());
         replicationActionList.add(AddBucketReplicationRequest.ReplicationAction.ALL);
         request.setReplicationActionList(replicationActionList);
-        assertEquals(replicationActionList, request.getReplicationActionList());
+        Assertions.assertEquals(replicationActionList, request.getReplicationActionList());
         request.setReplicationActionList(null);
-        assertEquals(0, request.getReplicationActionList().size());
+        Assertions.assertEquals(0, request.getReplicationActionList().size());
         replicationActionList = new ArrayList<AddBucketReplicationRequest.ReplicationAction>();
         request.setReplicationActionList(replicationActionList);
-        assertEquals(0, request.getObjectPrefixList().size());
+        Assertions.assertEquals(0, request.getObjectPrefixList().size());
 
-        assertEquals(AddBucketReplicationRequest.ReplicationAction.ALL,
+        Assertions.assertEquals(AddBucketReplicationRequest.ReplicationAction.ALL,
                 AddBucketReplicationRequest.ReplicationAction.parse("ALL"));
-        assertEquals(AddBucketReplicationRequest.ReplicationAction.ALL.toString(), "ALL");
-        assertEquals(AddBucketReplicationRequest.ReplicationAction.PUT,
+        Assertions.assertEquals(AddBucketReplicationRequest.ReplicationAction.ALL.toString(), "ALL");
+        Assertions.assertEquals(AddBucketReplicationRequest.ReplicationAction.PUT,
                 AddBucketReplicationRequest.ReplicationAction.parse("PUT"));
-        assertEquals(AddBucketReplicationRequest.ReplicationAction.DELETE,
+        Assertions.assertEquals(AddBucketReplicationRequest.ReplicationAction.DELETE,
                 AddBucketReplicationRequest.ReplicationAction.parse("DELETE"));
-        assertEquals(AddBucketReplicationRequest.ReplicationAction.ABORT,
+        Assertions.assertEquals(AddBucketReplicationRequest.ReplicationAction.ABORT,
                 AddBucketReplicationRequest.ReplicationAction.parse("ABORT"));
 
         try {
             AddBucketReplicationRequest.ReplicationAction  value = AddBucketReplicationRequest.ReplicationAction.parse("UN");
-            assertTrue(false);
+            Assertions.assertTrue(false);
         }catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
     @Test
     public void testDeleteBucketReplicationRequest() {
         DeleteBucketReplicationRequest request = new DeleteBucketReplicationRequest(bucketName).withReplicationRuleID("id");
-        assertEquals("id", request.getReplicationRuleID());
+        Assertions.assertEquals("id", request.getReplicationRuleID());
 
         request.setReplicationRuleID("new id");
-        assertEquals("new id", request.getReplicationRuleID());
+        Assertions.assertEquals("new id", request.getReplicationRuleID());
 
         request = new DeleteBucketReplicationRequest(bucketName, "id1");
-        assertEquals("id1", request.getReplicationRuleID());
+        Assertions.assertEquals("id1", request.getReplicationRuleID());
     }
 
     @Test
@@ -135,14 +133,14 @@ public class BucketRelatedTest {
         request.SetDefault404Pic("404Pic");
         request.SetStyleDelimiters("del");
 
-        assertEquals("bucket", request.getBucketName());
-        assertEquals(false, request.GetIsForbidOrigPicAccess());
-        assertEquals(false, request.GetIsUseStyleOnly());
-        assertEquals(false, request.GetIsAutoSetContentType());
-        assertEquals(false, request.GetIsUseSrcFormat());
-        assertEquals(false, request.GetIsSetAttachName());
-        assertEquals("404Pic", request.GetDefault404Pic());
-        assertEquals("del", request.GetStyleDelimiters());
+        Assertions.assertEquals("bucket", request.getBucketName());
+        Assertions.assertEquals(false, request.GetIsForbidOrigPicAccess());
+        Assertions.assertEquals(false, request.GetIsUseStyleOnly());
+        Assertions.assertEquals(false, request.GetIsAutoSetContentType());
+        Assertions.assertEquals(false, request.GetIsUseSrcFormat());
+        Assertions.assertEquals(false, request.GetIsSetAttachName());
+        Assertions.assertEquals("404Pic", request.GetDefault404Pic());
+        Assertions.assertEquals("del", request.GetStyleDelimiters());
     }
 
     @Test
@@ -152,9 +150,9 @@ public class BucketRelatedTest {
         request.SetStyleName("stylename");
         request.SetStyle("style");
 
-        assertEquals("bucket", request.GetBucketName());
-        assertEquals("stylename", request.GetStyleName());
-        assertEquals("style", request.GetStyle());
+        Assertions.assertEquals("bucket", request.GetBucketName());
+        Assertions.assertEquals("stylename", request.GetStyleName());
+        Assertions.assertEquals("style", request.GetStyle());
     }
 
     @Test
@@ -204,7 +202,7 @@ public class BucketRelatedTest {
         try {
             request.addCorsRule(null);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
@@ -218,9 +216,9 @@ public class BucketRelatedTest {
             for (int i = 0; i < 11; i++) {
                 request.addCorsRule(rule);
             }
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         //one addAllowdOrigin *
@@ -230,9 +228,9 @@ public class BucketRelatedTest {
             rule.addAllowdOrigin("*");
             rule.addAllowedMethod("PUT");
             request.addCorsRule(rule);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
@@ -242,9 +240,9 @@ public class BucketRelatedTest {
             rule.addAllowedHeader("*");
             rule.addAllowedHeader("*");
             request.addCorsRule(rule);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
@@ -253,9 +251,9 @@ public class BucketRelatedTest {
             rule.addAllowedMethod("");
             rule.addAllowedHeader("*");
             request.addCorsRule(rule);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
@@ -264,24 +262,24 @@ public class BucketRelatedTest {
             rule.addAllowedMethod(null);
             rule.addAllowedHeader("*");
             request.addCorsRule(rule);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             request.setCorsRules(null);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             List<CORSRule> corsRules = new ArrayList<CORSRule>();
             request.setCorsRules(corsRules);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
@@ -291,9 +289,9 @@ public class BucketRelatedTest {
             rule.addAllowedMethod("PUT");
             corsRules.add(rule);
             request.setCorsRules(corsRules);
-            assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
@@ -305,9 +303,9 @@ public class BucketRelatedTest {
             for (int i = 0; i < 11; i++)
                 corsRules.add(rule);
             request.setCorsRules(corsRules);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
@@ -317,7 +315,7 @@ public class BucketRelatedTest {
             corsRule.addAllowedMethod("GET");
             corsRule.addAllowedHeader("**");
             corsRequest.addCorsRule(corsRule);
-            Assert.fail("no more than one '*' allowed, should be failed here.");
+            Assertions.fail("no more than one '*' allowed, should be failed here.");
         } catch (IllegalArgumentException e) {
         }
 
@@ -330,7 +328,7 @@ public class BucketRelatedTest {
             corsRequest.addCorsRule(corsRule);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
@@ -340,7 +338,7 @@ public class BucketRelatedTest {
             corsRule.addAllowedHeader("*");
             corsRule.setAllowedOrigins(new ArrayList<String>(Arrays.asList("*")));
             corsRequest.addCorsRule(corsRule);
-            Assert.fail("not allowed method, should be failed here.");
+            Assertions.fail("not allowed method, should be failed here.");
         } catch (IllegalArgumentException e) {
             // expected exception.
         }
@@ -352,7 +350,7 @@ public class BucketRelatedTest {
             corsRule.addAllowedHeader("*");
             corsRule.setAllowedOrigins(new ArrayList<String>(Arrays.asList("*")));
             corsRequest.addCorsRule(corsRule);
-            Assert.fail("not allowed method, should be failed here.");
+            Assertions.fail("not allowed method, should be failed here.");
         } catch (IllegalArgumentException e) {
             // expected exception.
         }
@@ -361,16 +359,16 @@ public class BucketRelatedTest {
 
     @Test
     public void testSSEAlgorithm() {
-        assertEquals(SSEAlgorithm.AES256, SSEAlgorithm.getDefault());
-        assertEquals("AES256", SSEAlgorithm.AES256.getAlgorithm());
-        assertEquals(null, SSEAlgorithm.fromString(null));
-        assertEquals(SSEAlgorithm.KMS, SSEAlgorithm.fromString("KMS"));
+        Assertions.assertEquals(SSEAlgorithm.AES256, SSEAlgorithm.getDefault());
+        Assertions.assertEquals("AES256", SSEAlgorithm.AES256.getAlgorithm());
+        Assertions.assertEquals(null, SSEAlgorithm.fromString(null));
+        Assertions.assertEquals(SSEAlgorithm.KMS, SSEAlgorithm.fromString("KMS"));
 
         try {
             SSEAlgorithm sse = SSEAlgorithm.fromString("UN");
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
@@ -380,27 +378,27 @@ public class BucketRelatedTest {
                 .withSSEAlgorithm(SSEAlgorithm.KMS)
                 .withKMSMasterKeyID("id");
 
-        assertEquals("KMS", sseDefault.getSSEAlgorithm());
-        assertEquals("id", sseDefault.getKMSMasterKeyID());
+        Assertions.assertEquals("KMS", sseDefault.getSSEAlgorithm());
+        Assertions.assertEquals("id", sseDefault.getKMSMasterKeyID());
 
         sseDefault.setSSEAlgorithm(SSEAlgorithm.AES256);
-        assertEquals("AES256", sseDefault.getSSEAlgorithm());
+        Assertions.assertEquals("AES256", sseDefault.getSSEAlgorithm());
 
         sseDefault = new ServerSideEncryptionByDefault(SSEAlgorithm.KMS);
-        assertEquals("KMS", sseDefault.getSSEAlgorithm());
+        Assertions.assertEquals("KMS", sseDefault.getSSEAlgorithm());
     }
 
     @Test
     public void testBucket() {
         Bucket bucket = new Bucket();
         bucket.setName("bucket-name");
-        assertEquals("bucket-name", bucket.getName());
+        Assertions.assertEquals("bucket-name", bucket.getName());
 
         bucket.setStorageClass(null);
-        assertFalse(bucket.toString().contains("storageClass="));
+        Assertions.assertFalse(bucket.toString().contains("storageClass="));
 
         bucket.setStorageClass(StorageClass.IA);
-        assertTrue(bucket.toString().contains("storageClass="));
+        Assertions.assertTrue(bucket.toString().contains("storageClass="));
 
         try {
             StorageClass.parse("UN");
@@ -409,130 +407,130 @@ public class BucketRelatedTest {
 
     @Test
     public void testDataRedundancyType() {
-        assertEquals(DataRedundancyType.LRS, DataRedundancyType.parse("LRS"));
-        assertEquals(DataRedundancyType.ZRS, DataRedundancyType.parse("ZRS"));
+        Assertions.assertEquals(DataRedundancyType.LRS, DataRedundancyType.parse("LRS"));
+        Assertions.assertEquals(DataRedundancyType.ZRS, DataRedundancyType.parse("ZRS"));
 
         try {
             DataRedundancyType type = DataRedundancyType.parse("ERROR");
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
     @Test
     public void testOwner() {
         Owner owner = new Owner();
-        assertEquals(0, owner.hashCode());
+        Assertions.assertEquals(0, owner.hashCode());
 
         owner.setId("id");
         owner.setDisplayName("name");
-        assertFalse(owner.toString().isEmpty());
-        assertEquals("id".hashCode(), owner.hashCode());
+        Assertions.assertFalse(owner.toString().isEmpty());
+        Assertions.assertEquals("id".hashCode(), owner.hashCode());
 
         Owner owner1 = new Owner("id1", "name");
-        assertFalse(owner.equals(owner1));
-        assertFalse(owner.equals(""));
+        Assertions.assertFalse(owner.equals(owner1));
+        Assertions.assertFalse(owner.equals(""));
 
         owner.setDisplayName(null);
         owner.setId(null);
         owner1.setDisplayName(null);
         owner1.setId(null);
-        assertEquals(true, owner.equals(owner1));
+        Assertions.assertEquals(true, owner.equals(owner1));
 
         owner.setDisplayName("name");
         owner.setId(null);
         owner1.setDisplayName(null);
         owner1.setId(null);
-        assertEquals(false, owner.equals(owner1));
+        Assertions.assertEquals(false, owner.equals(owner1));
 
         owner.setDisplayName("name");
         owner.setId("id");
         owner1.setDisplayName(null);
         owner1.setId(null);
-        assertEquals(false, owner.equals(owner1));
+        Assertions.assertEquals(false, owner.equals(owner1));
 
         owner.setDisplayName("name");
         owner.setId("id");
         owner1.setDisplayName("name");
         owner1.setId(null);
-        assertEquals(false, owner.equals(owner1));
+        Assertions.assertEquals(false, owner.equals(owner1));
     }
     @Test
     public void testLifecycleRule() {
         LifecycleRule.AbortMultipartUpload abortMultipartUpload = new LifecycleRule.AbortMultipartUpload(10);
-        assertEquals(10, abortMultipartUpload.getExpirationDays());
+        Assertions.assertEquals(10, abortMultipartUpload.getExpirationDays());
         Date date = new Date();
         abortMultipartUpload = new LifecycleRule.AbortMultipartUpload(date);
-        assertEquals(date, abortMultipartUpload.getCreatedBeforeDate());
+        Assertions.assertEquals(date, abortMultipartUpload.getCreatedBeforeDate());
         abortMultipartUpload = new LifecycleRule.AbortMultipartUpload().withExpirationDays(11).withCreatedBeforeDate(date);
-        assertEquals(11, abortMultipartUpload.getExpirationDays());
-        assertEquals(date, abortMultipartUpload.getCreatedBeforeDate());
+        Assertions.assertEquals(11, abortMultipartUpload.getExpirationDays());
+        Assertions.assertEquals(date, abortMultipartUpload.getCreatedBeforeDate());
 
         Integer expirationDays = new Integer(10);
         LifecycleRule.StorageTransition storageTransition = new LifecycleRule.StorageTransition(expirationDays, StorageClass.IA);
-        assertEquals(expirationDays, storageTransition.getExpirationDays());
+        Assertions.assertEquals(expirationDays, storageTransition.getExpirationDays());
         storageTransition = new LifecycleRule.StorageTransition(date, StorageClass.IA);
-        assertEquals(date, storageTransition.getCreatedBeforeDate());
+        Assertions.assertEquals(date, storageTransition.getCreatedBeforeDate());
         storageTransition = new LifecycleRule.StorageTransition().withExpirationDays(expirationDays)
                 .withCreatedBeforeDate(date).withStrorageClass(StorageClass.IA);
-        assertEquals(date, storageTransition.getCreatedBeforeDate());
-        assertEquals(expirationDays, storageTransition.getExpirationDays());
-        assertEquals(StorageClass.IA, storageTransition.getStorageClass());
+        Assertions.assertEquals(date, storageTransition.getCreatedBeforeDate());
+        Assertions.assertEquals(expirationDays, storageTransition.getExpirationDays());
+        Assertions.assertEquals(StorageClass.IA, storageTransition.getStorageClass());
 
         LifecycleRule rule = new LifecycleRule("id", "prefix", LifecycleRule.RuleStatus.Enabled,
                 10, abortMultipartUpload);
-        assertEquals(abortMultipartUpload, rule.getAbortMultipartUpload());
-        assertEquals(10, rule.getExpirationDays());
+        Assertions.assertEquals(abortMultipartUpload, rule.getAbortMultipartUpload());
+        Assertions.assertEquals(10, rule.getExpirationDays());
 
         rule = new LifecycleRule("id", "prefix", LifecycleRule.RuleStatus.Enabled,
                 date, abortMultipartUpload);
-        assertEquals(abortMultipartUpload, rule.getAbortMultipartUpload());
-        assertEquals(date, rule.getExpirationTime());
+        Assertions.assertEquals(abortMultipartUpload, rule.getAbortMultipartUpload());
+        Assertions.assertEquals(date, rule.getExpirationTime());
 
         List<LifecycleRule.StorageTransition> storageTransitions = null;
         rule = new LifecycleRule("id", "prefix", LifecycleRule.RuleStatus.Enabled, 10, storageTransitions);
-        assertEquals(0, rule.getStorageTransition().size());
+        Assertions.assertEquals(0, rule.getStorageTransition().size());
         rule = new LifecycleRule("id", "prefix", LifecycleRule.RuleStatus.Enabled, date, storageTransitions);
-        assertEquals(0, rule.getStorageTransition().size());
+        Assertions.assertEquals(0, rule.getStorageTransition().size());
         rule = new LifecycleRule("id", "prefix", LifecycleRule.RuleStatus.Enabled, 10, abortMultipartUpload, storageTransitions);
-        assertEquals(0, rule.getStorageTransition().size());
+        Assertions.assertEquals(0, rule.getStorageTransition().size());
         rule = new LifecycleRule("id", "prefix", LifecycleRule.RuleStatus.Enabled, date, abortMultipartUpload, storageTransitions);
-        assertEquals(0, rule.getStorageTransition().size());
-        assertEquals(false, rule.hasStorageTransition());
+        Assertions.assertEquals(0, rule.getStorageTransition().size());
+        Assertions.assertEquals(false, rule.hasStorageTransition());
 
         storageTransitions = new ArrayList<LifecycleRule.StorageTransition>();
         rule = new LifecycleRule("id", "prefix", LifecycleRule.RuleStatus.Enabled, 10, storageTransitions);
-        assertEquals(0, rule.getStorageTransition().size());
+        Assertions.assertEquals(0, rule.getStorageTransition().size());
         rule = new LifecycleRule("id", "prefix", LifecycleRule.RuleStatus.Enabled, date, storageTransitions);
-        assertEquals(0, rule.getStorageTransition().size());
+        Assertions.assertEquals(0, rule.getStorageTransition().size());
         rule = new LifecycleRule("id", "prefix", LifecycleRule.RuleStatus.Enabled, 10, abortMultipartUpload, storageTransitions);
-        assertEquals(0, rule.getStorageTransition().size());
+        Assertions.assertEquals(0, rule.getStorageTransition().size());
         rule = new LifecycleRule("id", "prefix", LifecycleRule.RuleStatus.Enabled, date, abortMultipartUpload, storageTransitions);
-        assertEquals(0, rule.getStorageTransition().size());
-        assertEquals(false, rule.hasStorageTransition());
+        Assertions.assertEquals(0, rule.getStorageTransition().size());
+        Assertions.assertEquals(false, rule.hasStorageTransition());
 
         storageTransitions.add(storageTransition);
         rule = new LifecycleRule("id", "prefix", LifecycleRule.RuleStatus.Enabled, 10, storageTransitions);
-        assertEquals(storageTransitions, rule.getStorageTransition());
+        Assertions.assertEquals(storageTransitions, rule.getStorageTransition());
         rule = new LifecycleRule("id", "prefix", LifecycleRule.RuleStatus.Enabled, date, storageTransitions);
-        assertEquals(storageTransitions, rule.getStorageTransition());
+        Assertions.assertEquals(storageTransitions, rule.getStorageTransition());
         rule = new LifecycleRule("id", "prefix", LifecycleRule.RuleStatus.Enabled, 10, abortMultipartUpload, storageTransitions);
-        assertEquals(storageTransitions, rule.getStorageTransition());
+        Assertions.assertEquals(storageTransitions, rule.getStorageTransition());
         rule = new LifecycleRule("id", "prefix", LifecycleRule.RuleStatus.Enabled, date, abortMultipartUpload, storageTransitions);
-        assertEquals(storageTransitions, rule.getStorageTransition());
-        assertEquals(true, rule.hasStorageTransition());
+        Assertions.assertEquals(storageTransitions, rule.getStorageTransition());
+        Assertions.assertEquals(true, rule.hasStorageTransition());
 
         rule.setStorageTransition(null);
-        assertEquals(false, rule.hasStorageTransition());
+        Assertions.assertEquals(false, rule.hasStorageTransition());
 
         Map<String, String> tags = new HashMap<String, String>();
         rule.setTags(null);
-        assertEquals(false, rule.hasTags());
+        Assertions.assertEquals(false, rule.hasTags());
         rule.setTags(tags);
-        assertEquals(false, rule.hasTags());
+        Assertions.assertEquals(false, rule.hasTags());
         rule.addTag("key", "value");
-        assertEquals(true, rule.hasTags());
+        Assertions.assertEquals(true, rule.hasTags());
     }
 
     @Test
@@ -541,17 +539,17 @@ public class BucketRelatedTest {
 
         try {
             request.setLifecycleRules(null);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             List<LifecycleRule> lifecycleRules = new ArrayList<LifecycleRule>();
             request.setLifecycleRules(lifecycleRules);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
@@ -559,9 +557,9 @@ public class BucketRelatedTest {
             for (int i = 0; i < 1001; i++)
                 lifecycleRules.add(new LifecycleRule());
             request.setLifecycleRules(lifecycleRules);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
@@ -569,10 +567,10 @@ public class BucketRelatedTest {
             for (int i = 0; i < 3; i++)
                 lifecycleRules.add(new LifecycleRule());
             request.setLifecycleRules(lifecycleRules);
-            Assert.assertEquals(3, request.getLifecycleRules().size());
+            Assertions.assertEquals(3, request.getLifecycleRules().size());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
@@ -581,9 +579,9 @@ public class BucketRelatedTest {
             LifecycleRule rule = new LifecycleRule("id", "prefix", LifecycleRule.RuleStatus.Unknown,
                     10, abortMultipartUpload);
             request.AddLifecycleRule(rule);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (IllegalArgumentException e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
@@ -594,25 +592,25 @@ public class BucketRelatedTest {
             request.AddLifecycleRule(rule);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
             request.AddLifecycleRule(null);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
     @Test
     public void testBucketProcess() {
         BucketProcess process = new BucketProcess(null);
-        assertEquals(null, process.getImageProcess());
+        Assertions.assertEquals(null, process.getImageProcess());
 
         ImageProcess imageProcess = new ImageProcess("compliedHost", false, "", "");
         process.setImageProcess(imageProcess);
-        assertEquals(imageProcess, process.getImageProcess());
+        Assertions.assertEquals(imageProcess, process.getImageProcess());
     }
 
 
@@ -620,33 +618,33 @@ public class BucketRelatedTest {
     @Test
     public void testBucketReferer() {
         BucketReferer refer = new BucketReferer();
-        assertEquals(true, refer.allowEmpty());
+        Assertions.assertEquals(true, refer.allowEmpty());
 
         List<String> refererList = new ArrayList<String>();
         refererList.add("1");
         refererList.add("2");
 
-        assertEquals(0, refer.getRefererList().size());
+        Assertions.assertEquals(0, refer.getRefererList().size());
         refer.setRefererList(refererList);
-        assertEquals(refererList, refer.getRefererList());
+        Assertions.assertEquals(refererList, refer.getRefererList());
 
         refer.setRefererList(null);
-        assertEquals(0, refer.getRefererList().size());
+        Assertions.assertEquals(0, refer.getRefererList().size());
 
         refer.setRefererList(refererList);
-        assertEquals(2, refer.getRefererList().size());
+        Assertions.assertEquals(2, refer.getRefererList().size());
         refererList.clear();
         refer.setRefererList(refererList);
-        assertEquals(0, refer.getRefererList().size());
+        Assertions.assertEquals(0, refer.getRefererList().size());
     }
 
     @Test
     public void testBucketVersioningConfiguration() {
         BucketVersioningConfiguration conf = new BucketVersioningConfiguration(BucketVersioningConfiguration.SUSPENDED);
-        assertTrue(conf.getStatus().equals(BucketVersioningConfiguration.SUSPENDED));
+        Assertions.assertTrue(conf.getStatus().equals(BucketVersioningConfiguration.SUSPENDED));
 
         conf = new BucketVersioningConfiguration().withStatus(BucketVersioningConfiguration.ENABLED);
-        assertTrue(conf.getStatus().equals(BucketVersioningConfiguration.ENABLED));
+        Assertions.assertTrue(conf.getStatus().equals(BucketVersioningConfiguration.ENABLED));
     }
 
 
@@ -656,17 +654,17 @@ public class BucketRelatedTest {
 
         try {
             request.setRoutingRules(null);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             List<RoutingRule> routingRules = new ArrayList<RoutingRule>();
             request.setRoutingRules(routingRules);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
@@ -686,9 +684,9 @@ public class BucketRelatedTest {
 
             routingRules.add(rule);
             request.setRoutingRules(routingRules);
-            assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -699,47 +697,47 @@ public class BucketRelatedTest {
 
         condition.setHttpErrorCodeReturnedEquals(codeReturned);
         condition.setHttpErrorCodeReturnedEquals(null);
-        assertEquals(codeReturned, condition.getHttpErrorCodeReturnedEquals());
+        Assertions.assertEquals(codeReturned, condition.getHttpErrorCodeReturnedEquals());
 
         try {
             condition.setHttpErrorCodeReturnedEquals(-1);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertEquals(codeReturned, condition.getHttpErrorCodeReturnedEquals());
+            Assertions.assertEquals(codeReturned, condition.getHttpErrorCodeReturnedEquals());
         }
 
         try {
             RoutingRule.RedirectType.parse("UN");
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             RoutingRule.Protocol.parse("UN");
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         RoutingRule.Redirect redirect = new RoutingRule.Redirect();
         Integer httpRedirectCode = new Integer(303);
         redirect.setHttpRedirectCode(httpRedirectCode);
         redirect.setHttpRedirectCode(null);
-        assertEquals(httpRedirectCode, redirect.getHttpRedirectCode());
+        Assertions.assertEquals(httpRedirectCode, redirect.getHttpRedirectCode());
 
         try {
             redirect.setHttpRedirectCode(200);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertEquals(httpRedirectCode, redirect.getHttpRedirectCode());
+            Assertions.assertEquals(httpRedirectCode, redirect.getHttpRedirectCode());
         }
 
         try {
             redirect.setHttpRedirectCode(400);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertEquals(httpRedirectCode, redirect.getHttpRedirectCode());
+            Assertions.assertEquals(httpRedirectCode, redirect.getHttpRedirectCode());
         }
 
         redirect = new RoutingRule.Redirect();
@@ -870,7 +868,7 @@ public class BucketRelatedTest {
             redirect.setRedirectType(RoutingRule.RedirectType.Mirror);
             redirect.setMirrorURL("https://123");
             redirect.ensureRedirectValid();
-            Assert.fail("should be failed here.");
+            Assertions.fail("should be failed here.");
         } catch (IllegalArgumentException e) {}
 
         try {
@@ -881,7 +879,7 @@ public class BucketRelatedTest {
             redirect.ensureRedirectValid();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
     }
@@ -894,27 +892,27 @@ public class BucketRelatedTest {
 
         try {
             acl.grantPermission(null, null);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         }catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             acl.grantPermission(GroupGrantee.AllUsers, null);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         }catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         acl.grantPermission(GroupGrantee.AllUsers, Permission.Read);
-        assertEquals(1, acl.getGrants().size());
-        assertEquals(true, acl.getGrants().contains(grant));
+        Assertions.assertEquals(1, acl.getGrants().size());
+        Assertions.assertEquals(true, acl.getGrants().contains(grant));
 
         try {
             acl.revokeAllPermissions(null);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         }catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         acl.revokeAllPermissions(GroupGrantee.AllUsers);
@@ -926,16 +924,16 @@ public class BucketRelatedTest {
 
         try {
             info.grantPermission(null, null);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         }catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             info.grantPermission(GroupGrantee.AllUsers, null);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         }catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
@@ -947,79 +945,79 @@ public class BucketRelatedTest {
             grant = new Grant(null, null);
         } catch (Exception e) {
         }
-        assertEquals(null, grant);
+        Assertions.assertEquals(null, grant);
 
         try {
             grant = new Grant(GroupGrantee.AllUsers, null);
         } catch (Exception e) {
         }
-        assertEquals(null, grant);
+        Assertions.assertEquals(null, grant);
 
         grant = new Grant(GroupGrantee.AllUsers, Permission.Read);
         grant1 = new Grant(GroupGrantee.AllUsers, Permission.FullControl);
 
-        assertEquals(false, grant.equals(""));
-        assertEquals(false, grant.equals(grant1));
-        assertEquals(true, grant.equals(new Grant(GroupGrantee.AllUsers, Permission.Read)));
+        Assertions.assertEquals(false, grant.equals(""));
+        Assertions.assertEquals(false, grant.equals(grant1));
+        Assertions.assertEquals(true, grant.equals(new Grant(GroupGrantee.AllUsers, Permission.Read)));
 
-        assertEquals(false, grant.toString().isEmpty());
+        Assertions.assertEquals(false, grant.toString().isEmpty());
     }
 
     @Test
     public void testReplicationRule() {
         ReplicationRule replicationRule = new ReplicationRule();
         replicationRule.setReplicationStatus(ReplicationStatus.Doing);
-        assertEquals(ReplicationStatus.Doing, replicationRule.getReplicationStatus());
+        Assertions.assertEquals(ReplicationStatus.Doing, replicationRule.getReplicationStatus());
 
         List<String> objectPrefixList = new ArrayList<String>();
         replicationRule.setObjectPrefixList(null);
-        assertEquals(0, replicationRule.getObjectPrefixList().size());
+        Assertions.assertEquals(0, replicationRule.getObjectPrefixList().size());
 
         replicationRule.setObjectPrefixList(objectPrefixList);
-        assertEquals(0, replicationRule.getObjectPrefixList().size());
+        Assertions.assertEquals(0, replicationRule.getObjectPrefixList().size());
 
         objectPrefixList.add("prefix");
         replicationRule.setObjectPrefixList(objectPrefixList);
-        assertEquals(objectPrefixList, replicationRule.getObjectPrefixList());
+        Assertions.assertEquals(objectPrefixList, replicationRule.getObjectPrefixList());
 
         List<AddBucketReplicationRequest.ReplicationAction> replicationActionList = new ArrayList<AddBucketReplicationRequest.ReplicationAction>();
         replicationRule.setReplicationActionList(null);
-        assertEquals(0, replicationRule.getReplicationActionList().size());
+        Assertions.assertEquals(0, replicationRule.getReplicationActionList().size());
 
         replicationRule.setReplicationActionList(replicationActionList);
-        assertEquals(0, replicationRule.getReplicationActionList().size());
+        Assertions.assertEquals(0, replicationRule.getReplicationActionList().size());
 
         replicationActionList.add(AddBucketReplicationRequest.ReplicationAction.ALL);
         replicationRule.setReplicationActionList(replicationActionList);
-        assertEquals(replicationActionList, replicationRule.getReplicationActionList());
+        Assertions.assertEquals(replicationActionList, replicationRule.getReplicationActionList());
     }
 
     @Test
     public void testSetBucketVersioningRequest() {
         BucketVersioningConfiguration configuration = new BucketVersioningConfiguration();
         SetBucketVersioningRequest request = new SetBucketVersioningRequest("bucket", configuration);
-        assertEquals(configuration, request.getVersioningConfiguration());
+        Assertions.assertEquals(configuration, request.getVersioningConfiguration());
 
         request = new SetBucketVersioningRequest("bucket", null);
-        assertEquals(null, request.getVersioningConfiguration());
+        Assertions.assertEquals(null, request.getVersioningConfiguration());
 
         request.setVersioningConfiguration(configuration);
-        assertEquals(configuration, request.getVersioningConfiguration());
+        Assertions.assertEquals(configuration, request.getVersioningConfiguration());
 
         request = new SetBucketVersioningRequest("bucket", null).withVersioningConfiguration(configuration);
-        assertEquals(configuration, request.getVersioningConfiguration());
+        Assertions.assertEquals(configuration, request.getVersioningConfiguration());
     }
 
     @Test
     public void testRevokeAllPermissions() {
         AccessControlList accessControlList = new AccessControlList();
-        Assert.assertEquals(0, accessControlList.getGrants().size());
+        Assertions.assertEquals(0, accessControlList.getGrants().size());
 
         accessControlList.grantPermission(GroupGrantee.AllUsers, Permission.Read);
-        Assert.assertEquals(1, accessControlList.getGrants().size());
+        Assertions.assertEquals(1, accessControlList.getGrants().size());
 
         accessControlList.revokeAllPermissions(GroupGrantee.AllUsers);
-        Assert.assertEquals(0, accessControlList.getGrants().size());
+        Assertions.assertEquals(0, accessControlList.getGrants().size());
     }
 
     @Test
@@ -1034,7 +1032,7 @@ public class BucketRelatedTest {
     @Test
     public void testBucketConstruction() {
         Bucket bucket = new Bucket("abc");
-        Assert.assertEquals("abc", bucket.getName());
+        Assertions.assertEquals("abc", bucket.getName());
     }
 
 }

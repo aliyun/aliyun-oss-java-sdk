@@ -24,7 +24,7 @@ import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.model.*;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -155,7 +155,7 @@ public class BucketInventoryTest extends TestBase {
             ossClient.setBucketInventoryConfiguration(bucketName, inventoryConfiguration);
         } catch (ClientException e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         // get and delete
@@ -164,24 +164,24 @@ public class BucketInventoryTest extends TestBase {
                    new GetBucketInventoryConfigurationRequest(bucketName, inventoryId));
 
             InventoryConfiguration actualConfig = result.getInventoryConfiguration();
-            Assert.assertEquals(inventoryId, actualConfig.getInventoryId());
-            Assert.assertEquals(InventoryIncludedObjectVersions.All.toString(), actualConfig.getIncludedObjectVersions());
-            Assert.assertEquals("testPrefix", actualConfig.getInventoryFilter().getPrefix());
-            Assert.assertEquals(InventoryFrequency.Weekly.toString(), actualConfig.getSchedule().getFrequency());
-            Assert.assertEquals(6, actualConfig.getOptionalFields().size());
+            Assertions.assertEquals(inventoryId, actualConfig.getInventoryId());
+            Assertions.assertEquals(InventoryIncludedObjectVersions.All.toString(), actualConfig.getIncludedObjectVersions());
+            Assertions.assertEquals("testPrefix", actualConfig.getInventoryFilter().getPrefix());
+            Assertions.assertEquals(InventoryFrequency.Weekly.toString(), actualConfig.getSchedule().getFrequency());
+            Assertions.assertEquals(6, actualConfig.getOptionalFields().size());
 
             InventoryOSSBucketDestination actualDestin = actualConfig.getDestination().getOssBucketDestination();
 
-            Assert.assertEquals(TestConfig.RAM_UID, actualDestin.getAccountId());
-            Assert.assertEquals(destinBucket, actualDestin.getBucket());
-            Assert.assertEquals(TestConfig.RAM_ROLE_ARN, actualDestin.getRoleArn());
-            Assert.assertEquals(InventoryFormat.CSV.toString(), actualDestin.getFormat());
-            Assert.assertEquals("bucket-prefix", actualDestin.getPrefix());
-            Assert.assertNotNull(actualDestin.getEncryption().getServerSideOssEncryption());
-            Assert.assertNull(actualDestin.getEncryption().getServerSideKmsEncryption());
+            Assertions.assertEquals(TestConfig.RAM_UID, actualDestin.getAccountId());
+            Assertions.assertEquals(destinBucket, actualDestin.getBucket());
+            Assertions.assertEquals(TestConfig.RAM_ROLE_ARN, actualDestin.getRoleArn());
+            Assertions.assertEquals(InventoryFormat.CSV.toString(), actualDestin.getFormat());
+            Assertions.assertEquals("bucket-prefix", actualDestin.getPrefix());
+            Assertions.assertNotNull(actualDestin.getEncryption().getServerSideOssEncryption());
+            Assertions.assertNull(actualDestin.getEncryption().getServerSideKmsEncryption());
         } catch (ClientException e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucketInventoryConfiguration(new DeleteBucketInventoryConfigurationRequest(bucketName, inventoryId));
         }
@@ -193,7 +193,7 @@ public class BucketInventoryTest extends TestBase {
             InventoryEncryption inventoryEncryption = new InventoryEncryption();
             inventoryEncryption.setServerSideOssEncryption(new InventoryServerSideEncryptionOSS());
             inventoryEncryption.setServerSideKmsEncryption(new InventoryServerSideEncryptionKMS().withKeyId("test-kms-id"));
-            Assert.fail("The KMS encryption and OSS encryption only can be selected one");
+            Assertions.fail("The KMS encryption and OSS encryption only can be selected one");
         } catch (ClientException e) {
         }
     }
@@ -210,16 +210,16 @@ public class BucketInventoryTest extends TestBase {
             }
         } catch (ClientException e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
             ListBucketInventoryConfigurationsRequest request = new ListBucketInventoryConfigurationsRequest(bucketName);
             ListBucketInventoryConfigurationsResult result = ossClient.listBucketInventoryConfigurations(request);
-            Assert.assertEquals(sum, result.getInventoryConfigurationList().size());
+            Assertions.assertEquals(sum, result.getInventoryConfigurationList().size());
         } catch (ClientException e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             for (int i = 0; i < sum; i++) {
                 String id = idPrefix + String.valueOf(i);
@@ -240,7 +240,7 @@ public class BucketInventoryTest extends TestBase {
             }
         } catch (ClientException e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
@@ -249,21 +249,21 @@ public class BucketInventoryTest extends TestBase {
 
             ListBucketInventoryConfigurationsResult result = ossClient.listBucketInventoryConfigurations(request);
             count += result.getInventoryConfigurationList().size();
-            Assert.assertEquals(true, result.isTruncated());
-            Assert.assertNull(result.getContinuationToken());
-            Assert.assertNotNull(result.getNextContinuationToken());
+            Assertions.assertEquals(true, result.isTruncated());
+            Assertions.assertNull(result.getContinuationToken());
+            Assertions.assertNotNull(result.getNextContinuationToken());
 
             String continuationToken = result.getNextContinuationToken();
             request = new ListBucketInventoryConfigurationsRequest(bucketName, continuationToken);
             result = ossClient.listBucketInventoryConfigurations(request);
             count += result.getInventoryConfigurationList().size();
-            Assert.assertEquals(false, result.isTruncated());
-            Assert.assertEquals(continuationToken, result.getContinuationToken());
-            Assert.assertNull(result.getNextContinuationToken());
-            Assert.assertEquals(sum , count);
+            Assertions.assertEquals(false, result.isTruncated());
+            Assertions.assertEquals(continuationToken, result.getContinuationToken());
+            Assertions.assertNull(result.getNextContinuationToken());
+            Assertions.assertEquals(sum , count);
         } catch (ClientException e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             for (int i = 0; i < sum; i++) {
                 String id = idPrefix + String.valueOf(i);
@@ -284,16 +284,16 @@ public class BucketInventoryTest extends TestBase {
             }
         } catch (ClientException e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
             ListBucketInventoryConfigurationsRequest request = new ListBucketInventoryConfigurationsRequest(bucketName);
             ListBucketInventoryConfigurationsResult result = ossClient.listBucketInventoryConfigurations(request);
-            Assert.assertEquals(false, result.isTruncated());
+            Assertions.assertEquals(false, result.isTruncated());
         } catch (ClientException e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             for (int i = 0; i < sum; i++) {
                 String id = idPrefix + String.valueOf(i);
@@ -307,9 +307,9 @@ public class BucketInventoryTest extends TestBase {
         try {
             ListBucketInventoryConfigurationsRequest request = new ListBucketInventoryConfigurationsRequest(bucketName);
             ListBucketInventoryConfigurationsResult result = ossClient.listBucketInventoryConfigurations(request);
-            Assert.fail("There is no inventory configuration, should be failed.");
+            Assertions.fail("There is no inventory configuration, should be failed.");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_INVENTORY, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_INVENTORY, e.getErrorCode());
         }
     }
 

@@ -22,7 +22,7 @@ package com.aliyun.oss.integrationtests;
 import java.util.Date;
 
 import com.aliyun.oss.OSSClient;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 
@@ -55,7 +55,7 @@ public class PostPolicyTest extends TestBase {
             String expectedPostPolicy = String.format("{\"expiration\":\"2020-03-19T03:44:06.476Z\",\"conditions\":[{\"bucket\":\"%s\"},"
                     + "[\"eq\",\"$key\",\"user/eric/\\${filename}\"],[\"starts-with\",\"$key\",\"user/eric\"],[\"starts-with\",\"$x-oss-meta-tag\","
                     + "\"dummy_etag\"],[\"content-length-range\",1,1024]]}", bucketName);
-            Assert.assertEquals(expectedPostPolicy, actualPostPolicy);
+            Assertions.assertEquals(expectedPostPolicy, actualPostPolicy);
             
             byte[] binaryData = actualPostPolicy.getBytes("utf-8");
             String actualEncodedPolicy = BinaryUtil.toBase64String(binaryData);
@@ -64,14 +64,14 @@ public class PostPolicyTest extends TestBase {
                     + "J1c2VyL2VyaWMvXCR7ZmlsZW5hbWV9Il0sWyJzdGFydHMtd2l0aCIsIiRrZXkiLCJ1c2VyL2Vya"
                     + "WMiXSxbInN0YXJ0cy13aXRoIiwiJHgtb3NzLW1ldGEtdGFnIiwiZHVtbXlfZXRhZyJdLFsiY29udG"
                     + "VudC1sZW5ndGgtcmFuZ2UiLDEsMTAyNF1dfQ==";
-            Assert.assertEquals(expectedEncodedPolicy, actualEncodedPolicy);
+            Assertions.assertEquals(expectedEncodedPolicy, actualEncodedPolicy);
             
             String actualPostSignature = client.calculatePostSignature(actualPostPolicy);
 
             // It has something to do with the local time
-            Assert.assertTrue(actualPostSignature.equals("G1WsE3NWpXjB1OrQdGJXBevhzhI="));
+            Assertions.assertTrue(actualPostSignature.equals("G1WsE3NWpXjB1OrQdGJXBevhzhI="));
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             if (client != null) {
                 client.shutdown();
@@ -87,7 +87,7 @@ public class PostPolicyTest extends TestBase {
             conditions.jsonize();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
@@ -95,13 +95,13 @@ public class PostPolicyTest extends TestBase {
             conditions.jsonize();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
             conditions.addConditionItem(MatchMode.Unknown, "bucket", "bucketName");
             conditions.jsonize();
-            Assert.fail("MatchMode.Unknown, should be failed.");
+            Assertions.fail("MatchMode.Unknown, should be failed.");
         } catch (IllegalArgumentException e) {
             // expected exception.
         }

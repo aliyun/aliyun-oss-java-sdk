@@ -22,7 +22,7 @@ package com.aliyun.oss.integrationtests;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Ignore;
 import com.aliyun.oss.ClientBuilderConfiguration;
@@ -56,7 +56,7 @@ public class ProxyTest extends TestBase {
                     conf);
 
             BucketInfo info = ossClient.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
+            Assertions.assertEquals(info.getBucket().getName(), bucketName);
             
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(content.getBytes().length);
@@ -69,7 +69,7 @@ public class ProxyTest extends TestBase {
             ossClient.deleteObject(bucketName, key);
             
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     

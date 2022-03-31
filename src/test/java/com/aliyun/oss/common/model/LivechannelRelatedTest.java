@@ -28,9 +28,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
 
 public class LivechannelRelatedTest {
 
@@ -40,17 +38,17 @@ public class LivechannelRelatedTest {
         request = new CreateLiveChannelRequest("bucket", "live", "desc", new LiveChannelTarget());
         request = new CreateLiveChannelRequest("bucket", "live", "desc", LiveChannelStatus.Enabled);
 
-        assertEquals("desc", request.getLiveChannelDescription());
+        Assertions.assertEquals("desc", request.getLiveChannelDescription());
         request.setLiveChannelDescription("new desc");
-        assertEquals("new desc", request.getLiveChannelDescription());
+        Assertions.assertEquals("new desc", request.getLiveChannelDescription());
 
-        assertEquals(LiveChannelStatus.Enabled, request.getLiveChannelStatus());
+        Assertions.assertEquals(LiveChannelStatus.Enabled, request.getLiveChannelStatus());
         request.setLiveChannelStatus(LiveChannelStatus.Disabled);
-        assertEquals(LiveChannelStatus.Disabled, request.getLiveChannelStatus());
+        Assertions.assertEquals(LiveChannelStatus.Disabled, request.getLiveChannelStatus());
 
         LiveChannelTarget target = new LiveChannelTarget();
         request.setLiveChannelTarget(target);
-        assertEquals(target, request.getLiveChannelTarget());
+        Assertions.assertEquals(target, request.getLiveChannelTarget());
     }
 
     @Test
@@ -60,10 +58,10 @@ public class LivechannelRelatedTest {
         request.setLiveChannelName("livename");
         request.setPlaylistName("playlistname");
         request.setExpires(30);
-        assertEquals("bucket", request.getBucketName());
-        assertEquals("livename", request.getLiveChannelName());
-        assertEquals("playlistname", request.getPlaylistName());
-        assertEquals(new Long(30), request.getExpires());
+        Assertions.assertEquals("bucket", request.getBucketName());
+        Assertions.assertEquals("livename", request.getLiveChannelName());
+        Assertions.assertEquals("playlistname", request.getPlaylistName());
+        Assertions.assertEquals(new Long(30), request.getExpires());
     }
 
     @Test
@@ -73,9 +71,9 @@ public class LivechannelRelatedTest {
         request.setStartTime(10);
         request.setEndTime(20);
 
-        assertEquals("new name", request.getPlaylistName());
-        assertEquals(new Long(10), request.getStartTime());
-        assertEquals(new Long(20), request.getEndTime());
+        Assertions.assertEquals("new name", request.getPlaylistName());
+        Assertions.assertEquals(new Long(10), request.getStartTime());
+        Assertions.assertEquals(new Long(20), request.getEndTime());
     }
 
     @Test
@@ -83,33 +81,33 @@ public class LivechannelRelatedTest {
         GetVodPlaylistRequest request = new GetVodPlaylistRequest("bucket", "livename", 10, 20);
         request.setStartTime(40);
         request.setEndTime(80);
-        assertEquals(new Long(40), request.getStartTime());
-        assertEquals(new Long(80), request.getEndTime());
+        Assertions.assertEquals(new Long(40), request.getStartTime());
+        Assertions.assertEquals(new Long(80), request.getEndTime());
     }
 
     @Test
     public void testListLiveChannelsRequest() {
         ListLiveChannelsRequest request = new ListLiveChannelsRequest("bucket", "prefix", "marker", 10);
-        assertEquals("marker", request.getMarker());
+        Assertions.assertEquals("marker", request.getMarker());
 
         request = new ListLiveChannelsRequest("bucket1", "prefix1", "marker1");
-        assertEquals("marker1", request.getMarker());
+        Assertions.assertEquals("marker1", request.getMarker());
 
         request = new ListLiveChannelsRequest("bucket2").withMarker("marker2").withPrefix("prefix2").withMaxKeys(50);
-        assertEquals("marker2", request.getMarker());
+        Assertions.assertEquals("marker2", request.getMarker());
 
         try {
             request.setMaxKeys(3000);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             request.setMaxKeys(-1);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
@@ -122,9 +120,9 @@ public class LivechannelRelatedTest {
         channel.setPlayUrls(list);
         channel.setPublishUrls(list);
         String name = channel.getName();
-        assertEquals("name", name);
+        Assertions.assertEquals("name", name);
         String str = channel.toString();
-        assertFalse(str.isEmpty());
+        Assertions.assertFalse(str.isEmpty());
     }
 
     @Test
@@ -143,15 +141,15 @@ public class LivechannelRelatedTest {
         LiveChannelStat.VideoStat vstat = new LiveChannelStat.VideoStat(100, 50, 30, 100, "h264");
         LiveChannelStat.AudioStat astat = new LiveChannelStat.AudioStat(100, 100, "aac");
 
-        assertEquals(100, vstat.getWidth());
-        assertEquals(50, vstat.getHeight());
-        assertEquals(30, vstat.getFrameRate());
-        assertEquals(100, vstat.getBandWidth());
-        assertEquals("h264", vstat.getCodec());
+        Assertions.assertEquals(100, vstat.getWidth());
+        Assertions.assertEquals(50, vstat.getHeight());
+        Assertions.assertEquals(30, vstat.getFrameRate());
+        Assertions.assertEquals(100, vstat.getBandWidth());
+        Assertions.assertEquals("h264", vstat.getCodec());
 
-        assertEquals(100, astat.getBandWidth());
-        assertEquals(100, astat.getSampleRate());
-        assertEquals("aac", astat.getCodec());
+        Assertions.assertEquals(100, astat.getBandWidth());
+        Assertions.assertEquals(100, astat.getSampleRate());
+        Assertions.assertEquals("aac", astat.getCodec());
 
         vstat = new LiveChannelStat.VideoStat();
         astat = new LiveChannelStat.AudioStat();
@@ -172,7 +170,7 @@ public class LivechannelRelatedTest {
         stat.setRemoteAddress("remote");
 
         LiveChannelStatus status = LiveChannelStatus.parse("enabled");
-        assertEquals(LiveChannelStatus.Enabled, status);
+        Assertions.assertEquals(LiveChannelStatus.Enabled, status);
     }
 
     @Test
@@ -190,9 +188,9 @@ public class LivechannelRelatedTest {
 
         record = new LiveRecord(date, date, "address");
 
-        assertEquals(date, record.getStartDate());
-        assertEquals(date, record.getEndDate());
-        assertEquals("address", record.getRemoteAddress());
+        Assertions.assertEquals(date, record.getStartDate());
+        Assertions.assertEquals(date, record.getEndDate());
+        Assertions.assertEquals("address", record.getRemoteAddress());
     }
 
     @Test
@@ -200,9 +198,9 @@ public class LivechannelRelatedTest {
 
         try {
             PushflowStatus.parse("UN");
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 

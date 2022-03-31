@@ -19,15 +19,15 @@
 
 package com.aliyun.oss.common.comm;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 public class IdleConnectionReaperTest {
     @Test
     public void testIdleConnectionReaperMethod() {
         IdleConnectionReaper.registerConnectionManager(null);
-        Assert.assertTrue(IdleConnectionReaper.shutdown());
-        Assert.assertFalse(IdleConnectionReaper.shutdown());
-        Assert.assertEquals(0, IdleConnectionReaper.size());
+        Assertions.assertTrue(IdleConnectionReaper.shutdown());
+        Assertions.assertFalse(IdleConnectionReaper.shutdown());
+        Assertions.assertEquals(0, IdleConnectionReaper.size());
     }
 }

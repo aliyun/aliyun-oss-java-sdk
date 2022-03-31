@@ -19,7 +19,7 @@
 
 package com.aliyun.oss;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -59,8 +59,8 @@ public class OSSObjectOperationTest {
         params[0] = request;
         params[1] = headers;
         testMethod.invoke(operations, params);
-        assertEquals("/srcbucket/srckey", headers.get(OSSHeaders.COPY_OBJECT_SOURCE));
-        assertEquals(ObjectMetadata.AES_256_SERVER_SIDE_ENCRYPTION, headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION));
-        assertEquals(null, headers.get(OSSHeaders.COPY_OBJECT_METADATA_DIRECTIVE));
+        Assertions.assertEquals("/srcbucket/srckey", headers.get(OSSHeaders.COPY_OBJECT_SOURCE));
+        Assertions.assertEquals(ObjectMetadata.AES_256_SERVER_SIDE_ENCRYPTION, headers.get(OSSHeaders.OSS_SERVER_SIDE_ENCRYPTION));
+        Assertions.assertEquals(null, headers.get(OSSHeaders.COPY_OBJECT_METADATA_DIRECTIVE));
     }
 }

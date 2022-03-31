@@ -2,7 +2,7 @@ package com.aliyun.oss.integrationtests;
 
 import com.aliyun.oss.event.ProgressEvent;
 import com.aliyun.oss.model.*;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -30,8 +30,8 @@ public class SelectObjectTest extends TestBase {
                         .withOverwrite(true)
                         .withSelectProgressListener(new CustomProgressListener())
                         .withInputSerialization(new InputSerialization().withCsvInputFormat(new CSVFormat())));
-        Assert.assertEquals(5, validSelectObjectMetadata.getCsvObjectMetadata().getTotalLines());
-        Assert.assertEquals(1, validSelectObjectMetadata.getCsvObjectMetadata().getSplits());
+        Assertions.assertEquals(5, validSelectObjectMetadata.getCsvObjectMetadata().getTotalLines());
+        Assertions.assertEquals(1, validSelectObjectMetadata.getCsvObjectMetadata().getSplits());
 
         final String invalid = "get-select-object-metadata-invalid";
         final String invalidContent = "name,school,company,age\n" +
@@ -46,7 +46,7 @@ public class SelectObjectTest extends TestBase {
             ossClient.createSelectObjectMetadata(
                     new CreateSelectObjectMetadataRequest(bucketName, invalid)
                             .withInputSerialization(new InputSerialization().withCsvInputFormat(new CSVFormat())));
-            Assert.fail("invalid object for get select object metadata");
+            Assertions.fail("invalid object for get select object metadata");
         } catch (Exception e) {
         }
     }
@@ -89,7 +89,7 @@ public class SelectObjectTest extends TestBase {
             buffer[off++] = (byte)bytesRead;
         }
 
-        Assert.assertEquals(new String(buffer, 0, off), content.substring(content.indexOf("#L") + 1));
+        Assertions.assertEquals(new String(buffer, 0, off), content.substring(content.indexOf("#L") + 1));
 
         ossClient.createSelectObjectMetadata(
                 new CreateSelectObjectMetadataRequest(bucketName, key)
@@ -101,7 +101,7 @@ public class SelectObjectTest extends TestBase {
         OSSObject rangeOssObject = ossClient.selectObject(selectObjectRequest);
         try {
             rangeOssObject.getObjectContent().available();
-            Assert.fail("select object input stream does not support available() operation");
+            Assertions.fail("select object input stream does not support available() operation");
         } catch (Exception e) {
 
         }
@@ -110,21 +110,21 @@ public class SelectObjectTest extends TestBase {
         while ((bytesRead = rangeOssObject.getObjectContent().read(buffer)) != -1) {
             off += bytesRead;
         }
-        Assert.assertEquals(new String(buffer, 0, off),
+        Assertions.assertEquals(new String(buffer, 0, off),
                 "Lora Francis,School,Staples Inc,27\n" +
                 "Eleanor Little,School,\"Conectiv, Inc\",43\n");
 
         selectObjectRequest.withLineRange(6, 10);
         try {
             ossClient.selectObject(selectObjectRequest);
-            Assert.fail("invalid line range for select object request");
+            Assertions.fail("invalid line range for select object request");
         } catch (Exception e) {
         }
 
         selectObjectRequest.withSplitRange(5, 10);
         try {
             ossClient.selectObject(selectObjectRequest);
-            Assert.fail("both split range and line range have been set for select object request");
+            Assertions.fail("both split range and line range have been set for select object request");
         } catch (Exception e) {
         }
     }
@@ -159,8 +159,8 @@ public class SelectObjectTest extends TestBase {
                         .withSelectProgressListener(new CustomProgressListener())
                         .withInputSerialization(new InputSerialization().withJsonInputFormat(
                                 new JsonFormat().withJsonType(JsonType.LINES))));
-        Assert.assertEquals(3, validSelectObjectMetadata.getJsonObjectMetadata().getTotalLines());
-        Assert.assertEquals(1, validSelectObjectMetadata.getJsonObjectMetadata().getSplits());
+        Assertions.assertEquals(3, validSelectObjectMetadata.getJsonObjectMetadata().getTotalLines());
+        Assertions.assertEquals(1, validSelectObjectMetadata.getJsonObjectMetadata().getSplits());
 
         final String invalid = "get-select-object-metadata-invalid";
         final String invalidContent = "{\n" +
@@ -189,7 +189,7 @@ public class SelectObjectTest extends TestBase {
                     new CreateSelectObjectMetadataRequest(bucketName, invalid)
                             .withInputSerialization(new InputSerialization().withJsonInputFormat(
                                     new JsonFormat().withJsonType(JsonType.LINES))));
-            Assert.fail("invalid object for get select object metadata");
+            Assertions.fail("invalid object for get select object metadata");
         } catch (Exception e) {
         }
     }
@@ -249,7 +249,7 @@ public class SelectObjectTest extends TestBase {
                 "\t\"age\":44,\n" +
                 "\t\"company\":\"Western Gas Resources Inc\"" +
                 "}\n";
-        Assert.assertEquals(new String(buffer, 0, off), result.replace("\t", "").replace(",\n", ","));
+        Assertions.assertEquals(new String(buffer, 0, off), result.replace("\t", "").replace(",\n", ","));
 
         ossClient.createSelectObjectMetadata(
                 new CreateSelectObjectMetadataRequest(bucketName, key)
@@ -261,7 +261,7 @@ public class SelectObjectTest extends TestBase {
         OSSObject rangeOssObject = ossClient.selectObject(selectObjectRequest);
         try {
             rangeOssObject.getObjectContent().available();
-            Assert.fail("select object input stream does not support available() operation");
+            Assertions.fail("select object input stream does not support available() operation");
         } catch (Exception e) {
 
         }
@@ -271,19 +271,19 @@ public class SelectObjectTest extends TestBase {
             off += bytesRead;
         }
 
-        Assert.assertEquals(new String(buffer, 0, off), result.replace("\t", "").replace(",\n", ","));
+        Assertions.assertEquals(new String(buffer, 0, off), result.replace("\t", "").replace(",\n", ","));
 
         selectObjectRequest.withLineRange(6, 10);
         try {
             ossClient.selectObject(selectObjectRequest);
-            Assert.fail("invalid line range for select object request");
+            Assertions.fail("invalid line range for select object request");
         } catch (Exception e) {
         }
 
         selectObjectRequest.withSplitRange(5, 10);
         try {
             ossClient.selectObject(selectObjectRequest);
-            Assert.fail("both split range and line range have been set for select object request");
+            Assertions.fail("both split range and line range have been set for select object request");
         } catch (Exception e) {
         }
     }

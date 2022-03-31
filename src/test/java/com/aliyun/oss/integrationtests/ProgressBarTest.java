@@ -33,7 +33,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -227,9 +227,9 @@ public class ProgressBarTest extends TestBase {
                     <PutObjectRequest>withProgressListener(new PutObjectProgressListener()));
             ObjectMetadata metadata = ossClient.getObject(new GetObjectRequest(bucketName, key).
                     <GetObjectRequest>withProgressListener(new GetObjectProgressListener()), new File(filePath));
-            Assert.assertEquals(instreamLength, metadata.getContentLength());
+            Assertions.assertEquals(instreamLength, metadata.getContentLength());
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
     }
     
@@ -267,7 +267,7 @@ public class ProgressBarTest extends TestBase {
                 e.printStackTrace();
             }
         }
-        Assert.assertEquals(partCount, partETags.size());
+        Assertions.assertEquals(partCount, partETags.size());
  
         Collections.sort(partETags, new Comparator<PartETag>() {
 
@@ -282,7 +282,7 @@ public class ProgressBarTest extends TestBase {
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             ossClient.completeMultipartUpload(completeMultipartUploadRequest);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -302,7 +302,7 @@ public class ProgressBarTest extends TestBase {
             ossClient.uploadFile(uploadFileRequest);
             
             SimplifiedObjectMeta metadata = ossClient.getSimplifiedObjectMeta(bucketName, key);            
-            Assert.assertEquals(instreamLength, metadata.getSize());
+            Assertions.assertEquals(instreamLength, metadata.getSize());
             
             DownloadFileRequest downloadFileRequest = new DownloadFileRequest(bucketName, key);
             downloadFileRequest.setDownloadFile(localFile + "-df.tmp");
@@ -313,7 +313,7 @@ public class ProgressBarTest extends TestBase {
             ossClient.downloadFile(downloadFileRequest);
         } catch (Exception ex) {
             ex.printStackTrace();
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
     }
     

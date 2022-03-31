@@ -53,7 +53,7 @@ import com.aliyun.oss.crypto.MultipartUploadCryptoContext;
 import com.aliyun.oss.crypto.SimpleRSAEncryptionMaterials;
 import com.aliyun.oss.internal.OSSHeaders;
 import com.aliyun.oss.utils.ResourceUtils;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 public class EncryptionClientRsaTest extends TestBase {
     private OSSEncryptionClient ossEncryptionClient;
@@ -94,10 +94,10 @@ public class EncryptionClientRsaTest extends TestBase {
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             OSSObject ossObject = ossEncryptionClient.getObject(getObjectRequest);
             String readContent = readOSSObject(ossObject);
-            Assert.assertEquals(content, readContent.toString());
+            Assertions.assertEquals(content, readContent.toString());
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -112,17 +112,17 @@ public class EncryptionClientRsaTest extends TestBase {
             metadata.setContentMD5(virtualMd5);
             PutObjectRequest req = new PutObjectRequest(bucketName, key, new ByteArrayInputStream(content.getBytes()), metadata);
 
-            Assert.assertEquals(req.getMetadata().getContentMD5(), virtualMd5);
+            Assertions.assertEquals(req.getMetadata().getContentMD5(), virtualMd5);
             ossEncryptionClient.putObject(req);
-            Assert.assertEquals(req.getMetadata().getContentMD5(), null);
+            Assertions.assertEquals(req.getMetadata().getContentMD5(), null);
 
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             OSSObject ossObject = ossEncryptionClient.getObject(getObjectRequest);
             String unencryptedMd5 = (String)ossObject.getObjectMetadata().getUserMetadata().get(CryptoHeaders.CRYPTO_UNENCRYPTION_CONTENT_MD5);
-            Assert.assertEquals(virtualMd5, unencryptedMd5);
+            Assertions.assertEquals(virtualMd5, unencryptedMd5);
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
 
@@ -131,18 +131,18 @@ public class EncryptionClientRsaTest extends TestBase {
             PutObjectRequest req = new PutObjectRequest(bucketName, key, new ByteArrayInputStream(content.getBytes()));
             req.getHeaders().put(OSSHeaders.CONTENT_MD5, virtualMd5);
 
-            Assert.assertTrue(req.getHeaders().containsKey(OSSHeaders.CONTENT_MD5));
+            Assertions.assertTrue(req.getHeaders().containsKey(OSSHeaders.CONTENT_MD5));
             ossEncryptionClient.putObject(req);
-            Assert.assertFalse(req.getHeaders().containsKey(OSSHeaders.CONTENT_MD5));
+            Assertions.assertFalse(req.getHeaders().containsKey(OSSHeaders.CONTENT_MD5));
 
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             OSSObject ossObject = ossEncryptionClient.getObject(getObjectRequest);
             String unencryptedMd5 = (String) ossObject.getObjectMetadata().getUserMetadata()
                     .get(CryptoHeaders.CRYPTO_UNENCRYPTION_CONTENT_MD5);
-            Assert.assertEquals(virtualMd5, unencryptedMd5);
+            Assertions.assertEquals(virtualMd5, unencryptedMd5);
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -158,16 +158,16 @@ public class EncryptionClientRsaTest extends TestBase {
             PutObjectRequest req = new PutObjectRequest(bucketName, key, new ByteArrayInputStream(content.getBytes()),
                     metadata);
             ossEncryptionClient.putObject(req);
-            Assert.assertEquals(req.getMetadata().getContentLength(), contentLength);
+            Assertions.assertEquals(req.getMetadata().getContentLength(), contentLength);
 
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             OSSObject ossObject = ossEncryptionClient.getObject(getObjectRequest);
             String unencryptedContentLengh = (String) ossObject.getObjectMetadata().getUserMetadata()
                     .get(CryptoHeaders.CRYPTO_UNENCRYPTION_CONTENT_LENGTH);
-            Assert.assertEquals(String.valueOf(contentLength), unencryptedContentLengh);
+            Assertions.assertEquals(String.valueOf(contentLength), unencryptedContentLengh);
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
@@ -175,18 +175,18 @@ public class EncryptionClientRsaTest extends TestBase {
             PutObjectRequest req = new PutObjectRequest(bucketName, key, new ByteArrayInputStream(content.getBytes()));
             req.getHeaders().put(OSSHeaders.CONTENT_LENGTH, String.valueOf(contentLength));
             ossEncryptionClient.putObject(req);
-            Assert.assertEquals(String.valueOf(contentLength), req.getHeaders().get(OSSHeaders.CONTENT_LENGTH));
+            Assertions.assertEquals(String.valueOf(contentLength), req.getHeaders().get(OSSHeaders.CONTENT_LENGTH));
 
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             OSSObject ossObject = ossEncryptionClient.getObject(getObjectRequest);
             long resContentLength = ossObject.getObjectMetadata().getContentLength();
             String unencryptedContentLengh = (String) ossObject.getObjectMetadata().getUserMetadata()
                     .get(CryptoHeaders.CRYPTO_UNENCRYPTION_CONTENT_LENGTH);
-            Assert.assertEquals(String.valueOf(contentLength), unencryptedContentLengh);
-            Assert.assertEquals(contentLength, resContentLength);
+            Assertions.assertEquals(String.valueOf(contentLength), unencryptedContentLengh);
+            Assertions.assertEquals(contentLength, resContentLength);
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -202,10 +202,10 @@ public class EncryptionClientRsaTest extends TestBase {
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             OSSObject ossObject = ossEncryptionClient.getObject(getObjectRequest);
             String readContent = readOSSObject(ossObject);
-            Assert.assertEquals(content, readContent.toString());
+            Assertions.assertEquals(content, readContent.toString());
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -223,11 +223,11 @@ public class EncryptionClientRsaTest extends TestBase {
             ossEncryptionClient.getObject(getObjectRequest, new File(filePathNew));
 
             File fileNew = new File(filePathNew);
-            Assert.assertTrue("comparte file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
+            Assertions.assertTrue(compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()), "comparte file");
             fileNew.delete();
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -252,19 +252,19 @@ public class EncryptionClientRsaTest extends TestBase {
             is1.skip(rangeLower);
             int len1 = is1.read(buffer1, 0, range);
             is1.close();
-            Assert.assertEquals(range, len1);
+            Assertions.assertEquals(range, len1);
 
             File fileNew = new File(filePathNew);
             InputStream is2 = new FileInputStream(fileNew);
             byte[] buffer2 = new byte[1024];
             int len2 = is2.read(buffer2);
             is2.close();
-            Assert.assertEquals(range, len2);
-            Assert.assertTrue(Arrays.equals(buffer1, buffer2));
+            Assertions.assertEquals(range, len2);
+            Assertions.assertTrue(Arrays.equals(buffer1, buffer2));
             fileNew.delete();
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -273,26 +273,26 @@ public class EncryptionClientRsaTest extends TestBase {
         try {
             final String content = "qwertyuuihonkffttdctgvbkhiijojilkmkeowirnskdnsiwi93729741084084875vydrdrrdrwdfdfds"
                     + "qwertyuiopdfghjklcvbnm,rertyufghcvb";
-            Assert.assertEquals(content.length(), 117);
+            Assertions.assertEquals(content.length(), 117);
             int maxRange = content.length() - 1;
 
             try {
                 checkRangeGet(content, 20, 10);
-                Assert.fail("range[0] > range[1] is not allowed.");
+                Assertions.fail("range[0] > range[1] is not allowed.");
             } catch (ClientException e) {
                 // Excepted excption.
             }
 
             try {
                 checkRangeGet(content, -1, 3);
-                Assert.fail("range[0] < 0 is not allowed");
+                Assertions.fail("range[0] < 0 is not allowed");
             } catch (ClientException e) {
                 // Excepted excption.
             }
 
             try {
                 checkRangeGet(content, 20, -1);
-                Assert.fail("range[1] < 0 is not allowed");
+                Assertions.fail("range[1] < 0 is not allowed");
             } catch (ClientException e) {
                 // Excepted excption.
             }
@@ -304,7 +304,7 @@ public class EncryptionClientRsaTest extends TestBase {
             checkRangeGet(content, maxRange + 100, maxRange + 200);
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -327,7 +327,7 @@ public class EncryptionClientRsaTest extends TestBase {
         ossObject = ossClient.getObject(getObjectRequest);
         String result2 = readOSSObject(ossObject);
 
-        Assert.assertEquals(result2, result1);
+        Assertions.assertEquals(result2, result1);
     }
 
     private String readOSSObject(OSSObject ossObject) throws Throwable {
@@ -357,10 +357,10 @@ public class EncryptionClientRsaTest extends TestBase {
             InitiateMultipartUploadResult upresult = ossEncryptionClient.initiateMultipartUpload(initiateMultipartUploadRequest, context);
             String uploadId = upresult.getUploadId();
 
-            Assert.assertEquals(context.getUploadId(), uploadId);
-            Assert.assertEquals(context.getPartSize(), partSize);
-            Assert.assertNotNull(context.getUploadId());
-            Assert.assertNotNull(context.getContentCryptoMaterial());
+            Assertions.assertEquals(context.getUploadId(), uploadId);
+            Assertions.assertEquals(context.getPartSize(), partSize);
+            Assertions.assertNotNull(context.getUploadId());
+            Assertions.assertNotNull(context.getContentCryptoMaterial());
 
             // Create partETags
             List<PartETag> partETags = new ArrayList<PartETag>();
@@ -392,11 +392,11 @@ public class EncryptionClientRsaTest extends TestBase {
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             ossEncryptionClient.getObject(getObjectRequest, new File(filePathNew));
             File fileNew = new File(filePathNew);
-            Assert.assertTrue("compare file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
+            Assertions.assertTrue(compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()), "compare file");
             fileNew.delete();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, key);
         }
@@ -414,7 +414,7 @@ public class EncryptionClientRsaTest extends TestBase {
                InitiateMultipartUploadRequest initiateMultipartUploadRequest = new InitiateMultipartUploadRequest(bucketName, key);
                ossEncryptionClient.initiateMultipartUpload(initiateMultipartUploadRequest, context);  
            } catch (Exception e) {
-               Assert.fail(e.getMessage());
+               Assertions.fail(e.getMessage());
            }
 
            // context is null
@@ -422,7 +422,7 @@ public class EncryptionClientRsaTest extends TestBase {
                MultipartUploadCryptoContext context = null;
                InitiateMultipartUploadRequest initiateMultipartUploadRequest = new InitiateMultipartUploadRequest(bucketName, key);
                ossEncryptionClient.initiateMultipartUpload(initiateMultipartUploadRequest, context);
-               Assert.fail("context is null ,should be failed.");
+               Assertions.fail("context is null ,should be failed.");
            } catch (Exception e) {
                // Expected exception.
            }
@@ -433,7 +433,7 @@ public class EncryptionClientRsaTest extends TestBase {
                context.setDataSize(500 * 1024);
                InitiateMultipartUploadRequest initiateMultipartUploadRequest = new InitiateMultipartUploadRequest(bucketName, key);
                ossEncryptionClient.initiateMultipartUpload(initiateMultipartUploadRequest, context);
-               Assert.fail("part size is not set, should be failed.");
+               Assertions.fail("part size is not set, should be failed.");
            } catch (Exception e) {
                // Expected exception.
            }
@@ -445,12 +445,12 @@ public class EncryptionClientRsaTest extends TestBase {
                context.setDataSize(500 * 1024);
                InitiateMultipartUploadRequest initiateMultipartUploadRequest = new InitiateMultipartUploadRequest(bucketName, key);
                ossEncryptionClient.initiateMultipartUpload(initiateMultipartUploadRequest, context);
-               Assert.fail("part size is not 16 bytes alignmen, should be failed.");
+               Assertions.fail("part size is not 16 bytes alignmen, should be failed.");
            } catch (Exception e) {
                // Expected exception.
            }
        } catch (Exception e) {
-           Assert.fail(e.getMessage());
+           Assertions.fail(e.getMessage());
        }
     }
 
@@ -466,7 +466,7 @@ public class EncryptionClientRsaTest extends TestBase {
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             OSSObject ossObject = ossEncryptionClient.getObject(getObjectRequest);
             String readContent = readOSSObject(ossObject);
-            Assert.assertEquals(content, readContent.toString());
+            Assertions.assertEquals(content, readContent.toString());
 
             // create new encryption materials
             KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance("RSA");
@@ -483,7 +483,7 @@ public class EncryptionClientRsaTest extends TestBase {
             try {
                 getObjectRequest = new GetObjectRequest(bucketName, key);
                 ossEncryptionClient2.getObject(getObjectRequest);
-                Assert.fail("Has no correct key pair, should be failed.");
+                Assertions.fail("Has no correct key pair, should be failed.");
             } catch (Exception e) {
                 // Ignore exception.
             } finally {
@@ -499,10 +499,10 @@ public class EncryptionClientRsaTest extends TestBase {
             ossObject = ossEncryptionClient2.getObject(getObjectRequest);
             readContent = readOSSObject(ossObject);
             ossEncryptionClient2.shutdown();
-            Assert.assertEquals(content, readContent.toString());
+            Assertions.assertEquals(content, readContent.toString());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -527,9 +527,9 @@ public class EncryptionClientRsaTest extends TestBase {
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             OSSObject ossObject = encryptionClient2.getObject(getObjectRequest);
             String readContent = readOSSObject(ossObject);
-            Assert.assertEquals(content, readContent.toString());
+            Assertions.assertEquals(content, readContent.toString());
         } catch (Throwable e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
@@ -546,7 +546,7 @@ public class EncryptionClientRsaTest extends TestBase {
             try {
                 GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
                 encryptionClient3.getObject(getObjectRequest);
-                Assert.fail("Has no correct key pair, should be failed.");
+                Assertions.fail("Has no correct key pair, should be failed.");
             } catch (Exception e) {
                 // Expected exception.
             } finally {
@@ -561,16 +561,16 @@ public class EncryptionClientRsaTest extends TestBase {
                 GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
                 OSSObject ossObject = encryptionClient3.getObject(getObjectRequest);
                 String readContent = readOSSObject(ossObject);
-                Assert.assertEquals(content, readContent.toString());
+                Assertions.assertEquals(content, readContent.toString());
             } catch (Exception e) {
                 e.printStackTrace();
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             } finally {
                 encryptionClient3.shutdown();
             }
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -583,7 +583,7 @@ public class EncryptionClientRsaTest extends TestBase {
             final String key = "encryption-test-disabled-append-object";
             AppendObjectRequest appendObjectRequest = new AppendObjectRequest(bucketName, key, new ByteArrayInputStream(content.getBytes()));
             ossEncryptionClient.appendObject(appendObjectRequest);
-            Assert.fail("Apend object not allowed.");
+            Assertions.fail("Apend object not allowed.");
         } catch (ClientException e) {
             // Expected exception, ignore it.
         }
@@ -598,7 +598,7 @@ public class EncryptionClientRsaTest extends TestBase {
             URL signedUrl = ossEncryptionClient.generatePresignedUrl(request);
             InputStream instream = genFixedLengthInputStream(10);
             ossEncryptionClient.putObject(signedUrl, instream, -1, null, true);
-            Assert.fail("put object  with url is not allowed.");
+            Assertions.fail("put object  with url is not allowed.");
         } catch (ClientException e) {
             // Expected exception.
         }
@@ -619,14 +619,14 @@ public class EncryptionClientRsaTest extends TestBase {
 
             try {
                 ossEncryptionClient.getObject(getObjectRequest);
-                Assert.fail("Get object with url by encryption client should be failed.");
+                Assertions.fail("Get object with url by encryption client should be failed.");
             } catch (ClientException e) {
                 // Expected exception.
             }
 
             ossClient.getObject(getObjectRequest);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -646,7 +646,7 @@ public class EncryptionClientRsaTest extends TestBase {
             // Build init request without crypto context is not allowed.
             try {
                 InitiateMultipartUploadResult upresult = ossEncryptionClient.initiateMultipartUpload(initiateMultipartUploadRequest);
-                Assert.fail("init multi upload withou context should be failed.");
+                Assertions.fail("init multi upload withou context should be failed.");
             } catch (ClientException e) {
                 // Expected exception.
             }
@@ -666,7 +666,7 @@ public class EncryptionClientRsaTest extends TestBase {
             // Build init and upload part request without context is not allowed.
             try {
                 UploadPartResult uploadPartResult = ossEncryptionClient.uploadPart(uploadPartRequest);
-                Assert.fail("upload part without context should be failed.");
+                Assertions.fail("upload part without context should be failed.");
             } catch (ClientException e) {
                 // Expected exception.
             }
@@ -679,12 +679,12 @@ public class EncryptionClientRsaTest extends TestBase {
                     bucketName, key, uploadId, partETags);
             try {
                 ossEncryptionClient.completeMultipartUpload(completeMultipartUploadRequest);
-                Assert.fail("total size is not equal.");
+                Assertions.fail("total size is not equal.");
             } catch (OSSException e) {
                 // Expected exception.
             }
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -712,14 +712,14 @@ public class EncryptionClientRsaTest extends TestBase {
             // Upload part copy is not allowed.
             try {
                 UploadPartCopyResult uploadPartCopyResult = ossEncryptionClient.uploadPartCopy(uploadPartCopyRequest);
-                Assert.fail("upload part copy by encryption client is not allowed.");
+                Assertions.fail("upload part copy by encryption client is not allowed.");
             } catch (ClientException e) {
                 // Expected exception.
             }
 
             UploadPartCopyResult uploadPartCopyResult = ossClient.uploadPartCopy(uploadPartCopyRequest);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -780,7 +780,7 @@ public class EncryptionClientRsaTest extends TestBase {
         userMetaList.add(userMetaCpp);
         userMetaList.add(userMetaGo);
 
-        Assert.assertEquals(encSourceList.size(), userMetaList.size());
+        Assertions.assertEquals(encSourceList.size(), userMetaList.size());
 
         final String key = "example-test-compare-other-sdk-rsa.jpg";
         final String unEncryptedSource = "oss/example.jpg";
@@ -805,12 +805,12 @@ public class EncryptionClientRsaTest extends TestBase {
                 File getFile = new File(key);
                 tmpOssEncryptionClient.getObject(getObjectRequest, getFile);
                 File unEncryptedFile = new File(ResourceUtils.getTestFilename(unEncryptedSource));
-                Assert.assertTrue("compare file", compareFile(unEncryptedFile.getAbsolutePath(), getFile.getAbsolutePath()));
+                Assertions.assertTrue(compareFile(unEncryptedFile.getAbsolutePath(), getFile.getAbsolutePath()), "compare file");
                 getFile.delete();
                 tmpOssEncryptionClient.shutdown();
             }
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -873,13 +873,13 @@ public class EncryptionClientRsaTest extends TestBase {
 
             try {
                 tmpOssEncryptionClient.getObject(getObjectRequest);
-                Assert.fail("The key wrap algoritm is unrecognized, should be failed.");
+                Assertions.fail("The key wrap algoritm is unrecognized, should be failed.");
             } catch (ClientException e) {
                 // Expected exception.
             }
             tmpOssEncryptionClient.shutdown();
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -902,15 +902,15 @@ public class EncryptionClientRsaTest extends TestBase {
 
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             ObjectMetadata objectMetadata = ossEncryptionClient.getObject(getObjectRequest, new File(filePathNew));
-            Assert.assertEquals(file.length(), objectMetadata.getContentLength());
-            Assert.assertEquals("propval", objectMetadata.getUserMetadata().get("prop"));
+            Assertions.assertEquals(file.length(), objectMetadata.getContentLength());
+            Assertions.assertEquals("propval", objectMetadata.getUserMetadata().get("prop"));
 
             File fileNew = new File(filePathNew);
-            Assert.assertTrue("comparte file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
+            Assertions.assertTrue(compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()), "comparte file");
             fileNew.delete();
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -935,14 +935,14 @@ public class EncryptionClientRsaTest extends TestBase {
             downloadFileRequest.setEnableCheckpoint(true);
 
             DownloadFileResult result = ossEncryptionClient.downloadFile(downloadFileRequest);
-            Assert.assertEquals("propval", result.getObjectMetadata().getUserMetadata().get("prop"));
+            Assertions.assertEquals("propval", result.getObjectMetadata().getUserMetadata().get("prop"));
 
             File fileNew = new File(downloadFile);
-            Assert.assertTrue("compare file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
+            Assertions.assertTrue(compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()), "compare file");
             fileNew.delete();
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -964,13 +964,13 @@ public class EncryptionClientRsaTest extends TestBase {
             downloadFileRequest.setEnableCheckpoint(true);
 
             DownloadFileResult result = ossEncryptionClient.downloadFile(downloadFileRequest);
-            Assert.assertEquals(file.length(), result.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(file.length(), result.getObjectMetadata().getContentLength());
 
             File fileNew = new File(downloadFile);
-            Assert.assertTrue("compare file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
+            Assertions.assertTrue(compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()), "compare file");
             fileNew.delete();
         } catch (Throwable e){
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -992,11 +992,11 @@ public class EncryptionClientRsaTest extends TestBase {
             downloadFileRequest.setEnableCheckpoint(true);
 
             ossEncryptionClient.downloadFile(downloadFileRequest);
-            Assert.fail("the part size is not 16 bytes alignment. should be failed.");
+            Assertions.fail("the part size is not 16 bytes alignment. should be failed.");
         } catch (IllegalArgumentException e) {
             // Expected exception.
         } catch (Throwable e){
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -1028,18 +1028,18 @@ public class EncryptionClientRsaTest extends TestBase {
             is1.skip(rangeLower);
             int len1 = is1.read(buffer1, 0, range);
             is1.close();
-            Assert.assertEquals(range, len1);
+            Assertions.assertEquals(range, len1);
 
             File fileNew = new File(downloadFile);
             InputStream is2 = new FileInputStream(fileNew);
             byte[] buffer2 = new byte[1024 * 600];
             int len2 = is2.read(buffer2);
             is2.close();
-            Assert.assertEquals(range, len2);
-            Assert.assertTrue(Arrays.equals(buffer1, buffer2));
+            Assertions.assertEquals(range, len2);
+            Assertions.assertTrue(Arrays.equals(buffer1, buffer2));
             fileNew.delete();
         } catch (Throwable e){
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -1071,18 +1071,18 @@ public class EncryptionClientRsaTest extends TestBase {
             is1.skip(rangeLower);
             int len1 = is1.read(buffer1, 0, range);
             is1.close();
-            Assert.assertEquals(range, len1);
+            Assertions.assertEquals(range, len1);
 
             File fileNew = new File(downloadFile);
             InputStream is2 = new FileInputStream(fileNew);
             byte[] buffer2 = new byte[1024];
             int len2 = is2.read(buffer2);
             is2.close();
-            Assert.assertEquals(range, len2);
-            Assert.assertTrue(Arrays.equals(buffer1, buffer2));
+            Assertions.assertEquals(range, len2);
+            Assertions.assertTrue(Arrays.equals(buffer1, buffer2));
             fileNew.delete();
         } catch (Throwable e){
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 

@@ -19,8 +19,7 @@
 
 package com.aliyun.oss.common.comm;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.Assertions;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -52,7 +51,7 @@ public class HttpFactoryTest {
             contentBytes = content.getBytes(context.getCharset());
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         HttpRequestFactory factory = new HttpRequestFactory();
@@ -66,19 +65,19 @@ public class HttpFactoryTest {
         request.setMethod(HttpMethod.GET);
         httpRequest = factory.createHttpRequest(request, context);
         HttpGet getMethod = (HttpGet)httpRequest;
-        assertEquals(url, getMethod.getURI().toString());
+        Assertions.assertEquals(url, getMethod.getURI().toString());
 
         // DELETE
         request.setMethod(HttpMethod.DELETE);
         httpRequest = factory.createHttpRequest(request, context);
         HttpDelete delMethod = (HttpDelete)httpRequest;
-        assertEquals(url, delMethod.getURI().toString());
+        Assertions.assertEquals(url, delMethod.getURI().toString());
 
         // HEAD
         request.setMethod(HttpMethod.HEAD);
         httpRequest = factory.createHttpRequest(request, context);
         HttpHead headMethod = (HttpHead)httpRequest;
-        assertEquals(url, headMethod.getURI().toString());
+        Assertions.assertEquals(url, headMethod.getURI().toString());
 
         //POST
         request.setContent(new ByteArrayInputStream(contentBytes));
@@ -87,17 +86,17 @@ public class HttpFactoryTest {
         httpRequest = factory.createHttpRequest(request, context);
         HttpPost postMethod = (HttpPost)httpRequest;
 
-        assertEquals(url, postMethod.getURI().toString());
+        Assertions.assertEquals(url, postMethod.getURI().toString());
         HttpEntity entity = postMethod.getEntity();
 
         try {
-            assertEquals(content, readSting(entity.getContent()));
+            Assertions.assertEquals(content, readSting(entity.getContent()));
         } catch (IllegalStateException e) {
             e.printStackTrace();
-            fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
-            fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         //PUT
@@ -107,16 +106,16 @@ public class HttpFactoryTest {
         httpRequest = factory.createHttpRequest(request, context);
         HttpPut putMethod = (HttpPut)httpRequest;
 
-        assertEquals(url, putMethod.getURI().toString());
+        Assertions.assertEquals(url, putMethod.getURI().toString());
         entity = putMethod.getEntity();
         try {
-            assertEquals(content, readSting(entity.getContent()));
+            Assertions.assertEquals(content, readSting(entity.getContent()));
         } catch (IllegalStateException e) {
             e.printStackTrace();
-            fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
-            fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
         
         try {

@@ -25,8 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
 
 public class CodingUtilTest {
     @Test
@@ -34,34 +33,34 @@ public class CodingUtilTest {
 
         try {
             CodingUtils.assertStringNotNullOrEmpty("", "");
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             List<String> param = new ArrayList<String>();
             CodingUtils.assertListNotNullOrEmpty(param, "");
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
-        assertEquals(true, CodingUtils.checkParamRange(3, 1, false, 5, false));
-        assertEquals(false, CodingUtils.checkParamRange(0, 1, false, 5, false));
-        assertEquals(false, CodingUtils.checkParamRange(8, 1, false, 5, false));
+        Assertions.assertEquals(true, CodingUtils.checkParamRange(3, 1, false, 5, false));
+        Assertions.assertEquals(false, CodingUtils.checkParamRange(0, 1, false, 5, false));
+        Assertions.assertEquals(false, CodingUtils.checkParamRange(8, 1, false, 5, false));
 
-        assertEquals(true, CodingUtils.checkParamRange(3, 1, true, 5, false));
-        assertEquals(false, CodingUtils.checkParamRange(0, 1, true, 5, false));
-        assertEquals(false, CodingUtils.checkParamRange(8, 1, true, 5, false));
+        Assertions.assertEquals(true, CodingUtils.checkParamRange(3, 1, true, 5, false));
+        Assertions.assertEquals(false, CodingUtils.checkParamRange(0, 1, true, 5, false));
+        Assertions.assertEquals(false, CodingUtils.checkParamRange(8, 1, true, 5, false));
 
-        assertEquals(true, CodingUtils.checkParamRange(3, 1, false, 5, true));
-        assertEquals(false, CodingUtils.checkParamRange(0, 1, false, 5, true));
-        assertEquals(false, CodingUtils.checkParamRange(8, 1, false, 5, true));
+        Assertions.assertEquals(true, CodingUtils.checkParamRange(3, 1, false, 5, true));
+        Assertions.assertEquals(false, CodingUtils.checkParamRange(0, 1, false, 5, true));
+        Assertions.assertEquals(false, CodingUtils.checkParamRange(8, 1, false, 5, true));
 
-        assertEquals(true, CodingUtils.checkParamRange(3, 1, true, 5, true));
-        assertEquals(false, CodingUtils.checkParamRange(0, 1, true, 5, true));
-        assertEquals(false, CodingUtils.checkParamRange(8, 1, true, 5, true));
+        Assertions.assertEquals(true, CodingUtils.checkParamRange(3, 1, true, 5, true));
+        Assertions.assertEquals(false, CodingUtils.checkParamRange(0, 1, true, 5, true));
+        Assertions.assertEquals(false, CodingUtils.checkParamRange(8, 1, true, 5, true));
     }
 
 }

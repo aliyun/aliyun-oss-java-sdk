@@ -36,7 +36,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -236,8 +236,8 @@ public class TestUtils {
     public static String claimUploadId(OSSClient client, String bucketName, String key) {
         InitiateMultipartUploadRequest request = new InitiateMultipartUploadRequest(bucketName, key);
         InitiateMultipartUploadResult result = client.initiateMultipartUpload(request);
-        Assert.assertEquals(bucketName, result.getBucketName());
-        Assert.assertEquals(key, result.getKey());
+        Assertions.assertEquals(bucketName, result.getBucketName());
+        Assertions.assertEquals(key, result.getKey());
         return result.getUploadId();
     }
 

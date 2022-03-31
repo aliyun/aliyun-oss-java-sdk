@@ -26,7 +26,7 @@ import java.util.List;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.SetLiveChannelRequest;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -62,26 +62,26 @@ public class RtmpTest extends TestBase {
                     bucketName, liveChannel);
             CreateLiveChannelResult createLiveChannelResult = ossClient.createLiveChannel(createLiveChannelRequest);
             ossClient.setBucketAcl(bucketName, CannedAccessControlList.PublicReadWrite);
-            Assert.assertEquals(createLiveChannelResult.getPublishUrls().size(), 1);
-            Assert.assertTrue(createLiveChannelResult.getPublishUrls().get(0).startsWith("rtmp://"));
-            Assert.assertTrue(createLiveChannelResult.getPublishUrls().get(0).endsWith("live/" + liveChannel));
-            Assert.assertEquals(createLiveChannelResult.getPlayUrls().size(), 1);
-            Assert.assertTrue(createLiveChannelResult.getPlayUrls().get(0).startsWith("http://"));
-            Assert.assertTrue(createLiveChannelResult.getPlayUrls().get(0).endsWith(liveChannel + "/playlist.m3u8"));
-            Assert.assertEquals(createLiveChannelResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(createLiveChannelResult.getPublishUrls().size(), 1);
+            Assertions.assertTrue(createLiveChannelResult.getPublishUrls().get(0).startsWith("rtmp://"));
+            Assertions.assertTrue(createLiveChannelResult.getPublishUrls().get(0).endsWith("live/" + liveChannel));
+            Assertions.assertEquals(createLiveChannelResult.getPlayUrls().size(), 1);
+            Assertions.assertTrue(createLiveChannelResult.getPlayUrls().get(0).startsWith("http://"));
+            Assertions.assertTrue(createLiveChannelResult.getPlayUrls().get(0).endsWith(liveChannel + "/playlist.m3u8"));
+            Assertions.assertEquals(createLiveChannelResult.getRequestId().length(), REQUEST_ID_LEN);
             
             LiveChannelInfo liveChannelInfo = ossClient.getLiveChannelInfo(bucketName, liveChannel);
-            Assert.assertEquals(liveChannelInfo.getDescription(), "");
-            Assert.assertEquals(liveChannelInfo.getStatus(), LiveChannelStatus.Enabled);
-            Assert.assertEquals(liveChannelInfo.getTarget().getType(), "HLS");
-            Assert.assertEquals(liveChannelInfo.getTarget().getFragDuration(), 5);
-            Assert.assertEquals(liveChannelInfo.getTarget().getFragCount(), 3);
-            Assert.assertEquals(liveChannelInfo.getTarget().getPlaylistName(), "playlist.m3u8");
-            Assert.assertEquals(liveChannelInfo.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(liveChannelInfo.getDescription(), "");
+            Assertions.assertEquals(liveChannelInfo.getStatus(), LiveChannelStatus.Enabled);
+            Assertions.assertEquals(liveChannelInfo.getTarget().getType(), "HLS");
+            Assertions.assertEquals(liveChannelInfo.getTarget().getFragDuration(), 5);
+            Assertions.assertEquals(liveChannelInfo.getTarget().getFragCount(), 3);
+            Assertions.assertEquals(liveChannelInfo.getTarget().getPlaylistName(), "playlist.m3u8");
+            Assertions.assertEquals(liveChannelInfo.getRequestId().length(), REQUEST_ID_LEN);
             
             ossClient.deleteLiveChannel(bucketName, liveChannel);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -96,26 +96,26 @@ public class RtmpTest extends TestBase {
                     bucketName, liveChannel, liveChannelDesc, LiveChannelStatus.Disabled, target);
             
             CreateLiveChannelResult createLiveChannelResult = ossClient.createLiveChannel(createLiveChannelRequest);
-            Assert.assertEquals(createLiveChannelResult.getPublishUrls().size(), 1);
-            Assert.assertTrue(createLiveChannelResult.getPublishUrls().get(0).startsWith("rtmp://"));
-            Assert.assertTrue(createLiveChannelResult.getPublishUrls().get(0).endsWith("live/" + liveChannel));
-            Assert.assertEquals(createLiveChannelResult.getPlayUrls().size(), 1);
-            Assert.assertTrue(createLiveChannelResult.getPlayUrls().get(0).startsWith("http://"));
-            Assert.assertTrue(createLiveChannelResult.getPlayUrls().get(0).endsWith(liveChannel + "/myplaylist.m3u8"));
-            Assert.assertEquals(createLiveChannelResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(createLiveChannelResult.getPublishUrls().size(), 1);
+            Assertions.assertTrue(createLiveChannelResult.getPublishUrls().get(0).startsWith("rtmp://"));
+            Assertions.assertTrue(createLiveChannelResult.getPublishUrls().get(0).endsWith("live/" + liveChannel));
+            Assertions.assertEquals(createLiveChannelResult.getPlayUrls().size(), 1);
+            Assertions.assertTrue(createLiveChannelResult.getPlayUrls().get(0).startsWith("http://"));
+            Assertions.assertTrue(createLiveChannelResult.getPlayUrls().get(0).endsWith(liveChannel + "/myplaylist.m3u8"));
+            Assertions.assertEquals(createLiveChannelResult.getRequestId().length(), REQUEST_ID_LEN);
             
             LiveChannelInfo liveChannelInfo = ossClient.getLiveChannelInfo(bucketName, liveChannel);
-            Assert.assertEquals(liveChannelInfo.getDescription(), liveChannelDesc);
-            Assert.assertEquals(liveChannelInfo.getStatus(), LiveChannelStatus.Disabled);
-            Assert.assertEquals(liveChannelInfo.getTarget().getType(), "HLS");
-            Assert.assertEquals(liveChannelInfo.getTarget().getFragDuration(), 100);
-            Assert.assertEquals(liveChannelInfo.getTarget().getFragCount(), 99);
-            Assert.assertEquals(liveChannelInfo.getTarget().getPlaylistName(), "myplaylist.m3u8");
-            Assert.assertEquals(liveChannelInfo.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(liveChannelInfo.getDescription(), liveChannelDesc);
+            Assertions.assertEquals(liveChannelInfo.getStatus(), LiveChannelStatus.Disabled);
+            Assertions.assertEquals(liveChannelInfo.getTarget().getType(), "HLS");
+            Assertions.assertEquals(liveChannelInfo.getTarget().getFragDuration(), 100);
+            Assertions.assertEquals(liveChannelInfo.getTarget().getFragCount(), 99);
+            Assertions.assertEquals(liveChannelInfo.getTarget().getPlaylistName(), "myplaylist.m3u8");
+            Assertions.assertEquals(liveChannelInfo.getRequestId().length(), REQUEST_ID_LEN);
             
             ossClient.deleteLiveChannel(bucketName, liveChannel);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 	    
@@ -128,9 +128,9 @@ public class RtmpTest extends TestBase {
             CreateLiveChannelRequest createLiveChannelRequest = new CreateLiveChannelRequest(
                     bucketName, liveChannel, "", LiveChannelStatus.Enabled, target);
             ossClient.createLiveChannel(createLiveChannelRequest);
-            Assert.fail("Get live channel should not be successful.");
+            Assertions.fail("Get live channel should not be successful.");
         } catch (OSSException e) {
-            Assert.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
+            Assertions.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
         }
         
         try {
@@ -138,9 +138,9 @@ public class RtmpTest extends TestBase {
             CreateLiveChannelRequest createLiveChannelRequest = new CreateLiveChannelRequest(
                     bucketName, liveChannel, "", LiveChannelStatus.Enabled, target);
             ossClient.createLiveChannel(createLiveChannelRequest);
-            Assert.fail("Get live channel should not be successful.");
+            Assertions.fail("Get live channel should not be successful.");
         } catch (OSSException e) {
-            Assert.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
+            Assertions.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
         }
         
         try {
@@ -148,9 +148,9 @@ public class RtmpTest extends TestBase {
             CreateLiveChannelRequest createLiveChannelRequest = new CreateLiveChannelRequest(
                     bucketName, liveChannel, "", LiveChannelStatus.Enabled, target);
             ossClient.createLiveChannel(createLiveChannelRequest);
-            Assert.fail("Get live channel should not be successful.");
+            Assertions.fail("Get live channel should not be successful.");
         } catch (OSSException e) {
-            Assert.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
+            Assertions.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
         }
         
         try {
@@ -158,9 +158,9 @@ public class RtmpTest extends TestBase {
             CreateLiveChannelRequest createLiveChannelRequest = new CreateLiveChannelRequest(
                     bucketName, liveChannel, "", LiveChannelStatus.Enabled, target);
             ossClient.createLiveChannel(createLiveChannelRequest);
-            Assert.fail("Get live channel should not be successful.");
+            Assertions.fail("Get live channel should not be successful.");
         } catch (OSSException e) {
-            Assert.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
+            Assertions.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
         }
     }
     
@@ -179,19 +179,19 @@ public class RtmpTest extends TestBase {
             ossClient.setLiveChannelStatus(setLiveChannelRequest);
             
             LiveChannelInfo liveChannelInfo = ossClient.getLiveChannelInfo(bucketName, liveChannel);
-            Assert.assertEquals(liveChannelInfo.getStatus(), LiveChannelStatus.Disabled);
-            Assert.assertEquals(liveChannelInfo.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(liveChannelInfo.getStatus(), LiveChannelStatus.Disabled);
+            Assertions.assertEquals(liveChannelInfo.getRequestId().length(), REQUEST_ID_LEN);
             
             // set enable
             ossClient.setLiveChannelStatus(bucketName, liveChannel, LiveChannelStatus.Enabled);
             
             liveChannelInfo = ossClient.getLiveChannelInfo(bucketName, liveChannel);
-            Assert.assertEquals(liveChannelInfo.getStatus(), LiveChannelStatus.Enabled);
-            Assert.assertEquals(liveChannelInfo.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(liveChannelInfo.getStatus(), LiveChannelStatus.Enabled);
+            Assertions.assertEquals(liveChannelInfo.getRequestId().length(), REQUEST_ID_LEN);
             
             ossClient.deleteLiveChannel(bucketName, liveChannel);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -209,36 +209,36 @@ public class RtmpTest extends TestBase {
             ossClient.setLiveChannelStatus(bucketName, liveChannel, LiveChannelStatus.Disabled);
             
             LiveChannelInfo liveChannelInfo = ossClient.getLiveChannelInfo(bucketName, liveChannel);
-            Assert.assertEquals(liveChannelInfo.getStatus(), LiveChannelStatus.Disabled);
-            Assert.assertEquals(liveChannelInfo.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(liveChannelInfo.getStatus(), LiveChannelStatus.Disabled);
+            Assertions.assertEquals(liveChannelInfo.getRequestId().length(), REQUEST_ID_LEN);
             
             // set enabled
             ossClient.setLiveChannelStatus(bucketName, liveChannel, LiveChannelStatus.Enabled);
             ossClient.setLiveChannelStatus(bucketName, liveChannel, LiveChannelStatus.Enabled);
             
             liveChannelInfo = ossClient.getLiveChannelInfo(bucketName, liveChannel);
-            Assert.assertEquals(liveChannelInfo.getStatus(), LiveChannelStatus.Enabled);
-            Assert.assertEquals(liveChannelInfo.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(liveChannelInfo.getStatus(), LiveChannelStatus.Enabled);
+            Assertions.assertEquals(liveChannelInfo.getRequestId().length(), REQUEST_ID_LEN);
             
             // set disabled
             ossClient.setLiveChannelStatus(bucketName, liveChannel, LiveChannelStatus.Disabled);
             ossClient.setLiveChannelStatus(bucketName, liveChannel, LiveChannelStatus.Disabled);
             
             liveChannelInfo = ossClient.getLiveChannelInfo(bucketName, liveChannel);
-            Assert.assertEquals(liveChannelInfo.getStatus(), LiveChannelStatus.Disabled);
-            Assert.assertEquals(liveChannelInfo.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(liveChannelInfo.getStatus(), LiveChannelStatus.Disabled);
+            Assertions.assertEquals(liveChannelInfo.getRequestId().length(), REQUEST_ID_LEN);
             
             // set enabled
             ossClient.setLiveChannelStatus(bucketName, liveChannel, LiveChannelStatus.Enabled);
             ossClient.setLiveChannelStatus(bucketName, liveChannel, LiveChannelStatus.Enabled);
             
             liveChannelInfo = ossClient.getLiveChannelInfo(bucketName, liveChannel);
-            Assert.assertEquals(liveChannelInfo.getStatus(), LiveChannelStatus.Enabled);
-            Assert.assertEquals(liveChannelInfo.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(liveChannelInfo.getStatus(), LiveChannelStatus.Enabled);
+            Assertions.assertEquals(liveChannelInfo.getRequestId().length(), REQUEST_ID_LEN);
             
             ossClient.deleteLiveChannel(bucketName, liveChannel);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -255,17 +255,17 @@ public class RtmpTest extends TestBase {
             ossClient.createLiveChannel(createLiveChannelRequest);
 
             LiveChannelInfo liveChannelInfo = ossClient.getLiveChannelInfo(bucketName, liveChannel);
-            Assert.assertEquals(liveChannelInfo.getDescription(), liveChannelDesc);
-            Assert.assertEquals(liveChannelInfo.getStatus(), LiveChannelStatus.Enabled);
-            Assert.assertEquals(liveChannelInfo.getTarget().getType(), "HLS");
-            Assert.assertEquals(liveChannelInfo.getTarget().getFragDuration(), 100);
-            Assert.assertEquals(liveChannelInfo.getTarget().getFragCount(), 99);
-            Assert.assertEquals(liveChannelInfo.getTarget().getPlaylistName(), "myplaylist.m3u8");
-            Assert.assertEquals(liveChannelInfo.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(liveChannelInfo.getDescription(), liveChannelDesc);
+            Assertions.assertEquals(liveChannelInfo.getStatus(), LiveChannelStatus.Enabled);
+            Assertions.assertEquals(liveChannelInfo.getTarget().getType(), "HLS");
+            Assertions.assertEquals(liveChannelInfo.getTarget().getFragDuration(), 100);
+            Assertions.assertEquals(liveChannelInfo.getTarget().getFragCount(), 99);
+            Assertions.assertEquals(liveChannelInfo.getTarget().getPlaylistName(), "myplaylist.m3u8");
+            Assertions.assertEquals(liveChannelInfo.getRequestId().length(), REQUEST_ID_LEN);
             
             ossClient.deleteLiveChannel(bucketName, liveChannel);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -279,26 +279,26 @@ public class RtmpTest extends TestBase {
             ossClient.createLiveChannel(createLiveChannelRequest);
             
             LiveChannelStat liveChannelStat = ossClient.getLiveChannelStat(bucketName, liveChannel);
-            Assert.assertEquals(liveChannelStat.getPushflowStatus(), PushflowStatus.Idle);
-            Assert.assertNull(liveChannelStat.getConnectedDate());
-            Assert.assertNull(liveChannelStat.getRemoteAddress());
-            Assert.assertNull(liveChannelStat.getVideoStat());
-            Assert.assertNull(liveChannelStat.getAudioStat());
-            Assert.assertEquals(liveChannelStat.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(liveChannelStat.getPushflowStatus(), PushflowStatus.Idle);
+            Assertions.assertNull(liveChannelStat.getConnectedDate());
+            Assertions.assertNull(liveChannelStat.getRemoteAddress());
+            Assertions.assertNull(liveChannelStat.getVideoStat());
+            Assertions.assertNull(liveChannelStat.getAudioStat());
+            Assertions.assertEquals(liveChannelStat.getRequestId().length(), REQUEST_ID_LEN);
             
             ossClient.setLiveChannelStatus(bucketName, liveChannel, LiveChannelStatus.Disabled);
             liveChannelStat = ossClient.getLiveChannelStat(bucketName, liveChannel);
-            Assert.assertEquals(liveChannelStat.getPushflowStatus(), PushflowStatus.Disabled);
-            Assert.assertNull(liveChannelStat.getConnectedDate());
-            Assert.assertNull(liveChannelStat.getRemoteAddress());
-            Assert.assertNull(liveChannelStat.getVideoStat());
-            Assert.assertNull(liveChannelStat.getAudioStat());
-            Assert.assertEquals(liveChannelStat.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(liveChannelStat.getPushflowStatus(), PushflowStatus.Disabled);
+            Assertions.assertNull(liveChannelStat.getConnectedDate());
+            Assertions.assertNull(liveChannelStat.getRemoteAddress());
+            Assertions.assertNull(liveChannelStat.getVideoStat());
+            Assertions.assertNull(liveChannelStat.getAudioStat());
+            Assertions.assertEquals(liveChannelStat.getRequestId().length(), REQUEST_ID_LEN);
             
             ossClient.deleteLiveChannel(bucketName, liveChannel);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -317,21 +317,21 @@ public class RtmpTest extends TestBase {
             Thread.sleep(5 * 1000);
             
             LiveChannelStat liveChannelStat = ossClient.getLiveChannelStat(bucketName, liveChannel);
-            Assert.assertEquals(liveChannelStat.getPushflowStatus(), PushflowStatus.Live);
-            Assert.assertNotNull(liveChannelStat.getConnectedDate());
-            Assert.assertTrue(liveChannelStat.getRemoteAddress().length() >= new String("0.0.0.0:0").length());
-            Assert.assertEquals(liveChannelStat.getVideoStat().getWidth(), 672);
-            Assert.assertEquals(liveChannelStat.getVideoStat().getHeight(), 378);
-            Assert.assertEquals(liveChannelStat.getVideoStat().getFrameRate(), 29);
-            Assert.assertTrue(liveChannelStat.getVideoStat().getBandWidth() > 50000);
-            Assert.assertEquals(liveChannelStat.getVideoStat().getCodec(), "H264");
-            Assert.assertTrue(liveChannelStat.getAudioStat().getBandWidth() > 4000);
-            Assert.assertEquals(liveChannelStat.getAudioStat().getSampleRate(), 22050);
-            Assert.assertEquals(liveChannelStat.getAudioStat().getCodec(), "AAC");
+            Assertions.assertEquals(liveChannelStat.getPushflowStatus(), PushflowStatus.Live);
+            Assertions.assertNotNull(liveChannelStat.getConnectedDate());
+            Assertions.assertTrue(liveChannelStat.getRemoteAddress().length() >= new String("0.0.0.0:0").length());
+            Assertions.assertEquals(liveChannelStat.getVideoStat().getWidth(), 672);
+            Assertions.assertEquals(liveChannelStat.getVideoStat().getHeight(), 378);
+            Assertions.assertEquals(liveChannelStat.getVideoStat().getFrameRate(), 29);
+            Assertions.assertTrue(liveChannelStat.getVideoStat().getBandWidth() > 50000);
+            Assertions.assertEquals(liveChannelStat.getVideoStat().getCodec(), "H264");
+            Assertions.assertTrue(liveChannelStat.getAudioStat().getBandWidth() > 4000);
+            Assertions.assertEquals(liveChannelStat.getAudioStat().getSampleRate(), 22050);
+            Assertions.assertEquals(liveChannelStat.getAudioStat().getCodec(), "AAC");
             
             ossClient.deleteLiveChannel(bucketName, liveChannel);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -351,11 +351,11 @@ public class RtmpTest extends TestBase {
             try {
                 ossClient.getLiveChannelInfo(bucketName, liveChannel);
             } catch (OSSException e) {
-                Assert.assertEquals(e.getErrorCode(), OSSErrorCode.NO_SUCH_LIVE_CHANNEL);
+                Assertions.assertEquals(e.getErrorCode(), OSSErrorCode.NO_SUCH_LIVE_CHANNEL);
             }
 
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -375,37 +375,37 @@ public class RtmpTest extends TestBase {
             ListLiveChannelsRequest listLiveChannelsRequest = new ListLiveChannelsRequest(bucketName);
             LiveChannelListing liveChannelListing = ossClient.listLiveChannels(listLiveChannelsRequest);
             
-            Assert.assertTrue(liveChannelListing.getLiveChannels().size() >= 10);
-            Assert.assertNull(liveChannelListing.getPrefix());
-            Assert.assertNull(liveChannelListing.getMarker());
-            Assert.assertNull(liveChannelListing.getNextMarker());
-            Assert.assertEquals(liveChannelListing.getMaxKeys(), 100);
-            Assert.assertFalse(liveChannelListing.isTruncated());
+            Assertions.assertTrue(liveChannelListing.getLiveChannels().size() >= 10);
+            Assertions.assertNull(liveChannelListing.getPrefix());
+            Assertions.assertNull(liveChannelListing.getMarker());
+            Assertions.assertNull(liveChannelListing.getNextMarker());
+            Assertions.assertEquals(liveChannelListing.getMaxKeys(), 100);
+            Assertions.assertFalse(liveChannelListing.isTruncated());
             
             // prefix
             listLiveChannelsRequest = new ListLiveChannelsRequest(bucketName);
             listLiveChannelsRequest.setPrefix(liveChannelPrefix);
             
             liveChannelListing = ossClient.listLiveChannels(listLiveChannelsRequest);
-            Assert.assertTrue(liveChannelListing.getLiveChannels().size() == 10);
-            Assert.assertEquals(liveChannelListing.getPrefix(), liveChannelPrefix);
-            Assert.assertNull(liveChannelListing.getMarker());
-            Assert.assertNull(liveChannelListing.getNextMarker());
-            Assert.assertEquals(liveChannelListing.getMaxKeys(), 100);
-            Assert.assertFalse(liveChannelListing.isTruncated());
+            Assertions.assertTrue(liveChannelListing.getLiveChannels().size() == 10);
+            Assertions.assertEquals(liveChannelListing.getPrefix(), liveChannelPrefix);
+            Assertions.assertNull(liveChannelListing.getMarker());
+            Assertions.assertNull(liveChannelListing.getNextMarker());
+            Assertions.assertEquals(liveChannelListing.getMaxKeys(), 100);
+            Assertions.assertFalse(liveChannelListing.isTruncated());
             
             for (LiveChannel liveChannel : liveChannelListing.getLiveChannels()) {
-                Assert.assertTrue(liveChannel.getName().startsWith(liveChannelPrefix));
-                Assert.assertEquals(liveChannel.getDescription(), "");
-                Assert.assertEquals(liveChannel.getStatus(), LiveChannelStatus.Enabled);
-                Assert.assertTrue(dateAfterValidator(liveChannel.getLastModified()));
+                Assertions.assertTrue(liveChannel.getName().startsWith(liveChannelPrefix));
+                Assertions.assertEquals(liveChannel.getDescription(), "");
+                Assertions.assertEquals(liveChannel.getStatus(), LiveChannelStatus.Enabled);
+                Assertions.assertTrue(dateAfterValidator(liveChannel.getLastModified()));
   
-                Assert.assertEquals(liveChannel.getPublishUrls().size(), 1);
-                Assert.assertTrue(liveChannel.getPublishUrls().get(0).startsWith("rtmp://"));
-                Assert.assertTrue(liveChannel.getPublishUrls().get(0).indexOf("live/" + liveChannelPrefix) > -1);
-                Assert.assertEquals(liveChannel.getPlayUrls().size(), 1);
-                Assert.assertTrue(liveChannel.getPlayUrls().get(0).startsWith("http://"));
-                Assert.assertTrue(liveChannel.getPlayUrls().get(0).endsWith("/playlist.m3u8"));
+                Assertions.assertEquals(liveChannel.getPublishUrls().size(), 1);
+                Assertions.assertTrue(liveChannel.getPublishUrls().get(0).startsWith("rtmp://"));
+                Assertions.assertTrue(liveChannel.getPublishUrls().get(0).indexOf("live/" + liveChannelPrefix) > -1);
+                Assertions.assertEquals(liveChannel.getPlayUrls().size(), 1);
+                Assertions.assertTrue(liveChannel.getPlayUrls().get(0).startsWith("http://"));
+                Assertions.assertTrue(liveChannel.getPlayUrls().get(0).endsWith("/playlist.m3u8"));
             }
             
             // marker
@@ -414,25 +414,25 @@ public class RtmpTest extends TestBase {
             listLiveChannelsRequest.setMarker(liveChannelPrefix + 5);
             
             liveChannelListing = ossClient.listLiveChannels(listLiveChannelsRequest);
-            Assert.assertTrue(liveChannelListing.getLiveChannels().size() == 4);
-            Assert.assertEquals(liveChannelListing.getPrefix(), liveChannelPrefix);
-            Assert.assertEquals(liveChannelListing.getMarker(), liveChannelPrefix + 5);
-            Assert.assertNull(liveChannelListing.getNextMarker());
-            Assert.assertEquals(liveChannelListing.getMaxKeys(), 100);
-            Assert.assertFalse(liveChannelListing.isTruncated());
+            Assertions.assertTrue(liveChannelListing.getLiveChannels().size() == 4);
+            Assertions.assertEquals(liveChannelListing.getPrefix(), liveChannelPrefix);
+            Assertions.assertEquals(liveChannelListing.getMarker(), liveChannelPrefix + 5);
+            Assertions.assertNull(liveChannelListing.getNextMarker());
+            Assertions.assertEquals(liveChannelListing.getMaxKeys(), 100);
+            Assertions.assertFalse(liveChannelListing.isTruncated());
             
             for (LiveChannel liveChannel : liveChannelListing.getLiveChannels()) {
-                Assert.assertTrue(liveChannel.getName().startsWith(liveChannelPrefix));
-                Assert.assertEquals(liveChannel.getDescription(), "");
-                Assert.assertEquals(liveChannel.getStatus(), LiveChannelStatus.Enabled);
-                Assert.assertTrue(dateAfterValidator(liveChannel.getLastModified()));
+                Assertions.assertTrue(liveChannel.getName().startsWith(liveChannelPrefix));
+                Assertions.assertEquals(liveChannel.getDescription(), "");
+                Assertions.assertEquals(liveChannel.getStatus(), LiveChannelStatus.Enabled);
+                Assertions.assertTrue(dateAfterValidator(liveChannel.getLastModified()));
   
-                Assert.assertEquals(liveChannel.getPublishUrls().size(), 1);
-                Assert.assertTrue(liveChannel.getPublishUrls().get(0).startsWith("rtmp://"));
-                Assert.assertTrue(liveChannel.getPublishUrls().get(0).indexOf("live/" + liveChannelPrefix) > -1);
-                Assert.assertEquals(liveChannel.getPlayUrls().size(), 1);
-                Assert.assertTrue(liveChannel.getPlayUrls().get(0).startsWith("http://"));
-                Assert.assertTrue(liveChannel.getPlayUrls().get(0).endsWith("/playlist.m3u8"));
+                Assertions.assertEquals(liveChannel.getPublishUrls().size(), 1);
+                Assertions.assertTrue(liveChannel.getPublishUrls().get(0).startsWith("rtmp://"));
+                Assertions.assertTrue(liveChannel.getPublishUrls().get(0).indexOf("live/" + liveChannelPrefix) > -1);
+                Assertions.assertEquals(liveChannel.getPlayUrls().size(), 1);
+                Assertions.assertTrue(liveChannel.getPlayUrls().get(0).startsWith("http://"));
+                Assertions.assertTrue(liveChannel.getPlayUrls().get(0).endsWith("/playlist.m3u8"));
             }
             
             // marker
@@ -441,25 +441,25 @@ public class RtmpTest extends TestBase {
             listLiveChannelsRequest.setMaxKeys(5);
             
             liveChannelListing = ossClient.listLiveChannels(listLiveChannelsRequest);
-            Assert.assertTrue(liveChannelListing.getLiveChannels().size() == 5);
-            Assert.assertEquals(liveChannelListing.getPrefix(), liveChannelPrefix);
-            Assert.assertNull(liveChannelListing.getMarker());
-            Assert.assertNotNull(liveChannelListing.getNextMarker());
-            Assert.assertEquals(liveChannelListing.getMaxKeys(), 5);
-            Assert.assertTrue(liveChannelListing.isTruncated());
+            Assertions.assertTrue(liveChannelListing.getLiveChannels().size() == 5);
+            Assertions.assertEquals(liveChannelListing.getPrefix(), liveChannelPrefix);
+            Assertions.assertNull(liveChannelListing.getMarker());
+            Assertions.assertNotNull(liveChannelListing.getNextMarker());
+            Assertions.assertEquals(liveChannelListing.getMaxKeys(), 5);
+            Assertions.assertTrue(liveChannelListing.isTruncated());
             
             for (LiveChannel liveChannel : liveChannelListing.getLiveChannels()) {
-                Assert.assertTrue(liveChannel.getName().startsWith(liveChannelPrefix));
-                Assert.assertEquals(liveChannel.getDescription(), "");
-                Assert.assertEquals(liveChannel.getStatus(), LiveChannelStatus.Enabled);
-                Assert.assertTrue(dateAfterValidator(liveChannel.getLastModified()));
+                Assertions.assertTrue(liveChannel.getName().startsWith(liveChannelPrefix));
+                Assertions.assertEquals(liveChannel.getDescription(), "");
+                Assertions.assertEquals(liveChannel.getStatus(), LiveChannelStatus.Enabled);
+                Assertions.assertTrue(dateAfterValidator(liveChannel.getLastModified()));
   
-                Assert.assertEquals(liveChannel.getPublishUrls().size(), 1);
-                Assert.assertTrue(liveChannel.getPublishUrls().get(0).startsWith("rtmp://"));
-                Assert.assertTrue(liveChannel.getPublishUrls().get(0).indexOf("live/" + liveChannelPrefix) > -1);
-                Assert.assertEquals(liveChannel.getPlayUrls().size(), 1);
-                Assert.assertTrue(liveChannel.getPlayUrls().get(0).startsWith("http://"));
-                Assert.assertTrue(liveChannel.getPlayUrls().get(0).endsWith("/playlist.m3u8"));
+                Assertions.assertEquals(liveChannel.getPublishUrls().size(), 1);
+                Assertions.assertTrue(liveChannel.getPublishUrls().get(0).startsWith("rtmp://"));
+                Assertions.assertTrue(liveChannel.getPublishUrls().get(0).indexOf("live/" + liveChannelPrefix) > -1);
+                Assertions.assertEquals(liveChannel.getPlayUrls().size(), 1);
+                Assertions.assertTrue(liveChannel.getPlayUrls().get(0).startsWith("http://"));
+                Assertions.assertTrue(liveChannel.getPlayUrls().get(0).endsWith("/playlist.m3u8"));
             }
             
             // page
@@ -469,10 +469,10 @@ public class RtmpTest extends TestBase {
             
             do {
                 liveChannelListing = ossClient.listLiveChannels(listLiveChannelsRequest);
-                Assert.assertTrue(liveChannelListing.getLiveChannels().size() == 5);
+                Assertions.assertTrue(liveChannelListing.getLiveChannels().size() == 5);
                 
                 for (LiveChannel liveChannel : liveChannelListing.getLiveChannels()) {
-                    Assert.assertTrue(liveChannel.getName().startsWith(liveChannelPrefix));
+                    Assertions.assertTrue(liveChannel.getName().startsWith(liveChannelPrefix));
                 }
                 
                 listLiveChannelsRequest.setMarker(liveChannelListing.getNextMarker());
@@ -481,7 +481,7 @@ public class RtmpTest extends TestBase {
             
             // list all
             List<LiveChannel> liveChannels = ossClient.listLiveChannels(bucketName);
-            Assert.assertTrue(liveChannels.size() >= 10);
+            Assertions.assertTrue(liveChannels.size() >= 10);
                                     
             // delete live channels
             for (int i = 0; i < 10; i++) {
@@ -489,7 +489,7 @@ public class RtmpTest extends TestBase {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -503,11 +503,11 @@ public class RtmpTest extends TestBase {
             ossClient.createLiveChannel(createLiveChannelRequest);
             
             List<LiveRecord> liveRecords = ossClient.getLiveChannelHistory(bucketName, liveChannel);
-            Assert.assertEquals(liveRecords.size(), 0);
+            Assertions.assertEquals(liveRecords.size(), 0);
             
             ossClient.deleteLiveChannel(bucketName, liveChannel);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -526,14 +526,14 @@ public class RtmpTest extends TestBase {
             Thread.sleep(5 * 1000);
             
             List<LiveRecord> liveRecords = ossClient.getLiveChannelHistory(bucketName, liveChannel);
-            Assert.assertTrue(liveRecords.size() >= 1);
+            Assertions.assertTrue(liveRecords.size() >= 1);
             for (LiveRecord liveRecord : liveRecords) {
-                Assert.assertTrue(dateAfterValidator(liveRecord.getStartDate()));
-                Assert.assertTrue(dateAfterValidator(liveRecord.getEndDate()));
-                Assert.assertTrue(liveRecord.getRemoteAddress().length() >= new String("0.0.0.0:0").length());
+                Assertions.assertTrue(dateAfterValidator(liveRecord.getStartDate()));
+                Assertions.assertTrue(dateAfterValidator(liveRecord.getEndDate()));
+                Assertions.assertTrue(liveRecord.getRemoteAddress().length() >= new String("0.0.0.0:0").length());
             }
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -552,13 +552,13 @@ public class RtmpTest extends TestBase {
             try {
                 ossClient.generateVodPlaylist(bucketName, liveChannel, "playlist.m3u8", startTime, endTime);
             } catch (OSSException e) {
-                Assert.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
-                Assert.assertTrue(e.getMessage().indexOf("No ts file found in specified time span.") > -1);
+                Assertions.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
+                Assertions.assertTrue(e.getMessage().indexOf("No ts file found in specified time span.") > -1);
             }
             
             ossClient.deleteLiveChannel(bucketName, liveChannel);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -576,16 +576,16 @@ public class RtmpTest extends TestBase {
             long endTime = System.currentTimeMillis() / 1000 + 3600;
             try {
                 OSSObject o = ossClient.getVodPlaylist(bucketName, liveChannel, startTime, endTime);
-                Assert.assertEquals(bucketName, o.getBucketName());
-                Assert.assertEquals(liveChannel, o.getKey());
+                Assertions.assertEquals(bucketName, o.getBucketName());
+                Assertions.assertEquals(liveChannel, o.getKey());
             } catch (OSSException e) {
-                Assert.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
-                Assert.assertTrue(e.getMessage().indexOf("No ts file found in specified time span.") > -1);
+                Assertions.assertEquals(e.getErrorCode(), OSSErrorCode.INVALID_ARGUMENT);
+                Assertions.assertTrue(e.getMessage().indexOf("No ts file found in specified time span.") > -1);
             }
 
             ossClient.deleteLiveChannel(bucketName, liveChannel);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -600,7 +600,7 @@ public class RtmpTest extends TestBase {
             ossClient.setBucketAcl(bucketName, CannedAccessControlList.Private);
             
             LiveChannelInfo liveChannelInfo = ossClient.getLiveChannelInfo(bucketName, liveChannel);
-            Assert.assertEquals(liveChannelInfo.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(liveChannelInfo.getRequestId().length(), REQUEST_ID_LEN);
 
             // generate rtmp url
             long expires = System.currentTimeMillis() / 1000 + 3600;
@@ -609,8 +609,8 @@ public class RtmpTest extends TestBase {
             
             //System.out.println("uri:" + uri);
             
-            Assert.assertTrue(uri.startsWith("rtmp://" + bucketName));
-            Assert.assertTrue(uri.endsWith("playlistName=" + liveChannelInfo.getTarget().getPlaylistName()));
+            Assertions.assertTrue(uri.startsWith("rtmp://" + bucketName));
+            Assertions.assertTrue(uri.endsWith("playlistName=" + liveChannelInfo.getTarget().getPlaylistName()));
 
             // Manually verify by url, with following cmd.
             // ./ffmpeg \-re \-i allstar.flv \-c copy \-f flv "<RTMP_URI>"
@@ -619,16 +619,16 @@ public class RtmpTest extends TestBase {
             String uri2 = ossClient.generateRtmpUri(bucketName, liveChannel, 
                     liveChannelInfo.getTarget().getPlaylistName(), expires);
             
-            Assert.assertEquals(uri, uri2);
+            Assertions.assertEquals(uri, uri2);
             
             ossClient.deleteLiveChannel(bucketName, liveChannel);
 
             OSS client = new OSSClientBuilder().build("https://endpoint/", "ak", "sk", "sts");
             uri = client.generateRtmpUri("bucket", "live", "play.m3u8", 1000 );
-            Assert.assertTrue(uri.startsWith("rtmp://bucket"));
+            Assertions.assertTrue(uri.startsWith("rtmp://bucket"));
 
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -647,14 +647,14 @@ public class RtmpTest extends TestBase {
 
             // list all
             List<LiveChannel> liveChannels = ossClient.listLiveChannels(bucketName);
-            Assert.assertTrue(liveChannels.size() >= testCnt);
+            Assertions.assertTrue(liveChannels.size() >= testCnt);
 
             // delete live channels
             for (int i = 0; i < testCnt; i++) {
                 ossClient.deleteLiveChannel(bucketName, liveChannelPrefix + i);
             }
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -662,7 +662,7 @@ public class RtmpTest extends TestBase {
     public void testParseLiveStatusWrong() {
         try {
             LiveChannelStatus.parse("wrong-status");
-            Assert.fail("should be failed here.");
+            Assertions.fail("should be failed here.");
         } catch (IllegalArgumentException e) {
             // expected exception.
         }

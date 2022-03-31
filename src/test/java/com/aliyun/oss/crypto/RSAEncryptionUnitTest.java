@@ -28,7 +28,7 @@ import java.security.interfaces.RSAPublicKey;
 import javax.crypto.Cipher;
 
 import org.junit.Test;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 public class RSAEncryptionUnitTest {
     private final String PLAIN_TEXT = "kdnsknshiwonrjsn23e1vdjknvlsfnsl34ihsohnqm92u32jns.msl082mjk73643dns";
@@ -85,10 +85,10 @@ public class RSAEncryptionUnitTest {
             byte[] encryptedData = encrypt(keyPair.getPublic(), PLAIN_TEXT.getBytes());
             byte[] decryptedData = decrypt(keyPair.getPrivate(), encryptedData);
             String decryptedStr = new String(decryptedData);
-            Assert.assertEquals(PLAIN_TEXT, decryptedStr);
+            Assertions.assertEquals(PLAIN_TEXT, decryptedStr);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -103,10 +103,10 @@ public class RSAEncryptionUnitTest {
             byte[] encryptedData = encrypt(keyPair.getPublic(), PLAIN_TEXT.getBytes());
             byte[] decryptedData = decrypt(keyPair.getPrivate(), encryptedData);
             String decryptedStr = new String(decryptedData);
-            Assert.assertEquals(PLAIN_TEXT, decryptedStr);
+            Assertions.assertEquals(PLAIN_TEXT, decryptedStr);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -123,15 +123,15 @@ public class RSAEncryptionUnitTest {
             // dicrypt by private key pkcs1
             byte[] decryptedData = decrypt(privateKeyPKCS1, encryptedData);
             String decryptedStrPKCS1 = new String(decryptedData);
-            Assert.assertEquals(PLAIN_TEXT, decryptedStrPKCS1);
+            Assertions.assertEquals(PLAIN_TEXT, decryptedStrPKCS1);
 
             // decrypt by private key pkcs8
             decryptedData = decrypt(privateKeyPKCS8, encryptedData);
             String decryptedStrPKCS8 = new String(decryptedData);
-            Assert.assertEquals(decryptedStrPKCS1, decryptedStrPKCS8);
+            Assertions.assertEquals(decryptedStrPKCS1, decryptedStrPKCS8);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 

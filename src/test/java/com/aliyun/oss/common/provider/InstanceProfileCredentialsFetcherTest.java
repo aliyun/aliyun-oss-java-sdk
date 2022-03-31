@@ -24,7 +24,7 @@ import com.aliyun.oss.common.auth.InstanceProfileCredentialsFetcher;
 import com.aliyun.oss.common.provider.mock.InstanceProfileCredentialsFetcherMock;
 import com.aliyun.oss.common.provider.mock.InstanceProfileCredentialsFetcherMock.ResponseCategory;
 import com.aliyuncs.exceptions.ClientException;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -37,21 +37,21 @@ public class InstanceProfileCredentialsFetcherTest extends TestBase {
                     .withResponseCategory(ResponseCategory.Normal);
 
             InstanceProfileCredentials credentials = (InstanceProfileCredentials) credentialsFetcher.fetch(3);
-            Assert.assertEquals(credentials.getAccessKeyId().length(), 29);
-            Assert.assertEquals(credentials.getSecretAccessKey().length(), 44);
-            Assert.assertEquals(credentials.getSecurityToken().length(), 536);
-            Assert.assertTrue(credentials.useSecurityToken());
-            Assert.assertFalse(credentials.willSoonExpire());
+            Assertions.assertEquals(credentials.getAccessKeyId().length(), 29);
+            Assertions.assertEquals(credentials.getSecretAccessKey().length(), 44);
+            Assertions.assertEquals(credentials.getSecurityToken().length(), 536);
+            Assertions.assertTrue(credentials.useSecurityToken());
+            Assertions.assertFalse(credentials.willSoonExpire());
 
             credentials = (InstanceProfileCredentials) credentialsFetcher.fetch();
-            Assert.assertEquals(credentials.getAccessKeyId().length(), 29);
-            Assert.assertEquals(credentials.getSecretAccessKey().length(), 44);
-            Assert.assertEquals(credentials.getSecurityToken().length(), 536);
-            Assert.assertTrue(credentials.useSecurityToken());
-            Assert.assertFalse(credentials.willSoonExpire());
+            Assertions.assertEquals(credentials.getAccessKeyId().length(), 29);
+            Assertions.assertEquals(credentials.getSecretAccessKey().length(), 44);
+            Assertions.assertEquals(credentials.getSecurityToken().length(), 536);
+            Assertions.assertTrue(credentials.useSecurityToken());
+            Assertions.assertFalse(credentials.willSoonExpire());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -62,21 +62,21 @@ public class InstanceProfileCredentialsFetcherTest extends TestBase {
                     .withResponseCategory(ResponseCategory.Expired);
 
             InstanceProfileCredentials credentials = (InstanceProfileCredentials) credentialsFetcher.fetch(3);
-            Assert.assertEquals(credentials.getAccessKeyId().length(), 29);
-            Assert.assertEquals(credentials.getSecretAccessKey().length(), 44);
-            Assert.assertEquals(credentials.getSecurityToken().length(), 536);
-            Assert.assertTrue(credentials.useSecurityToken());
-            Assert.assertTrue(credentials.willSoonExpire());
+            Assertions.assertEquals(credentials.getAccessKeyId().length(), 29);
+            Assertions.assertEquals(credentials.getSecretAccessKey().length(), 44);
+            Assertions.assertEquals(credentials.getSecurityToken().length(), 536);
+            Assertions.assertTrue(credentials.useSecurityToken());
+            Assertions.assertTrue(credentials.willSoonExpire());
 
             credentials = (InstanceProfileCredentials) credentialsFetcher.fetch();
-            Assert.assertEquals(credentials.getAccessKeyId().length(), 29);
-            Assert.assertEquals(credentials.getSecretAccessKey().length(), 44);
-            Assert.assertEquals(credentials.getSecurityToken().length(), 536);
-            Assert.assertTrue(credentials.useSecurityToken());
-            Assert.assertTrue(credentials.willSoonExpire());
+            Assertions.assertEquals(credentials.getAccessKeyId().length(), 29);
+            Assertions.assertEquals(credentials.getSecretAccessKey().length(), 44);
+            Assertions.assertEquals(credentials.getSecurityToken().length(), 536);
+            Assertions.assertTrue(credentials.useSecurityToken());
+            Assertions.assertTrue(credentials.willSoonExpire());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -86,25 +86,25 @@ public class InstanceProfileCredentialsFetcherTest extends TestBase {
             InstanceProfileCredentialsFetcher credentialsFetcher = new InstanceProfileCredentialsFetcherMock()
                     .withResponseCategory(ResponseCategory.FormatInvalid);
             credentialsFetcher.fetch(3);
-            Assert.fail("EcsInstanceCredentialsFetcher.fetch should not be successful.");
+            Assertions.fail("EcsInstanceCredentialsFetcher.fetch should not be successful.");
         } catch (ClientException e) {
-            Assert.assertEquals(FORMAT_ERROR_MESSAGE, e.getMessage());
+            Assertions.assertEquals(FORMAT_ERROR_MESSAGE, e.getMessage());
         }
 
         try {
             InstanceProfileCredentialsFetcher credentialsFetcher = new InstanceProfileCredentialsFetcherMock()
                     .withResponseCategory(ResponseCategory.FormatInvalid);
             credentialsFetcher.fetch();
-            Assert.fail("EcsInstanceCredentialsFetcher.fetch should not be successful.");
+            Assertions.fail("EcsInstanceCredentialsFetcher.fetch should not be successful.");
         } catch (ClientException e) {
-            Assert.assertEquals(FORMAT_ERROR_MESSAGE, e.getMessage());
+            Assertions.assertEquals(FORMAT_ERROR_MESSAGE, e.getMessage());
         }
         
         try {
             InstanceProfileCredentialsFetcher credentialsFetcher = new InstanceProfileCredentialsFetcherMock()
                     .withResponseCategory(ResponseCategory.ServerHalt);
             credentialsFetcher.fetch(3);
-            Assert.fail("EcsInstanceCredentialsFetcher.fetch should not be successful.");
+            Assertions.fail("EcsInstanceCredentialsFetcher.fetch should not be successful.");
         } catch (ClientException e) {
         }
     }
@@ -115,7 +115,7 @@ public class InstanceProfileCredentialsFetcherTest extends TestBase {
             InstanceProfileCredentialsFetcher credentialsFetcher = new InstanceProfileCredentialsFetcherMock()
                     .withResponseCategory(ResponseCategory.Exceptional);
             credentialsFetcher.fetch(3);
-            Assert.fail("EcsInstanceCredentialsFetcher.fetch should not be successful.");
+            Assertions.fail("EcsInstanceCredentialsFetcher.fetch should not be successful.");
         } catch (ClientException e) {
         }
 
@@ -123,7 +123,7 @@ public class InstanceProfileCredentialsFetcherTest extends TestBase {
             InstanceProfileCredentialsFetcher credentialsFetcher = new InstanceProfileCredentialsFetcherMock()
                     .withResponseCategory(ResponseCategory.Exceptional);
             credentialsFetcher.fetch();
-            Assert.fail("EcsInstanceCredentialsFetcher.fetch should not be successful.");
+            Assertions.fail("EcsInstanceCredentialsFetcher.fetch should not be successful.");
         } catch (ClientException e) {
         }
     }
@@ -133,31 +133,31 @@ public class InstanceProfileCredentialsFetcherTest extends TestBase {
         try {
             InstanceProfileCredentialsFetcher credentialsFetcher = new InstanceProfileCredentialsFetcher();
             credentialsFetcher.setRoleName(null);
-            Assert.fail("EcsInstanceCredentialsFetcher.setRoleName should not be successful.");
+            Assertions.fail("EcsInstanceCredentialsFetcher.setRoleName should not be successful.");
         } catch (Exception e) {
-            Assert.assertTrue(e instanceof IllegalArgumentException);
+            Assertions.assertTrue(e instanceof IllegalArgumentException);
         }
 
         try {
             InstanceProfileCredentialsFetcher credentialsFetcher = new InstanceProfileCredentialsFetcher();
             credentialsFetcher.setRoleName("");
-            Assert.fail("EcsInstanceCredentialsFetcher.setRoleName should not be successful.");
+            Assertions.fail("EcsInstanceCredentialsFetcher.setRoleName should not be successful.");
         } catch (Exception e) {
-            Assert.assertTrue(e instanceof IllegalArgumentException);
+            Assertions.assertTrue(e instanceof IllegalArgumentException);
         }
 
         try {
             new InstanceProfileCredentialsFetcher().withRoleName(null);
-            Assert.fail("EcsInstanceCredentialsFetcher.setRoleName should not be successful.");
+            Assertions.fail("EcsInstanceCredentialsFetcher.setRoleName should not be successful.");
         } catch (Exception e) {
-            Assert.assertTrue(e instanceof IllegalArgumentException);
+            Assertions.assertTrue(e instanceof IllegalArgumentException);
         }
 
         try {
             new InstanceProfileCredentialsFetcher().withRoleName("");
-            Assert.fail("EcsInstanceCredentialsFetcher.setRoleName should not be successful.");
+            Assertions.fail("EcsInstanceCredentialsFetcher.setRoleName should not be successful.");
         } catch (Exception e) {
-            Assert.assertTrue(e instanceof IllegalArgumentException);
+            Assertions.assertTrue(e instanceof IllegalArgumentException);
         }
     }
 
@@ -167,9 +167,9 @@ public class InstanceProfileCredentialsFetcherTest extends TestBase {
             InstanceProfileCredentialsFetcher credentialsFetcher = new InstanceProfileCredentialsFetcher()
                     .withRoleName("NotExistRoleName");
             credentialsFetcher.fetch();
-            Assert.fail("EcsInstanceCredentialsFetcher.getMetadata should not be successful.");
+            Assertions.fail("EcsInstanceCredentialsFetcher.getMetadata should not be successful.");
         } catch (Exception e) {
-            Assert.assertTrue(e instanceof ClientException);
+            Assertions.assertTrue(e instanceof ClientException);
         }
     }
 
@@ -184,21 +184,21 @@ public class InstanceProfileCredentialsFetcherTest extends TestBase {
                     .withRoleName(TestConfig.ECS_ROLE_NAME);
 
             InstanceProfileCredentials credentials = (InstanceProfileCredentials) credentialsFetcher.fetch(3);
-            Assert.assertEquals(credentials.getAccessKeyId().length(), 29);
-            Assert.assertEquals(credentials.getSecretAccessKey().length(), 44);
-            Assert.assertEquals(credentials.getSecurityToken().length(), 536);
-            Assert.assertTrue(credentials.useSecurityToken());
-            Assert.assertFalse(credentials.willSoonExpire());
+            Assertions.assertEquals(credentials.getAccessKeyId().length(), 29);
+            Assertions.assertEquals(credentials.getSecretAccessKey().length(), 44);
+            Assertions.assertEquals(credentials.getSecurityToken().length(), 536);
+            Assertions.assertTrue(credentials.useSecurityToken());
+            Assertions.assertFalse(credentials.willSoonExpire());
 
             credentials = (InstanceProfileCredentials) credentialsFetcher.fetch();
-            Assert.assertEquals(credentials.getAccessKeyId().length(), 29);
-            Assert.assertEquals(credentials.getSecretAccessKey().length(), 44);
-            Assert.assertEquals(credentials.getSecurityToken().length(), 536);
-            Assert.assertTrue(credentials.useSecurityToken());
-            Assert.assertFalse(credentials.willSoonExpire());
+            Assertions.assertEquals(credentials.getAccessKeyId().length(), 29);
+            Assertions.assertEquals(credentials.getSecretAccessKey().length(), 44);
+            Assertions.assertEquals(credentials.getSecurityToken().length(), 536);
+            Assertions.assertTrue(credentials.useSecurityToken());
+            Assertions.assertFalse(credentials.willSoonExpire());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 

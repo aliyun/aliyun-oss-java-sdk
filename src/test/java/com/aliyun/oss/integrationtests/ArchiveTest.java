@@ -20,7 +20,7 @@
 package com.aliyun.oss.integrationtests;
 
 import com.aliyun.oss.model.RestoreObjectResult;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import static com.aliyun.oss.integrationtests.TestUtils.genFixedLengthFile;
 import static com.aliyun.oss.integrationtests.TestUtils.removeFile;
@@ -58,7 +58,7 @@ public class ArchiveTest extends TestBase {
             // delete object
             ossClient.deleteObject(bucketName, key);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             removeFile(filePath);
             ossClient.deleteBucket(bucketName);
@@ -107,7 +107,7 @@ public class ArchiveTest extends TestBase {
             // delete object
             ossClient.deleteObject(bucketName, key);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             removeFile(filePath);
             ossClient.deleteBucket(bucketName);
@@ -130,12 +130,12 @@ public class ArchiveTest extends TestBase {
             
             try {
                 ossClient.getObject(bucketName, key);
-                Assert.fail("Restore object should not be successful");
+                Assertions.fail("Restore object should not be successful");
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.INVALID_OBJECT_STATE, e.getErrorCode());
+                Assertions.assertEquals(OSSErrorCode.INVALID_OBJECT_STATE, e.getErrorCode());
             }    
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             removeFile(filePath);
             ossClient.deleteObject(bucketName, key);
@@ -148,7 +148,7 @@ public class ArchiveTest extends TestBase {
         // update coverage.
         RestoreObjectResult result = new RestoreObjectResult(200);
         result.setStatusCode(400);
-        Assert.assertEquals(400, result.getStatusCode());
+        Assertions.assertEquals(400, result.getStatusCode());
     }
 
 }

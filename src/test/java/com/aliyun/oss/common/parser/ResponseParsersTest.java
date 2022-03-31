@@ -5,7 +5,7 @@ import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.internal.ResponseParsers;
 import com.aliyun.oss.internal.model.OSSErrorResult;
 import com.aliyun.oss.model.*;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
@@ -41,24 +41,24 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         List<ReplicationRule> rules = null;
         try {
             rules = ResponseParsers.parseGetBucketReplication(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication response body fail!");
+            Assertions.fail("parse bucket replication response body fail!");
         }
-        Assert.assertTrue(rules.size() > 0);
+        Assertions.assertTrue(rules.size() > 0);
 
         ReplicationRule rule = rules.get(0);
-        Assert.assertEquals("12345678", rule.getReplicationRuleID());
-        Assert.assertEquals("testBucketName", rule.getTargetBucketName());
-        Assert.assertNull(rule.getTargetBucketLocation());
-        Assert.assertEquals("testCloud", rule.getTargetCloud());
-        Assert.assertEquals("testCloudLocation", rule.getTargetCloudLocation());
-        Assert.assertEquals(true, rule.isEnableHistoricalObjectReplication());
+        Assertions.assertEquals("12345678", rule.getReplicationRuleID());
+        Assertions.assertEquals("testBucketName", rule.getTargetBucketName());
+        Assertions.assertNull(rule.getTargetBucketLocation());
+        Assertions.assertEquals("testCloud", rule.getTargetCloud());
+        Assertions.assertEquals("testCloudLocation", rule.getTargetCloudLocation());
+        Assertions.assertEquals(true, rule.isEnableHistoricalObjectReplication());
     }
 
     @Test
@@ -78,25 +78,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         List<ReplicationRule> rules = null;
         try {
             rules = ResponseParsers.parseGetBucketReplication(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication response body fail!");
+            Assertions.fail("parse bucket replication response body fail!");
         }
-        Assert.assertTrue(rules.size() > 0);
+        Assertions.assertTrue(rules.size() > 0);
 
         ReplicationRule rule = rules.get(0);
-        Assert.assertEquals("12345678", rule.getReplicationRuleID());
-        Assert.assertEquals("testBucketName", rule.getTargetBucketName());
-        Assert.assertEquals("testLocation", rule.getTargetBucketLocation());
-        Assert.assertNull(rule.getTargetCloud());
-        Assert.assertNull(rule.getTargetCloudLocation());
-        Assert.assertEquals(false, rule.isEnableHistoricalObjectReplication());
-        Assert.assertNull(rule.getSourceBucketLocation());
+        Assertions.assertEquals("12345678", rule.getReplicationRuleID());
+        Assertions.assertEquals("testBucketName", rule.getTargetBucketName());
+        Assertions.assertEquals("testLocation", rule.getTargetBucketLocation());
+        Assertions.assertNull(rule.getTargetCloud());
+        Assertions.assertNull(rule.getTargetCloudLocation());
+        Assertions.assertEquals(false, rule.isEnableHistoricalObjectReplication());
+        Assertions.assertNull(rule.getSourceBucketLocation());
 
     }
 
@@ -121,25 +121,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         List<ReplicationRule> rules = null;
         try {
             rules = ResponseParsers.parseGetBucketReplication(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication response body fail!");
+            Assertions.fail("parse bucket replication response body fail!");
         }
-        Assert.assertTrue(rules.size() > 0);
+        Assertions.assertTrue(rules.size() > 0);
 
         ReplicationRule rule = rules.get(0);
-        Assert.assertEquals("12345678", rule.getReplicationRuleID());
-        Assert.assertEquals("testBucketName", rule.getTargetBucketName());
-        Assert.assertNull(rule.getTargetBucketLocation());
-        Assert.assertEquals("testCloud", rule.getTargetCloud());
-        Assert.assertEquals("testCloudLocation", rule.getTargetCloudLocation());
-        Assert.assertEquals(true, rule.isEnableHistoricalObjectReplication());
-        Assert.assertEquals("sourceLocation", rule.getSourceBucketLocation());
+        Assertions.assertEquals("12345678", rule.getReplicationRuleID());
+        Assertions.assertEquals("testBucketName", rule.getTargetBucketName());
+        Assertions.assertNull(rule.getTargetBucketLocation());
+        Assertions.assertEquals("testCloud", rule.getTargetCloud());
+        Assertions.assertEquals("testCloudLocation", rule.getTargetCloudLocation());
+        Assertions.assertEquals(true, rule.isEnableHistoricalObjectReplication());
+        Assertions.assertEquals("sourceLocation", rule.getSourceBucketLocation());
     }
 
     @Test
@@ -172,23 +172,23 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         BucketReplicationProgress progress = null;
         try {
             progress = ResponseParsers.parseGetBucketReplicationProgress(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication process response body fail!");
+            Assertions.fail("parse bucket replication process response body fail!");
         }
 
-        Assert.assertEquals("12345678", progress.getReplicationRuleID());
-        Assert.assertEquals("testBucketName", progress.getTargetBucketName());
-        Assert.assertNull(progress.getTargetBucketLocation());
-        Assert.assertEquals("testCloud", progress.getTargetCloud());
-        Assert.assertEquals("testCloudLocation", progress.getTargetCloudLocation());
-        Assert.assertEquals(0.8f, progress.getHistoricalObjectProgress());
-        Assert.assertEquals(dt, progress.getNewObjectProgress());
+        Assertions.assertEquals("12345678", progress.getReplicationRuleID());
+        Assertions.assertEquals("testBucketName", progress.getTargetBucketName());
+        Assertions.assertNull(progress.getTargetBucketLocation());
+        Assertions.assertEquals("testCloud", progress.getTargetCloud());
+        Assertions.assertEquals("testCloudLocation", progress.getTargetCloudLocation());
+        Assertions.assertEquals(0.8f, progress.getHistoricalObjectProgress());
+        Assertions.assertEquals(dt, progress.getNewObjectProgress());
 
     }
 
@@ -221,23 +221,23 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         BucketReplicationProgress progress = null;
         try {
             progress = ResponseParsers.parseGetBucketReplicationProgress(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication process response body fail!");
+            Assertions.fail("parse bucket replication process response body fail!");
         }
 
-        Assert.assertEquals("12345678", progress.getReplicationRuleID());
-        Assert.assertEquals("testBucketName", progress.getTargetBucketName());
-        Assert.assertEquals("testLocation", progress.getTargetBucketLocation());
-        Assert.assertNull(progress.getTargetCloud());
-        Assert.assertNull(progress.getTargetCloudLocation());
-        Assert.assertEquals(0.9f, progress.getHistoricalObjectProgress());
-        Assert.assertEquals(dt, progress.getNewObjectProgress());
+        Assertions.assertEquals("12345678", progress.getReplicationRuleID());
+        Assertions.assertEquals("testBucketName", progress.getTargetBucketName());
+        Assertions.assertEquals("testLocation", progress.getTargetBucketLocation());
+        Assertions.assertNull(progress.getTargetCloud());
+        Assertions.assertNull(progress.getTargetCloudLocation());
+        Assertions.assertEquals(0.9f, progress.getHistoricalObjectProgress());
+        Assertions.assertEquals(dt, progress.getNewObjectProgress());
     }
 
     @Test
@@ -313,7 +313,7 @@ public class ResponseParsersTest {
             instream2 = new ByteArrayInputStream(respBody2.getBytes("utf-8"));
             instream3 = new ByteArrayInputStream(respBody3.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         BucketReplicationProgress progress1 = null;
@@ -324,14 +324,14 @@ public class ResponseParsersTest {
             progress2 = ResponseParsers.parseGetBucketReplicationProgress(instream2);
             progress3 = ResponseParsers.parseGetBucketReplicationProgress(instream3);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication process response body fail!");
+            Assertions.fail("parse bucket replication process response body fail!");
         }
 
-        Assert.assertFalse(progress1.isEnableHistoricalObjectReplication());
-        Assert.assertEquals(Float.parseFloat("0"), progress2.getHistoricalObjectProgress());
-        Assert.assertNull(progress2.getNewObjectProgress());
-        Assert.assertEquals(Float.parseFloat("0"), progress3.getHistoricalObjectProgress());
-        Assert.assertNotNull(progress3.getNewObjectProgress());
+        Assertions.assertFalse(progress1.isEnableHistoricalObjectReplication());
+        Assertions.assertEquals(Float.parseFloat("0"), progress2.getHistoricalObjectProgress());
+        Assertions.assertNull(progress2.getNewObjectProgress());
+        Assertions.assertEquals(Float.parseFloat("0"), progress3.getHistoricalObjectProgress());
+        Assertions.assertNotNull(progress3.getNewObjectProgress());
 
         // test parse error
         String respBody4 = respBody1 + "-error-body";
@@ -340,7 +340,7 @@ public class ResponseParsersTest {
         try {
             instream4 = new ByteArrayInputStream(respBody4.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -369,27 +369,27 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         List<ReplicationRule> rules = null;
         try {
             rules = ResponseParsers.parseGetBucketReplication(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication response body fail!");
+            Assertions.fail("parse bucket replication response body fail!");
         }
-        Assert.assertTrue(rules.size() > 0);
+        Assertions.assertTrue(rules.size() > 0);
 
         ReplicationRule rule = rules.get(0);
-        Assert.assertEquals("12345678", rule.getReplicationRuleID());
-        Assert.assertEquals("testBucketName", rule.getTargetBucketName());
-        Assert.assertNull(rule.getTargetBucketLocation());
-        Assert.assertEquals("testCloud", rule.getTargetCloud());
-        Assert.assertEquals("testCloudLocation", rule.getTargetCloudLocation());
-        Assert.assertEquals(true, rule.isEnableHistoricalObjectReplication());
-        Assert.assertEquals("ft-sync-role", rule.getSyncRole());
-        Assert.assertNull(rule.getSseKmsEncryptedObjectsStatus());
-        Assert.assertNull(rule.getReplicaKmsKeyID());
+        Assertions.assertEquals("12345678", rule.getReplicationRuleID());
+        Assertions.assertEquals("testBucketName", rule.getTargetBucketName());
+        Assertions.assertNull(rule.getTargetBucketLocation());
+        Assertions.assertEquals("testCloud", rule.getTargetCloud());
+        Assertions.assertEquals("testCloudLocation", rule.getTargetCloudLocation());
+        Assertions.assertEquals(true, rule.isEnableHistoricalObjectReplication());
+        Assertions.assertEquals("ft-sync-role", rule.getSyncRole());
+        Assertions.assertNull(rule.getSseKmsEncryptedObjectsStatus());
+        Assertions.assertNull(rule.getReplicaKmsKeyID());
     }
 
     @Test
@@ -413,27 +413,27 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         List<ReplicationRule> rules = null;
         try {
             rules = ResponseParsers.parseGetBucketReplication(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication response body fail!");
+            Assertions.fail("parse bucket replication response body fail!");
         }
-        Assert.assertTrue(rules.size() > 0);
+        Assertions.assertTrue(rules.size() > 0);
 
         ReplicationRule rule = rules.get(0);
-        Assert.assertEquals("12345678", rule.getReplicationRuleID());
-        Assert.assertEquals("testBucketName", rule.getTargetBucketName());
-        Assert.assertNull(rule.getTargetBucketLocation());
-        Assert.assertEquals("testCloud", rule.getTargetCloud());
-        Assert.assertEquals("testCloudLocation", rule.getTargetCloudLocation());
-        Assert.assertEquals(true, rule.isEnableHistoricalObjectReplication());
-        Assert.assertNull(rule.getSyncRole());
-        Assert.assertNull(rule.getSseKmsEncryptedObjectsStatus());
-        Assert.assertEquals("12345", rule.getReplicaKmsKeyID());
+        Assertions.assertEquals("12345678", rule.getReplicationRuleID());
+        Assertions.assertEquals("testBucketName", rule.getTargetBucketName());
+        Assertions.assertNull(rule.getTargetBucketLocation());
+        Assertions.assertEquals("testCloud", rule.getTargetCloud());
+        Assertions.assertEquals("testCloudLocation", rule.getTargetCloudLocation());
+        Assertions.assertEquals(true, rule.isEnableHistoricalObjectReplication());
+        Assertions.assertNull(rule.getSyncRole());
+        Assertions.assertNull(rule.getSseKmsEncryptedObjectsStatus());
+        Assertions.assertEquals("12345", rule.getReplicaKmsKeyID());
     }
 
     @Test
@@ -459,27 +459,27 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         List<ReplicationRule> rules = null;
         try {
             rules = ResponseParsers.parseGetBucketReplication(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication response body fail!");
+            Assertions.fail("parse bucket replication response body fail!");
         }
-        Assert.assertTrue(rules.size() > 0);
+        Assertions.assertTrue(rules.size() > 0);
 
         ReplicationRule rule = rules.get(0);
-        Assert.assertEquals("12345678", rule.getReplicationRuleID());
-        Assert.assertEquals("testBucketName", rule.getTargetBucketName());
-        Assert.assertNull(rule.getTargetBucketLocation());
-        Assert.assertEquals("testCloud", rule.getTargetCloud());
-        Assert.assertEquals("testCloudLocation", rule.getTargetCloudLocation());
-        Assert.assertEquals(true, rule.isEnableHistoricalObjectReplication());
-        Assert.assertNull(rule.getSyncRole());
-        Assert.assertEquals("Enabled", rule.getSseKmsEncryptedObjectsStatus());
-        Assert.assertNull(rule.getReplicaKmsKeyID());
+        Assertions.assertEquals("12345678", rule.getReplicationRuleID());
+        Assertions.assertEquals("testBucketName", rule.getTargetBucketName());
+        Assertions.assertNull(rule.getTargetBucketLocation());
+        Assertions.assertEquals("testCloud", rule.getTargetCloud());
+        Assertions.assertEquals("testCloudLocation", rule.getTargetCloudLocation());
+        Assertions.assertEquals(true, rule.isEnableHistoricalObjectReplication());
+        Assertions.assertNull(rule.getSyncRole());
+        Assertions.assertEquals("Enabled", rule.getSseKmsEncryptedObjectsStatus());
+        Assertions.assertNull(rule.getReplicaKmsKeyID());
     }
 
     @Test
@@ -509,32 +509,32 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         List<ReplicationRule> rules = null;
         try {
             rules = ResponseParsers.parseGetBucketReplication(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication response body fail!");
+            Assertions.fail("parse bucket replication response body fail!");
         }
-        Assert.assertTrue(rules.size() > 0);
+        Assertions.assertTrue(rules.size() > 0);
 
         ReplicationRule rule = rules.get(0);
-        Assert.assertEquals("12345678", rule.getReplicationRuleID());
-        Assert.assertEquals("testBucketName", rule.getTargetBucketName());
-        Assert.assertNull(rule.getTargetBucketLocation());
-        Assert.assertEquals("testCloud", rule.getTargetCloud());
-        Assert.assertEquals("testCloudLocation", rule.getTargetCloudLocation());
-        Assert.assertEquals(true, rule.isEnableHistoricalObjectReplication());
-        Assert.assertEquals(3, rule.getObjectPrefixList().size());
+        Assertions.assertEquals("12345678", rule.getReplicationRuleID());
+        Assertions.assertEquals("testBucketName", rule.getTargetBucketName());
+        Assertions.assertNull(rule.getTargetBucketLocation());
+        Assertions.assertEquals("testCloud", rule.getTargetCloud());
+        Assertions.assertEquals("testCloudLocation", rule.getTargetCloudLocation());
+        Assertions.assertEquals(true, rule.isEnableHistoricalObjectReplication());
+        Assertions.assertEquals(3, rule.getObjectPrefixList().size());
         for (String o : rule.getObjectPrefixList()) {
-            Assert.assertTrue(o.startsWith("test-prefix-"));
+            Assertions.assertTrue(o.startsWith("test-prefix-"));
         }
-        Assert.assertEquals(2, rule.getReplicationActionList().size());
-        Assert.assertNull(rule.getSyncRole());
-        Assert.assertNull(rule.getSseKmsEncryptedObjectsStatus());
-        Assert.assertEquals("12345", rule.getReplicaKmsKeyID());
+        Assertions.assertEquals(2, rule.getReplicationActionList().size());
+        Assertions.assertNull(rule.getSyncRole());
+        Assertions.assertNull(rule.getSseKmsEncryptedObjectsStatus());
+        Assertions.assertEquals("12345", rule.getReplicaKmsKeyID());
     }
 
     @Test
@@ -547,18 +547,18 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         List<String> locations = null;
         try {
             locations = ResponseParsers.parseGetBucketReplicationLocation(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication response body fail!");
+            Assertions.fail("parse bucket replication response body fail!");
         }
-        Assert.assertEquals(2, locations.size());
+        Assertions.assertEquals(2, locations.size());
         for (String o : locations) {
-            Assert.assertTrue(o.startsWith("test-location-"));
+            Assertions.assertTrue(o.startsWith("test-location-"));
         }
 
 
@@ -567,12 +567,12 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetBucketReplicationLocation(instream);
-            Assert.fail("should be failed here.");
+            Assertions.fail("should be failed here.");
         } catch (Exception e) {
             // expected exception.
         }
@@ -603,20 +603,20 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         LiveChannelStat stat = null;
         try {
             stat = ResponseParsers.parseGetLiveChannelStat(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication response body fail!");
+            Assertions.fail("parse bucket replication response body fail!");
         }
 
-        Assert.assertEquals(PushflowStatus.Live, stat.getPushflowStatus());
-        Assert.assertEquals("10.1.2.3:47745", stat.getRemoteAddress());
-        Assert.assertEquals(1280, stat.getVideoStat().getWidth());
-        Assert.assertEquals(44100, stat.getAudioStat().getSampleRate());
+        Assertions.assertEquals(PushflowStatus.Live, stat.getPushflowStatus());
+        Assertions.assertEquals("10.1.2.3:47745", stat.getRemoteAddress());
+        Assertions.assertEquals(1280, stat.getVideoStat().getWidth());
+        Assertions.assertEquals(44100, stat.getAudioStat().getSampleRate());
     }
 
     @Test
@@ -639,18 +639,18 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         List<LiveRecord> records = null;
         try {
             records = ResponseParsers.parseGetLiveChannelHistory(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication response body fail!");
+            Assertions.fail("parse bucket replication response body fail!");
         }
 
-        Assert.assertEquals(2, records.size());
-        Assert.assertEquals("10.101.194.148:56861", records.get(0).getRemoteAddress());
+        Assertions.assertEquals(2, records.size());
+        Assertions.assertEquals("10.101.194.148:56861", records.get(0).getRemoteAddress());
     }
 
     @Test
@@ -675,18 +675,18 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         List<Style> records = null;
         try {
             records = ResponseParsers.parseListImageStyle(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication response body fail!");
+            Assertions.fail("parse bucket replication response body fail!");
         }
 
-        Assert.assertEquals(2, records.size());
-        Assert.assertEquals("Name1", records.get(0).GetStyleName());
+        Assertions.assertEquals(2, records.size());
+        Assertions.assertEquals("Name1", records.get(0).GetStyleName());
     }
 
     @Test
@@ -708,17 +708,17 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         GetBucketImageResult result = null;
         try {
             result = ResponseParsers.parseBucketImage(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication response body fail!");
+            Assertions.fail("parse bucket replication response body fail!");
         }
 
-        Assert.assertEquals("Enable", result.GetStatus());
+        Assertions.assertEquals("Enable", result.GetStatus());
     }
 
     @Test
@@ -735,17 +735,17 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         GetImageStyleResult result = null;
         try {
             result = ResponseParsers.parseImageStyle(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication response body fail!");
+            Assertions.fail("parse bucket replication response body fail!");
         }
 
-        Assert.assertEquals("Name1", result.GetStyleName());
+        Assertions.assertEquals("Name1", result.GetStyleName());
     }
 
     @Test
@@ -788,47 +788,47 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         List<CnameConfiguration> result = null;
         try {
             result = ResponseParsers.parseGetBucketCname(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication response body fail!");
+            Assertions.fail("parse bucket replication response body fail!");
         }
 
         Date date = DateUtil.parseIso8601Date("2019-09-30T01:53:45.000Z");
 
-        Assert.assertEquals(4, result.size());
+        Assertions.assertEquals(4, result.size());
 
-        Assert.assertEquals("Domain1", result.get(0).getDomain());
-        Assert.assertEquals(CnameConfiguration.CnameStatus.Enabled, result.get(0).getStatus());
-        Assert.assertEquals(date, result.get(0).getLastMofiedTime());
-        Assert.assertEquals(new Boolean(true), result.get(0).getPurgeCdnCache());
-        Assert.assertNull(result.get(0).getCertType());
+        Assertions.assertEquals("Domain1", result.get(0).getDomain());
+        Assertions.assertEquals(CnameConfiguration.CnameStatus.Enabled, result.get(0).getStatus());
+        Assertions.assertEquals(date, result.get(0).getLastMofiedTime());
+        Assertions.assertEquals(new Boolean(true), result.get(0).getPurgeCdnCache());
+        Assertions.assertNull(result.get(0).getCertType());
 
-        Assert.assertEquals("Domain2", result.get(1).getDomain());
-        Assert.assertEquals(CnameConfiguration.CnameStatus.Disabled, result.get(1).getStatus());
-        Assert.assertEquals(date, result.get(1).getLastMofiedTime());
-        Assert.assertNull(result.get(1).getPurgeCdnCache());
-        Assert.assertNull(result.get(1).getCertType());
+        Assertions.assertEquals("Domain2", result.get(1).getDomain());
+        Assertions.assertEquals(CnameConfiguration.CnameStatus.Disabled, result.get(1).getStatus());
+        Assertions.assertEquals(date, result.get(1).getLastMofiedTime());
+        Assertions.assertNull(result.get(1).getPurgeCdnCache());
+        Assertions.assertNull(result.get(1).getCertType());
 
-        Assert.assertEquals("Domain3", result.get(2).getDomain());
-        Assert.assertEquals(CnameConfiguration.CnameStatus.Enabled, result.get(2).getStatus());
-        Assert.assertEquals(date, result.get(2).getLastMofiedTime());
-        Assert.assertNull(result.get(2).getPurgeCdnCache());
-        Assert.assertEquals(CnameConfiguration.CertType.CAS, result.get(2).getCertType());
-        Assert.assertEquals("hangzhou-01", result.get(2).getCertId());
-        Assert.assertEquals(CnameConfiguration.CertStatus.Enabled, result.get(2).getCertStatus());
+        Assertions.assertEquals("Domain3", result.get(2).getDomain());
+        Assertions.assertEquals(CnameConfiguration.CnameStatus.Enabled, result.get(2).getStatus());
+        Assertions.assertEquals(date, result.get(2).getLastMofiedTime());
+        Assertions.assertNull(result.get(2).getPurgeCdnCache());
+        Assertions.assertEquals(CnameConfiguration.CertType.CAS, result.get(2).getCertType());
+        Assertions.assertEquals("hangzhou-01", result.get(2).getCertId());
+        Assertions.assertEquals(CnameConfiguration.CertStatus.Enabled, result.get(2).getCertStatus());
 
-        Assert.assertEquals("Domain4", result.get(3).getDomain());
-        Assert.assertEquals(CnameConfiguration.CnameStatus.Enabled, result.get(3).getStatus());
-        Assert.assertEquals(date, result.get(3).getLastMofiedTime());
-        Assert.assertNull(result.get(3).getPurgeCdnCache());
-        Assert.assertEquals(CnameConfiguration.CertType.Upload, result.get(3).getCertType());
-        Assert.assertNull(result.get(3).getCertId());
-        Assert.assertEquals(CnameConfiguration.CertStatus.Disabled, result.get(3).getCertStatus());
+        Assertions.assertEquals("Domain4", result.get(3).getDomain());
+        Assertions.assertEquals(CnameConfiguration.CnameStatus.Enabled, result.get(3).getStatus());
+        Assertions.assertEquals(date, result.get(3).getLastMofiedTime());
+        Assertions.assertNull(result.get(3).getPurgeCdnCache());
+        Assertions.assertEquals(CnameConfiguration.CertType.Upload, result.get(3).getCertType());
+        Assertions.assertNull(result.get(3).getCertId());
+        Assertions.assertEquals(CnameConfiguration.CertStatus.Disabled, result.get(3).getCertStatus());
     }
 
     @Test
@@ -855,19 +855,19 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         BucketInfo result = null;
         try {
             result = ResponseParsers.parseGetBucketInfo(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication response body fail!");
+            Assertions.fail("parse bucket replication response body fail!");
         }
 
-        Assert.assertEquals(CannedAccessControlList.Private, result.getCannedACL());
-        Assert.assertEquals("oss-cn-hangzhou", result.getBucket().getLocation());
-        Assert.assertEquals("oss-example", result.getBucket().getName());
+        Assertions.assertEquals(CannedAccessControlList.Private, result.getCannedACL());
+        Assertions.assertEquals("oss-cn-hangzhou", result.getBucket().getLocation());
+        Assertions.assertEquals("oss-example", result.getBucket().getName());
     }
 
     @Test
@@ -896,23 +896,23 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         BucketInfo result = null;
         try {
             result = ResponseParsers.parseGetBucketInfo(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication response body fail!");
+            Assertions.fail("parse bucket replication response body fail!");
         }
 
-        Assert.assertEquals("test", result.getComment());
-        Assert.assertEquals(DataRedundancyType.LRS, result.getDataRedundancyType());
-        Assert.assertEquals(CannedAccessControlList.Private, result.getCannedACL());
-        Assert.assertEquals("oss-cn-hangzhou", result.getBucket().getLocation());
-        Assert.assertEquals("oss-example", result.getBucket().getName());
-        Assert.assertEquals(null, result.getBucket().getHnsStatus());
-        Assert.assertEquals(null, result.getBucket().getResourceGroupId());
+        Assertions.assertEquals("test", result.getComment());
+        Assertions.assertEquals(DataRedundancyType.LRS, result.getDataRedundancyType());
+        Assertions.assertEquals(CannedAccessControlList.Private, result.getCannedACL());
+        Assertions.assertEquals("oss-cn-hangzhou", result.getBucket().getLocation());
+        Assertions.assertEquals("oss-example", result.getBucket().getName());
+        Assertions.assertEquals(null, result.getBucket().getHnsStatus());
+        Assertions.assertEquals(null, result.getBucket().getResourceGroupId());
 
         respBody = "" +
                 "<BucketInfo>\n" +
@@ -940,23 +940,23 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         result = null;
         try {
             result = ResponseParsers.parseGetBucketInfo(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication response body fail!");
+            Assertions.fail("parse bucket replication response body fail!");
         }
 
-        Assert.assertEquals("test", result.getComment());
-        Assert.assertEquals(DataRedundancyType.LRS, result.getDataRedundancyType());
-        Assert.assertEquals(CannedAccessControlList.Private, result.getCannedACL());
-        Assert.assertEquals("oss-cn-hangzhou", result.getBucket().getLocation());
-        Assert.assertEquals("oss-example", result.getBucket().getName());
-        Assert.assertEquals(HnsStatus.Enabled.toString(), result.getBucket().getHnsStatus());
-        Assert.assertEquals("xxx-id-123", result.getBucket().getResourceGroupId());
+        Assertions.assertEquals("test", result.getComment());
+        Assertions.assertEquals(DataRedundancyType.LRS, result.getDataRedundancyType());
+        Assertions.assertEquals(CannedAccessControlList.Private, result.getCannedACL());
+        Assertions.assertEquals("oss-cn-hangzhou", result.getBucket().getLocation());
+        Assertions.assertEquals("oss-example", result.getBucket().getName());
+        Assertions.assertEquals(HnsStatus.Enabled.toString(), result.getBucket().getHnsStatus());
+        Assertions.assertEquals("xxx-id-123", result.getBucket().getResourceGroupId());
     }
 
     @Test
@@ -981,23 +981,23 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         List<Vpcip>  result = null;
         try {
             result = ResponseParsers.parseListVpcipResult(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication response body fail!");
+            Assertions.fail("parse bucket replication response body fail!");
         }
 
-        Assert.assertEquals(2, result.size());
+        Assertions.assertEquals(2, result.size());
         for (Vpcip v: result) {
-            Assert.assertTrue(v.getRegion().startsWith("test-region-"));
-            Assert.assertTrue(v.getVpcId().startsWith("test-vpcid-"));
-            Assert.assertTrue(v.getVip().startsWith("test-vip-"));
-            Assert.assertTrue(v.getLabel().startsWith("test-label-"));
-            Assert.assertTrue(v.toString().contains("test-region-"));
+            Assertions.assertTrue(v.getRegion().startsWith("test-region-"));
+            Assertions.assertTrue(v.getVpcId().startsWith("test-vpcid-"));
+            Assertions.assertTrue(v.getVip().startsWith("test-vip-"));
+            Assertions.assertTrue(v.getLabel().startsWith("test-label-"));
+            Assertions.assertTrue(v.toString().contains("test-region-"));
         }
     }
 
@@ -1021,21 +1021,21 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         List<VpcPolicy>  result = null;
         try {
             result = ResponseParsers.parseListVpcPolicyResult(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication response body fail!");
+            Assertions.fail("parse bucket replication response body fail!");
         }
 
-        Assert.assertEquals(2, result.size());
+        Assertions.assertEquals(2, result.size());
         for (VpcPolicy v: result) {
-            Assert.assertTrue(v.getRegion().startsWith("test-region-"));
-            Assert.assertTrue(v.getVpcId().startsWith("test-vpcid-"));
-            Assert.assertTrue(v.getVip().startsWith("test-vip-"));
+            Assertions.assertTrue(v.getRegion().startsWith("test-region-"));
+            Assertions.assertTrue(v.getVpcId().startsWith("test-vpcid-"));
+            Assertions.assertTrue(v.getVip().startsWith("test-vip-"));
         }
     }
 
@@ -1053,27 +1053,27 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         Vpcip vpcip = null;
         try {
             vpcip = ResponseParsers.parseGetCreateVpcipResult(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse bucket replication response body fail!");
+            Assertions.fail("parse bucket replication response body fail!");
         }
 
-        Assert.assertTrue(vpcip.getRegion().startsWith("test-region-"));
-        Assert.assertTrue(vpcip.getVpcId().startsWith("test-vpcid-"));
-        Assert.assertTrue(vpcip.getVip().startsWith("test-vip-"));
-        Assert.assertTrue(vpcip.getLabel().startsWith("test-label-"));
-        Assert.assertTrue(vpcip.toString().contains("test-region-"));
+        Assertions.assertTrue(vpcip.getRegion().startsWith("test-region-"));
+        Assertions.assertTrue(vpcip.getVpcId().startsWith("test-vpcid-"));
+        Assertions.assertTrue(vpcip.getVip().startsWith("test-vip-"));
+        Assertions.assertTrue(vpcip.getLabel().startsWith("test-label-"));
+        Assertions.assertTrue(vpcip.toString().contains("test-region-"));
 
         // test error body
         try {
             instream = new ByteArrayInputStream((respBody + "error-body").getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1110,7 +1110,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1118,17 +1118,17 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.ListImageStyleResponseParser parser = new ResponseParsers.ListImageStyleResponseParser();
             List<Style> value = parser.parse(responseMessage);
-            Assert.assertEquals(value.size(), 2);
-            Assert.assertEquals(value.get(0).GetStyleName(), "name1");
+            Assertions.assertEquals(value.size(), 2);
+            Assertions.assertEquals(value.get(0).GetStyleName(), "name1");
         } catch (ResponseParseException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         respBody = "invalid xml";
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1136,9 +1136,9 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.ListImageStyleResponseParser parser = new ResponseParsers.ListImageStyleResponseParser();
             List<Style> value = parser.parse(responseMessage);
-            Assert.fail("should not here");
+            Assertions.fail("should not here");
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         respBody = "" +
@@ -1153,7 +1153,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1161,9 +1161,9 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.ListImageStyleResponseParser parser = new ResponseParsers.ListImageStyleResponseParser();
             List<Style> value = parser.parse(responseMessage);
-            Assert.fail("should not here");
+            Assertions.fail("should not here");
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
@@ -1188,7 +1188,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1196,16 +1196,16 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.GetBucketImageResponseParser parser = new ResponseParsers.GetBucketImageResponseParser();
             GetBucketImageResult result = parser.parse(responseMessage);
-            Assert.assertEquals(result.GetBucketName(), "name");
+            Assertions.assertEquals(result.GetBucketName(), "name");
         } catch (ResponseParseException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         respBody = "invalid xml";
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1213,9 +1213,9 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.GetBucketImageResponseParser parser = new ResponseParsers.GetBucketImageResponseParser();
             GetBucketImageResult result = parser.parse(responseMessage);
-            Assert.fail("should not here");
+            Assertions.fail("should not here");
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         respBody = "" +
@@ -1232,7 +1232,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1240,9 +1240,9 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.GetBucketImageResponseParser parser = new ResponseParsers.GetBucketImageResponseParser();
             GetBucketImageResult result = parser.parse(responseMessage);
-            Assert.fail("should not here");
+            Assertions.fail("should not here");
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
@@ -1264,7 +1264,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1272,16 +1272,16 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.GetImageStyleResponseParser parser = new ResponseParsers.GetImageStyleResponseParser();
             GetImageStyleResult result = parser.parse(responseMessage);
-            Assert.assertEquals(result.GetStyleName(), "name");
+            Assertions.assertEquals(result.GetStyleName(), "name");
         } catch (ResponseParseException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         respBody = "invalid xml";
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1289,9 +1289,9 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.GetImageStyleResponseParser parser = new ResponseParsers.GetImageStyleResponseParser();
             GetImageStyleResult result = parser.parse(responseMessage);
-            Assert.fail("should not here");
+            Assertions.fail("should not here");
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         respBody = "" +
@@ -1304,7 +1304,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1312,9 +1312,9 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.GetImageStyleResponseParser parser = new ResponseParsers.GetImageStyleResponseParser();
             GetImageStyleResult result = parser.parse(responseMessage);
-            Assert.fail("should not here");
+            Assertions.fail("should not here");
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
@@ -1343,7 +1343,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1351,17 +1351,17 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.GetBucketCnameResponseParser parser = new ResponseParsers.GetBucketCnameResponseParser();
             List<CnameConfiguration> result = parser.parse(responseMessage);
-            Assert.assertEquals(result.size(), 2);
-            Assert.assertEquals(result.get(0).getDomain(), "name");
+            Assertions.assertEquals(result.size(), 2);
+            Assertions.assertEquals(result.get(0).getDomain(), "name");
         } catch (ResponseParseException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         respBody = "invalid xml";
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1369,9 +1369,9 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.GetBucketCnameResponseParser parser = new ResponseParsers.GetBucketCnameResponseParser();
             List<CnameConfiguration> result = parser.parse(responseMessage);
-            Assert.fail("should not here");
+            Assertions.fail("should not here");
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         respBody = "" +
@@ -1386,7 +1386,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1394,9 +1394,9 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.GetBucketCnameResponseParser parser = new ResponseParsers.GetBucketCnameResponseParser();
             List<CnameConfiguration> result = parser.parse(responseMessage);
-            Assert.fail("should not here");
+            Assertions.fail("should not here");
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
@@ -1454,7 +1454,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1462,17 +1462,17 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.GetBucketReplicationResponseParser parser = new ResponseParsers.GetBucketReplicationResponseParser();
             List<ReplicationRule> result = parser.parse(responseMessage);
-            Assert.assertEquals(result.size(), 3);
-            Assert.assertEquals(result.get(0).getReplicationRuleID(), "name");
+            Assertions.assertEquals(result.size(), 3);
+            Assertions.assertEquals(result.get(0).getReplicationRuleID(), "name");
         } catch (ResponseParseException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         respBody = "invalid xml";
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1480,9 +1480,9 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.GetBucketReplicationResponseParser parser = new ResponseParsers.GetBucketReplicationResponseParser();
             List<ReplicationRule> result = parser.parse(responseMessage);
-            Assert.fail("should not here");
+            Assertions.fail("should not here");
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         respBody = "" +
@@ -1500,7 +1500,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1508,9 +1508,9 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.GetBucketReplicationResponseParser parser = new ResponseParsers.GetBucketReplicationResponseParser();
             List<ReplicationRule> result = parser.parse(responseMessage);
-            Assert.fail("should not here");
+            Assertions.fail("should not here");
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
@@ -1539,7 +1539,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1547,9 +1547,9 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.GetBucketReplicationProgressResponseParser parser = new ResponseParsers.GetBucketReplicationProgressResponseParser();
             BucketReplicationProgress result = parser.parse(responseMessage);
-            Assert.assertEquals(result.getReplicationRuleID(), "name");
+            Assertions.assertEquals(result.getReplicationRuleID(), "name");
         } catch (ResponseParseException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         respBody = "" +
@@ -1568,7 +1568,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1576,16 +1576,16 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.GetBucketReplicationProgressResponseParser parser = new ResponseParsers.GetBucketReplicationProgressResponseParser();
             BucketReplicationProgress result = parser.parse(responseMessage);
-            Assert.assertEquals(result.getReplicationRuleID(), "name");
+            Assertions.assertEquals(result.getReplicationRuleID(), "name");
         } catch (ResponseParseException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         respBody = "invalid xml";
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1593,9 +1593,9 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.GetBucketReplicationProgressResponseParser parser = new ResponseParsers.GetBucketReplicationProgressResponseParser();
             BucketReplicationProgress result = parser.parse(responseMessage);
-            Assert.fail("should not here");
+            Assertions.fail("should not here");
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         respBody = "" +
@@ -1616,7 +1616,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1624,9 +1624,9 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.GetBucketReplicationProgressResponseParser parser = new ResponseParsers.GetBucketReplicationProgressResponseParser();
             BucketReplicationProgress result = parser.parse(responseMessage);
-            Assert.fail("should not here");
+            Assertions.fail("should not here");
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
@@ -1644,7 +1644,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1652,17 +1652,17 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.GetBucketReplicationLocationResponseParser parser = new ResponseParsers.GetBucketReplicationLocationResponseParser();
             List<String> result = parser.parse(responseMessage);
-            Assert.assertEquals(result.size(), 2);
-            Assert.assertEquals(result.get(0), "oss-cn-beijing");
+            Assertions.assertEquals(result.size(), 2);
+            Assertions.assertEquals(result.get(0), "oss-cn-beijing");
         } catch (ResponseParseException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         respBody = "invalid xml";
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1670,9 +1670,9 @@ public class ResponseParsersTest {
             responseMessage.setContent(instream);
             ResponseParsers.GetBucketReplicationLocationResponseParser parser = new ResponseParsers.GetBucketReplicationLocationResponseParser();
             List<String> result = parser.parse(responseMessage);
-            Assert.fail("should not here");
+            Assertions.fail("should not here");
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
@@ -1680,9 +1680,9 @@ public class ResponseParsersTest {
             responseMessage.setContent(null);
             ResponseParsers.GetBucketReplicationLocationResponseParser parser = new ResponseParsers.GetBucketReplicationLocationResponseParser();
             List<String> result = parser.parse(responseMessage);
-            Assert.fail("should not here");
+            Assertions.fail("should not here");
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
@@ -1695,7 +1695,7 @@ public class ResponseParsersTest {
             ResponseParsers.AppendObjectResponseParser parser = new ResponseParsers.AppendObjectResponseParser();
             AppendObjectResult result = parser.parse(responseMessage);
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
@@ -1708,11 +1708,11 @@ public class ResponseParsersTest {
             responseMessage.setHeaders(headers);
             ResponseParsers.GetObjectResponseParser parser = new ResponseParsers.GetObjectResponseParser("bucket", "key");
             OSSObject result = parser.parse(responseMessage);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -1723,7 +1723,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream("".getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -1732,9 +1732,9 @@ public class ResponseParsersTest {
             responseMessage.setContentLength(0);
             ResponseParsers.DeleteVersionsResponseParser parser = new ResponseParsers.DeleteVersionsResponseParser();
             DeleteVersionsResult result = parser.parse(responseMessage);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -1760,14 +1760,14 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ObjectListing result = ResponseParsers.parseListObjects(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "" +
@@ -1779,21 +1779,21 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ObjectListing result = ResponseParsers.parseListObjects(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ObjectListing result = ResponseParsers.parseListObjects(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
@@ -1822,14 +1822,14 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             VersionListing result = ResponseParsers.parseListVersions(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "" +
@@ -1852,14 +1852,14 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             VersionListing result = ResponseParsers.parseListVersions(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "" +
@@ -1871,21 +1871,21 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             VersionListing result = ResponseParsers.parseListVersions(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             VersionListing result = ResponseParsers.parseListVersions(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
@@ -1899,25 +1899,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             AccessControlList result = ResponseParsers.parseGetBucketAcl(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             AccessControlList result = ResponseParsers.parseGetBucketAcl(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -1931,25 +1931,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ObjectAcl result = ResponseParsers.parseGetObjectAcl(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ObjectAcl result = ResponseParsers.parseGetObjectAcl(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -1968,16 +1968,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             BucketReferer result = ResponseParsers.parseGetBucketReferer(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "" +
@@ -1988,16 +1988,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             BucketReferer result = ResponseParsers.parseGetBucketReferer(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "invalid";
@@ -2005,25 +2005,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             BucketReferer result = ResponseParsers.parseGetBucketReferer(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             BucketReferer result = ResponseParsers.parseGetBucketReferer(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
     @Test
@@ -2036,25 +2036,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseUploadPartCopy(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseUploadPartCopy(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -2077,16 +2077,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseListBucket(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "" +
@@ -2103,16 +2103,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseListBucket(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "invalid";
@@ -2120,25 +2120,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseListBucket(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseListBucket(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         //Parser Region
@@ -2168,20 +2168,20 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             BucketList result = ResponseParsers.parseListBucket(instream);
-            Assert.assertEquals(result.getBucketList().size(), 1);
-            Assert.assertEquals(result.getBucketList().get(0).getLocation(), "oss-cn-hangzhou");
-            Assert.assertEquals(result.getBucketList().get(0).getRegion(), "cn-hangzhou");
-            Assert.assertEquals(result.getBucketList().get(0).getHnsStatus(), null);
-            Assert.assertEquals(result.getBucketList().get(0).getResourceGroupId(), null);
+            Assertions.assertEquals(result.getBucketList().size(), 1);
+            Assertions.assertEquals(result.getBucketList().get(0).getLocation(), "oss-cn-hangzhou");
+            Assertions.assertEquals(result.getBucketList().get(0).getRegion(), "cn-hangzhou");
+            Assertions.assertEquals(result.getBucketList().get(0).getHnsStatus(), null);
+            Assertions.assertEquals(result.getBucketList().get(0).getResourceGroupId(), null);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         //Parser Region
@@ -2212,20 +2212,20 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             BucketList result = ResponseParsers.parseListBucket(instream);
-            Assert.assertEquals(result.getBucketList().size(), 1);
-            Assert.assertEquals(result.getBucketList().get(0).getLocation(), "oss-cn-hangzhou");
-            Assert.assertEquals(result.getBucketList().get(0).getRegion(), null);
-            Assert.assertEquals(result.getBucketList().get(0).getHnsStatus(), "status");
-            Assert.assertEquals(result.getBucketList().get(0).getResourceGroupId(), "xxx-id-123");
+            Assertions.assertEquals(result.getBucketList().size(), 1);
+            Assertions.assertEquals(result.getBucketList().get(0).getLocation(), "oss-cn-hangzhou");
+            Assertions.assertEquals(result.getBucketList().get(0).getRegion(), null);
+            Assertions.assertEquals(result.getBucketList().get(0).getHnsStatus(), "status");
+            Assertions.assertEquals(result.getBucketList().get(0).getResourceGroupId(), "xxx-id-123");
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "invalid";
@@ -2233,16 +2233,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseListBucket(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -2256,25 +2256,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseListImageStyle(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseListImageStyle(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -2288,25 +2288,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetBucketLocation(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseGetBucketLocation(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -2315,11 +2315,11 @@ public class ResponseParsersTest {
 
         try {
             ResponseParsers.parseBucketMetadata(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -2330,20 +2330,20 @@ public class ResponseParsersTest {
             Map<String, String> headers = new HashMap<String, String>();
             headers.put("Last-Modified", "invalid");
             ResponseParsers.parseSimplifiedObjectMeta(headers);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseSimplifiedObjectMeta(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -2357,20 +2357,20 @@ public class ResponseParsersTest {
             response.setHeaders(headers);
             ResponseParsers.parseSymbolicLink(response);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseMessage response = new ResponseMessage(null);
             response.setHeaders(null);
             ResponseParsers.parseSymbolicLink(response);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -2386,16 +2386,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseInitiateMultipartUpload(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "invalid";
@@ -2403,25 +2403,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseInitiateMultipartUpload(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseInitiateMultipartUpload(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -2448,16 +2448,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseListMultipartUploads(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "" +
@@ -2470,16 +2470,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseListMultipartUploads(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "invalid";
@@ -2487,25 +2487,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseListMultipartUploads(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseListMultipartUploads(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -2526,16 +2526,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseListParts(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "invalid";
@@ -2543,25 +2543,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseListParts(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseListParts(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -2575,25 +2575,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseCompleteMultipartUpload(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseCompleteMultipartUpload(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -2609,16 +2609,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseBucketLogging(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
 
@@ -2627,25 +2627,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseBucketLogging(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseBucketLogging(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -2663,16 +2663,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetBucketImageProcessConf(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
 
@@ -2681,25 +2681,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetBucketImageProcessConf(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseGetBucketImageProcessConf(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -2746,16 +2746,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseBucketWebsite(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "" +
@@ -2780,16 +2780,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseBucketWebsite(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "invalid";
@@ -2797,25 +2797,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseBucketWebsite(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseBucketWebsite(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -2829,25 +2829,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseCopyObjectResult(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseCopyObjectResult(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -2864,16 +2864,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseDeleteObjectsResult(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "" +
@@ -2884,16 +2884,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseDeleteObjectsResult(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "invalid";
@@ -2901,25 +2901,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseDeleteObjectsResult(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseDeleteObjectsResult(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -2938,16 +2938,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseDeleteVersionsResult(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
 
@@ -2956,25 +2956,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseDeleteVersionsResult(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseDeleteVersionsResult(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -2988,25 +2988,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseListBucketCORS(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseListBucketCORS(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3025,16 +3025,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetBucketTagging(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "invalid";
@@ -3042,25 +3042,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetBucketTagging(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseGetBucketTagging(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3074,25 +3074,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetBucketInfo(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseGetBucketInfo(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3106,25 +3106,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetBucketStat(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseGetBucketStat(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3138,25 +3138,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseCreateLiveChannel(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseCreateLiveChannel(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3170,25 +3170,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetLiveChannelInfo(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseGetLiveChannelInfo(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3202,25 +3202,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetLiveChannelStat(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseGetLiveChannelStat(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3234,25 +3234,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetLiveChannelHistory(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseGetLiveChannelHistory(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3269,16 +3269,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseListLiveChannels(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "invalid";
@@ -3286,25 +3286,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseListLiveChannels(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseListLiveChannels(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3320,16 +3320,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetUserQos(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "invalid";
@@ -3337,25 +3337,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetUserQos(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseGetUserQos(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3369,25 +3369,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetBucketVersioning(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseGetBucketVersioning(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3401,25 +3401,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetBucketEncryption(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseGetBucketEncryption(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3428,11 +3428,11 @@ public class ResponseParsersTest {
 
         try {
             ResponseParsers.parseGetBucketPolicy(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3448,16 +3448,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetBucketRequestPayment(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "invalid";
@@ -3465,25 +3465,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetBucketRequestPayment(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseGetBucketRequestPayment(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3497,25 +3497,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetUserQosInfo(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseGetUserQosInfo(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3529,25 +3529,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetBucketQosInfo(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseGetBucketQosInfo(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3580,16 +3580,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetBucketLifecycle(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
 
@@ -3598,25 +3598,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetBucketLifecycle(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseGetBucketLifecycle(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3630,25 +3630,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseSetAsyncFetchTaskResult(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseSetAsyncFetchTaskResult(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3662,25 +3662,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetAsyncFetchTaskResult(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseGetAsyncFetchTaskResult(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3694,7 +3694,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -3702,11 +3702,11 @@ public class ResponseParsersTest {
             response.setContent(instream);
             ResponseParsers.CreateVpcipResultResponseParser parser = new ResponseParsers.CreateVpcipResultResponseParser();
             parser.parse(response);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "invalid";
@@ -3714,7 +3714,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -3722,11 +3722,11 @@ public class ResponseParsersTest {
             response.setContent(instream);
             ResponseParsers.CreateVpcipResultResponseParser parser = new ResponseParsers.CreateVpcipResultResponseParser();
             parser.parse(response);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
@@ -3734,11 +3734,11 @@ public class ResponseParsersTest {
             response.setContent(null);
             ResponseParsers.CreateVpcipResultResponseParser parser = new ResponseParsers.CreateVpcipResultResponseParser();
             parser.parse(response);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3752,7 +3752,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -3760,11 +3760,11 @@ public class ResponseParsersTest {
             response.setContent(instream);
             ResponseParsers.ListVpcipResultResponseParser parser = new ResponseParsers.ListVpcipResultResponseParser();
             parser.parse(response);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "invalid";
@@ -3772,7 +3772,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -3780,11 +3780,11 @@ public class ResponseParsersTest {
             response.setContent(instream);
             ResponseParsers.ListVpcipResultResponseParser parser = new ResponseParsers.ListVpcipResultResponseParser();
             parser.parse(response);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
@@ -3792,11 +3792,11 @@ public class ResponseParsersTest {
             response.setContent(null);
             ResponseParsers.ListVpcipResultResponseParser parser = new ResponseParsers.ListVpcipResultResponseParser();
             parser.parse(response);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3810,7 +3810,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -3818,11 +3818,11 @@ public class ResponseParsersTest {
             response.setContent(instream);
             ResponseParsers.ListVpcPolicyResultResponseParser parser = new ResponseParsers.ListVpcPolicyResultResponseParser();
             parser.parse(response);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "invalid";
@@ -3830,7 +3830,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -3838,11 +3838,11 @@ public class ResponseParsersTest {
             response.setContent(instream);
             ResponseParsers.ListVpcPolicyResultResponseParser parser = new ResponseParsers.ListVpcPolicyResultResponseParser();
             parser.parse(response);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
@@ -3850,11 +3850,11 @@ public class ResponseParsersTest {
             response.setContent(null);
             ResponseParsers.ListVpcPolicyResultResponseParser parser = new ResponseParsers.ListVpcPolicyResultResponseParser();
             parser.parse(response);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -3870,16 +3870,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetBucketInventoryConfig(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "" +
@@ -3895,16 +3895,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetBucketInventoryConfig(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "" +
@@ -3922,16 +3922,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetBucketInventoryConfig(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "" +
@@ -3951,16 +3951,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetBucketInventoryConfig(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "invalid";
@@ -3968,25 +3968,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseGetBucketInventoryConfig(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseGetBucketInventoryConfig(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -4002,16 +4002,16 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseListBucketInventoryConfigurations(instream);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "invalid";
@@ -4019,25 +4019,25 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
             ResponseParsers.parseListBucketInventoryConfigurations(instream);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             ResponseParsers.parseListBucketInventoryConfigurations(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -4058,7 +4058,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -4066,14 +4066,14 @@ public class ResponseParsersTest {
             response.setContent(instream);
             ResponseParsers.GetBucketEncryptionResponseParser parser = new ResponseParsers.GetBucketEncryptionResponseParser();
             ServerSideEncryptionConfiguration config = parser.parse(response);
-            Assert.assertEquals(config.getApplyServerSideEncryptionByDefault().getSSEAlgorithm(), "KMS");
-            Assert.assertEquals(config.getApplyServerSideEncryptionByDefault().getKMSMasterKeyID(), "id");
-            Assert.assertEquals(config.getApplyServerSideEncryptionByDefault().getKMSDataEncryption(), "SM4");
-            Assert.assertTrue(true);
+            Assertions.assertEquals(config.getApplyServerSideEncryptionByDefault().getSSEAlgorithm(), "KMS");
+            Assertions.assertEquals(config.getApplyServerSideEncryptionByDefault().getKMSMasterKeyID(), "id");
+            Assertions.assertEquals(config.getApplyServerSideEncryptionByDefault().getKMSDataEncryption(), "SM4");
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "" +
@@ -4087,7 +4087,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -4095,14 +4095,14 @@ public class ResponseParsersTest {
             response.setContent(instream);
             ResponseParsers.GetBucketEncryptionResponseParser parser = new ResponseParsers.GetBucketEncryptionResponseParser();
             ServerSideEncryptionConfiguration config = parser.parse(response);
-            Assert.assertEquals(config.getApplyServerSideEncryptionByDefault().getSSEAlgorithm(), "KMS");
-            Assert.assertEquals(config.getApplyServerSideEncryptionByDefault().getKMSMasterKeyID(), "id");
-            Assert.assertEquals(config.getApplyServerSideEncryptionByDefault().getKMSDataEncryption(), null);
-            Assert.assertTrue(true);
+            Assertions.assertEquals(config.getApplyServerSideEncryptionByDefault().getSSEAlgorithm(), "KMS");
+            Assertions.assertEquals(config.getApplyServerSideEncryptionByDefault().getKMSMasterKeyID(), "id");
+            Assertions.assertEquals(config.getApplyServerSideEncryptionByDefault().getKMSDataEncryption(), null);
+            Assertions.assertTrue(true);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         respBody = "invalid";
@@ -4110,7 +4110,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         try {
@@ -4118,11 +4118,11 @@ public class ResponseParsersTest {
             response.setContent(instream);
             ResponseParsers.GetBucketEncryptionResponseParser parser = new ResponseParsers.GetBucketEncryptionResponseParser();
             parser.parse(response);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
@@ -4130,11 +4130,11 @@ public class ResponseParsersTest {
             response.setContent(null);
             ResponseParsers.GetBucketEncryptionResponseParser parser = new ResponseParsers.GetBucketEncryptionResponseParser();
             parser.parse(response);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -4150,19 +4150,19 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         DeleteDirectoryResult result = null;
         try {
             result = ResponseParsers.parseDeleteDirectoryResult(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse delete directory response body fail!");
+            Assertions.fail("parse delete directory response body fail!");
         }
 
-        Assert.assertEquals("a/b/c", result.getDirectoryName());
-        Assert.assertEquals(1, result.getDeleteNumber());
-        Assert.assertNull(result.getNextDeleteToken());
+        Assertions.assertEquals("a/b/c", result.getDirectoryName());
+        Assertions.assertEquals(1, result.getDeleteNumber());
+        Assertions.assertNull(result.getNextDeleteToken());
 
         respBody = "" +
                 "<DeleteDirectoryResult>\n" +
@@ -4174,19 +4174,19 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         result = null;
         try {
             result = ResponseParsers.parseDeleteDirectoryResult(instream);
         } catch (ResponseParseException e) {
-            Assert.fail("parse delete directory response body fail!");
+            Assertions.fail("parse delete directory response body fail!");
         }
 
-        Assert.assertEquals("a/b/c", result.getDirectoryName());
-        Assert.assertEquals(1, result.getDeleteNumber());
-        Assert.assertEquals("CgJiYw--", result.getNextDeleteToken());
+        Assertions.assertEquals("a/b/c", result.getDirectoryName());
+        Assertions.assertEquals(1, result.getDeleteNumber());
+        Assertions.assertEquals("CgJiYw--", result.getNextDeleteToken());
     }
 
     @Test
@@ -4200,7 +4200,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         GetBucketResourceGroupResult result = null;
@@ -4210,10 +4210,10 @@ public class ResponseParsersTest {
             ResponseParsers.GetBucketResourceGroupResponseParser parser = new ResponseParsers.GetBucketResourceGroupResponseParser();
             result = parser.parse(response);
         } catch (ResponseParseException e) {
-            Assert.fail("parse delete directory response body fail!");
+            Assertions.fail("parse delete directory response body fail!");
         }
 
-        Assert.assertEquals("xxx-id-123", result.getResourceGroupId());
+        Assertions.assertEquals("xxx-id-123", result.getResourceGroupId());
 
 
         respBody = "" +
@@ -4223,7 +4223,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         result = null;
@@ -4233,10 +4233,10 @@ public class ResponseParsersTest {
             ResponseParsers.GetBucketResourceGroupResponseParser parser = new ResponseParsers.GetBucketResourceGroupResponseParser();
             result = parser.parse(response);
         } catch (ResponseParseException e) {
-            Assert.fail("parse delete directory response body fail!");
+            Assertions.fail("parse delete directory response body fail!");
         }
 
-        Assert.assertEquals(null, result.getResourceGroupId());
+        Assertions.assertEquals(null, result.getResourceGroupId());
     }
 
     @Test
@@ -4250,7 +4250,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         TransferAcceleration result = null;
@@ -4260,10 +4260,10 @@ public class ResponseParsersTest {
             ResponseParsers.GetBucketTransferAccelerationResponseParser parser = new ResponseParsers.GetBucketTransferAccelerationResponseParser();
             result = parser.parse(response);
         } catch (ResponseParseException e) {
-            Assert.fail("parse delete directory response body fail!");
+            Assertions.fail("parse delete directory response body fail!");
         }
 
-        Assert.assertEquals(true, result.isEnabled());
+        Assertions.assertEquals(true, result.isEnabled());
 
 
         respBody = "" +
@@ -4274,7 +4274,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         result = null;
@@ -4284,9 +4284,9 @@ public class ResponseParsersTest {
             ResponseParsers.GetBucketTransferAccelerationResponseParser parser = new ResponseParsers.GetBucketTransferAccelerationResponseParser();
             result = parser.parse(response);
         } catch (ResponseParseException e) {
-            Assert.fail("parse delete directory response body fail!");
+            Assertions.fail("parse delete directory response body fail!");
         }
-        Assert.assertEquals(false, result.isEnabled());
+        Assertions.assertEquals(false, result.isEnabled());
 
 
 
@@ -4297,7 +4297,7 @@ public class ResponseParsersTest {
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
+            Assertions.fail("UnsupportedEncodingException");
         }
 
         result = null;
@@ -4307,8 +4307,8 @@ public class ResponseParsersTest {
             ResponseParsers.GetBucketTransferAccelerationResponseParser parser = new ResponseParsers.GetBucketTransferAccelerationResponseParser();
             result = parser.parse(response);
         } catch (ResponseParseException e) {
-            Assert.fail("parse delete directory response body fail!");
+            Assertions.fail("parse delete directory response body fail!");
         }
-        Assert.assertEquals(false, result.isEnabled());
+        Assertions.assertEquals(false, result.isEnabled());
     }
 }

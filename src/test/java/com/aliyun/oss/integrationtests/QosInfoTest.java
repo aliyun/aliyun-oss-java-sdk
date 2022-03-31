@@ -26,7 +26,7 @@ import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.BucketQosInfo;
 import com.aliyun.oss.model.UserQosInfo;
 import com.aliyun.oss.model.SetBucketQosInfoRequest;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 public class QosInfoTest extends TestBase {
 
@@ -34,19 +34,19 @@ public class QosInfoTest extends TestBase {
     public void testUserQosInfo() {
         try {
             UserQosInfo userQosInfo = ossClient.getUserQosInfo();
-            Assert.assertEquals(userQosInfo.getRequestId().length(), REQUEST_ID_LEN);
-            Assert.assertNotNull(userQosInfo.getRegion());
-            Assert.assertNotNull(userQosInfo.getTotalUploadBw());
-            Assert.assertNotNull(userQosInfo.getIntranetUploadBw());
-            Assert.assertNotNull(userQosInfo.getExtranetUploadBw());
-            Assert.assertNotNull(userQosInfo.getTotalDownloadBw());
-            Assert.assertNotNull(userQosInfo.getIntranetDownloadBw());
-            Assert.assertNotNull(userQosInfo.getExtranetDownloadBw());
-            Assert.assertNotNull(userQosInfo.getTotalQps());
-            Assert.assertNotNull(userQosInfo.getIntranetQps());
-            Assert.assertNotNull(userQosInfo.getExtranetQps());
+            Assertions.assertEquals(userQosInfo.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertNotNull(userQosInfo.getRegion());
+            Assertions.assertNotNull(userQosInfo.getTotalUploadBw());
+            Assertions.assertNotNull(userQosInfo.getIntranetUploadBw());
+            Assertions.assertNotNull(userQosInfo.getExtranetUploadBw());
+            Assertions.assertNotNull(userQosInfo.getTotalDownloadBw());
+            Assertions.assertNotNull(userQosInfo.getIntranetDownloadBw());
+            Assertions.assertNotNull(userQosInfo.getExtranetDownloadBw());
+            Assertions.assertNotNull(userQosInfo.getTotalQps());
+            Assertions.assertNotNull(userQosInfo.getIntranetQps());
+            Assertions.assertNotNull(userQosInfo.getExtranetQps());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -67,17 +67,17 @@ public class QosInfoTest extends TestBase {
             ossClient.setBucketQosInfo(bucketName, bucketQosInfo);
 
             BucketQosInfo result = ossClient.getBucketQosInfo(bucketName);
-            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
-            Assert.assertEquals(result.getTotalUploadBw(), bucketQosInfo.getTotalUploadBw());
-            Assert.assertEquals(result.getIntranetUploadBw(), bucketQosInfo.getIntranetUploadBw());
-            Assert.assertEquals(result.getExtranetUploadBw(), bucketQosInfo.getExtranetUploadBw());
-            Assert.assertEquals(result.getTotalDownloadBw(), bucketQosInfo.getTotalDownloadBw());
-            Assert.assertEquals(result.getIntranetDownloadBw(), bucketQosInfo.getIntranetDownloadBw());
-            Assert.assertEquals(result.getExtranetDownloadBw(), bucketQosInfo.getExtranetDownloadBw());
-            Assert.assertEquals(result.getIntranetQps(), bucketQosInfo.getIntranetQps());
-            Assert.assertEquals(result.getExtranetQps(), bucketQosInfo.getExtranetQps());
+            Assertions.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(result.getTotalUploadBw(), bucketQosInfo.getTotalUploadBw());
+            Assertions.assertEquals(result.getIntranetUploadBw(), bucketQosInfo.getIntranetUploadBw());
+            Assertions.assertEquals(result.getExtranetUploadBw(), bucketQosInfo.getExtranetUploadBw());
+            Assertions.assertEquals(result.getTotalDownloadBw(), bucketQosInfo.getTotalDownloadBw());
+            Assertions.assertEquals(result.getIntranetDownloadBw(), bucketQosInfo.getIntranetDownloadBw());
+            Assertions.assertEquals(result.getExtranetDownloadBw(), bucketQosInfo.getExtranetDownloadBw());
+            Assertions.assertEquals(result.getIntranetQps(), bucketQosInfo.getIntranetQps());
+            Assertions.assertEquals(result.getExtranetQps(), bucketQosInfo.getExtranetQps());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucketQosInfo(bucketName);
         }
@@ -91,17 +91,17 @@ public class QosInfoTest extends TestBase {
 
             // Should be return default setting -1.
             BucketQosInfo result = ossClient.getBucketQosInfo(new GenericRequest(bucketName));
-            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
-            Assert.assertEquals(result.getTotalUploadBw().intValue(), -1);
-            Assert.assertEquals(result.getIntranetUploadBw().intValue(), -1);
-            Assert.assertEquals(result.getExtranetUploadBw().intValue(), -1);
-            Assert.assertEquals(result.getTotalDownloadBw().intValue(), -1);
-            Assert.assertEquals(result.getIntranetDownloadBw().intValue(), -1);
-            Assert.assertEquals(result.getExtranetDownloadBw().intValue(), -1);
-            Assert.assertEquals(result.getIntranetQps().intValue(), -1);
-            Assert.assertEquals(result.getExtranetQps().intValue(), -1);
+            Assertions.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(result.getTotalUploadBw().intValue(), -1);
+            Assertions.assertEquals(result.getIntranetUploadBw().intValue(), -1);
+            Assertions.assertEquals(result.getExtranetUploadBw().intValue(), -1);
+            Assertions.assertEquals(result.getTotalDownloadBw().intValue(), -1);
+            Assertions.assertEquals(result.getIntranetDownloadBw().intValue(), -1);
+            Assertions.assertEquals(result.getExtranetDownloadBw().intValue(), -1);
+            Assertions.assertEquals(result.getIntranetQps().intValue(), -1);
+            Assertions.assertEquals(result.getExtranetQps().intValue(), -1);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucketQosInfo(new GenericRequest(bucketName));
         }
@@ -112,9 +112,9 @@ public class QosInfoTest extends TestBase {
         UserQosInfo userQosInfo = null;
         try {
             userQosInfo = ossClient.getUserQosInfo();
-            Assert.assertEquals(userQosInfo.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(userQosInfo.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         // BucketQosInfo totalUploadBw > UserQosInfo totalUploadBw, should be failed.
@@ -126,7 +126,7 @@ public class QosInfoTest extends TestBase {
             request.setBucketQosInfo(bucketQosInfo);
             ossClient.setBucketQosInfo(request);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         }
 
         // intranetUploadBw > totalUploadBw, should be failed.
@@ -137,7 +137,7 @@ public class QosInfoTest extends TestBase {
             bucketQosInfo.setIntranetUploadBw(totalUploadBw + 1);
             ossClient.setBucketQosInfo(bucketName, bucketQosInfo);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         }
 
         // extranetUploadBw > totalUploadBw, should be failed.
@@ -148,7 +148,7 @@ public class QosInfoTest extends TestBase {
             bucketQosInfo.setExtranetUploadBw(totalUploadBw + 1);
             ossClient.setBucketQosInfo(bucketName, bucketQosInfo);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         }
 
         // BucketQosInfo totalDownloadBw > UserQosInfo totalDownloadBw, should be failed.
@@ -158,7 +158,7 @@ public class QosInfoTest extends TestBase {
             bucketQosInfo.setTotalUploadBw(totalDownloadBw);
             ossClient.setBucketQosInfo(bucketName, bucketQosInfo);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         }
 
         // intranetDownloadBw > totalDownloadBw, should be failed.
@@ -169,7 +169,7 @@ public class QosInfoTest extends TestBase {
             bucketQosInfo.setIntranetDownloadBw(totalDownloadBw + 1);
             ossClient.setBucketQosInfo(bucketName, bucketQosInfo);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         }
 
         // extranetDownloadBw > totalDownloadBw, should be failed.
@@ -180,7 +180,7 @@ public class QosInfoTest extends TestBase {
             bucketQosInfo.setExtranetDownloadBw(totalDownloadBw + 1);
             ossClient.setBucketQosInfo(bucketName, bucketQosInfo);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         }
 
         // BucketQosInfo totalQps > UserQosInfo totalQps, should be failed.
@@ -190,7 +190,7 @@ public class QosInfoTest extends TestBase {
             bucketQosInfo.setTotalUploadBw(totalQps);
             ossClient.setBucketQosInfo(bucketName, bucketQosInfo);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         }
 
         // intranetQps > totalQps, should be failed.
@@ -201,7 +201,7 @@ public class QosInfoTest extends TestBase {
             bucketQosInfo.setIntranetQps(totalQps + 1);
             ossClient.setBucketQosInfo(bucketName, bucketQosInfo);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         }
 
         // extranetQps > totalQps, should be failed.
@@ -212,7 +212,7 @@ public class QosInfoTest extends TestBase {
             bucketQosInfo.setExtranetQps(totalQps + 1);
             ossClient.setBucketQosInfo(bucketName, bucketQosInfo);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.INVALID_ARGUMENT, e.getErrorCode());
         }
     }
 

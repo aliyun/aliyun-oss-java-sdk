@@ -34,7 +34,7 @@ import com.aliyun.oss.model.AppendObjectRequest;
 import com.aliyun.oss.model.AppendObjectResult;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.UploadFileRequest;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 /**
  * Examples about how to enable and check CRC for uploading and downloading data.
@@ -98,8 +98,8 @@ public class CRCSample {
             
             // Download with CRC. Note that range download does not support CRC.
             OSSObject ossObject = ossClient.getObject(bucketName, key);
-            Assert.assertNull(ossObject.getClientCRC());
-            Assert.assertNotNull(ossObject.getServerCRC());
+            Assertions.assertNull(ossObject.getClientCRC());
+            Assertions.assertNotNull(ossObject.getServerCRC());
             
             InputStream stream = ossObject.getObjectContent();
             while (stream.read() != -1) {

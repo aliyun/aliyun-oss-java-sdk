@@ -21,7 +21,7 @@ package com.aliyun.oss.integrationtests;
 
 import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.SetBucketRequestPaymentRequest;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import java.util.Date;
 import java.util.Random;
@@ -45,16 +45,16 @@ public class BucketRequestPaymentTest extends TestBase {
 
             // Get default payer
             GetBucketRequestPaymentResult result = ossClient.getBucketRequestPayment(bucketName);
-            Assert.assertEquals(Payer.BucketOwner, result.getPayer());
+            Assertions.assertEquals(Payer.BucketOwner, result.getPayer());
 
             // Set payer
             ossClient.setBucketRequestPayment(bucketName, payer);
 
             // Get payer
             result = ossClient.getBucketRequestPayment(new GenericRequest(bucketName));
-            Assert.assertEquals(payer, result.getPayer());
+            Assertions.assertEquals(payer, result.getPayer());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
     }
@@ -69,8 +69,8 @@ public class BucketRequestPaymentTest extends TestBase {
         try {
             ossClient.setBucketRequestPayment(notExsiteBucketName, payer);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         }
 
         // Set bucket without ownership
@@ -79,9 +79,9 @@ public class BucketRequestPaymentTest extends TestBase {
             SetBucketRequestPaymentRequest request = new SetBucketRequestPaymentRequest(bucketWithoutOwnership);
             request.setPayer(payer);
             ossClient.setBucketRequestPayment(request);
-            Assert.fail("Set bucket request payment should not be successful");
+            Assertions.fail("Set bucket request payment should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
         }
 
     }
@@ -96,17 +96,17 @@ public class BucketRequestPaymentTest extends TestBase {
         try {
             ossClient.getBucketRequestPayment(notExsiteBucketName);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         }
 
         // Get bucket without ownership
         final String bucketWithoutOwnership = "oss";//AccessDenied
         try {
             ossClient.getBucketRequestPayment(bucketWithoutOwnership);
-            Assert.fail("Get bucket request payment should not be successful");
+            Assertions.fail("Get bucket request payment should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
         }
 
     }

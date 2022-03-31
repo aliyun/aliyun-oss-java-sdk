@@ -24,7 +24,7 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.DefaultCredentials;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 import com.aliyun.oss.model.BucketVersioningConfiguration;
@@ -58,7 +58,7 @@ public class BucketVersioningTest extends TestBase {
             ossClient.setBucketVersioning(request);
 
             BucketVersioningConfiguration versionConfiguration = ossClient.getBucketVersioning(bucketName);
-            Assert.assertTrue(versionConfiguration.getStatus().equals(BucketVersioningConfiguration.ENABLED));
+            Assertions.assertTrue(versionConfiguration.getStatus().equals(BucketVersioningConfiguration.ENABLED));
 
             // stop versioning
             configuration.setStatus(BucketVersioningConfiguration.SUSPENDED);
@@ -67,9 +67,9 @@ public class BucketVersioningTest extends TestBase {
             ossClient.setBucketVersioning(request);
 
             versionConfiguration = ossClient.getBucketVersioning(bucketName);
-            Assert.assertTrue(versionConfiguration.getStatus().equals(BucketVersioningConfiguration.SUSPENDED));
+            Assertions.assertTrue(versionConfiguration.getStatus().equals(BucketVersioningConfiguration.SUSPENDED));
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             if (ossClient != null) {
                 ossClient.shutdown();

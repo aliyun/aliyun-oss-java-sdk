@@ -24,16 +24,16 @@ import java.security.Provider;
 import java.security.SecureRandom;
 
 import org.junit.Test;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 public class CryptoConfigurationTest {
     @Test
     public void testConstruction() {
         CryptoConfiguration cryptoConfig = new CryptoConfiguration();
-        Assert.assertEquals(ContentCryptoMode.AES_CTR_MODE, cryptoConfig.getContentCryptoMode());
-        Assert.assertEquals(CryptoStorageMethod.ObjectMetadata, cryptoConfig.getStorageMethod());
-        Assert.assertEquals(SecureRandom.class.getName(), cryptoConfig.getSecureRandom().getClass().getName());
-        Assert.assertNull(cryptoConfig.getContentCryptoProvider());
+        Assertions.assertEquals(ContentCryptoMode.AES_CTR_MODE, cryptoConfig.getContentCryptoMode());
+        Assertions.assertEquals(CryptoStorageMethod.ObjectMetadata, cryptoConfig.getStorageMethod());
+        Assertions.assertEquals(SecureRandom.class.getName(), cryptoConfig.getSecureRandom().getClass().getName());
+        Assertions.assertNull(cryptoConfig.getContentCryptoProvider());
 
         cryptoConfig = new CryptoConfiguration(
                 ContentCryptoMode.AES_CTR_MODE,
@@ -41,36 +41,36 @@ public class CryptoConfigurationTest {
                 new SecureRandom(),
                 getBouncyCastleProvider());
 
-        Assert.assertEquals(ContentCryptoMode.AES_CTR_MODE, cryptoConfig.getContentCryptoMode());
-        Assert.assertEquals(CryptoStorageMethod.ObjectMetadata, cryptoConfig.getStorageMethod());
-        Assert.assertEquals(SecureRandom.class.getName(), cryptoConfig.getSecureRandom().getClass().getName());
-        Assert.assertEquals("BC", cryptoConfig.getContentCryptoProvider().getName());
+        Assertions.assertEquals(ContentCryptoMode.AES_CTR_MODE, cryptoConfig.getContentCryptoMode());
+        Assertions.assertEquals(CryptoStorageMethod.ObjectMetadata, cryptoConfig.getStorageMethod());
+        Assertions.assertEquals(SecureRandom.class.getName(), cryptoConfig.getSecureRandom().getClass().getName());
+        Assertions.assertEquals("BC", cryptoConfig.getContentCryptoProvider().getName());
     }
 
     @Test
     public void testRandom() {
         CryptoConfiguration cryptoConfig = new CryptoConfiguration();
-        Assert.assertNotNull(cryptoConfig.getSecureRandom());
+        Assertions.assertNotNull(cryptoConfig.getSecureRandom());
 
         cryptoConfig = new CryptoConfiguration().withSecureRandom(null);
-        Assert.assertNull(cryptoConfig.getSecureRandom());
+        Assertions.assertNull(cryptoConfig.getSecureRandom());
 
         cryptoConfig = new CryptoConfiguration();
         cryptoConfig.setSecureRandom(null);
-        Assert.assertNull(cryptoConfig.getSecureRandom());
+        Assertions.assertNull(cryptoConfig.getSecureRandom());
     }
 
     @Test
     public void testProvider() {
         CryptoConfiguration cryptoConfig = new CryptoConfiguration();
-        Assert.assertNull(cryptoConfig.getContentCryptoProvider());
+        Assertions.assertNull(cryptoConfig.getContentCryptoProvider());
 
         cryptoConfig = new CryptoConfiguration().withContentCryptoProvider(getBouncyCastleProvider());
-        Assert.assertEquals("BC", cryptoConfig.getContentCryptoProvider().getName());
+        Assertions.assertEquals("BC", cryptoConfig.getContentCryptoProvider().getName());
 
         cryptoConfig = new CryptoConfiguration();
         cryptoConfig.setContentCryptoProvider(getBouncyCastleProvider());
-        Assert.assertEquals("BC", cryptoConfig.getContentCryptoProvider().getName());
+        Assertions.assertEquals("BC", cryptoConfig.getContentCryptoProvider().getName());
     }
 
     public static Provider getBouncyCastleProvider()

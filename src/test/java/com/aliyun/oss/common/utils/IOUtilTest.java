@@ -23,9 +23,7 @@ import java.io.*;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;;
+import org.junit.jupiter.api.Assertions;
 
 public class IOUtilTest {
     @Test
@@ -36,9 +34,9 @@ public class IOUtilTest {
         byte[] byteData = null;
         try {
             byteData = IOUtils.readStreamAsByteArray(inStream);
-            assertArrayEquals(byteData, expectByteData);
+            Assertions.assertArrayEquals(byteData, expectByteData);
             byteData = IOUtils.readStreamAsByteArray(null);
-            assertArrayEquals(byteData, new byte[0]);
+            Assertions.assertArrayEquals(byteData, new byte[0]);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -50,9 +48,9 @@ public class IOUtilTest {
     @Test
     public void testReadStreamAsString() {
         try {
-            assertEquals("", IOUtils.readStreamAsString(null, "utf8"));
+            Assertions.assertEquals("", IOUtils.readStreamAsString(null, "utf8"));
         } catch (IOException e) {
-            assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -64,11 +62,11 @@ public class IOUtilTest {
         IOUtils.safeClose(outputStream);
 
         File file = null;
-        assertEquals(false, IOUtils.checkFile(file));
+        Assertions.assertEquals(false, IOUtils.checkFile(file));
 
         byte[] data = new byte[10];
         ByteArrayInputStream is = new ByteArrayInputStream(data);
-        assertEquals(null, IOUtils.getCRCValue(is));
+        Assertions.assertEquals(null, IOUtils.getCRCValue(is));
     }
 
 }

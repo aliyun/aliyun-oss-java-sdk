@@ -20,14 +20,13 @@
 package com.aliyun.oss.common.io;
 
 import com.aliyun.oss.common.comm.io.FixedLengthInputStream;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
 
 public class FixedLengthInputStreamTest {
     @Test
@@ -36,36 +35,36 @@ public class FixedLengthInputStreamTest {
         ByteArrayInputStream byteInput = new ByteArrayInputStream(data.getBytes());
         FixedLengthInputStream input = new FixedLengthInputStream(byteInput, data.length());
 
-        assertEquals(byteInput, input.getWrappedInputStream());
-        assertEquals(data.length(), input.getLength());
+        Assertions.assertEquals(byteInput, input.getWrappedInputStream());
+        Assertions.assertEquals(data.length(), input.getLength());
 
         input.setLength(data.length());
 
         input.setWrappedInputStream(null);
-        assertEquals(null, input.getWrappedInputStream());
+        Assertions.assertEquals(null, input.getWrappedInputStream());
 
         try {
             input.setWrappedInputStream(byteInput);
             input.skip(3);
             int ret = input.read();
-            assertEquals('S', ret);
+            Assertions.assertEquals('S', ret);
             input.reset();
         } catch (IOException e) {
-            assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             input = new FixedLengthInputStream(null, 10);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             input = new FixedLengthInputStream(byteInput, -1);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 }

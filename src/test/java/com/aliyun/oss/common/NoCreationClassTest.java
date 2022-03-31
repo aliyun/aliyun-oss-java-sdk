@@ -34,7 +34,7 @@ import com.aliyun.oss.model.AbortMultipartUploadRequest;
 import com.aliyun.oss.model.InitiateMultipartUploadRequest;
 import com.aliyun.oss.model.LocationConstraint;
 import com.aliyun.oss.model.WebServiceRequest;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -65,10 +65,10 @@ public class NoCreationClassTest {
             Mimetypes mime = Mimetypes.getInstance();
             InputStream input = new ByteArrayInputStream(content.getBytes());
             mime.loadMimetypes(input);
-            Assert.assertEquals(mime.getMimetype("test.xdoc"), "application/xdoc");
-            Assert.assertEquals(mime.getMimetype("test.xogg"), "application/octet-stream");
+            Assertions.assertEquals(mime.getMimetype("test.xdoc"), "application/xdoc");
+            Assertions.assertEquals(mime.getMimetype("test.xogg"), "application/octet-stream");
         } catch (IOException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
     }
@@ -112,17 +112,17 @@ public class NoCreationClassTest {
         CredentialsProvider cred = new DefaultCredentialProvider("ak", "sk");
         TestOSSOperation operation = new TestOSSOperation(client, cred);
         InitiateMultipartUploadRequest request = new InitiateMultipartUploadRequest("bucket", "key");
-        Assert.assertEquals(operation.isRetryablePostRequest(request), false);
+        Assertions.assertEquals(operation.isRetryablePostRequest(request), false);
 
-        Assert.assertEquals(operation.isRetryablePostRequest(null), false);
+        Assertions.assertEquals(operation.isRetryablePostRequest(null), false);
 
         ExecutionContext context = null;
         context = operation.createDefaultContext(HttpMethod.POST, "bucket", "key", request);
-        Assert.assertTrue(context.getRetryStrategy() instanceof NoRetryStrategy);
+        Assertions.assertTrue(context.getRetryStrategy() instanceof NoRetryStrategy);
 
         context = operation.createDefaultContext(HttpMethod.GET, "bucket", "key", request);
-        Assert.assertEquals(context.getRetryStrategy(), null);
-        Assert.assertFalse(context.getRetryStrategy() instanceof NoRetryStrategy);
+        Assertions.assertEquals(context.getRetryStrategy(), null);
+        Assertions.assertFalse(context.getRetryStrategy() instanceof NoRetryStrategy);
     }
 
     @Test
@@ -132,26 +132,26 @@ public class NoCreationClassTest {
         CredentialsProvider cred = new DefaultCredentialProvider("ak", "sk");
         TestOSSMultipartOperation operation = new TestOSSMultipartOperation(client, cred);
         InitiateMultipartUploadRequest request = new InitiateMultipartUploadRequest("bucket", "key");
-        Assert.assertEquals(operation.isRetryablePostRequest(request), true);
+        Assertions.assertEquals(operation.isRetryablePostRequest(request), true);
 
-        Assert.assertEquals(operation.isRetryablePostRequest(null), false);
+        Assertions.assertEquals(operation.isRetryablePostRequest(null), false);
 
         ExecutionContext context = null;
         context = operation.createDefaultContext(HttpMethod.POST, "bucket", "key", request);
-        Assert.assertEquals(context.getRetryStrategy(), null);
-        Assert.assertFalse(context.getRetryStrategy() instanceof NoRetryStrategy);
+        Assertions.assertEquals(context.getRetryStrategy(), null);
+        Assertions.assertFalse(context.getRetryStrategy() instanceof NoRetryStrategy);
 
         context = operation.createDefaultContext(HttpMethod.POST, "bucket", "key", null);
-        Assert.assertNotNull(context.getRetryStrategy());
-        Assert.assertTrue(context.getRetryStrategy() instanceof NoRetryStrategy);
+        Assertions.assertNotNull(context.getRetryStrategy());
+        Assertions.assertTrue(context.getRetryStrategy() instanceof NoRetryStrategy);
 
         context = operation.createDefaultContext(HttpMethod.POST, "bucket", "key",
                 new AbortMultipartUploadRequest("bucket", "key", "id"));
-        Assert.assertNotNull(context.getRetryStrategy());
-        Assert.assertTrue(context.getRetryStrategy() instanceof NoRetryStrategy);
+        Assertions.assertNotNull(context.getRetryStrategy());
+        Assertions.assertTrue(context.getRetryStrategy() instanceof NoRetryStrategy);
 
         context = operation.createDefaultContext(HttpMethod.GET, "bucket", "key",
                 new AbortMultipartUploadRequest("bucket", "key", "id"));
-        Assert.assertEquals(context.getRetryStrategy(), null);
+        Assertions.assertEquals(context.getRetryStrategy(), null);
     }
 }

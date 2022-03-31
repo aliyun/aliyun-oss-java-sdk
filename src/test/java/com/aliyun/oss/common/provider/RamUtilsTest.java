@@ -26,7 +26,7 @@ import java.util.List;
 import com.aliyun.oss.common.auth.PublicKey;
 import com.aliyun.oss.common.utils.AuthUtils;
 import com.aliyuncs.exceptions.ClientException;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 public class RamUtilsTest extends TestBase {
@@ -35,11 +35,11 @@ public class RamUtilsTest extends TestBase {
     public void testLoadPrivateKeyFromFile() {
         try {
             String privateKey = AuthUtils.loadPrivateKeyFromFile(TestConfig.PRIVATE_KEY_PATH);
-            Assert.assertNotNull(privateKey);
-            Assert.assertFalse(privateKey.isEmpty());
+            Assertions.assertNotNull(privateKey);
+            Assertions.assertFalse(privateKey.isEmpty());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -47,9 +47,9 @@ public class RamUtilsTest extends TestBase {
     public void testLoadPrivateKeyFromFileNegative() {
         try {
             AuthUtils.loadPrivateKeyFromFile("/not/exist/path");
-            Assert.fail("RamUtils.loadPrivateKeyFromFile should not be successful.");
+            Assertions.fail("RamUtils.loadPrivateKeyFromFile should not be successful.");
         } catch (IOException e) {
-            Assert.assertTrue(e instanceof FileNotFoundException);
+            Assertions.assertTrue(e instanceof FileNotFoundException);
         }
     }
 
@@ -57,11 +57,11 @@ public class RamUtilsTest extends TestBase {
     public void testLoadPublicKeyFromFile() {
         try {
             String publicKey = AuthUtils.loadPublicKeyFromFile(TestConfig.PUBLIC_KEY_PATH);
-            Assert.assertNotNull(publicKey);
-            Assert.assertFalse(publicKey.isEmpty());
+            Assertions.assertNotNull(publicKey);
+            Assertions.assertFalse(publicKey.isEmpty());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -69,9 +69,9 @@ public class RamUtilsTest extends TestBase {
     public void testLoadPublicKeyFromFileNegative() {
         try {
             AuthUtils.loadPublicKeyFromFile("/not/exist/path");
-            Assert.fail("RamUtils.loadPublicKeyFromFile should not be successful.");
+            Assertions.fail("RamUtils.loadPublicKeyFromFile should not be successful.");
         } catch (IOException e) {
-            Assert.assertTrue(e instanceof FileNotFoundException);
+            Assertions.assertTrue(e instanceof FileNotFoundException);
         }
     }
 
@@ -82,20 +82,20 @@ public class RamUtilsTest extends TestBase {
             String pubKey = AuthUtils.loadPublicKeyFromFile(TestConfig.PUBLIC_KEY_PATH);
             PublicKey publicKey = AuthUtils.uploadPublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
                     TestConfig.ROOT_ACCESS_KEY_SECRET, pubKey);
-            Assert.assertNotNull(publicKey);
-            Assert.assertEquals(publicKey.getPublicKeyId().length(), "LTRSA.2Qcjm****XW7M0NO".length());
+            Assertions.assertNotNull(publicKey);
+            Assertions.assertEquals(publicKey.getPublicKeyId().length(), "LTRSA.2Qcjm****XW7M0NO".length());
 
             // check
             List<PublicKey> publicKeys = AuthUtils.listPublicKeys(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
                     TestConfig.ROOT_ACCESS_KEY_SECRET);
-            Assert.assertEquals(1, publicKeys.size());
+            Assertions.assertEquals(1, publicKeys.size());
 
             // delete
             AuthUtils.deletePublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
                     TestConfig.ROOT_ACCESS_KEY_SECRET, publicKey.getPublicKeyId());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -105,9 +105,9 @@ public class RamUtilsTest extends TestBase {
             String pubKey = "invalid public key.";
             AuthUtils.uploadPublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
                     TestConfig.ROOT_ACCESS_KEY_SECRET, pubKey);
-            Assert.fail("RamUtils.uploadPublicKey should not be successful.");
+            Assertions.fail("RamUtils.uploadPublicKey should not be successful.");
         } catch (ClientException e) {
-            Assert.assertEquals(e.getErrCode(), "InvalidParameter.PublicKey.Format");
+            Assertions.assertEquals(e.getErrCode(), "InvalidParameter.PublicKey.Format");
         }
     }
 
@@ -122,18 +122,18 @@ public class RamUtilsTest extends TestBase {
             // check
             List<PublicKey> publicKeys = AuthUtils.listPublicKeys(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
                     TestConfig.ROOT_ACCESS_KEY_SECRET);
-            Assert.assertEquals(1, publicKeys.size());
-            Assert.assertEquals(publicKeys.get(0).getPublicKeyId().length(), "LTRSA.2Qcjm****XW7M0NO".length());
-            Assert.assertEquals(publicKeys.get(0).getCreateDate().length(), "2017-11-01T08:00:00Z".length());
-            Assert.assertEquals(publicKeys.get(0).getStatus(), "Active");
-            Assert.assertEquals(publicKeys.get(0).getPublicKeySpec(), null);
+            Assertions.assertEquals(1, publicKeys.size());
+            Assertions.assertEquals(publicKeys.get(0).getPublicKeyId().length(), "LTRSA.2Qcjm****XW7M0NO".length());
+            Assertions.assertEquals(publicKeys.get(0).getCreateDate().length(), "2017-11-01T08:00:00Z".length());
+            Assertions.assertEquals(publicKeys.get(0).getStatus(), "Active");
+            Assertions.assertEquals(publicKeys.get(0).getPublicKeySpec(), null);
 
             // delete
             AuthUtils.deletePublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
                     TestConfig.ROOT_ACCESS_KEY_SECRET, publicKey.getPublicKeyId());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -144,18 +144,18 @@ public class RamUtilsTest extends TestBase {
             String pubKey = AuthUtils.loadPublicKeyFromFile(TestConfig.PUBLIC_KEY_PATH);
             PublicKey publicKey = AuthUtils.uploadPublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
                     TestConfig.ROOT_ACCESS_KEY_SECRET, pubKey);
-            Assert.assertNotNull(publicKey);
-            Assert.assertEquals(publicKey.getPublicKeyId().length(), "LTRSA.2Qcjm****XW7M0NO".length());
+            Assertions.assertNotNull(publicKey);
+            Assertions.assertEquals(publicKey.getPublicKeyId().length(), "LTRSA.2Qcjm****XW7M0NO".length());
 
             publicKey = AuthUtils.uploadPublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
                     TestConfig.ROOT_ACCESS_KEY_SECRET, pubKey);
-            Assert.assertNotNull(publicKey);
-            Assert.assertEquals(publicKey.getPublicKeyId().length(), "LTRSA.2Qcjm****XW7M0NO".length());
+            Assertions.assertNotNull(publicKey);
+            Assertions.assertEquals(publicKey.getPublicKeyId().length(), "LTRSA.2Qcjm****XW7M0NO".length());
 
             // check
             List<PublicKey> publicKeys = AuthUtils.listPublicKeys(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
                     TestConfig.ROOT_ACCESS_KEY_SECRET);
-            Assert.assertEquals(2, publicKeys.size());
+            Assertions.assertEquals(2, publicKeys.size());
 
             // delete
             for (PublicKey pk : publicKeys) {
@@ -166,11 +166,11 @@ public class RamUtilsTest extends TestBase {
             // check
             publicKeys = AuthUtils.listPublicKeys(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
                     TestConfig.ROOT_ACCESS_KEY_SECRET);
-            Assert.assertEquals(0, publicKeys.size());
+            Assertions.assertEquals(0, publicKeys.size());
 
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -179,9 +179,9 @@ public class RamUtilsTest extends TestBase {
         try {
             AuthUtils.deletePublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
                     TestConfig.ROOT_ACCESS_KEY_SECRET, "LTRSA.2Qcjm****XW7M0NO");
-            Assert.fail("RamUtils.deletePublicKey should not be successful.");
+            Assertions.fail("RamUtils.deletePublicKey should not be successful.");
         } catch (ClientException e) {
-            Assert.assertEquals(e.getErrCode(), "EntityNotExist.User.PublicKey");
+            Assertions.assertEquals(e.getErrCode(), "EntityNotExist.User.PublicKey");
         }
     }
 

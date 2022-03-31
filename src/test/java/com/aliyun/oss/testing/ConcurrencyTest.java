@@ -26,7 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Ignore;
 import com.aliyun.oss.OSS;
@@ -110,10 +110,10 @@ public class ConcurrencyTest {
                 ts[i].join();
             }
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             int totalCompleted = completedCount.get();
-            Assert.assertEquals(threadCount, totalCompleted);
+            Assertions.assertEquals(threadCount, totalCompleted);
         }
     }
     
@@ -151,10 +151,10 @@ public class ConcurrencyTest {
                 ts[i].join();
             }
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             int totalCompleted = completedCount.get();
-            Assert.assertEquals(threadCount, totalCompleted);
+            Assertions.assertEquals(threadCount, totalCompleted);
         }
     }
     

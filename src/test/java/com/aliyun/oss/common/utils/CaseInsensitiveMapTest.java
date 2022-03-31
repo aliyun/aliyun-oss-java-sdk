@@ -25,7 +25,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
 
 public class CaseInsensitiveMapTest {
     @Test
@@ -33,35 +33,35 @@ public class CaseInsensitiveMapTest {
 
         CaseInsensitiveMap<String> map = new CaseInsensitiveMap<String>();
 
-        assertEquals(0, map.size());
-        assertEquals(true, map.isEmpty());
+        Assertions.assertEquals(0, map.size());
+        Assertions.assertEquals(true, map.isEmpty());
 
         map.put("key", "value");
-        assertEquals("value", map.get("key"));
-        assertEquals("value", map.get("KEY"));
-        assertEquals(true, map.containsKey("KEY"));
-        assertEquals(true, map.containsValue("value"));
-        assertEquals(false, map.containsValue("Value"));
-        assertEquals(1, map.size());
+        Assertions.assertEquals("value", map.get("key"));
+        Assertions.assertEquals("value", map.get("KEY"));
+        Assertions.assertEquals(true, map.containsKey("KEY"));
+        Assertions.assertEquals(true, map.containsValue("value"));
+        Assertions.assertEquals(false, map.containsValue("Value"));
+        Assertions.assertEquals(1, map.size());
 
         Map<String, String> map2 = new HashMap<String, String>();
         map2.put("key", "value");
         map2.put("Key", "Value");
-        assertEquals(2, map2.size());
+        Assertions.assertEquals(2, map2.size());
         map.clear();
-        assertEquals(0, map.size());
+        Assertions.assertEquals(0, map.size());
         map.putAll(map2);
-        assertEquals(1, map.size());
+        Assertions.assertEquals(1, map.size());
 
         CaseInsensitiveMap<String> map3 = new CaseInsensitiveMap<String>(map);
-        assertEquals(1, map3.size());
+        Assertions.assertEquals(1, map3.size());
 
-        assertEquals(1, map.keySet().size());
-        assertEquals(1, map.values().size());
-        assertEquals(1, map.entrySet().size());
+        Assertions.assertEquals(1, map.keySet().size());
+        Assertions.assertEquals(1, map.values().size());
+        Assertions.assertEquals(1, map.entrySet().size());
 
         map.remove("key");
-        assertEquals(0, map.size());
+        Assertions.assertEquals(0, map.size());
     }
 
 }

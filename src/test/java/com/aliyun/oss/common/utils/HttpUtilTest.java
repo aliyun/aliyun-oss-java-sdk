@@ -24,33 +24,33 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
 
 public class HttpUtilTest {
     @Test
     public void testUrlEncodeDecode() {
-        assertEquals("", HttpUtil.urlEncode(null, "utf8"));
+        Assertions.assertEquals("", HttpUtil.urlEncode(null, "utf8"));
 
         try {
             HttpUtil.urlEncode("abcdef", "xxx");
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             HttpUtil.urlDecode("abcdef", "");
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
     @Test
     public void testParamToQueryString() {
         Map<String, String> params = new HashMap<String, String>();
-        assertNull(HttpUtil.paramToQueryString(null, "utf8"));
-        assertNull(HttpUtil.paramToQueryString(params, "utf8"));
+        Assertions.assertNull(HttpUtil.paramToQueryString(null, "utf8"));
+        Assertions.assertNull(HttpUtil.paramToQueryString(params, "utf8"));
     }
 
 }

@@ -12,7 +12,7 @@ import com.aliyun.oss.model.SetBucketPolicyRequest;
 
 import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_BUCKET_ERR;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 public class BucketPolicyTest extends TestBase {
 
@@ -28,10 +28,10 @@ public class BucketPolicyTest extends TestBase {
             GetBucketPolicyResult result = ossClient.getBucketPolicy(bucketName);
 
             // Verfiy policy text
-            Assert.assertEquals(policyText, result.getPolicyText());
+            Assertions.assertEquals(policyText, result.getPolicyText());
 
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             // Delete policy after test
             ossClient.deleteBucketPolicy(new GenericRequest(bucketName));
@@ -50,8 +50,8 @@ public class BucketPolicyTest extends TestBase {
             setPolicyReq.setPolicyText(normalPolicyText);
             ossClient.setBucketPolicy(setPolicyReq);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         }
 
         // Set bucket without ownership
@@ -59,9 +59,9 @@ public class BucketPolicyTest extends TestBase {
         try {
             SetBucketPolicyRequest setPolicyReq = new SetBucketPolicyRequest(bucketWithoutOwnership, normalPolicyText);
             ossClient.setBucketPolicy(setPolicyReq);
-            Assert.fail("Set bucket policy should not be successful");
+            Assertions.fail("Set bucket policy should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
         }
 
         // Set bucket with unnormal plicy text
@@ -69,9 +69,9 @@ public class BucketPolicyTest extends TestBase {
         try {
             SetBucketPolicyRequest setPolicyReq = new SetBucketPolicyRequest(bucketName, unnormalPolicyText);
             ossClient.setBucketPolicy(setPolicyReq);
-            Assert.fail("Set bucket policy should not be successful");
+            Assertions.fail("Set bucket policy should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.INVALID_POLICY_DOCUMENT, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.INVALID_POLICY_DOCUMENT, e.getErrorCode());
         }
     }
 
@@ -84,8 +84,8 @@ public class BucketPolicyTest extends TestBase {
         try {
             GetBucketPolicyResult result = ossClient.getBucketPolicy(new GenericRequest(notExsiteBucketName));
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         }
 
         // Get non-exsitent policy
@@ -94,7 +94,7 @@ public class BucketPolicyTest extends TestBase {
             ossClient.createBucket(newBucketName);
             GetBucketPolicyResult result = ossClient.getBucketPolicy(newBucketName);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET_POLICY, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET_POLICY, e.getErrorCode());
         } finally {
             ossClient.deleteBucket(newBucketName);
         }
@@ -103,9 +103,9 @@ public class BucketPolicyTest extends TestBase {
         final String bucketWithoutOwnership = "oss";//AccessDenied
         try {
             GetBucketPolicyResult result = ossClient.getBucketPolicy(bucketWithoutOwnership);
-            Assert.fail("Get bucket policy should not be successful");
+            Assertions.fail("Get bucket policy should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
         }
     }
 
@@ -118,8 +118,8 @@ public class BucketPolicyTest extends TestBase {
         try {
             ossClient.deleteBucketPolicy(notExsiteBucketName);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         }
 
         // Delete non-exsitent policy
@@ -128,7 +128,7 @@ public class BucketPolicyTest extends TestBase {
             ossClient.createBucket(newBucketName);
             ossClient.deleteBucketPolicy(newBucketName);
         } catch (Exception e) {
-            Assert.fail("deleteBucketPolicy err" + e.getMessage());
+            Assertions.fail("deleteBucketPolicy err" + e.getMessage());
         } finally {
             ossClient.deleteBucket(newBucketName);
         }
@@ -137,9 +137,9 @@ public class BucketPolicyTest extends TestBase {
         final String bucketWithoutOwnership = "oss";//AccessDenied
         try {
             ossClient.deleteBucketPolicy(bucketWithoutOwnership);
-            Assert.fail("Delete bucket policy should not be successful");
+            Assertions.fail("Delete bucket policy should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
         }
     }
 }

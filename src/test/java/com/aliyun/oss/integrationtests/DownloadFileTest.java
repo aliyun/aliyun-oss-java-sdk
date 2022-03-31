@@ -29,7 +29,7 @@ import java.util.List;
 import com.aliyun.oss.event.ProgressEvent;
 import com.aliyun.oss.event.ProgressEventType;
 import com.aliyun.oss.event.ProgressListener;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 import com.aliyun.oss.model.DownloadFileRequest;
 import com.aliyun.oss.model.DownloadFileResult;
@@ -55,8 +55,8 @@ public class DownloadFileTest extends TestBase {
             uploadFileRequest.setObjectMetadata(objMetadata);
             
             UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
-            Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
-            Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
+            Assertions.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
+            Assertions.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
             
             // download file
             String filePathNew = key + "-new.txt";
@@ -67,18 +67,18 @@ public class DownloadFileTest extends TestBase {
             DownloadFileResult downloadRes = ossClient.downloadFile(downloadFileRequest);
             
             ObjectMetadata objMeta = downloadRes.getObjectMetadata();
-            Assert.assertEquals(objMeta.getContentLength(), 102400);
-            Assert.assertEquals(objMeta.getObjectType(), "Multipart");
-            Assert.assertEquals(objMeta.getUserMetadata().get("prop"), "propval");
+            Assertions.assertEquals(objMeta.getContentLength(), 102400);
+            Assertions.assertEquals(objMeta.getObjectType(), "Multipart");
+            Assertions.assertEquals(objMeta.getUserMetadata().get("prop"), "propval");
 
             File fileNew = new File(filePathNew);
-            Assert.assertTrue("comparte file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
+            Assertions.assertTrue(compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()), "comparte file");
             
             ossClient.deleteObject(bucketName, key);
             fileNew.delete();
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
             ossClient.deleteBucket(bucketName);
         }
     }
@@ -100,8 +100,8 @@ public class DownloadFileTest extends TestBase {
             uploadFileRequest.setObjectMetadata(objMetadata);
             
             UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
-            Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
-            Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);            
+            Assertions.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
+            Assertions.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);            
             
             // download file
             String filePathNew = key + "-new.txt";
@@ -113,18 +113,18 @@ public class DownloadFileTest extends TestBase {
             DownloadFileResult downloadRes = ossClient.downloadFile(downloadFileRequest);
             
             ObjectMetadata objMeta = downloadRes.getObjectMetadata();
-            Assert.assertEquals(objMeta.getContentLength(), 102400);
-            Assert.assertEquals(objMeta.getObjectType(), "Multipart");
-            Assert.assertEquals(objMeta.getUserMetadata().get("prop"), "propval");
+            Assertions.assertEquals(objMeta.getContentLength(), 102400);
+            Assertions.assertEquals(objMeta.getObjectType(), "Multipart");
+            Assertions.assertEquals(objMeta.getUserMetadata().get("prop"), "propval");
 
             File fileNew = new File(filePathNew);
-            Assert.assertTrue("comparte file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
+            Assertions.assertTrue(compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()), "comparte file");
             
             ossClient.deleteObject(bucketName, key);
             fileNew.delete();
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
             ossClient.deleteBucket(bucketName);
         }
     }
@@ -147,8 +147,8 @@ public class DownloadFileTest extends TestBase {
             uploadFileRequest.setObjectMetadata(objMetadata);
             
             UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
-            Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
-            Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
+            Assertions.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
+            Assertions.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
             
             // download file
             String filePathNew = key + "-new.txt";
@@ -161,18 +161,18 @@ public class DownloadFileTest extends TestBase {
             DownloadFileResult downloadRes = ossClient.downloadFile(downloadFileRequest);
             
             ObjectMetadata objMeta = downloadRes.getObjectMetadata();
-            Assert.assertEquals(objMeta.getContentLength(), 102400);
-            Assert.assertEquals(objMeta.getObjectType(), "Multipart");
-            Assert.assertEquals(objMeta.getUserMetadata().get("prop"), "propval");
+            Assertions.assertEquals(objMeta.getContentLength(), 102400);
+            Assertions.assertEquals(objMeta.getObjectType(), "Multipart");
+            Assertions.assertEquals(objMeta.getUserMetadata().get("prop"), "propval");
 
             File fileNew = new File(filePathNew);
-            Assert.assertTrue("comparte file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
+            Assertions.assertTrue(compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()), "comparte file");
             
             ossClient.deleteObject(bucketName, key);
             fileNew.delete();
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
             ossClient.deleteBucket(bucketName);
         }
     }
@@ -203,8 +203,8 @@ public class DownloadFileTest extends TestBase {
             uploadFileRequest.setObjectMetadata(objMetadata);
 
             UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
-            Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
-            Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
+            Assertions.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
+            Assertions.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
 
             //range
             List<RangeInfo> rangeInfo = new ArrayList<RangeInfo>();
@@ -247,8 +247,8 @@ public class DownloadFileTest extends TestBase {
             rangeInfo.add(new RangeInfo(1024, 100));
             expectRangeInfo.add(new RangeInfo(0, file.length() -1));
 
-            Assert.assertEquals(rangeInfo.size(), expectRangeInfo.size());
-            Assert.assertEquals(true, rangeInfo.size() > 0);
+            Assertions.assertEquals(rangeInfo.size(), expectRangeInfo.size());
+            Assertions.assertEquals(true, rangeInfo.size() > 0);
 
             for (int i = 0; i < rangeInfo.size(); i++) {
                 // download file
@@ -264,20 +264,20 @@ public class DownloadFileTest extends TestBase {
                 DownloadFileResult downloadRes = ossClient.downloadFile(downloadFileRequest);
 
                 ObjectMetadata objMeta = downloadRes.getObjectMetadata();
-                //Assert.assertEquals(objMeta.getContentLength(), downloadFileRequest.getPartSize());
-                Assert.assertEquals(objMeta.getObjectType(), "Multipart");
-                Assert.assertEquals(objMeta.getUserMetadata().get("prop"), "propval");
+                //Assertions.assertEquals(objMeta.getContentLength(), downloadFileRequest.getPartSize());
+                Assertions.assertEquals(objMeta.getObjectType(), "Multipart");
+                Assertions.assertEquals(objMeta.getUserMetadata().get("prop"), "propval");
 
                 File fileNew = new File(filePathNew);
                 long expectStart = expectRangeInfo.get(i).start;
                 long expectEnd = expectRangeInfo.get(i).end;
-                Assert.assertTrue("comparte file", compareFileWithRange(file.getAbsolutePath(), expectStart, expectEnd, fileNew.getAbsolutePath()));
+                Assertions.assertTrue(compareFileWithRange(file.getAbsolutePath(), expectStart, expectEnd, fileNew.getAbsolutePath()), "comparte file");
                 fileNew.delete();
             }
             ossClient.deleteObject(bucketName, key);
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
             ossClient.deleteBucket(bucketName);
         }
     }
@@ -288,7 +288,7 @@ public class DownloadFileTest extends TestBase {
 
         try {
             File file = createSampleFile(key, 0);
-            Assert.assertEquals(0, file.length());
+            Assertions.assertEquals(0, file.length());
 
             // upload file
             UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
@@ -299,8 +299,8 @@ public class DownloadFileTest extends TestBase {
             uploadFileRequest.setObjectMetadata(objMetadata);
 
             UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
-            Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
-            Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
+            Assertions.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
+            Assertions.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
 
             // download file
             String filePathNew = key + "-new.txt";
@@ -311,12 +311,12 @@ public class DownloadFileTest extends TestBase {
             DownloadFileResult downloadRes = ossClient.downloadFile(downloadFileRequest);
 
             ObjectMetadata objMeta = downloadRes.getObjectMetadata();
-            Assert.assertEquals(objMeta.getContentLength(), 0);
-            Assert.assertEquals(objMeta.getObjectType(), "Multipart");
-            Assert.assertEquals(objMeta.getUserMetadata().get("prop"), "propval");
+            Assertions.assertEquals(objMeta.getContentLength(), 0);
+            Assertions.assertEquals(objMeta.getObjectType(), "Multipart");
+            Assertions.assertEquals(objMeta.getUserMetadata().get("prop"), "propval");
 
             File fileNew = new File(filePathNew);
-            Assert.assertEquals(0, fileNew.length());
+            Assertions.assertEquals(0, fileNew.length());
             fileNew.delete();
 
             //download file with range
@@ -328,18 +328,18 @@ public class DownloadFileTest extends TestBase {
             downloadRes = ossClient.downloadFile(downloadFileRequest);
 
             objMeta = downloadRes.getObjectMetadata();
-            Assert.assertEquals(objMeta.getContentLength(), 0);
-            Assert.assertEquals(objMeta.getObjectType(), "Multipart");
-            Assert.assertEquals(objMeta.getUserMetadata().get("prop"), "propval");
+            Assertions.assertEquals(objMeta.getContentLength(), 0);
+            Assertions.assertEquals(objMeta.getObjectType(), "Multipart");
+            Assertions.assertEquals(objMeta.getUserMetadata().get("prop"), "propval");
 
             fileNew = new File(filePathNew);
-            Assert.assertEquals(0, fileNew.length());
+            Assertions.assertEquals(0, fileNew.length());
             fileNew.delete();
 
             ossClient.deleteObject(bucketName, key);
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
             ossClient.deleteBucket(bucketName);
         }
     }
@@ -359,24 +359,24 @@ public class DownloadFileTest extends TestBase {
 
         if (downFile.exists()) {
             downFile.delete();
-            Assert.assertFalse(downFile.exists());
+            Assertions.assertFalse(downFile.exists());
         }
 
         if (newDownFile.exists()) {
             newDownFile.delete();
-            Assert.assertFalse(newDownFile.exists());
+            Assertions.assertFalse(newDownFile.exists());
         }
 
         File dcpFile = new File(dcpName);
         if (dcpFile.exists()) {
             dcpFile.delete();
-            Assert.assertFalse(dcpFile.exists());
+            Assertions.assertFalse(dcpFile.exists());
         }
 
         File newDcpFile = new File(newDcpName);
         if (newDcpFile.exists()) {
             newDcpFile.delete();
-            Assert.assertFalse(newDcpFile.exists());
+            Assertions.assertFalse(newDcpFile.exists());
         }
 
         final DownloadFileRequest downloadFileRequest = new DownloadFileRequest(bucketName, key);
@@ -442,12 +442,12 @@ public class DownloadFileTest extends TestBase {
             downloadFileRequest2.setCheckpointFile(newDcpName);
             downloadFileRequest2.setProgressListener(new DownloadObjectProgressListener(newDownFilePath, uploadFile.length(), true, 200 * 1024));
             ossClient.downloadFile(downloadFileRequest2);
-            Assert.assertTrue("compare file", compareFile(newDownFilePath, uploadFile.getAbsolutePath()));
+            Assertions.assertTrue(compareFile(newDownFilePath, uploadFile.getAbsolutePath()), "compare file");
 
             // wait for the first download task to finish
             Thread.sleep(10000);
         } catch (Throwable e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             downFile.delete();
             tmpDownFile.delete();
@@ -474,7 +474,7 @@ public class DownloadFileTest extends TestBase {
 
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
             ossClient.deleteBucket(bucketName);
         }
     }
@@ -495,7 +495,7 @@ public class DownloadFileTest extends TestBase {
 
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
             ossClient.deleteBucket(bucketName);
         }
     }
@@ -527,12 +527,12 @@ public class DownloadFileTest extends TestBase {
                     break;
                 case RESPONSE_CONTENT_LENGTH_EVENT:
                     this.totalBytes = bytes;
-                    Assert.assertEquals(this.expectedTotal, this.totalBytes);
+                    Assertions.assertEquals(this.expectedTotal, this.totalBytes);
                     System.out.println(this.fileName + " " + this.totalBytes + " bytes in total will be downloaded to a local file");
                     break;
                 case RESPONSE_BYTE_TRANSFER_EVENT:
                     if (this.reDownFlag) {
-                        Assert.assertTrue(bytes > this.partSize);
+                        Assertions.assertTrue(bytes > this.partSize);
                         this.reDownFlag = false;
                     }
                     this.bytesRead += bytes;

@@ -19,7 +19,7 @@
 
 package com.aliyun.oss.testing;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.Ignore;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
@@ -41,9 +41,9 @@ public class NamingConventionsTest {
             try {
                 client.createBucket(value);
                 created = true;
-                Assert.fail(String.format("Invalid bucket name %s should not be created successfully.", value));
+                Assertions.fail(String.format("Invalid bucket name %s should not be created successfully.", value));
             } catch (Exception ex) {
-                Assert.assertTrue(ex instanceof IllegalArgumentException);
+                Assertions.assertTrue(ex instanceof IllegalArgumentException);
             } finally {
                 if (created) {
                     client.deleteBucket(value);

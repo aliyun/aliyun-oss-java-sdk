@@ -22,52 +22,51 @@ package com.aliyun.oss.common.utils;
 
 import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.internal.OSSUtils;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
 
 public class OSSUtilsTest {
     @Test
     public void testOSSUtils() {
-        assertEquals(OSSUtils.validateBucketName(null), false);
+        Assertions.assertEquals(OSSUtils.validateBucketName(null), false);
 
-        assertEquals(OSSUtils.validateObjectKey(null), false);
-        assertEquals(OSSUtils.validateObjectKey(""), false);
-        assertEquals(OSSUtils.validateObjectKey("/key-with-invalid-prefix"), true);
-        assertEquals(OSSUtils.validateObjectKey("\\key-with-invalid-prefix"), false);
+        Assertions.assertEquals(OSSUtils.validateObjectKey(null), false);
+        Assertions.assertEquals(OSSUtils.validateObjectKey(""), false);
+        Assertions.assertEquals(OSSUtils.validateObjectKey("/key-with-invalid-prefix"), true);
+        Assertions.assertEquals(OSSUtils.validateObjectKey("\\key-with-invalid-prefix"), false);
 
         try {
             OSSUtils.ensureObjectKeyValid("");
-            assertTrue(false);
+            Assertions.assertTrue(false);
         }catch (Exception ex) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             OSSUtils.ensureLiveChannelNameValid("");
-            assertTrue(false);
+            Assertions.assertTrue(false);
         }catch (Exception ex) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
-        assertEquals(OSSUtils.makeResourcePath("bucket", "key"),"bucket/key");
-        assertEquals(OSSUtils.makeResourcePath("bucket", null),"bucket/");
-        assertEquals(OSSUtils.makeResourcePath(null, "key"),null);
-        assertEquals(OSSUtils.makeResourcePath("key/123/"),"key/123/" );
-        assertEquals(OSSUtils.makeResourcePath("/key/123/"),"%2Fkey%2F123%2F" );
-        assertEquals(OSSUtils.makeResourcePath("bucket", "key/123/"),"bucket/key/123/" );
-        assertEquals(OSSUtils.makeResourcePath("bucket", "/key/123/"),"bucket/%2Fkey%2F123%2F" );
+        Assertions.assertEquals(OSSUtils.makeResourcePath("bucket", "key"),"bucket/key");
+        Assertions.assertEquals(OSSUtils.makeResourcePath("bucket", null),"bucket/");
+        Assertions.assertEquals(OSSUtils.makeResourcePath(null, "key"),null);
+        Assertions.assertEquals(OSSUtils.makeResourcePath("key/123/"),"key/123/" );
+        Assertions.assertEquals(OSSUtils.makeResourcePath("/key/123/"),"%2Fkey%2F123%2F" );
+        Assertions.assertEquals(OSSUtils.makeResourcePath("bucket", "key/123/"),"bucket/key/123/" );
+        Assertions.assertEquals(OSSUtils.makeResourcePath("bucket", "/key/123/"),"bucket/%2Fkey%2F123%2F" );
 
-        assertEquals(OSSUtils.trimQuotes(null),null);
-        assertEquals(OSSUtils.trimQuotes("\"test"),"test");
-        assertEquals(OSSUtils.trimQuotes("test\""),"test");
-        assertEquals(OSSUtils.trimQuotes("test"),"test");
-        assertEquals(OSSUtils.trimQuotes("\"test\""),"test");
+        Assertions.assertEquals(OSSUtils.trimQuotes(null),null);
+        Assertions.assertEquals(OSSUtils.trimQuotes("\"test"),"test");
+        Assertions.assertEquals(OSSUtils.trimQuotes("test\""),"test");
+        Assertions.assertEquals(OSSUtils.trimQuotes("test"),"test");
+        Assertions.assertEquals(OSSUtils.trimQuotes("\"test\""),"test");
     }
 
     @Test
@@ -76,7 +75,7 @@ public class OSSUtilsTest {
         String defaultProtocol = "https";
 
         URI res = OSSUtils.toEndpointURI(endpoint, defaultProtocol);
-        assertEquals(endpoint, res.toString());
+        Assertions.assertEquals(endpoint, res.toString());
     }
 
     @Test
@@ -85,7 +84,7 @@ public class OSSUtilsTest {
         String defaultProtocol = "https";
 
         URI res = OSSUtils.toEndpointURI(endpoint, defaultProtocol);
-        assertEquals("https://oss-cn-hangzhou.aliyuncs.com", res.toString());
+        Assertions.assertEquals("https://oss-cn-hangzhou.aliyuncs.com", res.toString());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -94,7 +93,7 @@ public class OSSUtilsTest {
         String defaultProtocol = "";
 
         URI res = OSSUtils.toEndpointURI(endpoint, defaultProtocol);
-        assertEquals("https://oss-cn-hangzhou.aliyuncs.com", res.toString());
+        Assertions.assertEquals("https://oss-cn-hangzhou.aliyuncs.com", res.toString());
     }
 
     @Test
@@ -104,9 +103,9 @@ public class OSSUtilsTest {
 
         try {
             URI res = OSSUtils.toEndpointURI(endpoint, defaultProtocol);
-            assertEquals(null, res);
+            Assertions.assertEquals(null, res);
         } catch (Exception e) {
-            assertTrue(e instanceof  NullPointerException);
+            Assertions.assertTrue(e instanceof  NullPointerException);
         }
     }
 }

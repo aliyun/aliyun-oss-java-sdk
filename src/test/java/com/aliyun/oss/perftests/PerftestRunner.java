@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -109,7 +109,7 @@ public class PerftestRunner {
             input = new FileInputStream(confFile);
         } catch (FileNotFoundException e) {
             log.error(e);
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
         SAXBuilder builder = new SAXBuilder();
         try {
@@ -138,14 +138,14 @@ public class PerftestRunner {
             } else {
                 log.error("Unable to locate XML element "
                         + scenarioTypeString);
-                Assert.fail("Unable to locate XML element " + scenarioTypeString);
+                Assertions.fail("Unable to locate XML element " + scenarioTypeString);
             }
         } catch (JDOMException e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -162,7 +162,7 @@ public class PerftestRunner {
             byteArray4MB = createFixedLengthBytes(4 * 1024 * 1024);
         } catch (Exception e) {
             log.error(e.getMessage());
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -172,13 +172,13 @@ public class PerftestRunner {
             ossClient.createBucket(bucketName);
         } catch (OSSException e) {
             log.error("Put bucket " + bucketName + " error " + e.getMessage());
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } catch (ClientException e) {
             log.error("Put bucket " + bucketName + " error " + e.getMessage());
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } catch (Exception e) {
             log.error("Put bucket " + bucketName + " error " + e.getMessage());
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -319,7 +319,7 @@ public class PerftestRunner {
             writeResult(contentStr);
         } catch (Exception e) {
             log.error("Unexpected exception occurs when calculate result " + getTestName(type));
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -331,7 +331,7 @@ public class PerftestRunner {
         } catch (IOException e) {
             // TODO: handle exception
             log.error(e.getMessage());
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             try {
                 if (writer != null) {
@@ -340,7 +340,7 @@ public class PerftestRunner {
             } catch (Exception e2) {
                 // TODO: handle exception
                 log.error(e2.getMessage());
-                Assert.fail(e2.getMessage());
+                Assertions.fail(e2.getMessage());
             }
         }
     }
@@ -444,7 +444,7 @@ public class PerftestRunner {
             }
         } catch (Exception ex) {
             log.error(ex.getMessage());
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
 
         Thread[] getThreads = new Thread[getThreadNumber];
@@ -536,7 +536,7 @@ public class PerftestRunner {
             }
         } catch (Exception ex) {
             log.error(ex.getMessage());
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
 
         startTime = new Date();

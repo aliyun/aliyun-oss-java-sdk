@@ -30,7 +30,7 @@ import com.aliyun.oss.model.AddBucketCnameRequest;
 import com.aliyun.oss.model.CertificateConfiguration;
 import com.aliyun.oss.model.CnameConfiguration;
 import com.aliyun.oss.utils.ResourceUtils;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -43,10 +43,10 @@ public class CnameTest extends TestBase {
         ClientBuilderConfiguration cc = new ClientBuilderConfiguration();
         // Defalut CNAME Exclude List: [aliyuncs.com, aliyun-inc.com, aliyun.com]
         List<String> currentExcludeList = cc.getCnameExcludeList();
-        Assert.assertEquals(currentExcludeList.size(), 3);
-        Assert.assertTrue(currentExcludeList.contains("aliyuncs.com"));
-        Assert.assertTrue(currentExcludeList.contains("aliyun-inc.com"));
-        Assert.assertTrue(currentExcludeList.contains("aliyun.com"));
+        Assertions.assertEquals(currentExcludeList.size(), 3);
+        Assertions.assertTrue(currentExcludeList.contains("aliyuncs.com"));
+        Assertions.assertTrue(currentExcludeList.contains("aliyun-inc.com"));
+        Assertions.assertTrue(currentExcludeList.contains("aliyun.com"));
 
         List<String> cnameExcludeList = new ArrayList<String>();
         String excludeItem = "http://oss-cn-hangzhou.aliyuncs.gd";
@@ -54,11 +54,11 @@ public class CnameTest extends TestBase {
         cnameExcludeList.add(excludeItem);
         cc.setCnameExcludeList(cnameExcludeList);
         currentExcludeList = cc.getCnameExcludeList();
-        Assert.assertEquals(currentExcludeList.size(), 4);
-        Assert.assertTrue(currentExcludeList.contains(excludeItem));
-        Assert.assertTrue(currentExcludeList.contains("aliyuncs.com"));
-        Assert.assertTrue(currentExcludeList.contains("aliyun-inc.com"));
-        Assert.assertTrue(currentExcludeList.contains("aliyun.com"));
+        Assertions.assertEquals(currentExcludeList.size(), 4);
+        Assertions.assertTrue(currentExcludeList.contains(excludeItem));
+        Assertions.assertTrue(currentExcludeList.contains("aliyuncs.com"));
+        Assertions.assertTrue(currentExcludeList.contains("aliyun-inc.com"));
+        Assertions.assertTrue(currentExcludeList.contains("aliyun.com"));
 
         OSS client = new OSSClientBuilder().build(OSS_TEST_ENDPOINT, OSS_TEST_ACCESS_KEY_ID, OSS_TEST_ACCESS_KEY_SECRET, cc);
         // Do some operations with client here...
@@ -87,23 +87,23 @@ public class CnameTest extends TestBase {
                 .withPrivateKey(priKey));
 
         String certId1 = client.addBucketCname(request1).getCertId();
-        Assert.assertNotNull(certId1);
+        Assertions.assertNotNull(certId1);
 
         AddBucketCnameRequest request2 = new AddBucketCnameRequest(bucketName)
             .withDomain(cname2)
             .withCertificateConfiguration(new CertificateConfiguration()
                 .withId(certId1));
         String certId2 = client.addBucketCname(request2).getCertId();
-        Assert.assertEquals(certId1, certId2);
+        Assertions.assertEquals(certId1, certId2);
 
         boolean flag = false;
         try {
             client.addBucketCname(request2);
         } catch (OSSException e) {
-            Assert.assertEquals("CasRenewCertificateConflict", e.getErrorCode());
+            Assertions.assertEquals("CasRenewCertificateConflict", e.getErrorCode());
             flag = true;
         }
-        Assert.assertTrue(flag);
+        Assertions.assertTrue(flag);
 
         request2.getCertificateConfiguration().setPreviousId(certId1);
         client.addBucketCname(request2);
@@ -113,11 +113,11 @@ public class CnameTest extends TestBase {
         client.addBucketCname(request2);
 
         List<CnameConfiguration> cnameConfigurations = client.getBucketCname(bucketName);
-        Assert.assertEquals(2, cnameConfigurations.size());
+        Assertions.assertEquals(2, cnameConfigurations.size());
 
-        Assert.assertEquals(certId1, cnameConfigurations.get(0).getCertId());
-        Assert.assertEquals(certId1, cnameConfigurations.get(1).getCertId());
-        Assert.assertEquals(CnameConfiguration.CertType.CAS, cnameConfigurations.get(0).getCertType());
-        Assert.assertEquals(CnameConfiguration.CertType.CAS, cnameConfigurations.get(1).getCertType());
+        Assertions.assertEquals(certId1, cnameConfigurations.get(0).getCertId());
+        Assertions.assertEquals(certId1, cnameConfigurations.get(1).getCertId());
+        Assertions.assertEquals(CnameConfiguration.CertType.CAS, cnameConfigurations.get(0).getCertType());
+        Assertions.assertEquals(CnameConfiguration.CertType.CAS, cnameConfigurations.get(1).getCertType());
     }
 }

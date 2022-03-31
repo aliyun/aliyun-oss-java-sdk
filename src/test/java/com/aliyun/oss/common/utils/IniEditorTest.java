@@ -19,6 +19,7 @@
 package com.aliyun.oss.common.utils;
 
 import junit.framework.*;
+import org.junit.jupiter.api.Assertions;
 
 import java.io.*;
 import java.util.*;
@@ -35,9 +36,9 @@ public class IniEditorTest extends TestCase {
     public void testAddSection() {
         IniEditor i = new IniEditor();
         i.addSection("hallo");
-        assertTrue(i.hasSection("hallo"));
+        Assertions.assertTrue(i.hasSection("hallo"));
         i.addSection("   HELLO\t ");
-        assertTrue(i.hasSection("hello"));
+        Assertions.assertTrue(i.hasSection("hello"));
     }
 
     /**
@@ -45,9 +46,9 @@ public class IniEditorTest extends TestCase {
      */
     public void testAddSectionDup() {
         IniEditor i = new IniEditor();
-        assertTrue(i.addSection("hallo"));
-        assertTrue(i.hasSection("hallo"));
-        assertTrue(!i.addSection("HALLO"));
+        Assertions.assertTrue(i.addSection("hallo"));
+        Assertions.assertTrue(i.hasSection("hallo"));
+        Assertions.assertTrue(!i.addSection("HALLO"));
     }
 
     /**
@@ -57,25 +58,25 @@ public class IniEditorTest extends TestCase {
         IniEditor i = new IniEditor();
         try {
             i.addSection("[hallo");
-            fail("Should throw IllegalArgumentException.");
+            Assertions.fail("Should throw IllegalArgumentException.");
         } catch (IllegalArgumentException ex) {
             /* ok, this should happen */
         }
         try {
             i.addSection("hallo]");
-            fail("Should throw IllegalArgumentException.");
+            Assertions.fail("Should throw IllegalArgumentException.");
         } catch (IllegalArgumentException ex) {
             /* ok, this should happen */
         }
         try {
             i.addSection("  \t ");
-            fail("Should throw IllegalArgumentException.");
+            Assertions.fail("Should throw IllegalArgumentException.");
         } catch (IllegalArgumentException ex) {
             /* ok, this should happen */
         }
         try {
             i.addSection("");
-            fail("Should throw IllegalArgumentException.");
+            Assertions.fail("Should throw IllegalArgumentException.");
         } catch (IllegalArgumentException ex) {
             /* ok, this should happen */
         }
@@ -87,9 +88,9 @@ public class IniEditorTest extends TestCase {
     public void testHasSection() {
         IniEditor i = new IniEditor();
         i.addSection("HaLlO");
-        assertTrue(i.hasSection("hAlLo"));
-        assertTrue(i.hasSection(" hallo\t"));
-        assertTrue(!i.hasSection("hello"));
+        Assertions.assertTrue(i.hasSection("hAlLo"));
+        Assertions.assertTrue(i.hasSection(" hallo\t"));
+        Assertions.assertTrue(!i.hasSection("hello"));
     }
 
     /**
@@ -100,13 +101,13 @@ public class IniEditorTest extends TestCase {
         i.addSection("test");
         try {
             i.removeSection("common");
-            fail("Should throw IllegalArgumentException");
+            Assertions.fail("Should throw IllegalArgumentException");
         } catch (IllegalArgumentException ex) {
             /* ok, this should happen */
         }
-        assertTrue(i.removeSection("test"));
-        assertTrue(!i.hasSection("test"));
-        assertTrue(!i.removeSection("bla"));
+        Assertions.assertTrue(i.removeSection("test"));
+        Assertions.assertTrue(!i.hasSection("test"));
+        Assertions.assertTrue(!i.removeSection("bla"));
     }
 
     /**
@@ -115,49 +116,49 @@ public class IniEditorTest extends TestCase {
     public void testSetGet() {
         IniEditor i = new IniEditor();
         i.addSection("test");
-        assertEquals(i.get("test", "hallo"), null);
-        assertTrue(!i.hasOption("test", "hallo"));
+        Assertions.assertEquals(i.get("test", "hallo"), null);
+        Assertions.assertTrue(!i.hasOption("test", "hallo"));
         i.set(" \t TEST  ", " HALLO \t", " \tvelo ");
-        assertEquals(i.get("test", "hallo"), "velo");
-        assertTrue(i.hasOption("test", "hallo"));
+        Assertions.assertEquals(i.get("test", "hallo"), "velo");
+        Assertions.assertTrue(i.hasOption("test", "hallo"));
         i.set("test", "hallo", "bike");
-        assertEquals(i.get(" TesT\t ", " \tHALLO "), "bike");
-        assertTrue(i.hasOption("test", "hallo"));
+        Assertions.assertEquals(i.get(" TesT\t ", " \tHALLO "), "bike");
+        Assertions.assertTrue(i.hasOption("test", "hallo"));
         i.set("test", "hallo", "bi\nk\n\re\n");
-        assertEquals(i.get("test", "hallo"), "bike");
-        assertTrue(i.hasOption("test", "hallo"));
+        Assertions.assertEquals(i.get("test", "hallo"), "bike");
+        Assertions.assertTrue(i.hasOption("test", "hallo"));
         // with common section
         i = new IniEditor("common");
         i.addSection("test");
-        assertEquals(i.get("common", "hallo"), null);
-        assertEquals(i.get("test", "hallo"), null);
-        assertTrue(!i.hasOption("test", "hallo"));
+        Assertions.assertEquals(i.get("common", "hallo"), null);
+        Assertions.assertEquals(i.get("test", "hallo"), null);
+        Assertions.assertTrue(!i.hasOption("test", "hallo"));
         i.set("common", "hallo", "velo");
-        assertEquals(i.get("common", "hallo"), "velo");
-        assertEquals(i.get("test", "hallo"), "velo");
-        assertTrue(i.hasOption("common", "hallo"));
-        assertTrue(!i.hasOption("test", "hallo"));
+        Assertions.assertEquals(i.get("common", "hallo"), "velo");
+        Assertions.assertEquals(i.get("test", "hallo"), "velo");
+        Assertions.assertTrue(i.hasOption("common", "hallo"));
+        Assertions.assertTrue(!i.hasOption("test", "hallo"));
         i.set("test", "hallo", "bike");
-        assertEquals(i.get("test", "hallo"), "bike");
+        Assertions.assertEquals(i.get("test", "hallo"), "bike");
     }
 
     public void testGetSectionMap() {
         IniEditor i = new IniEditor();
-        assertNull(i.getSectionMap("test"));
+        Assertions.assertNull(i.getSectionMap("test"));
         i.addSection("test");
-        assertEquals(i.getSectionMap("test"), new HashMap<String, String>());
+        Assertions.assertEquals(i.getSectionMap("test"), new HashMap<String, String>());
         i.set("test", "hallo", "bike");
         Map<String, String> temp = new HashMap<String, String>();
         temp.put("hallo", "bike");
-        assertEquals(i.getSectionMap("test"), temp);
+        Assertions.assertEquals(i.getSectionMap("test"), temp);
         try {
             i.getSectionMap(null);
-            fail("Should throw NullPointerException");
+            Assertions.fail("Should throw NullPointerException");
         } catch (NullPointerException ex) {
             /* ok, this should happen */
         }
         i = new IniEditor("common");
-        assertEquals(i.getSectionMap("common"), new HashMap<String, String>());
+        Assertions.assertEquals(i.getSectionMap("common"), new HashMap<String, String>());
     }
 
     /**
@@ -168,19 +169,19 @@ public class IniEditorTest extends TestCase {
         i.addSection("test");
         try {
             i.set("test", "hallo=", "velo");
-            fail("Should throw IllegalArgumentException");
+            Assertions.fail("Should throw IllegalArgumentException");
         } catch (IllegalArgumentException ex) {
             /* ok, this should happen */
         }
         try {
             i.set("test", " \t\t ", "velo");
-            fail("Should throw IllegalArgumentException");
+            Assertions.fail("Should throw IllegalArgumentException");
         } catch (IllegalArgumentException ex) {
             /* ok, this should happen */
         }
         try {
             i.set("test", "", "velo");
-            fail("Should throw IllegalArgumentException");
+            Assertions.fail("Should throw IllegalArgumentException");
         } catch (IllegalArgumentException ex) {
             /* ok, this should happen */
         }
@@ -193,7 +194,7 @@ public class IniEditorTest extends TestCase {
         IniEditor i = new IniEditor();
         try {
             i.set("test", "hallo", "velo");
-            fail("Should throw NoSuchSectionException");
+            Assertions.fail("Should throw NoSuchSectionException");
         } catch (IniEditor.NoSuchSectionException ex) {
             /* ok, this should happen */
         }
@@ -207,26 +208,26 @@ public class IniEditorTest extends TestCase {
         i.addSection("test");
         try {
             i.set(null, "hallo", "velo");
-            fail("Should throw NullPointerException");
+            Assertions.fail("Should throw NullPointerException");
         } catch (NullPointerException ex) {
             /* ok, this should happen */
         }
         try {
             i.set("test", null, "velo");
-            fail("Should throw NullPointerException");
+            Assertions.fail("Should throw NullPointerException");
         } catch (NullPointerException ex) {
             /* ok, this should happen */
         }
         i.set("test", "hallo", null);
         try {
             i.get(null, "hallo");
-            fail("Should throw NullPointerException");
+            Assertions.fail("Should throw NullPointerException");
         } catch (NullPointerException ex) {
             /* ok, this should happen */
         }
         try {
             i.get("test", null);
-            fail("Should throw NullPointerException");
+            Assertions.fail("Should throw NullPointerException");
         } catch (NullPointerException ex) {
             /* ok, this should happen */
         }
@@ -239,14 +240,14 @@ public class IniEditorTest extends TestCase {
         IniEditor i = new IniEditor();
         i.addSection("test");
         i.set("test", "hallo", "velo");
-        assertTrue(i.hasOption("test", "hallo"));
-        assertTrue(i.remove("test", "hallo"));
-        assertEquals(i.get("test", "hallo"), null);
-        assertTrue(!i.hasOption("test", "hallo"));
-        assertTrue(!i.remove("test", "hallo"));
+        Assertions.assertTrue(i.hasOption("test", "hallo"));
+        Assertions.assertTrue(i.remove("test", "hallo"));
+        Assertions.assertEquals(i.get("test", "hallo"), null);
+        Assertions.assertTrue(!i.hasOption("test", "hallo"));
+        Assertions.assertTrue(!i.remove("test", "hallo"));
         try {
             i.remove("test2", "hallo");
-            fail("Should throw NoSuchSectionException");
+            Assertions.fail("Should throw NoSuchSectionException");
         } catch (IniEditor.NoSuchSectionException ex) {
             /* ok, should happen */
         }
@@ -260,15 +261,15 @@ public class IniEditorTest extends TestCase {
         i.addSection("test");
         i.addSection("test2");
         List<String> names = i.sectionNames();
-        assertEquals(names.get(0), "test");
-        assertEquals(names.get(1), "test2");
-        assertEquals(names.size(), 2);
+        Assertions.assertEquals(names.get(0), "test");
+        Assertions.assertEquals(names.get(1), "test2");
+        Assertions.assertEquals(names.size(), 2);
         // with common section
         i = new IniEditor("common");
         i.addSection("test");
         i.addSection("test2");
         names = i.sectionNames();
-        assertTrue(names.contains("test") && names.contains("test2") && names.size() == 2);
+        Assertions.assertTrue(names.contains("test") && names.contains("test2") && names.size() == 2);
     }
 
     /**
@@ -280,9 +281,9 @@ public class IniEditorTest extends TestCase {
         i.set("test", "hallo", "velo");
         i.set("test", "hello", "bike");
         List<String> names = i.optionNames("test");
-        assertEquals(names.get(0), "hallo");
-        assertEquals(names.get(1), "hello");
-        assertEquals(names.size(), 2);
+        Assertions.assertEquals(names.get(0), "hallo");
+        Assertions.assertEquals(names.get(1), "hello");
+        Assertions.assertEquals(names.size(), 2);
     }
 
     /**
@@ -312,15 +313,15 @@ public class IniEditorTest extends TestCase {
         i.save(new FileOutputStream(f));
         Object[] saved = fileToStrings(f);
         //System.out.println(Arrays.asList(saved));
-        assertTrue(Arrays.equals(expected, saved));
+        Assertions.assertTrue(Arrays.equals(expected, saved));
         // with File
         i.save(f);
         saved = fileToStrings(f);
-        assertTrue(Arrays.equals(expected, saved));
+        Assertions.assertTrue(Arrays.equals(expected, saved));
         // with file name
         i.save(f.toString());
         saved = fileToStrings(f);
-        assertTrue(Arrays.equals(expected, saved));
+        Assertions.assertTrue(Arrays.equals(expected, saved));
     }
 
     /**
@@ -335,7 +336,7 @@ public class IniEditorTest extends TestCase {
         i.save(new OutputStreamWriter(new FileOutputStream(f), charsetName));
         i = new IniEditor("cmmn");
         i.load(new InputStreamReader(new FileInputStream(f), charsetName));
-        assertEquals(i.get("tst", "hllo"), "vel");
+        Assertions.assertEquals(i.get("tst", "hllo"), "vel");
     }
 
     /**
@@ -349,7 +350,7 @@ public class IniEditorTest extends TestCase {
         i.save(f.toString());
         i = new IniEditor();
         i.load(f);
-        assertTrue(f.delete());
+        Assertions.assertTrue(f.delete());
     }
 
     /**
@@ -357,17 +358,17 @@ public class IniEditorTest extends TestCase {
      */
     public void testCaseSensitivity() throws IOException {
         IniEditor i = new IniEditor("Common", true);
-        assertTrue(i.hasSection("Common"));
-        assertTrue(!i.hasSection("common"));
+        Assertions.assertTrue(i.hasSection("Common"));
+        Assertions.assertTrue(!i.hasSection("common"));
         i.addSection("Test");
-        assertTrue(i.hasSection("Test"));
-        assertTrue(!i.hasSection("test"));
+        Assertions.assertTrue(i.hasSection("Test"));
+        Assertions.assertTrue(!i.hasSection("test"));
         i.set("Test", "Hallo", "velo");
-        assertEquals("velo", i.get("Test", "Hallo"));
-        assertNull(i.get("Test", "hallo"));
+        Assertions.assertEquals("velo", i.get("Test", "Hallo"));
+        Assertions.assertNull(i.get("Test", "hallo"));
         try {
             i.set("TesT", "hallo", "velo");
-            fail("should fail");
+            Assertions.fail("should fail");
         } catch (IniEditor.NoSuchSectionException ex) {
             /* ok */
         }
@@ -377,7 +378,7 @@ public class IniEditorTest extends TestCase {
         IniEditor i = new IniEditor();
         try {
             i.setOptionFormatString("%s %s");
-            fail("Should throw IllegalArgumentException");
+            Assertions.fail("Should throw IllegalArgumentException");
         } catch (IllegalArgumentException ex) {
             /* ok, this should happen */
         }
@@ -387,7 +388,7 @@ public class IniEditorTest extends TestCase {
         File f = File.createTempFile("test", null);
         i.save(new FileOutputStream(f));
         Object[] saved = fileToStrings(f);
-        assertEquals("hallo=velo", saved[1]);
+        Assertions.assertEquals("hallo=velo", saved[1]);
     }
 
     private static Object[] fileToStrings(File f) throws IOException {

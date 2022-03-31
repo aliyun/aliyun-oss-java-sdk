@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Ignore;
@@ -84,7 +84,7 @@ public class SecurityTokenTest {
         try {
             sessionClient.listBuckets();
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -99,9 +99,9 @@ public class SecurityTokenTest {
         try {
             sessionClient.deleteBucket(bucketName);
         } catch (OSSException oe) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, oe.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, oe.getErrorCode());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -117,7 +117,7 @@ public class SecurityTokenTest {
         try {
             sessionClient.createBucket(bucketName);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -128,8 +128,8 @@ public class SecurityTokenTest {
         try {
             sessionClient.createBucket(unmatchedBucketName);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(SECURITY_TOKEN_ACCESS_DENIED_ERR));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(SECURITY_TOKEN_ACCESS_DENIED_ERR));
         } finally {
             actions.clear();
             resources.clear();
@@ -143,8 +143,8 @@ public class SecurityTokenTest {
         try {
             sessionClient.createBucket(unmatchedBucketName);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(SECURITY_TOKEN_ACCESS_DENIED_ERR));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(SECURITY_TOKEN_ACCESS_DENIED_ERR));
         } finally {
             actions.clear();
             resources.clear();
@@ -159,7 +159,7 @@ public class SecurityTokenTest {
         try {
             sessionClient.createBucket(bucketName);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -173,7 +173,7 @@ public class SecurityTokenTest {
         try {
             sessionClient.setBucketAcl(bucketName, CannedAccessControlList.PublicRead);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -182,8 +182,8 @@ public class SecurityTokenTest {
         try {
             sessionClient.getBucketAcl(bucketName);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(SECURITY_TOKEN_ACCESS_DENIED_ERR));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(SECURITY_TOKEN_ACCESS_DENIED_ERR));
         } finally {
             actions.clear();
             resources.clear();
@@ -197,12 +197,12 @@ public class SecurityTokenTest {
         try {
             AccessControlList returnedAcl = sessionClient.getBucketAcl(bucketName);
             Set<Grant> grants = returnedAcl.getGrants();
-            Assert.assertEquals(1, grants.size());
+            Assertions.assertEquals(1, grants.size());
             Grant grant = (Grant) grants.toArray()[0];
-            Assert.assertEquals(GroupGrantee.AllUsers, grant.getGrantee());
-            Assert.assertEquals(Permission.Read, grant.getPermission());
+            Assertions.assertEquals(GroupGrantee.AllUsers, grant.getGrantee());
+            Assertions.assertEquals(Permission.Read, grant.getPermission());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -211,8 +211,8 @@ public class SecurityTokenTest {
         try {
             sessionClient.setBucketAcl(bucketName, CannedAccessControlList.Private);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(SECURITY_TOKEN_ACCESS_DENIED_ERR));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(SECURITY_TOKEN_ACCESS_DENIED_ERR));
         } finally {
             actions.clear();
             resources.clear();
@@ -230,7 +230,7 @@ public class SecurityTokenTest {
             request.setTargetPrefix(targetPrefix);
             sessionClient.setBucketLogging(request);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -239,8 +239,8 @@ public class SecurityTokenTest {
         try {
             sessionClient.getBucketLogging(bucketName);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(SECURITY_TOKEN_ACCESS_DENIED_ERR));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(SECURITY_TOKEN_ACCESS_DENIED_ERR));
         } finally {
             actions.clear();
             resources.clear();
@@ -253,10 +253,10 @@ public class SecurityTokenTest {
         sessionClient = createSessionClient(actions, resources);
         try {
             BucketLoggingResult result = sessionClient.getBucketLogging(bucketName);
-            Assert.assertEquals(bucketName, result.getTargetBucket());
-            Assert.assertEquals(targetPrefix, result.getTargetPrefix());
+            Assertions.assertEquals(bucketName, result.getTargetBucket());
+            Assertions.assertEquals(targetPrefix, result.getTargetPrefix());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -268,8 +268,8 @@ public class SecurityTokenTest {
             request.setTargetPrefix(targetPrefix);
             sessionClient.setBucketLogging(request);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(SECURITY_TOKEN_ACCESS_DENIED_ERR));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(SECURITY_TOKEN_ACCESS_DENIED_ERR));
         } finally {
             actions.clear();
             resources.clear();
@@ -283,7 +283,7 @@ public class SecurityTokenTest {
         try {
             sessionClient.deleteBucketLogging(bucketName);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -302,7 +302,7 @@ public class SecurityTokenTest {
             request.setErrorDocument(errorDocument);
             sessionClient.setBucketWebsite(request);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -328,7 +328,7 @@ public class SecurityTokenTest {
             r.setRefererList(refererList);
             sessionClient.setBucketReferer(bucketName, r);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -350,7 +350,7 @@ public class SecurityTokenTest {
                     DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z")));
             sessionClient.setBucketLifecycle(request);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -374,7 +374,7 @@ public class SecurityTokenTest {
             request.addCorsRule(r0);
             sessionClient.setBucketCORS(request);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -387,15 +387,15 @@ public class SecurityTokenTest {
         sessionClient = createSessionClient(actions, resources);
         try {
             ObjectListing objectListing = sessionClient.listObjects(bucketName);
-            Assert.assertEquals(0, objectListing.getObjectSummaries().size());
-            Assert.assertEquals(bucketName, objectListing.getBucketName());
-            Assert.assertNull(objectListing.getDelimiter());
-            Assert.assertNull(objectListing.getPrefix());
-            Assert.assertNull(objectListing.getMarker());
-            Assert.assertNull(objectListing.getNextMarker());
-            Assert.assertFalse(objectListing.isTruncated());
+            Assertions.assertEquals(0, objectListing.getObjectSummaries().size());
+            Assertions.assertEquals(bucketName, objectListing.getBucketName());
+            Assertions.assertNull(objectListing.getDelimiter());
+            Assertions.assertNull(objectListing.getPrefix());
+            Assertions.assertNull(objectListing.getMarker());
+            Assertions.assertNull(objectListing.getNextMarker());
+            Assertions.assertFalse(objectListing.isTruncated());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -409,7 +409,7 @@ public class SecurityTokenTest {
         try {
             sessionClient.deleteBucket(bucketName);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -430,7 +430,7 @@ public class SecurityTokenTest {
         try {
             sessionClient.createBucket(bucketName);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -448,7 +448,7 @@ public class SecurityTokenTest {
             instream = genFixedLengthInputStream(instreamLength);
             sessionClient.putObject(bucketName, key, instream, null);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -468,9 +468,9 @@ public class SecurityTokenTest {
         sessionClient = createSessionClient(actions, resources);
         try {
             OSSObject o = sessionClient.getObject(bucketName, key);
-            Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -485,7 +485,7 @@ public class SecurityTokenTest {
         try {
             sessionClient.copyObject(bucketName, key, bucketName, key + DUMMY_SUFFIX);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -517,7 +517,7 @@ public class SecurityTokenTest {
             UploadPartResult uploadPartResult = sessionClient.uploadPart(uploadPartRequest);
             partETags.add(uploadPartResult.getPartETag());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -531,15 +531,15 @@ public class SecurityTokenTest {
         try {
             ListPartsRequest listPartsRequest = new ListPartsRequest(bucketName, key, uploadId);
             PartListing partListing = sessionClient.listParts(listPartsRequest);
-            Assert.assertEquals(1, partListing.getParts().size());
-            Assert.assertEquals(bucketName, partListing.getBucketName());
-            Assert.assertEquals(key, partListing.getKey());
-            Assert.assertEquals(uploadId, partListing.getUploadId());
-            Assert.assertEquals(1000, partListing.getMaxParts().intValue());
-            Assert.assertEquals(1, partListing.getNextPartNumberMarker().intValue());
-            Assert.assertFalse(partListing.isTruncated());
+            Assertions.assertEquals(1, partListing.getParts().size());
+            Assertions.assertEquals(bucketName, partListing.getBucketName());
+            Assertions.assertEquals(key, partListing.getKey());
+            Assertions.assertEquals(uploadId, partListing.getUploadId());
+            Assertions.assertEquals(1000, partListing.getMaxParts().intValue());
+            Assertions.assertEquals(1, partListing.getNextPartNumberMarker().intValue());
+            Assertions.assertFalse(partListing.isTruncated());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -554,7 +554,7 @@ public class SecurityTokenTest {
             CompleteMultipartUploadRequest request = new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             sessionClient.completeMultipartUpload(request);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -569,7 +569,7 @@ public class SecurityTokenTest {
             sessionClient.deleteObject(bucketName, key);
             sessionClient.deleteObject(bucketName, key + DUMMY_SUFFIX);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();
@@ -582,7 +582,7 @@ public class SecurityTokenTest {
         try {
             sessionClient.deleteBucket(bucketName);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             actions.clear();
             resources.clear();

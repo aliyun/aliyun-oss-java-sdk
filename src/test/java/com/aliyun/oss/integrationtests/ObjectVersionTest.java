@@ -32,7 +32,7 @@ import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.internal.OSSUtils;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 import com.aliyun.oss.OSSErrorCode;
@@ -71,7 +71,7 @@ import com.aliyun.oss.model.BucketVersioningConfiguration;
 import com.aliyun.oss.model.SetBucketVersioningRequest;
 
 import static com.aliyun.oss.integrationtests.TestUtils.*;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
 
 public class ObjectVersionTest extends TestBase {
 
@@ -118,10 +118,10 @@ public class ObjectVersionTest extends TestBase {
             ObjectMetadata metadata = new ObjectMetadata();
 
             PutObjectResult putResult = ossClient.putObject(bucketName, key, instream, metadata);
-            Assert.assertNotNull(putResult.getVersionId());
-            Assert.assertEquals(64, putResult.getVersionId().length());
+            Assertions.assertNotNull(putResult.getVersionId());
+            Assertions.assertEquals(64, putResult.getVersionId().length());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -147,7 +147,7 @@ public class ObjectVersionTest extends TestBase {
                 uploadPartRequest.setPartSize(partSize);
                 uploadPartRequest.setUploadId(uploadId);
                 UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
-                Assert.assertEquals(uploadPartResult.getRequestId().length(), REQUEST_ID_LEN);
+                Assertions.assertEquals(uploadPartResult.getRequestId().length(), REQUEST_ID_LEN);
                 partETags.add(uploadPartResult.getPartETag());
             }
 
@@ -156,14 +156,14 @@ public class ObjectVersionTest extends TestBase {
                     new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-            Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
-            Assert.assertEquals(key, completeMultipartUploadResult.getKey());
-            Assert.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
-            Assert.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
-            Assert.assertNotNull(completeMultipartUploadResult.getVersionId());
-            Assert.assertEquals(64, completeMultipartUploadResult.getVersionId().length());
+            Assertions.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
+            Assertions.assertEquals(key, completeMultipartUploadResult.getKey());
+            Assertions.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
+            Assertions.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertNotNull(completeMultipartUploadResult.getVersionId());
+            Assertions.assertEquals(64, completeMultipartUploadResult.getVersionId().length());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -177,17 +177,17 @@ public class ObjectVersionTest extends TestBase {
             ObjectMetadata metadata = new ObjectMetadata();
 
             PutObjectResult putResult = ossClient.putObject(bucketName, key, instream, metadata);
-            Assert.assertTrue(putResult.getVersionId() != null);
-            Assert.assertTrue(putResult.getVersionId().length() == 64);
+            Assertions.assertTrue(putResult.getVersionId() != null);
+            Assertions.assertTrue(putResult.getVersionId().length() == 64);
 
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             getObjectRequest.setVersionId(putResult.getVersionId());
             OSSObject ossObject = ossClient.getObject(getObjectRequest);
             ossObject.close();
-            Assert.assertEquals(inputStreamLength, ossObject.getObjectMetadata().getContentLength());
-            Assert.assertEquals(putResult.getVersionId(), ossObject.getObjectMetadata().getVersionId());
+            Assertions.assertEquals(inputStreamLength, ossObject.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(putResult.getVersionId(), ossObject.getObjectMetadata().getVersionId());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -201,25 +201,25 @@ public class ObjectVersionTest extends TestBase {
             ObjectMetadata metadata = new ObjectMetadata();
 
             PutObjectResult putResult = ossClient.putObject(bucketName, key, instream, metadata);
-            Assert.assertTrue(putResult.getVersionId() != null);
-            Assert.assertTrue(putResult.getVersionId().length() == 64);
+            Assertions.assertTrue(putResult.getVersionId() != null);
+            Assertions.assertTrue(putResult.getVersionId().length() == 64);
 
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key, putResult.getVersionId());
             getObjectRequest.setVersionId(putResult.getVersionId());
             OSSObject ossObject = ossClient.getObject(getObjectRequest);
             ossObject.close();
-            Assert.assertEquals(inputStreamLength, ossObject.getObjectMetadata().getContentLength());
-            Assert.assertEquals(putResult.getVersionId(), ossObject.getObjectMetadata().getVersionId());
+            Assertions.assertEquals(inputStreamLength, ossObject.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(putResult.getVersionId(), ossObject.getObjectMetadata().getVersionId());
 
             ossClient.deleteVersion(bucketName, key, putResult.getVersionId());
 
             try {
                 ossClient.getObject(getObjectRequest);
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.NO_SUCH_VERSION, e.getErrorCode());
+                Assertions.assertEquals(OSSErrorCode.NO_SUCH_VERSION, e.getErrorCode());
             }
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -242,26 +242,26 @@ public class ObjectVersionTest extends TestBase {
             ossClient.deleteObject(bucketName, key);
 
             VersionListing versionListing = ossClient.listVersions(bucketName, prefix);
-            Assert.assertEquals(4, versionListing.getVersionSummaries().size());
+            Assertions.assertEquals(4, versionListing.getVersionSummaries().size());
 
             List<KeyVersion> keysTodel = new ArrayList<KeyVersion>();
             for (OSSVersionSummary ossVersion : versionListing.getVersionSummaries()) {
                 keysTodel.add(new KeyVersion(ossVersion.getKey(), ossVersion.getVersionId()));
-                Assert.assertNotNull(ossVersion.getOwner());
-                Assert.assertNotNull(ossVersion.getLastModified());
+                Assertions.assertNotNull(ossVersion.getOwner());
+                Assertions.assertNotNull(ossVersion.getLastModified());
             }
 
             // Delete versions
             DeleteVersionsRequest delRequest = new DeleteVersionsRequest(bucketName);
             delRequest.setKeys(keysTodel);
             DeleteVersionsResult delRes = ossClient.deleteVersions(delRequest);
-            Assert.assertEquals(4, delRes.getDeletedVersions().size());
+            Assertions.assertEquals(4, delRes.getDeletedVersions().size());
 
             // Check
             versionListing = ossClient.listVersions(bucketName, prefix);
-            Assert.assertEquals(0, versionListing.getVersionSummaries().size());
+            Assertions.assertEquals(0, versionListing.getVersionSummaries().size());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -280,9 +280,9 @@ public class ObjectVersionTest extends TestBase {
             ossClient.createSymlink(bucketName, link, target);
 
             OSSSymlink symlink = ossClient.getSymlink(bucketName, link);
-            Assert.assertEquals(false, symlink.getMetadata().getVersionId().isEmpty());
+            Assertions.assertEquals(false, symlink.getMetadata().getVersionId().isEmpty());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -302,10 +302,10 @@ public class ObjectVersionTest extends TestBase {
             CopyObjectRequest copyObjectRequest = new CopyObjectRequest(bucketName, srcKey, bucketName, destKey);
             copyObjectRequest.setSourceVersionId(puObjectResult.getVersionId());
             CopyObjectResult copyObjectResult = ossClient.copyObject(copyObjectRequest);
-            Assert.assertTrue(copyObjectResult.getVersionId() != null);
-            Assert.assertTrue(copyObjectResult.getVersionId().length() == 64);
+            Assertions.assertTrue(copyObjectResult.getVersionId() != null);
+            Assertions.assertTrue(copyObjectResult.getVersionId().length() == 64);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -319,8 +319,8 @@ public class ObjectVersionTest extends TestBase {
             // Prepare
             InputStream instream = genFixedLengthInputStream(partSize);
             PutObjectResult putObjectResult = ossClient.putObject(bucketName, srcKey, instream);
-            Assert.assertNotNull(putObjectResult.getVersionId());
-            Assert.assertEquals(64, putObjectResult.getVersionId().length());
+            Assertions.assertNotNull(putObjectResult.getVersionId());
+            Assertions.assertEquals(64, putObjectResult.getVersionId().length());
 
             // Claim upload id
             String uploadId = claimUploadId(ossClient, bucketName, destKey);
@@ -341,24 +341,24 @@ public class ObjectVersionTest extends TestBase {
                     new CompleteMultipartUploadRequest(bucketName, destKey, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult =
                     ossClient.completeMultipartUpload(completeMultipartUploadRequest);
-            Assert.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
-            Assert.assertEquals(destKey, completeMultipartUploadResult.getKey());
-            Assert.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
-            Assert.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
-            Assert.assertNotNull(completeMultipartUploadResult.getVersionId());
-            Assert.assertEquals(64, completeMultipartUploadResult.getVersionId().length());
+            Assertions.assertEquals(bucketName, completeMultipartUploadResult.getBucketName());
+            Assertions.assertEquals(destKey, completeMultipartUploadResult.getKey());
+            Assertions.assertEquals(calcMultipartsETag(partETags), completeMultipartUploadResult.getETag());
+            Assertions.assertEquals(completeMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertNotNull(completeMultipartUploadResult.getVersionId());
+            Assertions.assertEquals(64, completeMultipartUploadResult.getVersionId().length());
 
             // Get uploaded object
             OSSObject ossObject = ossClient.getObject(bucketName, destKey);
-            Assert.assertEquals(partSize, ossObject.getObjectMetadata().getContentLength());
-            Assert.assertEquals(calcMultipartsETag(partETags), ossObject.getObjectMetadata().getETag());
-            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
-            Assert.assertEquals(completeMultipartUploadResult.getVersionId(),
+            Assertions.assertEquals(partSize, ossObject.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(calcMultipartsETag(partETags), ossObject.getObjectMetadata().getETag());
+            Assertions.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(completeMultipartUploadResult.getVersionId(),
                     ossObject.getObjectMetadata().getVersionId());
             ossObject.close();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -373,41 +373,41 @@ public class ObjectVersionTest extends TestBase {
             InputStream instream = genFixedLengthInputStream(inputStreamLength1);
             ObjectMetadata metadata = new ObjectMetadata();
             PutObjectResult putResult = ossClient.putObject(bucketName, key, instream, metadata);
-            Assert.assertNotNull(putResult.getVersionId());
-            Assert.assertEquals(64, putResult.getVersionId().length());
+            Assertions.assertNotNull(putResult.getVersionId());
+            Assertions.assertEquals(64, putResult.getVersionId().length());
             String versionId1 = putResult.getVersionId();
 
             // Put object version2
             instream = genFixedLengthInputStream(inputStreamLength2);
             putResult = ossClient.putObject(bucketName, key, instream);
-            Assert.assertNotNull(putResult.getVersionId());
-            Assert.assertEquals(64, putResult.getVersionId().length());
+            Assertions.assertNotNull(putResult.getVersionId());
+            Assertions.assertEquals(64, putResult.getVersionId().length());
             String versionId2 = putResult.getVersionId();
 
             // Test getObjectMetadata
             GenericRequest getObjectMetadataRequest = new GenericRequest(bucketName, key, versionId1);
             ObjectMetadata objectMetadata = ossClient.getObjectMetadata(getObjectMetadataRequest);
-            Assert.assertNotNull(objectMetadata.getVersionId());
-            Assert.assertEquals(64, objectMetadata.getVersionId().length());
-            Assert.assertEquals(objectMetadata.getContentLength(), inputStreamLength1);
+            Assertions.assertNotNull(objectMetadata.getVersionId());
+            Assertions.assertEquals(64, objectMetadata.getVersionId().length());
+            Assertions.assertEquals(objectMetadata.getContentLength(), inputStreamLength1);
 
             // Test headObject
             HeadObjectRequest HeadObjectRequest = new HeadObjectRequest(bucketName, key, versionId1);
             objectMetadata = ossClient.headObject(HeadObjectRequest);
-            Assert.assertNotNull(objectMetadata.getVersionId());
-            Assert.assertEquals(64, objectMetadata.getVersionId().length());
-            Assert.assertEquals(objectMetadata.getContentLength(), inputStreamLength1);
+            Assertions.assertNotNull(objectMetadata.getVersionId());
+            Assertions.assertEquals(64, objectMetadata.getVersionId().length());
+            Assertions.assertEquals(objectMetadata.getContentLength(), inputStreamLength1);
 
             // Test getSimplifiedObjectMeta
             GenericRequest getSimplifiedObjectMetaRequest =
                     new GenericRequest(bucketName, key, versionId1);
             SimplifiedObjectMeta simplifiedObjectMeta =
                     ossClient.getSimplifiedObjectMeta(getSimplifiedObjectMetaRequest);
-            Assert.assertNotNull(simplifiedObjectMeta.getVersionId());
-            Assert.assertEquals(64, simplifiedObjectMeta.getVersionId().length());
-            Assert.assertEquals(simplifiedObjectMeta.getVersionId(), versionId1);
+            Assertions.assertNotNull(simplifiedObjectMeta.getVersionId());
+            Assertions.assertEquals(64, simplifiedObjectMeta.getVersionId().length());
+            Assertions.assertEquals(simplifiedObjectMeta.getVersionId(), versionId1);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -421,12 +421,12 @@ public class ObjectVersionTest extends TestBase {
             ObjectMetadata metadata = new ObjectMetadata();
 
             PutObjectResult putResult = ossClient.putObject(bucketName, key, instream, metadata);
-            Assert.assertNotNull(putResult.getVersionId());
+            Assertions.assertNotNull(putResult.getVersionId());
             String versionId1 = putResult.getVersionId();
 
             instream = genFixedLengthInputStream(inputStreamLength);
             putResult = ossClient.putObject(bucketName, key, instream, metadata);
-            Assert.assertNotNull(putResult.getVersionId());
+            Assertions.assertNotNull(putResult.getVersionId());
             String versionId2 = putResult.getVersionId();
 
             // Set version1 'PublicRead'
@@ -442,11 +442,11 @@ public class ObjectVersionTest extends TestBase {
             // Check acl of object version1
             GenericRequest genericRequest = new GenericRequest(bucketName, key, versionId1);
             ObjectAcl objectAcl = ossClient.getObjectAcl(genericRequest);
-            Assert.assertEquals(ObjectPermission.PublicRead, objectAcl.getPermission());
-            Assert.assertNotNull(objectAcl.getVersionId());
-            Assert.assertEquals(64, objectAcl.getVersionId().length());
+            Assertions.assertEquals(ObjectPermission.PublicRead, objectAcl.getPermission());
+            Assertions.assertNotNull(objectAcl.getVersionId());
+            Assertions.assertEquals(64, objectAcl.getVersionId().length());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -462,17 +462,17 @@ public class ObjectVersionTest extends TestBase {
             metadata.setHeader("x-oss-storage-class", "Archive");
 
             PutObjectResult putResult = ossClient.putObject(bucketName, key, instream, metadata);
-            Assert.assertNotNull(putResult.getVersionId());
-            Assert.assertEquals(64, putResult.getVersionId().length());
+            Assertions.assertNotNull(putResult.getVersionId());
+            Assertions.assertEquals(64, putResult.getVersionId().length());
 
             // restore
             GenericRequest genericRequest = new GenericRequest(bucketName, key, putResult.getVersionId());
             RestoreObjectResult restoreObjectResult = ossClient.restoreObject(genericRequest);
-            Assert.assertEquals(202, restoreObjectResult.getStatusCode());
-            Assert.assertNotNull(restoreObjectResult.getVersionId());
-            Assert.assertEquals(64, restoreObjectResult.getVersionId().length());
+            Assertions.assertEquals(202, restoreObjectResult.getStatusCode());
+            Assertions.assertNotNull(restoreObjectResult.getVersionId());
+            Assertions.assertEquals(64, restoreObjectResult.getVersionId().length());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -495,15 +495,15 @@ public class ObjectVersionTest extends TestBase {
 
             GenericRequest genericRequest = new GenericRequest(bucketName, key, versionId);
             TagSet tagSet = ossClient.getObjectTagging(genericRequest);
-            Assert.assertEquals(tagSet.getAllTags().size(), 2);
+            Assertions.assertEquals(tagSet.getAllTags().size(), 2);
 
             ossClient.deleteObjectTagging(genericRequest);
 
             tagSet = ossClient.getObjectTagging(genericRequest);
-            Assert.assertEquals(tagSet.getAllTags().size(), 0);
+            Assertions.assertEquals(tagSet.getAllTags().size(), 0);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -538,7 +538,7 @@ public class ObjectVersionTest extends TestBase {
             downFile.delete();
 
             // Check download object version1 
-            Assert.assertEquals(length1, inputStreamLength1);
+            Assertions.assertEquals(length1, inputStreamLength1);
 
             // Download object verison2
             downloadFileRequest = new DownloadFileRequest(bucketName, key);
@@ -551,10 +551,10 @@ public class ObjectVersionTest extends TestBase {
             downFile.delete();
 
             // Check download object version2
-            Assert.assertEquals(length2, inputStreamLength2);
+            Assertions.assertEquals(length2, inputStreamLength2);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 

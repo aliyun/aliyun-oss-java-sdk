@@ -27,7 +27,7 @@ import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.OSSClient;
@@ -119,10 +119,10 @@ public class ObjectRequestPaymentVersionTest extends TestBase {
         try {
             DeleteVersionRequest deleteVersionRequest = new DeleteVersionRequest(bucketName,key, version1);
             ossPayerClient.deleteVersion(deleteVersionRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
          // Delete version with payer setting, should be successful.
@@ -130,7 +130,7 @@ public class ObjectRequestPaymentVersionTest extends TestBase {
             GenericRequest genericRequest = new GenericRequest(bucketName, key);
             genericRequest.setVersionId(version1);
             boolean isExist = ossClient.doesObjectExist(genericRequest);
-            Assert.assertEquals(isExist, true);
+            Assertions.assertEquals(isExist, true);
 
             Payer payer = Payer.Requester;
             DeleteVersionRequest deleteVersionRequest = new DeleteVersionRequest(bucketName,key, version1);
@@ -142,12 +142,12 @@ public class ObjectRequestPaymentVersionTest extends TestBase {
                 genericRequest = new GenericRequest(bucketName, key); 
                 genericRequest.setVersionId(version1);
                 ossPayerClient.doesObjectExist(genericRequest);
-                Assert.fail("no such version , should not be successful");
+                Assertions.fail("no such version , should not be successful");
             } catch(OSSException e) {
-                Assert.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, e.getErrorCode());
+                Assertions.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, e.getErrorCode());
             }
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteVersion(bucketName, key, version2);
         }
@@ -177,10 +177,10 @@ public class ObjectRequestPaymentVersionTest extends TestBase {
             DeleteVersionsRequest delVersionsRequest = new DeleteVersionsRequest(bucketName);
             delVersionsRequest.setKeys(keyVersionsList);
             ossPayerClient.deleteVersions(delVersionsRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
          // Delete versons with payer setting, should be successful.
@@ -190,9 +190,9 @@ public class ObjectRequestPaymentVersionTest extends TestBase {
             delVersionsRequest.setKeys(keyVersionsList);
             delVersionsRequest.setRequestPayer(payer);
             DeleteVersionsResult delVersionsResult = ossPayerClient.deleteVersions(delVersionsRequest);
-            Assert.assertEquals(delVersionsResult.getDeletedVersions().size(), 2);
+            Assertions.assertEquals(delVersionsResult.getDeletedVersions().size(), 2);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -215,22 +215,22 @@ public class ObjectRequestPaymentVersionTest extends TestBase {
         GenericRequest genericRequest = new GenericRequest(bucketName, key);
         genericRequest.setVersionId(version1);
         boolean isExist = ossClient.doesObjectExist(genericRequest);
-        Assert.assertEquals(isExist, true);
+        Assertions.assertEquals(isExist, true);
 
         // Check verison2 exist
         genericRequest = new GenericRequest(bucketName, key);
         genericRequest.setVersionId(version2);
         isExist = ossClient.doesObjectExist(genericRequest);
-        Assert.assertEquals(isExist, true);
+        Assertions.assertEquals(isExist, true);
 
         // List versions without payer setting, should be failed.
         try {
             ListVersionsRequest listVersionsRequest = new ListVersionsRequest().withBucketName(bucketName);
             ossPayerClient.listVersions(listVersionsRequest);
-            Assert.fail("no RequestPayer, should not be successful");
+            Assertions.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(ACCESS_DENIED_MSG_REQUESTER_PAY_BUCKET));
         }
 
          // List versons with payer setting, should be successful.
@@ -239,9 +239,9 @@ public class ObjectRequestPaymentVersionTest extends TestBase {
             ListVersionsRequest listVersionsRequest = new ListVersionsRequest().withBucketName(bucketName);
             listVersionsRequest.setRequestPayer(payer);
             VersionListing versionListing = ossPayerClient.listVersions(listVersionsRequest);
-            Assert.assertEquals(versionListing.getVersionSummaries().size(), 2);
+            Assertions.assertEquals(versionListing.getVersionSummaries().size(), 2);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             List<KeyVersion> keyVersionsList = new ArrayList<KeyVersion>();
             keyVersionsList.add(new KeyVersion(key, version1));

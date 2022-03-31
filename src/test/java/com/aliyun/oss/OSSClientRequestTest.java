@@ -19,9 +19,7 @@
 
 package com.aliyun.oss;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -36,10 +34,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.DefaultCredentials;
@@ -157,11 +151,11 @@ public class OSSClientRequestTest {
             endpoint = new URI("http://localhost/");
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            fail();
+            Assertions.fail();
         }
     }
     
-    @Before
+    @BeforeEach
     public void setUp() {
         bucketOp.setEndpoint(endpoint);
         objectOp.setEndpoint(endpoint);
@@ -293,7 +287,7 @@ public class OSSClientRequestTest {
         try {
             contentBuffer = content.getBytes(OSSConstants.DEFAULT_CHARSET_NAME);
         } catch (UnsupportedEncodingException e) {
-            fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
         final ByteArrayInputStream input =  new ByteArrayInputStream(contentBuffer);
 
@@ -477,7 +471,7 @@ public class OSSClientRequestTest {
             request.setRange(100, -1);
             expectedHeaders.put(RANGE_HEADER, "bytes=100-");
             executeTest(test, HttpMethod.GET, bucketName + "." + endpoint.getHost(), objectKey, expectedHeaders);
-            fail("Get object should not be successful.");
+            Assertions.fail("Get object should not be successful.");
         } catch (IllegalArgumentException e) {
             // success
         }
@@ -486,14 +480,14 @@ public class OSSClientRequestTest {
             request.setRange(-1, 100);
             expectedHeaders.put(RANGE_HEADER, "bytes=-100");
             executeTest(test, HttpMethod.GET, bucketName + "." + endpoint.getHost(), objectKey, expectedHeaders);
-            fail("Get object should not be successful.");
+            Assertions.fail("Get object should not be successful.");
         } catch (IllegalArgumentException e) {
             // success
         }
 
         try {
             request.setRange(-1, -1);
-            fail("Expected exception is not thrown.");
+            Assertions.fail("Expected exception is not thrown.");
         } catch (IllegalArgumentException e) {
             // success
         } */
@@ -645,14 +639,14 @@ public class OSSClientRequestTest {
         try {
             url = ossClient.generatePresignedUrl(bucketName, objectKey, expiration);
         } catch (ClientException e) {
-            fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         String expectedUrlPrefix =  endpoint.getScheme() + "://" + endpoint.getHost() + "/" + bucketName + "/" + objectKey
                 + "?Expires=" + Long.toString(expiration.getTime() / 1000) + "&OSSAccessKeyId=" + accessId
                 + "&Signature=";
         
-        Assert.assertTrue(url.toString().startsWith(expectedUrlPrefix));
+        Assertions.assertTrue(url.toString().startsWith(expectedUrlPrefix));
 
         // Override response header
         ResponseHeaderOverrides responseHeaders = new ResponseHeaderOverrides();
@@ -672,9 +666,9 @@ public class OSSClientRequestTest {
                 + "&Signature=";
         try {
             url = ossClient.generatePresignedUrl(request);
-            Assert.assertTrue(url.toString().startsWith(expectedUrlPrefix));
+            Assertions.assertTrue(url.toString().startsWith(expectedUrlPrefix));
         } catch (ClientException e) {
-            fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -709,25 +703,25 @@ public class OSSClientRequestTest {
         try {
             test.run();
         } catch (Exception e){
-            assertTrue(e.getMessage(), e instanceof RequestReceivedException);
+            Assertions.assertTrue(e instanceof RequestReceivedException, e.getMessage());
             ServiceClient.Request request = ((RequestReceivedException)e).getRequest();
-            assertEquals(expectedMethod, request.getMethod());
-            assertEquals(endpoint.getScheme() + "://" + expectedHost + "/" + expectedPath, request.getUri());
+            Assertions.assertEquals(expectedMethod, request.getMethod());
+            Assertions.assertEquals(endpoint.getScheme() + "://" + expectedHost + "/" + expectedPath, request.getUri());
             if (expectedHeaders != null) {
                 for(Entry<String, String> header : expectedHeaders.entrySet()) {
-                    assertEquals(header.getValue(), request.getHeaders().get(header.getKey()));
+                    Assertions.assertEquals(header.getValue(), request.getHeaders().get(header.getKey()));
                 }
             }
             if (expectedContent != null){
                 try {
-                    assertEquals(expectedContent,
+                    Assertions.assertEquals(expectedContent,
                             IOUtils.readStreamAsString(request.getContent(), "utf-8"));
                 } catch (IOException e1) {
-                    fail(e1.getMessage());
+                    Assertions.fail(e1.getMessage());
                 }
             }
             if (contentLength >= 0){
-                assertEquals(contentLength, request.getContentLength());
+                Assertions.assertEquals(contentLength, request.getContentLength());
             }
         }
     }

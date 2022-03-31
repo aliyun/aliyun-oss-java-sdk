@@ -24,7 +24,7 @@ import com.aliyun.oss.common.auth.ProfileConfigFile;
 import com.aliyun.oss.common.auth.ProfileConfigLoader;
 import com.aliyun.oss.common.auth.ProfileCredentialsProvider;
 import com.aliyun.oss.common.utils.AuthUtils;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 import java.io.File;
@@ -47,15 +47,15 @@ public class ProfileCredentialsProviderTest extends TestBase {
 
             Credentials credentials = provider.getCredentials();
 
-            Assert.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
-            Assert.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
-            Assert.assertNull(credentials.getSecurityToken());
-            Assert.assertFalse(credentials.useSecurityToken());
+            Assertions.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
+            Assertions.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
+            Assertions.assertNull(credentials.getSecurityToken());
+            Assertions.assertFalse(credentials.useSecurityToken());
 
             new File(AuthUtils.DEFAULT_PROFILE_PATH).delete();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         // construct provider with ProfileConfigFile object.
@@ -73,15 +73,15 @@ public class ProfileCredentialsProviderTest extends TestBase {
             ProfileCredentialsProvider provider = new ProfileCredentialsProvider(configFile, null);
 
             Credentials credentials = provider.getCredentials();
-            Assert.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
-            Assert.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
-            Assert.assertNull(credentials.getSecurityToken());
-            Assert.assertFalse(credentials.useSecurityToken());
+            Assertions.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
+            Assertions.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
+            Assertions.assertNull(credentials.getSecurityToken());
+            Assertions.assertFalse(credentials.useSecurityToken());
 
             new File(AuthUtils.DEFAULT_PROFILE_PATH).delete();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         // construct provider with ProfileConfigFile and profile name.
@@ -99,15 +99,15 @@ public class ProfileCredentialsProviderTest extends TestBase {
             ProfileCredentialsProvider provider = new ProfileCredentialsProvider(configFile, "test-name");
 
             Credentials credentials = provider.getCredentials();
-            Assert.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
-            Assert.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
-            Assert.assertNull(credentials.getSecurityToken());
-            Assert.assertFalse(credentials.useSecurityToken());
+            Assertions.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
+            Assertions.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
+            Assertions.assertNull(credentials.getSecurityToken());
+            Assertions.assertFalse(credentials.useSecurityToken());
 
             new File(AuthUtils.DEFAULT_PROFILE_PATH).delete();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
     }
@@ -128,16 +128,16 @@ public class ProfileCredentialsProviderTest extends TestBase {
             ProfileCredentialsProvider provider = new ProfileCredentialsProvider(configFile, "test-name");
 
             Credentials credentials = provider.getCredentials();
-            Assert.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
-            Assert.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
-            Assert.assertNull(credentials.getSecurityToken());
-            Assert.assertFalse(credentials.useSecurityToken());
+            Assertions.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
+            Assertions.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
+            Assertions.assertNull(credentials.getSecurityToken());
+            Assertions.assertFalse(credentials.useSecurityToken());
 
 
             provider.refresh();
             credentials = provider.getCredentials();
-            Assert.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
-            Assert.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
+            Assertions.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
+            Assertions.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
 
             // age > force-interval
             Thread.sleep(1200);
@@ -151,12 +151,12 @@ public class ProfileCredentialsProviderTest extends TestBase {
                 provider.setRefreshForceIntervalMillis(1000);
 
                 credentials = provider.getCredentials();
-                Assert.assertEquals("new_key_id_1", credentials.getAccessKeyId());
-                Assert.assertEquals("new_secret_key_1", credentials.getSecretAccessKey());
+                Assertions.assertEquals("new_key_id_1", credentials.getAccessKeyId());
+                Assertions.assertEquals("new_secret_key_1", credentials.getSecretAccessKey());
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             }
 
             // age > interval && age < force-interval
@@ -174,17 +174,17 @@ public class ProfileCredentialsProviderTest extends TestBase {
                 Thread.sleep(2200);
 
                 credentials = provider.getCredentials();
-                Assert.assertEquals("new_key_id_2", credentials.getAccessKeyId());
-                Assert.assertEquals("new_secret_key_2", credentials.getSecretAccessKey());
+                Assertions.assertEquals("new_key_id_2", credentials.getAccessKeyId());
+                Assertions.assertEquals("new_secret_key_2", credentials.getSecretAccessKey());
             } catch (Exception e) {
                 e.printStackTrace();
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             }
 
             new File(AuthUtils.DEFAULT_PROFILE_PATH).delete();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
     }

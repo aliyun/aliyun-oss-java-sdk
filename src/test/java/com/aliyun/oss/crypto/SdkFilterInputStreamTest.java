@@ -27,7 +27,7 @@ import java.util.Arrays;
 import org.junit.Test;
 import com.aliyun.oss.ClientErrorCode;
 import com.aliyun.oss.ClientException;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 public class SdkFilterInputStreamTest {
     @Test
@@ -49,10 +49,10 @@ public class SdkFilterInputStreamTest {
                         }
                     }
                     // During the inputStream reading, this thread would not responds the interrupt request.
-                    Assert.assertEquals(1000, i);
+                    Assertions.assertEquals(1000, i);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Assert.fail(e.getMessage());
+                    Assertions.fail(e.getMessage());
                 }
             }
         }, "thread1");
@@ -70,14 +70,14 @@ public class SdkFilterInputStreamTest {
                         while (in.read() != -1) {
                         }
                     }
-                    Assert.fail("This thread should be abort during read inputStream...");
+                    Assertions.fail("This thread should be abort during read inputStream...");
                 } catch (Exception e) {
                     if (e instanceof ClientException) {
                         // Expected excption
-                        Assert.assertEquals(((ClientException)e).getErrorCode(), ClientErrorCode.INPUTSTREAM_READING_ABORTED);
+                        Assertions.assertEquals(((ClientException)e).getErrorCode(), ClientErrorCode.INPUTSTREAM_READING_ABORTED);
                     } else {
                         e.printStackTrace();
-                        Assert.fail(e.getMessage());
+                        Assertions.fail(e.getMessage());
                     }
                 }
             }
@@ -94,16 +94,16 @@ public class SdkFilterInputStreamTest {
         String content = "012345678901234567890123456789012345678901234567890123456789";
         try {
             SdkFilterInputStream in = new SdkFilterInputStream(new ByteArrayInputStream(content.getBytes()));
-            Assert.assertEquals(in.available(), content.length());
-            Assert.assertEquals(in.isAborted(), false);
+            Assertions.assertEquals(in.available(), content.length());
+            Assertions.assertEquals(in.isAborted(), false);
             in.skip(1);
             int ret = in.read();
-            Assert.assertEquals(ret, content.charAt(1));
+            Assertions.assertEquals(ret, content.charAt(1));
             String str = readInputStream(in);
-            Assert.assertEquals(content.substring(2), str);
+            Assertions.assertEquals(content.substring(2), str);
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -113,8 +113,8 @@ public class SdkFilterInputStreamTest {
                 + "isfdfsklfjkslvmdklu0wrwurjjdnksh098j62kfgjsdfbsj4427gc1sfbjsfsj123y214y2hujnhdfyq";
         try {
             SdkFilterInputStream in = new SdkFilterInputStream(new ByteArrayInputStream(content.getBytes()));
-            Assert.assertEquals(in.getDelegateStream().markSupported(), true);
-            Assert.assertEquals(in.markSupported(), true);
+            Assertions.assertEquals(in.getDelegateStream().markSupported(), true);
+            Assertions.assertEquals(in.markSupported(), true);
 
             in.mark(100);
             byte[] buffer = new byte[50];
@@ -123,12 +123,12 @@ public class SdkFilterInputStreamTest {
             in.reset();
             byte[] buffer2 = new byte[50];
             int len2 = in.read(buffer2, 0, 40);
-            Assert.assertEquals(len, len2);
-            Assert.assertTrue(Arrays.equals(buffer, buffer2));
+            Assertions.assertEquals(len, len2);
+            Assertions.assertTrue(Arrays.equals(buffer, buffer2));
             in.release();
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 

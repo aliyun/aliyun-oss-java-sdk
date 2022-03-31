@@ -44,7 +44,7 @@ import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.UploadFileRequest;
 import com.aliyun.oss.model.UploadPartRequest;
 import com.aliyun.oss.model.UploadPartResult;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 public class TrafficLimitTest extends TestBase {
     final static int OBJECT_SIZE_1MB = 1024*1024;
@@ -75,12 +75,12 @@ public class TrafficLimitTest extends TestBase {
 
             // Compare to minimum theoretical time
             if (expenseTimeSec.compareTo(theoreticalExpenseMin) < 0) {
-                Assert.fail("calc traffic expensive time is error.");
+                Assertions.fail("calc traffic expensive time is error.");
             }
 
             ossClient.deleteObject(bucketName, key); 
         } catch (Exception e){
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -104,7 +104,7 @@ public class TrafficLimitTest extends TestBase {
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             getObjectRequest.setTrafficLimit(LIMIT_100KB);
             ObjectMetadata meta = ossClient.getObject(getObjectRequest, file);
-            Assert.assertEquals(meta.getContentLength(), OBJECT_SIZE_1MB);
+            Assertions.assertEquals(meta.getContentLength(), OBJECT_SIZE_1MB);
             endTimeSec = new Date().getTime()/1000;
 
             // Calculate expensed time
@@ -116,12 +116,12 @@ public class TrafficLimitTest extends TestBase {
 
             // Compare to minimum theoretical time
             if (expenseTimeSec.compareTo(theoreticalExpenseMin) < 0) {
-                Assert.fail("calc traffic expensive time is error.");
+                Assertions.fail("calc traffic expensive time is error.");
             }
 
             ossClient.deleteObject(bucketName, key);
         } catch (Exception e){
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             file.deleteOnExit();
         }
@@ -153,12 +153,12 @@ public class TrafficLimitTest extends TestBase {
 
             // Compare to minimum theoretical time
             if (expenseTimeSec.compareTo(theoreticalExpenseMin) < 0) {
-                Assert.fail("calc traffic expensive time is error.");
+                Assertions.fail("calc traffic expensive time is error.");
             }
 
             ossClient.deleteObject(bucketName, key);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -189,12 +189,12 @@ public class TrafficLimitTest extends TestBase {
 
             // Compare to minimum theoretical time
             if (expenseTimeSec.compareTo(theoreticalExpenseMin) < 0) {
-                Assert.fail("calc traffic expensive time is error.");
+                Assertions.fail("calc traffic expensive time is error.");
             }
 
             ossClient.deleteObject(bucketName, key);
         } catch(Exception e){
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -229,12 +229,12 @@ public class TrafficLimitTest extends TestBase {
 
             // Compare to minimum theoretical time
             if (expenseTimeSec.compareTo(theoreticalExpenseMin) < 0) {
-                Assert.fail("calc traffic expensive time is error.");
+                Assertions.fail("calc traffic expensive time is error.");
             }
 
             ossClient.deleteObject(bucketName, key);
         } catch(Exception e){
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             File downFile = new File(downFileName);
             downFile.deleteOnExit(); 
@@ -294,7 +294,7 @@ public class TrafficLimitTest extends TestBase {
 
                 // Compare to minimum theoretical time
                 if (expenseTimeSec.compareTo(theoreticalExpenseMin) < 0) {
-                    Assert.fail("calc traffic expensive time is error.");
+                    Assertions.fail("calc traffic expensive time is error.");
                 }
 
                 partETags.add(uploadPartResult.getPartETag());
@@ -306,7 +306,7 @@ public class TrafficLimitTest extends TestBase {
 
             ossClient.deleteObject(bucketName, key);
         } catch(Exception e){
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -335,7 +335,7 @@ public class TrafficLimitTest extends TestBase {
 
             GenericRequest getObjectMetadataRequest = new GenericRequest(bucketName, key);
             ObjectMetadata objectMetadata = ossClient.getObjectMetadata(getObjectMetadataRequest);
-            Assert.assertEquals(objectMetadata.getContentLength(), inputStreamLength);
+            Assertions.assertEquals(objectMetadata.getContentLength(), inputStreamLength);
 
             // Calculate expensed time
             expenseTimeSec = new BigDecimal(endTimeSec - startTimeSec);
@@ -346,12 +346,12 @@ public class TrafficLimitTest extends TestBase {
 
             // Compare to minimum theoretical time
             if (expenseTimeSec.compareTo(theoreticalExpenseMin) < 0) {
-                Assert.fail("calc traffic expensive time is error.");
+                Assertions.fail("calc traffic expensive time is error.");
             }
 
             ossClient.deleteObject(bucketName, key); 
         } catch (Exception e){
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -393,12 +393,12 @@ public class TrafficLimitTest extends TestBase {
 
             // Compare to minimum theoretical time
             if (expenseTimeSec.compareTo(theoreticalExpenseMin) < 0) {
-                Assert.fail("calc traffic expensive time is error.");
+                Assertions.fail("calc traffic expensive time is error.");
             }
 
             ossClient.deleteObject(bucketName, key); 
         } catch (Exception e){
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             file.deleteOnExit();
         }

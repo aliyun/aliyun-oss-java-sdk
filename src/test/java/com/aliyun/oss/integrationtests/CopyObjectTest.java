@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -76,14 +76,14 @@ public class CopyObjectTest extends TestBase {
                     targetBucket, targetKey);
             String sourceETag = putObjectResult.getETag();
             String targetETag = copyObjectResult.getETag();
-            Assert.assertEquals(sourceETag, targetETag);
-            Assert.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(sourceETag, targetETag);
+            Assertions.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
             
             OSSObject ossObject = ossClient.getObject(targetBucket, targetKey);
             ObjectMetadata newObjectMetadata = ossObject.getObjectMetadata();
-            Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, newObjectMetadata.getContentType());
-            Assert.assertEquals(userMetaValue0, newObjectMetadata.getUserMetadata().get(userMetaKey0));
-            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, newObjectMetadata.getContentType());
+            Assertions.assertEquals(userMetaValue0, newObjectMetadata.getUserMetadata().get(userMetaKey0));
+            Assertions.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
             
             // Set source object same as target object and replace source bucket orignal metadata.
             final String sourceBucketAsTarget = sourceBucket;
@@ -96,17 +96,17 @@ public class CopyObjectTest extends TestBase {
                     sourceBucketAsTarget, sourceKeyAsTarget);
             copyObjectRequest.setNewObjectMetadata(newObjectMetadata);
             copyObjectResult = ossClient.copyObject(copyObjectRequest);
-            Assert.assertEquals(sourceETag, copyObjectResult.getETag());
+            Assertions.assertEquals(sourceETag, copyObjectResult.getETag());
             
             ossObject = ossClient.getObject(sourceBucketAsTarget, sourceKeyAsTarget);
             newObjectMetadata = ossObject.getObjectMetadata();
-            Assert.assertEquals(contentType, newObjectMetadata.getContentType());
-            Assert.assertEquals(userMetaValue1, newObjectMetadata.getUserMetadata().get(userMetaKey1));
-            Assert.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
-            Assert.assertEquals(copyObjectResult.getRequestId().length(), REQUEST_ID_LEN);
-            Assert.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(contentType, newObjectMetadata.getContentType());
+            Assertions.assertEquals(userMetaValue1, newObjectMetadata.getUserMetadata().get(userMetaKey1));
+            Assertions.assertEquals(putObjectResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(copyObjectResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(ossObject.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             waitForCacheExpiration(5);
             deleteBucketWithObjects(ossClient, sourceBucket);
@@ -132,39 +132,39 @@ public class CopyObjectTest extends TestBase {
             // Try to copy object under non-existent source bucket
             try {
                 ossClient.copyObject(nonexistentSourceBucket, nonexistentSourceKey, existingTargetBucket, targetKey);
-                Assert.fail("Copy object should not be successful");
+                Assertions.fail("Copy object should not be successful");
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+                Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+                Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
             }
             
             // Try to copy non-existent object under existing bucket
             try {
                 ossClient.copyObject(existingSourceBucket, nonexistentSourceKey, existingTargetBucket, targetKey);
-                Assert.fail("Copy object should not be successful");                
+                Assertions.fail("Copy object should not be successful");                
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_KEY_ERR));
+                Assertions.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
+                Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_KEY_ERR));
             }
     
             try {
                 byte[] content = { 'A', 'l', 'i', 'y', 'u', 'n' };
                 ossClient.putObject(existingSourceBucket, existingSourceKey, new ByteArrayInputStream(content), null);
             } catch (Exception e) {
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             }
             
             // Try to copy existing object to non-existent target bucket
             try {
                 ossClient.copyObject(existingSourceBucket, existingSourceKey, nonexistentTargetBucket, targetKey);
-                Assert.fail("Copy object should not be successful");
+                Assertions.fail("Copy object should not be successful");
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+                Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+                Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
             }
             
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             deleteBucketWithObjects(ossClient, existingSourceBucket);
             deleteBucketWithObjects(ossClient, existingTargetBucket);
@@ -202,12 +202,12 @@ public class CopyObjectTest extends TestBase {
                     targetBucket, targetKey);
             String sourceETag = putObjectResult.getETag();
             String targetETag = copyObjectResult.getETag();
-            Assert.assertEquals(sourceETag, targetETag);
+            Assertions.assertEquals(sourceETag, targetETag);
             
             OSSObject ossObject = ossClient.getObject(targetBucket, targetKey);
             ObjectMetadata newObjectMetadata = ossObject.getObjectMetadata();
-            Assert.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, newObjectMetadata.getContentType());
-            Assert.assertEquals(userMetaValue0, newObjectMetadata.getUserMetadata().get(userMetaKey0));
+            Assertions.assertEquals(DEFAULT_OBJECT_CONTENT_TYPE, newObjectMetadata.getContentType());
+            Assertions.assertEquals(userMetaValue0, newObjectMetadata.getUserMetadata().get(userMetaKey0));
             
             // Set source object same as target object and replace source bucket orignal metadata.
             final String sourceBucketAsTarget = sourceBucket;
@@ -220,14 +220,14 @@ public class CopyObjectTest extends TestBase {
                     sourceBucketAsTarget, sourceKeyAsTarget);
             copyObjectRequest.setNewObjectMetadata(newObjectMetadata);
             copyObjectResult = ossClient.copyObject(copyObjectRequest);
-            Assert.assertEquals(sourceETag, copyObjectResult.getETag());
+            Assertions.assertEquals(sourceETag, copyObjectResult.getETag());
             
             ossObject = ossClient.getObject(sourceBucketAsTarget, sourceKeyAsTarget);
             newObjectMetadata = ossObject.getObjectMetadata();
-            Assert.assertEquals(contentType, newObjectMetadata.getContentType());
-            Assert.assertEquals(userMetaValue1, newObjectMetadata.getUserMetadata().get(userMetaKey1));
+            Assertions.assertEquals(contentType, newObjectMetadata.getContentType());
+            Assertions.assertEquals(userMetaValue1, newObjectMetadata.getUserMetadata().get(userMetaKey1));
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             deleteBucketWithObjects(ossClient, sourceBucket);
             deleteBucketWithObjects(ossClient, targetBucket);
@@ -250,13 +250,13 @@ public class CopyObjectTest extends TestBase {
                 CopyObjectRequest request = new CopyObjectRequest(sourceBucket, sourceKey, targetBucket, targetKey);
                 request.setServerSideEncryption(invalidEncryptionAlgo);
                 ossClient.copyObject(request);
-                Assert.fail("Copy object should not be successful");
+                Assertions.fail("Copy object should not be successful");
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.INVALID_ENCRYPTION_ALGORITHM_ERROR, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(INVALID_ENCRYPTION_ALGO_ERR));
+                Assertions.assertEquals(OSSErrorCode.INVALID_ENCRYPTION_ALGORITHM_ERROR, e.getErrorCode());
+                Assertions.assertTrue(e.getMessage().startsWith(INVALID_ENCRYPTION_ALGO_ERR));
             }
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             deleteBucketWithObjects(ossClient, sourceBucket);
             deleteBucketWithObjects(ossClient, targetBucket);
@@ -283,7 +283,7 @@ public class CopyObjectTest extends TestBase {
                         TestUtils.genFixedLengthInputStream(1024), null);
                 eTag = result.getETag();
             } catch (Exception e) {
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             }
             
             // Matching ETag Constraints
@@ -294,9 +294,9 @@ public class CopyObjectTest extends TestBase {
             CopyObjectResult result = null;
             try {
                 result = ossClient.copyObject(request);
-                Assert.assertEquals(eTag, result.getETag());
+                Assertions.assertEquals(eTag, result.getETag());
             } catch (Exception e) {
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             } finally {
                 request.clearMatchingETagConstraints();
             }
@@ -306,10 +306,10 @@ public class CopyObjectTest extends TestBase {
             request.setMatchingETagConstraints(matchingETagConstraints);
             try {
                 result = ossClient.copyObject(request);
-                Assert.fail("Copy object should not be successful.");
+                Assertions.fail("Copy object should not be successful.");
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.PRECONDITION_FAILED, e.getErrorCode());
-                //Assert.assertTrue(e.getMessage().startsWith(PRECONDITION_FAILED_ERR));
+                Assertions.assertEquals(OSSErrorCode.PRECONDITION_FAILED, e.getErrorCode());
+                //Assertions.assertTrue(e.getMessage().startsWith(PRECONDITION_FAILED_ERR));
             } finally {
                 request.clearMatchingETagConstraints();
             }
@@ -320,9 +320,9 @@ public class CopyObjectTest extends TestBase {
             request.setNonmatchingETagConstraints(nonmatchingETagConstraints);
             try {
                 result = ossClient.copyObject(request);
-                Assert.assertEquals(eTag, result.getETag());
+                Assertions.assertEquals(eTag, result.getETag());
             } catch (Exception e) {
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             } finally {
                 request.clearNonmatchingETagConstraints();
             }
@@ -332,10 +332,10 @@ public class CopyObjectTest extends TestBase {
             request.setNonmatchingETagConstraints(nonmatchingETagConstraints);
             try {
                 result = ossClient.copyObject(request);
-                Assert.fail("Copy object should not be successful.");
+                Assertions.fail("Copy object should not be successful.");
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.NOT_MODIFIED, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(NOT_MODIFIED_ERR));
+                Assertions.assertEquals(OSSErrorCode.NOT_MODIFIED, e.getErrorCode());
+                Assertions.assertTrue(e.getMessage().startsWith(NOT_MODIFIED_ERR));
             } finally {
                 request.clearNonmatchingETagConstraints();
             }
@@ -345,9 +345,9 @@ public class CopyObjectTest extends TestBase {
             request.setUnmodifiedSinceConstraint(unmodifiedSinceConstraint);
             try {
                 result = ossClient.copyObject(request);
-                Assert.assertEquals(eTag, result.getETag());
+                Assertions.assertEquals(eTag, result.getETag());
             } catch (OSSException e) {
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             } finally {
                 request.setUnmodifiedSinceConstraint(null);
             }
@@ -356,10 +356,10 @@ public class CopyObjectTest extends TestBase {
             request.setUnmodifiedSinceConstraint(unmodifiedSinceConstraint);
             try {
                 result = ossClient.copyObject(request);
-                Assert.fail("Copy object should not be successful.");
+                Assertions.fail("Copy object should not be successful.");
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.PRECONDITION_FAILED, e.getErrorCode());
-                //Assert.assertTrue(e.getMessage().startsWith(PRECONDITION_FAILED_ERR));
+                Assertions.assertEquals(OSSErrorCode.PRECONDITION_FAILED, e.getErrorCode());
+                //Assertions.assertTrue(e.getMessage().startsWith(PRECONDITION_FAILED_ERR));
             } finally {
                 request.setUnmodifiedSinceConstraint(null);
             }
@@ -369,9 +369,9 @@ public class CopyObjectTest extends TestBase {
             request.setModifiedSinceConstraint(modifiedSinceConstraint);
             try {
                 result = ossClient.copyObject(request);
-                Assert.assertEquals(eTag, result.getETag());
+                Assertions.assertEquals(eTag, result.getETag());
             } catch (OSSException e) {
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             } finally {
                 request.setModifiedSinceConstraint(null);
             }
@@ -380,16 +380,16 @@ public class CopyObjectTest extends TestBase {
             request.setModifiedSinceConstraint(modifiedSinceConstraint);
             try {
                 result = ossClient.copyObject(request);
-                Assert.fail("Copy object should not be successful.");
+                Assertions.fail("Copy object should not be successful.");
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.NOT_MODIFIED, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(NOT_MODIFIED_ERR));
+                Assertions.assertEquals(OSSErrorCode.NOT_MODIFIED, e.getErrorCode());
+                Assertions.assertTrue(e.getMessage().startsWith(NOT_MODIFIED_ERR));
             } finally {
                 request.setModifiedSinceConstraint(null);
             }
             
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             deleteBucketWithObjects(ossClient, sourceBucket);
             deleteBucketWithObjects(ossClient, targetBucket);

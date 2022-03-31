@@ -23,7 +23,7 @@ import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.common.auth.*;
 import com.aliyun.oss.model.OSSObject;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -75,7 +75,7 @@ public class CredentialsProviderTest extends TestBase {
 
         OSSObject obj = client.getObject(bucketName, key);
 
-        Assert.assertEquals(obj.getObjectMetadata().getContentLength(), NORMAL_METADATA.length());
+        Assertions.assertEquals(obj.getObjectMetadata().getContentLength(), NORMAL_METADATA.length());
     }
 
     @Test
@@ -100,6 +100,6 @@ public class CredentialsProviderTest extends TestBase {
 
         OSSObject obj = client.getObject(bucketName, key);
 
-        Assert.assertEquals(obj.getObjectMetadata().getContentLength(), NORMAL_METADATA.length());
+        Assertions.assertEquals(obj.getObjectMetadata().getContentLength(), NORMAL_METADATA.length());
     }
 }

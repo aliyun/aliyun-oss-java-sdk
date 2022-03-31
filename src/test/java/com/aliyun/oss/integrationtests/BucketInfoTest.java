@@ -21,7 +21,7 @@ package com.aliyun.oss.integrationtests;
 
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 
@@ -42,29 +42,29 @@ public class BucketInfoTest extends TestBase {
             ossClient.setBucketAcl(bucketName, CannedAccessControlList.PublicRead);
 
             BucketInfo info = ossClient.getBucketInfo(bucketName);
-            Assert.assertNotNull(info.getComment());
-            Assert.assertNotNull(info.getDataRedundancyType());
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
-            Assert.assertEquals(info.getBucket().getLocation(), TestConfig.OSS_TEST_REGION);
-            Assert.assertNotNull(info.getBucket().getCreationDate());
-            Assert.assertTrue(info.getBucket().getExtranetEndpoint().length() > 0);
-            Assert.assertTrue(info.getBucket().getIntranetEndpoint().length() > 0);
-            Assert.assertTrue(info.getBucket().getOwner().getId().length() > 0);
-            Assert.assertEquals(CannedAccessControlList.PublicRead, info.getCannedACL());
-            Assert.assertEquals(info.getBucket().getOwner().getDisplayName(), info.getBucket().getOwner().getId());
-            Assert.assertEquals(info.getGrants().size(), 1);
-            Assert.assertEquals(info.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertNotNull(info.getComment());
+            Assertions.assertNotNull(info.getDataRedundancyType());
+            Assertions.assertEquals(info.getBucket().getName(), bucketName);
+            Assertions.assertEquals(info.getBucket().getLocation(), TestConfig.OSS_TEST_REGION);
+            Assertions.assertNotNull(info.getBucket().getCreationDate());
+            Assertions.assertTrue(info.getBucket().getExtranetEndpoint().length() > 0);
+            Assertions.assertTrue(info.getBucket().getIntranetEndpoint().length() > 0);
+            Assertions.assertTrue(info.getBucket().getOwner().getId().length() > 0);
+            Assertions.assertEquals(CannedAccessControlList.PublicRead, info.getCannedACL());
+            Assertions.assertEquals(info.getBucket().getOwner().getDisplayName(), info.getBucket().getOwner().getId());
+            Assertions.assertEquals(info.getGrants().size(), 1);
+            Assertions.assertEquals(info.getRequestId().length(), REQUEST_ID_LEN);
             for (Grant grant : info.getGrants()) {
-                Assert.assertEquals(grant.getGrantee(), GroupGrantee.AllUsers);
-                Assert.assertEquals(grant.getPermission(), Permission.Read);
+                Assertions.assertEquals(grant.getGrantee(), GroupGrantee.AllUsers);
+                Assertions.assertEquals(grant.getPermission(), Permission.Read);
             }
 
             ossClient.setBucketAcl(bucketName, CannedAccessControlList.PublicReadWrite);
             info = ossClient.getBucketInfo(bucketName);
-            Assert.assertEquals(CannedAccessControlList.PublicReadWrite, info.getCannedACL());
+            Assertions.assertEquals(CannedAccessControlList.PublicReadWrite, info.getCannedACL());
 
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -76,13 +76,13 @@ public class BucketInfoTest extends TestBase {
             listBucketsRequest.setMaxKeys(1);
             
             BucketList buckets = ossClient.listBuckets(listBucketsRequest);
-            Assert.assertEquals(buckets.getBucketList().size(), 1);
-            Assert.assertNotNull(buckets.getBucketList().get(0).getExtranetEndpoint());
-            Assert.assertNotNull(buckets.getBucketList().get(0).getIntranetEndpoint());
-            Assert.assertEquals(buckets.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(buckets.getBucketList().size(), 1);
+            Assertions.assertNotNull(buckets.getBucketList().get(0).getExtranetEndpoint());
+            Assertions.assertNotNull(buckets.getBucketList().get(0).getIntranetEndpoint());
+            Assertions.assertEquals(buckets.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -96,11 +96,11 @@ public class BucketInfoTest extends TestBase {
             listBucketsRequest.setBid("26842");
             
             BucketList buckets = ossClient.listBuckets(listBucketsRequest);
-            Assert.assertEquals(buckets.getBucketList().size(), 1);
-            Assert.assertEquals(buckets.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(buckets.getBucketList().size(), 1);
+            Assertions.assertEquals(buckets.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -109,15 +109,15 @@ public class BucketInfoTest extends TestBase {
         final String testBucketName = bucketName + "-test-_1";
         try {
             ossClient.createBucket(testBucketName);
-            Assert.fail("should fail.");
+            Assertions.fail("should fail.");
         } catch (IllegalArgumentException e) {
         }
 
         try {
             ossClient.getBucketInfo(testBucketName);
-            Assert.fail("should fail.");
+            Assertions.fail("should fail.");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
         }
     }
 

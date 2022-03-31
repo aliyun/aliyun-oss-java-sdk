@@ -35,7 +35,7 @@ import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.internal.OSSConstants;
 import com.aliyun.oss.model.*;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 
@@ -99,11 +99,11 @@ public class ListVersionsTest extends TestBase {
                 .withPrefix(prefix);
 
             VersionListing versionListing = ossClient.listVersions(listVersionsRequest);
-            Assert.assertEquals(bucketName, versionListing.getBucketName());
-            Assert.assertEquals(prefix, versionListing.getPrefix());
-            Assert.assertEquals(5, versionListing.getVersionSummaries().size());
-            Assert.assertNull(versionListing.getDelimiter());
-            Assert.assertFalse(versionListing.isTruncated());
+            Assertions.assertEquals(bucketName, versionListing.getBucketName());
+            Assertions.assertEquals(prefix, versionListing.getPrefix());
+            Assertions.assertEquals(5, versionListing.getVersionSummaries().size());
+            Assertions.assertNull(versionListing.getDelimiter());
+            Assertions.assertFalse(versionListing.isTruncated());
 
             // List by max
             listVersionsRequest = new ListVersionsRequest()
@@ -112,12 +112,12 @@ public class ListVersionsTest extends TestBase {
                 .withMaxResults(3);
 
             versionListing = ossClient.listVersions(listVersionsRequest);
-            Assert.assertEquals(bucketName, versionListing.getBucketName());
-            Assert.assertEquals(prefix, versionListing.getPrefix());
-            Assert.assertEquals(3, versionListing.getMaxKeys());
-            Assert.assertEquals(3, versionListing.getVersionSummaries().size());
-            Assert.assertNull(versionListing.getDelimiter());
-            Assert.assertTrue(versionListing.isTruncated());
+            Assertions.assertEquals(bucketName, versionListing.getBucketName());
+            Assertions.assertEquals(prefix, versionListing.getPrefix());
+            Assertions.assertEquals(3, versionListing.getMaxKeys());
+            Assertions.assertEquals(3, versionListing.getVersionSummaries().size());
+            Assertions.assertNull(versionListing.getDelimiter());
+            Assertions.assertTrue(versionListing.isTruncated());
 
             // List by page
             int numOfVersion = 0;
@@ -137,7 +137,7 @@ public class ListVersionsTest extends TestBase {
                 nextKeyMarker = versionListing.getNextKeyMarker();
                 nextVersionMarker = versionListing.getNextVersionIdMarker();
             } while (versionListing.isTruncated());
-            Assert.assertEquals(5, numOfVersion);
+            Assertions.assertEquals(5, numOfVersion);
 
             // List by delimiter
             listVersionsRequest = new ListVersionsRequest()
@@ -147,12 +147,12 @@ public class ListVersionsTest extends TestBase {
                 .withMaxResults(5);
 
             versionListing = ossClient.listVersions(listVersionsRequest);
-            Assert.assertEquals(1, versionListing.getCommonPrefixes().size());
+            Assertions.assertEquals(1, versionListing.getCommonPrefixes().size());
 
             versionListing = ossClient.listVersions(bucketName, prefix, "", "", "/", 5);
-            Assert.assertEquals(1, versionListing.getCommonPrefixes().size());
+            Assertions.assertEquals(1, versionListing.getCommonPrefixes().size());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -167,7 +167,7 @@ public class ListVersionsTest extends TestBase {
             existingKeys.add(objectPrefix + "\002\007");
 
             if (!batchPutObject(ossClient, bucketName, existingKeys)) {
-                Assert.fail("batch put object failed");
+                Assertions.fail("batch put object failed");
             }
 
             try {
@@ -177,10 +177,10 @@ public class ListVersionsTest extends TestBase {
                     .withPrefix(objectPrefix);
 
                 ossClient.listVersions(listVersionsRequest);
-                Assert.fail("List version should not be successful.");
+                Assertions.fail("List version should not be successful.");
             } catch (Exception e) {
-                Assert.assertTrue(e instanceof OSSException);
-                Assert.assertEquals(OSSErrorCode.INVALID_RESPONSE, ((OSSException)e).getErrorCode());
+                Assertions.assertTrue(e instanceof OSSException);
+                Assertions.assertEquals(OSSErrorCode.INVALID_RESPONSE, ((OSSException)e).getErrorCode());
             }
 
             // Normal
@@ -194,15 +194,15 @@ public class ListVersionsTest extends TestBase {
                 List<KeyVersion> keyVersionsList = new ArrayList<KeyVersion>();
                 for (OSSVersionSummary version : versionListing.getVersionSummaries()) {
                     String decodedKey = URLDecoder.decode(version.getKey(), "UTF-8");
-                    Assert.assertTrue(existingKeys.contains(decodedKey));
+                    Assertions.assertTrue(existingKeys.contains(decodedKey));
                     keyVersionsList.add(new KeyVersion(version.getKey(), version.getVersionId()));
                 }
                 DeleteVersionsRequest delVersionsRequest = new DeleteVersionsRequest(bucketName).withKeys(keyVersionsList);
                 ossClient.deleteVersions(delVersionsRequest);
             }
-            Assert.assertNull(versionListing.getEncodingType());
+            Assertions.assertNull(versionListing.getEncodingType());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 

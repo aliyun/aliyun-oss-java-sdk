@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Ignore;
 import com.aliyun.oss.ClientBuilderConfiguration;
 import com.aliyun.oss.ClientException;
@@ -141,7 +141,7 @@ public class ProxySignTest {
             ossClient.deleteObject(bucketName, key);
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     

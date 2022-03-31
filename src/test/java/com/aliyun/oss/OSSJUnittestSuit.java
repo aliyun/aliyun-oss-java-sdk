@@ -19,9 +19,8 @@
 
 package com.aliyun.oss;
 
-import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-
+import org.junit.runner.RunWith;
 import com.aliyun.oss.common.auth.ServiceSignatureTest;
 import com.aliyun.oss.common.comm.HttpFactoryTest;
 import com.aliyun.oss.common.comm.ServiceClientTest;

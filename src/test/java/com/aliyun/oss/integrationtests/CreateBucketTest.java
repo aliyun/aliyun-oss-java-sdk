@@ -36,7 +36,7 @@ import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.model.*;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -53,16 +53,16 @@ public class CreateBucketTest extends TestBase {
         try {
         	Bucket bucket = ossClient.createBucket(bucketName);
             String loc = ossClient.getBucketLocation(bucketName);
-            Assert.assertEquals(OSS_TEST_REGION, loc);
-            Assert.assertEquals(bucket.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(OSS_TEST_REGION, loc);
+            Assertions.assertEquals(bucket.getRequestId().length(), REQUEST_ID_LEN);
             
             // Create bucket with the same name again.
             bucket = ossClient.createBucket(bucketName);
             loc = ossClient.getBucketLocation(bucketName);
-            Assert.assertEquals(OSS_TEST_REGION, loc);
-            Assert.assertEquals(bucket.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(OSS_TEST_REGION, loc);
+            Assertions.assertEquals(bucket.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -77,10 +77,10 @@ public class CreateBucketTest extends TestBase {
         request.setLocationConstraint(unsupportedLocation);
         try {
             ossClient.createBucket(request);
-            Assert.fail("Create bucket should not be successful.");
+            Assertions.fail("Create bucket should not be successful.");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.INVALID_LOCATION_CONSTRAINT, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(INVALID_LOCATION_CONSTRAINT_ERR));
+            Assertions.assertEquals(OSSErrorCode.INVALID_LOCATION_CONSTRAINT, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(INVALID_LOCATION_CONSTRAINT_ERR));
         }
     }
     
@@ -93,10 +93,10 @@ public class CreateBucketTest extends TestBase {
         request.setLocationConstraint("oss-ap-southeast-1");
         try {
             ossClient.createBucket(request);
-            Assert.fail("Create bucket should not be successful.");
+            Assertions.fail("Create bucket should not be successful.");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.INVALID_LOCATION_CONSTRAINT, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(INVALID_LOCATION_CONSTRAINT_ERR));
+            Assertions.assertEquals(OSSErrorCode.INVALID_LOCATION_CONSTRAINT, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(INVALID_LOCATION_CONSTRAINT_ERR));
         }
     }
     
@@ -107,17 +107,17 @@ public class CreateBucketTest extends TestBase {
         try {
             ossClient.createBucket(bucketName);
             String loc = ossClient.getBucketLocation(bucketName);
-            Assert.assertEquals(OSS_TEST_REGION, loc);
+            Assertions.assertEquals(OSS_TEST_REGION, loc);
             
             // Try to modify location of existing bucket
             CreateBucketRequest request = new CreateBucketRequest(bucketName);
             request.setLocationConstraint("oss-ap-southeast-1");
             ossClient.createBucket(request);
             
-            Assert.fail("Create bucket should not be successful.");
+            Assertions.fail("Create bucket should not be successful.");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.INVALID_LOCATION_CONSTRAINT, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(INVALID_LOCATION_CONSTRAINT_ERR));
+            Assertions.assertEquals(OSSErrorCode.INVALID_LOCATION_CONSTRAINT, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(INVALID_LOCATION_CONSTRAINT_ERR));
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -129,10 +129,10 @@ public class CreateBucketTest extends TestBase {
         
         try {
             ossClient.createBucket(bucketWithoutOwnership);    
-            Assert.fail("Create bucket should not be successful.");
+            Assertions.fail("Create bucket should not be successful.");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.BUCKET_ALREADY_EXISTS, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(BUCKET_ALREADY_EXIST_ERR));
+            Assertions.assertEquals(OSSErrorCode.BUCKET_ALREADY_EXISTS, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(BUCKET_ALREADY_EXIST_ERR));
         }
     }
     
@@ -146,9 +146,9 @@ public class CreateBucketTest extends TestBase {
             try {
                 ossClient.createBucket(value);
                 created = true;
-                Assert.fail(String.format("Invalid bucket name %s should not be created successfully.", value));
+                Assertions.fail(String.format("Invalid bucket name %s should not be created successfully.", value));
             } catch (Exception ex) {
-                Assert.assertTrue(ex instanceof IllegalArgumentException);
+                Assertions.assertTrue(ex instanceof IllegalArgumentException);
             } finally {
                 if (created) {
                     ossClient.deleteBucket(value);
@@ -179,7 +179,7 @@ public class CreateBucketTest extends TestBase {
                     i++;
                     
                     String loc = ossClient.getBucketLocation(bucketName);
-                    Assert.assertEquals(OSS_TEST_REGION, loc);
+                    Assertions.assertEquals(OSS_TEST_REGION, loc);
                     
                     Thread.sleep(50);
                 } catch (Exception e) {
@@ -191,10 +191,10 @@ public class CreateBucketTest extends TestBase {
             // Try to create (MAX_BUCKETS_ALLOWED +1)th bucket
             try {
                 ossClient.createBucket(bucketNamePrefix + MAX_BUCKETS_ALLOWED);    
-                Assert.fail("Create bucket should not be successful.");
+                Assertions.fail("Create bucket should not be successful.");
             } catch (OSSException oe) {
-                Assert.assertEquals(OSSErrorCode.TOO_MANY_BUCKETS, oe.getErrorCode());
-                Assert.assertTrue(oe.getMessage().startsWith(TOO_MANY_BUCKETS_ERR));
+                Assertions.assertEquals(OSSErrorCode.TOO_MANY_BUCKETS, oe.getErrorCode());
+                Assertions.assertTrue(oe.getMessage().startsWith(TOO_MANY_BUCKETS_ERR));
             } finally {
                 for (String bkt : newlyBuckets) {
                     try {
@@ -205,7 +205,7 @@ public class CreateBucketTest extends TestBase {
                 }
             }
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -219,15 +219,15 @@ public class CreateBucketTest extends TestBase {
             ossClient.createBucket(createBucketRequest);
             AccessControlList returnedAcl = ossClient.getBucketAcl(bucketName);
             Set<Grant> grants = returnedAcl.getGrants();
-            Assert.assertEquals(0, grants.size());
-            Assert.assertEquals(returnedAcl.getCannedACL(), CannedAccessControlList.Private);
+            Assertions.assertEquals(0, grants.size());
+            Assertions.assertEquals(returnedAcl.getCannedACL(), CannedAccessControlList.Private);
             
             // Try to create existing bucket without setting acl
             ossClient.createBucket(bucketName);
             waitForCacheExpiration(5);
             returnedAcl = ossClient.getBucketAcl(bucketName);
             grants = returnedAcl.getGrants();
-            Assert.assertEquals(0, grants.size());
+            Assertions.assertEquals(0, grants.size());
             
             // Create bucket with public-read acl
             createBucketRequest.setCannedACL(CannedAccessControlList.PublicRead);
@@ -235,21 +235,21 @@ public class CreateBucketTest extends TestBase {
             waitForCacheExpiration(5);
             returnedAcl = ossClient.getBucketAcl(bucketName);
             grants = returnedAcl.getGrants();
-            Assert.assertEquals(1, grants.size());
+            Assertions.assertEquals(1, grants.size());
             Grant grant = (Grant) grants.toArray()[0];
-            Assert.assertEquals(GroupGrantee.AllUsers, grant.getGrantee());
-            Assert.assertEquals(Permission.Read, grant.getPermission());
-            Assert.assertEquals(returnedAcl.getCannedACL(), CannedAccessControlList.PublicRead);
+            Assertions.assertEquals(GroupGrantee.AllUsers, grant.getGrantee());
+            Assertions.assertEquals(Permission.Read, grant.getPermission());
+            Assertions.assertEquals(returnedAcl.getCannedACL(), CannedAccessControlList.PublicRead);
             
             // Try to create existing bucket without setting acl
             ossClient.createBucket(bucketName);
             waitForCacheExpiration(5);
             returnedAcl = ossClient.getBucketAcl(bucketName);
             grants = returnedAcl.getGrants();
-            Assert.assertEquals(1, grants.size());
+            Assertions.assertEquals(1, grants.size());
             grant = (Grant) grants.toArray()[0];
-            Assert.assertEquals(GroupGrantee.AllUsers, grant.getGrantee());
-            Assert.assertEquals(Permission.Read, grant.getPermission());
+            Assertions.assertEquals(GroupGrantee.AllUsers, grant.getGrantee());
+            Assertions.assertEquals(Permission.Read, grant.getPermission());
 
             // Create bucket with public-read-write acl
             createBucketRequest.setCannedACL(CannedAccessControlList.PublicReadWrite);
@@ -257,23 +257,23 @@ public class CreateBucketTest extends TestBase {
             waitForCacheExpiration(5);
             returnedAcl = ossClient.getBucketAcl(bucketName);
             grants = returnedAcl.getGrants();
-            Assert.assertEquals(1, grants.size());
+            Assertions.assertEquals(1, grants.size());
             grant = (Grant) grants.toArray()[0];
-            Assert.assertEquals(GroupGrantee.AllUsers, grant.getGrantee());
-            Assert.assertEquals(Permission.FullControl, grant.getPermission());
-            Assert.assertEquals(returnedAcl.getCannedACL(), CannedAccessControlList.PublicReadWrite);
+            Assertions.assertEquals(GroupGrantee.AllUsers, grant.getGrantee());
+            Assertions.assertEquals(Permission.FullControl, grant.getPermission());
+            Assertions.assertEquals(returnedAcl.getCannedACL(), CannedAccessControlList.PublicReadWrite);
             
             // Try to create existing bucket without setting acl
             ossClient.createBucket(bucketName);
             waitForCacheExpiration(5);
             returnedAcl = ossClient.getBucketAcl(bucketName);
             grants = returnedAcl.getGrants();
-            Assert.assertEquals(1, grants.size());
+            Assertions.assertEquals(1, grants.size());
             grant = (Grant) grants.toArray()[0];
-            Assert.assertEquals(GroupGrantee.AllUsers, grant.getGrantee());
-            Assert.assertEquals(Permission.FullControl, grant.getPermission());
+            Assertions.assertEquals(GroupGrantee.AllUsers, grant.getGrantee());
+            Assertions.assertEquals(Permission.FullControl, grant.getPermission());
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -288,11 +288,11 @@ public class CreateBucketTest extends TestBase {
             ossClient.createBucket(createBucketRequest);
 
             BucketList buckets = ossClient.listBuckets(bucketName, "", 100);
-            Assert.assertEquals(1, buckets.getBucketList().size());
-            Assert.assertEquals(StorageClass.Standard, buckets.getBucketList().get(0).getStorageClass());            
-            Assert.assertEquals(buckets.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(1, buckets.getBucketList().size());
+            Assertions.assertEquals(StorageClass.Standard, buckets.getBucketList().get(0).getStorageClass());            
+            Assertions.assertEquals(buckets.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -308,13 +308,13 @@ public class CreateBucketTest extends TestBase {
             ossClient.createBucket(createBucketRequest);
             AccessControlList returnedAcl = ossClient.getBucketAcl(bucketName);
             Set<Grant> grants = returnedAcl.getGrants();
-            Assert.assertEquals(0, grants.size());
+            Assertions.assertEquals(0, grants.size());
             
             BucketList buckets = ossClient.listBuckets(bucketName, "", 100);
-            Assert.assertEquals(1, buckets.getBucketList().size());
-            Assert.assertEquals(StorageClass.IA, buckets.getBucketList().get(0).getStorageClass());
+            Assertions.assertEquals(1, buckets.getBucketList().size());
+            Assertions.assertEquals(StorageClass.IA, buckets.getBucketList().get(0).getStorageClass());
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -328,13 +328,13 @@ public class CreateBucketTest extends TestBase {
             ossClient.createBucket(new CreateBucketRequest(bucketName).withStorageType(StorageClass.IA));
             AccessControlList returnedAcl = ossClient.getBucketAcl(bucketName);
             Set<Grant> grants = returnedAcl.getGrants();
-            Assert.assertEquals(0, grants.size());
+            Assertions.assertEquals(0, grants.size());
             
             BucketList buckets = ossClient.listBuckets(bucketName, "", 100);
-            Assert.assertEquals(1, buckets.getBucketList().size());
-            Assert.assertEquals(StorageClass.IA, buckets.getBucketList().get(0).getStorageClass());
+            Assertions.assertEquals(1, buckets.getBucketList().size());
+            Assertions.assertEquals(StorageClass.IA, buckets.getBucketList().get(0).getStorageClass());
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -351,16 +351,16 @@ public class CreateBucketTest extends TestBase {
             ossClient.createBucket(createBucketRequest);
             AccessControlList returnedAcl = ossClient.getBucketAcl(bucketName);
             Set<Grant> grants = returnedAcl.getGrants();
-            Assert.assertEquals(0, grants.size());
+            Assertions.assertEquals(0, grants.size());
             System.out.println(returnedAcl.toString());
             
             BucketList buckets = ossClient.listBuckets(bucketName, "", 100);
-            Assert.assertEquals(1, buckets.getBucketList().size());
-            Assert.assertEquals(StorageClass.Standard, buckets.getBucketList().get(0).getStorageClass());
-            Assert.assertEquals(OSS_TEST_REGION, buckets.getBucketList().get(0).getLocation());
-            Assert.assertEquals(buckets.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(1, buckets.getBucketList().size());
+            Assertions.assertEquals(StorageClass.Standard, buckets.getBucketList().get(0).getStorageClass());
+            Assertions.assertEquals(OSS_TEST_REGION, buckets.getBucketList().get(0).getLocation());
+            Assertions.assertEquals(buckets.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -375,19 +375,19 @@ public class CreateBucketTest extends TestBase {
             ossClient.createBucket(createBucketRequest);
 
             BucketList buckets = ossClient.listBuckets(bucketName, "", 100);
-            Assert.assertEquals(1, buckets.getBucketList().size());
-            Assert.assertEquals(StorageClass.Standard, buckets.getBucketList().get(0).getStorageClass());
+            Assertions.assertEquals(1, buckets.getBucketList().size());
+            Assertions.assertEquals(StorageClass.Standard, buckets.getBucketList().get(0).getStorageClass());
            
             try {
                 createBucketRequest.setStorageClass(StorageClass.IA);
                 ossClient.createBucket(createBucketRequest);
-                Assert.fail("Create bucket should not be successful.");
+                Assertions.fail("Create bucket should not be successful.");
             } catch (OSSException oe) {
-                Assert.assertEquals(OSSErrorCode.BUCKET_ALREADY_EXISTS, oe.getErrorCode());
-                Assert.assertTrue(oe.getMessage().startsWith(MODIFY_STORAGE_TYPE_ERR));
+                Assertions.assertEquals(OSSErrorCode.BUCKET_ALREADY_EXISTS, oe.getErrorCode());
+                Assertions.assertTrue(oe.getMessage().startsWith(MODIFY_STORAGE_TYPE_ERR));
             }
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -403,10 +403,10 @@ public class CreateBucketTest extends TestBase {
         request.setLocationConstraint(unsupportedLocation);
         try {
             ossClient.createBucket(request);
-            Assert.fail("Create bucket should not be successful.");
+            Assertions.fail("Create bucket should not be successful.");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.INVALID_LOCATION_CONSTRAINT, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(INVALID_LOCATION_CONSTRAINT_ERR));
+            Assertions.assertEquals(OSSErrorCode.INVALID_LOCATION_CONSTRAINT, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(INVALID_LOCATION_CONSTRAINT_ERR));
         }
     }
     
@@ -419,11 +419,11 @@ public class CreateBucketTest extends TestBase {
             ossClient.createBucket(createBucketRequest);
 
             BucketList buckets = ossClient.listBuckets(bucketName, "", 100);
-            Assert.assertEquals(1, buckets.getBucketList().size());
-            Assert.assertEquals(StorageClass.Standard, buckets.getBucketList().get(0).getStorageClass());
-            Assert.assertEquals(buckets.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(1, buckets.getBucketList().size());
+            Assertions.assertEquals(StorageClass.Standard, buckets.getBucketList().get(0).getStorageClass());
+            Assertions.assertEquals(buckets.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -439,9 +439,9 @@ public class CreateBucketTest extends TestBase {
             ossClient.createBucket(createBucketRequest);
             Thread.sleep(2000);
             BucketInfo bucketInfo = ossClient.getBucketInfo(bucketName);
-            Assert.assertEquals(DataRedundancyType.LRS, bucketInfo.getDataRedundancyType());
+            Assertions.assertEquals(DataRedundancyType.LRS, bucketInfo.getDataRedundancyType());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -452,9 +452,9 @@ public class CreateBucketTest extends TestBase {
             ossClient.createBucket(createBucketRequest);
             Thread.sleep(2000);
             BucketInfo bucketInfo = ossClient.getBucketInfo(bucketName);
-            Assert.assertEquals(DataRedundancyType.ZRS, bucketInfo.getDataRedundancyType());
+            Assertions.assertEquals(DataRedundancyType.ZRS, bucketInfo.getDataRedundancyType());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -471,31 +471,31 @@ public class CreateBucketTest extends TestBase {
             CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName)
                     .withStorageType(StorageClass.Standard).withResourceGroupId("123");
 
-            Assert.assertEquals("123", createBucketRequest.getResourceGroupId());
+            Assertions.assertEquals("123", createBucketRequest.getResourceGroupId());
             createBucketRequest.setResourceGroupId(rsId);
-            Assert.assertEquals(rsId, createBucketRequest.getResourceGroupId());
+            Assertions.assertEquals(rsId, createBucketRequest.getResourceGroupId());
 
             client.createBucket(createBucketRequest);
             Thread.sleep(2000);
             BucketInfo bucketInfo = client.getBucketInfo(bucketName);
-            Assert.assertEquals(rsId, bucketInfo.getBucket().getResourceGroupId());
+            Assertions.assertEquals(rsId, bucketInfo.getBucket().getResourceGroupId());
 
             ListBucketsRequest listBucketsRequest = new ListBucketsRequest(bucketName, "", 1);
-            Assert.assertEquals(null, listBucketsRequest.getResourceGroupId());
+            Assertions.assertEquals(null, listBucketsRequest.getResourceGroupId());
 
             BucketList list = client.listBuckets(listBucketsRequest);
-            Assert.assertEquals(null, list.getBucketList().get(0).getResourceGroupId());
+            Assertions.assertEquals(null, list.getBucketList().get(0).getResourceGroupId());
 
             listBucketsRequest.setResourceGroupId(rsId);
-            Assert.assertEquals(rsId, listBucketsRequest.getResourceGroupId());
+            Assertions.assertEquals(rsId, listBucketsRequest.getResourceGroupId());
             list = client.listBuckets(listBucketsRequest);
-            Assert.assertEquals(rsId, list.getBucketList().get(0).getResourceGroupId());
+            Assertions.assertEquals(rsId, list.getBucketList().get(0).getResourceGroupId());
 
             GetBucketResourceGroupResult result = client.getBucketResourceGroup(bucketName);
-            Assert.assertEquals(rsId, result.getResourceGroupId());
+            Assertions.assertEquals(rsId, result.getResourceGroupId());
 
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             client.deleteBucket(bucketName);
         }
@@ -505,39 +505,39 @@ public class CreateBucketTest extends TestBase {
         try {
             CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName)
                     .withStorageType(StorageClass.Standard);
-            Assert.assertEquals(null, createBucketRequest.getResourceGroupId());
+            Assertions.assertEquals(null, createBucketRequest.getResourceGroupId());
 
             client.createBucket(createBucketRequest);
             Thread.sleep(2000);
             BucketInfo bucketInfo = client.getBucketInfo(bucketName);
-            Assert.assertNotNull(bucketInfo.getBucket().getResourceGroupId());
+            Assertions.assertNotNull(bucketInfo.getBucket().getResourceGroupId());
             String defaultRsId = bucketInfo.getBucket().getResourceGroupId();
 
             ListBucketsRequest listBucketsRequest = new ListBucketsRequest(bucketName, "", 1)
                     .withResourceGroupId(defaultRsId);
-            Assert.assertEquals(defaultRsId, listBucketsRequest.getResourceGroupId());
+            Assertions.assertEquals(defaultRsId, listBucketsRequest.getResourceGroupId());
 
             BucketList list = client.listBuckets(listBucketsRequest);
-            Assert.assertEquals(defaultRsId, list.getBucketList().get(0).getResourceGroupId());
+            Assertions.assertEquals(defaultRsId, list.getBucketList().get(0).getResourceGroupId());
 
             /*
             listBucketsRequest = new ListBucketsRequest(bucketName, "", 1)
                     .withResourceGroupId("");
             list = client.listBuckets(listBucketsRequest);
-            Assert.assertEquals(defaultRsId, list.getBucketList().get(0).getResourceGroupId());
+            Assertions.assertEquals(defaultRsId, list.getBucketList().get(0).getResourceGroupId());
             */
 
             GetBucketResourceGroupResult result = client.getBucketResourceGroup(bucketName);
-            Assert.assertEquals(defaultRsId, result.getResourceGroupId());
+            Assertions.assertEquals(defaultRsId, result.getResourceGroupId());
 
             SetBucketResourceGroupRequest setBucketResourceGroupRequest = new SetBucketResourceGroupRequest(bucketName, rsId);
             client.setBucketResourceGroup(setBucketResourceGroupRequest);
 
             bucketInfo = client.getBucketInfo(bucketName);
-            Assert.assertEquals(rsId, bucketInfo.getBucket().getResourceGroupId());
+            Assertions.assertEquals(rsId, bucketInfo.getBucket().getResourceGroupId());
 
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             client.deleteBucket(bucketName);
         }
@@ -549,11 +549,11 @@ public class CreateBucketTest extends TestBase {
             CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName)
                     .withStorageType(StorageClass.Standard).withResourceGroupId("invalid-rs-id");
             client.createBucket(createBucketRequest);
-            Assert.fail("shuold not here");
+            Assertions.fail("shuold not here");
         } catch (OSSException e) {
-            Assert.assertEquals("InvalidArgument", e.getErrorCode());
+            Assertions.assertEquals("InvalidArgument", e.getErrorCode());
         } catch (Exception ex) {
-            Assert.fail("shuold not here");
+            Assertions.fail("shuold not here");
         }
     }
 }

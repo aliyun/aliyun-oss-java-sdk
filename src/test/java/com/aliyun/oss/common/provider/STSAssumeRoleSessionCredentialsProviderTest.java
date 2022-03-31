@@ -26,7 +26,7 @@ import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.common.auth.BasicCredentials;
 import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.auth.CredentialsProviderFactory;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 public class STSAssumeRoleSessionCredentialsProviderTest extends TestBase {
@@ -40,15 +40,15 @@ public class STSAssumeRoleSessionCredentialsProviderTest extends TestBase {
                     .withExpiredDuration(900);
 
             BasicCredentials credentials = (BasicCredentials) credentialsProvider.getCredentials();
-            Assert.assertTrue(credentials.useSecurityToken());
-            Assert.assertFalse(credentials.willSoonExpire());
-            Assert.assertTrue(credentials.getAccessKeyId().startsWith("STS."));
-            Assert.assertEquals(credentials.getAccessKeyId().length(), 29);
-            Assert.assertTrue(credentials.getSecretAccessKey().length() > 0);
-            Assert.assertTrue(credentials.getSecurityToken().length() > 0);
+            Assertions.assertTrue(credentials.useSecurityToken());
+            Assertions.assertFalse(credentials.willSoonExpire());
+            Assertions.assertTrue(credentials.getAccessKeyId().startsWith("STS."));
+            Assertions.assertEquals(credentials.getAccessKeyId().length(), 29);
+            Assertions.assertTrue(credentials.getSecretAccessKey().length() > 0);
+            Assertions.assertTrue(credentials.getSecurityToken().length() > 0);
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -61,14 +61,14 @@ public class STSAssumeRoleSessionCredentialsProviderTest extends TestBase {
                     .withExpiredFactor(0.001).withExpiredDuration(2000);
 
             BasicCredentials credentials = (BasicCredentials) credentialsProvider.getCredentials();
-            Assert.assertFalse(credentials.willSoonExpire());
+            Assertions.assertFalse(credentials.willSoonExpire());
 
             Thread.sleep(3000);
 
-            Assert.assertTrue(credentials.willSoonExpire());
+            Assertions.assertTrue(credentials.willSoonExpire());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -81,16 +81,16 @@ public class STSAssumeRoleSessionCredentialsProviderTest extends TestBase {
                     .withExpiredFactor(0.001).withExpiredDuration(2000);
 
             BasicCredentials credentials = (BasicCredentials) credentialsProvider.getCredentials();
-            Assert.assertFalse(credentials.willSoonExpire());
+            Assertions.assertFalse(credentials.willSoonExpire());
             Thread.sleep(3000);
-            Assert.assertTrue(credentials.willSoonExpire());
+            Assertions.assertTrue(credentials.willSoonExpire());
 
             BasicCredentials freshCredentials = (BasicCredentials) credentialsProvider.getCredentials();
-            Assert.assertFalse(freshCredentials.willSoonExpire());
-            Assert.assertFalse(freshCredentials.getAccessKeyId().equals(credentials.getAccessKeyId()));
+            Assertions.assertFalse(freshCredentials.willSoonExpire());
+            Assertions.assertFalse(freshCredentials.getAccessKeyId().equals(credentials.getAccessKeyId()));
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -100,26 +100,26 @@ public class STSAssumeRoleSessionCredentialsProviderTest extends TestBase {
             CredentialsProviderFactory.newSTSAssumeRoleSessionCredentialsProvider(TestConfig.RAM_REGION_ID,
                     TestConfig.USER_ACCESS_KEY_ID, TestConfig.USER_ACCESS_KEY_SECRET, TestConfig.RAM_ROLE_ARN)
                     .withExpiredDuration(899);
-            Assert.fail("RamUtils.newStsAssumeRoleCredentialsProvider should not be successful.");
+            Assertions.fail("RamUtils.newStsAssumeRoleCredentialsProvider should not be successful.");
         } catch (Exception e) {
-            Assert.assertTrue(e instanceof IllegalArgumentException);
+            Assertions.assertTrue(e instanceof IllegalArgumentException);
         }
 
         try {
             CredentialsProviderFactory.newSTSAssumeRoleSessionCredentialsProvider(TestConfig.RAM_REGION_ID,
                     TestConfig.USER_ACCESS_KEY_ID, TestConfig.USER_ACCESS_KEY_SECRET, TestConfig.RAM_ROLE_ARN)
                     .withExpiredDuration(3601);
-            Assert.fail("RamUtils.newStsAssumeRoleCredentialsProvider should not be successful.");
+            Assertions.fail("RamUtils.newStsAssumeRoleCredentialsProvider should not be successful.");
         } catch (Exception e) {
-            Assert.assertTrue(e instanceof IllegalArgumentException);
+            Assertions.assertTrue(e instanceof IllegalArgumentException);
         }
 
         try {
             CredentialsProviderFactory.newSTSAssumeRoleSessionCredentialsProvider(TestConfig.RAM_REGION_ID,
                     TestConfig.USER_ACCESS_KEY_ID, TestConfig.USER_ACCESS_KEY_SECRET, "").withExpiredDuration(3601);
-            Assert.fail("RamUtils.newStsAssumeRoleCredentialsProvider should not be successful.");
+            Assertions.fail("RamUtils.newStsAssumeRoleCredentialsProvider should not be successful.");
         } catch (Exception e) {
-            Assert.assertTrue(e instanceof IllegalArgumentException);
+            Assertions.assertTrue(e instanceof IllegalArgumentException);
         }
 
     }
@@ -145,7 +145,7 @@ public class STSAssumeRoleSessionCredentialsProviderTest extends TestBase {
             ossClient.shutdown();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 }

@@ -25,7 +25,7 @@ import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.BucketInfo;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.ObjectMetadata;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -92,7 +92,7 @@ public class HttpsTest extends TestBase {
                     conf);
 
             BucketInfo info = ossClient.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
+            Assertions.assertEquals(info.getBucket().getName(), bucketName);
             
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(content.getBytes().length);
@@ -104,14 +104,14 @@ public class HttpsTest extends TestBase {
             
             ossClient.deleteObject(bucketName, key);
 
-            Assert.assertEquals(conf.isVerifySSLEnable(), true);
-            Assert.assertEquals(conf.getX509TrustManagers(), null);
-            Assert.assertEquals(conf.getHostnameVerifier(), null);
-            Assert.assertEquals(conf.getSecureRandom(), null);
-            Assert.assertEquals(conf.getKeyManagers(), null);
+            Assertions.assertEquals(conf.isVerifySSLEnable(), true);
+            Assertions.assertEquals(conf.getX509TrustManagers(), null);
+            Assertions.assertEquals(conf.getHostnameVerifier(), null);
+            Assertions.assertEquals(conf.getSecureRandom(), null);
+            Assertions.assertEquals(conf.getKeyManagers(), null);
 
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -124,7 +124,7 @@ public class HttpsTest extends TestBase {
             ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
 
             MyX509TrustManager x509Manager = new MyX509TrustManager();
-            Assert.assertEquals(x509Manager.traceFlag, false);
+            Assertions.assertEquals(x509Manager.traceFlag, false);
 
             X509TrustManager[] trustManagers = new X509TrustManager[]{x509Manager};
             conf.setX509TrustManagers(trustManagers);
@@ -136,7 +136,7 @@ public class HttpsTest extends TestBase {
                     conf);
 
             BucketInfo info = ossClient.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
+            Assertions.assertEquals(info.getBucket().getName(), bucketName);
 
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(content.getBytes().length);
@@ -148,11 +148,11 @@ public class HttpsTest extends TestBase {
 
             ossClient.deleteObject(bucketName, key);
 
-            Assert.assertEquals(conf.getX509TrustManagers().length, 1);
-            Assert.assertEquals(x509Manager.traceFlag, true);
+            Assertions.assertEquals(conf.getX509TrustManagers().length, 1);
+            Assertions.assertEquals(x509Manager.traceFlag, true);
 
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -174,7 +174,7 @@ public class HttpsTest extends TestBase {
                     conf);
 
             BucketInfo info = ossClient.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
+            Assertions.assertEquals(info.getBucket().getName(), bucketName);
 
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(content.getBytes().length);
@@ -187,7 +187,7 @@ public class HttpsTest extends TestBase {
             ossClient.deleteObject(bucketName, key);
 
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
@@ -203,9 +203,9 @@ public class HttpsTest extends TestBase {
                     conf);
 
             BucketInfo info = ossClient.getBucketInfo(bucketName);
-            Assert.fail("can not be here");
+            Assertions.fail("can not be here");
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
@@ -233,7 +233,7 @@ public class HttpsTest extends TestBase {
                     conf);
 
             BucketInfo info = ossClient.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
+            Assertions.assertEquals(info.getBucket().getName(), bucketName);
 
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(content.getBytes().length);
@@ -246,7 +246,7 @@ public class HttpsTest extends TestBase {
             ossClient.deleteObject(bucketName, key);
 
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 }

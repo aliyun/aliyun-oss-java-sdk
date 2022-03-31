@@ -32,8 +32,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
 
 public class RepeatableInputStreamTest {
 
@@ -43,8 +42,8 @@ public class RepeatableInputStreamTest {
         ByteArrayInputStream byteInput = new ByteArrayInputStream(data.getBytes());
         RepeatableInputStream input = new RepeatableInputStream(byteInput, 20);
 
-        assertEquals(true, input.markSupported());
-        assertEquals(byteInput, input.getWrappedInputStream());
+        Assertions.assertEquals(true, input.markSupported());
+        Assertions.assertEquals(byteInput, input.getWrappedInputStream());
 
         input.mark(10);
         input.mark(30);
@@ -52,26 +51,26 @@ public class RepeatableInputStreamTest {
         try {
             byte[] out = new byte[8];
             int ret = input.read(out, 0, 8);
-            assertEquals(8, ret);
+            Assertions.assertEquals(8, ret);
             ret = input.read();
-            assertEquals('c', ret);
+            Assertions.assertEquals('c', ret);
             ret = input.read();
             ret = input.read();
-            assertEquals(-1, ret);
+            Assertions.assertEquals(-1, ret);
             input.reset();
             input.available();
             input.close();
         } catch (IOException e) {
-            assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
 
         //
         try {
             input = new RepeatableInputStream(null, 20);
-            assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
     }
@@ -83,8 +82,8 @@ public class RepeatableInputStreamTest {
             FileInputStream inputFile = new FileInputStream(path);
             RepeatableFileInputStream input = new RepeatableFileInputStream(inputFile);
 
-            assertEquals(inputFile, input.getWrappedInputStream());
-            assertEquals(null, input.getFile());
+            Assertions.assertEquals(inputFile, input.getWrappedInputStream());
+            Assertions.assertEquals(null, input.getFile());
 
             input.mark(10);
             int ret0 = input.read();
@@ -92,12 +91,12 @@ public class RepeatableInputStreamTest {
             input.reset();
             input.skip(1);
             ret0 = input.read();
-            assertEquals(ret1, ret0);
+            Assertions.assertEquals(ret1, ret0);
 
             input.available();
             input.close();
         } catch (Exception e) {
-            assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 
@@ -109,20 +108,20 @@ public class RepeatableInputStreamTest {
             BoundedInputStream bInput = new BoundedInputStream(inputFile);
             RepeatableBoundedFileInputStream input = new RepeatableBoundedFileInputStream(bInput);
 
-            assertEquals(bInput, input.getWrappedInputStream());
+            Assertions.assertEquals(bInput, input.getWrappedInputStream());
 
             int ret0 = input.read();
             int ret1 = input.read();
             input.reset();
             input.skip(1);
             ret0 = input.read();
-            assertEquals(ret1, ret0);
+            Assertions.assertEquals(ret1, ret0);
 
             input.available();
             input.reset();
             input.close();
         } catch (Exception e) {
-            assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 }

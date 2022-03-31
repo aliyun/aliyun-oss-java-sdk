@@ -39,7 +39,7 @@ import com.aliyun.oss.model.BucketInfo;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.ObjectMetadata;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 public class EncryptionClientBuilderTest extends TestBase {
@@ -65,10 +65,10 @@ public class EncryptionClientBuilderTest extends TestBase {
                     TestConfig.OSS_TEST_ENDPOINT, TestConfig.OSS_TEST_ACCESS_KEY_ID,
                     TestConfig.OSS_TEST_ACCESS_KEY_SECRET, encryptionMaterials);
 
-            Assert.assertFalse(ossEncryptionClient.getClientConfiguration().isSupportCname());
+            Assertions.assertFalse(ossEncryptionClient.getClientConfiguration().isSupportCname());
 
             BucketInfo info = ossEncryptionClient.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
+            Assertions.assertEquals(info.getBucket().getName(), bucketName);
 
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(TEST_CONTENT.getBytes().length);
@@ -81,7 +81,7 @@ public class EncryptionClientBuilderTest extends TestBase {
             ossEncryptionClient.deleteObject(bucketName, TEST_KEY);
 
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -93,10 +93,10 @@ public class EncryptionClientBuilderTest extends TestBase {
                     TestConfig.OSS_TEST_ENDPOINT, TestConfig.OSS_TEST_ACCESS_KEY_ID,
                     TestConfig.OSS_TEST_ACCESS_KEY_SECRET, stsTokent, encryptionMaterials);
 
-            Assert.assertFalse(ossEncryptionClient.getClientConfiguration().isSupportCname());
+            Assertions.assertFalse(ossEncryptionClient.getClientConfiguration().isSupportCname());
 
             BucketInfo info = ossEncryptionClient.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
+            Assertions.assertEquals(info.getBucket().getName(), bucketName);
 
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(TEST_CONTENT.getBytes().length);
@@ -109,7 +109,7 @@ public class EncryptionClientBuilderTest extends TestBase {
             ossEncryptionClient.deleteObject(bucketName, TEST_KEY);
 
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -123,10 +123,10 @@ public class EncryptionClientBuilderTest extends TestBase {
             OSSEncryptionClient ossEncryptionClient = new OSSEncryptionClientBuilder().build(
                     TestConfig.OSS_TEST_ENDPOINT, new DefaultCredentialProvider(credentials), encryptionMaterials);
 
-            Assert.assertFalse(ossEncryptionClient.getClientConfiguration().isSupportCname());
+            Assertions.assertFalse(ossEncryptionClient.getClientConfiguration().isSupportCname());
 
             BucketInfo info = ossEncryptionClient.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
+            Assertions.assertEquals(info.getBucket().getName(), bucketName);
 
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(TEST_CONTENT.getBytes().length);
@@ -139,7 +139,7 @@ public class EncryptionClientBuilderTest extends TestBase {
             ossEncryptionClient.deleteObject(bucketName, TEST_KEY);
 
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -151,10 +151,10 @@ public class EncryptionClientBuilderTest extends TestBase {
                             TestConfig.OSS_TEST_ACCESS_KEY_SECRET, null),
                     encryptionMaterials);
 
-            Assert.assertFalse(ossEncryptionClient.getClientConfiguration().isSupportCname());
+            Assertions.assertFalse(ossEncryptionClient.getClientConfiguration().isSupportCname());
 
             BucketInfo info = ossEncryptionClient.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
+            Assertions.assertEquals(info.getBucket().getName(), bucketName);
 
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(TEST_CONTENT.getBytes().length);
@@ -166,7 +166,7 @@ public class EncryptionClientBuilderTest extends TestBase {
 
             ossEncryptionClient.deleteObject(bucketName, TEST_KEY);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -178,14 +178,14 @@ public class EncryptionClientBuilderTest extends TestBase {
                             TestConfig.OSS_TEST_ACCESS_KEY_SECRET, "TOKEN"),
                     encryptionMaterials);
 
-            Assert.assertFalse(ossEncryptionClient.getClientConfiguration().isSupportCname());
+            Assertions.assertFalse(ossEncryptionClient.getClientConfiguration().isSupportCname());
             Credentials cred = ossEncryptionClient.getCredentialsProvider().getCredentials();
-            Assert.assertEquals(cred.getAccessKeyId(), TestConfig.OSS_TEST_ACCESS_KEY_ID);
-            Assert.assertEquals(cred.getSecretAccessKey(), TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
-            Assert.assertEquals(cred.getSecurityToken(), "TOKEN");
-            Assert.assertTrue(cred.useSecurityToken());
+            Assertions.assertEquals(cred.getAccessKeyId(), TestConfig.OSS_TEST_ACCESS_KEY_ID);
+            Assertions.assertEquals(cred.getSecretAccessKey(), TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
+            Assertions.assertEquals(cred.getSecurityToken(), "TOKEN");
+            Assertions.assertTrue(cred.useSecurityToken());
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -199,10 +199,10 @@ public class EncryptionClientBuilderTest extends TestBase {
                               encryptionMaterials,
                               new ClientBuilderConfiguration());
 
-            Assert.assertFalse(ossEncryptionClient.getClientConfiguration().isSupportCname());
+            Assertions.assertFalse(ossEncryptionClient.getClientConfiguration().isSupportCname());
 
             BucketInfo info = ossEncryptionClient.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
+            Assertions.assertEquals(info.getBucket().getName(), bucketName);
 
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(TEST_CONTENT.getBytes().length);
@@ -214,7 +214,7 @@ public class EncryptionClientBuilderTest extends TestBase {
 
             ossEncryptionClient.deleteObject(bucketName, TEST_KEY);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -228,10 +228,10 @@ public class EncryptionClientBuilderTest extends TestBase {
                               encryptionMaterials,
                               new CryptoConfiguration());
 
-            Assert.assertFalse(ossEncryptionClient.getClientConfiguration().isSupportCname());
+            Assertions.assertFalse(ossEncryptionClient.getClientConfiguration().isSupportCname());
 
             BucketInfo info = ossEncryptionClient.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
+            Assertions.assertEquals(info.getBucket().getName(), bucketName);
 
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(TEST_CONTENT.getBytes().length);
@@ -243,7 +243,7 @@ public class EncryptionClientBuilderTest extends TestBase {
 
             ossEncryptionClient.deleteObject(bucketName, TEST_KEY);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -263,11 +263,11 @@ public class EncryptionClientBuilderTest extends TestBase {
                           clientConfig,
                           cryptoConfig);
             
-            Assert.assertTrue(ossEncryptionClient.getClientConfiguration().isSupportCname());
-            Assert.assertEquals(ossEncryptionClient.getClientConfiguration().getConnectionTimeout(), 10000);
+            Assertions.assertTrue(ossEncryptionClient.getClientConfiguration().isSupportCname());
+            Assertions.assertEquals(ossEncryptionClient.getClientConfiguration().getConnectionTimeout(), 10000);
 
             BucketInfo info = ossEncryptionClient.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
+            Assertions.assertEquals(info.getBucket().getName(), bucketName);
 
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(TEST_CONTENT.getBytes().length);
@@ -279,7 +279,7 @@ public class EncryptionClientBuilderTest extends TestBase {
 
             ossEncryptionClient.deleteObject(bucketName, TEST_KEY);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -294,10 +294,10 @@ public class EncryptionClientBuilderTest extends TestBase {
                           null,
                           null);
 
-            Assert.assertFalse(ossEncryptionClient.getClientConfiguration().isSupportCname());
+            Assertions.assertFalse(ossEncryptionClient.getClientConfiguration().isSupportCname());
 
             BucketInfo info = ossEncryptionClient.getBucketInfo(bucketName);
-            Assert.assertEquals(info.getBucket().getName(), bucketName);
+            Assertions.assertEquals(info.getBucket().getName(), bucketName);
 
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(TEST_CONTENT.getBytes().length);
@@ -309,7 +309,7 @@ public class EncryptionClientBuilderTest extends TestBase {
 
             ossEncryptionClient.deleteObject(bucketName, TEST_KEY);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 

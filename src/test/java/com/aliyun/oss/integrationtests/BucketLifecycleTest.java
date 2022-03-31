@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 
@@ -110,63 +110,63 @@ public class BucketLifecycleTest extends TestBase {
             ossClient.setBucketLifecycle(request);
 
             List<LifecycleRule> rules = ossClient.getBucketLifecycle(bucketName);
-            Assert.assertEquals(rules.size(), 6);
+            Assertions.assertEquals(rules.size(), 6);
 
             LifecycleRule r0 = rules.get(0);
-            Assert.assertEquals(r0.getId(), ruleId0);
-            Assert.assertEquals(r0.getPrefix(), matchPrefix0);
-            Assert.assertEquals(r0.getStatus(), RuleStatus.Enabled);
-            Assert.assertEquals(r0.getExpirationDays(), 3);
-            Assert.assertTrue(r0.getAbortMultipartUpload() == null);
+            Assertions.assertEquals(r0.getId(), ruleId0);
+            Assertions.assertEquals(r0.getPrefix(), matchPrefix0);
+            Assertions.assertEquals(r0.getStatus(), RuleStatus.Enabled);
+            Assertions.assertEquals(r0.getExpirationDays(), 3);
+            Assertions.assertTrue(r0.getAbortMultipartUpload() == null);
 
             LifecycleRule r1 = rules.get(1);
-            Assert.assertEquals(r1.getId(), ruleId1);
-            Assert.assertEquals(r1.getPrefix(), matchPrefix1);
-            Assert.assertEquals(r1.getStatus(), RuleStatus.Enabled);
-            Assert.assertEquals(DateUtil.formatIso8601Date(r1.getExpirationTime()), "2022-10-12T00:00:00.000Z");
-            Assert.assertTrue(r1.getAbortMultipartUpload() == null);
+            Assertions.assertEquals(r1.getId(), ruleId1);
+            Assertions.assertEquals(r1.getPrefix(), matchPrefix1);
+            Assertions.assertEquals(r1.getStatus(), RuleStatus.Enabled);
+            Assertions.assertEquals(DateUtil.formatIso8601Date(r1.getExpirationTime()), "2022-10-12T00:00:00.000Z");
+            Assertions.assertTrue(r1.getAbortMultipartUpload() == null);
 
             LifecycleRule r2 = rules.get(2);
-            Assert.assertEquals(r2.getId(), ruleId2);
-            Assert.assertEquals(r2.getPrefix(), matchPrefix2);
-            Assert.assertEquals(r2.getStatus(), RuleStatus.Enabled);
-            Assert.assertEquals(r2.getExpirationDays(), 3);
-            Assert.assertNotNull(r2.getAbortMultipartUpload());
-            Assert.assertEquals(r2.getAbortMultipartUpload().getExpirationDays(), 3);
+            Assertions.assertEquals(r2.getId(), ruleId2);
+            Assertions.assertEquals(r2.getPrefix(), matchPrefix2);
+            Assertions.assertEquals(r2.getStatus(), RuleStatus.Enabled);
+            Assertions.assertEquals(r2.getExpirationDays(), 3);
+            Assertions.assertNotNull(r2.getAbortMultipartUpload());
+            Assertions.assertEquals(r2.getAbortMultipartUpload().getExpirationDays(), 3);
 
             LifecycleRule r3 = rules.get(3);
-            Assert.assertEquals(r3.getId(), ruleId3);
-            Assert.assertEquals(r3.getPrefix(), matchPrefix3);
-            Assert.assertEquals(r3.getStatus(), RuleStatus.Enabled);
-            Assert.assertEquals(r3.getExpirationDays(), 30);
-            Assert.assertNotNull(r3.getAbortMultipartUpload());
-            Assert.assertEquals(DateUtil.formatIso8601Date(r3.getAbortMultipartUpload().getCreatedBeforeDate()),
+            Assertions.assertEquals(r3.getId(), ruleId3);
+            Assertions.assertEquals(r3.getPrefix(), matchPrefix3);
+            Assertions.assertEquals(r3.getStatus(), RuleStatus.Enabled);
+            Assertions.assertEquals(r3.getExpirationDays(), 30);
+            Assertions.assertNotNull(r3.getAbortMultipartUpload());
+            Assertions.assertEquals(DateUtil.formatIso8601Date(r3.getAbortMultipartUpload().getCreatedBeforeDate()),
                     "2022-10-12T00:00:00.000Z");
-            Assert.assertTrue(r3.hasStorageTransition());
-            Assert.assertTrue(r3.getStorageTransition().get(0).getExpirationDays() == 10);
-            Assert.assertEquals(r3.getStorageTransition().get(0).getStorageClass(), StorageClass.IA);
-            Assert.assertTrue(r3.getStorageTransition().get(1).getExpirationDays() == 20);
-            Assert.assertEquals(r3.getStorageTransition().get(1).getStorageClass(), StorageClass.Archive);
+            Assertions.assertTrue(r3.hasStorageTransition());
+            Assertions.assertTrue(r3.getStorageTransition().get(0).getExpirationDays() == 10);
+            Assertions.assertEquals(r3.getStorageTransition().get(0).getStorageClass(), StorageClass.IA);
+            Assertions.assertTrue(r3.getStorageTransition().get(1).getExpirationDays() == 20);
+            Assertions.assertEquals(r3.getStorageTransition().get(1).getStorageClass(), StorageClass.Archive);
 
             LifecycleRule r4 = rules.get(4);
-            Assert.assertEquals(r4.getId(), ruleId4);
-            Assert.assertEquals(r4.getPrefix(), matchPrefix4);
-            Assert.assertEquals(r4.getStatus(), RuleStatus.Enabled);
-            Assert.assertEquals(DateUtil.formatIso8601Date(r4.getCreatedBeforeDate()), "2022-10-12T00:00:00.000Z");
-            Assert.assertTrue(r4.getAbortMultipartUpload() == null);
+            Assertions.assertEquals(r4.getId(), ruleId4);
+            Assertions.assertEquals(r4.getPrefix(), matchPrefix4);
+            Assertions.assertEquals(r4.getStatus(), RuleStatus.Enabled);
+            Assertions.assertEquals(DateUtil.formatIso8601Date(r4.getCreatedBeforeDate()), "2022-10-12T00:00:00.000Z");
+            Assertions.assertTrue(r4.getAbortMultipartUpload() == null);
 
             LifecycleRule r5 = rules.get(5);
-            Assert.assertEquals(r5.getId(), ruleId5);
-            Assert.assertEquals(r5.getPrefix(), matchPrefix5);
-            Assert.assertEquals(r5.getStatus(), RuleStatus.Disabled);
-            Assert.assertFalse(r5.hasCreatedBeforeDate());
-            Assert.assertFalse(r5.hasExpirationTime());
-            Assert.assertFalse(r5.hasExpirationDays());
-            Assert.assertFalse(r5.hasAbortMultipartUpload());
-            Assert.assertTrue(r5.hasStorageTransition());
-            Assert.assertEquals(DateUtil.formatIso8601Date(r5.getStorageTransition().get(0).getCreatedBeforeDate()),
+            Assertions.assertEquals(r5.getId(), ruleId5);
+            Assertions.assertEquals(r5.getPrefix(), matchPrefix5);
+            Assertions.assertEquals(r5.getStatus(), RuleStatus.Disabled);
+            Assertions.assertFalse(r5.hasCreatedBeforeDate());
+            Assertions.assertFalse(r5.hasExpirationTime());
+            Assertions.assertFalse(r5.hasExpirationDays());
+            Assertions.assertFalse(r5.hasAbortMultipartUpload());
+            Assertions.assertTrue(r5.hasStorageTransition());
+            Assertions.assertEquals(DateUtil.formatIso8601Date(r5.getStorageTransition().get(0).getCreatedBeforeDate()),
                     "2022-10-12T00:00:00.000Z");
-            Assert.assertEquals(r5.getStorageTransition().get(0).getStorageClass(), StorageClass.Archive);
+            Assertions.assertEquals(r5.getStorageTransition().get(0).getStorageClass(), StorageClass.Archive);
 
             // Override existing lifecycle rules
             final String nullRuleId = null;
@@ -177,12 +177,12 @@ public class BucketLifecycleTest extends TestBase {
             waitForCacheExpiration(5);
 
             rules = ossClient.getBucketLifecycle(bucketName);
-            Assert.assertEquals(rules.size(), 1);
+            Assertions.assertEquals(rules.size(), 1);
 
             r0 = rules.get(0);
-            Assert.assertEquals(matchPrefix0, r0.getPrefix());
-            Assert.assertEquals(r0.getStatus(), RuleStatus.Enabled);
-            Assert.assertEquals(r0.getExpirationDays(), 7);
+            Assertions.assertEquals(matchPrefix0, r0.getPrefix());
+            Assertions.assertEquals(r0.getStatus(), RuleStatus.Enabled);
+            Assertions.assertEquals(r0.getExpirationDays(), 7);
 
             ossClient.deleteBucketLifecycle(bucketName);
 
@@ -190,11 +190,11 @@ public class BucketLifecycleTest extends TestBase {
             try {
                 ossClient.getBucketLifecycle(bucketName);
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.NO_SUCH_LIFECYCLE, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_LIFECYCLE_ERR));
+                Assertions.assertEquals(OSSErrorCode.NO_SUCH_LIFECYCLE, e.getErrorCode());
+                Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_LIFECYCLE_ERR));
             }
         } catch (OSSException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -279,68 +279,68 @@ public class BucketLifecycleTest extends TestBase {
             ossClient.setBucketLifecycle(request);
 
             List<LifecycleRule> rules = ossClient.getBucketLifecycle(bucketName);
-            Assert.assertEquals(rules.size(), 6);
+            Assertions.assertEquals(rules.size(), 6);
 
             LifecycleRule r0 = rules.get(0);
-            Assert.assertEquals(r0.getId(), ruleId0);
-            Assert.assertEquals(r0.getPrefix(), matchPrefix0);
-            Assert.assertEquals(r0.getStatus(), RuleStatus.Enabled);
-            Assert.assertEquals(r0.getExpirationDays(), 3);
-            Assert.assertTrue(r0.getAbortMultipartUpload() == null);
-            Assert.assertEquals(r0.getTags().size(), 2);
+            Assertions.assertEquals(r0.getId(), ruleId0);
+            Assertions.assertEquals(r0.getPrefix(), matchPrefix0);
+            Assertions.assertEquals(r0.getStatus(), RuleStatus.Enabled);
+            Assertions.assertEquals(r0.getExpirationDays(), 3);
+            Assertions.assertTrue(r0.getAbortMultipartUpload() == null);
+            Assertions.assertEquals(r0.getTags().size(), 2);
 
             LifecycleRule r1 = rules.get(1);
-            Assert.assertEquals(r1.getId(), ruleId1);
-            Assert.assertEquals(r1.getPrefix(), matchPrefix1);
-            Assert.assertEquals(r1.getStatus(), RuleStatus.Enabled);
-            Assert.assertEquals(DateUtil.formatIso8601Date(r1.getExpirationTime()), "2022-10-12T00:00:00.000Z");
-            Assert.assertTrue(r1.getAbortMultipartUpload() == null);
+            Assertions.assertEquals(r1.getId(), ruleId1);
+            Assertions.assertEquals(r1.getPrefix(), matchPrefix1);
+            Assertions.assertEquals(r1.getStatus(), RuleStatus.Enabled);
+            Assertions.assertEquals(DateUtil.formatIso8601Date(r1.getExpirationTime()), "2022-10-12T00:00:00.000Z");
+            Assertions.assertTrue(r1.getAbortMultipartUpload() == null);
 
             LifecycleRule r2 = rules.get(2);
-            Assert.assertEquals(r2.getId(), ruleId2);
-            Assert.assertEquals(r2.getPrefix(), matchPrefix2);
-            Assert.assertEquals(r2.getStatus(), RuleStatus.Enabled);
-            Assert.assertEquals(r2.getExpirationDays(), 3);
-            Assert.assertNotNull(r2.getAbortMultipartUpload());
-            Assert.assertEquals(r2.getAbortMultipartUpload().getExpirationDays(), 3);
+            Assertions.assertEquals(r2.getId(), ruleId2);
+            Assertions.assertEquals(r2.getPrefix(), matchPrefix2);
+            Assertions.assertEquals(r2.getStatus(), RuleStatus.Enabled);
+            Assertions.assertEquals(r2.getExpirationDays(), 3);
+            Assertions.assertNotNull(r2.getAbortMultipartUpload());
+            Assertions.assertEquals(r2.getAbortMultipartUpload().getExpirationDays(), 3);
 
             LifecycleRule r3 = rules.get(3);
-            Assert.assertEquals(r3.getId(), ruleId3);
-            Assert.assertEquals(r3.getPrefix(), matchPrefix3);
-            Assert.assertEquals(r3.getStatus(), RuleStatus.Enabled);
-            Assert.assertEquals(r3.getExpirationDays(), 30);
-            Assert.assertNotNull(r3.getAbortMultipartUpload());
-            Assert.assertEquals(DateUtil.formatIso8601Date(r3.getAbortMultipartUpload().getCreatedBeforeDate()), 
+            Assertions.assertEquals(r3.getId(), ruleId3);
+            Assertions.assertEquals(r3.getPrefix(), matchPrefix3);
+            Assertions.assertEquals(r3.getStatus(), RuleStatus.Enabled);
+            Assertions.assertEquals(r3.getExpirationDays(), 30);
+            Assertions.assertNotNull(r3.getAbortMultipartUpload());
+            Assertions.assertEquals(DateUtil.formatIso8601Date(r3.getAbortMultipartUpload().getCreatedBeforeDate()), 
                     "2022-10-12T00:00:00.000Z");
-            Assert.assertTrue(r3.hasStorageTransition());
-            Assert.assertTrue(r3.getStorageTransition().get(0).getExpirationDays() == 10);
-            Assert.assertEquals(r3.getStorageTransition().get(0).getStorageClass(), StorageClass.IA);
-            Assert.assertTrue(r3.getStorageTransition().get(1).getExpirationDays() == 20);
-            Assert.assertEquals(r3.getStorageTransition().get(1).getStorageClass(), StorageClass.Archive);
+            Assertions.assertTrue(r3.hasStorageTransition());
+            Assertions.assertTrue(r3.getStorageTransition().get(0).getExpirationDays() == 10);
+            Assertions.assertEquals(r3.getStorageTransition().get(0).getStorageClass(), StorageClass.IA);
+            Assertions.assertTrue(r3.getStorageTransition().get(1).getExpirationDays() == 20);
+            Assertions.assertEquals(r3.getStorageTransition().get(1).getStorageClass(), StorageClass.Archive);
 
             LifecycleRule r4 = rules.get(4);
-            Assert.assertEquals(r4.getId(), ruleId4);
-            Assert.assertEquals(r4.getPrefix(), matchPrefix4);
-            Assert.assertEquals(r4.getStatus(), RuleStatus.Enabled);
-            Assert.assertEquals(DateUtil.formatIso8601Date(r4.getCreatedBeforeDate()), "2022-10-12T00:00:00.000Z");
-            Assert.assertTrue(r4.getAbortMultipartUpload() == null);
-            Assert.assertEquals(r4.getTags().size(), 2);
+            Assertions.assertEquals(r4.getId(), ruleId4);
+            Assertions.assertEquals(r4.getPrefix(), matchPrefix4);
+            Assertions.assertEquals(r4.getStatus(), RuleStatus.Enabled);
+            Assertions.assertEquals(DateUtil.formatIso8601Date(r4.getCreatedBeforeDate()), "2022-10-12T00:00:00.000Z");
+            Assertions.assertTrue(r4.getAbortMultipartUpload() == null);
+            Assertions.assertEquals(r4.getTags().size(), 2);
 
             LifecycleRule r5 = rules.get(5);
-            Assert.assertEquals(r5.getId(), ruleId5);
-            Assert.assertEquals(r5.getPrefix(), matchPrefix5);
-            Assert.assertEquals(r5.getStatus(), RuleStatus.Enabled);
-            Assert.assertFalse(r5.hasCreatedBeforeDate());
-            Assert.assertFalse(r5.hasExpirationTime());
-            Assert.assertFalse(r5.hasExpirationDays());
-            Assert.assertFalse(r5.hasAbortMultipartUpload());
-            Assert.assertTrue(r5.hasStorageTransition());
-            Assert.assertEquals(DateUtil.formatIso8601Date(r5.getStorageTransition().get(0).getCreatedBeforeDate()), 
+            Assertions.assertEquals(r5.getId(), ruleId5);
+            Assertions.assertEquals(r5.getPrefix(), matchPrefix5);
+            Assertions.assertEquals(r5.getStatus(), RuleStatus.Enabled);
+            Assertions.assertFalse(r5.hasCreatedBeforeDate());
+            Assertions.assertFalse(r5.hasExpirationTime());
+            Assertions.assertFalse(r5.hasExpirationDays());
+            Assertions.assertFalse(r5.hasAbortMultipartUpload());
+            Assertions.assertTrue(r5.hasStorageTransition());
+            Assertions.assertEquals(DateUtil.formatIso8601Date(r5.getStorageTransition().get(0).getCreatedBeforeDate()), 
                     "2022-10-12T00:00:00.000Z");
-            Assert.assertEquals(r5.getStorageTransition().get(0).getStorageClass(), StorageClass.Archive);
-            Assert.assertEquals(r5.getTags().size(), 2);
+            Assertions.assertEquals(r5.getStorageTransition().get(0).getStorageClass(), StorageClass.Archive);
+            Assertions.assertEquals(r5.getTags().size(), 2);
         } catch (OSSException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
         }
@@ -360,7 +360,7 @@ public class BucketLifecycleTest extends TestBase {
                 final LifecycleRule r = new LifecycleRule(ruleId0, matchPrefix0, RuleStatus.Enabled);
                 SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(bucketName);
                 request.AddLifecycleRule(r);
-                Assert.fail("Rule has none expiration or transition specified, should be failed.");
+                Assertions.fail("Rule has none expiration or transition specified, should be failed.");
             } catch (IllegalArgumentException e) {
                 // Expected exception.
             }
@@ -373,10 +373,10 @@ public class BucketLifecycleTest extends TestBase {
                 request.AddLifecycleRule(r);
                 ossClient.setBucketLifecycle(request);
                 
-                Assert.fail("Set bucket lifecycle should not be successful");
+                Assertions.fail("Set bucket lifecycle should not be successful");
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+                Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+                Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
             }
 
             // Set bucket without ownership
@@ -386,9 +386,9 @@ public class BucketLifecycleTest extends TestBase {
                 request.AddLifecycleRule(r);
                 ossClient.setBucketLifecycle(request);
 
-                Assert.fail("Set bucket lifecycle should not be successful");
+                Assertions.fail("Set bucket lifecycle should not be successful");
             } catch (OSSException e) {
-                Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+                Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
             }
 
             // Set length of rule id exceeding RULE_ID_MAX_LENGTH(255)
@@ -397,9 +397,9 @@ public class BucketLifecycleTest extends TestBase {
                 SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(bucketName);
                 request.AddLifecycleRule(new LifecycleRule(ruleId256, matchPrefix0, RuleStatus.Enabled, 3));
                 
-                Assert.fail("Set bucket lifecycle should not be successful");
+                Assertions.fail("Set bucket lifecycle should not be successful");
             } catch (Exception e) {
-                Assert.assertTrue(e instanceof IllegalArgumentException);
+                Assertions.assertTrue(e instanceof IllegalArgumentException);
             }
 
             // Set size of lifecycle rules exceeding LIFECYCLE_RULE_MAX_LIMIT(1000)
@@ -409,9 +409,9 @@ public class BucketLifecycleTest extends TestBase {
                     request.AddLifecycleRule(r);
                 }
 
-                Assert.fail("Set bucket lifecycle should not be successful");
+                Assertions.fail("Set bucket lifecycle should not be successful");
             } catch (Exception e) {
-                Assert.assertTrue(e instanceof IllegalArgumentException);
+                Assertions.assertTrue(e instanceof IllegalArgumentException);
             }
 
             // Set both rule id and prefix null
@@ -422,7 +422,7 @@ public class BucketLifecycleTest extends TestBase {
                 request.AddLifecycleRule(new LifecycleRule(nullRuleId, nullMatchPrefix, RuleStatus.Enabled, 3));
                 ossClient.setBucketLifecycle(request);
             } catch (Exception e) {
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             }
 
             // Set both expiration day and expiration time
@@ -436,9 +436,9 @@ public class BucketLifecycleTest extends TestBase {
                 invalidRule.setExpirationDays(3);
                 request.AddLifecycleRule(invalidRule);
 
-                Assert.fail("Set bucket lifecycle should not be successful");
+                Assertions.fail("Set bucket lifecycle should not be successful");
             } catch (Exception e) {
-                Assert.assertTrue(e instanceof IllegalArgumentException);
+                Assertions.assertTrue(e instanceof IllegalArgumentException);
             }
 
             // Set neither expiration day nor expiration time
@@ -450,9 +450,9 @@ public class BucketLifecycleTest extends TestBase {
                 invalidRule.setStatus(RuleStatus.Enabled);
                 request.AddLifecycleRule(invalidRule);
 
-                Assert.fail("Set bucket lifecycle should not be successful");
+                Assertions.fail("Set bucket lifecycle should not be successful");
             } catch (Exception e) {
-                Assert.assertTrue(e instanceof IllegalArgumentException);
+                Assertions.assertTrue(e instanceof IllegalArgumentException);
             }
 
             // With abort multipart upload option
@@ -469,9 +469,9 @@ public class BucketLifecycleTest extends TestBase {
                 invalidRule.setAbortMultipartUpload(abortMultipartUpload);
                 request.AddLifecycleRule(invalidRule);
 
-                Assert.fail("Set bucket lifecycle should not be successful");
+                Assertions.fail("Set bucket lifecycle should not be successful");
             } catch (Exception e) {
-                Assert.assertTrue(e instanceof IllegalArgumentException);
+                Assertions.assertTrue(e instanceof IllegalArgumentException);
             }
 
             // With storage transition option
@@ -490,9 +490,9 @@ public class BucketLifecycleTest extends TestBase {
                 invalidRule.setStorageTransition(storageTransitions);
                 request.AddLifecycleRule(invalidRule);
 
-                Assert.fail("Set bucket lifecycle should not be successful");
+                Assertions.fail("Set bucket lifecycle should not be successful");
             } catch (Exception e) {
-                Assert.assertTrue(e instanceof IllegalArgumentException);
+                Assertions.assertTrue(e instanceof IllegalArgumentException);
             }
 
         } finally {
@@ -506,19 +506,19 @@ public class BucketLifecycleTest extends TestBase {
         final String nonexistentBucket = "unormal-get-bucket-lifecycle";
         try {
             ossClient.getBucketLifecycle(nonexistentBucket);
-            Assert.fail("Get bucket lifecycle should not be successful");
+            Assertions.fail("Get bucket lifecycle should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         }
 
         // Get bucket without ownership
         final String bucketWithoutOwnership = "oss";
         try {
             ossClient.getBucketLogging(bucketWithoutOwnership);
-            Assert.fail("Get bucket lifecycle should not be successful");
+            Assertions.fail("Get bucket lifecycle should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
         }
 
         // Get bucket without setting lifecycle configuration
@@ -527,10 +527,10 @@ public class BucketLifecycleTest extends TestBase {
             ossClient.createBucket(bucketWithoutLifecycleConfiguration);
 
             ossClient.getBucketLifecycle(bucketWithoutLifecycleConfiguration);
-            Assert.fail("Get bucket lifecycle should not be successful");
+            Assertions.fail("Get bucket lifecycle should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_LIFECYCLE, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_LIFECYCLE_ERR));
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_LIFECYCLE, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_LIFECYCLE_ERR));
         } finally {
             TestUtils.waitForCacheExpiration(5);
             ossClient.deleteBucket(bucketWithoutLifecycleConfiguration);
@@ -543,19 +543,19 @@ public class BucketLifecycleTest extends TestBase {
         final String nonexistentBucket = super.bucketName + "unormal-delete-bucket-lifecycle";
         try {
             ossClient.deleteBucketLifecycle(nonexistentBucket);
-            Assert.fail("Delete bucket lifecycle should not be successful");
+            Assertions.fail("Delete bucket lifecycle should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
-            Assert.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assertions.assertTrue(e.getMessage().startsWith(NO_SUCH_BUCKET_ERR));
         }
 
         // Delete bucket without ownership
         final String bucketWithoutOwnership = "oss";
         try {
             ossClient.deleteBucketLifecycle(bucketWithoutOwnership);
-            Assert.fail("Delete bucket lifecycle should not be successful");
+            Assertions.fail("Delete bucket lifecycle should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
         }
 
         // Delete bucket without setting lifecycle configuration
@@ -564,7 +564,7 @@ public class BucketLifecycleTest extends TestBase {
             ossClient.createBucket(bucketWithoutLifecycleConfiguration);
             ossClient.deleteBucketLifecycle(bucketWithoutLifecycleConfiguration);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketWithoutLifecycleConfiguration);
         }

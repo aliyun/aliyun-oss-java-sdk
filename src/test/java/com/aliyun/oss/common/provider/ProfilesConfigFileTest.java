@@ -28,7 +28,7 @@ import com.aliyun.oss.common.auth.InvalidCredentialsException;
 import com.aliyun.oss.common.auth.ProfileConfigFile;
 import com.aliyun.oss.common.auth.ProfileConfigLoader;
 import com.aliyun.oss.common.utils.AuthUtils;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 public class ProfilesConfigFileTest extends TestBase {
@@ -47,10 +47,10 @@ public class ProfilesConfigFileTest extends TestBase {
             ProfileConfigFile configFile = new ProfileConfigFile(AuthUtils.DEFAULT_PROFILE_PATH);
             Credentials credentials = configFile.getCredentials();
 
-            Assert.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
-            Assert.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
-            Assert.assertEquals(TEST_SECURITY_TOKEN, credentials.getSecurityToken());
-            Assert.assertTrue(credentials.useSecurityToken());
+            Assertions.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
+            Assertions.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
+            Assertions.assertEquals(TEST_SECURITY_TOKEN, credentials.getSecurityToken());
+            Assertions.assertTrue(credentials.useSecurityToken());
 
             new File(AuthUtils.DEFAULT_PROFILE_PATH).delete();
 
@@ -64,15 +64,15 @@ public class ProfilesConfigFileTest extends TestBase {
             configFile = new ProfileConfigFile(AuthUtils.DEFAULT_PROFILE_PATH);
             credentials = configFile.getCredentials();
 
-            Assert.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
-            Assert.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
-            Assert.assertNull(credentials.getSecurityToken());
-            Assert.assertFalse(credentials.useSecurityToken());
+            Assertions.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
+            Assertions.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
+            Assertions.assertNull(credentials.getSecurityToken());
+            Assertions.assertFalse(credentials.useSecurityToken());
 
             new File(AuthUtils.DEFAULT_PROFILE_PATH).delete();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -92,10 +92,10 @@ public class ProfilesConfigFileTest extends TestBase {
                     new File(AuthUtils.DEFAULT_PROFILE_PATH), profileLoader);
             Credentials credentials = configFile.getCredentials();
 
-            Assert.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
-            Assert.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
-            Assert.assertEquals(TEST_SECURITY_TOKEN, credentials.getSecurityToken());
-            Assert.assertTrue(credentials.useSecurityToken());
+            Assertions.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
+            Assertions.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
+            Assertions.assertEquals(TEST_SECURITY_TOKEN, credentials.getSecurityToken());
+            Assertions.assertTrue(credentials.useSecurityToken());
 
             new File(AuthUtils.DEFAULT_PROFILE_PATH).delete();
 
@@ -109,10 +109,10 @@ public class ProfilesConfigFileTest extends TestBase {
             configFile = new ProfileConfigFile(new File(AuthUtils.DEFAULT_PROFILE_PATH), profileLoader);
             credentials = configFile.getCredentials();
 
-            Assert.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
-            Assert.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
-            Assert.assertNull(credentials.getSecurityToken());
-            Assert.assertFalse(credentials.useSecurityToken());
+            Assertions.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
+            Assertions.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
+            Assertions.assertNull(credentials.getSecurityToken());
+            Assertions.assertFalse(credentials.useSecurityToken());
 
             new File(AuthUtils.DEFAULT_PROFILE_PATH).delete();
 
@@ -126,15 +126,15 @@ public class ProfilesConfigFileTest extends TestBase {
             configFile = new ProfileConfigFile(AuthUtils.DEFAULT_PROFILE_PATH, profileLoader);
             credentials = configFile.getCredentials();
 
-            Assert.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
-            Assert.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
-            Assert.assertNull(credentials.getSecurityToken());
-            Assert.assertFalse(credentials.useSecurityToken());
+            Assertions.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
+            Assertions.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
+            Assertions.assertNull(credentials.getSecurityToken());
+            Assertions.assertFalse(credentials.useSecurityToken());
 
             new File(AuthUtils.DEFAULT_PROFILE_PATH).delete();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -153,10 +153,10 @@ public class ProfilesConfigFileTest extends TestBase {
             ProfileConfigFile configFile = new ProfileConfigFile(AuthUtils.DEFAULT_PROFILE_PATH);
             Credentials credentials = configFile.getCredentials();
 
-            Assert.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
-            Assert.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
-            Assert.assertNull(credentials.getSecurityToken());
-            Assert.assertFalse(credentials.useSecurityToken());
+            Assertions.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
+            Assertions.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
+            Assertions.assertNull(credentials.getSecurityToken());
+            Assertions.assertFalse(credentials.useSecurityToken());
             
             new File(AuthUtils.DEFAULT_PROFILE_PATH).delete();
             Thread.sleep(1000);
@@ -171,13 +171,13 @@ public class ProfilesConfigFileTest extends TestBase {
 
             credentials = configFile.getCredentials();
 
-            Assert.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
-            Assert.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
-            Assert.assertEquals(TEST_SECURITY_TOKEN, credentials.getSecurityToken());
-            Assert.assertTrue(credentials.useSecurityToken());
+            Assertions.assertEquals(TEST_ACCESS_KEY_ID, credentials.getAccessKeyId());
+            Assertions.assertEquals(TEST_ACCESS_KEY_SECRET, credentials.getSecretAccessKey());
+            Assertions.assertEquals(TEST_SECURITY_TOKEN, credentials.getSecurityToken());
+            Assertions.assertTrue(credentials.useSecurityToken());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -194,7 +194,7 @@ public class ProfilesConfigFileTest extends TestBase {
 
             try {
                 configFile.getCredentials();
-                Assert.fail("ProfileConfigFile.getCredentials should not be successful");
+                Assertions.fail("ProfileConfigFile.getCredentials should not be successful");
             } catch (InvalidCredentialsException e) {
 
             }
@@ -206,13 +206,13 @@ public class ProfilesConfigFileTest extends TestBase {
                     AuthUtils.DEFAULT_SECTION_NAME, options);
             try {
                 configFile.getCredentials();
-                Assert.fail("ProfileConfigFile.getCredentials should not be successful");
+                Assertions.fail("ProfileConfigFile.getCredentials should not be successful");
             } catch (InvalidCredentialsException e) {
 
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             new File(AuthUtils.DEFAULT_PROFILE_PATH).delete();
         }
@@ -223,7 +223,7 @@ public class ProfilesConfigFileTest extends TestBase {
         try {
             String filepath = null;
             ProfileConfigFile profileConfigFile = new ProfileConfigFile(filepath);
-            Assert.fail("File path error, should be failed here.");
+            Assertions.fail("File path error, should be failed here.");
         } catch (IllegalArgumentException e) {
             // expected.
         }

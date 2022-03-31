@@ -25,7 +25,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 import com.aliyun.oss.OSSErrorCode;
@@ -60,16 +60,16 @@ public class SymlinkTest extends TestBase {
             ossClient.createSymlink(createSymlinkRequest);
 
             OSSSymlink symbolicLink = ossClient.getSymlink(bucketName, symLink);
-            Assert.assertEquals(symbolicLink.getSymlink(), symLink);
-            Assert.assertEquals(symbolicLink.getTarget(), targetObject);
-            Assert.assertEquals(symbolicLink.getMetadata().getContentType(), "text/plain");
-            Assert.assertEquals(symbolicLink.getMetadata().getUserMetadata().get("property"), "property-value");   
-            Assert.assertEquals(symbolicLink.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(symbolicLink.getSymlink(), symLink);
+            Assertions.assertEquals(symbolicLink.getTarget(), targetObject);
+            Assertions.assertEquals(symbolicLink.getMetadata().getContentType(), "text/plain");
+            Assertions.assertEquals(symbolicLink.getMetadata().getUserMetadata().get("property"), "property-value");   
+            Assertions.assertEquals(symbolicLink.getRequestId().length(), REQUEST_ID_LEN);
                         
             ossClient.deleteObject(bucketName, symLink);
             ossClient.deleteObject(bucketName, targetObject);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -84,14 +84,14 @@ public class SymlinkTest extends TestBase {
             ossClient.createSymlink(bucketName, symLink, targetObject);
 
             OSSSymlink symbolicLink = ossClient.getSymlink(bucketName, symLink);
-            Assert.assertEquals(symbolicLink.getSymlink(), symLink);
-            Assert.assertEquals(symbolicLink.getTarget(), targetObject);
-            Assert.assertEquals(symbolicLink.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(symbolicLink.getSymlink(), symLink);
+            Assertions.assertEquals(symbolicLink.getTarget(), targetObject);
+            Assertions.assertEquals(symbolicLink.getRequestId().length(), REQUEST_ID_LEN);
                         
             ossClient.deleteObject(bucketName, symLink);
             ossClient.deleteObject(bucketName, targetObject);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -104,18 +104,18 @@ public class SymlinkTest extends TestBase {
             
             OSSSymlink symbolicLink = ossClient.getSymlink(
                     bucketName, symLink);
-            Assert.assertEquals(symbolicLink.getSymlink(), symLink);
-            Assert.assertEquals(symbolicLink.getTarget(), symLink);
+            Assertions.assertEquals(symbolicLink.getSymlink(), symLink);
+            Assertions.assertEquals(symbolicLink.getTarget(), symLink);
             
             try {
                 ossClient.getObject(bucketName, symLink);
             } catch (OSSException e) {
-                Assert.assertEquals("InvalidTargetType", e.getErrorCode());
+                Assertions.assertEquals("InvalidTargetType", e.getErrorCode());
             }
 
             ossClient.deleteObject(bucketName, symLink);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -125,16 +125,16 @@ public class SymlinkTest extends TestBase {
 
         try {
             OSSSymlink symbolicLink = ossClient.getSymlink(bucketName, symLink);
-            Assert.assertNull(symbolicLink.getSymlink());
+            Assertions.assertNull(symbolicLink.getSymlink());
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
         }
         
         try {
             ossClient.createSymlink(bucketName, symLink, targetObject);
             ossClient.getObject(bucketName, symLink);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_SYM_LINK_TARGET, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_SYM_LINK_TARGET, e.getErrorCode());
         }
     }
     
@@ -150,9 +150,9 @@ public class SymlinkTest extends TestBase {
 
             OSSSymlink symbolicLink = ossClient.getSymlink(
                     bucketName, symLink);
-            Assert.assertEquals(symbolicLink.getSymlink(), symLink);
-            Assert.assertEquals(symbolicLink.getTarget(), targetObject);
-            Assert.assertEquals(symbolicLink.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(symbolicLink.getSymlink(), symLink);
+            Assertions.assertEquals(symbolicLink.getTarget(), targetObject);
+            Assertions.assertEquals(symbolicLink.getRequestId().length(), REQUEST_ID_LEN);
 
             // content
             OSSObject ossObject = ossClient.getObject(bucketName, symLink);
@@ -167,16 +167,16 @@ public class SymlinkTest extends TestBase {
             }
             reader.close();
             
-            Assert.assertEquals(contentBuilder.toString(), content);
+            Assertions.assertEquals(contentBuilder.toString(), content);
             
             // size
             ObjectMetadata meta = ossClient.getObjectMetadata(bucketName, symLink);
-            Assert.assertEquals(meta.getContentLength(), content.length());
+            Assertions.assertEquals(meta.getContentLength(), content.length());
 
             ossClient.deleteObject(bucketName, symLink);
             ossClient.deleteObject(bucketName, targetObject);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     
@@ -197,12 +197,12 @@ public class SymlinkTest extends TestBase {
             ossClient.createSymlink(bucketName, symLink, targetObject);
 
             ObjectMetadata meta = ossClient.getObjectMetadata(bucketName, symLink);
-            Assert.assertNull(meta.getUserMetadata().get("meta"));
+            Assertions.assertNull(meta.getUserMetadata().get("meta"));
 
             ossClient.deleteObject(bucketName, symLink);
             ossClient.deleteObject(bucketName, targetObject);
         } catch (Exception e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
     

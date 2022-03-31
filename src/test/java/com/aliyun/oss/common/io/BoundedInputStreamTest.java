@@ -25,8 +25,7 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
 
 public class BoundedInputStreamTest {
     @Test
@@ -40,39 +39,39 @@ public class BoundedInputStreamTest {
             input = new BoundedInputStream(new ByteArrayInputStream(data.getBytes()), 2);
             input.mark(10);
             ret = input.read(out);
-            assertEquals(1, ret);
+            Assertions.assertEquals(1, ret);
             ret = input.read();
-            assertEquals('e', ret);
+            Assertions.assertEquals('e', ret);
             ret = input.read();
-            assertEquals(-1, ret);
+            Assertions.assertEquals(-1, ret);
 
-            assertEquals(0, input.available());
+            Assertions.assertEquals(0, input.available());
             input.reset();
             input.available();
 
             input.skip(1);
             ret = input.read();
-            assertEquals('e', ret);
+            Assertions.assertEquals('e', ret);
 
             input.setPropagateClose(false);
-            assertEquals(false, input.isPropagateClose());
+            Assertions.assertEquals(false, input.isPropagateClose());
             input.close();
             input.setPropagateClose(true);
-            assertEquals(true, input.isPropagateClose());
+            Assertions.assertEquals(true, input.isPropagateClose());
 
             input.toString();
 
         } catch (IOException e) {
-            assertTrue(false);
+            Assertions.assertTrue(false);
         }
 
         try {
             byte[] out = new byte[10];
             input = new BoundedInputStream(new ByteArrayInputStream(data.getBytes()));
             ret = input.read(out);
-            assertEquals(data.length(), ret);
+            Assertions.assertEquals(data.length(), ret);
         } catch (Exception e) {
-            assertTrue(false);
+            Assertions.assertTrue(false);
         }
     }
 }

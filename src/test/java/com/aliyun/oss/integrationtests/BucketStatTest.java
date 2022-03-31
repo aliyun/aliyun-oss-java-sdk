@@ -19,7 +19,7 @@
 
 package com.aliyun.oss.integrationtests;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 
@@ -51,29 +51,29 @@ public class BucketStatTest extends TestBase {
             uploadFileRequest.setTaskNum(10);
             
             UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
-            Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
-            Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
+            Assertions.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
+            Assertions.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
             
             // init upload
             InitiateMultipartUploadRequest initiateMultipartUploadRequest = 
                     new InitiateMultipartUploadRequest(bucketName, key);
             InitiateMultipartUploadResult initiateMultipartUploadResult = 
                     ossClient.initiateMultipartUpload(initiateMultipartUploadRequest);
-            Assert.assertEquals(initiateMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(initiateMultipartUploadResult.getRequestId().length(), REQUEST_ID_LEN);
             uploadId = initiateMultipartUploadResult.getUploadId();
             
             BucketStat stat = ossClient.getBucketStat(bucketName);
             System.out.println(stat.getStorageSize() + "," + stat.getObjectCount() + "," + stat.getMultipartUploadCount());
-            Assert.assertTrue(stat.getStorageSize() >= 1024 * 300);
-            Assert.assertTrue(stat.getObjectCount() >= 1);
-            Assert.assertTrue(stat.getMultipartUploadCount() >= 1);
-            Assert.assertEquals(stat.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertTrue(stat.getStorageSize() >= 1024 * 300);
+            Assertions.assertTrue(stat.getObjectCount() >= 1);
+            Assertions.assertTrue(stat.getMultipartUploadCount() >= 1);
+            Assertions.assertEquals(stat.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
         	e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } catch (Throwable e) {
         	e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
         	if (uploadId != null) {
                 AbortMultipartUploadRequest AbortMultipartUploadRequest = 
@@ -90,9 +90,9 @@ public class BucketStatTest extends TestBase {
         // bucket non-existent 
         try {            
             ossClient.getBucketStat(bucketName);
-            Assert.fail("Get bucket stat should not be successful");
+            Assertions.fail("Get bucket stat should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
         }
 
     }

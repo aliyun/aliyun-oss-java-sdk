@@ -20,7 +20,7 @@
 package com.aliyun.oss.common.utils;
 
 import com.aliyun.oss.utils.ResourceUtils;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.Test;
 
 import java.io.File;
@@ -30,8 +30,7 @@ import java.io.Writer;
 
 import static com.aliyun.oss.common.utils.AuthUtils.loadPrivateKeyFromFile;
 import static com.aliyun.oss.common.utils.AuthUtils.loadPublicKeyFromFile;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
 
 public class AuthUtilTest {
 
@@ -42,16 +41,16 @@ public class AuthUtilTest {
 
         try {
             data = loadPublicKeyFromFile(path);
-            assertEquals(false, data.isEmpty());
+            Assertions.assertEquals(false, data.isEmpty());
         } catch (Exception e) {
-            Assert.fail("could not here.");
+            Assertions.fail("could not here.");
         }
 
         try {
             data = loadPublicKeyFromFile("invalid path");
-            Assert.fail("could not here.");
+            Assertions.fail("could not here.");
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
@@ -61,16 +60,16 @@ public class AuthUtilTest {
         String path = ResourceUtils.getTestFilename("oss/rsaPrivateKey.pem");
         try {
             data = loadPrivateKeyFromFile(path);
-            assertEquals(false, data.isEmpty());
+            Assertions.assertEquals(false, data.isEmpty());
         } catch (Exception e) {
-            Assert.fail("could not here.");
+            Assertions.fail("could not here.");
         }
 
         try {
             data = loadPrivateKeyFromFile("invalid path");
-            Assert.fail("could not here.");
+            Assertions.fail("could not here.");
         } catch (Exception e) {
-            assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 
@@ -88,14 +87,14 @@ public class AuthUtilTest {
             writer.close();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
             String data = loadPrivateKeyFromFile(file.getAbsolutePath());
-            assertEquals("abc\n", data);
+            Assertions.assertEquals("abc\n", data);
         } catch (Exception e) {
-            Assert.fail("load private key error.");
+            Assertions.fail("load private key error.");
         }
     }
 

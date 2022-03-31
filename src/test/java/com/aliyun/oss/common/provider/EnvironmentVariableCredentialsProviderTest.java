@@ -32,7 +32,7 @@ import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.auth.CredentialsProviderFactory;
 import com.aliyun.oss.common.auth.EnvironmentVariableCredentialsProvider;
 import com.aliyun.oss.common.utils.AuthUtils;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 public class EnvironmentVariableCredentialsProviderTest extends TestBase {
@@ -56,12 +56,12 @@ public class EnvironmentVariableCredentialsProviderTest extends TestBase {
             // env provider
             EnvironmentVariableCredentialsProvider credentialsProvider = new EnvironmentVariableCredentialsProvider();
             Credentials credentials = credentialsProvider.getCredentials();
-            Assert.assertEquals(credentials.getAccessKeyId(), TestConfig.ROOT_ACCESS_KEY_ID);
-            Assert.assertEquals(credentials.getSecretAccessKey(), TestConfig.ROOT_ACCESS_KEY_SECRET);
-            Assert.assertFalse(credentials.useSecurityToken());
+            Assertions.assertEquals(credentials.getAccessKeyId(), TestConfig.ROOT_ACCESS_KEY_ID);
+            Assertions.assertEquals(credentials.getSecretAccessKey(), TestConfig.ROOT_ACCESS_KEY_SECRET);
+            Assertions.assertFalse(credentials.useSecurityToken());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -90,13 +90,13 @@ public class EnvironmentVariableCredentialsProviderTest extends TestBase {
             // env provider
             EnvironmentVariableCredentialsProvider credentialsProvider = new EnvironmentVariableCredentialsProvider();
             Credentials credentials = credentialsProvider.getCredentials();
-            Assert.assertEquals(credentials.getAccessKeyId(), assumeRoleCred.getAccessKeyId());
-            Assert.assertEquals(credentials.getSecretAccessKey(), assumeRoleCred.getSecretAccessKey());
-            Assert.assertEquals(credentials.getSecurityToken(), assumeRoleCred.getSecurityToken());
-            Assert.assertTrue(credentials.useSecurityToken());
+            Assertions.assertEquals(credentials.getAccessKeyId(), assumeRoleCred.getAccessKeyId());
+            Assertions.assertEquals(credentials.getSecretAccessKey(), assumeRoleCred.getSecretAccessKey());
+            Assertions.assertEquals(credentials.getSecurityToken(), assumeRoleCred.getSecurityToken());
+            Assertions.assertTrue(credentials.useSecurityToken());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -132,7 +132,7 @@ public class EnvironmentVariableCredentialsProviderTest extends TestBase {
             ossClient.shutdown();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -174,7 +174,7 @@ public class EnvironmentVariableCredentialsProviderTest extends TestBase {
             ossClient.shutdown();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 

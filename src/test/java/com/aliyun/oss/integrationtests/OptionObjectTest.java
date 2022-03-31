@@ -24,7 +24,7 @@ import static com.aliyun.oss.integrationtests.TestUtils.batchPutObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 
@@ -42,7 +42,7 @@ public class OptionObjectTest extends TestBase {
         existingKeys.add(key);
         
         if (!batchPutObject(ossClient, bucketName, existingKeys)) {
-            Assert.fail("batch put object failed");
+            Assertions.fail("batch put object failed");
         }
         
         final String origin = "http://www.example.com";
@@ -56,7 +56,7 @@ public class OptionObjectTest extends TestBase {
         try {
             ossClient.optionsObject(optionsRequest);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, e.getErrorCode());
         }
         
         /*
@@ -74,9 +74,9 @@ public class OptionObjectTest extends TestBase {
         // Now options object will be successful
         ResponseMessage response = secondClient.optionsObject(optionsRequest);
         Map<String, String> responseHeaders =  response.getHeaders();
-        Assert.assertEquals(origin, responseHeaders.get(OSSHeaders.ORIGIN));
-        Assert.assertEquals(requestHeaders, responseHeaders.get(OSSHeaders.ACCESS_CONTROL_REQUEST_HEADER));
-        Assert.assertEquals(HttpMethod.PUT, responseHeaders.get(OSSHeaders.ACCESS_CONTROL_ALLOW_METHODS));
+        Assertions.assertEquals(origin, responseHeaders.get(OSSHeaders.ORIGIN));
+        Assertions.assertEquals(requestHeaders, responseHeaders.get(OSSHeaders.ACCESS_CONTROL_REQUEST_HEADER));
+        Assertions.assertEquals(HttpMethod.PUT, responseHeaders.get(OSSHeaders.ACCESS_CONTROL_ALLOW_METHODS));
         */
     }
 }

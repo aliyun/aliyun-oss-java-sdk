@@ -43,7 +43,7 @@ import com.aliyun.oss.crypto.EncryptionMaterials;
 import com.aliyun.oss.crypto.KmsEncryptionMaterials;
 import com.aliyun.oss.crypto.MultipartUploadCryptoContext;
 
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 public class EncryptionClientKmsTest extends TestBase {
     private OSSEncryptionClient ossEncryptionClient;
@@ -84,10 +84,10 @@ public class EncryptionClientKmsTest extends TestBase {
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             OSSObject ossObject = ossEncryptionClient.getObject(getObjectRequest);
             String readContent = readOSSObject(ossObject);
-            Assert.assertEquals(content, readContent.toString());
+            Assertions.assertEquals(content, readContent.toString());
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -103,10 +103,10 @@ public class EncryptionClientKmsTest extends TestBase {
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             OSSObject ossObject = ossEncryptionClient.getObject(getObjectRequest);
             String readContent = readOSSObject(ossObject);
-            Assert.assertEquals(content, readContent.toString());
+            Assertions.assertEquals(content, readContent.toString());
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -124,11 +124,11 @@ public class EncryptionClientKmsTest extends TestBase {
             ossEncryptionClient.getObject(getObjectRequest, new File(filePathNew));
 
             File fileNew = new File(filePathNew);
-            Assert.assertTrue("comparte file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
+            Assertions.assertTrue(compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()), "comparte file");
             fileNew.delete();
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -153,19 +153,19 @@ public class EncryptionClientKmsTest extends TestBase {
             is1.skip(rangeLower);
             int len1 = is1.read(buffer1, 0, range);
             is1.close();
-            Assert.assertEquals(range, len1);
+            Assertions.assertEquals(range, len1);
 
             File fileNew = new File(filePathNew);
             InputStream is2 = new FileInputStream(fileNew);
             byte[] buffer2 = new byte[1024];
             int len2 = is2.read(buffer2);
             is2.close();
-            Assert.assertEquals(range, len2);
-            Assert.assertTrue(Arrays.equals(buffer1, buffer2));
+            Assertions.assertEquals(range, len2);
+            Assertions.assertTrue(Arrays.equals(buffer1, buffer2));
             fileNew.delete();
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -174,26 +174,26 @@ public class EncryptionClientKmsTest extends TestBase {
         try {
             final String content = "qwertyuuihonkffttdctgvbkhiijojilkmkeowirnskdnsiwi93729741084084875vydrdrrdrwdfdfds"
                     + "qwertyuiopdfghjklcvbnm,rertyufghcvb";
-            Assert.assertEquals(content.length(), 117);
+            Assertions.assertEquals(content.length(), 117);
             int maxRange = content.length() - 1;
 
             try {
                 checkRangeGet(content, 20, 10);
-                Assert.fail("range[0] > range[1] is not allowed.");
+                Assertions.fail("range[0] > range[1] is not allowed.");
             } catch (ClientException e) {
                 // Excepted excption.
             }
 
             try {
                 checkRangeGet(content, -1, 3);
-                Assert.fail("range[0] < 0 is not allowed");
+                Assertions.fail("range[0] < 0 is not allowed");
             } catch (ClientException e) {
                 // Excepted excption.
             }
 
             try {
                 checkRangeGet(content, 20, -1);
-                Assert.fail("range[1] < 0 is not allowed");
+                Assertions.fail("range[1] < 0 is not allowed");
             } catch (ClientException e) {
                 // Excepted excption.
             }
@@ -205,7 +205,7 @@ public class EncryptionClientKmsTest extends TestBase {
             checkRangeGet(content, maxRange + 100, maxRange + 200);
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -228,7 +228,7 @@ public class EncryptionClientKmsTest extends TestBase {
         ossObject = ossClient.getObject(getObjectRequest);
         String result2 = readOSSObject(ossObject);
 
-        Assert.assertEquals(result2, result1);
+        Assertions.assertEquals(result2, result1);
     }
 
     private String readOSSObject(OSSObject ossObject) throws Throwable {
@@ -258,10 +258,10 @@ public class EncryptionClientKmsTest extends TestBase {
             InitiateMultipartUploadResult upresult = ossEncryptionClient.initiateMultipartUpload(initiateMultipartUploadRequest, context);
             String uploadId = upresult.getUploadId();
 
-            Assert.assertEquals(context.getUploadId(), uploadId);
-            Assert.assertEquals(context.getPartSize(), partSize);
-            Assert.assertNotNull(context.getUploadId());
-            Assert.assertNotNull(context.getContentCryptoMaterial());
+            Assertions.assertEquals(context.getUploadId(), uploadId);
+            Assertions.assertEquals(context.getPartSize(), partSize);
+            Assertions.assertNotNull(context.getUploadId());
+            Assertions.assertNotNull(context.getContentCryptoMaterial());
 
             // Create partETags
             List<PartETag> partETags = new ArrayList<PartETag>();
@@ -293,11 +293,11 @@ public class EncryptionClientKmsTest extends TestBase {
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             ossEncryptionClient.getObject(getObjectRequest, new File(filePathNew));
             File fileNew = new File(filePathNew);
-            Assert.assertTrue("compare file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
+            Assertions.assertTrue(compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()), "compare file");
             fileNew.delete();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             ossClient.deleteObject(bucketName, key);
         }
@@ -315,7 +315,7 @@ public class EncryptionClientKmsTest extends TestBase {
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             OSSObject ossObject = ossEncryptionClient.getObject(getObjectRequest);
             String readContent = readOSSObject(ossObject);
-            Assert.assertEquals(content, readContent.toString());
+            Assertions.assertEquals(content, readContent.toString());
 
             // Create new encryption materials.
             String newRegion = TestConfig.KMS_REGION_1;
@@ -330,7 +330,7 @@ public class EncryptionClientKmsTest extends TestBase {
             try {
                 getObjectRequest = new GetObjectRequest(bucketName, key);
                 ossEncryptionClient2.getObject(getObjectRequest);
-                Assert.fail("Should be failed here.");
+                Assertions.fail("Should be failed here.");
             } catch (Exception e) {
                 // Expected exception.
             } finally {
@@ -346,10 +346,10 @@ public class EncryptionClientKmsTest extends TestBase {
             ossObject = ossEncryptionClient2.getObject(getObjectRequest);
             readContent = readOSSObject(ossObject);
             ossEncryptionClient2.shutdown();
-            Assert.assertEquals(content, readContent.toString());
+            Assertions.assertEquals(content, readContent.toString());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -374,9 +374,9 @@ public class EncryptionClientKmsTest extends TestBase {
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             OSSObject ossObject = encryptionClient2.getObject(getObjectRequest);
             String readContent = readOSSObject(ossObject);
-            Assert.assertEquals(content, readContent.toString());
+            Assertions.assertEquals(content, readContent.toString());
         } catch (Throwable e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
@@ -391,7 +391,7 @@ public class EncryptionClientKmsTest extends TestBase {
             try {
                 GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
                 encryptionClient3.getObject(getObjectRequest);
-                Assert.fail("Has no correct region, should be failed.");
+                Assertions.fail("Has no correct region, should be failed.");
             } catch (Exception e) {
                 // Expected exception.
             } finally {
@@ -406,16 +406,16 @@ public class EncryptionClientKmsTest extends TestBase {
                 GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
                 OSSObject ossObject = encryptionClient3.getObject(getObjectRequest);
                 String readContent = readOSSObject(ossObject);
-                Assert.assertEquals(content, readContent.toString());
+                Assertions.assertEquals(content, readContent.toString());
             } catch (Exception e) {
                 e.printStackTrace();
-                Assert.fail(e.getMessage());
+                Assertions.fail(e.getMessage());
             } finally {
                 encryptionClient3.shutdown();
             }
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -438,15 +438,15 @@ public class EncryptionClientKmsTest extends TestBase {
 
             GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
             ObjectMetadata objectMetadata = ossEncryptionClient.getObject(getObjectRequest, new File(filePathNew));
-            Assert.assertEquals(file.length(), objectMetadata.getContentLength());
-            Assert.assertEquals("propval", objectMetadata.getUserMetadata().get("prop"));
+            Assertions.assertEquals(file.length(), objectMetadata.getContentLength());
+            Assertions.assertEquals("propval", objectMetadata.getUserMetadata().get("prop"));
 
             File fileNew = new File(filePathNew);
-            Assert.assertTrue("comparte file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
+            Assertions.assertTrue(compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()), "comparte file");
             fileNew.delete();
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -454,7 +454,6 @@ public class EncryptionClientKmsTest extends TestBase {
     public void testDownloadBigFile() {
         try {
             String key = "encryption-client-downloadfile.txt";
-            String filePathNew = key + "-new.txt";
             File file = createSampleFile(key, 2 * 1024 * 1024);
 
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file);
@@ -471,14 +470,14 @@ public class EncryptionClientKmsTest extends TestBase {
             downloadFileRequest.setEnableCheckpoint(true);
 
             DownloadFileResult result = ossEncryptionClient.downloadFile(downloadFileRequest);
-            Assert.assertEquals("propval", result.getObjectMetadata().getUserMetadata().get("prop"));
+            Assertions.assertEquals("propval", result.getObjectMetadata().getUserMetadata().get("prop"));
 
             File fileNew = new File(downloadFile);
-            Assert.assertTrue("compare file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
+            Assertions.assertTrue(compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()), "compare file");
             fileNew.delete();
         } catch (Throwable e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -486,7 +485,6 @@ public class EncryptionClientKmsTest extends TestBase {
     public void testDownloadSmallFile() throws Throwable {
         try {
             String key = "encryption-client-downloadfile.txt";
-            String filePathNew = key + "-new.txt";
             File file = createSampleFile(key, 200 * 1024);
 
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file);
@@ -500,13 +498,13 @@ public class EncryptionClientKmsTest extends TestBase {
             downloadFileRequest.setEnableCheckpoint(true);
 
             DownloadFileResult result = ossEncryptionClient.downloadFile(downloadFileRequest);
-            Assert.assertEquals(file.length(), result.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(file.length(), result.getObjectMetadata().getContentLength());
 
             File fileNew = new File(downloadFile);
-            Assert.assertTrue("compare file", compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()));
+            Assertions.assertTrue(compareFile(file.getAbsolutePath(), fileNew.getAbsolutePath()), "compare file");
             fileNew.delete();
         } catch (Throwable e){
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -514,7 +512,6 @@ public class EncryptionClientKmsTest extends TestBase {
     public void testDownloadFileWithWrongPartSize() throws Throwable {
         try {
             String key = "encryption-client-downloadfile.txt";
-            String filePathNew = key + "-new.txt";
             File file = createSampleFile(key, 2 * 1024 * 1024);
 
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file);
@@ -528,11 +525,11 @@ public class EncryptionClientKmsTest extends TestBase {
             downloadFileRequest.setEnableCheckpoint(true);
 
             ossEncryptionClient.downloadFile(downloadFileRequest);
-            Assert.fail("the part size is not 16 bytes alignment. should be failed.");
+            Assertions.fail("the part size is not 16 bytes alignment. should be failed.");
         } catch (IllegalArgumentException e) {
             // Expected exception.
         } catch (Throwable e){
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -557,25 +554,25 @@ public class EncryptionClientKmsTest extends TestBase {
             downloadFileRequest.setEnableCheckpoint(true);
             downloadFileRequest.setRange(rangeLower, rangeUpper);
 
-            DownloadFileResult result = ossEncryptionClient.downloadFile(downloadFileRequest);
+            ossEncryptionClient.downloadFile(downloadFileRequest);
 
             InputStream is1 = new FileInputStream(file);
             byte[] buffer1 = new byte[1024 * 600];
             is1.skip(rangeLower);
             int len1 = is1.read(buffer1, 0, range);
             is1.close();
-            Assert.assertEquals(range, len1);
+            Assertions.assertEquals(range, len1);
 
             File fileNew = new File(downloadFile);
             InputStream is2 = new FileInputStream(fileNew);
             byte[] buffer2 = new byte[1024 * 600];
             int len2 = is2.read(buffer2);
             is2.close();
-            Assert.assertEquals(range, len2);
-            Assert.assertTrue(Arrays.equals(buffer1, buffer2));
+            Assertions.assertEquals(range, len2);
+            Assertions.assertTrue(Arrays.equals(buffer1, buffer2));
             fileNew.delete();
         } catch (Throwable e){
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -600,25 +597,25 @@ public class EncryptionClientKmsTest extends TestBase {
             downloadFileRequest.setEnableCheckpoint(true);
             downloadFileRequest.setRange(rangeLower, rangeUpper);
 
-            DownloadFileResult result = ossEncryptionClient.downloadFile(downloadFileRequest);
+            ossEncryptionClient.downloadFile(downloadFileRequest);
 
             InputStream is1 = new FileInputStream(file);
             byte[] buffer1 = new byte[1024];
             is1.skip(rangeLower);
             int len1 = is1.read(buffer1, 0, range);
             is1.close();
-            Assert.assertEquals(range, len1);
+            Assertions.assertEquals(range, len1);
 
             File fileNew = new File(downloadFile);
             InputStream is2 = new FileInputStream(fileNew);
             byte[] buffer2 = new byte[1024];
             int len2 = is2.read(buffer2);
             is2.close();
-            Assert.assertEquals(range, len2);
-            Assert.assertTrue(Arrays.equals(buffer1, buffer2));
+            Assertions.assertEquals(range, len2);
+            Assertions.assertTrue(Arrays.equals(buffer1, buffer2));
             fileNew.delete();
         } catch (Throwable e){
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 }

@@ -22,19 +22,19 @@ package com.aliyun.oss.common.utils;
 import org.junit.Test;
 
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
 
 public class RangeSpecTest {
     @Test
     public void testRangeSpec() {
         RangeSpec rangeSpec = new RangeSpec();
-        assertEquals(0, rangeSpec.getStart());
+        Assertions.assertEquals(0, rangeSpec.getStart());
 
         long[] range = new long[3];
         range[0] = 0;
         range[1] = 12;
         rangeSpec = RangeSpec.parse(range);
-        assertEquals(0, rangeSpec.getStart());
-        assertEquals(12, rangeSpec.getEnd());
+        Assertions.assertEquals(0, rangeSpec.getStart());
+        Assertions.assertEquals(12, rangeSpec.getEnd());
     }
 }

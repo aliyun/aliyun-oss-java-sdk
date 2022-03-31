@@ -29,7 +29,7 @@ import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.model.*;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 
@@ -92,20 +92,20 @@ public class AsyncFetchTaskTest extends TestBase {
             Thread.sleep(1000 * 5);
 
             GetAsyncFetchTaskResult getTaskResult = ossClient.getAsyncFetchTask(bucketName, taskId);
-            Assert.assertEquals(taskId, getTaskResult.getTaskId());
-            Assert.assertEquals(AsyncFetchTaskState.Success, getTaskResult.getAsyncFetchTaskState());
-            Assert.assertTrue(getTaskResult.getErrorMsg().isEmpty());
+            Assertions.assertEquals(taskId, getTaskResult.getTaskId());
+            Assertions.assertEquals(AsyncFetchTaskState.Success, getTaskResult.getAsyncFetchTaskState());
+            Assertions.assertTrue(getTaskResult.getErrorMsg().isEmpty());
 
             AsyncFetchTaskConfiguration taskInfo = getTaskResult.getAsyncFetchTaskConfiguration();
-            Assert.assertEquals(url, taskInfo.getUrl());
-            Assert.assertEquals(contentMd5, taskInfo.getContentMd5());
-            Assert.assertFalse(taskInfo.getIgnoreSameKey());
-            Assert.assertEquals(destObject, taskInfo.getObjectName());
-            Assert.assertTrue(taskInfo.getHost().isEmpty());
-            Assert.assertTrue(taskInfo.getCallback().isEmpty());
+            Assertions.assertEquals(url, taskInfo.getUrl());
+            Assertions.assertEquals(contentMd5, taskInfo.getContentMd5());
+            Assertions.assertFalse(taskInfo.getIgnoreSameKey());
+            Assertions.assertEquals(destObject, taskInfo.getObjectName());
+            Assertions.assertTrue(taskInfo.getHost().isEmpty());
+            Assertions.assertTrue(taskInfo.getCallback().isEmpty());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -123,20 +123,20 @@ public class AsyncFetchTaskTest extends TestBase {
             Thread.sleep(1000 * 5);
 
             GetAsyncFetchTaskResult getTaskResult = ossClient.getAsyncFetchTask(bucketName, taskId);
-            Assert.assertEquals(taskId, getTaskResult.getTaskId());
-            Assert.assertEquals(AsyncFetchTaskState.Success, getTaskResult.getAsyncFetchTaskState());
-            Assert.assertTrue(getTaskResult.getErrorMsg().isEmpty());
+            Assertions.assertEquals(taskId, getTaskResult.getTaskId());
+            Assertions.assertEquals(AsyncFetchTaskState.Success, getTaskResult.getAsyncFetchTaskState());
+            Assertions.assertTrue(getTaskResult.getErrorMsg().isEmpty());
 
             AsyncFetchTaskConfiguration taskInfo = getTaskResult.getAsyncFetchTaskConfiguration();
-            Assert.assertEquals(url, taskInfo.getUrl());
-            Assert.assertEquals(destObject, taskInfo.getObjectName());
-            Assert.assertTrue(taskInfo.getContentMd5().isEmpty());
-            Assert.assertTrue(taskInfo.getHost().isEmpty());
-            Assert.assertTrue(taskInfo.getCallback().isEmpty());
-            Assert.assertTrue(taskInfo.getIgnoreSameKey());
+            Assertions.assertEquals(url, taskInfo.getUrl());
+            Assertions.assertEquals(destObject, taskInfo.getObjectName());
+            Assertions.assertTrue(taskInfo.getContentMd5().isEmpty());
+            Assertions.assertTrue(taskInfo.getHost().isEmpty());
+            Assertions.assertTrue(taskInfo.getCallback().isEmpty());
+            Assertions.assertTrue(taskInfo.getIgnoreSameKey());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -158,20 +158,20 @@ public class AsyncFetchTaskTest extends TestBase {
             Thread.sleep(1000 * 5);
 
             GetAsyncFetchTaskResult getTaskResult = ossClient.getAsyncFetchTask(bucketName, taskId);
-            Assert.assertEquals(taskId, getTaskResult.getTaskId());
-            Assert.assertEquals(AsyncFetchTaskState.Success, getTaskResult.getAsyncFetchTaskState());
-            Assert.assertTrue(getTaskResult.getErrorMsg().isEmpty());
+            Assertions.assertEquals(taskId, getTaskResult.getTaskId());
+            Assertions.assertEquals(AsyncFetchTaskState.Success, getTaskResult.getAsyncFetchTaskState());
+            Assertions.assertTrue(getTaskResult.getErrorMsg().isEmpty());
 
             AsyncFetchTaskConfiguration taskInfo = getTaskResult.getAsyncFetchTaskConfiguration();
-            Assert.assertEquals(url, taskInfo.getUrl());
-            Assert.assertEquals(destObject, taskInfo.getObjectName());
-            Assert.assertTrue(taskInfo.getContentMd5().isEmpty());
-            Assert.assertTrue(taskInfo.getHost().isEmpty());
-            Assert.assertTrue(taskInfo.getCallback().isEmpty());
-            Assert.assertTrue(taskInfo.getIgnoreSameKey());
+            Assertions.assertEquals(url, taskInfo.getUrl());
+            Assertions.assertEquals(destObject, taskInfo.getObjectName());
+            Assertions.assertTrue(taskInfo.getContentMd5().isEmpty());
+            Assertions.assertTrue(taskInfo.getHost().isEmpty());
+            Assertions.assertTrue(taskInfo.getCallback().isEmpty());
+            Assertions.assertTrue(taskInfo.getIgnoreSameKey());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -191,15 +191,15 @@ public class AsyncFetchTaskTest extends TestBase {
             Thread.sleep(1000 * 5);
 
             GetAsyncFetchTaskResult getTaskResult = ossClient.getAsyncFetchTask(bucketName, taskId);
-            Assert.assertEquals(taskId, getTaskResult.getTaskId());
-            Assert.assertEquals(AsyncFetchTaskState.FetchSuccessCallbackFailed, getTaskResult.getAsyncFetchTaskState());
-            Assert.assertFalse(getTaskResult.getErrorMsg().isEmpty());
+            Assertions.assertEquals(taskId, getTaskResult.getTaskId());
+            Assertions.assertEquals(AsyncFetchTaskState.FetchSuccessCallbackFailed, getTaskResult.getAsyncFetchTaskState());
+            Assertions.assertFalse(getTaskResult.getErrorMsg().isEmpty());
 
             AsyncFetchTaskConfiguration taskInfo = getTaskResult.getAsyncFetchTaskConfiguration();
-            Assert.assertEquals(callback, taskInfo.getCallback());
+            Assertions.assertEquals(callback, taskInfo.getCallback());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -218,12 +218,12 @@ public class AsyncFetchTaskTest extends TestBase {
             Thread.sleep(1000 * 5);
 
             GetAsyncFetchTaskResult getTaskResult = ossClient.getAsyncFetchTask(bucketName, taskId);
-            Assert.assertEquals(taskId, getTaskResult.getTaskId());
-            Assert.assertEquals(AsyncFetchTaskState.Failed, getTaskResult.getAsyncFetchTaskState());
-            Assert.assertFalse(getTaskResult.getErrorMsg().isEmpty());
+            Assertions.assertEquals(taskId, getTaskResult.getTaskId());
+            Assertions.assertEquals(AsyncFetchTaskState.Failed, getTaskResult.getAsyncFetchTaskState());
+            Assertions.assertFalse(getTaskResult.getErrorMsg().isEmpty());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -235,7 +235,7 @@ public class AsyncFetchTaskTest extends TestBase {
             ossClient.putObject(bucketName, destObject, new ByteArrayInputStream("123".getBytes()));
         } catch (ClientException e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
@@ -245,10 +245,10 @@ public class AsyncFetchTaskTest extends TestBase {
                     .withIgnoreSameKey(false);
 
             SetAsyncFetchTaskResult setTaskResult = ossClient.setAsyncFetchTask(bucketName, configuration);
-            Assert.assertNotNull(setTaskResult.getTaskId());
+            Assertions.assertNotNull(setTaskResult.getTaskId());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
@@ -258,9 +258,9 @@ public class AsyncFetchTaskTest extends TestBase {
                     .withIgnoreSameKey(true);
 
             SetAsyncFetchTaskResult setTaskResult = ossClient.setAsyncFetchTask(bucketName, configuration);
-            Assert.fail("dest object has already exist, fetch task failed.");
+            Assertions.fail("dest object has already exist, fetch task failed.");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.OBJECT_ALREADY_EXISTS, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.OBJECT_ALREADY_EXISTS, e.getErrorCode());
         }
 
         try {
@@ -269,9 +269,9 @@ public class AsyncFetchTaskTest extends TestBase {
                     .withObjectName(destObject);
 
             SetAsyncFetchTaskResult setTaskResult = ossClient.setAsyncFetchTask(bucketName, configuration);
-            Assert.fail("dest object has already exist, fetch task failed.");
+            Assertions.fail("dest object has already exist, fetch task failed.");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.OBJECT_ALREADY_EXISTS, e.getErrorCode());
+            Assertions.assertEquals(OSSErrorCode.OBJECT_ALREADY_EXISTS, e.getErrorCode());
         }
     }
 

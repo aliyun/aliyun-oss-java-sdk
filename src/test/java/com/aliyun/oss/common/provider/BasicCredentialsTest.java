@@ -21,7 +21,7 @@ package com.aliyun.oss.common.provider;
 
 import com.aliyun.oss.common.auth.BasicCredentials;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.Test;
 
 public class BasicCredentialsTest extends TestBase {
@@ -31,20 +31,20 @@ public class BasicCredentialsTest extends TestBase {
         try {
             BasicCredentials credentials = new BasicCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, SECURITY_TOKEN)
                     .withExpiredFactor(0.8).withExpiredDuration(900);
-            Assert.assertEquals(credentials.getAccessKeyId(), ACCESS_KEY_ID);
-            Assert.assertEquals(credentials.getSecretAccessKey(), ACCESS_KEY_SECRET);
-            Assert.assertEquals(credentials.getSecurityToken(), SECURITY_TOKEN);
-            Assert.assertTrue(credentials.useSecurityToken());
+            Assertions.assertEquals(credentials.getAccessKeyId(), ACCESS_KEY_ID);
+            Assertions.assertEquals(credentials.getSecretAccessKey(), ACCESS_KEY_SECRET);
+            Assertions.assertEquals(credentials.getSecurityToken(), SECURITY_TOKEN);
+            Assertions.assertTrue(credentials.useSecurityToken());
 
             credentials = new BasicCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, null).withExpiredFactor(0.8)
                     .withExpiredDuration(900);
-            Assert.assertEquals(credentials.getAccessKeyId(), ACCESS_KEY_ID);
-            Assert.assertEquals(credentials.getSecretAccessKey(), ACCESS_KEY_SECRET);
-            Assert.assertNull(credentials.getSecurityToken());
-            Assert.assertFalse(credentials.useSecurityToken());
+            Assertions.assertEquals(credentials.getAccessKeyId(), ACCESS_KEY_ID);
+            Assertions.assertEquals(credentials.getSecretAccessKey(), ACCESS_KEY_SECRET);
+            Assertions.assertNull(credentials.getSecurityToken());
+            Assertions.assertFalse(credentials.useSecurityToken());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -54,15 +54,15 @@ public class BasicCredentialsTest extends TestBase {
             BasicCredentials credentials = new BasicCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, SECURITY_TOKEN)
                     .withExpiredFactor(1.0).withExpiredDuration(1);
             Thread.sleep(2000);
-            Assert.assertTrue(credentials.willSoonExpire());
+            Assertions.assertTrue(credentials.willSoonExpire());
 
             credentials = new BasicCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, SECURITY_TOKEN).withExpiredFactor(1.0)
                     .withExpiredDuration(100);
             Thread.sleep(2000);
-            Assert.assertFalse(credentials.willSoonExpire());
+            Assertions.assertFalse(credentials.willSoonExpire());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -72,20 +72,20 @@ public class BasicCredentialsTest extends TestBase {
             BasicCredentials credentials = new BasicCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, SECURITY_TOKEN)
                     .withExpiredFactor(1.0).withExpiredDuration(3);
             Thread.sleep(2000);
-            Assert.assertFalse(credentials.willSoonExpire());
+            Assertions.assertFalse(credentials.willSoonExpire());
 
             credentials = new BasicCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, SECURITY_TOKEN).withExpiredFactor(0.1)
                     .withExpiredDuration(3);
             Thread.sleep(1000);
-            Assert.assertTrue(credentials.willSoonExpire());
+            Assertions.assertTrue(credentials.willSoonExpire());
 
             credentials = new BasicCredentials(ACCESS_KEY_ID, ACCESS_KEY_SECRET, SECURITY_TOKEN).withExpiredFactor(1.0)
                     .withExpiredDuration(1);
             Thread.sleep(1500);
-            Assert.assertTrue(credentials.willSoonExpire());
+            Assertions.assertTrue(credentials.willSoonExpire());
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -94,39 +94,39 @@ public class BasicCredentialsTest extends TestBase {
         DefaultCredentialProvider provider;
         try {
             provider = new DefaultCredentialProvider(null, "");
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             provider = new DefaultCredentialProvider("", "");
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             provider = new DefaultCredentialProvider(ACCESS_KEY_ID, null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             provider = new DefaultCredentialProvider(ACCESS_KEY_ID, "");
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
 
         try {
             provider = new DefaultCredentialProvider(ACCESS_KEY_ID, ACCESS_KEY_SECRET);
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
             provider.setCredentials(null);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assertions.assertTrue(true);
         }
     }
 

@@ -29,7 +29,7 @@ import java.io.File;
 import java.io.InputStream;
 
 import com.aliyun.oss.InconsistentException;
-import junit.framework.Assert;
+import org.junit.jupiter.api.*;
 
 import org.junit.Test;
 
@@ -54,12 +54,12 @@ public class AppendObjectTest extends TestBase {
                 appendObjectRequest.setPosition(2 * i * instreamLength);
                 AppendObjectResult appendObjectResult = ossClient.appendObject(appendObjectRequest);
                 OSSObject o = ossClient.getObject(bucketName, key);
-                Assert.assertEquals(key, o.getKey());
-                Assert.assertEquals((2 * i + 1) * instreamLength, o.getObjectMetadata().getContentLength());
-                Assert.assertEquals(APPENDABLE_OBJECT_TYPE, o.getObjectMetadata().getObjectType());
-                Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+                Assertions.assertEquals(key, o.getKey());
+                Assertions.assertEquals((2 * i + 1) * instreamLength, o.getObjectMetadata().getContentLength());
+                Assertions.assertEquals(APPENDABLE_OBJECT_TYPE, o.getObjectMetadata().getObjectType());
+                Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
                 if (appendObjectResult.getNextPosition() != null) {
-                    Assert.assertEquals((2 * i + 1) * instreamLength, appendObjectResult.getNextPosition().longValue());
+                    Assertions.assertEquals((2 * i + 1) * instreamLength, appendObjectResult.getNextPosition().longValue());
                 }
                 
                 // Usage style 2
@@ -68,15 +68,15 @@ public class AppendObjectTest extends TestBase {
                 appendObjectRequest.setPosition(appendObjectResult.getNextPosition());
                 appendObjectResult = ossClient.appendObject(appendObjectRequest);
                 o = ossClient.getObject(bucketName, key);
-                Assert.assertEquals(instreamLength * 2 * (i + 1), o.getObjectMetadata().getContentLength());
-                Assert.assertEquals(APPENDABLE_OBJECT_TYPE, o.getObjectMetadata().getObjectType());
+                Assertions.assertEquals(instreamLength * 2 * (i + 1), o.getObjectMetadata().getContentLength());
+                Assertions.assertEquals(APPENDABLE_OBJECT_TYPE, o.getObjectMetadata().getObjectType());
                 if (appendObjectResult.getNextPosition() != null) {                
-                    Assert.assertEquals(instreamLength * 2 * (i + 1), appendObjectResult.getNextPosition().longValue());
+                    Assertions.assertEquals(instreamLength * 2 * (i + 1), appendObjectResult.getNextPosition().longValue());
                 }
-                Assert.assertEquals(appendObjectResult.getRequestId().length(), REQUEST_ID_LEN);
-                Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+                Assertions.assertEquals(appendObjectResult.getRequestId().length(), REQUEST_ID_LEN);
+                Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
             } catch (Exception ex) {
-                Assert.fail(ex.getMessage());
+                Assertions.fail(ex.getMessage());
             }
         }
     }
@@ -90,8 +90,8 @@ public class AppendObjectTest extends TestBase {
             InputStream instream = genFixedLengthInputStream(instreamLength);
             ossClient.putObject(bucketName, key, instream, null);
             OSSObject o = ossClient.getObject(bucketName, key);
-            Assert.assertEquals(key, o.getKey());
-            Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(key, o.getKey());
+            Assertions.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
             o.getObjectContent().close();
             
             try {
@@ -100,11 +100,11 @@ public class AppendObjectTest extends TestBase {
                 appendObjectRequest.setPosition(instreamLength);
                 ossClient.appendObject(appendObjectRequest);
             } catch (OSSException ex) {
-                Assert.assertEquals(OSSErrorCode.OBJECT_NOT_APPENDALBE, ex.getErrorCode());
-                Assert.assertTrue(ex.getMessage().startsWith(OBJECT_NOT_APPENDABLE_ERR));
+                Assertions.assertEquals(OSSErrorCode.OBJECT_NOT_APPENDALBE, ex.getErrorCode());
+                Assertions.assertTrue(ex.getMessage().startsWith(OBJECT_NOT_APPENDABLE_ERR));
             }
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
     }
     
@@ -119,14 +119,14 @@ public class AppendObjectTest extends TestBase {
             appendObjectRequest.setPosition(0L);
             AppendObjectResult appendObjectResult = ossClient.appendObject(appendObjectRequest);
             OSSObject o = ossClient.getObject(bucketName, key);
-            Assert.assertEquals(key, o.getKey());
-            Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
-            Assert.assertEquals(APPENDABLE_OBJECT_TYPE, o.getObjectMetadata().getObjectType());
+            Assertions.assertEquals(key, o.getKey());
+            Assertions.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
+            Assertions.assertEquals(APPENDABLE_OBJECT_TYPE, o.getObjectMetadata().getObjectType());
             if (appendObjectResult.getNextPosition() != null) {
-                Assert.assertEquals(instreamLength, appendObjectResult.getNextPosition().longValue());
+                Assertions.assertEquals(instreamLength, appendObjectResult.getNextPosition().longValue());
             }
-            Assert.assertEquals(appendObjectResult.getRequestId().length(), REQUEST_ID_LEN);
-            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(appendObjectResult.getRequestId().length(), REQUEST_ID_LEN);
+            Assertions.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
             o.getObjectContent().close();
             
             try {
@@ -136,11 +136,11 @@ public class AppendObjectTest extends TestBase {
                 appendObjectRequest.setPosition(instreamLength - 1);        
                 ossClient.appendObject(appendObjectRequest);
             } catch (OSSException ex) {
-                Assert.assertEquals(OSSErrorCode.POSITION_NOT_EQUAL_TO_LENGTH, ex.getErrorCode());
-                Assert.assertTrue(ex.getMessage().startsWith(POSITION_NOT_EQUAL_TO_LENGTH_ERROR));
+                Assertions.assertEquals(OSSErrorCode.POSITION_NOT_EQUAL_TO_LENGTH, ex.getErrorCode());
+                Assertions.assertTrue(ex.getMessage().startsWith(POSITION_NOT_EQUAL_TO_LENGTH_ERROR));
             }
         } catch (Exception ex) {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
     }
     
@@ -150,14 +150,14 @@ public class AppendObjectTest extends TestBase {
         final long instreamLength = 128 * 1024;
         
         try {
-            Assert.assertEquals(true, ossClient.doesBucketExist(bucketName));
+            Assertions.assertEquals(true, ossClient.doesBucketExist(bucketName));
             InputStream instream = genFixedLengthInputStream(instreamLength);
             AppendObjectRequest appendObjectRequest = new AppendObjectRequest(bucketName, key, instream, null);
             // Missing required parameter 'postition'
             ossClient.appendObject(appendObjectRequest);
         } catch (OSSException ex) {
-            Assert.assertEquals(OSSErrorCode.MISSING_ARGUMENT, ex.getErrorCode());
-            Assert.assertTrue(ex.getMessage().startsWith(MISSING_ARGUMENT_ERR));
+            Assertions.assertEquals(OSSErrorCode.MISSING_ARGUMENT, ex.getErrorCode());
+            Assertions.assertTrue(ex.getMessage().startsWith(MISSING_ARGUMENT_ERR));
         }
     }
 
@@ -167,15 +167,15 @@ public class AppendObjectTest extends TestBase {
         final long instreamLength = 128 * 1024;
 
         try {
-            Assert.assertEquals(true, ossClient.doesBucketExist(bucketName));
+            Assertions.assertEquals(true, ossClient.doesBucketExist(bucketName));
             InputStream instream = genFixedLengthInputStream(instreamLength);
             AppendObjectRequest appendObjectRequest = new AppendObjectRequest(bucketName, key, instream, null);
             appendObjectRequest.setPosition((long) 0);
             appendObjectRequest.setInitCRC((long) 123);
             ossClient.appendObject(appendObjectRequest);
-            Assert.assertTrue(false);
+            Assertions.assertTrue(false);
         } catch (Exception ex) {
-            Assert.assertTrue(ex instanceof InconsistentException);
+            Assertions.assertTrue(ex instanceof InconsistentException);
         }
     }
 }
