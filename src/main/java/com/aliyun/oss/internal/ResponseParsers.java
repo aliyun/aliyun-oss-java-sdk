@@ -37,22 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.CheckedInputStream;
 
-import com.aliyun.oss.model.AddBucketCnameResult;
-import com.aliyun.oss.model.DeleteDirectoryResult;
-import com.aliyun.oss.model.GetBucketInventoryConfigurationResult;
-import com.aliyun.oss.model.GetBucketWormResult;
-import com.aliyun.oss.model.InitiateBucketWormResult;
-import com.aliyun.oss.model.InventoryServerSideEncryptionOSS;
-import com.aliyun.oss.model.ListBucketInventoryConfigurationsResult;
-import com.aliyun.oss.model.InventoryConfiguration;
-import com.aliyun.oss.model.InventoryDestination;
-import com.aliyun.oss.model.InventoryEncryption;
-import com.aliyun.oss.model.InventoryFilter;
-import com.aliyun.oss.model.InventoryOSSBucketDestination;
-import com.aliyun.oss.model.InventorySchedule;
-import com.aliyun.oss.model.InventoryServerSideEncryptionKMS;
-import com.aliyun.oss.model.ListObjectsV2Result;
-import com.aliyun.oss.model.VoidResult;
+import com.aliyun.oss.model.*;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.JDOMParseException;
@@ -64,93 +49,16 @@ import com.aliyun.oss.common.parser.ResponseParser;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.common.utils.StringUtils;
-import com.aliyun.oss.model.AccessControlList;
 import com.aliyun.oss.model.AddBucketReplicationRequest.ReplicationAction;
 import com.aliyun.oss.model.DeleteVersionsResult.DeletedVersion;
-import com.aliyun.oss.model.AppendObjectResult;
-import com.aliyun.oss.model.Bucket;
-import com.aliyun.oss.model.BucketInfo;
-import com.aliyun.oss.model.BucketList;
-import com.aliyun.oss.model.BucketLoggingResult;
-import com.aliyun.oss.model.BucketMetadata;
-import com.aliyun.oss.model.BucketProcess;
-import com.aliyun.oss.model.BucketQosInfo;
-import com.aliyun.oss.model.BucketReferer;
-import com.aliyun.oss.model.BucketReplicationProgress;
-import com.aliyun.oss.model.BucketStat;
-import com.aliyun.oss.model.BucketVersioningConfiguration;
-import com.aliyun.oss.model.BucketWebsiteResult;
-import com.aliyun.oss.model.CannedAccessControlList;
-import com.aliyun.oss.model.CnameConfiguration;
-import com.aliyun.oss.model.CompleteMultipartUploadResult;
-import com.aliyun.oss.model.CopyObjectResult;
-import com.aliyun.oss.model.CreateLiveChannelResult;
-import com.aliyun.oss.model.DataRedundancyType;
-import com.aliyun.oss.model.DeleteObjectsResult;
-import com.aliyun.oss.model.DeleteVersionsResult;
-import com.aliyun.oss.model.GenericResult;
-import com.aliyun.oss.model.GetBucketImageResult;
-import com.aliyun.oss.model.ImageProcess;
-import com.aliyun.oss.model.LiveChannel;
-import com.aliyun.oss.model.LiveChannelInfo;
-import com.aliyun.oss.model.LiveChannelListing;
-import com.aliyun.oss.model.LiveChannelStat;
-import com.aliyun.oss.model.LiveRecord;
 import com.aliyun.oss.model.LiveChannelStat.AudioStat;
 import com.aliyun.oss.model.LiveChannelStat.VideoStat;
-import com.aliyun.oss.model.LiveChannelStatus;
-import com.aliyun.oss.model.LiveChannelTarget;
-import com.aliyun.oss.model.OSSSymlink;
-import com.aliyun.oss.model.OSSVersionSummary;
-import com.aliyun.oss.model.ReplicationRule;
-import com.aliyun.oss.model.GetImageStyleResult;
-import com.aliyun.oss.model.GroupGrantee;
-import com.aliyun.oss.model.InitiateMultipartUploadResult;
-import com.aliyun.oss.model.LifecycleRule;
-import com.aliyun.oss.model.ReplicationStatus;
-import com.aliyun.oss.model.RestoreObjectResult;
-import com.aliyun.oss.model.RoutingRule;
-import com.aliyun.oss.model.ServerSideEncryptionByDefault;
-import com.aliyun.oss.model.ServerSideEncryptionConfiguration;
-import com.aliyun.oss.model.StorageClass;
 import com.aliyun.oss.model.LifecycleRule.RuleStatus;
 import com.aliyun.oss.model.LifecycleRule.StorageTransition;
-import com.aliyun.oss.model.MultipartUpload;
-import com.aliyun.oss.model.MultipartUploadListing;
-import com.aliyun.oss.model.OSSObject;
-import com.aliyun.oss.model.OSSObjectSummary;
-import com.aliyun.oss.model.ObjectAcl;
-import com.aliyun.oss.model.ObjectListing;
-import com.aliyun.oss.model.ObjectMetadata;
-import com.aliyun.oss.model.ObjectPermission;
-import com.aliyun.oss.model.Owner;
-import com.aliyun.oss.model.PartListing;
-import com.aliyun.oss.model.PartSummary;
-import com.aliyun.oss.model.Payer;
-import com.aliyun.oss.model.Permission;
-import com.aliyun.oss.model.PutObjectResult;
-import com.aliyun.oss.model.PushflowStatus;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
-import com.aliyun.oss.model.CORSConfiguration;
-import com.aliyun.oss.model.SimplifiedObjectMeta;
-import com.aliyun.oss.model.Style;
-import com.aliyun.oss.model.TagSet;
-import com.aliyun.oss.model.UploadPartCopyResult;
-import com.aliyun.oss.model.UserQos;
-import com.aliyun.oss.model.UserQosInfo;
-import com.aliyun.oss.model.VersionListing;
-import com.aliyun.oss.model.GetBucketPolicyResult;
-import com.aliyun.oss.model.GetBucketRequestPaymentResult;
 import com.aliyun.oss.model.LifecycleRule.NoncurrentVersionStorageTransition;
 import com.aliyun.oss.model.LifecycleRule.NoncurrentVersionExpiration;
-import com.aliyun.oss.model.SetAsyncFetchTaskResult;
-import com.aliyun.oss.model.GetAsyncFetchTaskResult;
-import com.aliyun.oss.model.AsyncFetchTaskConfiguration;
-import com.aliyun.oss.model.AsyncFetchTaskState;
-import com.aliyun.oss.model.VpcPolicy;
-import com.aliyun.oss.model.Vpcip;
-import com.aliyun.oss.model.GetBucketResourceGroupResult;
-import com.aliyun.oss.model.TransferAcceleration;
+
 /*
  * A collection of parsers that parse HTTP reponses into corresponding human-readable results.
  */
@@ -175,6 +83,8 @@ public final class ResponseParsers {
     public static final GetBucketReplicationLocationResponseParser getBucketReplicationLocationResponseParser = new GetBucketReplicationLocationResponseParser();
     public static final AddBucketCnameResponseParser addBucketCnameResponseParser = new AddBucketCnameResponseParser();
     public static final GetBucketCnameResponseParser getBucketCnameResponseParser = new GetBucketCnameResponseParser();
+    public static final CreateBucketCnameTokenResponseParser createBucketCnameTokenResponseParser = new CreateBucketCnameTokenResponseParser();
+    public static final GetBucketCnameTokenResponseParser getBucketCnameTokenResponseParser = new GetBucketCnameTokenResponseParser();
     public static final GetBucketInfoResponseParser getBucketInfoResponseParser = new GetBucketInfoResponseParser();
     public static final GetBucketStatResponseParser getBucketStatResponseParser = new GetBucketStatResponseParser();
     public static final GetBucketQosResponseParser getBucketQosResponseParser = new GetBucketQosResponseParser();
@@ -450,6 +360,30 @@ public final class ResponseParsers {
             }
         }
 
+    }
+
+    public static final class CreateBucketCnameTokenResponseParser implements ResponseParser<CreateBucketCnameTokenResult> {
+
+        @Override
+        public CreateBucketCnameTokenResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                return parseCreateBucketCnameToken(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+    }
+
+    public static final class GetBucketCnameTokenResponseParser implements ResponseParser<GetBucketCnameTokenResult> {
+
+        @Override
+        public GetBucketCnameTokenResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                return parseGetBucketCnameToken(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
     }
 
     public static final class GetBucketInfoResponseParser implements ResponseParser<BucketInfo> {
@@ -3536,6 +3470,56 @@ public final class ResponseParsers {
             }
 
             return cnames;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Unmarshall create bucket cname token response body to cname configuration.
+     */
+    @SuppressWarnings("unchecked")
+    public static CreateBucketCnameTokenResult parseCreateBucketCnameToken(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+            String bucket = root.getChildText("Bucket");
+            String cname = root.getChildText("Cname");
+            String token = root.getChildText("Token");
+            String expireTime = root.getChildText("ExpireTime");
+            CreateBucketCnameTokenResult result = new CreateBucketCnameTokenResult();
+            result.setBucket(bucket);
+            result.setCname(cname);
+            result.setToken(token);
+            result.setExpireTime(expireTime);
+            return result;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Unmarshall create bucket cname token response body to cname configuration.
+     */
+    @SuppressWarnings("unchecked")
+    public static GetBucketCnameTokenResult parseGetBucketCnameToken(InputStream responseBody) throws ResponseParseException {
+
+        try {
+            Element root = getXmlRootElement(responseBody);
+            String bucket = root.getChildText("Bucket");
+            String cname = root.getChildText("Cname");
+            String token = root.getChildText("Token");
+            String expireTime = root.getChildText("ExpireTime");
+            GetBucketCnameTokenResult result = new GetBucketCnameTokenResult();
+            result.setBucket(bucket);
+            result.setCname(cname);
+            result.setToken(token);
+            result.setExpireTime(expireTime);
+            return result;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {

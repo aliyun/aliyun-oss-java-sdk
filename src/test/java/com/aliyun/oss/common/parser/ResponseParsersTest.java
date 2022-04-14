@@ -832,6 +832,66 @@ public class ResponseParsersTest {
     }
 
     @Test
+    public void testParseCreateBucketCnameToken() throws Exception {
+        String respBody = "" +
+                "<CnameToken>\n" +
+                "  <Bucket>bucket-name</Bucket>\n" +
+                "  <Cname>domain</Cname>\n" +
+                "  <Token>token-1234</Token>\n" +
+                "  <ExpireTime>Wed, 23 Feb 2022 21:16:37 GMT</ExpireTime>\n" +
+                 "</CnameToken>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        CreateBucketCnameTokenResult result = null;
+        try {
+            result = ResponseParsers.parseCreateBucketCnameToken(instream);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse bucket replication response body fail!");
+        }
+
+        Assert.assertEquals("bucket-name", result.getBucket());
+        Assert.assertEquals("domain", result.getCname());
+        Assert.assertEquals("token-1234", result.getToken());
+        Assert.assertEquals("Wed, 23 Feb 2022 21:16:37 GMT", result.getExpireTime());
+    }
+
+    @Test
+    public void testParseGetBucketCnameToken() throws Exception {
+        String respBody = "" +
+                "<CnameToken>\n" +
+                "  <Bucket>bucket-name</Bucket>\n" +
+                "  <Cname>domain</Cname>\n" +
+                "  <Token>token-1234</Token>\n" +
+                "  <ExpireTime>Wed, 23 Feb 2022 21:16:37 GMT</ExpireTime>\n" +
+                "</CnameToken>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        GetBucketCnameTokenResult result = null;
+        try {
+            result = ResponseParsers.parseGetBucketCnameToken(instream);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse bucket replication response body fail!");
+        }
+
+        Assert.assertEquals("bucket-name", result.getBucket());
+        Assert.assertEquals("domain", result.getCname());
+        Assert.assertEquals("token-1234", result.getToken());
+        Assert.assertEquals("Wed, 23 Feb 2022 21:16:37 GMT", result.getExpireTime());
+    }
+
+    @Test
     public void testParseGetBucketInfoBasic() {
         String respBody = "" +
                 "<BucketInfo>\n" +

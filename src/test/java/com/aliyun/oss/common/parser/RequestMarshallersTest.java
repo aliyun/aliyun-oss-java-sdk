@@ -750,6 +750,97 @@ public class RequestMarshallersTest {
         Assert.assertEquals("previd", certificate.getChildText("PreviousCertId"));
         Assert.assertEquals("id", certificate.getChildText("CertId"));
         Assert.assertEquals("true", certificate.getChildText("Force"));
+        Assert.assertEquals(null, certificate.getChildText("DeleteCertificate"));
+
+        request = new AddBucketCnameRequest(bucketName);
+        request.setDomain("domain1");
+        request.setCertificateConfiguration(
+                new CertificateConfiguration()
+                        .withPublicKey("pubkey")
+                        .withPrivateKey("prikey")
+                        .withPreviousId("previd")
+                        .withId("id"));
+
+        data = addBucketCnameRequestMarshaller.marshall(request);
+        is = new ByteArrayInputStream(data);
+
+        builder = new SAXBuilder();
+        doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        root = doc.getRootElement();
+        cname = root.getChild("Cname");
+        domain = cname.getChildText("Domain");
+        Assert.assertEquals("domain1", domain);
+        certificate = cname.getChild("CertificateConfiguration");
+        Assert.assertEquals("pubkey", certificate.getChildText("Certificate"));
+        Assert.assertEquals("prikey", certificate.getChildText("PrivateKey"));
+        Assert.assertEquals("previd", certificate.getChildText("PreviousCertId"));
+        Assert.assertEquals("id", certificate.getChildText("CertId"));
+        Assert.assertEquals(null, certificate.getChildText("Force"));
+
+        request = new AddBucketCnameRequest(bucketName);
+        request.setDomain("domain1");
+        request.setCertificateConfiguration(
+                new CertificateConfiguration()
+                        .withDeleteCertificate(true));
+
+        data = addBucketCnameRequestMarshaller.marshall(request);
+        is = new ByteArrayInputStream(data);
+
+        builder = new SAXBuilder();
+        doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        root = doc.getRootElement();
+        cname = root.getChild("Cname");
+        domain = cname.getChildText("Domain");
+        Assert.assertEquals("domain1", domain);
+        certificate = cname.getChild("CertificateConfiguration");
+        Assert.assertEquals(null, certificate.getChildText("Certificate"));
+        Assert.assertEquals(null, certificate.getChildText("PrivateKey"));
+        Assert.assertEquals(null, certificate.getChildText("PreviousCertId"));
+        Assert.assertEquals(null, certificate.getChildText("CertId"));
+        Assert.assertEquals(null, certificate.getChildText("Force"));
+        Assert.assertEquals("true", certificate.getChildText("DeleteCertificate"));
+
+        request = new AddBucketCnameRequest(bucketName);
+        request.setDomain("domain1");
+        request.setCertificateConfiguration(
+                new CertificateConfiguration()
+                        .withDeleteCertificate(false));
+
+        data = addBucketCnameRequestMarshaller.marshall(request);
+        is = new ByteArrayInputStream(data);
+
+        builder = new SAXBuilder();
+        doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        root = doc.getRootElement();
+        cname = root.getChild("Cname");
+        domain = cname.getChildText("Domain");
+        Assert.assertEquals("domain1", domain);
+        certificate = cname.getChild("CertificateConfiguration");
+        Assert.assertEquals(null, certificate.getChildText("Certificate"));
+        Assert.assertEquals(null, certificate.getChildText("PrivateKey"));
+        Assert.assertEquals(null, certificate.getChildText("PreviousCertId"));
+        Assert.assertEquals("false", certificate.getChildText("DeleteCertificate"));
     }
 
     @Test

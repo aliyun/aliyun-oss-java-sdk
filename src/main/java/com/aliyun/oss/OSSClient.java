@@ -1225,6 +1225,18 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public CreateBucketCnameTokenResult createBucketCnameToken(CreateBucketCnameTokenRequest createBucketCnameTokenRequest)
+            throws OSSException, ClientException {
+        return this.bucketOperation.createBucketCnameToken(createBucketCnameTokenRequest);
+    }
+
+    @Override
+    public GetBucketCnameTokenResult getBucketCnameToken(GetBucketCnameTokenRequest getBucketCnameTokenRequest)
+            throws OSSException, ClientException {
+        return this.bucketOperation.getBucketCnameToken(getBucketCnameTokenRequest);
+    }
+
+    @Override
     public BucketInfo getBucketInfo(String bucketName) throws OSSException, ClientException {
         return this.getBucketInfo(new GenericRequest(bucketName));
     }
