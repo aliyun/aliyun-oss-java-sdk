@@ -67,6 +67,7 @@ public final class RequestMarshallers {
     public static final DeleteBucketReplicationRequestMarshaller deleteBucketReplicationRequestMarshaller = new DeleteBucketReplicationRequestMarshaller();
     public static final AddBucketCnameRequestMarshaller addBucketCnameRequestMarshaller = new AddBucketCnameRequestMarshaller();
     public static final DeleteBucketCnameRequestMarshaller deleteBucketCnameRequestMarshaller = new DeleteBucketCnameRequestMarshaller();
+    public static final CreateBucketCnameTokenRequestMarshaller createBucketCnameTokenRequestMarshaller = new CreateBucketCnameTokenRequestMarshaller();
     public static final SetBucketQosRequestMarshaller setBucketQosRequestMarshaller = new SetBucketQosRequestMarshaller();
     public static final CompleteMultipartUploadRequestMarshaller completeMultipartUploadRequestMarshaller = new CompleteMultipartUploadRequestMarshaller();
     public static final CreateLiveChannelRequestMarshaller createLiveChannelRequestMarshaller = new CreateLiveChannelRequestMarshaller();
@@ -1005,6 +1006,11 @@ public final class RequestMarshallers {
                 if (certConf.isForceOverwriteCert()) {
                     xmlBody.append("<Force>true</Force>");
                 }
+
+                if (certConf.getDeleteCertificate() != null) {
+                    xmlBody.append("<DeleteCertificate>" + certConf.getDeleteCertificate().toString() + "</DeleteCertificate>");
+                }
+
                 xmlBody.append("</CertificateConfiguration>");
             }
 
@@ -1043,6 +1049,28 @@ public final class RequestMarshallers {
             return rawData;
         }
 
+    }
+
+    public static final class CreateBucketCnameTokenRequestMarshaller
+            implements RequestMarshaller2<CreateBucketCnameTokenRequest> {
+
+        @Override
+        public byte[] marshall(CreateBucketCnameTokenRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<BucketCnameConfiguration>");
+            xmlBody.append("<Cname>");
+            xmlBody.append("<Domain>" + request.getDomain() + "</Domain>");
+            xmlBody.append("</Cname>");
+            xmlBody.append("</BucketCnameConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
     }
 
     public static final class SetBucketQosRequestMarshaller implements RequestMarshaller2<UserQos> {

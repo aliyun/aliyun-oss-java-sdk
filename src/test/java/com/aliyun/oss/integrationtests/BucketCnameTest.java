@@ -24,17 +24,15 @@ import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 import java.util.Date;
 import java.util.List;
 
-import com.aliyun.oss.model.GenericRequest;
+import com.aliyun.oss.*;
+import com.aliyun.oss.common.auth.Credentials;
+import com.aliyun.oss.common.auth.DefaultCredentialProvider;
+import com.aliyun.oss.common.auth.DefaultCredentials;
+import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.aliyun.oss.OSSErrorCode;
-import com.aliyun.oss.OSSException;
-import com.aliyun.oss.model.CnameConfiguration;
-import com.aliyun.oss.model.DeleteBucketCnameRequest;
-import com.aliyun.oss.model.AddBucketCnameRequest;
 
 
 public class BucketCnameTest extends TestBase {
@@ -213,6 +211,47 @@ public class BucketCnameTest extends TestBase {
             Assert.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketName);
+        }
+    }
+
+    @Test
+    public void testBucketCnameToken() {
+        final String endpoint = "oss-ap-southeast-2.aliyuncs.com";
+        final String bucketName = super.bucketName + "-bucket-cname";
+
+        //create client
+        ClientConfiguration conf = new ClientBuilderConfiguration();
+        Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
+        OSS client = new OSSClient(endpoint, new DefaultCredentialProvider(credentials), conf);
+
+        client.createBucket(bucketName);
+        CreateBucketCnameTokenResult cresult;
+        try {
+            CreateBucketCnameTokenRequest request = new CreateBucketCnameTokenRequest(bucketName);
+            request.setDomain("www.example.com");
+            cresult = client.createBucketCnameToken(request);
+            Assert.assertEquals("www.example.com", cresult.getCname());
+        } catch (ServiceException e) {
+            Assert.assertTrue(false);
+        }
+
+        try {
+            GetBucketCnameTokenRequest grequest = new GetBucketCnameTokenRequest(bucketName);
+            grequest.setDomain("www.example.com");
+            GetBucketCnameTokenResult gresult = client.getBucketCnameToken(grequest);
+            Assert.assertEquals("www.example.com", gresult.getCname());
+            Assert.assertEquals(gresult.getToken(), gresult.getToken());
+        } catch (ServiceException e) {
+            Assert.assertTrue(false);
+        }
+
+        try {
+            GetBucketCnameTokenRequest grequest = new GetBucketCnameTokenRequest(bucketName);
+            grequest.setDomain("www.example.cn");
+            client.getBucketCnameToken(grequest);
+            Assert.assertTrue(false);
+        } catch (ServiceException e) {
+            Assert.assertEquals("CnameTokenNotFound", e.getErrorCode());
         }
     }
 }

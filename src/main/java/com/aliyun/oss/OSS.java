@@ -2671,6 +2671,39 @@ public interface OSS {
             throws OSSException, ClientException;
 
     /**
+     * Creates a cname token for the {@link Bucket} instance.
+     *
+     * @param createBucketCnameTokenRequest
+     *            The request specifies the bucket name and the Cname
+     *            information.
+     *
+     * @return A {@link CreateBucketCnameTokenResult} instance contains token
+     *         and some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public CreateBucketCnameTokenResult createBucketCnameToken(CreateBucketCnameTokenRequest createBucketCnameTokenRequest) throws OSSException, ClientException;
+
+    /**
+     * Gets a cname token for the {@link Bucket} instance.
+     *
+     * @param getBucketCnameTokenRequest
+     *            The request specifies the bucket name and the cname token.
+     *
+     * @return A {@link CreateBucketCnameTokenResult} instance contains token
+     *         and some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             OSS Server side exception.
+     * @throws ClientException
+     *             OSS Client side exception.
+     */
+    public GetBucketCnameTokenResult getBucketCnameToken(GetBucketCnameTokenRequest getBucketCnameTokenRequest) throws OSSException, ClientException;
+
+    /**
      * Gets the {@link Bucket}'s basic information as well as its ACL.
      * 
      * @param bucketName

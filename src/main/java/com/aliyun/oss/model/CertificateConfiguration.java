@@ -27,6 +27,12 @@ public class CertificateConfiguration {
     private String previousId;
 
     /**
+     * If enabled, Delete certificate.
+     */
+    private Boolean deleteCertificate;
+
+
+    /**
      * Gets the certificate public key
      */
     public String getPublicKey() { return publicKey; }
@@ -115,6 +121,24 @@ public class CertificateConfiguration {
      */
     public CertificateConfiguration withPreviousId(String previousId) {
         setPreviousId(previousId);
+        return this;
+    }
+
+    /**
+     * Gets the delete certificate flag.
+     */
+    public Boolean getDeleteCertificate() { return deleteCertificate; }
+
+    /**
+     * Sets the delete certificate flag.
+     */
+    public void setDeleteCertificate(Boolean deleteCertificate) { this.deleteCertificate = deleteCertificate; }
+
+    /**
+     * Sets the delete certificate flag and return the updated CertificateConfiguration object.
+     */
+    public CertificateConfiguration withDeleteCertificate(Boolean deleteCertificate) {
+        setDeleteCertificate(deleteCertificate);
         return this;
     }
 }
