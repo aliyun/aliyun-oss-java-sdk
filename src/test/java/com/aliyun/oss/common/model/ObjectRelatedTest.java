@@ -389,6 +389,11 @@ public class ObjectRelatedTest {
         assertEquals("markerId", version.getDeleteMarkerVersionId());
         assertEquals("key", version.getKey());
         assertEquals("versionid", version.getVersionId());
+
+        DeleteVersionsResult result = new DeleteVersionsResult(null);
+
+        List<DeleteVersionsResult.DeletedVersion> deletedVersions = Arrays.asList();
+        result = new DeleteVersionsResult(deletedVersions);
     }
 
     @Test
