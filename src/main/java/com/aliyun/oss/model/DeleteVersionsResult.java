@@ -92,7 +92,9 @@ public class DeleteVersionsResult extends GenericResult {
     private final List<DeletedVersion> deletedVersions = new ArrayList<DeletedVersion>();
 
     public DeleteVersionsResult(List<DeletedVersion> deletedVersions) {
-        this.deletedVersions.addAll(deletedVersions);
+        if (deletedVersions != null) {
+            this.deletedVersions.addAll(deletedVersions);
+        }
     }
 
     /**
