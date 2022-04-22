@@ -55,6 +55,17 @@ public abstract class ServiceSignature {
     public abstract String computeSignature(String key, String data);
 
     /**
+     * Computes the hash of the data by the given key.
+     *
+     * @param key
+     *            The key for the signature.
+     * @param data
+     *            The data to compute the hash on.
+     * @return The hash in byte array.
+     */
+    public abstract byte[] computeHash(byte[] key, byte[] data);
+
+    /**
      *
      * Creates the default <code>ServiceSignature</code> instance which is
      * {@link HmacSHA1Signature}.
@@ -63,6 +74,21 @@ public abstract class ServiceSignature {
      */
     public static ServiceSignature create() {
         return new HmacSHA1Signature();
+    }
+
+    /**
+     *
+     * Creates the <code>ServiceSignature</code> instance by the algorithm
+     *
+     * @return The <code>ServiceSignature</code> instance
+     */
+    public static ServiceSignature create(String algorithm) {
+        if ("HmacSHA256".equals(algorithm)) {
+            return new HmacSHA256Signature();
+        } else if ("HmacSHA1".equals(algorithm)) {
+            return new HmacSHA1Signature();
+        }
+        throw new RuntimeException("Unsupported algorithm: " + algorithm);
     }
 
     protected byte[] sign(byte[] key, byte[] data, Mac macInstance, Object lock, String algorithm) {

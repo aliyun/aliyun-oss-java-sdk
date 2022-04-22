@@ -21,6 +21,11 @@ package com.aliyun.oss;
 
 import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
+import com.aliyun.oss.common.comm.SignVersion;
+import com.aliyun.oss.common.utils.StringUtils;
+import com.aliyun.oss.internal.OSSConstants;
+
+import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 
 /**
  * Fluent builder for OSS Client. Use of the builder is preferred over using
@@ -48,7 +53,7 @@ public class OSSClientBuilder implements OSSBuilder {
 
     @Override
     public OSS build(String endpoint, String accessKeyId, String secretAccessKey, String securityToken,
-            ClientBuilderConfiguration config) {
+                     ClientBuilderConfiguration config) {
         return new OSSClient(endpoint, getDefaultCredentialProvider(accessKeyId, secretAccessKey, securityToken),
                 getClientConfiguration(config));
     }
@@ -79,8 +84,66 @@ public class OSSClientBuilder implements OSSBuilder {
     }
 
     private static DefaultCredentialProvider getDefaultCredentialProvider(String accessKeyId, String secretAccessKey,
-            String securityToken) {
+                                                                          String securityToken) {
         return new DefaultCredentialProvider(accessKeyId, secretAccessKey, securityToken);
     }
 
+    public static OSSClientBuilderImpl create() {
+        return new OSSClientBuilderImpl();
+    }
+
+    public static final class OSSClientBuilderImpl {
+        private String endpoint;
+        private CredentialsProvider credentialsProvider;
+        private ClientConfiguration clientConfiguration;
+        private String region;
+        private String cloudBoxId;
+
+        private OSSClientBuilderImpl() {
+            this.clientConfiguration = OSSClientBuilder.getClientConfiguration();
+        }
+
+        public OSSClientBuilderImpl endpoint(String endpoint) {
+            this.endpoint = endpoint;
+            return this;
+        }
+
+        public OSSClientBuilderImpl credentialsProvider(CredentialsProvider credentialsProvider) {
+            this.credentialsProvider = credentialsProvider;
+            return this;
+        }
+
+        public OSSClientBuilderImpl clientConfiguration(ClientConfiguration clientConfiguration) {
+            this.clientConfiguration = clientConfiguration;
+            return this;
+        }
+
+        public OSSClientBuilderImpl region(String region) {
+            this.region = region;
+            return this;
+        }
+
+        public OSSClientBuilderImpl cloudBoxId(String cloudBoxId) {
+            this.cloudBoxId = cloudBoxId;
+            return this;
+        }
+
+        public OSS build() {
+            assertParameterNotNull(endpoint, "endpoint");
+            assertParameterNotNull(credentialsProvider, "credentialsProvider");
+            assertParameterNotNull(clientConfiguration, "clientConfiguration");
+            if (SignVersion.V4.equals(clientConfiguration.getSignatureVersion())) {
+                assertParameterNotNull(region, "region");
+            }
+            OSSClient client = new OSSClient(endpoint, credentialsProvider, clientConfiguration);
+            if (!StringUtils.isNullOrEmpty(region)) {
+                client.setRegion(region);
+            }
+            if (!StringUtils.isNullOrEmpty(cloudBoxId)) {
+                client.setProduct(OSSConstants.PRODUCT_CLOUD_BOX);
+                client.setCloudBoxId(cloudBoxId);
+            }
+            return client;
+        }
+    }
 }

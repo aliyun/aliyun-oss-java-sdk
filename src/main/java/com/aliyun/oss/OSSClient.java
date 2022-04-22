@@ -297,6 +297,47 @@ public class OSSClient implements OSS {
         this.downloadOperation = new OSSDownloadOperation(objectOperation);
         this.liveChannelOperation = new LiveChannelOperation(this.serviceClient, this.credsProvider);
     }
+    /**
+     * Sets the product name.
+     *
+     * @param product
+     *            the product name, ex oss.
+     */
+    public void setProduct(String product) {
+        this.bucketOperation.setProduct(product);
+        this.objectOperation.setProduct(product);
+        this.multipartOperation.setProduct(product);
+        this.corsOperation.setProduct(product);
+        this.liveChannelOperation.setProduct(product);
+    }
+
+    /**
+     * Sets OSS services Region.
+     *
+     * @param region
+     *            OSS services Region.
+     */
+    public void setRegion(String region) {
+        this.bucketOperation.setRegion(region);
+        this.objectOperation.setRegion(region);
+        this.multipartOperation.setRegion(region);
+        this.corsOperation.setRegion(region);
+        this.liveChannelOperation.setRegion(region);
+    }
+
+    /**
+     * Sets OSS cloud box id.
+     *
+     * @param cloudBoxId OSS cloud box id.
+     */
+    public void setCloudBoxId(String cloudBoxId) {
+        this.bucketOperation.setCloudBoxId(cloudBoxId);
+        this.objectOperation.setCloudBoxId(cloudBoxId);
+        this.multipartOperation.setCloudBoxId(cloudBoxId);
+        this.corsOperation.setCloudBoxId(cloudBoxId);
+        this.liveChannelOperation.setCloudBoxId(cloudBoxId);
+    }
+
 
     @Override
     public void switchCredentials(Credentials creds) {
