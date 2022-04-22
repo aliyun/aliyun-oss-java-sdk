@@ -112,4 +112,7 @@ public interface OSSHeaders extends HttpHeaders {
 
     static final String OSS_RESOURCE_GROUP_ID = "x-oss-resource-group-id";
 
+    static final String OSS_DATE = "x-oss-date";
+
+    static final String OSS_CONTENT_SHA256 = "x-oss-content-sha256";
 }

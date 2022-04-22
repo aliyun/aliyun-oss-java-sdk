@@ -53,4 +53,8 @@ public final class OSSConstants {
     
     /** URL encoding for OSS object keys */
     public static final String URL_ENCODING = "url";
+
+    public static final String PRODUCT_DEFAULT = "oss";
+
+    public static final String PRODUCT_CLOUD_BOX = "oss-cloudbox";
 }

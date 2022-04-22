@@ -27,10 +27,7 @@ import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
 import java.net.URI;
 import java.util.List;
 
-import com.aliyun.oss.ClientException;
-import com.aliyun.oss.HttpMethod;
-import com.aliyun.oss.OSSException;
-import com.aliyun.oss.ServiceException;
+import com.aliyun.oss.*;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.auth.RequestSigner;
@@ -40,7 +37,8 @@ import com.aliyun.oss.common.parser.ResponseParser;
 import com.aliyun.oss.common.utils.ExceptionFactory;
 import com.aliyun.oss.internal.ResponseParsers.EmptyResponseParser;
 import com.aliyun.oss.internal.ResponseParsers.RequestIdResponseParser;
-import com.aliyun.oss.model.GenericRequest;
+import com.aliyun.oss.internal.signer.OSSSignerBase;
+import com.aliyun.oss.internal.signer.OSSSignerParams;
 import com.aliyun.oss.model.WebServiceRequest;
 
 /**
@@ -48,10 +46,12 @@ import com.aliyun.oss.model.WebServiceRequest;
  * operations (such as bucket/object/multipart/cors operations).
  */
 public abstract class OSSOperation {
-
+    protected String product;
+    protected String region;
     protected volatile URI endpoint;
     protected CredentialsProvider credsProvider;
     protected ServiceClient client;
+    protected String cloudBoxId;
 
     protected static OSSErrorResponseHandler errorResponseHandler = new OSSErrorResponseHandler();
     protected static EmptyResponseParser emptyResponseParser = new EmptyResponseParser();
@@ -61,6 +61,23 @@ public abstract class OSSOperation {
     protected OSSOperation(ServiceClient client, CredentialsProvider credsProvider) {
         this.client = client;
         this.credsProvider = credsProvider;
+        this.product = OSSConstants.PRODUCT_DEFAULT;
+    }
+
+    public String getProduct() {
+        return product;
+    }
+
+    public void setProduct(String product) {
+        this.product = product;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 
     public URI getEndpoint() {
@@ -69,17 +86,26 @@ public abstract class OSSOperation {
 
     public URI getEndpoint(WebServiceRequest request) {
         String reqEndpoint = request.getEndpoint();
-        if (reqEndpoint == null) {
-            return getEndpoint();
+         if (reqEndpoint == null) {
+             return getEndpoint();
+
         }
         String defaultProto = this.client.getClientConfiguration().getProtocol().toString();
-        URI ret =  OSSUtils.toEndpointURI(reqEndpoint, defaultProto);
+        URI ret = OSSUtils.toEndpointURI(reqEndpoint, defaultProto);
         OSSUtils.ensureEndpointValid(ret.getHost());
-        return ret;
+         return ret;
     }
 
     public void setEndpoint(URI endpoint) {
         this.endpoint = URI.create(endpoint.toString());
+    }
+
+    public String getCloudBoxId() {
+        return cloudBoxId;
+    }
+
+    public void setCloudBoxId(String cloudBoxId) {
+        this.cloudBoxId = cloudBoxId;
     }
 
     protected ServiceClient getInnerClient() {
@@ -128,10 +154,6 @@ public abstract class OSSOperation {
 
         ExecutionContext context = createDefaultContext(request.getMethod(), bucketName, key, originalRequest);
 
-        if (context.getCredentials().useSecurityToken() && !request.isUseUrlSignature()) {
-            request.addHeader(OSSHeaders.OSS_SECURITY_TOKEN, context.getCredentials().getSecurityToken());
-        }
-
         context.addRequestHandler(new RequestProgressHanlder());
         if (requestHandlers != null) {
             for (RequestHandler handler : requestHandlers)
@@ -169,10 +191,15 @@ public abstract class OSSOperation {
         }
     }
 
-    private static RequestSigner createSigner(HttpMethod method, String bucketName, String key, Credentials creds, SignVersion signatureVersion) {
+    private RequestSigner createSigner(String bucketName, String key, Credentials creds, ClientConfiguration config) {
         String resourcePath = "/" + ((bucketName != null) ? bucketName + "/" : "") + ((key != null ? key : ""));
 
-        return new OSSRequestSigner(method.toString(), resourcePath, creds, signatureVersion);
+        OSSSignerParams params = new OSSSignerParams(resourcePath, creds);
+        params.setProduct(product);
+        params.setRegion(region);
+        params.setCloudBoxId(cloudBoxId);
+        params.setTickOffset(config.getTickOffset());
+        return OSSSignerBase.createRequestSigner(config.getSignatureVersion(), params);
     }
 
     protected ExecutionContext createDefaultContext(HttpMethod method, String bucketName, String key, WebServiceRequest originalRequest) {
@@ -180,7 +207,7 @@ public abstract class OSSOperation {
 		Credentials credentials = credsProvider.getCredentials();
         assertParameterNotNull(credentials, "credentials");
         context.setCharset(DEFAULT_CHARSET_NAME);
-        context.setSigner(createSigner(method, bucketName, key, credentials, client.getClientConfiguration().getSignatureVersion()));
+        context.setSigner(createSigner(bucketName, key, credentials, client.getClientConfiguration()));
         context.addResponseHandler(errorResponseHandler);
         if (method == HttpMethod.POST && !isRetryablePostRequest(originalRequest)) {
             context.setRetryStrategy(noRetryStrategy);

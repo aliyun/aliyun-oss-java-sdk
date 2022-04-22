@@ -23,6 +23,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
 
 public class BinaryUtil {
 
@@ -57,5 +58,28 @@ public class BinaryUtil {
             buf[i * 2 + 1] = HEX_DIGITS[md5Bytes[i] & 0x0f];
         }
         return new String(buf);
+    }
+
+    public static byte[] calculateSha256(byte[] binaryData) {
+        MessageDigest messageDigest = null;
+        try {
+            messageDigest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("SHA-256 algorithm not found.");
+        }
+        messageDigest.update(binaryData);
+        return messageDigest.digest();
+    }
+
+    /**
+     * Converts byte data to a Hex-encoded string in lower case.
+     *
+     * @param data
+     *            data to hex encode.
+     *
+     * @return hex-encoded string.
+     */
+    public static String toHex(byte[] data) {
+        return Hex.encodeHexString(data);
     }
 }
