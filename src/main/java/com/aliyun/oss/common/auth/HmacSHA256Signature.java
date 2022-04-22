@@ -60,4 +60,8 @@ public class HmacSHA256Signature extends ServiceSignature {
             throw new RuntimeException("Unsupported algorithm: " + DEFAULT_ENCODING, ex);
         }
     }
+
+    public byte[] computeHash(byte[] key, byte[] data) {
+        return sign(key, data, macInstance, LOCK, ALGORITHM);
+    }
 }

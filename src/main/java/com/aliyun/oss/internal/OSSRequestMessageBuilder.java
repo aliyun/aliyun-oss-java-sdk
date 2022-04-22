@@ -170,11 +170,6 @@ public class OSSRequestMessageBuilder {
         ClientConfiguration clientCofig = this.innerClient.getClientConfiguration();
         Map<String, String> sentHeaders = new HashMap<String, String>(this.headers);
         Map<String, String> sentParameters = new LinkedHashMap<String, String>(this.parameters);
-        Date now = new Date();
-        if (clientCofig.getTickOffset() != 0) {
-            now.setTime(now.getTime() + clientCofig.getTickOffset());
-        }
-        sentHeaders.put(OSSHeaders.DATE, DateUtil.formatRfc822Date(now));
 
         RequestMessage request = new RequestMessage(this.originalRequest, this.bucket, this.key);
         request.setBucket(bucket);
