@@ -569,4 +569,59 @@ public class BucketLifecycleTest extends TestBase {
             ossClient.deleteBucket(bucketWithoutLifecycleConfiguration);
         }
     }
+
+    @Test
+    public void testLifecycleOverlap() throws ParseException {
+        final String bucketName = super.bucketName + "normal-set-bucket-lifecycle";
+        final String ruleId1 = "overlap/";
+        final String matchPrefix1 = "Prefix";
+        final String ruleId2 = "overlap/a";
+        final String matchPrefix2 = "Prefix/SubPrefix";
+
+        try {
+            SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(bucketName);
+            ossClient.createBucket(bucketName);
+
+
+            LifecycleRule rule = new LifecycleRule(ruleId1, matchPrefix1, RuleStatus.Enabled,
+                    DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z"));
+            request.AddLifecycleRule(rule);
+
+            rule = new LifecycleRule(ruleId2, matchPrefix2, RuleStatus.Enabled,
+                    DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z"));
+            request.AddLifecycleRule(rule);
+
+            try {
+                ossClient.setBucketLifecycle(request);
+            } catch (OSSException e){
+                Assert.assertEquals("Overlap for same action type Expiration",e.getErrorMessage());
+            }
+            request.addHeader("x-oss-allow-same-action-overlap", "true");
+            ossClient.setBucketLifecycle(request);
+
+            List<LifecycleRule> rules = ossClient.getBucketLifecycle(bucketName);
+            Assert.assertEquals(rules.size(), 2);
+
+            LifecycleRule r1 = rules.get(0);
+            Assert.assertEquals(r1.getId(), ruleId1);
+            Assert.assertEquals(r1.getPrefix(), matchPrefix1);
+            Assert.assertEquals(r1.getStatus(), RuleStatus.Enabled);
+            Assert.assertFalse(r1.hasCreatedBeforeDate());
+            Assert.assertEquals(DateUtil.formatIso8601Date(r1.getExpirationTime()),
+                    "2022-10-12T00:00:00.000Z");
+
+            LifecycleRule r2 = rules.get(1);
+            Assert.assertEquals(r2.getId(), ruleId2);
+            Assert.assertEquals(r2.getPrefix(), matchPrefix2);
+            Assert.assertEquals(r2.getStatus(), RuleStatus.Enabled);
+            Assert.assertFalse(r2.hasCreatedBeforeDate());
+            Assert.assertEquals(DateUtil.formatIso8601Date(r2.getExpirationTime()),
+                    "2022-10-12T00:00:00.000Z");
+
+        } catch (OSSException e) {
+            Assert.fail(e.getMessage());
+        } finally {
+            ossClient.deleteBucket(bucketName);
+        }
+    }
 }
