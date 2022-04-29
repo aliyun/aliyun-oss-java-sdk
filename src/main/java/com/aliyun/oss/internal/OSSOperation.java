@@ -24,9 +24,6 @@ import static com.aliyun.oss.common.utils.LogUtils.logException;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
 
-import java.net.URI;
-import java.util.List;
-
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSSException;
@@ -34,7 +31,19 @@ import com.aliyun.oss.ServiceException;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.auth.RequestSigner;
-import com.aliyun.oss.common.comm.*;
+import com.aliyun.oss.common.comm.ExecutionContext;
+import com.aliyun.oss.common.comm.NoRetryStrategy;
+import com.aliyun.oss.common.comm.RequestChecksumHanlder;
+import com.aliyun.oss.common.comm.RequestHandler;
+import com.aliyun.oss.common.comm.RequestMessage;
+import com.aliyun.oss.common.comm.RequestProgressHanlder;
+import com.aliyun.oss.common.comm.ResponseChecksumHandler;
+import com.aliyun.oss.common.comm.ResponseHandler;
+import com.aliyun.oss.common.comm.ResponseMessage;
+import com.aliyun.oss.common.comm.ResponseProgressHandler;
+import com.aliyun.oss.common.comm.RetryStrategy;
+import com.aliyun.oss.common.comm.ServiceClient;
+import com.aliyun.oss.common.comm.SignVersion;
 import com.aliyun.oss.common.parser.ResponseParseException;
 import com.aliyun.oss.common.parser.ResponseParser;
 import com.aliyun.oss.common.utils.ExceptionFactory;
@@ -42,6 +51,8 @@ import com.aliyun.oss.internal.ResponseParsers.EmptyResponseParser;
 import com.aliyun.oss.internal.ResponseParsers.RequestIdResponseParser;
 import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.WebServiceRequest;
+import java.net.URI;
+import java.util.List;
 
 /**
  * Abstract base class that provides some common functionalities for OSS
@@ -127,9 +138,9 @@ public abstract class OSSOperation {
         request.getParameters().putAll(originalRequest.getParameters());
 
         ExecutionContext context = createDefaultContext(request.getMethod(), bucketName, key, originalRequest);
-
-        if (context.getCredentials().useSecurityToken() && !request.isUseUrlSignature()) {
-            request.addHeader(OSSHeaders.OSS_SECURITY_TOKEN, context.getCredentials().getSecurityToken());
+        Credentials credentials = context.getCredentials();
+        if (credentials != null && credentials.useSecurityToken() && !request.isUseUrlSignature()) {
+            request.addHeader(OSSHeaders.OSS_SECURITY_TOKEN, credentials.getSecurityToken());
         }
 
         context.addRequestHandler(new RequestProgressHanlder());
