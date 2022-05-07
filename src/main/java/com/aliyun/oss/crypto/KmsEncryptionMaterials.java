@@ -56,7 +56,7 @@ public class KmsEncryptionMaterials implements EncryptionMaterials {
     
     public KmsEncryptionMaterials(String region, String cmk) {
         assertParameterNotNull(region, "kms region");
-        assertParameterNotNull(region, "kms cmk");
+        assertParameterNotNull(cmk, "kms cmk");
         this.region = region;
         this.cmk = cmk;
         this.desc = new HashMap<String, String>();
