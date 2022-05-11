@@ -55,7 +55,7 @@ public class ObjectWithPrefixSlashTest extends TestBase {
     public void testPutObjectWithSignedUrl() {
         final String key = "/abc中/put-object-prefix-slash-by-urlSignature";
 
-        final String expirationString = "Sun, 12 Apr 2022 12:00:00 GMT";
+        final String expirationString = "Sun, 12 Apr 2025 12:00:00 GMT";
         final long inputStreamLength = 1024;
 
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.PUT);

@@ -460,9 +460,19 @@ public class DownloadFileTest extends TestBase {
 
     @Test
     public void testDownloadNot4KAlignment() {
-        final String key = "obj-download-empty-file-wcp";
+        final String key = "obj-download-not-4k-aligment";
 
         try {
+            File file = createSampleFile(key, 1024 * 100);
+
+            // upload file
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
+            uploadFileRequest.setUploadFile(file.getAbsolutePath());
+
+            UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
+
             // download file
             String filePathNew = key + "-new.txt";
             DownloadFileRequest downloadFileRequest = new DownloadFileRequest(bucketName, key);
@@ -481,9 +491,20 @@ public class DownloadFileTest extends TestBase {
 
     @Test
     public void testDownload4KAlignment() {
-        final String key = "obj-download-empty-file-wcp";
+        final String key = "obj-download-4k-aligment";
 
         try {
+
+            File file = createSampleFile(key, 1024 * 100);
+
+            // upload file
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
+            uploadFileRequest.setUploadFile(file.getAbsolutePath());
+
+            UploadFileResult uploadRes = ossClient.uploadFile(uploadFileRequest);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getBucketName(), bucketName);
+            Assert.assertEquals(uploadRes.getMultipartUploadResult().getKey(), key);
+
             // download file
             String filePathNew = key + "-new.txt";
             DownloadFileRequest downloadFileRequest = new DownloadFileRequest(bucketName, key);

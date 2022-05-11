@@ -142,7 +142,7 @@ public class SignTest extends  TestBase{
         String bucket = TestBase.BUCKET_NAME_PREFIX + ticks;
         ossClient.createBucket(bucket);
 
-        final String expirationString = "Sun, 12 Apr 2022 12:00:00 GMT";
+        final String expirationString = "Sun, 12 Apr 2025 12:00:00 GMT";
         final long inputStreamLength = 128 * 1024; //128KB
 
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key, HttpMethod.PUT);
@@ -188,7 +188,7 @@ public class SignTest extends  TestBase{
         String bucket = TestBase.BUCKET_NAME_PREFIX + ticks;
         ossClient.createBucket(bucket);
 
-        final String expirationString = "Sun, 12 Apr 2022 12:00:00 GMT";
+        final String expirationString = "Sun, 12 Apr 2025 12:00:00 GMT";
         final long inputStreamLength = 128 * 1024; //128KB
         final long firstByte= inputStreamLength / 2;
         final long lastByte = inputStreamLength - 1;
