@@ -78,7 +78,17 @@ public class CnameConfiguration {
         /**
          * Disabled
          */
-        Disabled("Disabled");
+        Disabled("Disabled"),
+
+        /**
+         * Blocked
+         */
+        Blocked("Blocked"),
+
+        /**
+         * Forbidden
+         */
+        Forbidden("Forbidden");
 
         private String certStatusString;
         private CertStatus(String certStatusString) { this.certStatusString = certStatusString; }
