@@ -29,6 +29,7 @@ import java.util.*;
 import com.aliyun.oss.*;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.CredentialsProvider;
+import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.internal.OSSConstants;
 import com.aliyun.oss.internal.RequestParameters;
 import com.aliyun.oss.model.GetObjectRequest;
@@ -369,6 +370,117 @@ public class OSSClientTest {
         } catch (Exception e1) {
             Assert.fail("should be failed here.");
         }
+    }
+
+    @Test
+    public void testExtractSettingFromEndpoint() {
+        ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
+        Assert.assertEquals(true, conf.isExtractSettingFromEndpointEnable());
+
+        conf.setExtractSettingFromEndpoint(false);
+        Assert.assertEquals(false, conf.isExtractSettingFromEndpointEnable());
+
+        //non cloud-box endpoint
+        OSS ossClient = new OSSClientBuilder().build("http://bucket.oss-cn-hangzhou.aliyuncs.com", "ak", "sk");
+        OSSClient clientImpl = (OSSClient)ossClient;
+        Assert.assertEquals(null, clientImpl.getObjectOperation().getSignVersion());
+        Assert.assertEquals(null, clientImpl.getObjectOperation().getCloudBoxId());
+        Assert.assertEquals(null, clientImpl.getObjectOperation().getRegion());
+        Assert.assertEquals("oss", clientImpl.getObjectOperation().getProduct());
+
+        //cloud-box data endpoint
+        String cloudboxDataEndpoint = "https://cb-f8z7yvzgwfkl9q0h.cn-hangzhou.oss-cloudbox.aliyuncs.com";
+        ossClient = new OSSClientBuilder().build(cloudboxDataEndpoint, "ak", "sk");
+        clientImpl = (OSSClient)ossClient;
+        Assert.assertEquals(SignVersion.V4, clientImpl.getObjectOperation().getSignVersion());
+        Assert.assertEquals("cb-f8z7yvzgwfkl9q0h", clientImpl.getObjectOperation().getCloudBoxId());
+        Assert.assertEquals("cn-hangzhou", clientImpl.getObjectOperation().getRegion());
+        Assert.assertEquals("oss-cloudbox", clientImpl.getObjectOperation().getProduct());
+
+        //cloud-box control endpoint
+        String cloudboxControlEndpoint = "cb-123.cn-heyuan.oss-cloudbox-control.aliyuncs.com";
+        ossClient = new OSSClientBuilder().build(cloudboxControlEndpoint, "ak", "sk");
+        clientImpl = (OSSClient)ossClient;
+        Assert.assertEquals(SignVersion.V4, clientImpl.getObjectOperation().getSignVersion());
+        Assert.assertEquals("cb-123", clientImpl.getObjectOperation().getCloudBoxId());
+        Assert.assertEquals("cn-heyuan", clientImpl.getObjectOperation().getRegion());
+        Assert.assertEquals("oss-cloudbox", clientImpl.getObjectOperation().getProduct());
+
+        //cloud-box data endpoint with signer version 4
+        conf = new ClientBuilderConfiguration();
+        conf.setSignatureVersion(SignVersion.V4);
+        ossClient = new OSSClientBuilder().build(cloudboxDataEndpoint, "ak", "sk", conf);
+        clientImpl = (OSSClient)ossClient;
+        Assert.assertEquals(SignVersion.V4, conf.getSignatureVersion());
+        Assert.assertEquals(null, clientImpl.getObjectOperation().getSignVersion());
+        Assert.assertEquals("cb-f8z7yvzgwfkl9q0h", clientImpl.getObjectOperation().getCloudBoxId());
+        Assert.assertEquals("cn-hangzhou", clientImpl.getObjectOperation().getRegion());
+        Assert.assertEquals("oss-cloudbox", clientImpl.getObjectOperation().getProduct());
+
+        //invalid cloud-box control endpoint
+        ossClient = new OSSClientBuilder().build("https://c-f8z7yvzgwfkl9q0h.cn-hangzhou.oss-cloudbox-control.aliyuncs.com", "ak", "sk");
+        clientImpl = (OSSClient)ossClient;
+        Assert.assertEquals(null, clientImpl.getObjectOperation().getSignVersion());
+        Assert.assertEquals(null, clientImpl.getObjectOperation().getCloudBoxId());
+        Assert.assertEquals(null, clientImpl.getObjectOperation().getRegion());
+        Assert.assertEquals("oss", clientImpl.getObjectOperation().getProduct());
+
+        //disable extract setting data endpoint
+        conf = new ClientBuilderConfiguration();
+        conf.setExtractSettingFromEndpoint(false);
+        ossClient = new OSSClientBuilder().build(cloudboxDataEndpoint, "ak", "sk", conf);
+        clientImpl = (OSSClient)ossClient;
+        Assert.assertEquals(SignVersion.V1, conf.getSignatureVersion());
+        Assert.assertEquals(null, clientImpl.getObjectOperation().getSignVersion());
+        Assert.assertEquals(null, clientImpl.getObjectOperation().getCloudBoxId());
+        Assert.assertEquals(null, clientImpl.getObjectOperation().getRegion());
+        Assert.assertEquals("oss", clientImpl.getObjectOperation().getProduct());
+
+        //build cloudbox data endpoint with region and cloudboxId
+        conf = new ClientBuilderConfiguration();
+        conf.setSignatureVersion(SignVersion.V4);
+        ossClient = OSSClientBuilder.create()
+                .endpoint(cloudboxDataEndpoint)
+                .credentialsProvider(new DefaultCredentialProvider("ak", "sk"))
+                .clientConfiguration(conf)
+                .region("region")
+                .cloudBoxId("cloudBoxId")
+                .build();
+        clientImpl = (OSSClient)ossClient;
+        Assert.assertEquals(SignVersion.V4, conf.getSignatureVersion());
+        Assert.assertEquals(null, clientImpl.getObjectOperation().getSignVersion());
+        Assert.assertEquals("cloudBoxId", clientImpl.getObjectOperation().getCloudBoxId());
+        Assert.assertEquals("region", clientImpl.getObjectOperation().getRegion());
+        Assert.assertEquals("oss-cloudbox", clientImpl.getObjectOperation().getProduct());
+
+        //build normal endpoint with region and cloudbox
+        conf = new ClientBuilderConfiguration();
+        conf.setSignatureVersion(SignVersion.V4);
+        ossClient = OSSClientBuilder.create()
+                .endpoint("http://oss-cn-hangzhou.aliyuncs.com")
+                .credentialsProvider(new DefaultCredentialProvider("ak", "sk"))
+                .clientConfiguration(conf)
+                .region("region")
+                .cloudBoxId("cloudBoxId")
+                .build();
+        clientImpl = (OSSClient)ossClient;
+        Assert.assertEquals(SignVersion.V4, conf.getSignatureVersion());
+        Assert.assertEquals(null, clientImpl.getObjectOperation().getSignVersion());
+        Assert.assertEquals("cloudBoxId", clientImpl.getObjectOperation().getCloudBoxId());
+        Assert.assertEquals("region", clientImpl.getObjectOperation().getRegion());
+        Assert.assertEquals("oss-cloudbox", clientImpl.getObjectOperation().getProduct());
+
+        //build cloudbox data endpoint with region and cloudboxId, and version v1
+        ossClient = OSSClientBuilder.create()
+                .endpoint(cloudboxDataEndpoint)
+                .credentialsProvider(new DefaultCredentialProvider("ak", "sk"))
+                .region("region")
+                .build();
+        clientImpl = (OSSClient)ossClient;
+        Assert.assertEquals(SignVersion.V4, clientImpl.getObjectOperation().getSignVersion());
+        Assert.assertEquals("cb-f8z7yvzgwfkl9q0h", clientImpl.getObjectOperation().getCloudBoxId());
+        Assert.assertEquals("region", clientImpl.getObjectOperation().getRegion());
+        Assert.assertEquals("oss-cloudbox", clientImpl.getObjectOperation().getProduct());
     }
 }
 

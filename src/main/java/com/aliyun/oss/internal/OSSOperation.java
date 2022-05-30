@@ -52,6 +52,7 @@ public abstract class OSSOperation {
     protected CredentialsProvider credsProvider;
     protected ServiceClient client;
     protected String cloudBoxId;
+    protected SignVersion signVersion;
 
     protected static OSSErrorResponseHandler errorResponseHandler = new OSSErrorResponseHandler();
     protected static EmptyResponseParser emptyResponseParser = new EmptyResponseParser();
@@ -62,6 +63,7 @@ public abstract class OSSOperation {
         this.client = client;
         this.credsProvider = credsProvider;
         this.product = OSSConstants.PRODUCT_DEFAULT;
+        this.signVersion = null;
     }
 
     public String getProduct() {
@@ -106,6 +108,14 @@ public abstract class OSSOperation {
 
     public void setCloudBoxId(String cloudBoxId) {
         this.cloudBoxId = cloudBoxId;
+    }
+
+    public SignVersion getSignVersion() {
+        return signVersion;
+    }
+
+    public void setSignVersion(SignVersion signVersion) {
+        this.signVersion = signVersion;
     }
 
     protected ServiceClient getInnerClient() {
@@ -199,7 +209,7 @@ public abstract class OSSOperation {
         params.setRegion(region);
         params.setCloudBoxId(cloudBoxId);
         params.setTickOffset(config.getTickOffset());
-        return OSSSignerBase.createRequestSigner(config.getSignatureVersion(), params);
+        return OSSSignerBase.createRequestSigner(signVersion != null ? signVersion : config.getSignatureVersion(), params);
     }
 
     protected ExecutionContext createDefaultContext(HttpMethod method, String bucketName, String key, WebServiceRequest originalRequest) {
