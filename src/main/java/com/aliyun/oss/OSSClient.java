@@ -223,6 +223,7 @@ public class OSSClient implements OSS {
         }
         initOperations();
         setEndpoint(endpoint);
+        initDefaultsByEndpoint();
     }
 
     /**
@@ -284,6 +285,18 @@ public class OSSClient implements OSS {
         return false;
     }
 
+    private boolean isCloudBoxEndpointSuffix(URI uri)  {
+        if (uri == null || uri.getHost() == null) {
+            return false;
+        }
+        String host = uri.getHost();
+        if (host.endsWith("oss-cloudbox.aliyuncs.com") ||
+                host.endsWith("oss-cloudbox-control.aliyuncs.com")) {
+            return true;
+        }
+        return false;
+    }
+
     private URI toURI(String endpoint) throws IllegalArgumentException {
         return OSSUtils.toEndpointURI(endpoint, this.serviceClient.getClientConfiguration().getProtocol().toString());
     }
@@ -296,6 +309,37 @@ public class OSSClient implements OSS {
         this.uploadOperation = new OSSUploadOperation(this.multipartOperation);
         this.downloadOperation = new OSSDownloadOperation(objectOperation);
         this.liveChannelOperation = new LiveChannelOperation(this.serviceClient, this.credsProvider);
+    }
+
+    private void initDefaultsByEndpoint() {
+        if (!this.serviceClient.getClientConfiguration().isExtractSettingFromEndpointEnable()) {
+            return;
+        }
+
+        //cloud box endpoint pattern: cloudbox-id.region.oss-cloudbox[-control].aliyuncs.com
+        //cloudbox-id start with cb-
+        if (isCloudBoxEndpointSuffix(this.endpoint)) {
+            String host = this.endpoint.getHost();
+            String[] keys = host.split("\\.");
+            if (keys != null && keys.length == 5) {
+                if (keys[0].startsWith("cb-")) {
+                    this.setCloudBoxId(keys[0]);
+                    this.setRegion(keys[1]);
+                    this.setProduct(OSSConstants.PRODUCT_CLOUD_BOX);
+                    if (SignVersion.V4.compareTo(this.serviceClient.getClientConfiguration().getSignatureVersion()) > 0) {
+                        this.setSignatureVersionInner(SignVersion.V4);
+                    }
+                }
+            }
+        }
+    }
+
+    private void setSignatureVersionInner(SignVersion version) {
+        this.bucketOperation.setSignVersion(version);
+        this.objectOperation.setSignVersion(version);
+        this.multipartOperation.setSignVersion(version);
+        this.corsOperation.setSignVersion(version);
+        this.liveChannelOperation.setSignVersion(version);
     }
     /**
      * Sets the product name.
