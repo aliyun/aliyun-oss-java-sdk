@@ -106,6 +106,10 @@ public final class RequestParameters {
     public static final String SEQUENTIAL = "sequential";
 
     public static final String SECURITY_TOKEN = "security-token";
+    public static final String X_OSS_AC_SOURCE_IP = "x-oss-ac-source-ip";
+    public static final String X_OSS_AC_SUBNET_MASK = "x-oss-ac-subnet-mask";
+    public static final String X_OSS_AC_VPC_ID = "x-oss-ac-vpc-id";
+    public static final String X_OSS_AC_FORWARD_ALLOW = "x-oss-ac-forward-allow";
 
     public static final String POSITION = "position";
     public static final String STYLE_NAME = "styleName";
