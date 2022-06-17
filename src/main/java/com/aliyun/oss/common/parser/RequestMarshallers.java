@@ -1344,6 +1344,21 @@ public final class RequestMarshallers {
                 if (config.getInventoryFilter().getPrefix() != null) {
                     xmlBody.append("<Filter>");
                     xmlBody.append("<Prefix>" +config.getInventoryFilter().getPrefix() + "</Prefix>");
+                    if(config.getInventoryFilter().getLastModifyBeginTimeStamp() != null){
+                        xmlBody.append("<LastModifyBeginTimeStamp>" +config.getInventoryFilter().getLastModifyBeginTimeStamp() + "</LastModifyBeginTimeStamp>");
+                    }
+                    if(config.getInventoryFilter().getLastModifyEndTimeStamp() != null) {
+                        xmlBody.append("<LastModifyEndTimeStamp>" + config.getInventoryFilter().getLastModifyEndTimeStamp() + "</LastModifyEndTimeStamp>");
+                    }
+                    if(config.getInventoryFilter().getLowerSizeBound() != null) {
+                        xmlBody.append("<LowerSizeBound>" + config.getInventoryFilter().getLowerSizeBound() + "</LowerSizeBound>");
+                    }
+                    if(config.getInventoryFilter().getUpperSizeBound() != null) {
+                        xmlBody.append("<UpperSizeBound>" + config.getInventoryFilter().getUpperSizeBound() + "</UpperSizeBound>");
+                    }
+                    if(config.getInventoryFilter().getStorageClass() != null) {
+                        xmlBody.append("<StorageClass>" + config.getInventoryFilter().getStorageClass() + "</StorageClass>");
+                    }
                     xmlBody.append("</Filter>");
                 }
             }

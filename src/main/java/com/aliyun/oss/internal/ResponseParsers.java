@@ -3183,10 +3183,26 @@ public final class ResponseParsers {
 
         if (configElem.getChild("Filter") != null) {
             Element elem = configElem.getChild("Filter");
+            InventoryFilter filter = new InventoryFilter();
             if (elem.getChildText("Prefix") != null) {
-                InventoryFilter filter = new InventoryFilter().withPrefix(elem.getChildText("Prefix"));
-                inventoryConfiguration.setInventoryFilter(filter);
+                filter = new InventoryFilter().withPrefix(elem.getChildText("Prefix"));
             }
+            if (elem.getChildText("LastModifyBeginTimeStamp") != null) {
+                filter.setLastModifyBeginTimeStamp(Integer.valueOf(elem.getChildText("LastModifyBeginTimeStamp")));
+            }
+            if (elem.getChildText("LastModifyEndTimeStamp") != null) {
+                filter.setLastModifyEndTimeStamp(Integer.valueOf(elem.getChildText("LastModifyEndTimeStamp")));
+            }
+            if (elem.getChildText("LowerSizeBound") != null) {
+                filter.setLowerSizeBound(Integer.valueOf(elem.getChildText("LowerSizeBound")));
+            }
+            if (elem.getChildText("UpperSizeBound") != null) {
+                filter.setUpperSizeBound(Integer.valueOf(elem.getChildText("UpperSizeBound")));
+            }
+            if (elem.getChildText("StorageClass") != null) {
+                filter.setStorageClass(elem.getChildText("StorageClass"));
+            }
+            inventoryConfiguration.setInventoryFilter(filter);
         }
 
         if (configElem.getChild("Schedule") != null) {
