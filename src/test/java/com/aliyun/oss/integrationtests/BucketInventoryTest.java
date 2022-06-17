@@ -313,4 +313,91 @@ public class BucketInventoryTest extends TestBase {
         }
     }
 
+    @Test
+    public void testBucketInventoryNormalWithFilter() {
+        String inventoryId = "testid";
+        // fields
+        List<String> fields = new ArrayList<String>();
+        fields.add(InventoryOptionalFields.Size);
+        fields.add(InventoryOptionalFields.LastModifiedDate);
+        fields.add(InventoryOptionalFields.ETag);
+        fields.add(InventoryOptionalFields.StorageClass);
+        fields.add(InventoryOptionalFields.IsMultipartUploaded);
+        fields.add(InventoryOptionalFields.EncryptionStatus);
+
+        // schedule
+        InventorySchedule inventorySchedule = new InventorySchedule().withFrequency(InventoryFrequency.Weekly);
+
+        // filter
+        InventoryFilter inventoryFilter = new InventoryFilter()
+                .withPrefix("testPrefix")
+                .withLastModifyBeginTimeStamp(1637883649)
+                .withLastModifyEndTimeStamp(1638347592)
+                .withLowerSizeBound(1024)
+                .withUpperSizeBound(1048576)
+                .withStorageClass("Standard,IA");
+
+        // destination
+        InventoryEncryption inventoryEncryption = new InventoryEncryption();
+        inventoryEncryption.setServerSideOssEncryption(new InventoryServerSideEncryptionOSS());
+        InventoryOSSBucketDestination ossBucketDestin = new InventoryOSSBucketDestination()
+                .withFormat(InventoryFormat.CSV)
+                .withPrefix("bucket-prefix")
+                .withAccountId(TestConfig.RAM_UID)
+                .withRoleArn(TestConfig.RAM_ROLE_ARN)
+                .withBucket(destinBucket)
+                .withEncryption(inventoryEncryption);
+
+        InventoryDestination destination = new InventoryDestination().withOSSBucketDestination(ossBucketDestin);
+
+        InventoryConfiguration inventoryConfiguration = new InventoryConfiguration()
+                .withInventoryId(inventoryId)
+                .withEnabled(false)
+                .withIncludedObjectVersions(InventoryIncludedObjectVersions.All)
+                .withOptionalFields(fields)
+                .withFilter(inventoryFilter)
+                .withSchedule(inventorySchedule)
+                .withDestination(destination);
+
+        // put
+        try {
+            ossClient.setBucketInventoryConfiguration(bucketName, inventoryConfiguration);
+        } catch (ClientException e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        // get and delete
+        try {
+            GetBucketInventoryConfigurationResult result = ossClient.getBucketInventoryConfiguration(
+                    new GetBucketInventoryConfigurationRequest(bucketName, inventoryId));
+
+            InventoryConfiguration actualConfig = result.getInventoryConfiguration();
+            Assert.assertEquals(inventoryId, actualConfig.getInventoryId());
+            Assert.assertEquals(InventoryIncludedObjectVersions.All.toString(), actualConfig.getIncludedObjectVersions());
+            Assert.assertEquals("testPrefix", actualConfig.getInventoryFilter().getPrefix());
+            Assert.assertEquals(InventoryFrequency.Weekly.toString(), actualConfig.getSchedule().getFrequency());
+            Assert.assertEquals(6, actualConfig.getOptionalFields().size());
+
+            InventoryOSSBucketDestination actualDestin = actualConfig.getDestination().getOssBucketDestination();
+
+            Assert.assertEquals(TestConfig.RAM_UID, actualDestin.getAccountId());
+            Assert.assertEquals(destinBucket, actualDestin.getBucket());
+            Assert.assertEquals(TestConfig.RAM_ROLE_ARN, actualDestin.getRoleArn());
+            Assert.assertEquals(InventoryFormat.CSV.toString(), actualDestin.getFormat());
+            Assert.assertEquals("bucket-prefix", actualDestin.getPrefix());
+            Assert.assertEquals(Integer.valueOf(1637883649), actualConfig.getInventoryFilter().getLastModifyBeginTimeStamp());
+            Assert.assertEquals(Integer.valueOf(1638347592), actualConfig.getInventoryFilter().getLastModifyBeginTimeStamp());
+            Assert.assertEquals(Integer.valueOf(1024), actualConfig.getInventoryFilter().getLowerSizeBound());
+            Assert.assertEquals(Integer.valueOf(1048576), actualConfig.getInventoryFilter().getUpperSizeBound());
+            Assert.assertEquals("Standard,IA", actualConfig.getInventoryFilter().getStorageClass());
+            Assert.assertNotNull(actualDestin.getEncryption().getServerSideOssEncryption());
+            Assert.assertNull(actualDestin.getEncryption().getServerSideKmsEncryption());
+        } catch (ClientException e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        } finally {
+            ossClient.deleteBucketInventoryConfiguration(new DeleteBucketInventoryConfigurationRequest(bucketName, inventoryId));
+        }
+    }
 }
