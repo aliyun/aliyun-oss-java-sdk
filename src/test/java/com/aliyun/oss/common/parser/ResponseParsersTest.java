@@ -4186,6 +4186,72 @@ public class ResponseParsersTest {
     }
 
     @Test
+    public void testGetMetaQueryStatusResponseParser() {
+        String respBody = "" +
+                "<InventoryConfiguration>\n" +
+                "     <Id>report1</Id>\n" +
+                "     <IsEnabled>true</IsEnabled>\n" +
+                "     <Filter>\n" +
+                "        <Prefix>filterPrefix/</Prefix>\n" +
+                "       \t<LastModifyBeginTimeStamp>1637883649</LastModifyBeginTimeStamp>\n" +
+                "     \t  <LastModifyEndTimeStamp>1638347592</LastModifyEndTimeStamp>\n" +
+                "     \t  <LowerSizeBound>1024</LowerSizeBound>\n" +
+                "     \t  <UpperSizeBound>1048576</UpperSizeBound>\n" +
+                "        <StorageClass>Standard,IA</StorageClass>\n" +
+                "     </Filter>\n" +
+                "     <Destination>\n" +
+                "        <OSSBucketDestination>\n" +
+                "           <Format>CSV</Format>\n" +
+                "           <AccountId>1000000000000000</AccountId>\n" +
+                "           <RoleArn>acs:ram::1000000000000000:role/AliyunOSSRole</RoleArn>\n" +
+                "           <Bucket>acs:oss:::destination-bucket</Bucket>\n" +
+                "           <Prefix>prefix1</Prefix>\n" +
+                "           <Encryption>\n" +
+                "              <SSE-KMS>\n" +
+                "                 <KeyId>keyId</KeyId>\n" +
+                "              </SSE-KMS>\n" +
+                "           </Encryption>\n" +
+                "        </OSSBucketDestination>\n" +
+                "     </Destination>\n" +
+                "     <Schedule>\n" +
+                "        <Frequency>Daily</Frequency>\n" +
+                "     </Schedule>\n" +
+                "     <IncludedObjectVersions>All</IncludedObjectVersions>\n" +
+                "     <OptionalFields>\n" +
+                "        <Field>Size</Field>\n" +
+                "        <Field>LastModifiedDate</Field>\n" +
+                "        <Field>ETag</Field>\n" +
+                "        <Field>StorageClass</Field>\n" +
+                "        <Field>IsMultipartUploaded</Field>\n" +
+                "        <Field>EncryptionStatus</Field>\n" +
+                "     </OptionalFields>\n" +
+                "  </InventoryConfiguration>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        GetBucketInventoryConfigurationResult result = null;
+
+        try {
+            result = ResponseParsers.parseGetBucketInventoryConfig(instream);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse bucket replication response body fail!");
+        }
+
+        Assert.assertEquals("report1", result.getInventoryConfiguration().getInventoryId());
+        Assert.assertEquals("filterPrefix/", result.getInventoryConfiguration().getInventoryFilter().getPrefix());
+        Assert.assertEquals(Integer.valueOf(1637883649), result.getInventoryConfiguration().getInventoryFilter().getLastModifyBeginTimeStamp());
+        Assert.assertEquals(Integer.valueOf(1638347592), result.getInventoryConfiguration().getInventoryFilter().getLastModifyEndTimeStamp());
+        Assert.assertEquals(Integer.valueOf(1024), result.getInventoryConfiguration().getInventoryFilter().getLowerSizeBound());
+        Assert.assertEquals(Integer.valueOf(1048576), result.getInventoryConfiguration().getInventoryFilter().getUpperSizeBound());
+        Assert.assertEquals("Standard,IA", result.getInventoryConfiguration().getInventoryFilter().getStorageClass());
+    }
+
+    @Test
     public void testGetBucketEncryptionResponseParser() {
         InputStream instream = null;
         String respBody;
