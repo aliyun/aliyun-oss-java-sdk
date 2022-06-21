@@ -4186,7 +4186,7 @@ public class ResponseParsersTest {
     }
 
     @Test
-    public void testGetMetaQueryStatusResponseParser() {
+    public void testGetBucketInventoryConfigWithFilter() {
         String respBody = "" +
                 "<InventoryConfiguration>\n" +
                 "     <Id>report1</Id>\n" +
