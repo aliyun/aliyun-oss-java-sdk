@@ -1750,8 +1750,8 @@ public final class RequestMarshallers {
             if(input.getObjects() != null && !input.getObjects().isEmpty()){
                 for (CopyObjects objs : input.getObjects()) {
                     xmlBody.append("<Object>");
-                    xmlBody.append("<SourceKey>" + objs.getSourceKey() + "</SourceKey>");
-                    xmlBody.append("<TargetKey>" + objs.getTargetKey() + "</TargetKey>");
+                    xmlBody.append("<SourceKey>" + escapeKey(objs.getSourceKey()) + "</SourceKey>");
+                    xmlBody.append("<TargetKey>" + escapeKey(objs.getTargetKey()) + "</TargetKey>");
                     xmlBody.append("</Object>");
                 }
             }
