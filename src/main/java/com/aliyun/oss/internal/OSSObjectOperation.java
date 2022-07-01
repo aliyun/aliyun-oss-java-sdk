@@ -1055,6 +1055,36 @@ public class OSSObjectOperation extends OSSOperation {
         return doOperation(request, requestIdResponseParser, bucketName, destObject);
     }
 
+    public CopyObjectsResult copyObjects(CopyObjectsRequest copyObjectsRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(copyObjectsRequest, "copyObjectsRequest");
+
+        String bucketName = copyObjectsRequest.getBucketName();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        if(copyObjectsRequest.getObjects() == null && copyObjectsRequest.getObjects().isEmpty()){
+            throw new IllegalArgumentException("Batch copy object cannot be empty");
+        }
+
+        Map<String, String> headers = new HashMap<String, String>();
+        populateRequestPayerHeader(headers, copyObjectsRequest.getRequestPayer());
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.COPY, null);
+
+        byte[] rawContent = copyObjectsRequestMarshaller.marshall(copyObjectsRequest);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(copyObjectsRequest))
+                .setMethod(HttpMethod.POST).setBucket(bucketName).setParameters(params).setHeaders(headers)
+                .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+                .setOriginalRequest(copyObjectsRequest).build();
+
+        return doOperation(request, ResponseParsers.copyObjectsResponseParser, bucketName, null, true);
+    }
+
+
     private static enum MetadataDirective {
 
         /* Copy metadata from source object */

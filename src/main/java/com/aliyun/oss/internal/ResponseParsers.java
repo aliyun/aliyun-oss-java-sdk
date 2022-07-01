@@ -137,6 +137,7 @@ public final class ResponseParsers {
     public static final GetSymbolicLinkResponseParser getSymbolicLinkResponseParser = new GetSymbolicLinkResponseParser();
 
     public static final DeleteDirectoryResponseParser deleteDirectoryResponseParser = new DeleteDirectoryResponseParser();
+    public static final CopyObjectsResponseParser copyObjectsResponseParser = new CopyObjectsResponseParser();
 
     public static Long parseLongWithDefault(String defaultValue){
         if(defaultValue == null || "".equals(defaultValue)){
@@ -3837,5 +3838,64 @@ public final class ResponseParsers {
             }
         }
     }
+
+    public static final class CopyObjectsResponseParser implements ResponseParser<CopyObjectsResult> {
+        @Override
+        public CopyObjectsResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                CopyObjectsResult result = parseCopyObjects(response.getContent());
+                result.setRequestId(response.getRequestId());
+                result.setResponse(response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private CopyObjectsResult parseCopyObjects(InputStream inputStream) throws ResponseParseException {
+            CopyObjectsResult result = new CopyObjectsResult();
+            if (inputStream == null) {
+                return result;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                if(root.getChild("Success") != null){
+                    List<CopyObjectsSuccessResult> successObjects = new ArrayList<CopyObjectsSuccessResult>();
+                    List<Element> successElements = root.getChild("Success").getChildren("Object");
+
+                    for (Element e : successElements) {
+                        CopyObjectsSuccessResult successResult = new CopyObjectsSuccessResult();
+                        successResult.setSourceKey(e.getChildText("SourceKey"));
+                        successResult.setTargetKey(e.getChildText("TargetKey"));
+                        successResult.setETag(e.getChildText("ETag"));
+                        successObjects.add(successResult);
+                    }
+                    result.setSuccessObjects(successObjects);
+                }
+
+                if(root.getChild("Failed") != null){
+                    List<CopyObjectsFailedResult> failedObjects = new ArrayList<CopyObjectsFailedResult>();
+                    List<Element> failedElements = root.getChild("Failed").getChildren("Object");
+
+                    for (Element e : failedElements) {
+                        CopyObjectsFailedResult failedResult = new CopyObjectsFailedResult();
+                        failedResult.setSourceKey(e.getChildText("SourceKey"));
+                        failedResult.setTargetKey(e.getChildText("TargetKey"));
+                        failedResult.setErrorStatus(e.getChildText("ErrorStatus"));
+                        failedObjects.add(failedResult);
+                    }
+                    result.setFailedObjects(failedObjects);
+                }
+                return result;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
 
 }

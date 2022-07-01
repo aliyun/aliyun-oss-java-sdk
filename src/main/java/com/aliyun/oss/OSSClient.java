@@ -1919,6 +1919,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public CopyObjectsResult copyObjects(CopyObjectsRequest copyObjectsRequest) throws OSSException, ClientException {
+        return objectOperation.copyObjects(copyObjectsRequest);
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();

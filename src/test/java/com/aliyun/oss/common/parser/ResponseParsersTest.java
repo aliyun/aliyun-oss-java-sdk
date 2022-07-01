@@ -3,12 +3,8 @@ package com.aliyun.oss.common.parser;
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.internal.ResponseParsers;
-import com.aliyun.oss.internal.model.OSSErrorResult;
 import com.aliyun.oss.model.*;
 import junit.framework.Assert;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.input.SAXBuilder;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -4454,5 +4450,81 @@ public class ResponseParsersTest {
             Assert.fail("parse delete directory response body fail!");
         }
         Assert.assertEquals(false, result.isEnabled());
+    }
+
+    @Test
+    public void testCopyObjectsResponseParser() {
+        String respBody = "" +
+                "<CopyObjectsResult>\n" +
+                "\t<Success>\n" +
+                "    <Object>\n" +
+                "      <SourceKey>copy-source1.data</SourceKey>\n" +
+                "      <TargetKey>copy1.data</TargetKey>\n" +
+                "      <ETag>F2064A169EE92E9775EE5324D0B1****</ETag>\n" +
+                "    </Object>\n" +
+                "    <Object>\n" +
+                "      <SourceKey>copy-source2.data</SourceKey>\n" +
+                "      <TargetKey>copy2.data</TargetKey>\n" +
+                "      <ETag>5B3C1A2E053D763E1B002CC607C5****</ETag>\n" +
+                "    </Object>\n" +
+                "  </Success>\n" +
+                "  <Failed>\n" +
+                "  \t<Object>\n" +
+                "      <SourceKey>copy-source3.data</SourceKey>\n" +
+                "      <TargetKey>copy3.data</TargetKey>\n" +
+                "      <ErrorStatus>AccessDenied</ErrorStatus>\n" +
+                "    </Object>\n" +
+                "  </Failed>\n" +
+                "</CopyObjectsResult>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        CopyObjectsResult result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.CopyObjectsResponseParser parser = new ResponseParsers.CopyObjectsResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+
+        Assert.assertEquals("copy-source1.data", result.getSuccessObjects().get(0).getSourceKey());
+        Assert.assertEquals("copy1.data", result.getSuccessObjects().get(0).getTargetKey());
+        Assert.assertEquals("F2064A169EE92E9775EE5324D0B1****", result.getSuccessObjects().get(0).getETag());
+        Assert.assertEquals("copy-source2.data", result.getSuccessObjects().get(1).getSourceKey());
+        Assert.assertEquals("copy2.data", result.getSuccessObjects().get(1).getTargetKey());
+        Assert.assertEquals("5B3C1A2E053D763E1B002CC607C5****", result.getSuccessObjects().get(1).getETag());
+        Assert.assertEquals("copy-source3.data", result.getFailedObjects().get(0).getSourceKey());
+        Assert.assertEquals("copy3.data", result.getFailedObjects().get(0).getTargetKey());
+        Assert.assertEquals("AccessDenied", result.getFailedObjects().get(0).getErrorStatus());
+
+
+
+        respBody = "" +
+                "<CopyObjectsResult>\n" +
+                "</CopyObjectsResult>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.CopyObjectsResponseParser parser = new ResponseParsers.CopyObjectsResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+        Assert.assertEquals(null, result.getSuccessObjects());
     }
 }
