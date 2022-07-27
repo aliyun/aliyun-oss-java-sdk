@@ -4196,7 +4196,7 @@ public class ResponseParsersTest {
                 "       \t<LastModifyBeginTimeStamp>1637883649</LastModifyBeginTimeStamp>\n" +
                 "     \t  <LastModifyEndTimeStamp>1638347592</LastModifyEndTimeStamp>\n" +
                 "     \t  <LowerSizeBound>1024</LowerSizeBound>\n" +
-                "     \t  <UpperSizeBound>1048576</UpperSizeBound>\n" +
+                "     \t  <UpperSizeBound>5365000000000</UpperSizeBound>\n" +
                 "        <StorageClass>Standard,IA</StorageClass>\n" +
                 "     </Filter>\n" +
                 "     <Destination>\n" +
@@ -4244,10 +4244,10 @@ public class ResponseParsersTest {
 
         Assert.assertEquals("report1", result.getInventoryConfiguration().getInventoryId());
         Assert.assertEquals("filterPrefix/", result.getInventoryConfiguration().getInventoryFilter().getPrefix());
-        Assert.assertEquals(Integer.valueOf(1637883649), result.getInventoryConfiguration().getInventoryFilter().getLastModifyBeginTimeStamp());
-        Assert.assertEquals(Integer.valueOf(1638347592), result.getInventoryConfiguration().getInventoryFilter().getLastModifyEndTimeStamp());
-        Assert.assertEquals(Integer.valueOf(1024), result.getInventoryConfiguration().getInventoryFilter().getLowerSizeBound());
-        Assert.assertEquals(Integer.valueOf(1048576), result.getInventoryConfiguration().getInventoryFilter().getUpperSizeBound());
+        Assert.assertEquals(Long.valueOf(1637883649), result.getInventoryConfiguration().getInventoryFilter().getLastModifyBeginTimeStamp());
+        Assert.assertEquals(Long.valueOf(1638347592), result.getInventoryConfiguration().getInventoryFilter().getLastModifyEndTimeStamp());
+        Assert.assertEquals(Long.valueOf(1024L), result.getInventoryConfiguration().getInventoryFilter().getLowerSizeBound());
+        Assert.assertEquals(Long.valueOf(5365000000000L), result.getInventoryConfiguration().getInventoryFilter().getUpperSizeBound());
         Assert.assertEquals("Standard,IA", result.getInventoryConfiguration().getInventoryFilter().getStorageClass());
     }
 

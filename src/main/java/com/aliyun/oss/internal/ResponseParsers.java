@@ -3188,16 +3188,16 @@ public final class ResponseParsers {
                 filter = new InventoryFilter().withPrefix(elem.getChildText("Prefix"));
             }
             if (elem.getChildText("LastModifyBeginTimeStamp") != null) {
-                filter.setLastModifyBeginTimeStamp(Integer.valueOf(elem.getChildText("LastModifyBeginTimeStamp")));
+                filter.setLastModifyBeginTimeStamp(Long.valueOf(elem.getChildText("LastModifyBeginTimeStamp")));
             }
             if (elem.getChildText("LastModifyEndTimeStamp") != null) {
-                filter.setLastModifyEndTimeStamp(Integer.valueOf(elem.getChildText("LastModifyEndTimeStamp")));
+                filter.setLastModifyEndTimeStamp(Long.valueOf(elem.getChildText("LastModifyEndTimeStamp")));
             }
             if (elem.getChildText("LowerSizeBound") != null) {
-                filter.setLowerSizeBound(Integer.valueOf(elem.getChildText("LowerSizeBound")));
+                filter.setLowerSizeBound(Long.valueOf(elem.getChildText("LowerSizeBound")));
             }
             if (elem.getChildText("UpperSizeBound") != null) {
-                filter.setUpperSizeBound(Integer.valueOf(elem.getChildText("UpperSizeBound")));
+                filter.setUpperSizeBound(Long.valueOf(elem.getChildText("UpperSizeBound")));
             }
             if (elem.getChildText("StorageClass") != null) {
                 filter.setStorageClass(elem.getChildText("StorageClass"));
