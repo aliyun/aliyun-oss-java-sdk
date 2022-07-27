@@ -331,10 +331,10 @@ public class BucketInventoryTest extends TestBase {
         // filter
         InventoryFilter inventoryFilter = new InventoryFilter()
                 .withPrefix("testPrefix")
-                .withLastModifyBeginTimeStamp(1637883649)
-                .withLastModifyEndTimeStamp(1638347592)
-                .withLowerSizeBound(1024)
-                .withUpperSizeBound(1048576)
+                .withLastModifyBeginTimeStamp(1637883649L)
+                .withLastModifyEndTimeStamp(1638347592L)
+                .withLowerSizeBound(1024L)
+                .withUpperSizeBound(1048576L)
                 .withStorageClass("Standard,IA");
 
         // destination
@@ -386,10 +386,10 @@ public class BucketInventoryTest extends TestBase {
             Assert.assertEquals(TestConfig.RAM_ROLE_ARN, actualDestin.getRoleArn());
             Assert.assertEquals(InventoryFormat.CSV.toString(), actualDestin.getFormat());
             Assert.assertEquals("bucket-prefix", actualDestin.getPrefix());
-            Assert.assertEquals(Integer.valueOf(1637883649), actualConfig.getInventoryFilter().getLastModifyBeginTimeStamp());
-            Assert.assertEquals(Integer.valueOf(1638347592), actualConfig.getInventoryFilter().getLastModifyBeginTimeStamp());
-            Assert.assertEquals(Integer.valueOf(1024), actualConfig.getInventoryFilter().getLowerSizeBound());
-            Assert.assertEquals(Integer.valueOf(1048576), actualConfig.getInventoryFilter().getUpperSizeBound());
+            Assert.assertEquals(Long.valueOf(1637883649), actualConfig.getInventoryFilter().getLastModifyBeginTimeStamp());
+            Assert.assertEquals(Long.valueOf(1638347592), actualConfig.getInventoryFilter().getLastModifyBeginTimeStamp());
+            Assert.assertEquals(Long.valueOf(1024L), actualConfig.getInventoryFilter().getLowerSizeBound());
+            Assert.assertEquals(Long.valueOf(1048576L), actualConfig.getInventoryFilter().getUpperSizeBound());
             Assert.assertEquals("Standard,IA", actualConfig.getInventoryFilter().getStorageClass());
             Assert.assertNotNull(actualDestin.getEncryption().getServerSideOssEncryption());
             Assert.assertNull(actualDestin.getEncryption().getServerSideKmsEncryption());
