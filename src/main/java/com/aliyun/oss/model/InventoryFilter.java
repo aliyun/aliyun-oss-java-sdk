@@ -25,10 +25,10 @@ public class InventoryFilter implements Serializable {
     private static final long serialVersionUID = 6611200273488675580L;
 
     private String prefix;
-    private Integer lastModifyBeginTimeStamp;
-    private Integer lastModifyEndTimeStamp;
-    private Integer lowerSizeBound;
-    private Integer upperSizeBound;
+    private Long lastModifyBeginTimeStamp;
+    private Long lastModifyEndTimeStamp;
+    private Long lowerSizeBound;
+    private Long upperSizeBound;
     private String storageClass;
 
     /**
@@ -57,14 +57,14 @@ public class InventoryFilter implements Serializable {
     /**
      * Returns the start timestamp for data to use when evaluating an inventory filter.
      */
-    public Integer getLastModifyBeginTimeStamp() {
+    public Long getLastModifyBeginTimeStamp() {
         return lastModifyBeginTimeStamp;
     }
 
     /**
      * Specifies the start timestamp for data to use when evaluating an inventory filter.
      */
-    public void setLastModifyBeginTimeStamp(Integer lastModifyBeginTimeStamp) {
+    public void setLastModifyBeginTimeStamp(Long lastModifyBeginTimeStamp) {
         this.lastModifyBeginTimeStamp = lastModifyBeginTimeStamp;
     }
 
@@ -72,7 +72,7 @@ public class InventoryFilter implements Serializable {
      * Specifies the the start timestamp for data to use when evaluating an inventory filter.
      * And returns the {@link InventoryFilter} object itself.
      */
-    public InventoryFilter withLastModifyBeginTimeStamp(Integer lastModifyBeginTimeStamp) {
+    public InventoryFilter withLastModifyBeginTimeStamp(Long lastModifyBeginTimeStamp) {
         setLastModifyBeginTimeStamp(lastModifyBeginTimeStamp);
         return this;
     }
@@ -80,14 +80,14 @@ public class InventoryFilter implements Serializable {
     /**
      * Returns the end timestamp of data to use when evaluating an inventory filter.
      */
-    public Integer getLastModifyEndTimeStamp() {
+    public Long getLastModifyEndTimeStamp() {
         return lastModifyEndTimeStamp;
     }
 
     /**
      * Specifies the end timestamp of data to use when evaluating an inventory filter.
      */
-    public void setLastModifyEndTimeStamp(Integer lastModifyEndTimeStamp) {
+    public void setLastModifyEndTimeStamp(Long lastModifyEndTimeStamp) {
         this.lastModifyEndTimeStamp = lastModifyEndTimeStamp;
     }
 
@@ -95,7 +95,7 @@ public class InventoryFilter implements Serializable {
      * Specifies the end timestamp of data to use when evaluating an inventory filter.
      * And returns the {@link InventoryFilter} object itself.
      */
-    public InventoryFilter withLastModifyEndTimeStamp(Integer lastModifyEndTimeStamp) {
+    public InventoryFilter withLastModifyEndTimeStamp(Long lastModifyEndTimeStamp) {
         setLastModifyEndTimeStamp(lastModifyEndTimeStamp);
         return this;
     }
@@ -103,14 +103,14 @@ public class InventoryFilter implements Serializable {
     /**
      * Returns the minimum size of filter file size to use when evaluating an inventory filter.
      */
-    public Integer getLowerSizeBound() {
+    public Long getLowerSizeBound() {
         return lowerSizeBound;
     }
 
     /**
      * Specifies the minimum size of filter file size to use when evaluating an inventory filter.
      */
-    public void setLowerSizeBound(Integer lowerSizeBound) {
+    public void setLowerSizeBound(Long lowerSizeBound) {
         this.lowerSizeBound = lowerSizeBound;
     }
 
@@ -118,7 +118,7 @@ public class InventoryFilter implements Serializable {
      * Specifies the minimum size of filter file size to use when evaluating an inventory filter.
      * And returns the {@link InventoryFilter} object itself.
      */
-    public InventoryFilter withLowerSizeBound(Integer lowerSizeBound) {
+    public InventoryFilter withLowerSizeBound(Long lowerSizeBound) {
         setLowerSizeBound(lowerSizeBound);
         return this;
     }
@@ -126,14 +126,14 @@ public class InventoryFilter implements Serializable {
     /**
      * Returns the maximum size of filter file size to use when evaluating an inventory filter.
      */
-    public Integer getUpperSizeBound() {
+    public Long getUpperSizeBound() {
         return upperSizeBound;
     }
 
     /**
      * Specifies the maximum size of filter file size to use when evaluating an inventory filter.
      */
-    public void setUpperSizeBound(Integer upperSizeBound) {
+    public void setUpperSizeBound(Long upperSizeBound) {
         this.upperSizeBound = upperSizeBound;
     }
 
@@ -141,7 +141,7 @@ public class InventoryFilter implements Serializable {
      * Specifies the maximum size of filter file size to use when evaluating an inventory filter.
      * And returns the {@link InventoryFilter} object itself.
      */
-    public InventoryFilter withUpperSizeBound(Integer upperSizeBound) {
+    public InventoryFilter withUpperSizeBound(Long upperSizeBound) {
         setUpperSizeBound(upperSizeBound);
         return this;
     }
