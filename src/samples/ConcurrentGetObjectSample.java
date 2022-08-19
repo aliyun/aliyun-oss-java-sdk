@@ -97,7 +97,7 @@ public class ConcurrentGetObjectSample {
             System.out.println("Start to download " + key + "\n");
             for (int i = 0; i < blockCount; i++) {
                 long startPos = i * blockSize;
-                long endPos = (i + 1 == blockCount) ? objectSize : (i + 1) * blockSize;
+                long endPos = (i + 1 == blockCount) ? objectSize - 1 : (i + 1) * blockSize;
                 executorService.execute(new BlockFetcher(startPos, endPos, i + 1));
             }
             
@@ -163,9 +163,10 @@ public class ConcurrentGetObjectSample {
             try {
                 raf = new RandomAccessFile(localFilePath, "rw");
                 raf.seek(startPos);
-                
-                OSSObject object = client.getObject(new GetObjectRequest(bucketName, key)
-                    .withRange(startPos, endPos));
+
+                GetObjectRequest request = new GetObjectRequest(bucketName, key).withRange(startPos, endPos);
+                request.addHeader("x-oss-range-behavior", "standard");
+                OSSObject object = client.getObject(request);
                 InputStream objectContent = object.getObjectContent();
                 try {
                     byte[] buf = new byte[4096];
