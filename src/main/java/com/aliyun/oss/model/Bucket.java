@@ -70,6 +70,8 @@ public class Bucket extends GenericResult {
 	// The id of resource group.
     private String resourceGroupId;
 
+    private String xcType;
+
     /**
      * Default constructor.
      */
@@ -285,5 +287,13 @@ public class Bucket extends GenericResult {
      */
     public void setResourceGroupId(String resourceGroupId) {
         this.resourceGroupId = resourceGroupId;
+    }
+
+    public String getXcType() {
+        return xcType;
+    }
+
+    public void setXcType(String xcType) {
+        this.xcType = xcType;
     }
 }

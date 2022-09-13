@@ -27,6 +27,7 @@ public class CreateBucketRequest extends GenericRequest {
     private DataRedundancyType dataRedundancyType;
     private String hnsStatus;
     private String resourceGroupId;
+    private String xcType;
 
     public CreateBucketRequest(String bucketName) {
         super(bucketName);
@@ -191,5 +192,13 @@ public class CreateBucketRequest extends GenericRequest {
     public CreateBucketRequest withResourceGroupId(String resourceGroupId) {
         this.setResourceGroupId(resourceGroupId);
         return this;
+    }
+
+    public String getXcType() {
+        return xcType;
+    }
+
+    public void setXcType(String xcType) {
+        this.xcType = xcType;
     }
 }
