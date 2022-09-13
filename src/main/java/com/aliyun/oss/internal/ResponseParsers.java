@@ -2679,6 +2679,13 @@ public final class ResponseParsers {
             if (bucketElem.getChild("StorageClass") != null) {
                 bucket.setStorageClass(StorageClass.parse(bucketElem.getChildText("StorageClass")));
             }
+
+            if (bucketElem.getChild("BucketPolicy") != null) {
+                Element policyElem = bucketElem.getChild("BucketPolicy");
+                if (policyElem.getChild("XCType") != null) {
+                    bucket.setXcType(policyElem.getChildText("XCType"));
+                }
+            }
             bucketInfo.setBucket(bucket);
 
             // comment
