@@ -225,6 +225,9 @@ public final class RequestMarshallers {
                 if (request.getDataRedundancyType() != null) {
                     xmlBody.append("<DataRedundancyType>" + request.getDataRedundancyType().toString() + "</DataRedundancyType>");
                 }
+                if (request.getXcType() != null) {
+                    xmlBody.append("<XCType>" + request.getXcType() + "</XCType>");
+                }
                 xmlBody.append("</CreateBucketConfiguration>");
             }
             return stringMarshaller.marshall(xmlBody.toString());
