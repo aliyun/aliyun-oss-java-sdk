@@ -571,4 +571,35 @@ public class SignTest extends  TestBase{
 
         TestBase.deleteBucket(bucket);
     }
+
+
+    @Test
+    public void testGenerateSignedURLIsKeyNotEmpty() {
+        String key = "";
+        ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
+        conf.setSignatureVersion(SignVersion.V1);
+        OSS ossClient = new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT, TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET, conf);
+        Date expiration = new Date(new Date().getTime() + 1000 * 60 *10);
+        long ticks = new Date().getTime() / 1000 + new Random().nextInt(5000);
+        String bucket = TestBase.BUCKET_NAME_PREFIX + ticks;
+
+        ossClient.createBucket(bucket);
+
+        try {
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key);
+            request.setExpiration(expiration);
+            ossClient.generatePresignedUrl(request);
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        key = "test";
+        try {
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key);
+            request.setExpiration(expiration);
+            ossClient.generatePresignedUrl(request);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
 }
