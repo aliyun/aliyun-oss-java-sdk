@@ -589,6 +589,7 @@ public class SignTest extends  TestBase{
             GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key);
             request.setExpiration(expiration);
             ossClient.generatePresignedUrl(request);
+            Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(true);
         }
