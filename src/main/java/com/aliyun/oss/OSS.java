@@ -4259,4 +4259,17 @@ public interface OSS {
      * @throws ClientException
      */
     VoidResult deleteBucketTransferAcceleration(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * batch copy a batch of objects in the same bucket.
+     *
+     * @param copyObjectsRequest
+     *            A {@link CopyObjectsRequest} instance that specifies bucket
+     *            source key and target key。
+     * @return A {@link CopyObjectResult} instance.
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public CopyObjectsResult copyObjects(CopyObjectsRequest copyObjectsRequest) throws OSSException, ClientException;
+
 }

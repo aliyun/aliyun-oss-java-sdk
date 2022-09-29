@@ -1334,4 +1334,51 @@ public class RequestMarshallersTest {
         Assert.assertEquals("true", status);
     }
 
+    @Test
+    public void testCopyObjectsRequestMarshaller() {
+
+        CopyObjectsRequest copyObjectsRequest = new CopyObjectsRequest();
+
+        byte[] data = copyObjectsRequestMarshaller.marshall(copyObjectsRequest);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        Assert.assertEquals(root.getChildren("Object").size(), 0);
+
+
+
+        copyObjectsRequest = new CopyObjectsRequest();
+        List<CopyObjects> objects = new ArrayList<CopyObjects>();
+        CopyObjects copyObjects = new CopyObjects();
+        copyObjects.setSourceKey("Thread-1");
+        copyObjects.setTargetKey("Thread-12");
+        objects.add(copyObjects);
+        copyObjectsRequest.setObjects(objects);
+
+        data = copyObjectsRequestMarshaller.marshall(copyObjectsRequest);
+        is = new ByteArrayInputStream(data);
+
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        root = doc.getRootElement();
+        Assert.assertEquals(root.getChildren("Object").get(0).getChildText("SourceKey"), "Thread-1");
+        Assert.assertEquals(root.getChildren("Object").get(0).getChildText("TargetKey"), "Thread-12");
+
+    }
 }

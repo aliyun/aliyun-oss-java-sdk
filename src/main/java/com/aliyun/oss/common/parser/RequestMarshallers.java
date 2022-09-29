@@ -97,6 +97,7 @@ public final class RequestMarshallers {
 
     public static final SetBucketResourceGroupRequestMarshaller setBucketResourceGroupRequestMarshaller = new SetBucketResourceGroupRequestMarshaller();
     public static final PutBucketTransferAccelerationRequestMarshaller putBucketTransferAccelerationRequestMarshaller = new PutBucketTransferAccelerationRequestMarshaller();
+    public static final CopyObjectsRequestMarshaller copyObjectsRequestMarshaller = new CopyObjectsRequestMarshaller();
 
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
 
@@ -1755,6 +1756,34 @@ public final class RequestMarshallers {
 
             return rawData;
         }
+    }
+
+    public static final class CopyObjectsRequestMarshaller implements RequestMarshaller2<CopyObjectsRequest> {
+
+        @Override
+        public byte[] marshall(CopyObjectsRequest input) {
+            StringBuffer xmlBody = new StringBuffer();
+
+            xmlBody.append("<Copy>");
+            if(input.getObjects() != null && !input.getObjects().isEmpty()){
+                for (CopyObjects objs : input.getObjects()) {
+                    xmlBody.append("<Object>");
+                    xmlBody.append("<SourceKey>" + escapeKey(objs.getSourceKey()) + "</SourceKey>");
+                    xmlBody.append("<TargetKey>" + escapeKey(objs.getTargetKey()) + "</TargetKey>");
+                    xmlBody.append("</Object>");
+                }
+            }
+            xmlBody.append("</Copy>");
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+
+            return rawData;
+        }
+
     }
 
     private static enum EscapedChar {
