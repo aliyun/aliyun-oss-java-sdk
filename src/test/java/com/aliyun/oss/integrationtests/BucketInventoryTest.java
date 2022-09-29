@@ -41,7 +41,7 @@ public class BucketInventoryTest extends TestBase {
         super.setUp();
 
         bucketName = super.bucketName + "-inventory";
-        endpoint = "http://oss-ap-southeast-2.aliyuncs.com";
+        endpoint = TestConfig.OSS_TEST_ENDPOINT;
 
         //create client
         ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);
@@ -87,7 +87,7 @@ public class BucketInventoryTest extends TestBase {
 
         // destination
         InventoryEncryption inventoryEncryption = new InventoryEncryption();
-        inventoryEncryption.setServerSideKmsEncryption(new InventoryServerSideEncryptionKMS().withKeyId("123"));
+        inventoryEncryption.setServerSideKmsEncryption(new InventoryServerSideEncryptionKMS().withKeyId(TestConfig.KMS_CMK_ID_1));
         InventoryOSSBucketDestination ossBucketDestin = new InventoryOSSBucketDestination()
                 .withFormat(InventoryFormat.CSV)
                 .withPrefix("bucket-prefix")
