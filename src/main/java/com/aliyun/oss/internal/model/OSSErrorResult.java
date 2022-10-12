@@ -45,4 +45,59 @@ public class OSSErrorResult {
     @XmlElement(name = "Header")
     public String Header;
 
+    public String getCode() {
+        return Code;
+    }
+
+    public void setCode(String code) {
+        Code = code;
+    }
+
+    public String getMessage() {
+        return Message;
+    }
+
+    public void setMessage(String message) {
+        Message = message;
+    }
+
+    public String getRequestId() {
+        return RequestId;
+    }
+
+    public void setRequestId(String requestId) {
+        RequestId = requestId;
+    }
+
+    public String getHostId() {
+        return HostId;
+    }
+
+    public void setHostId(String hostId) {
+        HostId = hostId;
+    }
+
+    public String getResourceType() {
+        return ResourceType;
+    }
+
+    public void setResourceType(String resourceType) {
+        ResourceType = resourceType;
+    }
+
+    public String getMethod() {
+        return Method;
+    }
+
+    public void setMethod(String method) {
+        Method = method;
+    }
+
+    public String getHeader() {
+        return Header;
+    }
+
+    public void setHeader(String header) {
+        Header = header;
+    }
 }

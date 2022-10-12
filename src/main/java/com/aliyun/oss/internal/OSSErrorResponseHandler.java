@@ -66,9 +66,9 @@ public class OSSErrorResponseHandler implements ResponseHandler {
             }
         }
 
-        JAXBResponseParser parser = new JAXBResponseParser(OSSErrorResult.class);
+        ResponseParsers.ErrorResponseParser parser = new ResponseParsers.ErrorResponseParser();
         try {
-            OSSErrorResult errorResult = (OSSErrorResult) parser.parse(response);
+            OSSErrorResult errorResult = parser.parse(response);
             throw ExceptionFactory.createOSSException(errorResult, response.getErrorResponseAsString());
         } catch (ResponseParseException e) {
             throw ExceptionFactory.createInvalidResponseException(requestId, response.getErrorResponseAsString(), e);

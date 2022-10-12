@@ -4521,4 +4521,72 @@ public class ResponseParsersTest {
         }
         Assert.assertEquals(false, result.isEnabled());
     }
+
+    @Test
+    public void testParseErrorResponse() {
+        InputStream instream = null;
+        String respBody;
+
+        respBody = "" +
+                "<Error>\n" +
+                "  <Code>MethodNotAllowed</Code>\n" +
+                "  <Message>The specified method is not allowed against this resource.</Message>\n" +
+                "  <RequestId>5CAC0CF8DE0170*****</RequestId>\n" +
+                "  <HostId>versioning-get.oss-cn-hangzhou.aliyunc*****</HostId>\n" +
+                "  <ResourceType>DeleteMarker</ResourceType>\n" +
+                "  <Method>GET</Method>\n" +
+                "  <Header>If-Modified-Since</Header>\n" +
+                "</Error>";
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+
+        OSSErrorResult result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.ErrorResponseParser parser = new ResponseParsers.ErrorResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+
+        Assert.assertEquals("MethodNotAllowed", result.getCode());
+        Assert.assertEquals("The specified method is not allowed against this resource.", result.getMessage());
+        Assert.assertEquals("5CAC0CF8DE0170*****", result.getRequestId());
+        Assert.assertEquals("versioning-get.oss-cn-hangzhou.aliyunc*****", result.getHostId());
+        Assert.assertEquals("DeleteMarker", result.getResourceType());
+        Assert.assertEquals("GET", result.getMethod());
+        Assert.assertEquals("If-Modified-Since", result.getHeader());
+
+        respBody = "" +
+                "<Error>\n" +
+                "  <Code></Code>\n" +
+                "  <Message></Message>\n" +
+                "  <RequestId></RequestId>\n" +
+                "  <HostId></HostId>\n" +
+                "  <ResourceType></ResourceType>\n" +
+                "  <Method></Method>\n" +
+                "  <Header></Header>\n" +
+                "</Error>";
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.ErrorResponseParser parser = new ResponseParsers.ErrorResponseParser();
+            result = parser.parse(response);
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.assertTrue(false);
+        }
+    }
 }

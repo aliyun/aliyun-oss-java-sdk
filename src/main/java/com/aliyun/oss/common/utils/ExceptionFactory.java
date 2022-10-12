@@ -76,13 +76,13 @@ public class ExceptionFactory {
 
     public static OSSException createInvalidResponseException(String requestId, Throwable cause) {
         return createInvalidResponseException(requestId,
-                COMMON_RESOURCE_MANAGER.getFormattedString("FailedToParseResponse", cause.getMessage()));
+                cause.getMessage());
     }
 
     public static OSSException createInvalidResponseException(String requestId, String rawResponseError,
             Throwable cause) {
         return createInvalidResponseException(requestId,
-                COMMON_RESOURCE_MANAGER.getFormattedString("FailedToParseResponse", cause.getMessage()),
+                cause.getMessage(),
                 rawResponseError);
     }
 

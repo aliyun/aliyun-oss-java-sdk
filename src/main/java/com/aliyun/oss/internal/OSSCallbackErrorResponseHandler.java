@@ -36,9 +36,9 @@ public class OSSCallbackErrorResponseHandler implements ResponseHandler {
     @Override
     public void handle(ResponseMessage response) throws ServiceException, ClientException {
         if (response.getStatusCode() == HttpStatus.SC_NON_AUTHORITATIVE_INFORMATION) {
-            JAXBResponseParser parser = new JAXBResponseParser(OSSErrorResult.class);
+            ResponseParsers.ErrorResponseParser parser = new ResponseParsers.ErrorResponseParser();
             try {
-                OSSErrorResult errorResult = (OSSErrorResult) parser.parse(response);
+                OSSErrorResult errorResult = parser.parse(response);
                 throw ExceptionFactory.createOSSException(errorResult, response.getErrorResponseAsString());
             } catch (ResponseParseException e) {
                 throw ExceptionFactory.createInvalidResponseException(response.getRequestId(),
