@@ -179,6 +179,7 @@ public class SignV2Utils {
         }
         Map<String, String> responseHeaderParams = new HashMap<String, String>();
         populateResponseHeaderParameters(responseHeaderParams, request.getResponseHeaders());
+        populateTrafficLimitParams(responseHeaderParams, request.getTrafficLimit());
         if (responseHeaderParams.size() > 0) {
             requestMessage.setParameters(responseHeaderParams);
         }
@@ -298,4 +299,9 @@ public class SignV2Utils {
         return new HmacSHA256Signature().computeSignature(secretAccessKey, canonicalString);
     }
 
+    private static void populateTrafficLimitParams(Map<String, String> params, int limit) {
+        if (limit > 0) {
+            params.put(OSS_TRAFFIC_LIMIT, String.valueOf(limit));
+        }
+    }
 }
