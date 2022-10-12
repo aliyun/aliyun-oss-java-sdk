@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.CheckedInputStream;
 
+import com.aliyun.oss.internal.model.OSSErrorResult;
 import com.aliyun.oss.model.*;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -157,6 +158,40 @@ public final class ResponseParsers {
             return response;
         }
 
+    }
+
+
+    public static final class ErrorResponseParser implements ResponseParser<OSSErrorResult> {
+        @Override
+        public OSSErrorResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                return parseErrorResponse(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private OSSErrorResult parseErrorResponse(InputStream inputStream) throws ResponseParseException {
+            OSSErrorResult ossErrorResult = new OSSErrorResult();
+            if (inputStream == null) {
+                return ossErrorResult;
+            }
+            try {
+                Element root = getXmlRootElement(inputStream);
+                ossErrorResult.Code = root.getChildText("Code");
+                ossErrorResult.Message = root.getChildText("Message");
+                ossErrorResult.RequestId = root.getChildText("RequestId");
+                ossErrorResult.HostId = root.getChildText("HostId");
+                ossErrorResult.ResourceType = root.getChildText("ResourceType");
+                ossErrorResult.Method = root.getChildText("Method");
+                ossErrorResult.Header = root.getChildText("Header");
+                return ossErrorResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
     }
 
     public static void setResultParameter(GenericResult result, ResponseMessage response){

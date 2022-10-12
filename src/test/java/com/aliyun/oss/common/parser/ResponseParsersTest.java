@@ -4941,4 +4941,72 @@ public class ResponseParsersTest {
         Assert.assertEquals("value2", result.getAggregations().getAggregation().get(2).getGroups().getGroup().get(1).getValue());
         Assert.assertEquals(20, result.getAggregations().getAggregation().get(2).getGroups().getGroup().get(1).getCount());
     }
+
+    @Test
+    public void testParseErrorResponse() {
+        InputStream instream = null;
+        String respBody;
+
+        respBody = "" +
+                "<Error>\n" +
+                "  <Code>MethodNotAllowed</Code>\n" +
+                "  <Message>The specified method is not allowed against this resource.</Message>\n" +
+                "  <RequestId>5CAC0CF8DE0170*****</RequestId>\n" +
+                "  <HostId>versioning-get.oss-cn-hangzhou.aliyunc*****</HostId>\n" +
+                "  <ResourceType>DeleteMarker</ResourceType>\n" +
+                "  <Method>GET</Method>\n" +
+                "  <Header>If-Modified-Since</Header>\n" +
+                "</Error>";
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+
+        OSSErrorResult result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.ErrorResponseParser parser = new ResponseParsers.ErrorResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+
+        Assert.assertEquals("MethodNotAllowed", result.Code);
+        Assert.assertEquals("The specified method is not allowed against this resource.", result.Message);
+        Assert.assertEquals("5CAC0CF8DE0170*****", result.RequestId);
+        Assert.assertEquals("versioning-get.oss-cn-hangzhou.aliyunc*****", result.HostId);
+        Assert.assertEquals("DeleteMarker", result.ResourceType);
+        Assert.assertEquals("GET", result.Method);
+        Assert.assertEquals("If-Modified-Since", result.Header);
+
+        respBody = "" +
+                "<Error>\n" +
+                "  <Code></Code>\n" +
+                "  <Message></Message>\n" +
+                "  <RequestId></RequestId>\n" +
+                "  <HostId></HostId>\n" +
+                "  <ResourceType></ResourceType>\n" +
+                "  <Method></Method>\n" +
+                "  <Header></Header>\n" +
+                "</Error>";
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.ErrorResponseParser parser = new ResponseParsers.ErrorResponseParser();
+            result = parser.parse(response);
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.assertTrue(false);
+        }
+    }
 }
