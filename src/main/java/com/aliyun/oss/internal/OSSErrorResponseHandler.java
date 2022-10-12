@@ -31,13 +31,14 @@ import com.aliyun.oss.common.parser.JAXBResponseParser;
 import com.aliyun.oss.common.parser.ResponseParseException;
 import com.aliyun.oss.common.utils.ExceptionFactory;
 import com.aliyun.oss.internal.model.OSSErrorResult;
-
+import com.aliyun.oss.internal.ResponseParsers.ErrorResponseParser;
 /**
  * Used to handle error response from oss, when HTTP status code is not 2xx,
  * then throws <code>OSSException</code> with detailed error information(such as
  * request id, error code).
  */
 public class OSSErrorResponseHandler implements ResponseHandler {
+    private static ErrorResponseParser errorResponseParser = new ErrorResponseParser();
 
     public void handle(ResponseMessage response) throws OSSException, ClientException {
 
@@ -66,9 +67,8 @@ public class OSSErrorResponseHandler implements ResponseHandler {
             }
         }
 
-        JAXBResponseParser parser = new JAXBResponseParser(OSSErrorResult.class);
         try {
-            OSSErrorResult errorResult = (OSSErrorResult) parser.parse(response);
+            OSSErrorResult errorResult = errorResponseParser.parse(response);
             throw ExceptionFactory.createOSSException(errorResult, response.getErrorResponseAsString());
         } catch (ResponseParseException e) {
             throw ExceptionFactory.createInvalidResponseException(requestId, response.getErrorResponseAsString(), e);

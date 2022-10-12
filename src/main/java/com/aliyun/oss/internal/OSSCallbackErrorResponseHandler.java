@@ -30,15 +30,16 @@ import com.aliyun.oss.common.parser.JAXBResponseParser;
 import com.aliyun.oss.common.parser.ResponseParseException;
 import com.aliyun.oss.common.utils.ExceptionFactory;
 import com.aliyun.oss.internal.model.OSSErrorResult;
+import com.aliyun.oss.internal.ResponseParsers.ErrorResponseParser;
 
 public class OSSCallbackErrorResponseHandler implements ResponseHandler {
+    private static ErrorResponseParser errorResponseParser = new ErrorResponseParser();
 
     @Override
     public void handle(ResponseMessage response) throws ServiceException, ClientException {
         if (response.getStatusCode() == HttpStatus.SC_NON_AUTHORITATIVE_INFORMATION) {
-            JAXBResponseParser parser = new JAXBResponseParser(OSSErrorResult.class);
             try {
-                OSSErrorResult errorResult = (OSSErrorResult) parser.parse(response);
+                OSSErrorResult errorResult = errorResponseParser.parse(response);
                 throw ExceptionFactory.createOSSException(errorResult, response.getErrorResponseAsString());
             } catch (ResponseParseException e) {
                 throw ExceptionFactory.createInvalidResponseException(response.getRequestId(),
