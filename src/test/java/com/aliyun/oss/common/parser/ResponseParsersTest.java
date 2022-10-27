@@ -3766,6 +3766,55 @@ public class ResponseParsersTest {
         } catch (Exception e) {
             Assert.assertTrue(false);
         }
+
+        respBody = "" +
+                "<LifecycleConfiguration>\n" +
+                "  <Rule>\n" +
+                "    <ID>RuleID</ID>\n" +
+                "    <Prefix>Prefix</Prefix>\n" +
+                "    <Status>Enabled</Status>\n" +
+                "    <Filter>\n" +
+                "      <ObjectSizeGreaterThan>500</ObjectSizeGreaterThan>\n" +
+                "      <ObjectSizeLessThan>64000</ObjectSizeLessThan>\n" +
+                "      <Not>\n" +
+                "        <Prefix>abc/not1/</Prefix>\n" +
+                "        <Tag>\n" +
+                "          <Key>notkey1</Key>\n" +
+                "          <Value>notvalue1</Value>\n" +
+                "        </Tag>\n" +
+                "      </Not>\n" +
+                "      <Not>\n" +
+                "        <Prefix>abc/not2/</Prefix>\n" +
+                "        <Tag>\n" +
+                "          <Key>notkey2</Key>\n" +
+                "          <Value>notvalue2</Value>\n" +
+                "        </Tag>\n" +
+                "      </Not>\n" +
+                "    </Filter>" +
+                "  </Rule>\n" +
+                "</LifecycleConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        List<LifecycleRule> rules = null;
+        try {
+            rules = ResponseParsers.parseGetBucketLifecycle(instream);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse response body fail!");
+        }
+
+        Assert.assertEquals(Long.valueOf(500), rules.get(0).getFilter().getObjectSizeGreaterThan());
+        Assert.assertEquals(Long.valueOf(64000), rules.get(0).getFilter().getObjectSizeLessThan());
+        Assert.assertEquals("abc/not1/", rules.get(0).getFilter().getNotList().get(0).getPrefix());
+        Assert.assertEquals("notkey1", rules.get(0).getFilter().getNotList().get(0).getTag().getKey());
+        Assert.assertEquals("notvalue1", rules.get(0).getFilter().getNotList().get(0).getTag().getValue());
+        Assert.assertEquals("abc/not2/", rules.get(0).getFilter().getNotList().get(1).getPrefix());
+        Assert.assertEquals("notkey2", rules.get(0).getFilter().getNotList().get(1).getTag().getKey());
+        Assert.assertEquals("notvalue2", rules.get(0).getFilter().getNotList().get(1).getTag().getValue());
     }
 
     @Test

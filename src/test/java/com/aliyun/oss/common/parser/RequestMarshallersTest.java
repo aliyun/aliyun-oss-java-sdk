@@ -4,7 +4,9 @@ package com.aliyun.oss.common.parser;
  * Created by zhoufeng.chen on 2018/1/10.
  */
 
+import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.comm.io.FixedLengthInputStream;
+import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 import org.jdom2.Document;
@@ -15,6 +17,7 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.*;
 
 import static com.aliyun.oss.common.parser.RequestMarshallers.*;
@@ -1362,5 +1365,58 @@ public class RequestMarshallersTest {
         Element root = doc.getRootElement();
         String status = root.getChildText("Status");
         Assert.assertEquals("Enabled", status);
+    }
+
+    @Test
+    public void testPutLifeCycleRequestMarshaller() {
+        SetBucketLifecycleRequest request = new SetBucketLifecycleRequest("bucket");
+        Long objectSizeGreaterThan = 500L;
+        Long objectSizeLessThan = 64000L;
+        String ruleId0 = "rule0";
+        String matchPrefix0 = "A0/";
+        Map<String, String> matchTags0 = new HashMap<String, String>();
+        matchTags0.put("key0", "value0");
+        LifecycleRule rule = new LifecycleRule(ruleId0, matchPrefix0, LifecycleRule.RuleStatus.Enabled, 3);
+        rule.setTags(matchTags0);
+        LifecycleFilter filter = new LifecycleFilter();
+        LifecycleNot not = new LifecycleNot();
+        List<LifecycleNot> notList = new ArrayList<LifecycleNot>();
+        Tag tag = new Tag("key","value");
+        not.setPrefix("not-prefix");
+        not.setTag(tag);
+        notList.add(not);
+        LifecycleNot not2 = new LifecycleNot();
+        Tag tag2 = new Tag("key2","value2");
+        not2.setPrefix("not2-prefix");
+        not2.setTag(tag2);
+        notList.add(not2);
+        filter.setNotList(notList);
+        filter.setObjectSizeLessThan(objectSizeLessThan);
+        filter.setObjectSizeGreaterThan(objectSizeGreaterThan);
+        rule.setFilter(filter);
+        request.AddLifecycleRule(rule);
+
+        FixedLengthInputStream is = setBucketLifecycleRequestMarshaller.marshall(request);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        Assert.assertEquals("A0/", root.getChild("Rule").getChildText("Prefix"));
+        Assert.assertEquals(objectSizeGreaterThan.toString(), root.getChild("Rule").getChild("Filter").getChildText("ObjectSizeGreaterThan"));
+        Assert.assertEquals(objectSizeLessThan.toString(), root.getChild("Rule").getChild("Filter").getChildText("ObjectSizeLessThan"));
+        Assert.assertEquals("A0/not-prefix", root.getChild("Rule").getChild("Filter").getChildren("Not").get(0).getChildText("Prefix"));
+        Assert.assertEquals("key", root.getChild("Rule").getChild("Filter").getChildren("Not").get(0).getChild("Tag").getChildText("Key"));
+        Assert.assertEquals("value", root.getChild("Rule").getChild("Filter").getChildren("Not").get(0).getChild("Tag").getChildText("Value"));
+        Assert.assertEquals("A0/not2-prefix", root.getChild("Rule").getChild("Filter").getChildren("Not").get(1).getChildText("Prefix"));
+        Assert.assertEquals("key2", root.getChild("Rule").getChild("Filter").getChildren("Not").get(1).getChild("Tag").getChildText("Key"));
+        Assert.assertEquals("value2", root.getChild("Rule").getChild("Filter").getChildren("Not").get(1).getChild("Tag").getChildText("Value"));
     }
 }
