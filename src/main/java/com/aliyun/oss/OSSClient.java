@@ -1921,6 +1921,16 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public VoidResult putBucketAccessMonitor(String bucketName, String status) throws OSSException, ClientException {
+        return this.bucketOperation.putBucketAccessMonitor(new PutBucketAccessMonitorRequest(bucketName, status));
+    }
+
+    @Override
+    public AccessMonitor getBucketAccessMonitor(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketAccessMonitor(new GenericRequest(bucketName));
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();

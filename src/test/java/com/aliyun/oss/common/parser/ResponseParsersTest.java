@@ -4521,4 +4521,170 @@ public class ResponseParsersTest {
         }
         Assert.assertEquals(false, result.isEnabled());
     }
+
+
+    @Test
+    public void testGetBucketAccessMonitorResponseParser() {
+        String respBody = "" +
+                "<AccessMonitorConfiguration>\n" +
+                "    <Status>Enabled</Status>\n" +
+                "</AccessMonitorConfiguration>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        AccessMonitor result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketAccessMonitorResponseParser parser = new ResponseParsers.GetBucketAccessMonitorResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+
+        Assert.assertEquals("Enabled", result.getStatus());
+
+
+        respBody = "" +
+                "<AccessMonitorConfiguration>\n" +
+                "    <Status>Disabled</Status>\n" +
+                "</AccessMonitorConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketAccessMonitorResponseParser parser = new ResponseParsers.GetBucketAccessMonitorResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+        Assert.assertEquals("Disabled", result.getStatus());
+
+
+
+        respBody = "" +
+                "<AccessMonitorConfiguration>\n" +
+                "</AccessMonitorConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketAccessMonitorResponseParser parser = new ResponseParsers.GetBucketAccessMonitorResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+        Assert.assertEquals("Disabled", result.getStatus());
+    }
+    @Test
+    public void testParseGetBucketInfoWithAccessMonitor() {
+        String respBody = "" +
+                "<BucketInfo>\n" +
+                "  <Bucket>\n" +
+                "           <CreationDate>2013-07-31T10:56:21.000Z</CreationDate>\n" +
+                "            <ExtranetEndpoint>oss-cn-hangzhou.aliyuncs.com</ExtranetEndpoint>\n" +
+                "            <IntranetEndpoint>oss-cn-hangzhou-internal.aliyuncs.com</IntranetEndpoint>\n" +
+                "            <Location>oss-cn-hangzhou</Location>\n" +
+                "            <Name>oss-example</Name>\n" +
+                "            <AccessMonitor>Enabled</AccessMonitor>\n" +
+                "            <Owner>\n" +
+                "              <DisplayName>username</DisplayName>\n" +
+                "              <ID>27183473914****</ID>\n" +
+                "            </Owner>\n" +
+                "            <AccessControlList>\n" +
+                "              <Grant>private</Grant>\n" +
+                "            </AccessControlList>\n" +
+                "            <Comment>test</Comment>\n" +
+                "            <DataRedundancyType>LRS</DataRedundancyType>\n" +
+                "          </Bucket>\n" +
+                " </BucketInfo>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        BucketInfo result = null;
+        try {
+            result = ResponseParsers.parseGetBucketInfo(instream);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse bucket replication response body fail!");
+        }
+
+        Assert.assertEquals("test", result.getComment());
+        Assert.assertEquals(DataRedundancyType.LRS, result.getDataRedundancyType());
+        Assert.assertEquals(CannedAccessControlList.Private, result.getCannedACL());
+        Assert.assertEquals("oss-cn-hangzhou", result.getBucket().getLocation());
+        Assert.assertEquals("oss-example", result.getBucket().getName());
+        Assert.assertEquals(null, result.getBucket().getHnsStatus());
+        Assert.assertEquals(null, result.getBucket().getResourceGroupId());
+        Assert.assertEquals("Enabled", result.getBucket().getAccessMonitor());
+
+        respBody = "" +
+                "<BucketInfo>\n" +
+                "  <Bucket>\n" +
+                "           <CreationDate>2013-07-31T10:56:21.000Z</CreationDate>\n" +
+                "            <ExtranetEndpoint>oss-cn-hangzhou.aliyuncs.com</ExtranetEndpoint>\n" +
+                "            <HierarchicalNamespace>Enabled</HierarchicalNamespace>\n" +
+                "            <IntranetEndpoint>oss-cn-hangzhou-internal.aliyuncs.com</IntranetEndpoint>\n" +
+                "            <Location>oss-cn-hangzhou</Location>\n" +
+                "            <ResourceGroupId>xxx-id-123</ResourceGroupId>\n" +
+                "            <Name>oss-example</Name>\n" +
+                "            <AccessMonitor>Disabled</AccessMonitor>\n" +
+                "            <Owner>\n" +
+                "              <DisplayName>username</DisplayName>\n" +
+                "              <ID>27183473914****</ID>\n" +
+                "            </Owner>\n" +
+                "            <AccessControlList>\n" +
+                "              <Grant>private</Grant>\n" +
+                "            </AccessControlList>\n" +
+                "            <Comment>test</Comment>\n" +
+                "            <DataRedundancyType>LRS</DataRedundancyType>\n" +
+                "          </Bucket>\n" +
+                " </BucketInfo>";
+
+        instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        result = null;
+        try {
+            result = ResponseParsers.parseGetBucketInfo(instream);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse bucket replication response body fail!");
+        }
+
+        Assert.assertEquals("test", result.getComment());
+        Assert.assertEquals(DataRedundancyType.LRS, result.getDataRedundancyType());
+        Assert.assertEquals(CannedAccessControlList.Private, result.getCannedACL());
+        Assert.assertEquals("oss-cn-hangzhou", result.getBucket().getLocation());
+        Assert.assertEquals("oss-example", result.getBucket().getName());
+        Assert.assertEquals(HnsStatus.Enabled.toString(), result.getBucket().getHnsStatus());
+        Assert.assertEquals("xxx-id-123", result.getBucket().getResourceGroupId());
+        Assert.assertEquals("Disabled", result.getBucket().getAccessMonitor());
+    }
 }
