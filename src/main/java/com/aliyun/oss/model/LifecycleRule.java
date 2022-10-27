@@ -351,6 +351,7 @@ public class LifecycleRule {
     private Date expirationTime;
     private Date createdBeforeDate;
     private Boolean expiredDeleteMarker;
+    private LifecycleFilter filter;
 
     /***
      * access time return
@@ -599,5 +600,13 @@ public class LifecycleRule {
 
     public void setaTimeBase(String aTimeBase) {
         this.aTimeBase = aTimeBase;
+    }
+
+    public LifecycleFilter getFilter() {
+        return filter;
+    }
+
+    public void setFilter(LifecycleFilter filter) {
+        this.filter = filter;
     }
 }
