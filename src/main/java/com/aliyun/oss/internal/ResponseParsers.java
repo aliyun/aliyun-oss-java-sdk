@@ -137,6 +137,7 @@ public final class ResponseParsers {
     public static final GetSymbolicLinkResponseParser getSymbolicLinkResponseParser = new GetSymbolicLinkResponseParser();
 
     public static final DeleteDirectoryResponseParser deleteDirectoryResponseParser = new DeleteDirectoryResponseParser();
+    public static final GetBucketAccessMonitorResponseParser getBucketAccessMonitorResponseParser = new GetBucketAccessMonitorResponseParser();
 
     public static Long parseLongWithDefault(String defaultValue){
         if(defaultValue == null || "".equals(defaultValue)){
@@ -154,6 +155,12 @@ public final class ResponseParsers {
             return response;
         }
 
+    }
+
+    public static void setResultParameter(GenericResult result, ResponseMessage response){
+        result.setRequestId(response.getRequestId());
+        setCRC(result, response);
+        result.setResponse(response);
     }
 
     public static final class RequestIdResponseParser implements ResponseParser<VoidResult> {
@@ -1166,16 +1173,18 @@ public final class ResponseParsers {
     }
 
     public static <ResultType extends GenericResult> void setCRC(ResultType result, ResponseMessage response) {
-        InputStream inputStream = response.getRequest().getContent();
-        if (inputStream instanceof CheckedInputStream) {
-            CheckedInputStream checkedInputStream = (CheckedInputStream) inputStream;
-            result.setClientCRC(checkedInputStream.getChecksum().getValue());
-        }
+        if(response.getRequest() != null) {
+            InputStream inputStream = response.getRequest().getContent();
+            if (inputStream instanceof CheckedInputStream) {
+                CheckedInputStream checkedInputStream = (CheckedInputStream) inputStream;
+                result.setClientCRC(checkedInputStream.getChecksum().getValue());
+            }
 
-        String strSrvCrc = response.getHeaders().get(OSSHeaders.OSS_HASH_CRC64_ECMA);
-        if (strSrvCrc != null) {
-            BigInteger bi = new BigInteger(strSrvCrc);
-            result.setServerCRC(bi.longValue());
+            String strSrvCrc = response.getHeaders().get(OSSHeaders.OSS_HASH_CRC64_ECMA);
+            if (strSrvCrc != null) {
+                BigInteger bi = new BigInteger(strSrvCrc);
+                result.setServerCRC(bi.longValue());
+            }
         }
     }
 
@@ -2679,6 +2688,9 @@ public final class ResponseParsers {
             if (bucketElem.getChild("StorageClass") != null) {
                 bucket.setStorageClass(StorageClass.parse(bucketElem.getChildText("StorageClass")));
             }
+            if (bucketElem.getChild("AccessMonitor") != null) {
+                bucket.setAccessMonitor(bucketElem.getChildText("AccessMonitor"));
+            }
 
             if (bucketElem.getChild("BucketPolicy") != null) {
                 Element policyElem = bucketElem.getChild("BucketPolicy");
@@ -3355,6 +3367,10 @@ public final class ResponseParsers {
                 if (ruleElem.getChild("Prefix") != null) {
                     rule.setPrefix(ruleElem.getChildText("Prefix"));
                 }
+
+                if (ruleElem.getChild("AtimeBase") != null) {
+                    rule.setaTimeBase(ruleElem.getChildText("AtimeBase"));
+                }
                 
                 List<Element> tagElems = ruleElem.getChildren("Tag");
                 if (tagElems != null) {
@@ -3421,6 +3437,15 @@ public final class ResponseParsers {
                         storageTransition
                                 .setStorageClass(StorageClass.parse(transitionElem.getChildText("StorageClass")));
                     }
+                    if (transitionElem.getChild("IsAccessTime") != null) {
+                        storageTransition.setIsAccessTime(transitionElem.getChildText("IsAccessTime"));
+                    }
+                    if (transitionElem.getChild("ReturnToStdWhenVisit") != null) {
+                        storageTransition.setReturnToStdWhenVisit(transitionElem.getChildText("ReturnToStdWhenVisit"));
+                    }
+                    if (transitionElem.getChild("AllowSmallFile") != null) {
+                        storageTransition.setAllowSmallFile(transitionElem.getChildText("AllowSmallFile"));
+                    }
                     storageTransitions.add(storageTransition);
                 }
                 rule.setStorageTransition(storageTransitions);
@@ -3442,6 +3467,15 @@ public final class ResponseParsers {
                     }
                     if (transitionElem.getChild("StorageClass") != null) {
                         transition.setStorageClass(StorageClass.parse(transitionElem.getChildText("StorageClass")));
+                    }
+                    if (transitionElem.getChild("IsAccessTime") != null) {
+                        transition.setIsAccessTime(transitionElem.getChildText("IsAccessTime"));
+                    }
+                    if (transitionElem.getChild("ReturnToStdWhenVisit") != null) {
+                        transition.setReturnToStdWhenVisit(transitionElem.getChildText("ReturnToStdWhenVisit"));
+                    }
+                    if (transitionElem.getChild("AllowSmallFile") != null) {
+                        transition.setAllowSmallFile(transitionElem.getChildText("AllowSmallFile"));
                     }
                     noncurrentVersionTransitions.add(transition);
                 }
@@ -3861,4 +3895,40 @@ public final class ResponseParsers {
         }
     }
 
+    /**
+     * Unmarshall get bucket access monitor.
+     */
+    public static final class GetBucketAccessMonitorResponseParser implements ResponseParser<AccessMonitor> {
+        @Override
+        public AccessMonitor parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                AccessMonitor result = parseAccessMonitor(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private AccessMonitor parseAccessMonitor(InputStream inputStream) throws ResponseParseException {
+            AccessMonitor accessMonitor = new AccessMonitor(AccessMonitor.AccessMonitorStatus.Disabled.toString());
+            if (inputStream == null) {
+                return accessMonitor;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                if (root.getChildText("Status") != null) {
+                    accessMonitor.setStatus(root.getChildText("Status"));
+                }
+
+                return accessMonitor;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
 }

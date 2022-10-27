@@ -149,4 +149,6 @@ public final class RequestParameters {
     public static final String START_AFTER = "start-after";
     public static final String FETCH_OWNER = "fetch-owner";
     public static final String SUBRESOURCE_TRANSFER_ACCELERATION = "transferAcceleration";
+
+    public static final String ACCESS_MONITOR = "accessmonitor";
 }
