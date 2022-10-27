@@ -3389,6 +3389,24 @@ public final class ResponseParsers {
                     }
                 }
 
+                Element filterElems = ruleElem.getChild("Filter");
+                if(filterElems != null){
+                    LifecycleFilter lifecycleFilter = new LifecycleFilter();
+
+                    List<LifecycleNot> notList = new ArrayList<LifecycleNot>();
+                    for(Element notEle : filterElems.getChildren("Not")){
+                        LifecycleNot lifecycleNot = new LifecycleNot();
+                        lifecycleNot.setPrefix(notEle.getChildText("Prefix"));
+                        if (notEle.getChild("Tag") != null) {
+                            Tag tag = new Tag(notEle.getChild("Tag").getChildText("Key"), notEle.getChild("Tag").getChildText("Value"));
+                            lifecycleNot.setTag(tag);
+                        }
+                        notList.add(lifecycleNot);
+                    }
+                    lifecycleFilter.setNotList(notList);
+                    rule.setFilter(lifecycleFilter);
+                }
+
                 if (ruleElem.getChild("Status") != null) {
                     rule.setStatus(RuleStatus.valueOf(ruleElem.getChildText("Status")));
                 }

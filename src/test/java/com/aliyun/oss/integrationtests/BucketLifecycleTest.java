@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.aliyun.oss.model.AccessMonitor;
+import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -40,12 +40,9 @@ import org.junit.Test;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.utils.DateUtil;
-import com.aliyun.oss.model.LifecycleRule;
 import com.aliyun.oss.model.LifecycleRule.AbortMultipartUpload;
 import com.aliyun.oss.model.LifecycleRule.RuleStatus;
 import com.aliyun.oss.model.LifecycleRule.StorageTransition;
-import com.aliyun.oss.model.SetBucketLifecycleRequest;
-import com.aliyun.oss.model.StorageClass;
 
 public class BucketLifecycleTest extends TestBase {
 
@@ -632,6 +629,107 @@ public class BucketLifecycleTest extends TestBase {
             Assert.fail(e.getMessage());
         } finally {
             ossClient.deleteBucket(bucketWithoutLifecycleConfiguration);
+        }
+    }
+
+    @Test
+    public void testUnormalSetBucketLifecycleWithNot() throws ParseException {
+        final String bucketName = super.bucketName + "unormal-set-bucket-lifecycle";
+        final String ruleId0 = "delete obsoleted files";
+        final String matchPrefix0 = "obsoleted/";
+
+        try {
+            ossClient.createBucket(bucketName);
+
+            SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(bucketName);
+            LifecycleRule rule = new LifecycleRule(ruleId0, matchPrefix0, RuleStatus.Enabled, 3);
+            LifecycleFilter filter = new LifecycleFilter();
+            LifecycleNot not = new LifecycleNot();
+            List<LifecycleNot> notList = new ArrayList<LifecycleNot>();
+            not.setPrefix(matchPrefix0);
+            notList.add(not);
+            filter.setNotList(notList);
+            rule.setFilter(filter);
+            request.AddLifecycleRule(rule);
+
+            ossClient.setBucketLifecycle(request);
+        } catch (Exception e){
+            Assert.assertTrue(e instanceof IllegalArgumentException);
+            Assert.assertEquals(e.getMessage(),"If there is no tag node under the not node, the prefix of the not node cannot be the same as that of the rule.");
+        } finally {
+            ossClient.deleteBucket(bucketName);
+        }
+    }
+
+    @Test
+    public void testNormalSetBucketLifecycleWithNot() throws ParseException {
+        final String bucketName = super.bucketName + "normal-set-bucket-lifecycle-tagging";
+        final String ruleId0 = "delete obsoleted files";
+        final String matchPrefix0 = "obsoleted0/";
+        final String ruleId1 = "delete temporary files";
+        final String matchPrefix1 = "temporary0/";
+
+        try {
+            ossClient.createBucket(bucketName);
+
+            SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(bucketName);
+
+            Map<String, String> tags = new HashMap<String, String>(1);
+            tags.put("tag1", "balabala");
+            tags.put("tag2", "haha");
+            LifecycleFilter filter = new LifecycleFilter();
+            LifecycleNot not = new LifecycleNot();
+            Tag tag = new Tag("tag-key","tag-value");
+            not.setPrefix("not-prefix");
+            not.setTag(tag);
+            List<LifecycleNot> notList = new ArrayList<LifecycleNot>();
+            notList.add(not);
+            filter.setNotList(notList);
+
+            // ruleId0
+            LifecycleRule rule = new LifecycleRule(ruleId0, matchPrefix0, RuleStatus.Enabled, 3);
+            rule.setTags(tags);
+            rule.setFilter(filter);
+            request.AddLifecycleRule(rule);
+
+            // ruleId1, unsupported tag
+            LifecycleNot not1 = new LifecycleNot();
+            LifecycleFilter filter1 = new LifecycleFilter();
+            rule = new LifecycleRule(ruleId1, matchPrefix1, RuleStatus.Enabled,
+                    DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z"));
+            not1.setPrefix(matchPrefix1+"not-prefix1");
+
+            List<LifecycleNot> notList1 = new ArrayList<LifecycleNot>();
+            notList1.add(not1);
+            filter1.setNotList(notList1);
+            rule.setFilter(filter1);
+            request.AddLifecycleRule(rule);
+
+            ossClient.setBucketLifecycle(request);
+
+            List<LifecycleRule> rules = ossClient.getBucketLifecycle(bucketName);
+
+            LifecycleRule r0 = rules.get(0);
+            Assert.assertEquals(r0.getId(), ruleId0);
+            Assert.assertEquals(r0.getPrefix(), matchPrefix0);
+            Assert.assertEquals(r0.getStatus(), RuleStatus.Enabled);
+            Assert.assertEquals(r0.getExpirationDays(), 3);
+            Assert.assertTrue(r0.getAbortMultipartUpload() == null);
+            Assert.assertEquals(r0.getTags().size(), 2);
+            Assert.assertEquals(r0.getFilter().getNotList().get(0).getPrefix(), matchPrefix0+"not-prefix");
+            Assert.assertEquals(r0.getFilter().getNotList().get(0).getTag().getKey(), "tag-key");
+            Assert.assertEquals(r0.getFilter().getNotList().get(0).getTag().getValue(), "tag-value");
+            LifecycleRule r1 = rules.get(1);
+            Assert.assertEquals(r1.getId(), ruleId1);
+            Assert.assertEquals(r1.getPrefix(), matchPrefix1);
+            Assert.assertEquals(r1.getStatus(), RuleStatus.Enabled);
+            Assert.assertEquals(DateUtil.formatIso8601Date(r1.getExpirationTime()), "2022-10-12T00:00:00.000Z");
+            Assert.assertTrue(r1.getAbortMultipartUpload() == null);
+            Assert.assertEquals(r1.getFilter().getNotList().get(0).getPrefix(), matchPrefix1+"not-prefix1");
+        } catch (OSSException e) {
+            Assert.fail(e.getMessage());
+        } finally {
+            ossClient.deleteBucket(bucketName);
         }
     }
 }

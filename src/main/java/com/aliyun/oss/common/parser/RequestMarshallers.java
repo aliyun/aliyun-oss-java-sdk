@@ -534,6 +534,23 @@ public final class RequestMarshallers {
                     }
                 }
 
+                if(rule.getFilter() != null){
+                    xmlBody.append("<Filter>");
+
+                    for(LifecycleNot not : rule.getFilter().getNotList()){
+                        xmlBody.append("<Not>");
+                        xmlBody.append("<Prefix>" + not.getPrefix() + "</Prefix>");
+                        if(not.getTag() != null){
+                            xmlBody.append("<Tag>");
+                            xmlBody.append("<Key>" + not.getTag().getKey() + "</Key>");
+                            xmlBody.append("<Value>" + not.getTag().getValue() + "</Value>");
+                            xmlBody.append("</Tag>");
+                        }
+                        xmlBody.append("</Not>");
+                    }
+                    xmlBody.append("</Filter>");
+                }
+
                 if (rule.getStatus() == RuleStatus.Enabled) {
                     xmlBody.append("<Status>Enabled</Status>");
                 } else {

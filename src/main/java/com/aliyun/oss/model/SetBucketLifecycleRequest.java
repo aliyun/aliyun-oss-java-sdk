@@ -127,6 +127,23 @@ public class SetBucketLifecycleRequest extends GenericRequest {
                 }
             }
         }
+
+        if (lifecycleRule.getFilter() != null) {
+            for(LifecycleNot lifecycleNot : lifecycleRule.getFilter().getNotList()){
+                if(lifecycleNot == null){
+                    throw new IllegalArgumentException("Not node cannot be empty.");
+                }
+                if(lifecycleNot.getPrefix() == null){
+                    throw new IllegalArgumentException("The prefix node under the not node cannot be empty.");
+                }
+                if(lifecycleNot.getTag() == null && lifecycleNot.getPrefix().equals(lifecycleRule.getPrefix())){
+                    throw new IllegalArgumentException("If there is no tag node under the not node, the prefix of the not node cannot be the same as that of the rule.");
+                }
+                if(!lifecycleNot.getPrefix().contains(lifecycleRule.getPrefix())){
+                    lifecycleNot.setPrefix(lifecycleRule.getPrefix() + lifecycleNot.getPrefix());
+                }
+            }
+        }
         this.lifecycleRules.add(lifecycleRule);
     }
 }
