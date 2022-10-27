@@ -19,6 +19,8 @@
 
 package com.aliyun.oss.model;
 
+import com.aliyun.oss.common.utils.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -89,6 +91,9 @@ public class LifecycleRule {
         private Integer expirationDays;
         private Date createdBeforeDate;
         private StorageClass storageClass;
+        private String isAccessTime;
+        private String returnToStdWhenVisit;
+        private String allowSmallFile;
 
         public StorageTransition() {
         }
@@ -101,6 +106,21 @@ public class LifecycleRule {
         public StorageTransition(Date createdBeforeDate, StorageClass storageClass) {
             this.createdBeforeDate = createdBeforeDate;
             this.storageClass = storageClass;
+        }
+
+
+        public StorageTransition(Integer expirationDays, StorageClass storageClass, String isAccessTime, String returnToStdWhenVisit) {
+            this.expirationDays = expirationDays;
+            this.storageClass = storageClass;
+            this.isAccessTime = isAccessTime;
+            this.returnToStdWhenVisit = returnToStdWhenVisit;
+        }
+
+        public StorageTransition(Date createdBeforeDate, StorageClass storageClass, String isAccessTime, String returnToStdWhenVisit) {
+            this.createdBeforeDate = createdBeforeDate;
+            this.storageClass = storageClass;
+            this.isAccessTime = isAccessTime;
+            this.returnToStdWhenVisit = returnToStdWhenVisit;
         }
 
         public Integer getExpirationDays() {
@@ -149,11 +169,60 @@ public class LifecycleRule {
             setStorageClass(storageClass);
             return this;
         }
+
+        public boolean hasIsAccessTime() {
+            return !StringUtils.isNullOrEmpty(this.isAccessTime);
+        }
+
+        public String getIsAccessTime() {
+            return isAccessTime;
+        }
+
+        public void setIsAccessTime(String isAccessTime) {
+            this.isAccessTime = isAccessTime;
+        }
+
+        public StorageTransition withIsAccessTime(String isAccessTime) {
+            setIsAccessTime(isAccessTime);
+            return this;
+        }
+
+        public boolean hasReturnToStdWhenVisit() {
+            return !StringUtils.isNullOrEmpty(this.returnToStdWhenVisit);
+        }
+
+        public String getReturnToStdWhenVisit() {
+            return returnToStdWhenVisit;
+        }
+
+        public void setReturnToStdWhenVisit(String returnToStdWhenVisit) {
+            this.returnToStdWhenVisit = returnToStdWhenVisit;
+        }
+
+        public StorageTransition withReturnToStdWhenVisit(String returnToStdWhenVisit) {
+            setReturnToStdWhenVisit(returnToStdWhenVisit);
+            return this;
+        }
+
+        public boolean hasAllowSmallFile() {
+            return !StringUtils.isNullOrEmpty(this.allowSmallFile);
+        }
+
+        public String getAllowSmallFile() {
+            return allowSmallFile;
+        }
+
+        public void setAllowSmallFile(String allowSmallFile) {
+            this.allowSmallFile = allowSmallFile;
+        }
     }
 
     public static class NoncurrentVersionStorageTransition {
         private Integer noncurrentDays;
         private StorageClass storageClass;
+        private String isAccessTime;
+        private String returnToStdWhenVisit;
+        private String allowSmallFile;
 
         public NoncurrentVersionStorageTransition() {
         }
@@ -161,6 +230,13 @@ public class LifecycleRule {
         public NoncurrentVersionStorageTransition(Integer noncurrentDays, StorageClass storageClass) {
             this.noncurrentDays = noncurrentDays;
             this.storageClass = storageClass;
+        }
+
+        public NoncurrentVersionStorageTransition(Integer noncurrentDays, StorageClass storageClass, String isAccessTime, String returnToStdWhenVisit) {
+            this.noncurrentDays = noncurrentDays;
+            this.storageClass = storageClass;
+            this.isAccessTime = isAccessTime;
+            this.returnToStdWhenVisit = returnToStdWhenVisit;
         }
 
         public Integer getNoncurrentDays() {
@@ -191,6 +267,52 @@ public class LifecycleRule {
         public NoncurrentVersionStorageTransition withStrorageClass(StorageClass storageClass) {
             setStorageClass(storageClass);
             return this;
+        }
+
+        public boolean hasIsAccessTime() {
+            return !StringUtils.isNullOrEmpty(this.isAccessTime);
+        }
+
+        public String getIsAccessTime() {
+            return isAccessTime;
+        }
+
+        public void setIsAccessTime(String isAccessTime) {
+            this.isAccessTime = isAccessTime;
+        }
+
+        public NoncurrentVersionStorageTransition withIsAccessTime(String isAccessTime) {
+            setIsAccessTime(isAccessTime);
+            return this;
+        }
+
+        public boolean hasReturnToStdWhenVisit() {
+            return !StringUtils.isNullOrEmpty(this.returnToStdWhenVisit);
+        }
+
+        public String getReturnToStdWhenVisit() {
+            return returnToStdWhenVisit;
+        }
+
+        public void setReturnToStdWhenVisit(String returnToStdWhenVisit) {
+            this.returnToStdWhenVisit = returnToStdWhenVisit;
+        }
+
+        public NoncurrentVersionStorageTransition withReturnToStdWhenVisit(String returnToStdWhenVisit) {
+            setReturnToStdWhenVisit(returnToStdWhenVisit);
+            return this;
+        }
+
+        public boolean hasAllowSmallFile() {
+            return !StringUtils.isNullOrEmpty(this.allowSmallFile);
+        }
+
+        public String getAllowSmallFile() {
+            return allowSmallFile;
+        }
+
+        public void setAllowSmallFile(String allowSmallFile) {
+            this.allowSmallFile = allowSmallFile;
         }
     }
 
@@ -229,6 +351,11 @@ public class LifecycleRule {
     private Date expirationTime;
     private Date createdBeforeDate;
     private Boolean expiredDeleteMarker;
+
+    /***
+     * access time return
+     */
+    private String aTimeBase;
 
     private AbortMultipartUpload abortMultipartUpload;
     private List<StorageTransition> storageTransitions = new ArrayList<StorageTransition>();
@@ -463,5 +590,14 @@ public class LifecycleRule {
     public void setNoncurrentVersionStorageTransitions(List<NoncurrentVersionStorageTransition>
                                                                noncurrentVersionStorageTransitions) {
         this.noncurrentVersionStorageTransitions = noncurrentVersionStorageTransitions;
+    }
+
+
+    public String getaTimeBase() {
+        return aTimeBase;
+    }
+
+    public void setaTimeBase(String aTimeBase) {
+        this.aTimeBase = aTimeBase;
     }
 }

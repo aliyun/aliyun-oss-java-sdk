@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static com.aliyun.oss.common.parser.RequestMarshallers.*;
+import static com.aliyun.oss.common.parser.RequestMarshallers.putBucketAccessMonitorRequestMarshaller;
 
 public class RequestMarshallersTest {
     @Test
@@ -1334,4 +1335,32 @@ public class RequestMarshallersTest {
         Assert.assertEquals("true", status);
     }
 
+    @Test
+    public void testPutBucketAccessMonitorRequestMarshaller() {
+
+        PutBucketAccessMonitorRequest request = new PutBucketAccessMonitorRequest("bucket", "Enabled");
+        Assert.assertEquals(request.getStatus(), "Enabled");
+        request.setStatus("Disabled");
+        Assert.assertEquals(request.getStatus(), "Disabled");
+
+        request.setStatus("Enabled");
+        Assert.assertEquals(request.getStatus(), "Enabled");
+
+        byte[] data = putBucketAccessMonitorRequestMarshaller.marshall(request);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        String status = root.getChildText("Status");
+        Assert.assertEquals("Enabled", status);
+    }
 }

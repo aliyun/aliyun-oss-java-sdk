@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.aliyun.oss.model.AccessMonitor;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -66,6 +67,7 @@ public class BucketLifecycleTest extends TestBase {
         
         try {
             ossClient.createBucket(bucketName);
+            ossClient.putBucketAccessMonitor(bucketName, AccessMonitor.AccessMonitorStatus.Enabled.toString());
 
             SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(bucketName);
             request.AddLifecycleRule(new LifecycleRule(ruleId0, matchPrefix0, RuleStatus.Enabled, 3));
@@ -86,10 +88,14 @@ public class BucketLifecycleTest extends TestBase {
             StorageTransition storageTransition = new StorageTransition();
             storageTransition.setStorageClass(StorageClass.IA);
             storageTransition.setExpirationDays(10);
+            storageTransition.setIsAccessTime("true");
+            storageTransition.setReturnToStdWhenVisit("true");
             storageTransitions.add(storageTransition);
             storageTransition = new LifecycleRule.StorageTransition();
             storageTransition.setStorageClass(StorageClass.Archive);
             storageTransition.setExpirationDays(20);
+            storageTransition.setIsAccessTime("true");
+            storageTransition.setReturnToStdWhenVisit("false");
             storageTransitions.add(storageTransition);
             rule.setStorageTransition(storageTransitions);
             request.AddLifecycleRule(rule);
@@ -102,9 +108,15 @@ public class BucketLifecycleTest extends TestBase {
             storageTransition = new LifecycleRule.StorageTransition();
             storageTransition.setStorageClass(StorageClass.Archive);
             storageTransition.setCreatedBeforeDate(DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z"));
+            storageTransition.setIsAccessTime("false");
             storageTransitions = new ArrayList<StorageTransition>();
             storageTransitions.add(storageTransition);
             rule.setStorageTransition(storageTransitions);
+            List<LifecycleRule.NoncurrentVersionStorageTransition> noncurrentVersionStorageTransitions = new ArrayList<LifecycleRule.NoncurrentVersionStorageTransition>();
+            LifecycleRule.NoncurrentVersionStorageTransition noncurrentVersionStorageTransition = new LifecycleRule.NoncurrentVersionStorageTransition();
+            noncurrentVersionStorageTransition.setIsAccessTime("true");
+            noncurrentVersionStorageTransition.setReturnToStdWhenVisit("false");
+            rule.setNoncurrentVersionStorageTransitions(noncurrentVersionStorageTransitions);
             request.AddLifecycleRule(rule);
 
             ossClient.setBucketLifecycle(request);
@@ -147,6 +159,10 @@ public class BucketLifecycleTest extends TestBase {
             Assert.assertEquals(r3.getStorageTransition().get(0).getStorageClass(), StorageClass.IA);
             Assert.assertTrue(r3.getStorageTransition().get(1).getExpirationDays() == 20);
             Assert.assertEquals(r3.getStorageTransition().get(1).getStorageClass(), StorageClass.Archive);
+            Assert.assertEquals(r3.getStorageTransition().get(0).getIsAccessTime(), "true");
+            Assert.assertEquals(r3.getStorageTransition().get(0).getReturnToStdWhenVisit(), "true");
+            Assert.assertEquals(r3.getStorageTransition().get(1).getIsAccessTime(), "true");
+            Assert.assertEquals(r3.getStorageTransition().get(1).getReturnToStdWhenVisit(), "false");
 
             LifecycleRule r4 = rules.get(4);
             Assert.assertEquals(r4.getId(), ruleId4);
@@ -167,6 +183,9 @@ public class BucketLifecycleTest extends TestBase {
             Assert.assertEquals(DateUtil.formatIso8601Date(r5.getStorageTransition().get(0).getCreatedBeforeDate()),
                     "2022-10-12T00:00:00.000Z");
             Assert.assertEquals(r5.getStorageTransition().get(0).getStorageClass(), StorageClass.Archive);
+            Assert.assertEquals(r5.getStorageTransition().get(0).getIsAccessTime(), "false");
+            Assert.assertEquals(r5.getNoncurrentVersionStorageTransitions().get(0).getIsAccessTime(), "true");
+            Assert.assertEquals(r5.getNoncurrentVersionStorageTransitions().get(0).getReturnToStdWhenVisit(), "false");
 
             // Override existing lifecycle rules
             final String nullRuleId = null;
@@ -495,6 +514,52 @@ public class BucketLifecycleTest extends TestBase {
                 Assert.assertTrue(e instanceof IllegalArgumentException);
             }
 
+            // Adding atime based lifecycle rules is supported only when the status is set to enabled
+            try {
+                try{
+                    ossClient.putBucketAccessMonitor(bucketName, AccessMonitor.AccessMonitorStatus.Disabled.toString());
+                } catch (Exception e){
+                    System.out.println("Accessmonitor execution failed");
+                    e.printStackTrace();
+                }
+                SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(bucketName);
+                LifecycleRule invalidRule = new LifecycleRule();
+                invalidRule.setId(ruleId0);
+                invalidRule.setPrefix(matchPrefix0);
+                invalidRule.setStatus(RuleStatus.Enabled);
+                invalidRule.setExpirationDays(3);
+                LifecycleRule.StorageTransition storageTransition = new StorageTransition(1, StorageClass.Archive, "true", "true");
+                List<StorageTransition> storageTransitions = new ArrayList<StorageTransition>();
+                storageTransitions.add(storageTransition);
+                invalidRule.setStorageTransition(storageTransitions);
+                request.AddLifecycleRule(invalidRule);
+                ossClient.setBucketLifecycle(request);
+            } catch (OSSException e) {
+                Assert.assertEquals(OSSErrorCode.OSS_ILLEGAL_ARGUMENT_CODE, e.getErrorCode());
+            }
+
+            // Returntostdwhenvisit can exist only when isaccesstime is true
+            try {
+                try{
+                    ossClient.putBucketAccessMonitor(bucketName, AccessMonitor.AccessMonitorStatus.Enabled.toString());
+                } catch (Exception e){
+                    System.out.println("Accessmonitor execution failed");
+                    e.printStackTrace();
+                }
+                SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(nonexistentBucket);
+                LifecycleRule invalidRule = new LifecycleRule();
+                invalidRule.setId(ruleId0);
+                invalidRule.setPrefix(matchPrefix0);
+                invalidRule.setStatus(RuleStatus.Enabled);
+                invalidRule.setExpirationDays(3);
+                LifecycleRule.NoncurrentVersionStorageTransition noncurrentVersionStorageTransition = new LifecycleRule.NoncurrentVersionStorageTransition(3, StorageClass.Archive, "false", "true");
+                List<LifecycleRule.NoncurrentVersionStorageTransition> noncurrentVersionStorageTransitions = new ArrayList<LifecycleRule.NoncurrentVersionStorageTransition>();
+                noncurrentVersionStorageTransitions.add(noncurrentVersionStorageTransition);
+                invalidRule.setNoncurrentVersionStorageTransitions(noncurrentVersionStorageTransitions);
+                request.AddLifecycleRule(invalidRule);
+            } catch (Exception e) {
+                Assert.assertTrue(e instanceof IllegalArgumentException);
+            }
         } finally {
             ossClient.deleteBucket(bucketName);
         }
