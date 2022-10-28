@@ -3807,8 +3807,6 @@ public class ResponseParsersTest {
             Assert.fail("parse response body fail!");
         }
 
-        Assert.assertEquals(Long.valueOf(500), rules.get(0).getFilter().getObjectSizeGreaterThan());
-        Assert.assertEquals(Long.valueOf(64000), rules.get(0).getFilter().getObjectSizeLessThan());
         Assert.assertEquals("abc/not1/", rules.get(0).getFilter().getNotList().get(0).getPrefix());
         Assert.assertEquals("notkey1", rules.get(0).getFilter().getNotList().get(0).getTag().getKey());
         Assert.assertEquals("notvalue1", rules.get(0).getFilter().getNotList().get(0).getTag().getValue());

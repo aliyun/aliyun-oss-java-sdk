@@ -1370,8 +1370,6 @@ public class RequestMarshallersTest {
     @Test
     public void testPutLifeCycleRequestMarshaller() {
         SetBucketLifecycleRequest request = new SetBucketLifecycleRequest("bucket");
-        Long objectSizeGreaterThan = 500L;
-        Long objectSizeLessThan = 64000L;
         String ruleId0 = "rule0";
         String matchPrefix0 = "A0/";
         Map<String, String> matchTags0 = new HashMap<String, String>();
@@ -1391,8 +1389,6 @@ public class RequestMarshallersTest {
         not2.setTag(tag2);
         notList.add(not2);
         filter.setNotList(notList);
-        filter.setObjectSizeLessThan(objectSizeLessThan);
-        filter.setObjectSizeGreaterThan(objectSizeGreaterThan);
         rule.setFilter(filter);
         request.AddLifecycleRule(rule);
 
@@ -1410,8 +1406,6 @@ public class RequestMarshallersTest {
 
         Element root = doc.getRootElement();
         Assert.assertEquals("A0/", root.getChild("Rule").getChildText("Prefix"));
-        Assert.assertEquals(objectSizeGreaterThan.toString(), root.getChild("Rule").getChild("Filter").getChildText("ObjectSizeGreaterThan"));
-        Assert.assertEquals(objectSizeLessThan.toString(), root.getChild("Rule").getChild("Filter").getChildText("ObjectSizeLessThan"));
         Assert.assertEquals("A0/not-prefix", root.getChild("Rule").getChild("Filter").getChildren("Not").get(0).getChildText("Prefix"));
         Assert.assertEquals("key", root.getChild("Rule").getChild("Filter").getChildren("Not").get(0).getChild("Tag").getChildText("Key"));
         Assert.assertEquals("value", root.getChild("Rule").getChild("Filter").getChildren("Not").get(0).getChild("Tag").getChildText("Value"));

@@ -538,12 +538,6 @@ public final class RequestMarshallers {
 
                 if(rule.getFilter() != null){
                     xmlBody.append("<Filter>");
-                    if(rule.getFilter().getObjectSizeGreaterThan() != null){
-                        xmlBody.append("<ObjectSizeGreaterThan>" + rule.getFilter().getObjectSizeGreaterThan() + "</ObjectSizeGreaterThan>");
-                    }
-                    if(rule.getFilter().getObjectSizeLessThan() != null){
-                        xmlBody.append("<ObjectSizeLessThan>" + rule.getFilter().getObjectSizeLessThan() + "</ObjectSizeLessThan>");
-                    }
 
                     for(LifecycleNot not : rule.getFilter().getNotList()){
                         xmlBody.append("<Not>");

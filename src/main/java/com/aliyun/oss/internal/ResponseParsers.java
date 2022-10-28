@@ -3394,12 +3394,6 @@ public final class ResponseParsers {
                 Element filterElems = ruleElem.getChild("Filter");
                 if(filterElems != null){
                     LifecycleFilter lifecycleFilter = new LifecycleFilter();
-                    if (!StringUtils.isNullOrEmpty(filterElems.getChildText("ObjectSizeGreaterThan"))) {
-                        lifecycleFilter.setObjectSizeGreaterThan(Long.valueOf(filterElems.getChildText("ObjectSizeGreaterThan")));
-                    }
-                    if (!StringUtils.isNullOrEmpty(filterElems.getChildText("ObjectSizeLessThan"))) {
-                        lifecycleFilter.setObjectSizeLessThan(Long.valueOf(filterElems.getChildText("ObjectSizeLessThan")));
-                    }
 
                     List<LifecycleNot> notList = new ArrayList<LifecycleNot>();
                     for(Element notEle : filterElems.getChildren("Not")){
