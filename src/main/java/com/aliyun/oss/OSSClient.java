@@ -1931,6 +1931,26 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public VoidResult openMetaQuery(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.openMetaQuery(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public GetMetaQueryStatusResult getMetaQueryStatus(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.getMetaQueryStatus(new GenericRequest(bucketName, null));
+    }
+
+    @Override
+    public DoMetaQueryResult doMetaQuery(DoMetaQueryRequest doMetaQueryRequest) throws OSSException, ClientException {
+        return this.bucketOperation.doMetaQuery(doMetaQueryRequest);
+    }
+
+    @Override
+    public VoidResult closeMetaQuery(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.closeMetaQuery(new GenericRequest(bucketName));
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();
