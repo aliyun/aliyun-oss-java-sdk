@@ -138,6 +138,8 @@ public final class ResponseParsers {
 
     public static final DeleteDirectoryResponseParser deleteDirectoryResponseParser = new DeleteDirectoryResponseParser();
     public static final GetBucketAccessMonitorResponseParser getBucketAccessMonitorResponseParser = new GetBucketAccessMonitorResponseParser();
+    public static final GetMetaQueryStatusResponseParser getMetaQueryStatusResponseParser = new GetMetaQueryStatusResponseParser();
+    public static final DoMetaQueryResponseParser doMetaQueryResponseParser = new DoMetaQueryResponseParser();
 
     public static Long parseLongWithDefault(String defaultValue){
         if(defaultValue == null || "".equals(defaultValue)){
@@ -3948,6 +3950,173 @@ public final class ResponseParsers {
                 }
 
                 return accessMonitor;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class GetMetaQueryStatusResponseParser implements ResponseParser<GetMetaQueryStatusResult> {
+        @Override
+        public GetMetaQueryStatusResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetMetaQueryStatusResult result = parseGetMetaQueryStatusResult(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private GetMetaQueryStatusResult parseGetMetaQueryStatusResult(InputStream inputStream) throws ResponseParseException {
+            GetMetaQueryStatusResult getMetaQueryStatusResult = new GetMetaQueryStatusResult();
+            if (inputStream == null) {
+                return getMetaQueryStatusResult;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                if (root.getChildText("State") != null) {
+                    getMetaQueryStatusResult.setState(root.getChildText("State"));
+                }
+                if (root.getChildText("Phase") != null) {
+                    getMetaQueryStatusResult.setPhase(root.getChildText("Phase"));
+                }
+                if (root.getChildText("CreateTime") != null) {
+                    getMetaQueryStatusResult.setCreateTime(root.getChildText("CreateTime"));
+                }
+                if (root.getChildText("UpdateTime") != null) {
+                    getMetaQueryStatusResult.setUpdateTime(root.getChildText("UpdateTime"));
+                }
+                return getMetaQueryStatusResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class DoMetaQueryResponseParser implements ResponseParser<DoMetaQueryResult> {
+        @Override
+        public DoMetaQueryResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                DoMetaQueryResult result = parseDoMetaQueryResult(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private DoMetaQueryResult parseDoMetaQueryResult(InputStream inputStream) throws ResponseParseException {
+            DoMetaQueryResult doMetaQueryResult = new DoMetaQueryResult();
+            if (inputStream == null) {
+                return doMetaQueryResult;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                if (root.getChildText("NextToken") != null) {
+                    doMetaQueryResult.setNextToken(root.getChildText("NextToken"));
+                }
+                Element filesElem = root.getChild("Files");
+                if(filesElem != null){
+                    ObjectFiles objectFiles = new ObjectFiles();
+                    List<Element> fileElem = filesElem.getChildren();
+                    List<ObjectFile> fileList = new ArrayList<ObjectFile>();
+                    for(Element elem : fileElem){
+                        ObjectFile objectFile = new ObjectFile();
+                        objectFile.setFilename(elem.getChildText("Filename"));
+                        if(!StringUtils.isNullOrEmpty(elem.getChildText("Size"))){
+                            objectFile.setSize(Long.parseLong(elem.getChildText("Size")));
+                        }
+                        objectFile.setFileModifiedTime(elem.getChildText("FileModifiedTime"));
+                        objectFile.setFileCreateTime(elem.getChildText("FileCreateTime"));
+                        objectFile.setFileAccessTime(elem.getChildText("FileAccessTime"));
+                        objectFile.setOssObjectType(elem.getChildText("OSSObjectType"));
+                        objectFile.setOssStorageClass(elem.getChildText("OSSStorageClass"));
+                        objectFile.setObjectACL(elem.getChildText("ObjectACL"));
+                        objectFile.setETag(elem.getChildText("ETag"));
+                        objectFile.setOssCRC64(elem.getChildText("OSSCRC64"));
+                        if(!StringUtils.isNullOrEmpty(elem.getChildText("OSSTaggingCount"))){
+                            objectFile.setOssTaggingCount(Integer.parseInt(elem.getChildText("OSSTaggingCount")));
+                        }
+
+                        Element ossTaggingElem = elem.getChild("OSSTagging");
+                        if(ossTaggingElem != null){
+                            OSSTagging ossTagging = new OSSTagging();
+                            List<Element> taggingElem = ossTaggingElem.getChildren();
+                            List<Tagging> taggingList = new ArrayList<Tagging>();
+                            for(Element ele : taggingElem){
+                                Tagging tagging = new Tagging();
+                                tagging.setKey(ele.getChildText("Key"));
+                                tagging.setValue(ele.getChildText("Value"));
+                                taggingList.add(tagging);
+                            }
+                            ossTagging.setTagging(taggingList);
+                            objectFile.setOssTagging(ossTagging);
+                        }
+
+                        Element ossUserMetaElem = elem.getChild("OSSUserMeta");
+                        if(ossUserMetaElem != null){
+                            OSSUserMeta ossUserMeta = new OSSUserMeta();
+                            List<Element> userMetaElem = ossUserMetaElem.getChildren();
+                            List<UserMeta> userMetaList = new ArrayList<UserMeta>();
+                            for(Element ele : userMetaElem){
+                                UserMeta userMeta = new UserMeta();
+                                userMeta.setKey(ele.getChildText("Key"));
+                                userMeta.setValue(ele.getChildText("Value"));
+                                userMetaList.add(userMeta);
+                            }
+                            ossUserMeta.setUserMeta(userMetaList);
+                            objectFile.setOssUserMeta(ossUserMeta);
+                        }
+                        fileList.add(objectFile);
+                    }
+                    objectFiles.setFile(fileList);
+                    doMetaQueryResult.setFiles(objectFiles);
+                }
+
+                Element elem = root.getChild("Aggregations");
+                if(elem != null){
+                    List<Aggregation> aggregationList = new ArrayList<Aggregation>();
+                    Aggregations aggregations = new Aggregations();
+                    for(Element el : elem.getChildren()){
+                        Aggregation aggregation = new Aggregation();
+                        aggregation.setField(el.getChildText("Field"));
+                        aggregation.setOperation(el.getChildText("Operation"));
+                        if(!StringUtils.isNullOrEmpty(el.getChildText("Value"))){
+                            aggregation.setValue(Double.parseDouble(el.getChildText("Value")));
+                        }
+
+                        Element elemGroup = el.getChild("Groups");
+                        if(elemGroup != null){
+                            List<AggregationGroup> groupList = new ArrayList<AggregationGroup>();
+                            AggregationGroups aggregationGroups = new AggregationGroups();
+                            for(Element e : elemGroup.getChildren()){
+                                AggregationGroup aggregationGroup = new AggregationGroup();
+                                aggregationGroup.setValue(e.getChildText("Value"));
+                                if(!StringUtils.isNullOrEmpty(e.getChildText("Count"))){
+                                    aggregationGroup.setCount(Integer.parseInt(e.getChildText("Count")));
+                                }
+                                groupList.add(aggregationGroup);
+                            }
+                            aggregationGroups.setGroup(groupList);
+                            aggregation.setGroups(aggregationGroups);
+                        }
+
+                        aggregationList.add(aggregation);
+                    }
+                    aggregations.setAggregation(aggregationList);
+                    doMetaQueryResult.setAggregations(aggregations);
+                }
+
+                return doMetaQueryResult;
             } catch (JDOMParseException e) {
                 throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
             } catch (Exception e) {

@@ -4648,4 +4648,211 @@ public class ResponseParsersTest {
         }
         Assert.assertEquals("Disabled", result.getStatus());
     }
+
+    @Test
+    public void testGetMetaQueryStatusResponseParser() {
+        String respBody = "" +
+                "<MetaQuery>\n" +
+                "  <State>Running</State>\n" +
+                "  <Phase>FullScanning</Phase>\n" +
+                "  <CreateTime>2021-08-02T10:49:17.289372919+08:00</CreateTime>\n" +
+                "  <UpdateTime>2021-08-02T10:49:17.289372919+08:00</UpdateTime>\n" +
+                "</MetaQuery>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        GetMetaQueryStatusResult result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetMetaQueryStatusResponseParser parser = new ResponseParsers.GetMetaQueryStatusResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+
+        Assert.assertEquals("Running", result.getState());
+        Assert.assertEquals("FullScanning", result.getPhase());
+        Assert.assertEquals("2021-08-02T10:49:17.289372919+08:00", result.getCreateTime());
+        Assert.assertEquals("2021-08-02T10:49:17.289372919+08:00", result.getUpdateTime());
+    }
+
+    @Test
+    public void testDoMetaQueryResponseParser() {
+        String respBody = "" +
+                "<MetaQuery>\n" +
+                "    <NextToken>MTIzNDU2NzgnV9zYW1wbGVvYmplY3QxLmpwZw==</NextToken>\n" +
+                "    <Files>    \n" +
+                "        <File>     \n" +
+                "            <Filename>exampleobject.txt</Filename>\n" +
+                "            <Size>120</Size>\n" +
+                "            <FileModifiedTime>2021-06-29T14:50:13.011643661+08:00</FileModifiedTime>\n" +
+                "            <FileCreateTime>2021-06-28T14:50:13.011643661+08:00</FileCreateTime>\n" +
+                "            <FileAccessTime>2021-06-27T14:50:13.011643661+08:00</FileAccessTime>\n" +
+                "            <OSSObjectType>Normal</OSSObjectType>\n" +
+                "            <OSSStorageClass>Standard</OSSStorageClass>\n" +
+                "            <ObjectACL>defalut</ObjectACL>\n" +
+                "            <ETag>fba9dede5f27731c9771645a3986****</ETag>\n" +
+                "            <OSSCRC64>4858A48BD1466884</OSSCRC64>\n" +
+                "            <OSSTaggingCount>2</OSSTaggingCount>\n" +
+                "            <OSSTagging>\n" +
+                "                <Tagging>\n" +
+                "                    <Key>owner</Key>\n" +
+                "                    <Value>John</Value>\n" +
+                "                </Tagging>\n" +
+                "                <Tagging>\n" +
+                "                    <Key>type</Key>\n" +
+                "                    <Value>document</Value>\n" +
+                "                </Tagging>\n" +
+                "            </OSSTagging>\n" +
+                "            <OSSUserMeta>\n" +
+                "                <UserMeta>\n" +
+                "                    <Key>x-oss-meta-location</Key>\n" +
+                "                    <Value>hangzhou</Value>\n" +
+                "                </UserMeta>\n" +
+                "            </OSSUserMeta>\n" +
+                "        </File>\n" +
+                "        <File>\n" +
+                "          <Filename>file2</Filename>\n" +
+                "          <Size>5168828111</Size>\n" +
+                "          <ObjectACL>private</ObjectACL>\n" +
+                "          <OSSObjectType>Appendable</OSSObjectType>\n" +
+                "          <OSSStorageClass>Standard</OSSStorageClass>\n" +
+                "          <ETag>etag</ETag>\n" +
+                "          <OSSCRC64>crc</OSSCRC64>\n" +
+                "          <OSSTaggingCount>2</OSSTaggingCount>\n" +
+                "          <OSSTagging>\n" +
+                "            <Tagging>\n" +
+                "              <Key>t3</Key>\n" +
+                "              <Value>v3</Value>\n" +
+                "            </Tagging>\n" +
+                "            <Tagging>\n" +
+                "              <Key>t4</Key>\n" +
+                "              <Value>v4</Value>\n" +
+                "            </Tagging>\n" +
+                "          </OSSTagging>\n" +
+                "          <OSSUserMeta>\n" +
+                "            <UserMeta>\n" +
+                "              <Key>u3</Key>\n" +
+                "              <Value>v3</Value>\n" +
+                "            </UserMeta>\n" +
+                "            <UserMeta>\n" +
+                "              <Key>u4</Key>\n" +
+                "              <Value>v4</Value>\n" +
+                "            </UserMeta>\n" +
+                "          </OSSUserMeta>\n" +
+                "        </File>\n" +
+                "    </Files>\n" +
+                "    <Aggregations>\n" +
+                "            <Aggregation>\n" +
+                "              <Field>Size</Field>\n" +
+                "              <Operation>sum</Operation>\n" +
+                "              <Value>200</Value>\n" +
+                "              <Groups>\n" +
+                "                <Group>\n" +
+                "                    <Value>100</Value>\n" +
+                "                    <Count>5</Count>\n" +
+                "                </Group>\n" +
+                "                <Group>\n" +
+                "                    <Value>300</Value>\n" +
+                "                    <Count>6</Count>\n" +
+                "                </Group>\n" +
+                "              </Groups>\n" +
+                "            </Aggregation>\n" +
+                "            <Aggregation>\n" +
+                "              <Field>Size</Field>\n" +
+                "              <Operation>max</Operation>\n" +
+                "              <Value>200.2</Value>\n" +
+                "            </Aggregation>\n" +
+                "            <Aggregation>\n" +
+                "              <Field>field1</Field>\n" +
+                "              <Operation>operation1</Operation>\n" +
+                "              <Groups>\n" +
+                "                <Group>\n" +
+                "                  <Value>value1</Value>\n" +
+                "                  <Count>10</Count>\n" +
+                "                </Group>\n" +
+                "                <Group>\n" +
+                "                  <Value>value2</Value>\n" +
+                "                  <Count>20</Count>\n" +
+                "                </Group>\n" +
+                "              </Groups>\n" +
+                "            </Aggregation>\n" +
+                "        </Aggregations>\n" +
+                "</MetaQuery>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        DoMetaQueryResult result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.DoMetaQueryResponseParser parser = new ResponseParsers.DoMetaQueryResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+
+        Assert.assertEquals("MTIzNDU2NzgnV9zYW1wbGVvYmplY3QxLmpwZw==", result.getNextToken());
+
+        Assert.assertEquals("exampleobject.txt", result.getFiles().getFile().get(0).getFilename());
+        Assert.assertEquals(120L, result.getFiles().getFile().get(0).getSize());
+        Assert.assertEquals("2021-06-29T14:50:13.011643661+08:00", result.getFiles().getFile().get(0).getFileModifiedTime());
+        Assert.assertEquals("2021-06-28T14:50:13.011643661+08:00", result.getFiles().getFile().get(0).getFileCreateTime());
+        Assert.assertEquals("2021-06-27T14:50:13.011643661+08:00", result.getFiles().getFile().get(0).getFileAccessTime());
+        Assert.assertEquals("Normal", result.getFiles().getFile().get(0).getOssObjectType());
+        Assert.assertEquals("Standard", result.getFiles().getFile().get(0).getOssStorageClass());
+        Assert.assertEquals("defalut", result.getFiles().getFile().get(0).getObjectACL());
+        Assert.assertEquals("fba9dede5f27731c9771645a3986****", result.getFiles().getFile().get(0).getETag());
+        Assert.assertEquals("4858A48BD1466884", result.getFiles().getFile().get(0).getOssCRC64());
+        Assert.assertEquals(2, result.getFiles().getFile().get(0).getOssTaggingCount());
+        Assert.assertEquals("owner", result.getFiles().getFile().get(0).getOssTagging().getTagging().get(0).getKey());
+        Assert.assertEquals("John", result.getFiles().getFile().get(0).getOssTagging().getTagging().get(0).getValue());
+        Assert.assertEquals("type", result.getFiles().getFile().get(0).getOssTagging().getTagging().get(1).getKey());
+        Assert.assertEquals("document", result.getFiles().getFile().get(0).getOssTagging().getTagging().get(1).getValue());
+        Assert.assertEquals("x-oss-meta-location", result.getFiles().getFile().get(0).getOssUserMeta().getUserMeta().get(0).getKey());
+        Assert.assertEquals("hangzhou", result.getFiles().getFile().get(0).getOssUserMeta().getUserMeta().get(0).getValue());
+        Assert.assertEquals("file2", result.getFiles().getFile().get(1).getFilename());
+        Assert.assertEquals(5168828111L, result.getFiles().getFile().get(1).getSize());
+        Assert.assertEquals("Appendable", result.getFiles().getFile().get(1).getOssObjectType());
+        Assert.assertEquals("Standard", result.getFiles().getFile().get(1).getOssStorageClass());
+        Assert.assertEquals("private", result.getFiles().getFile().get(1).getObjectACL());
+        Assert.assertEquals("etag", result.getFiles().getFile().get(1).getETag());
+        Assert.assertEquals("crc", result.getFiles().getFile().get(1).getOssCRC64());
+        Assert.assertEquals(2, result.getFiles().getFile().get(1).getOssTaggingCount());
+        Assert.assertEquals("t3", result.getFiles().getFile().get(1).getOssTagging().getTagging().get(0).getKey());
+        Assert.assertEquals("v3", result.getFiles().getFile().get(1).getOssTagging().getTagging().get(0).getValue());
+        Assert.assertEquals("t4", result.getFiles().getFile().get(1).getOssTagging().getTagging().get(1).getKey());
+        Assert.assertEquals("v4", result.getFiles().getFile().get(1).getOssTagging().getTagging().get(1).getValue());
+        Assert.assertEquals("u3", result.getFiles().getFile().get(1).getOssUserMeta().getUserMeta().get(0).getKey());
+        Assert.assertEquals("v3", result.getFiles().getFile().get(1).getOssUserMeta().getUserMeta().get(0).getValue());
+        Assert.assertEquals("u4", result.getFiles().getFile().get(1).getOssUserMeta().getUserMeta().get(1).getKey());
+        Assert.assertEquals("v4", result.getFiles().getFile().get(1).getOssUserMeta().getUserMeta().get(1).getValue());
+        Assert.assertEquals("Size", result.getAggregations().getAggregation().get(0).getField());
+        Assert.assertEquals("sum", result.getAggregations().getAggregation().get(0).getOperation());
+        Assert.assertEquals(200.0, result.getAggregations().getAggregation().get(0).getValue());
+        Assert.assertEquals("100", result.getAggregations().getAggregation().get(0).getGroups().getGroup().get(0).getValue());
+        Assert.assertEquals(5, result.getAggregations().getAggregation().get(0).getGroups().getGroup().get(0).getCount());
+        Assert.assertEquals("300", result.getAggregations().getAggregation().get(0).getGroups().getGroup().get(1).getValue());
+        Assert.assertEquals(6, result.getAggregations().getAggregation().get(0).getGroups().getGroup().get(1).getCount());
+        Assert.assertEquals("Size", result.getAggregations().getAggregation().get(1).getField());
+        Assert.assertEquals("max", result.getAggregations().getAggregation().get(1).getOperation());
+        Assert.assertEquals(200.2, result.getAggregations().getAggregation().get(1).getValue());
+        Assert.assertEquals("field1", result.getAggregations().getAggregation().get(2).getField());
+        Assert.assertEquals("operation1", result.getAggregations().getAggregation().get(2).getOperation());
+        Assert.assertEquals("value1", result.getAggregations().getAggregation().get(2).getGroups().getGroup().get(0).getValue());
+        Assert.assertEquals(10, result.getAggregations().getAggregation().get(2).getGroups().getGroup().get(0).getCount());
+        Assert.assertEquals("value2", result.getAggregations().getAggregation().get(2).getGroups().getGroup().get(1).getValue());
+        Assert.assertEquals(20, result.getAggregations().getAggregation().get(2).getGroups().getGroup().get(1).getCount());
+    }
 }

@@ -316,4 +316,19 @@ public interface OSSErrorCode {
      * Bucket access monitor cannot be disabled due to existence of atime lifecycle rule.  (400)
      */
     static final String OSS_MALFORMED_XML_CODE = "MalformedXmlCode";
+
+    /**
+     * The metadata index library being built exists in the bucket.  (404)
+     */
+    static final String META_QUERY_ALREADY_EXIST = "MetaQueryAlreadyExist";
+
+    /**
+     * The metadata index library does not exist in the bucket.  (400)
+     */
+    static final String META_QUERY_NOT_EXIST = "MetaQueryNotExist";
+
+    /**
+     * TThe bucket you specified had closed meta-query before, and is not ready to reopen while it is still closing in background.
+     */
+    static final String META_QUERY_NOT_READY = "MetaQueryNotReady";
 }

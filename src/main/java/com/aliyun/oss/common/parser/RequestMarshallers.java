@@ -31,6 +31,7 @@ import com.aliyun.oss.ClientException;
 import com.aliyun.oss.common.comm.io.FixedLengthInputStream;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.DateUtil;
+import com.aliyun.oss.common.utils.StringUtils;
 import com.aliyun.oss.internal.RequestParameters;
 import com.aliyun.oss.model.*;
 import com.aliyun.oss.model.AddBucketReplicationRequest.ReplicationAction;
@@ -98,6 +99,7 @@ public final class RequestMarshallers {
     public static final SetBucketResourceGroupRequestMarshaller setBucketResourceGroupRequestMarshaller = new SetBucketResourceGroupRequestMarshaller();
     public static final PutBucketTransferAccelerationRequestMarshaller putBucketTransferAccelerationRequestMarshaller = new PutBucketTransferAccelerationRequestMarshaller();
     public static final PutBucketAccessMonitorRequestMarshaller putBucketAccessMonitorRequestMarshaller = new PutBucketAccessMonitorRequestMarshaller();
+    public static final DoMetaQueryRequestMarshaller doMetaQueryRequestMarshaller = new DoMetaQueryRequestMarshaller();
 
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
 
@@ -1810,6 +1812,52 @@ public final class RequestMarshallers {
             xmlBody.append("<AccessMonitorConfiguration><Status>");
             xmlBody.append(input.getStatus());
             xmlBody.append("</Status></AccessMonitorConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+    }
+
+    public static final class DoMetaQueryRequestMarshaller implements RequestMarshaller2<DoMetaQueryRequest> {
+        @Override
+        public byte[] marshall(DoMetaQueryRequest input) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<MetaQuery>");
+            if(input.getNextToken() != null){
+                xmlBody.append("<NextToken>"+ input.getNextToken() +"</NextToken>");
+            }
+            xmlBody.append("<MaxResults>"+ input.getMaxResults() +"</MaxResults>");
+
+            if(input.getQuery() != null){
+                xmlBody.append("<Query>"+ escapeKey(input.getQuery()) +"</Query>");
+            }
+            if(input.getSort() != null){
+                xmlBody.append("<Sort>"+ input.getSort() +"</Sort>");
+            }
+
+            if(input.getOrder() != null){
+                xmlBody.append("<Order>"+ input.getOrder() +"</Order>");
+            }
+            if(input.getAggregations() != null && input.getAggregations().getAggregation() != null){
+                xmlBody.append("<Aggregations>");
+                for(Aggregation agg : input.getAggregations().getAggregation()){
+                    xmlBody.append("<Aggregation>");
+                    if(!StringUtils.isNullOrEmpty(agg.getField())){
+                        xmlBody.append("<Field>"+ agg.getField() +"</Field>");
+                    }
+                    if(!StringUtils.isNullOrEmpty(agg.getOperation())){
+                        xmlBody.append("<Operation>"+ agg.getOperation() +"</Operation>");
+                    }
+                    xmlBody.append("</Aggregation>");
+                }
+                xmlBody.append("</Aggregations>");
+            }
+            xmlBody.append("</MetaQuery>");
 
             byte[] rawData = null;
             try {
