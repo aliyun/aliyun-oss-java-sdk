@@ -120,6 +120,9 @@ public final class RequestParameters {
     public static final String COMP_UPGRADE = "upgrade";
     public static final String COMP_RESIZE = "resize";
     public static final String COMP_TOKEN = "token";
+    public static final String COMP_GET = "get";
+    public static final String COMP_QUERY = "query";
+    public static final String META_QUERY = "metaQuery";
 
     public static final String STAT = "stat";
     public static final String HISTORY = "history";
