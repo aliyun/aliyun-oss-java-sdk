@@ -4281,4 +4281,43 @@ public interface OSS {
      * @throws ClientException
      */
     AccessMonitor getBucketAccessMonitor(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Open MetaQuery configuration to the OSS Server
+     * @param bucketName
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     * @throws ClientException
+     */
+    VoidResult openMetaQuery(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Get MetaQueryStatus configuration from the OSS Server
+     * @param bucketName
+     * @return
+     * @throws OSSException
+     * @throws ClientException
+     */
+    GetMetaQueryStatusResult getMetaQueryStatus(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Query files that meet the specified criteria from the OSS Server
+     * @param doMetaQueryRequest
+     * @return
+     * @throws OSSException
+     * @throws ClientException
+     */
+    DoMetaQueryResult doMetaQuery(DoMetaQueryRequest doMetaQueryRequest) throws OSSException, ClientException;
+
+    /**
+     * Close metadata management from the OSS Server
+     * @param bucketName
+     * @return
+     * @throws OSSException
+     * @throws ClientException
+     */
+    VoidResult closeMetaQuery(String bucketName) throws OSSException, ClientException;
 }
