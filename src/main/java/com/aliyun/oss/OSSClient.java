@@ -1926,6 +1926,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public VoidResult putBucketAccessMonitor(String bucketName, Boolean status) throws OSSException, ClientException {
+        return this.putBucketAccessMonitor(bucketName, Boolean.toString(status));
+    }
+
+    @Override
     public AccessMonitor getBucketAccessMonitor(String bucketName) throws OSSException, ClientException {
         return this.bucketOperation.getBucketAccessMonitor(new GenericRequest(bucketName));
     }

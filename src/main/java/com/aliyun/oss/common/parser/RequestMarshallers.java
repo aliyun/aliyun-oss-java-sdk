@@ -597,7 +597,7 @@ public final class RequestMarshallers {
                         if (storageTransition.hasIsAccessTime()) {
                             xmlBody.append("<IsAccessTime>" + storageTransition.getIsAccessTime() + "</IsAccessTime>");
                         }
-                        if ("true".equals(storageTransition.getIsAccessTime()) && storageTransition.hasReturnToStdWhenVisit()) {
+                        if (storageTransition.hasReturnToStdWhenVisit()) {
                             xmlBody.append("<ReturnToStdWhenVisit>" + storageTransition.getReturnToStdWhenVisit() + "</ReturnToStdWhenVisit>");
                         }
 
@@ -625,7 +625,7 @@ public final class RequestMarshallers {
                         if (transition.hasIsAccessTime()) {
                             xmlBody.append("<IsAccessTime>" + transition.getIsAccessTime() + "</IsAccessTime>");
                         }
-                        if ("true".equals(transition.getIsAccessTime()) && transition.hasReturnToStdWhenVisit()) {
+                        if (transition.hasReturnToStdWhenVisit()) {
                             xmlBody.append("<ReturnToStdWhenVisit>" + transition.getReturnToStdWhenVisit() + "</ReturnToStdWhenVisit>");
                         }
 

@@ -4274,6 +4274,19 @@ public interface OSS {
     VoidResult putBucketAccessMonitor(String bucketName, String status) throws OSSException, ClientException;
 
     /**
+     * Set BucketAccessMonitor configuration to the OSS Server
+     * @param bucketName
+     * @param status
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     * @throws ClientException
+     */
+    VoidResult putBucketAccessMonitor(String bucketName, Boolean status) throws OSSException, ClientException;
+
+    /**
      * Get BucketAccessMonitor configuration from the OSS Server
      * @param bucketName
      * @return

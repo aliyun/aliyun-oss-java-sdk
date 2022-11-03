@@ -3493,13 +3493,13 @@ public final class ResponseParsers {
                                 .setStorageClass(StorageClass.parse(transitionElem.getChildText("StorageClass")));
                     }
                     if (transitionElem.getChild("IsAccessTime") != null) {
-                        storageTransition.setIsAccessTime(transitionElem.getChildText("IsAccessTime"));
+                        storageTransition.setIsAccessTime(Boolean.valueOf(transitionElem.getChildText("IsAccessTime")));
                     }
                     if (transitionElem.getChild("ReturnToStdWhenVisit") != null) {
-                        storageTransition.setReturnToStdWhenVisit(transitionElem.getChildText("ReturnToStdWhenVisit"));
+                        storageTransition.setReturnToStdWhenVisit(Boolean.valueOf(transitionElem.getChildText("ReturnToStdWhenVisit")));
                     }
                     if (transitionElem.getChild("AllowSmallFile") != null) {
-                        storageTransition.setAllowSmallFile(transitionElem.getChildText("AllowSmallFile"));
+                        storageTransition.setAllowSmallFile(Boolean.valueOf(transitionElem.getChildText("AllowSmallFile")));
                     }
                     storageTransitions.add(storageTransition);
                 }
@@ -3524,13 +3524,13 @@ public final class ResponseParsers {
                         transition.setStorageClass(StorageClass.parse(transitionElem.getChildText("StorageClass")));
                     }
                     if (transitionElem.getChild("IsAccessTime") != null) {
-                        transition.setIsAccessTime(transitionElem.getChildText("IsAccessTime"));
+                        transition.setIsAccessTime(Boolean.valueOf(transitionElem.getChildText("IsAccessTime")));
                     }
                     if (transitionElem.getChild("ReturnToStdWhenVisit") != null) {
-                        transition.setReturnToStdWhenVisit(transitionElem.getChildText("ReturnToStdWhenVisit"));
+                        transition.setReturnToStdWhenVisit(Boolean.valueOf(transitionElem.getChildText("ReturnToStdWhenVisit")));
                     }
                     if (transitionElem.getChild("AllowSmallFile") != null) {
-                        transition.setAllowSmallFile(transitionElem.getChildText("AllowSmallFile"));
+                        transition.setAllowSmallFile(Boolean.valueOf(transitionElem.getChildText("AllowSmallFile")));
                     }
                     noncurrentVersionTransitions.add(transition);
                 }

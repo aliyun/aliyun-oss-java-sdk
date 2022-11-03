@@ -940,7 +940,6 @@ public class ResponseParsersTest {
                 "            <IntranetEndpoint>oss-cn-hangzhou-internal.aliyuncs.com</IntranetEndpoint>\n" +
                 "            <Location>oss-cn-hangzhou</Location>\n" +
                 "            <Name>oss-example</Name>\n" +
-                "            <AccessMonitor>Enabled</AccessMonitor>\n" +
                 "            <Owner>\n" +
                 "              <DisplayName>username</DisplayName>\n" +
                 "              <ID>27183473914****</ID>\n" +
@@ -974,7 +973,6 @@ public class ResponseParsersTest {
         Assert.assertEquals("oss-example", result.getBucket().getName());
         Assert.assertEquals(null, result.getBucket().getHnsStatus());
         Assert.assertEquals(null, result.getBucket().getResourceGroupId());
-        Assert.assertEquals("Enabled", result.getBucket().getAccessMonitor());
 
         respBody = "" +
                 "<BucketInfo>\n" +
@@ -986,7 +984,6 @@ public class ResponseParsersTest {
                 "            <Location>oss-cn-hangzhou</Location>\n" +
                 "            <ResourceGroupId>xxx-id-123</ResourceGroupId>\n" +
                 "            <Name>oss-example</Name>\n" +
-                "            <AccessMonitor>Disabled</AccessMonitor>\n" +
                 "            <Owner>\n" +
                 "              <DisplayName>username</DisplayName>\n" +
                 "              <ID>27183473914****</ID>\n" +
@@ -1020,7 +1017,6 @@ public class ResponseParsersTest {
         Assert.assertEquals("oss-example", result.getBucket().getName());
         Assert.assertEquals(HnsStatus.Enabled.toString(), result.getBucket().getHnsStatus());
         Assert.assertEquals("xxx-id-123", result.getBucket().getResourceGroupId());
-        Assert.assertEquals("Disabled", result.getBucket().getAccessMonitor());
     }
 
     @Test
@@ -4920,5 +4916,98 @@ public class ResponseParsersTest {
             e.printStackTrace();
             Assert.assertTrue(false);
         }
+    }
+
+    @Test
+    public void testParseGetBucketInfoWithAccessMonitor() {
+        String respBody = "" +
+                "<BucketInfo>\n" +
+                "  <Bucket>\n" +
+                "           <CreationDate>2013-07-31T10:56:21.000Z</CreationDate>\n" +
+                "            <ExtranetEndpoint>oss-cn-hangzhou.aliyuncs.com</ExtranetEndpoint>\n" +
+                "            <IntranetEndpoint>oss-cn-hangzhou-internal.aliyuncs.com</IntranetEndpoint>\n" +
+                "            <Location>oss-cn-hangzhou</Location>\n" +
+                "            <Name>oss-example</Name>\n" +
+                "            <AccessMonitor>Enabled</AccessMonitor>\n" +
+                "            <Owner>\n" +
+                "              <DisplayName>username</DisplayName>\n" +
+                "              <ID>27183473914****</ID>\n" +
+                "            </Owner>\n" +
+                "            <AccessControlList>\n" +
+                "              <Grant>private</Grant>\n" +
+                "            </AccessControlList>\n" +
+                "            <Comment>test</Comment>\n" +
+                "            <DataRedundancyType>LRS</DataRedundancyType>\n" +
+                "          </Bucket>\n" +
+                " </BucketInfo>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        BucketInfo result = null;
+        try {
+            result = ResponseParsers.parseGetBucketInfo(instream);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse bucket replication response body fail!");
+        }
+
+        Assert.assertEquals("test", result.getComment());
+        Assert.assertEquals(DataRedundancyType.LRS, result.getDataRedundancyType());
+        Assert.assertEquals(CannedAccessControlList.Private, result.getCannedACL());
+        Assert.assertEquals("oss-cn-hangzhou", result.getBucket().getLocation());
+        Assert.assertEquals("oss-example", result.getBucket().getName());
+        Assert.assertEquals(null, result.getBucket().getHnsStatus());
+        Assert.assertEquals(null, result.getBucket().getResourceGroupId());
+        Assert.assertEquals("Enabled", result.getBucket().getAccessMonitor());
+
+        respBody = "" +
+                "<BucketInfo>\n" +
+                "  <Bucket>\n" +
+                "           <CreationDate>2013-07-31T10:56:21.000Z</CreationDate>\n" +
+                "            <ExtranetEndpoint>oss-cn-hangzhou.aliyuncs.com</ExtranetEndpoint>\n" +
+                "            <HierarchicalNamespace>Enabled</HierarchicalNamespace>\n" +
+                "            <IntranetEndpoint>oss-cn-hangzhou-internal.aliyuncs.com</IntranetEndpoint>\n" +
+                "            <Location>oss-cn-hangzhou</Location>\n" +
+                "            <ResourceGroupId>xxx-id-123</ResourceGroupId>\n" +
+                "            <Name>oss-example</Name>\n" +
+                "            <AccessMonitor>Disabled</AccessMonitor>\n" +
+                "            <Owner>\n" +
+                "              <DisplayName>username</DisplayName>\n" +
+                "              <ID>27183473914****</ID>\n" +
+                "            </Owner>\n" +
+                "            <AccessControlList>\n" +
+                "              <Grant>private</Grant>\n" +
+                "            </AccessControlList>\n" +
+                "            <Comment>test</Comment>\n" +
+                "            <DataRedundancyType>LRS</DataRedundancyType>\n" +
+                "          </Bucket>\n" +
+                " </BucketInfo>";
+
+        instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        result = null;
+        try {
+            result = ResponseParsers.parseGetBucketInfo(instream);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse bucket replication response body fail!");
+        }
+
+        Assert.assertEquals("test", result.getComment());
+        Assert.assertEquals(DataRedundancyType.LRS, result.getDataRedundancyType());
+        Assert.assertEquals(CannedAccessControlList.Private, result.getCannedACL());
+        Assert.assertEquals("oss-cn-hangzhou", result.getBucket().getLocation());
+        Assert.assertEquals("oss-example", result.getBucket().getName());
+        Assert.assertEquals(HnsStatus.Enabled.toString(), result.getBucket().getHnsStatus());
+        Assert.assertEquals("xxx-id-123", result.getBucket().getResourceGroupId());
+        Assert.assertEquals("Disabled", result.getBucket().getAccessMonitor());
     }
 }

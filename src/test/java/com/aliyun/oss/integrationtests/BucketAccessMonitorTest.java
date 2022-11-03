@@ -1,6 +1,5 @@
 package com.aliyun.oss.integrationtests;
 
-import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.AccessMonitor;
 import com.aliyun.oss.model.LifecycleRule;
@@ -47,16 +46,16 @@ public class BucketAccessMonitorTest extends TestBase {
             LifecycleRule.StorageTransition storageTransition = new LifecycleRule.StorageTransition();
             storageTransition.setStorageClass(StorageClass.IA);
             storageTransition.setExpirationDays(30);
-            storageTransition.setIsAccessTime(String.valueOf(false));
-            storageTransition.setReturnToStdWhenVisit(String.valueOf(false));
+            storageTransition.setIsAccessTime(true);
+            storageTransition.setReturnToStdWhenVisit(false);
             List<LifecycleRule.StorageTransition> storageTransitionList = new ArrayList<LifecycleRule.StorageTransition>();
             storageTransitionList.add(storageTransition);
 
             LifecycleRule.NoncurrentVersionStorageTransition noncurrentVersionStorageTransition = new LifecycleRule.NoncurrentVersionStorageTransition();
             noncurrentVersionStorageTransition.setStorageClass(StorageClass.IA);
             noncurrentVersionStorageTransition.setNoncurrentDays(30);
-            noncurrentVersionStorageTransition.setIsAccessTime(String.valueOf(false));
-            noncurrentVersionStorageTransition.setReturnToStdWhenVisit(String.valueOf(true));
+            noncurrentVersionStorageTransition.setIsAccessTime(true);
+            noncurrentVersionStorageTransition.setReturnToStdWhenVisit(true);
 
             List<LifecycleRule.NoncurrentVersionStorageTransition> noncurrentVersionStorageTransitionList = new ArrayList<LifecycleRule.NoncurrentVersionStorageTransition>();
             noncurrentVersionStorageTransitionList.add(noncurrentVersionStorageTransition);
@@ -77,7 +76,7 @@ public class BucketAccessMonitorTest extends TestBase {
             for(LifecycleRule rule : rules){
                 if (rule.getStorageTransition() != null && !rule.getStorageTransition().isEmpty()) {
                     for(LifecycleRule.StorageTransition trans : rule.getStorageTransition()){
-                        if("true".equals(trans.getIsAccessTime())){
+                        if("true".equals(trans.getIsAccessTime().toString())){
                             updateFlag = false;
                         }
                     }
@@ -98,7 +97,7 @@ public class BucketAccessMonitorTest extends TestBase {
                 try{
                     ossClient.putBucketAccessMonitor(bucketName, "Disabled");
                 } catch (OSSException e){
-                    Assert.assertEquals(e.getErrorCode(), OSSErrorCode.OSS_MALFORMED_XML_CODE);
+                    Assert.assertEquals(e.getErrorCode(), "AccessMonitorDisableNotAllowed");
                 }
             }
         } catch (Exception e1) {

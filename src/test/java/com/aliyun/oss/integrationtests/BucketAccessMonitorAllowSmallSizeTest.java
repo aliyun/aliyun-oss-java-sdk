@@ -36,18 +36,18 @@ public class BucketAccessMonitorAllowSmallSizeTest {
         LifecycleRule.StorageTransition storageTransition = new LifecycleRule.StorageTransition();
         storageTransition.setStorageClass(StorageClass.IA);
         storageTransition.setExpirationDays(30);
-        storageTransition.setIsAccessTime(String.valueOf(true));
-        storageTransition.setReturnToStdWhenVisit(String.valueOf(false));
-        storageTransition.setAllowSmallFile(String.valueOf(true));
+        storageTransition.setIsAccessTime(true);
+        storageTransition.setReturnToStdWhenVisit(false);
+        storageTransition.setAllowSmallFile(true);
         List<LifecycleRule.StorageTransition> storageTransitionList = new ArrayList<LifecycleRule.StorageTransition>();
         storageTransitionList.add(storageTransition);
 
         LifecycleRule.NoncurrentVersionStorageTransition noncurrentVersionStorageTransition = new LifecycleRule.NoncurrentVersionStorageTransition();
         noncurrentVersionStorageTransition.setStorageClass(StorageClass.IA);
         noncurrentVersionStorageTransition.setNoncurrentDays(30);
-        noncurrentVersionStorageTransition.setIsAccessTime(String.valueOf(true));
-        noncurrentVersionStorageTransition.setReturnToStdWhenVisit(String.valueOf(true));
-        noncurrentVersionStorageTransition.setAllowSmallFile(String.valueOf(false));
+        noncurrentVersionStorageTransition.setIsAccessTime(true);
+        noncurrentVersionStorageTransition.setReturnToStdWhenVisit(true);
+        noncurrentVersionStorageTransition.setAllowSmallFile(false);
         List<LifecycleRule.NoncurrentVersionStorageTransition> noncurrentVersionStorageTransitionList = new ArrayList<LifecycleRule.NoncurrentVersionStorageTransition>();
         noncurrentVersionStorageTransitionList.add(noncurrentVersionStorageTransition);
 

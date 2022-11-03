@@ -91,9 +91,9 @@ public class LifecycleRule {
         private Integer expirationDays;
         private Date createdBeforeDate;
         private StorageClass storageClass;
-        private String isAccessTime;
-        private String returnToStdWhenVisit;
-        private String allowSmallFile;
+        private Boolean isAccessTime;
+        private Boolean returnToStdWhenVisit;
+        private Boolean allowSmallFile;
 
         public StorageTransition() {
         }
@@ -109,14 +109,14 @@ public class LifecycleRule {
         }
 
 
-        public StorageTransition(Integer expirationDays, StorageClass storageClass, String isAccessTime, String returnToStdWhenVisit) {
+        public StorageTransition(Integer expirationDays, StorageClass storageClass, Boolean isAccessTime, Boolean returnToStdWhenVisit) {
             this.expirationDays = expirationDays;
             this.storageClass = storageClass;
             this.isAccessTime = isAccessTime;
             this.returnToStdWhenVisit = returnToStdWhenVisit;
         }
 
-        public StorageTransition(Date createdBeforeDate, StorageClass storageClass, String isAccessTime, String returnToStdWhenVisit) {
+        public StorageTransition(Date createdBeforeDate, StorageClass storageClass, Boolean isAccessTime, Boolean returnToStdWhenVisit) {
             this.createdBeforeDate = createdBeforeDate;
             this.storageClass = storageClass;
             this.isAccessTime = isAccessTime;
@@ -171,48 +171,48 @@ public class LifecycleRule {
         }
 
         public boolean hasIsAccessTime() {
-            return !StringUtils.isNullOrEmpty(this.isAccessTime);
+            return isAccessTime != null;
         }
 
-        public String getIsAccessTime() {
+        public Boolean getIsAccessTime() {
             return isAccessTime;
         }
 
-        public void setIsAccessTime(String isAccessTime) {
-            this.isAccessTime = isAccessTime;
+        public void setIsAccessTime(Boolean accessTime) {
+            isAccessTime = accessTime;
         }
 
-        public StorageTransition withIsAccessTime(String isAccessTime) {
+        public StorageTransition withIsAccessTime(Boolean isAccessTime) {
             setIsAccessTime(isAccessTime);
             return this;
         }
 
         public boolean hasReturnToStdWhenVisit() {
-            return !StringUtils.isNullOrEmpty(this.returnToStdWhenVisit);
+            return returnToStdWhenVisit != null;
         }
 
-        public String getReturnToStdWhenVisit() {
+        public Boolean getReturnToStdWhenVisit() {
             return returnToStdWhenVisit;
         }
 
-        public void setReturnToStdWhenVisit(String returnToStdWhenVisit) {
+        public void setReturnToStdWhenVisit(Boolean returnToStdWhenVisit) {
             this.returnToStdWhenVisit = returnToStdWhenVisit;
         }
 
-        public StorageTransition withReturnToStdWhenVisit(String returnToStdWhenVisit) {
+        public StorageTransition withReturnToStdWhenVisit(Boolean returnToStdWhenVisit) {
             setReturnToStdWhenVisit(returnToStdWhenVisit);
             return this;
         }
 
         public boolean hasAllowSmallFile() {
-            return !StringUtils.isNullOrEmpty(this.allowSmallFile);
+            return allowSmallFile != null;
         }
 
-        public String getAllowSmallFile() {
+        public Boolean getAllowSmallFile() {
             return allowSmallFile;
         }
 
-        public void setAllowSmallFile(String allowSmallFile) {
+        public void setAllowSmallFile(Boolean allowSmallFile) {
             this.allowSmallFile = allowSmallFile;
         }
     }
@@ -220,9 +220,9 @@ public class LifecycleRule {
     public static class NoncurrentVersionStorageTransition {
         private Integer noncurrentDays;
         private StorageClass storageClass;
-        private String isAccessTime;
-        private String returnToStdWhenVisit;
-        private String allowSmallFile;
+        private Boolean isAccessTime;
+        private Boolean returnToStdWhenVisit;
+        private Boolean allowSmallFile;
 
         public NoncurrentVersionStorageTransition() {
         }
@@ -232,7 +232,7 @@ public class LifecycleRule {
             this.storageClass = storageClass;
         }
 
-        public NoncurrentVersionStorageTransition(Integer noncurrentDays, StorageClass storageClass, String isAccessTime, String returnToStdWhenVisit) {
+        public NoncurrentVersionStorageTransition(Integer noncurrentDays, StorageClass storageClass, Boolean isAccessTime, Boolean returnToStdWhenVisit) {
             this.noncurrentDays = noncurrentDays;
             this.storageClass = storageClass;
             this.isAccessTime = isAccessTime;
@@ -270,48 +270,48 @@ public class LifecycleRule {
         }
 
         public boolean hasIsAccessTime() {
-            return !StringUtils.isNullOrEmpty(this.isAccessTime);
+            return isAccessTime != null;
         }
 
-        public String getIsAccessTime() {
+        public Boolean getIsAccessTime() {
             return isAccessTime;
         }
 
-        public void setIsAccessTime(String isAccessTime) {
+        public void setIsAccessTime(Boolean isAccessTime) {
             this.isAccessTime = isAccessTime;
         }
 
-        public NoncurrentVersionStorageTransition withIsAccessTime(String isAccessTime) {
+        public NoncurrentVersionStorageTransition withIsAccessTime(Boolean isAccessTime) {
             setIsAccessTime(isAccessTime);
             return this;
         }
 
         public boolean hasReturnToStdWhenVisit() {
-            return !StringUtils.isNullOrEmpty(this.returnToStdWhenVisit);
+            return returnToStdWhenVisit != null;
         }
 
-        public String getReturnToStdWhenVisit() {
+        public Boolean getReturnToStdWhenVisit() {
             return returnToStdWhenVisit;
         }
 
-        public void setReturnToStdWhenVisit(String returnToStdWhenVisit) {
+        public void setReturnToStdWhenVisit(Boolean returnToStdWhenVisit) {
             this.returnToStdWhenVisit = returnToStdWhenVisit;
         }
 
-        public NoncurrentVersionStorageTransition withReturnToStdWhenVisit(String returnToStdWhenVisit) {
+        public NoncurrentVersionStorageTransition withReturnToStdWhenVisit(Boolean returnToStdWhenVisit) {
             setReturnToStdWhenVisit(returnToStdWhenVisit);
             return this;
         }
 
         public boolean hasAllowSmallFile() {
-            return !StringUtils.isNullOrEmpty(this.allowSmallFile);
+            return allowSmallFile != null;
         }
 
-        public String getAllowSmallFile() {
+        public Boolean getAllowSmallFile() {
             return allowSmallFile;
         }
 
-        public void setAllowSmallFile(String allowSmallFile) {
+        public void setAllowSmallFile(Boolean allowSmallFile) {
             this.allowSmallFile = allowSmallFile;
         }
     }
