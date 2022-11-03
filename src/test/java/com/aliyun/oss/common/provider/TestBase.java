@@ -133,9 +133,11 @@ public class TestBase {
         if (!parentFile.exists()) {
             parentFile.mkdirs();
         }
-        if (!profileFile.exists()) {
-            profileFile.createNewFile();
+
+        if (profileFile.exists()) {
+            profileFile.delete();
         }
+        profileFile.createNewFile();
 
         IniEditor iniEditor = new IniEditor();
         iniEditor.load(profileFile);
