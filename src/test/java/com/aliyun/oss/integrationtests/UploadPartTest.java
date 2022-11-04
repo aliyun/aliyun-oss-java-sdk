@@ -453,7 +453,7 @@ public class UploadPartTest extends TestBase {
         }
 
         // Try to delete bucket with incompleted multipart uploads
-        final String existingBucket = "unormal-abort-multipart-upload-existing-bucket";
+        final String existingBucket = "unormal-abort-multipart-upload-existing-bucket-test";
         try {
             ossClient.createBucket(existingBucket);
 
@@ -463,7 +463,7 @@ public class UploadPartTest extends TestBase {
                 ossClient.deleteBucket(existingBucket);
             } catch (OSSException e) {
                 Assert.assertEquals(OSSErrorCode.BUCKET_NOT_EMPTY, e.getErrorCode());
-                Assert.assertTrue(e.getMessage().startsWith(BUCKET_NOT_EMPTY_ERR));
+                Assert.assertTrue(e.getMessage().startsWith("The bucket has Multipart Uploads."));
             }
 
             AbortMultipartUploadRequest abortMultipartUploadRequest =
