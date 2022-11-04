@@ -1291,6 +1291,7 @@ public final class ResponseParsers {
                 ossObjectSummary.setLastModified(DateUtil.parseIso8601Date(elem.getChildText("LastModified")));
                 ossObjectSummary.setSize(Long.valueOf(elem.getChildText("Size")));
                 ossObjectSummary.setStorageClass(elem.getChildText("StorageClass"));
+                ossObjectSummary.setRestoreInfo(elem.getChildText("RestoreInfo"));
                 ossObjectSummary.setBucketName(objectListing.getBucketName());
 
                 if (elem.getChild("Type") != null) {
@@ -1375,6 +1376,7 @@ public final class ResponseParsers {
                 ossObjectSummary.setLastModified(DateUtil.parseIso8601Date(elem.getChildText("LastModified")));
                 ossObjectSummary.setSize(Long.valueOf(elem.getChildText("Size")));
                 ossObjectSummary.setStorageClass(elem.getChildText("StorageClass"));
+                ossObjectSummary.setRestoreInfo(elem.getChildText("RestoreInfo"));
                 ossObjectSummary.setBucketName(result.getBucketName());
 
                 if (elem.getChild("Type") != null) {
@@ -1475,6 +1477,7 @@ public final class ResponseParsers {
                 ossVersionSummary.setLastModified(DateUtil.parseIso8601Date(elem.getChildText("LastModified")));
                 ossVersionSummary.setSize(Long.valueOf(elem.getChildText("Size")));
                 ossVersionSummary.setStorageClass(elem.getChildText("StorageClass"));
+                ossVersionSummary.setRestoreInfo(elem.getChildText("RestoreInfo"));
                 ossVersionSummary.setBucketName(versionListing.getBucketName());
                 ossVersionSummary.setIsDeleteMarker(false);
 

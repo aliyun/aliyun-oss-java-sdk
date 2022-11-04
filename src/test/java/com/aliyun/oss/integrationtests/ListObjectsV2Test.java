@@ -27,15 +27,17 @@ import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.common.utils.HttpUtil;
-import com.aliyun.oss.model.ListObjectsV2Request;
-import com.aliyun.oss.model.ListObjectsV2Result;
-import com.aliyun.oss.model.OSSObjectSummary;
+import com.aliyun.oss.internal.OSSHeaders;
+import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import static com.aliyun.oss.integrationtests.TestUtils.batchPutObject;
 import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
@@ -405,4 +407,53 @@ public class ListObjectsV2Test extends TestBase {
         }
     }
 
+    @Test
+    public void testListObjectsWithRestoreInfo() {
+        String objectPrefix = "object-with-special-restore";
+        String content = "abcde";
+
+        try {
+            // First upload the archive file, and then unfreeze it to obtain the returned RestoreInfo
+            Map<String, String> header = new HashMap<String, String>();
+            header.put(OSSHeaders.STORAGE_CLASS, "Archive");
+
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectPrefix, new ByteArrayInputStream(content.getBytes()));
+            putObjectRequest.setHeaders(header);
+            ossClient.putObject(putObjectRequest);
+
+            ossClient.restoreObject(bucketName, objectPrefix);
+
+            ListObjectsV2Request listObjectsRequest = new ListObjectsV2Request(bucketName);
+            ListObjectsV2Result objectListing = ossClient.listObjectsV2(listObjectsRequest);
+            for (OSSObjectSummary s : objectListing.getObjectSummaries()) {
+                String restoreInfo = s.getRestoreInfo();
+                Assert.assertEquals(restoreInfo, "ongoing-request=\"true\"");
+            }
+
+            boolean flag = true;
+            long startTime = System.currentTimeMillis();
+            while (flag){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                objectListing = ossClient.listObjectsV2(listObjectsRequest);
+                for (OSSObjectSummary s : objectListing.getObjectSummaries()) {
+                    if(s.getRestoreInfo().contains("ongoing-request=\"false\"")){
+                        flag = false;
+                        Assert.assertTrue(true);
+                        break;
+                    }
+                    long endTime = System.currentTimeMillis();
+                    if(endTime - startTime > 1000 * 120){
+                        Assert.assertFalse(true);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
 }

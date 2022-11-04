@@ -44,6 +44,9 @@ public class OSSObjectSummary {
 
     private String type;
 
+    /** The restore info status of the object  */
+    private String restoreInfo;
+
     /**
      * Constructor.
      */
@@ -203,4 +206,22 @@ public class OSSObjectSummary {
         this.type = type;
     }
 
+    /**
+     * Gets the restore info of the object.
+     *
+     * @return Object restore info.
+     */
+    public String getRestoreInfo() {
+        return restoreInfo;
+    }
+
+    /**
+     * Sets the restore info of the object.
+     *
+     * @param restoreInfo
+     *            object restore info
+     */
+    public void setRestoreInfo(String restoreInfo) {
+        this.restoreInfo = restoreInfo;
+    }
 }

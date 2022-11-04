@@ -21,10 +21,15 @@ package com.aliyun.oss.integrationtests;
 
 import static com.aliyun.oss.integrationtests.TestUtils.batchPutObject;
 
+import java.io.ByteArrayInputStream;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.aliyun.oss.internal.OSSHeaders;
+import com.aliyun.oss.model.PutObjectRequest;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -286,5 +291,54 @@ public class ListObjectsTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
-    
+
+    @Test
+    public void testListObjectsWithRestoreInfo() {
+        String objectPrefix = "object-with-special-restore";
+        String content = "abcde";
+
+        try {
+            // First upload the archive file, and then unfreeze it to obtain the returned RestoreInfo
+            Map<String, String> header = new HashMap<String, String>();
+            header.put(OSSHeaders.STORAGE_CLASS, "Archive");
+
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectPrefix, new ByteArrayInputStream(content.getBytes()));
+            putObjectRequest.setHeaders(header);
+            ossClient.putObject(putObjectRequest);
+
+            ossClient.restoreObject(bucketName, objectPrefix);
+
+            ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucketName);
+            ObjectListing objectListing = ossClient.listObjects(listObjectsRequest);
+            for (OSSObjectSummary s : objectListing.getObjectSummaries()) {
+                String restoreInfo = s.getRestoreInfo();
+                Assert.assertEquals(restoreInfo, "ongoing-request=\"true\"");
+            }
+
+            boolean flag = true;
+            long startTime = System.currentTimeMillis();
+            while (flag){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                objectListing = ossClient.listObjects(listObjectsRequest);
+                for (OSSObjectSummary s : objectListing.getObjectSummaries()) {
+                    if(s.getRestoreInfo().contains("ongoing-request=\"false\"")){
+                        flag = false;
+                        Assert.assertTrue(true);
+                        break;
+                    }
+                    long endTime = System.currentTimeMillis();
+                    if(endTime - startTime > 1000 * 120){
+                        Assert.assertFalse(true);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
 }
