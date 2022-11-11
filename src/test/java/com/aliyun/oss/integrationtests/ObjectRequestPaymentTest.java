@@ -1166,9 +1166,6 @@ public class ObjectRequestPaymentTest extends TestBase {
             Payer payer = Payer.Requester;
             GenericRequest genericRequest = new GenericRequest(bucketName, key);
             genericRequest.setRequestPayer(payer);
-            ObjectMetadata objectMetadata = ossPayerClient.getObjectMetadata(genericRequest);
-            Object accessTime = objectMetadata.getRawMetadata().get("x-oss-last-access-time");
-            Assert.assertNull(accessTime);
 
             ossClient.putBucketAccessMonitor(bucketName, AccessMonitor.AccessMonitorStatus.Enabled.toString());
 
