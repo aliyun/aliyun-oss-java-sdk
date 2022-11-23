@@ -1802,6 +1802,7 @@ public final class ResponseParsers {
                 } else if (key.equalsIgnoreCase(OSSHeaders.OSS_HEADER_VERSION_ID)) {
                     objectMeta.setVersionId(headers.get(key));
                 }
+                objectMeta.setHeader(key, headers.get(key));
             }
 
             return objectMeta;
