@@ -20,6 +20,8 @@
 package com.aliyun.oss.model;
 
 import java.util.Date;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * The simplified metadata information of an OSS object. It includes ETag, size,
@@ -31,6 +33,7 @@ public class SimplifiedObjectMeta extends GenericResult {
     private long size;
     private Date lastModified;
     private String versionId;
+    private Map<String, String> headers = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 
     public String getETag() {
         return eTag;
@@ -62,6 +65,21 @@ public class SimplifiedObjectMeta extends GenericResult {
 
     public void setVersionId(String versionId) {
         this.versionId = versionId;
+    }
+
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(Map<String, String> headers) {
+        this.headers.clear();
+        if (headers != null && !headers.isEmpty()) {
+            this.headers.putAll(headers);
+        }
+    }
+
+    public void setHeader(String key, String value) {
+        this.headers.put(key, value);
     }
 
     @Override

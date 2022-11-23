@@ -1161,7 +1161,7 @@ public class ObjectRequestPaymentTest extends TestBase {
 
         prepareObject(key);
 
-        // Verify x-oss-last-access-time response header
+        // Verify access monitor
         try {
             Payer payer = Payer.Requester;
             GenericRequest genericRequest = new GenericRequest(bucketName, key);
@@ -1190,6 +1190,32 @@ public class ObjectRequestPaymentTest extends TestBase {
             Assert.assertTrue(true);
         } catch (OSSException e) {
             System.out.println("Accessmonitor execution failed.");
+        } finally {
+            ossClient.deleteObject(bucketName, key);
+        }
+    }
+
+
+    @Test
+    public void testAccessMonitorWithGetObjectMeta() {
+        String key = "test-get-object-last-access-time";
+
+        prepareObject(key);
+
+        // Verify x-oss-last-access-time response header
+        try {
+            Payer payer = Payer.Requester;
+            GenericRequest genericRequest = new GenericRequest(bucketName, key);
+            genericRequest.setRequestPayer(payer);
+            Object accessTime = ossPayerClient.getSimplifiedObjectMeta(genericRequest).getHeaders().get("x-oss-last-access-time");
+            Assert.assertNull(accessTime);
+
+            ossClient.putBucketAccessMonitor(bucketName, AccessMonitor.AccessMonitorStatus.Enabled.toString());
+
+            Object accessTime2 = ossPayerClient.getSimplifiedObjectMeta(genericRequest).getHeaders().get("x-oss-last-access-time");
+            Assert.assertNotNull(accessTime2);
+        } catch (OSSException e) {
+            System.out.println("Accessmonitor x-oss-last-access-time execution failed.");
         } finally {
             ossClient.deleteObject(bucketName, key);
         }
