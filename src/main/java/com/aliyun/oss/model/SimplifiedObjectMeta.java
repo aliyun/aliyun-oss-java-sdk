@@ -78,7 +78,7 @@ public class SimplifiedObjectMeta extends GenericResult {
         }
     }
 
-    public void addHeaders(String key, String value) {
+    public void setHeader(String key, String value) {
         this.headers.put(key, value);
     }
 

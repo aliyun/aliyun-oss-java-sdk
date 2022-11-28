@@ -1804,6 +1804,7 @@ public final class ResponseParsers {
                 } else {
                     objectMeta.addHeaders(key, headers.get(key));
                 }
+                objectMeta.setHeader(key, headers.get(key));
             }
 
             return objectMeta;
