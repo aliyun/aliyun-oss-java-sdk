@@ -181,6 +181,7 @@ public class ClientConfiguration {
      * @param proxyPort
      *            The proxy port.
      * @throws ClientException
+     *           If any client side error occurs such as parameter invalid, an IO related failure,etc.
      */
     public void setProxyPort(int proxyPort) throws ClientException {
         if (proxyPort <= 0) {
@@ -394,6 +395,8 @@ public class ClientConfiguration {
     /**
      * Gets the flag of using {@link IdleConnectionReaper} to manage expired
      * connection.
+     *
+     * @return True if it's enabled; False if it's disabled.
      */
     public boolean isUseReaper() {
         return useReaper;
@@ -402,6 +405,9 @@ public class ClientConfiguration {
     /**
      * Sets the flag of using {@link IdleConnectionReaper} to manage expired
      * connection.
+     *
+     * @param useReaper
+     *            The flag of using {@link IdleConnectionReaper}.
      */
     public void setUseReaper(boolean useReaper) {
         this.useReaper = useReaper;
@@ -430,6 +436,8 @@ public class ClientConfiguration {
 
     /**
      * Gets the OSS's protocol (HTTP or HTTPS).
+     *
+     * @return The OSS's protocol.
      */
     public Protocol getProtocol() {
         return protocol;
@@ -437,6 +445,9 @@ public class ClientConfiguration {
 
     /**
      * Sets the OSS's protocol (HTTP or HTTPS).
+     *
+     * @param protocol
+     *            The OSS's protocol.
      */
     public void setProtocol(Protocol protocol) {
         this.protocol = protocol;
@@ -511,6 +522,9 @@ public class ClientConfiguration {
      *
      * @param supportCname
      *            The flag if supporting CName.
+     *
+     * @return This {@link ClientConfiguration}, enabling additional method
+     *         calls to be chained together.
      */
     public ClientConfiguration setSupportCname(boolean supportCname) {
         this.supportCname = supportCname;
@@ -534,6 +548,9 @@ public class ClientConfiguration {
      *
      * @param enabled
      *            True if it's enabled; False if it's disabled.
+     *
+     * @return This {@link ClientConfiguration}, enabling additional method
+     *         calls to be chained together.
      */
     public ClientConfiguration setSLDEnabled(boolean enabled) {
         this.sldEnabled = enabled;
@@ -571,6 +588,9 @@ public class ClientConfiguration {
 
     /**
      * Sets the timeout value in millisecond. By default it's 5 min.
+     *
+     * @param requestTimeout
+     *            The timeout value in millisecond.
      */
     public void setRequestTimeout(int requestTimeout) {
         this.requestTimeout = requestTimeout;
@@ -578,6 +598,8 @@ public class ClientConfiguration {
 
     /**
      * Gets the timeout value in millisecond.
+     *
+     * @return the tiemout value.
      */
     public int getRequestTimeout() {
         return requestTimeout;
@@ -586,6 +608,8 @@ public class ClientConfiguration {
     /**
      * Sets the slow request's latency threshold. If a request's latency is more
      * than it, the request will be logged. By default the threshold is 5 min.
+     *
+     * @return The slow request's latency threshold in millisecond.
      */
     public long getSlowRequestsThreshold() {
         return slowRequestsThreshold;
@@ -594,6 +618,9 @@ public class ClientConfiguration {
     /**
      * Gets the slow request's latency threshold. If a request's latency is more
      * than it, the request will be logged.
+     *
+     * @param slowRequestsThreshold
+     *            The slow request's latency threshold in millisecond.
      */
     public void setSlowRequestsThreshold(long slowRequestsThreshold) {
         this.slowRequestsThreshold = slowRequestsThreshold;
@@ -603,6 +630,8 @@ public class ClientConfiguration {
      * Gets the default http headers. All these headers would be automatically
      * added in every request. And if a header is also specified in the request,
      * the default one will be overwritten.
+     *
+     * @return The default http headers.
      */
     public Map<String, String> getDefaultHeaders() {
         return defaultHeaders;
@@ -666,6 +695,7 @@ public class ClientConfiguration {
      * Sets signer handlers using for authentication of the proxy server.
      *
      * @param signerHandlers
+     *            A list of {@link RequestSigner} handlers.
      */
     public void setSignerHandlers(List<RequestSigner> signerHandlers) {
         if (signerHandlers == null) {
@@ -692,6 +722,7 @@ public class ClientConfiguration {
      * Sets signature version for all request.
      *
      * @param signatureVersion
+     *             The signature version.
      */
     public void setSignatureVersion(SignVersion signatureVersion) {
         this.signatureVersion = signatureVersion;

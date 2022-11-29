@@ -113,9 +113,7 @@ public class RequestMessage extends HttpMesssage {
         this.parameters.remove(key);
     }
 
-    /**
-     * Indicate whether the request should be repeatedly sent.
-     */
+    //Indicate whether the request should be repeatedly sent.
     public boolean isRepeatable() {
         return this.getContent() == null || this.getContent().markSupported();
     }

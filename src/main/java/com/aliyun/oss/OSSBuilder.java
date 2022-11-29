@@ -37,6 +37,7 @@ public interface OSSBuilder {
      *            Access Key ID.
      * @param secretAccessKey
      *            Secret Access Key.
+     * @return An instance that implements the {@link OSS}.
      */
     public OSS build(String endpoint, String accessKeyId, String secretAccessKey);
 
@@ -52,6 +53,7 @@ public interface OSSBuilder {
      *            Access Key from STS
      * @param securityToken
      *            Security Token from STS.
+     * @return An instance that implements the {@link OSS}.
      */
     public OSS build(String endpoint, String accessKeyId, String secretAccessKey, String securityToken);
 
@@ -68,6 +70,7 @@ public interface OSSBuilder {
      * @param config
      *            A {@link ClientBuilderConfiguration} instance. The method would use
      *            default configuration if it's null.
+     * @return An instance that implements the {@link OSS}.
      */
     public OSS build(String endpoint, String accessKeyId, String secretAccessKey, ClientBuilderConfiguration config);
 
@@ -87,6 +90,7 @@ public interface OSSBuilder {
      * @param config
      *            A {@link ClientBuilderConfiguration} instance. The method would use
      *            default configuration if it's null.
+     * @return An instance that implements the {@link OSS}.
      */
     public OSS build(String endpoint, String accessKeyId, String secretAccessKey, String securityToken,
             ClientBuilderConfiguration config);
@@ -100,6 +104,7 @@ public interface OSSBuilder {
      * @param credsProvider
      *            Credentials provider which has access key Id and access Key
      *            secret.
+     * @return An instance that implements the {@link OSS}.
      */
     public OSS build(String endpoint, CredentialsProvider credsProvider);
 
@@ -113,6 +118,7 @@ public interface OSSBuilder {
      *            Credentials provider.
      * @param config
      *            client configuration.
+     * @return An instance that implements the {@link OSS}.
      */
     public OSS build(String endpoint, CredentialsProvider credsProvider, ClientBuilderConfiguration config);
 

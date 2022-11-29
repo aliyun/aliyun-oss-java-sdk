@@ -42,6 +42,9 @@ public class DateUtil {
 
     /**
      * Formats Date to GMT string.
+     * @param date
+     *          a {@link Date} instance.
+     * @return a RFC 822 date format string
      */
     public static String formatRfc822Date(Date date) {
         return getRfc822DateFormat().format(date);
@@ -49,6 +52,11 @@ public class DateUtil {
 
     /**
      * Parses a GMT-format string.
+     * @param dateString
+     *          a RFC 822 date format string.
+     * @return a {@link Date} instance.
+     * @throws ParseException
+     *         if an parsing error occurs
      */
     public static Date parseRfc822Date(String dateString) throws ParseException {
         return getRfc822DateFormat().parse(dateString);
@@ -73,8 +81,10 @@ public class DateUtil {
      * Parse a date string in the format of ISO 8601.
      * 
      * @param dateString
+     *          a ISO 8601 date format string.
      * @return a {@link Date} instance.
      * @throws ParseException
+     *         if an parsing error occurs
      */
     public static Date parseIso8601Date(String dateString) throws ParseException {
         try {

@@ -182,6 +182,10 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
+                        <configuration>
+                            <!-- <additionalparam>-Xdoclint:none</additionalparam>  -->
+                            <additionalJOption>-Xdoclint:none</additionalJOption>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

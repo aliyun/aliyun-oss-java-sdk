@@ -33,6 +33,7 @@ public interface CredentialsFetcher {
      * 
      * @return the url of authorization server
      * @throws ClientException
+     *           If any errors occurred in OSS while processing the request.
      */
     public URL buildUrl() throws ClientException;
 
@@ -43,6 +44,7 @@ public interface CredentialsFetcher {
      *            http request.
      * @return http response
      * @throws IOException
+     *            An IO errors occurred while sending the request to authorization server.
      */
     public HttpResponse send(HttpRequest request) throws IOException;
 
@@ -53,6 +55,7 @@ public interface CredentialsFetcher {
      *            http response.
      * @return credentials
      * @throws ClientException
+     *           If any errors occurred in OSS while processing the request.
      */
     public Credentials parse(HttpResponse response) throws ClientException;
 
@@ -61,6 +64,7 @@ public interface CredentialsFetcher {
      * 
      * @return credentials
      * @throws ClientException
+     *           If any errors occurred in OSS while processing the request.
      */
     public Credentials fetch() throws ClientException;
 
@@ -71,6 +75,7 @@ public interface CredentialsFetcher {
      *            retry times.
      * @return credentials
      * @throws ClientException
+     *           If any errors occurred in OSS while processing the request.
      */
     public Credentials fetch(int retryTimes) throws ClientException;
 }

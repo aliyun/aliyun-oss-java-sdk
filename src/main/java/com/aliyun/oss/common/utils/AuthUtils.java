@@ -159,6 +159,8 @@ public class AuthUtils {
      *            Public key content.
      * @return Public key description, include public key id etc.
      * @throws ClientException
+     *            If any errors are encountered in the client while making the
+     *            request or handling the response.
      */
     public static PublicKey uploadPublicKey(String regionId, String accessKeyId, String accessKeySecret,
             String publicKey) throws ClientException {
@@ -186,6 +188,8 @@ public class AuthUtils {
      *            Secret Access Key of the root user.
      * @return Public keys.
      * @throws ClientException
+     *            If any errors are encountered in the client while making the
+     *            request or handling the response.
      */
     public static List<PublicKey> listPublicKeys(String regionId, String accessKeyId, String accessKeySecret)
             throws ClientException {
@@ -216,6 +220,8 @@ public class AuthUtils {
      * @param publicKeyId
      *            Public Key Id.
      * @throws ClientException
+     *            If any errors are encountered in the client while making the
+     *            request or handling the response.
      */
     public static void deletePublicKey(String regionId, String accessKeyId, String accessKeySecret, String publicKeyId)
             throws ClientException {
@@ -235,6 +241,7 @@ public class AuthUtils {
      *            Public key file path.
      * @return Formatted public key content.
      * @throws IOException
+     *            if an I/O error occurs
      */
     public static String loadPublicKeyFromFile(String publicKeyPath) throws IOException {
         File file = new File(publicKeyPath);
@@ -263,6 +270,7 @@ public class AuthUtils {
      *            Private key file path.
      * @return Formatted private key content.
      * @throws IOException
+     *            if an I/O error occurs
      */
     public static String loadPrivateKeyFromFile(String privateKeyPath) throws IOException {
         BufferedReader reader = null;

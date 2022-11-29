@@ -80,6 +80,8 @@ public abstract class ServiceSignature {
      *
      * Creates the <code>ServiceSignature</code> instance by the algorithm
      *
+     * @param algorithm
+     *            A name of signature algorithm.
      * @return The <code>ServiceSignature</code> instance
      */
     public static ServiceSignature create(String algorithm) {

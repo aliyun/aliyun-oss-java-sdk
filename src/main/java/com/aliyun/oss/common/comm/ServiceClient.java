@@ -60,6 +60,20 @@ public abstract class ServiceClient {
     /**
      * Send HTTP request with specified context to OSS and wait for HTTP
      * response.
+     *
+     * @param request
+     *            a request message.
+     * @param context
+     *            http request context.
+     *
+     * @return A {@link ResponseMessage} instance.
+     *
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ServiceException
+     *             The base exception class to represent any expected or unexpected OSS
+     *             server side errors.
      */
     public ResponseMessage sendRequest(RequestMessage request, ExecutionContext context)
             throws ServiceException, ClientException {
@@ -179,6 +193,17 @@ public abstract class ServiceClient {
 
     /**
      * Implements the core logic to send requests to Aliyun OSS services.
+     *
+     * @param request
+     *            a request message.
+     * @param context
+     *            http request context.
+     *
+     * @return A {@link ResponseMessage} instance.
+     *
+     * @throws IOException
+     *             An IO errors are encountered in the client while making the
+     *             request or handling the response.
      */
     protected abstract ResponseMessage sendRequestCore(Request request, ExecutionContext context) throws IOException;
 
