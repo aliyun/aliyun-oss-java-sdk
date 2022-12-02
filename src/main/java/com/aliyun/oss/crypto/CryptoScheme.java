@@ -36,6 +36,15 @@ public abstract class CryptoScheme {
 
     /**
      * This is a factory method to create CryptoCipher.
+     *
+     * @param cipher
+     *            cipher.
+     * @param cek
+     *            secret key.
+     * @param cipherMode
+     *            cipher mode.
+     *
+     * @return The {@link CryptoCipher} instance.
      */
     public CryptoCipher newCryptoCipher(Cipher cipher, SecretKey cek, int cipherMode) {
         return new CryptoCipher(cipher, this, cek, cipherMode);
@@ -65,6 +74,7 @@ public abstract class CryptoScheme {
      *            a 16-byte counter.
      * @param blockDelta
      *            the number of blocks (16-byte) to increment
+     * @return Return the byte after increment.
      */
     public static byte[] incrementBlocks(byte[] counter, long blockDelta) {
         if (blockDelta == 0)

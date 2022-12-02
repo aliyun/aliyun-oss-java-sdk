@@ -33,7 +33,7 @@ public class CertificateConfiguration {
 
 
     /**
-     * Gets the certificate public key
+     * @return Gets the certificate public key
      */
     public String getPublicKey() { return publicKey; }
 
@@ -44,6 +44,8 @@ public class CertificateConfiguration {
 
     /**
      * Sets the certificate public key and return the updated CertificateConfiguration object.
+     *
+     * @return  The {@link CertificateConfiguration} instance.
      */
     public CertificateConfiguration withPublicKey(String publicKey) {
         setPublicKey(publicKey);
@@ -51,7 +53,7 @@ public class CertificateConfiguration {
     }
 
     /**
-     * Gets the certificate private key.
+     * @return Gets the certificate private key.
      */
     public String getPrivateKey() { return privateKey; }
 
@@ -62,6 +64,8 @@ public class CertificateConfiguration {
 
     /**
      * Sets the certificate private key and return the updated CertificateConfiguration object.
+     *
+     * @return  The {@link CertificateConfiguration} instance.
      */
     public CertificateConfiguration withPrivateKey(String privateKey) {
         setPrivateKey(privateKey);
@@ -69,7 +73,7 @@ public class CertificateConfiguration {
     }
 
     /**
-     * Gets the certificate ID.
+     * @return  Gets the certificate ID.
      */
     public String getId() { return id; }
 
@@ -80,6 +84,8 @@ public class CertificateConfiguration {
 
     /**
      * Sets the certificate ID and return the updated CertificateConfiguration object.
+     *
+     * @return  The {@link CertificateConfiguration} instance.
      */
     public CertificateConfiguration withId(String id) {
         setId(id);
@@ -88,6 +94,8 @@ public class CertificateConfiguration {
 
     /**
      * Get if force overwrite certificate or not.
+     *
+     * @return True if force overwrite cert; False if not.
      */
     public boolean isForceOverwriteCert() { return forceOverwriteCert; }
 
@@ -100,6 +108,8 @@ public class CertificateConfiguration {
     /**
      * Set if force overwrite certificate or not and return the updated CertificateConfiguration object.
      * @param forceOverwriteCert If enabled, OSS will not check the previous certificate ID.
+     *
+     * @return  The {@link CertificateConfiguration} instance.
      */
     public CertificateConfiguration withForceOverwriteCert(boolean forceOverwriteCert) {
         setForceOverwriteCert(forceOverwriteCert);
@@ -107,7 +117,7 @@ public class CertificateConfiguration {
     }
 
     /**
-     * Gets the previous certificate ID.
+     * @return  Gets the previous certificate ID.
      */
     public String getPreviousId() { return previousId; }
 
@@ -118,6 +128,8 @@ public class CertificateConfiguration {
 
     /**
      * Sets the previous certificate ID and return the updated CertificateConfiguration object.
+     *
+     * @return  The {@link CertificateConfiguration} instance.
      */
     public CertificateConfiguration withPreviousId(String previousId) {
         setPreviousId(previousId);
@@ -126,6 +138,8 @@ public class CertificateConfiguration {
 
     /**
      * Gets the delete certificate flag.
+     *
+     * @return True if delete certificate; False if not.
      */
     public Boolean getDeleteCertificate() { return deleteCertificate; }
 
@@ -136,6 +150,8 @@ public class CertificateConfiguration {
 
     /**
      * Sets the delete certificate flag and return the updated CertificateConfiguration object.
+     *
+     * @return  The {@link CertificateConfiguration} instance.
      */
     public CertificateConfiguration withDeleteCertificate(Boolean deleteCertificate) {
         setDeleteCertificate(deleteCertificate);

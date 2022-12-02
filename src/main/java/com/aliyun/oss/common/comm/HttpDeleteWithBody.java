@@ -36,6 +36,8 @@ public class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
     }
 
     /**
+     * @param uri
+     *            url address
      * @throws IllegalArgumentException if the uri is invalid.
      */
     public HttpDeleteWithBody(final String uri) {

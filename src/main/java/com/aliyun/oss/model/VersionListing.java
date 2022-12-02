@@ -145,7 +145,6 @@ public class VersionListing extends GenericResult {
      * applications to organize and browse their keys hierarchically,
      * similar to how a file system organizes files
      * into directories.
-     * <p>
      * For example, consider a bucket that contains the keys:
      * <ul>
      *  <li>"foo/bar/baz"</li>
@@ -405,7 +404,7 @@ public class VersionListing extends GenericResult {
      * is complete, indicating if additional calls to OSS are needed to obtain
      * complete version listing results.
      *
-     * @return The value <code>true</code> if this version listing is <b>not complete<b>, indicating
+     * @return The value <code>true</code> if this version listing is <b>not complete</b>, indicating
      *         additional calls to OSS are needed to obtain
      *         complete version listing results. Returns the value <code>false</code> if otherwise.
      */

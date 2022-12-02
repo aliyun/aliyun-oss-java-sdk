@@ -28,7 +28,7 @@ public class AsyncFetchTaskConfiguration {
     private Boolean ignoreSameKey;
 
     /**
-     * Gets the source object url.
+     * @returnn  Gets the source object url.
      */
     public String getUrl() {
         return url;
@@ -43,6 +43,8 @@ public class AsyncFetchTaskConfiguration {
 
     /**
      * Sets the source object url and returns the updated AsyncFetchTaskConfiguration object.
+     *
+     * @return  The {@link AsyncFetchTaskConfiguration} instance.
      */
     public AsyncFetchTaskConfiguration withUrl(String url) {
         setUrl(url);
@@ -50,7 +52,7 @@ public class AsyncFetchTaskConfiguration {
     }
 
     /**
-     * Gets the destination object name
+     * @return  Gets the destination object name
      */
     public String getObjectName() {
         return objectName;
@@ -65,6 +67,8 @@ public class AsyncFetchTaskConfiguration {
 
     /**
      * Sets the destination object name and returns the updated AsyncFetchTaskConfiguration object.
+     *
+     * @return  The {@link AsyncFetchTaskConfiguration} instance.
      */
     public AsyncFetchTaskConfiguration withObjectName(String objectName) {
         setObjectName(objectName);
@@ -72,7 +76,7 @@ public class AsyncFetchTaskConfiguration {
     }
 
     /**
-     * Gets the host that you specified.
+     * @return Gets the host that you specified.
      */
     public String getHost() {
         return host;
@@ -87,6 +91,8 @@ public class AsyncFetchTaskConfiguration {
     /**
      * Sets the host that you want to fetch, it also can be null or empty,
      * and returns the updated AsyncFetchTaskConfiguration object.
+     *
+     * @return  The {@link AsyncFetchTaskConfiguration} instance.
      */
     public AsyncFetchTaskConfiguration withHost(String host) {
         setHost(host);
@@ -94,7 +100,7 @@ public class AsyncFetchTaskConfiguration {
     }
 
     /**
-     * Gets the contentMd5 that you specified.
+     * @return  Gets the contentMd5 that you specified.
      */
     public String getContentMd5() {
         return contentMd5;
@@ -110,6 +116,8 @@ public class AsyncFetchTaskConfiguration {
     /**
      * Sets the contentMd5 of the source file, it also can be null or empty,
      * and returns the updated AsyncFetchTaskConfiguration object.
+     *
+     * @return  The {@link AsyncFetchTaskConfiguration} instance.
      */
     public AsyncFetchTaskConfiguration withContentMd5(String contentMd5) {
         setContentMd5(contentMd5);
@@ -118,6 +126,8 @@ public class AsyncFetchTaskConfiguration {
 
     /**
      * Gets the callback that you specified.
+     *
+     * @return  return the callback that you specified.
      */
     public String getCallback() {
         return callback;
@@ -132,6 +142,8 @@ public class AsyncFetchTaskConfiguration {
 
     /**
      * Sets the callback after fetch object success, and returns the updated AsyncFetchTaskConfiguration object.
+     *
+     * @return  The {@link AsyncFetchTaskConfiguration} instance.
      */
     public AsyncFetchTaskConfiguration withCallback(String callback) {
         setCallback(callback);
@@ -140,6 +152,8 @@ public class AsyncFetchTaskConfiguration {
 
     /**
      * Gets the ignoreSameKey option that you specified.
+     *
+     * @return True if ignore same key; False if not.
      */
     public Boolean getIgnoreSameKey() {
         return ignoreSameKey;
@@ -157,6 +171,8 @@ public class AsyncFetchTaskConfiguration {
      * Sets the optional operation of ignore the task or not when the destination object already exists,
      * true means ignore the task and false means it allows object coving,
      * and returns the updated AsyncFetchTaskConfiguration object.
+     *
+     * @return The {@link AsyncFetchTaskConfiguration} instance.
      */
     public AsyncFetchTaskConfiguration withIgnoreSameKey(Boolean ignoreSameKey) {
         setIgnoreSameKey(ignoreSameKey);
