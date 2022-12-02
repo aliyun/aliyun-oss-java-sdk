@@ -4247,6 +4247,7 @@ public interface OSS {
      * 
      * @param bucketName
      *             The bucket name.
+     * @return  A {@link GetBucketRequestPaymentResult} instance.
      * @throws OSSException
      *             If any errors are encountered in the client while making the
      *             request or handling the response.
@@ -4260,6 +4261,7 @@ public interface OSS {
      * 
      * @param genericRequest
      *             {@link GenericRequest} instance that has the bucket name.
+     * @return  A {@link GetBucketRequestPaymentResult} instance.
      * @throws OSSException
      *             If any errors are encountered in the client while making the
      *             request or handling the response.
@@ -4505,6 +4507,8 @@ public interface OSS {
     /**
      * Returns all {@link VpcPolicy} instances of the Bucket.
      *
+     * @param genericRequest
+     *              A {@link GenericRequest} instance that include the bucket name.
      * @return A list of {@link VpcPolicy} instances. If there's no list, the
      *         list will be empty (instead of null).
      * @throws OSSException
@@ -4915,6 +4919,7 @@ public interface OSS {
      * 
      * @param bucketName
      *             The bucket name.
+     * @return A {@link GetBucketResourceGroupResult} instance.
      * @throws OSSException
      *             If any errors are encountered in the client while making the
      *             request or handling the response.
@@ -5021,6 +5026,7 @@ public interface OSS {
      * @param bucketName
      *             The bucket name.
      * @param status
+     *             The bucket access monitor status.
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
@@ -5077,6 +5083,7 @@ public interface OSS {
     /**
      * Query files that meet the specified criteria from the OSS Server
      * @param doMetaQueryRequest
+     *             The {@link DoMetaQueryRequest} instance
      * @return A {@link DoMetaQueryResult} instance.
      * @throws OSSException
      *             If any errors are encountered in the client while making the

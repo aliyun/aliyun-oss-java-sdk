@@ -121,6 +121,8 @@ public abstract class CryptoModuleBase implements CryptoModule {
      * Returns the given {@link PutObjectRequest} instance but has the content as
      * input stream wrapped with a cipher, and configured with some meta data and
      * user metadata.
+     *
+     * @return  The {@link PutObjectRequest} instance.
      */
     protected final PutObjectRequest wrapPutRequestWithCipher(final PutObjectRequest request,
             ContentCryptoMaterial cekMaterial) {
@@ -176,6 +178,8 @@ public abstract class CryptoModuleBase implements CryptoModule {
 
     /**
      * Checks there an encryption info in the metadata.
+     *
+     * @return True if has encryption info; False if not.
      */
     public static boolean hasEncryptionInfo(ObjectMetadata metadata) {
         Map<String, String> userMeta = metadata.getUserMetadata();
@@ -225,6 +229,8 @@ public abstract class CryptoModuleBase implements CryptoModule {
 
     /**
      * Decrypt the encypted object by the metadata achieved.
+     *
+     * @return  The {@link OSSObject} instance.
      */
     protected OSSObject decipherWithMetadata(GetObjectRequest req,
             long[] desiredRange,
@@ -263,6 +269,8 @@ public abstract class CryptoModuleBase implements CryptoModule {
      * range of bytes desired by the user. Since encrypted contents can only be
      * retrieved in CIPHER_BLOCK_SIZE (16 bytes) chunks, the OSSObject potentially
      * contains more bytes than desired, so this method adjusts the contents range.
+     *
+     * @return  The {@link OSSObject} instance.
      */
     protected final OSSObject adjustToDesiredRange(OSSObject OSSobject, long[] range) {
         if (range == null)
@@ -423,7 +431,7 @@ public abstract class CryptoModuleBase implements CryptoModule {
     }
 
     /**
-     * Returns the plaintext length from the request and metadata; or -1 if unknown.
+     * @return  Returns the plaintext length from the request and metadata; or -1 if unknown.
      */
     protected final long plaintextLength(PutObjectRequest request, ObjectMetadata metadata) {
         if (request.getFile() != null) {
@@ -461,6 +469,8 @@ public abstract class CryptoModuleBase implements CryptoModule {
 
     /**
      * Build a new content crypto material read-only.
+     *
+     * @return  The {@link ContentCryptoMaterial} instance.
      */
     protected final ContentCryptoMaterial buildContentCryptoMaterials() {
         // Generate random CEK IV
@@ -479,6 +489,8 @@ public abstract class CryptoModuleBase implements CryptoModule {
 
     /**
      * Add the upload part info into metadata.
+     *
+     * @return  The {@link ObjectMetadata} instance.
      */
     protected final ObjectMetadata updateMetadataWithUploadContext(ObjectMetadata metadata,
             MultipartUploadCryptoContext context) {
@@ -494,6 +506,8 @@ public abstract class CryptoModuleBase implements CryptoModule {
 
     /**
      * Storages the encrytion materials in the object metadata.
+     *
+     * @return  The {@link ObjectMetadata} instance.
      */
     protected final ObjectMetadata updateMetadataWithContentCryptoMaterial(ObjectMetadata metadata, File file,
             ContentCryptoMaterial contentCryptoMaterial) {
@@ -532,6 +546,8 @@ public abstract class CryptoModuleBase implements CryptoModule {
 
     /**
      * Builds a new content crypto material for decrypting the object achieved.
+     *
+     * @return  The {@link ContentCryptoMaterial} instance.
      */
     protected ContentCryptoMaterial createContentMaterialFromMetadata(ObjectMetadata meta) {
         Map<String, String> userMeta = meta.getUserMetadata();

@@ -59,6 +59,8 @@ public class CreateBucketRequest extends GenericRequest {
      * 
      * @param locationConstraint
      *            Bucket datacenter.
+     *
+     * @return  The {@link CreateBucketRequest} instance.
      */
     public CreateBucketRequest withLocationConstraint(String locationConstraint) {
         setLocationConstraint(locationConstraint);
@@ -108,6 +110,8 @@ public class CreateBucketRequest extends GenericRequest {
      * 
      * @param dataRedundancyType
      *            The Bucketdata redundancy type.
+     *
+     * @return  The {@link CreateBucketRequest} instance.
      */
     public CreateBucketRequest withDataRedundancyType(DataRedundancyType dataRedundancyType) {
         setDataRedundancyType(dataRedundancyType);
@@ -115,14 +119,14 @@ public class CreateBucketRequest extends GenericRequest {
     }
 
     /**
-     * Gets the bucket's data redundancy type.
+     * @return Gets the bucket's data redundancy type.
      */
     public DataRedundancyType getDataRedundancyType() {
         return dataRedundancyType;
     }
 
     /**
-     * Gets hierarchical namespace status.
+     * @return  Gets hierarchical namespace status.
      */
     public String getHnsStatus() {
         return hnsStatus;
@@ -152,6 +156,8 @@ public class CreateBucketRequest extends GenericRequest {
      * Creates the instance with hierarchical namespace status.
      * @param hnsStatus
      *              The hierarchical namespace status.
+     *
+     * @return  The {@link CreateBucketRequest} instance.
      */
     public CreateBucketRequest withHnsStatus(String hnsStatus) {
         this.setHnsStatus(hnsStatus);
@@ -162,6 +168,8 @@ public class CreateBucketRequest extends GenericRequest {
      * Creates the instance with hierarchical namespace status.
      * @param hnsStatus
      *              The hierarchical namespace status.
+     *
+     * @return  The {@link CreateBucketRequest} instance.
      */
     public CreateBucketRequest withHnsStatus(HnsStatus hnsStatus) {
         this.setHnsStatus(hnsStatus);
@@ -169,7 +177,7 @@ public class CreateBucketRequest extends GenericRequest {
     }
 
     /**
-     * Gets the resouce group id.
+     * @return  Gets the resouce group id.
      */
     public String getResourceGroupId() {
         return resourceGroupId;
@@ -188,6 +196,8 @@ public class CreateBucketRequest extends GenericRequest {
      * Creates the instance with resouce group id.
      * @param resourceGroupId
      *              The id of resouce group.
+     *
+     * @return  The {@link CreateBucketRequest} instance.
      */
     public CreateBucketRequest withResourceGroupId(String resourceGroupId) {
         this.setResourceGroupId(resourceGroupId);

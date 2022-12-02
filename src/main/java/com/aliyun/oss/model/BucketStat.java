@@ -48,6 +48,7 @@ public class BucketStat extends GenericResult {
      *
      * @param storageSize
      *            The storage size.
+     * @return The {@link BucketStat} instance.
      */
     public BucketStat withStorageSize(Long storageSize) {
         this.storageSize = storageSize;
@@ -69,6 +70,7 @@ public class BucketStat extends GenericResult {
      *
      * @param objectCount
      *            The object count.
+     * @return The {@link BucketStat} instance.
      */
     public BucketStat withObjectCount(Long objectCount) {
         this.objectCount = objectCount;
@@ -90,6 +92,7 @@ public class BucketStat extends GenericResult {
      *
      * @param multipartUploadCount
      *            The multipart upload count.
+     * @return The {@link BucketStat} instance.
      */
     public BucketStat withMultipartUploadCount(Long multipartUploadCount) {
         this.multipartUploadCount = multipartUploadCount;
@@ -111,6 +114,7 @@ public class BucketStat extends GenericResult {
      *
      * @param liveChannelCount
      *            The live channel count.
+     * @return The {@link BucketStat} instance.
      */
     public BucketStat withLiveChannelCount(Long liveChannelCount) {
         this.liveChannelCount = liveChannelCount;
@@ -132,6 +136,7 @@ public class BucketStat extends GenericResult {
      *
      * @param lastModifiedTime
      *            The last modified time.
+     * @return The {@link BucketStat} instance.
      */
     public BucketStat withLastModifiedTime(Long lastModifiedTime) {
         this.lastModifiedTime = lastModifiedTime;
@@ -153,6 +158,7 @@ public class BucketStat extends GenericResult {
      *
      * @param standardStorage
      *            The standard storage.
+     * @return The {@link BucketStat} instance.
      */
     public BucketStat withStandardStorage(Long standardStorage) {
         this.standardStorage = standardStorage;
@@ -174,6 +180,7 @@ public class BucketStat extends GenericResult {
      *
      * @param standardObjectCount
      *            The standard object count.
+     * @return The {@link BucketStat} instance.
      */
     public BucketStat withStandardObjectCount(Long standardObjectCount) {
         this.standardObjectCount = standardObjectCount;

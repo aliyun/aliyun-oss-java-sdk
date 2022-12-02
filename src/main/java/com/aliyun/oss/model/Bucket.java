@@ -180,7 +180,7 @@ public class Bucket extends GenericResult {
     /**
      * Sets the bucket location.
      * 
-     * @param location
+     * @param location bucket location
      */
     public void setLocation(String location) {
         this.location = location;
@@ -198,7 +198,7 @@ public class Bucket extends GenericResult {
     /**
      * Sets the bucket's storage class
      * 
-     * @param storageClass
+     * @param storageClass storage class
      */
     public void setStorageClass(StorageClass storageClass) {
         this.storageClass = storageClass;

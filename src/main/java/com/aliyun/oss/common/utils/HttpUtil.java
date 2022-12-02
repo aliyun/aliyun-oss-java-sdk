@@ -39,6 +39,12 @@ public class HttpUtil {
 
     /**
      * Encode a URL segment with special chars replaced.
+     *
+     * @param value
+     *            Coded value
+     * @param encoding
+     *            The url encoding
+     * @return  Return the encoded url
      */
     public static String urlEncode(String value, String encoding) {
         if (value == null) {
@@ -82,6 +88,13 @@ public class HttpUtil {
 
     /**
      * Encode request parameters to URL segment.
+     *
+     * @param params
+     *            a request params.
+     * @param charset
+     *            Specific character set coding.
+     *
+     * @return Return the URL after request parameter encoding.
      */
     public static String paramToQueryString(Map<String, String> params, String charset) {
 
