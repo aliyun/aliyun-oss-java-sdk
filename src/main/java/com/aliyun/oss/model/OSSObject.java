@@ -143,6 +143,8 @@ public class OSSObject extends GenericResult implements Closeable {
      * be downloaded.
      * 
      * @throws IOException
+     *             An IO errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public void forcedClose() throws IOException {
         this.response.abort();

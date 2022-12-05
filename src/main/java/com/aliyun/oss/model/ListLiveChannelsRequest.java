@@ -130,6 +130,8 @@ public class ListLiveChannelsRequest extends LiveChannelGenericRequest {
      * 
      * @param prefix
      *            The prefix filter.
+     *
+     * @return  The {@link ListLiveChannelsRequest} instance.
      */
     public ListLiveChannelsRequest withPrefix(String prefix) {
         setPrefix(prefix);
@@ -143,6 +145,8 @@ public class ListLiveChannelsRequest extends LiveChannelGenericRequest {
      * @param maxKeys
      *            The max number of Live Channels, by default is 100 and max
      *            value is also 100.
+     *
+     * @return  The {@link ListLiveChannelsRequest} instance.
      */
     public ListLiveChannelsRequest withMaxKeys(Integer maxKeys) {
         setMaxKeys(maxKeys);
@@ -154,6 +158,8 @@ public class ListLiveChannelsRequest extends LiveChannelGenericRequest {
      * 
      * @param marker
      *            The marker filter.
+     *
+     * @return  The {@link ListLiveChannelsRequest} instance.
      */
     public ListLiveChannelsRequest withMarker(String marker) {
         setMarker(marker);

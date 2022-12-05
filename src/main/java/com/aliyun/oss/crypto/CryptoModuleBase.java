@@ -122,6 +122,12 @@ public abstract class CryptoModuleBase implements CryptoModule {
      * input stream wrapped with a cipher, and configured with some meta data and
      * user metadata.
      *
+     * @param request
+     *            The {@link PutObjectRequest} instance.
+     *
+     * @param cekMaterial
+     *            The {@link ContentCryptoMaterial} instance.
+     *
      * @return  The {@link PutObjectRequest} instance.
      */
     protected final PutObjectRequest wrapPutRequestWithCipher(final PutObjectRequest request,
@@ -179,6 +185,9 @@ public abstract class CryptoModuleBase implements CryptoModule {
     /**
      * Checks there an encryption info in the metadata.
      *
+     * @param metadata
+     *           object metadata.
+     *
      * @return True if has encryption info; False if not.
      */
     public static boolean hasEncryptionInfo(ObjectMetadata metadata) {
@@ -230,6 +239,18 @@ public abstract class CryptoModuleBase implements CryptoModule {
     /**
      * Decrypt the encypted object by the metadata achieved.
      *
+     * @param req
+     *            The {@link GetObjectRequest} instance.
+     *
+     * @param desiredRange
+     *            desired range.
+     *
+     * @param cryptoRange
+     *            crypto range.
+     *
+     * @param retrieved
+     *            The {@link OSSObject} instance.
+     *
      * @return  The {@link OSSObject} instance.
      */
     protected OSSObject decipherWithMetadata(GetObjectRequest req,
@@ -269,6 +290,12 @@ public abstract class CryptoModuleBase implements CryptoModule {
      * range of bytes desired by the user. Since encrypted contents can only be
      * retrieved in CIPHER_BLOCK_SIZE (16 bytes) chunks, the OSSObject potentially
      * contains more bytes than desired, so this method adjusts the contents range.
+     *
+     * @param OSSobject
+     *            The {@link OSSObject} instance.
+     *
+     * @param range
+     *            range of bytes desired by the user.
      *
      * @return  The {@link OSSObject} instance.
      */
@@ -431,7 +458,15 @@ public abstract class CryptoModuleBase implements CryptoModule {
     }
 
     /**
-     * @return  Returns the plaintext length from the request and metadata; or -1 if unknown.
+     * Returns the plaintext length from the request and metadata; or -1 if unknown.
+     *
+     * @param request
+     *            The {@link PutObjectRequest} instance.
+     *
+     * @param metadata
+     *            object metadata.
+     *
+     * @return  Returns the plaintext length from the request and metadata.
      */
     protected final long plaintextLength(PutObjectRequest request, ObjectMetadata metadata) {
         if (request.getFile() != null) {
@@ -490,6 +525,12 @@ public abstract class CryptoModuleBase implements CryptoModule {
     /**
      * Add the upload part info into metadata.
      *
+     * @param metadata
+     *            object metadata.
+     *
+     * @param context
+     *            The {@link MultipartUploadCryptoContext} instance.
+     *
      * @return  The {@link ObjectMetadata} instance.
      */
     protected final ObjectMetadata updateMetadataWithUploadContext(ObjectMetadata metadata,
@@ -506,6 +547,15 @@ public abstract class CryptoModuleBase implements CryptoModule {
 
     /**
      * Storages the encrytion materials in the object metadata.
+     *
+     * @param metadata
+     *            object metadata.
+     *
+     * @param file
+     *            The {@link File} instance.
+     *
+     * @param contentCryptoMaterial
+     *            The {@link ContentCryptoMaterial} instance.
      *
      * @return  The {@link ObjectMetadata} instance.
      */
@@ -547,6 +597,9 @@ public abstract class CryptoModuleBase implements CryptoModule {
     /**
      * Builds a new content crypto material for decrypting the object achieved.
      *
+     * @param meta
+     *            The {@link ObjectMetadata} instance.
+     *
      * @return  The {@link ContentCryptoMaterial} instance.
      */
     protected ContentCryptoMaterial createContentMaterialFromMetadata(ObjectMetadata meta) {
@@ -586,7 +639,12 @@ public abstract class CryptoModuleBase implements CryptoModule {
     }
 
     /**
-     * @return the corresponding material description from the given json string.
+     * the corresponding material description from the given json string.
+     *
+     * @param jsonString
+     *             json string info.
+     *
+     * @return  return the corresponding material description from the given json string.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected static Map<String, String> getDescFromJsonString(String jsonString) {

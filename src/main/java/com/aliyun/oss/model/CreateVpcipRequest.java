@@ -32,6 +32,8 @@ public class CreateVpcipRequest extends GenericRequest {
     /**
      * Deprecated method.
      * Please use method #getLabel instead.
+     *
+     * @return return labal info
      */
     @Deprecated
     public String getLabal() {
@@ -41,6 +43,9 @@ public class CreateVpcipRequest extends GenericRequest {
     /**
      * Deprecated method.
      * Please use method #setLabel instead.
+     *
+     * @param label
+     *            set label info.
      */
     @Deprecated
     public void setLabal(String label) {

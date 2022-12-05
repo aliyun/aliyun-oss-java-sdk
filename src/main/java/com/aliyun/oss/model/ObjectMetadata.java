@@ -276,7 +276,7 @@ public class ObjectMetadata {
     }
 
     /**
-     * Gets the ETag of the object. ETag is the 128bit MD5 signature in Hex.
+     * @return Gets the ETag of the object. ETag is the 128bit MD5 signature in Hex.
      */
     public String getETag() {
         return (String) metadata.get(OSSHeaders.ETAG);

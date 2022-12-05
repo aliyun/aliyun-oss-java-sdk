@@ -92,12 +92,19 @@ public class ListObjectsV2Result extends GenericResult {
      */
     private String encodingType;
 
-    /** Gets the list of object summaries describing the objects stored in the bucket. */
+    /**
+     * @return Gets the list of object summaries describing the objects stored in the bucket.
+     */
     public List<OSSObjectSummary> getObjectSummaries() {
         return objectSummaries;
     }
 
-    /** Add the object summary to the list of the object summaries */
+    /**
+     * Add the object summary to the list of the object summaries
+     *
+     * @param objectSummary
+     *            The {@link OSSObjectSummary} instance.
+     */
     public void addObjectSummary(OSSObjectSummary objectSummary) {
         this.objectSummaries.add(objectSummary);
     }
@@ -119,17 +126,29 @@ public class ListObjectsV2Result extends GenericResult {
         return commonPrefixes;
     }
 
-    /** adds a common prefix element to the common prefixes list */
+    /**
+     * adds a common prefix element to the common prefixes list
+     *
+     * @param commonPrefix
+     *            prefix element to the common prefixes list.
+     */
     public void addCommonPrefix(String commonPrefix) {
         this.commonPrefixes.add(commonPrefix);
     }
 
-    /** Gets the bucket name that containing the objects listing */
+    /**
+     * @return Gets the bucket name that containing the objects listing
+     */
     public String getBucketName() {
         return bucketName;
     }
 
-    /** Sets the bucket name that containing the objects listing */
+    /**
+     * Sets the bucket name that containing the objects listing
+     *
+     * @param bucketName
+     *            bucket name that containing the objects listing.
+     */
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
     }
@@ -137,6 +156,8 @@ public class ListObjectsV2Result extends GenericResult {
     /**
      * The prefix parameter originally specified by the caller when this object
      * listing was returned
+     *
+     * @return  return prefix parameter.
      */
     public String getPrefix() {
         return prefix;

@@ -52,7 +52,7 @@ public class SelectObjectRequest extends GetObjectRequest {
      * For text file, we can define line range for select operations.
      * Select will only scan data between startLine and endLine, that is [startLine, endLine]
      *
-     * * @param startLine
+     * @param startLine
      *            <p>
      *            Start line number
      *            </p>
@@ -148,7 +148,7 @@ public class SelectObjectRequest extends GetObjectRequest {
     }
 
     /**
-     * Get the expression which used to filter objects
+     * @return Get the expression which used to filter objects
      */
     public String getExpression() {
         return expression;
@@ -156,6 +156,9 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     /**
      * Set the expression which used to filter objects
+     *
+     * @param expression
+     *            expression which used to filter objects.
      */
     public void setExpression(String expression) {
         this.expression = expression;
@@ -210,6 +213,9 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     /**
      * Set the input serialization, we use this to parse data
+     *
+     * @param inputSerialization
+     *            The {@link InputSerialization} instance.
      */
     public void setInputSerialization(InputSerialization inputSerialization) {
         if (inputSerialization.getSelectContentFormat() == SelectContentFormat.CSV) {
@@ -235,6 +241,9 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     /**
      * Set the output serialization, it defines the output format
+     *
+     * @param outputSerialization
+     *            The {@link OutputSerialization} instance.
      */
     public void setOutputSerialization(OutputSerialization outputSerialization) {
         this.outputSerialization = outputSerialization;

@@ -31,7 +31,7 @@ public class DeleteBucketInventoryConfigurationRequest extends GenericRequest {
     }
 
     /**
-     * Returns the inventory id used to identify the inventory configuration.
+     * @return Returns the inventory id used to identify the inventory configuration.
      */
     public String getInventoryId() {
         return inventoryId;
@@ -39,6 +39,9 @@ public class DeleteBucketInventoryConfigurationRequest extends GenericRequest {
 
     /**
      * Sets the inventory id used to identify the inventory configuration.
+     *
+     * @param inventoryId
+     *            inventory id.
      */
     public void setInventoryId(String inventoryId) {
         this.inventoryId = inventoryId;

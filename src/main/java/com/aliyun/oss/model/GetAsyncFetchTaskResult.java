@@ -26,7 +26,7 @@ public class GetAsyncFetchTaskResult extends GenericResult {
     private AsyncFetchTaskConfiguration asyncFetchTaskConfiguration;
 
     /**
-     * Gets the async fetch task id.
+     * @return Gets the async fetch task id.
      */
     public String getTaskId() {
         return taskId;
@@ -34,6 +34,9 @@ public class GetAsyncFetchTaskResult extends GenericResult {
 
     /**
      * Sets the async fetch task id.
+     *
+     * @param taskId
+     *            task id
      */
     public void setTaskId(String taskId) {
         this.taskId = taskId;
@@ -42,6 +45,8 @@ public class GetAsyncFetchTaskResult extends GenericResult {
 
     /**
      * Gets the async fetch task state.
+     *
+     * @return  The {@link AsyncFetchTaskState} instance.
      */
     public AsyncFetchTaskState getAsyncFetchTaskState() {
         return asyncFetchTaskState;
@@ -49,13 +54,16 @@ public class GetAsyncFetchTaskResult extends GenericResult {
 
     /**
      * Sets the async fetch task state.
+     *
+     * @param asyncFetchTaskState
+     *            The {@link AsyncFetchTaskState} instance.
      */
     public void setAsyncFetchTaskState(AsyncFetchTaskState asyncFetchTaskState) {
         this.asyncFetchTaskState = asyncFetchTaskState;
     }
 
     /**
-     * Gets the errorMsg that received from server.
+     * @return Gets the errorMsg that received from server.
      */
     public String getErrorMsg() {
         return errorMsg;
@@ -63,6 +71,9 @@ public class GetAsyncFetchTaskResult extends GenericResult {
 
     /**
      * Sets the errorMsg received from server.
+     *
+     * @param errorMsg
+     *            error message
      */
     public void setErrorMsg(String errorMsg) {
         this.errorMsg = errorMsg;
@@ -70,6 +81,8 @@ public class GetAsyncFetchTaskResult extends GenericResult {
 
     /***
      * Gets the async task configuration.
+     *
+     * @return  The {@link AsyncFetchTaskConfiguration} instance.
      */
     public AsyncFetchTaskConfiguration getAsyncFetchTaskConfiguration() {
         return asyncFetchTaskConfiguration;
@@ -77,6 +90,9 @@ public class GetAsyncFetchTaskResult extends GenericResult {
 
     /***
      * Sets the async task configuration.
+     *
+     * @param asyncFetchTaskConfiguration
+     *            The {@link AsyncFetchTaskConfiguration} instance.
      */
     public void setAsyncFetchTaskConfiguration(AsyncFetchTaskConfiguration asyncFetchTaskConfiguration) {
         this.asyncFetchTaskConfiguration = asyncFetchTaskConfiguration;

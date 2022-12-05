@@ -240,6 +240,8 @@ public class ListObjectsV2Request extends GenericRequest {
      * @param encodingType
      *            The encoding method to be applied on the response. Valid
      *            values: null (not encoded) or "url".
+     *
+     * @return  The {@link ListObjectsV2Request} instance.
      */
     public ListObjectsV2Request withEncodingType(String encodingType) {
         setEncodingType(encodingType);

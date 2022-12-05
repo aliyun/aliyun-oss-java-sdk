@@ -41,7 +41,7 @@ public class RestoreConfiguration {
 
 
     /**
-     * Gets the days that it will stay in retrievable state after restore done.
+     * @return Gets the days that it will stay in retrievable state after restore done.
      */
     public Integer getDays() {
         return days;
@@ -49,6 +49,9 @@ public class RestoreConfiguration {
 
     /**
      * Sets the days that it will stay in retrievable state after restore done.
+     *
+     * @param days
+     *            days that it will stay in retrievable state after restore done.
      */
     public void setDays(Integer days) {
         this.days = days;
@@ -56,6 +59,8 @@ public class RestoreConfiguration {
 
     /**
      * Gets the ColdArchive object restore job parameters.
+     *
+     * @return  The {@link RestoreJobParameters} instance.
      */
     public RestoreJobParameters getRestoreJobParameters() {
         return restoreJobParameters;
@@ -63,6 +68,9 @@ public class RestoreConfiguration {
 
     /**
      * Sets the ColdArchive object restore job parameters.
+     *
+     * @param restoreJobParameters
+     *            The {@link RestoreJobParameters} instance.
      */
     public void setRestoreJobParameters(RestoreJobParameters restoreJobParameters) {
         this.restoreJobParameters = restoreJobParameters;
@@ -70,6 +78,11 @@ public class RestoreConfiguration {
 
     /**
      * Sets the restore job parameters and return the {@link RestoreConfiguration} object itself.
+     *
+     * @param restoreJobParameters
+     *            The {@link RestoreJobParameters} instance.
+     *
+     * @return  The {@link RestoreConfiguration} instance.
      */
     public RestoreConfiguration withRestoreJobParameters(RestoreJobParameters restoreJobParameters) {
         setRestoreJobParameters(restoreJobParameters);

@@ -35,6 +35,9 @@ public class SetBucketResourceGroupRequest extends GenericRequest{
 
 	/**
      * Returns the id of resource group.
+     *
+     * @param resourceGroupId
+     *            id of resource group.
     */
     public void setResourceGroupId(String resourceGroupId) {
         this.resourceGroupId = resourceGroupId;
@@ -42,6 +45,8 @@ public class SetBucketResourceGroupRequest extends GenericRequest{
 
 	/**
      * Sets the id of resource group.
+     *
+     * @return  resource group id.
     */
     public String getResourceGroupId() {
         return resourceGroupId;

@@ -25,12 +25,12 @@ import java.io.Serializable;
  * Represents the versioning configuration for a bucket.
  * <p>
  * A bucket's versioning configuration can be in one of three possible states:
+ * </p>
  *  <ul>
  *      <li>{@link BucketVersioningConfiguration#OFF}
  *      <li>{@link BucketVersioningConfiguration#ENABLED}
  *      <li>{@link BucketVersioningConfiguration#SUSPENDED}
  *  </ul>
- * </p>
  * <p>
  * By default, new buckets are in the
  * {@link BucketVersioningConfiguration#OFF off} state. Once versioning is

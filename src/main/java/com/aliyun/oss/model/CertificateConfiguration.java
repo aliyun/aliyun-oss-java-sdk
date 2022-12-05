@@ -39,11 +39,17 @@ public class CertificateConfiguration {
 
     /**
      * Sets the certificate public key.
+     *
+     * @param publicKey
+     *            certificate public key.
      */
     public void setPublicKey(String publicKey) { this.publicKey = publicKey; }
 
     /**
      * Sets the certificate public key and return the updated CertificateConfiguration object.
+     *
+     * @param publicKey
+     *            certificate public key.
      *
      * @return  The {@link CertificateConfiguration} instance.
      */
@@ -59,11 +65,17 @@ public class CertificateConfiguration {
 
     /**
      * Sets the certificate private key.
+     *
+     * @param privateKey
+     *            certificate private key.
      */
     public void setPrivateKey(String privateKey) { this.privateKey = privateKey; }
 
     /**
      * Sets the certificate private key and return the updated CertificateConfiguration object.
+     *
+     * @param privateKey
+     *            certificate private key.
      *
      * @return  The {@link CertificateConfiguration} instance.
      */
@@ -79,11 +91,17 @@ public class CertificateConfiguration {
 
     /**
      * Sets the certificate ID.
+     *
+     * @param id
+     *            certificate ID.
      */
     public void setId(String id) { this.id = id; }
 
     /**
      * Sets the certificate ID and return the updated CertificateConfiguration object.
+     *
+     * @param id
+     *            certificate ID.
      *
      * @return  The {@link CertificateConfiguration} instance.
      */
@@ -123,11 +141,17 @@ public class CertificateConfiguration {
 
     /**
      * Sets the previous certificate ID.
+     *
+     * @param previousId
+     *            previous certificate ID.
      */
     public void setPreviousId(String previousId) { this.previousId = previousId; }
 
     /**
      * Sets the previous certificate ID and return the updated CertificateConfiguration object.
+     *
+     * @param previousId
+     *            previous certificate ID.
      *
      * @return  The {@link CertificateConfiguration} instance.
      */
@@ -145,11 +169,17 @@ public class CertificateConfiguration {
 
     /**
      * Sets the delete certificate flag.
+     *
+     * @param deleteCertificate
+     *           delete certificate flag.
      */
     public void setDeleteCertificate(Boolean deleteCertificate) { this.deleteCertificate = deleteCertificate; }
 
     /**
      * Sets the delete certificate flag and return the updated CertificateConfiguration object.
+     *
+     * @param deleteCertificate
+     *           delete certificate flag.
      *
      * @return  The {@link CertificateConfiguration} instance.
      */

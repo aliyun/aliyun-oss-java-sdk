@@ -146,12 +146,14 @@ public class VersionListing extends GenericResult {
      * similar to how a file system organizes files
      * into directories.
      * For example, consider a bucket that contains the keys:
+     * </p>
      * <ul>
      *  <li>"foo/bar/baz"</li>
      *  <li>"foo/bar/bash"</li>
      *  <li>"foo/bar/bang"</li>
      *  <li>"foo/boo"</li>
      * </ul>
+     * <p>
      * If calling <code>listVersions</code> with a prefix value of "foo/" and a delimiter
      * value of "/" on this
      * bucket, the returned <code>VersionListing</code> will contain one entry in the
