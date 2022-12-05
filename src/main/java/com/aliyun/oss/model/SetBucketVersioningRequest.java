@@ -25,12 +25,12 @@ package com.aliyun.oss.model;
  * </p>
  * <p>
  * A bucket's versioning configuration can be in one of three possible states:
+ * </p>
  * <ul>
  *  <li>{@link BucketVersioningConfiguration#OFF}
  *  <li>{@link BucketVersioningConfiguration#ENABLED}
  *  <li>{@link BucketVersioningConfiguration#SUSPENDED}
  * </ul>
- * </p>
  * <p>
  * By default, new buckets are created in the
  * {@link BucketVersioningConfiguration#OFF} state. Once versioning is

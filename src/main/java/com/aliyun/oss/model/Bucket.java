@@ -271,6 +271,9 @@ public class Bucket extends GenericResult {
 
     /**
      * set hierarchical namespace status.
+     *
+     * @param hnsStatus
+     *            hierarchical namespace status.
      */
     public void setHnsStatus(String hnsStatus) {
         this.hnsStatus = hnsStatus;
@@ -287,6 +290,9 @@ public class Bucket extends GenericResult {
 
     /**
      * set the id of resource group.
+     *
+     * @param resourceGroupId
+     *            resource group id.
      */
     public void setResourceGroupId(String resourceGroupId) {
         this.resourceGroupId = resourceGroupId;

@@ -78,7 +78,7 @@ public class InitiateMultipartUploadRequest extends GenericRequest {
 
 
     /**
-     * Gets the sequential mode setting.
+     * @return Gets the sequential mode setting.
      */
     public Boolean getSequentialMode() {
         return sequentialMode;
@@ -86,6 +86,8 @@ public class InitiateMultipartUploadRequest extends GenericRequest {
 
     /**
      * Sets upload in sequential mode or not.
+     * @param sequentialMode
+     *            sequential mode.
      */
     public void setSequentialMode(Boolean sequentialMode) {
         this.sequentialMode = sequentialMode;

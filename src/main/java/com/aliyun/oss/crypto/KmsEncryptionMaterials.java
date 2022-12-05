@@ -81,6 +81,9 @@ public class KmsEncryptionMaterials implements EncryptionMaterials {
 
     /**
      * Sets the credentials provider.
+     *
+     * @param credentialsProvider
+     *            The {@link CredentialsProvider} instance.
      */
     public void setKmsCredentialsProvider(CredentialsProvider credentialsProvider) {
         this.credentialsProvider = credentialsProvider;

@@ -202,6 +202,8 @@ public class BucketStat extends GenericResult {
      *
      * @param infrequentAccessStorage
      *            The infrequent access storage.
+     *
+     * @return  The {@link BucketStat} instance.
      */
     public BucketStat withInfrequentAccessStorage(Long infrequentAccessStorage) {
         this.infrequentAccessStorage = infrequentAccessStorage;
@@ -223,6 +225,8 @@ public class BucketStat extends GenericResult {
      *
      * @param infrequentAccessRealStorage
      *            The infrequent access real storage.
+     *
+     * @return  The {@link BucketStat} instance.
      */
     public BucketStat withInfrequentAccessRealStorage(Long infrequentAccessRealStorage) {
         this.infrequentAccessRealStorage = infrequentAccessRealStorage;
@@ -244,6 +248,8 @@ public class BucketStat extends GenericResult {
      *
      * @param infrequentAccessObjectCount
      *            The infrequent access object count.
+     *
+     * @return  The {@link BucketStat} instance.
      */
     public BucketStat withInfrequentAccessObjectCount(Long infrequentAccessObjectCount) {
         this.infrequentAccessObjectCount = infrequentAccessObjectCount;
@@ -265,6 +271,8 @@ public class BucketStat extends GenericResult {
      *
      * @param archiveStorage
      *            The archive storage.
+     *
+     * @return  The {@link BucketStat} instance.
      */
     public BucketStat withArchiveStorage(Long archiveStorage) {
         this.archiveStorage = archiveStorage;
@@ -286,6 +294,8 @@ public class BucketStat extends GenericResult {
      *
      * @param archiveRealStorage
      *            The archive real storage.
+     *
+     * @return  The {@link BucketStat} instance.
      */
     public BucketStat withArchiveRealStorage(Long archiveRealStorage) {
         this.archiveRealStorage = archiveRealStorage;
@@ -307,6 +317,8 @@ public class BucketStat extends GenericResult {
      *
      * @param archiveObjectCount
      *            The archive object count.
+     *
+     * @return  The {@link BucketStat} instance.
      */
     public BucketStat withArchiveObjectCount(Long archiveObjectCount) {
         this.archiveObjectCount = archiveObjectCount;
@@ -328,6 +340,8 @@ public class BucketStat extends GenericResult {
      *
      * @param coldArchiveStorage
      *            The cold archive storage.
+     *
+     * @return  The {@link BucketStat} instance.
      */
     public BucketStat withColdArchiveStorage(Long coldArchiveStorage) {
         this.coldArchiveStorage = coldArchiveStorage;
@@ -349,6 +363,8 @@ public class BucketStat extends GenericResult {
      *
      * @param coldArchiveRealStorage
      *            The cold archive real storage.
+     *
+     * @return  The {@link BucketStat} instance.
      */
     public BucketStat withColdArchiveRealStorage(Long coldArchiveRealStorage) {
         this.coldArchiveRealStorage = coldArchiveRealStorage;
@@ -370,6 +386,8 @@ public class BucketStat extends GenericResult {
      *
      * @param coldArchiveObjectCount
      *            The cold archive object count.
+     *
+     * @return  The {@link BucketStat} instance.
      */
     public BucketStat withColdArchiveObjectCount(Long coldArchiveObjectCount) {
         this.coldArchiveObjectCount = coldArchiveObjectCount;

@@ -43,7 +43,7 @@ public class DeleteVersionsResult extends GenericResult {
         private String deleteMarkerVersionId;
 
         /**
-         * Returns the key that was successfully deleted.
+         * @return Returns the key that was successfully deleted.
          */
         public String getKey() {
             return key;
@@ -54,7 +54,7 @@ public class DeleteVersionsResult extends GenericResult {
         }
 
         /**
-         * Returns the version deleted, or null for unversioned objects.
+         * @return Returns the version deleted, or null for unversioned objects.
          */
         public String getVersionId() {
             return versionId;
@@ -65,7 +65,7 @@ public class DeleteVersionsResult extends GenericResult {
         }
 
         /**
-         * Returns whether the object deleted was a delete marker.
+         * @return Returns whether the object deleted was a delete marker.
          */
         public boolean isDeleteMarker() {
             return deleteMarker;
@@ -76,7 +76,7 @@ public class DeleteVersionsResult extends GenericResult {
         }
 
         /**
-         * Returns the versionId for the delete marker that was created when
+         * @return Returns the versionId for the delete marker that was created when
          * doing a non-versioned delete in a versioned bucket.
          */
         public String getDeleteMarkerVersionId() {
@@ -101,6 +101,8 @@ public class DeleteVersionsResult extends GenericResult {
      * Returns the list of successfully deleted objects from this request. If
      * {@link DeleteObjectsRequest#isQuiet()}  is true, only error responses
      * will be returned from OSS, so this list will be empty.
+     *
+     * @return  The {@link DeletedVersion} instance.
      */
     public List<DeletedVersion> getDeletedVersions() {
         return deletedVersions;

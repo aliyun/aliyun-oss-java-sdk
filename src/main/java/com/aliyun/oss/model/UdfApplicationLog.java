@@ -83,6 +83,7 @@ public class UdfApplicationLog extends GenericResult implements Closeable {
      * ignored.
      * 
      * @throws IOException
+     *             if there is an IO exception from the underlying input stream
      */
     public void forcedClose() throws IOException {
         this.response.abort();

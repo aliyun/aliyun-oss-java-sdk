@@ -28,7 +28,7 @@ public class AsyncFetchTaskConfiguration {
     private Boolean ignoreSameKey;
 
     /**
-     * @returnn  Gets the source object url.
+     * @return  Gets the source object url.
      */
     public String getUrl() {
         return url;
@@ -36,6 +36,9 @@ public class AsyncFetchTaskConfiguration {
 
     /**
      * Sets the source object url.
+     *
+     * @param url
+     *            object url.
      */
     public void setUrl(String url) {
         this.url = url;
@@ -44,6 +47,8 @@ public class AsyncFetchTaskConfiguration {
     /**
      * Sets the source object url and returns the updated AsyncFetchTaskConfiguration object.
      *
+     * @param url
+     *            object url.
      * @return  The {@link AsyncFetchTaskConfiguration} instance.
      */
     public AsyncFetchTaskConfiguration withUrl(String url) {
@@ -60,6 +65,9 @@ public class AsyncFetchTaskConfiguration {
 
     /**
      * Sets the destination object name
+     *
+     * @param objectName
+     *            object name.
      */
     public void setObjectName(String objectName) {
         this.objectName = objectName;
@@ -68,6 +76,8 @@ public class AsyncFetchTaskConfiguration {
     /**
      * Sets the destination object name and returns the updated AsyncFetchTaskConfiguration object.
      *
+     * @param objectName
+     *            object name.
      * @return  The {@link AsyncFetchTaskConfiguration} instance.
      */
     public AsyncFetchTaskConfiguration withObjectName(String objectName) {
@@ -84,6 +94,9 @@ public class AsyncFetchTaskConfiguration {
 
     /**
      * Sets the host that you want to fetch, and it also can be null or empty.
+     *
+     * @param host
+     *            host.
      */
     public void setHost(String host) {
         this.host = host;
@@ -92,6 +105,8 @@ public class AsyncFetchTaskConfiguration {
      * Sets the host that you want to fetch, it also can be null or empty,
      * and returns the updated AsyncFetchTaskConfiguration object.
      *
+     * @param host
+     *            host.
      * @return  The {@link AsyncFetchTaskConfiguration} instance.
      */
     public AsyncFetchTaskConfiguration withHost(String host) {
@@ -108,6 +123,9 @@ public class AsyncFetchTaskConfiguration {
 
     /**
      * Sets the contentMd5 of the source object, it also can be null or empty.
+     *
+     * @param contentMd5
+     *            content md5.
      */
     public void setContentMd5(String contentMd5) {
         this.contentMd5 = contentMd5;
@@ -117,6 +135,8 @@ public class AsyncFetchTaskConfiguration {
      * Sets the contentMd5 of the source file, it also can be null or empty,
      * and returns the updated AsyncFetchTaskConfiguration object.
      *
+     * @param contentMd5
+     *            content md5.
      * @return  The {@link AsyncFetchTaskConfiguration} instance.
      */
     public AsyncFetchTaskConfiguration withContentMd5(String contentMd5) {
@@ -135,6 +155,9 @@ public class AsyncFetchTaskConfiguration {
 
     /**
      * Sets the callback after fetch object success.
+     *
+     * @param callback
+     *            call back.
      */
     public void setCallback(String callback) {
         this.callback = callback;
@@ -143,6 +166,8 @@ public class AsyncFetchTaskConfiguration {
     /**
      * Sets the callback after fetch object success, and returns the updated AsyncFetchTaskConfiguration object.
      *
+     * @param callback
+     *            call back.
      * @return  The {@link AsyncFetchTaskConfiguration} instance.
      */
     public AsyncFetchTaskConfiguration withCallback(String callback) {
@@ -162,6 +187,9 @@ public class AsyncFetchTaskConfiguration {
     /**
      * Sets the optional operation of ignore the task or not when the destination object already exists,
      * true means ignore the task and false means it allows object coving.
+     *
+     * @param ignoreSameKey
+     *            ignore same key.
      */
     public void setIgnoreSameKey(Boolean ignoreSameKey) {
         this.ignoreSameKey = ignoreSameKey;
@@ -172,6 +200,8 @@ public class AsyncFetchTaskConfiguration {
      * true means ignore the task and false means it allows object coving,
      * and returns the updated AsyncFetchTaskConfiguration object.
      *
+     * @param ignoreSameKey
+     *            ignore same key.
      * @return The {@link AsyncFetchTaskConfiguration} instance.
      */
     public AsyncFetchTaskConfiguration withIgnoreSameKey(Boolean ignoreSameKey) {
