@@ -158,7 +158,6 @@ public class VersionListing extends GenericResult {
      * bucket, the returned <code>VersionListing</code> will contain one entry in the
      * common prefixes list ("foo/bar/") and none of the keys beginning with
      * that common prefix will be included in the version summaries list.
-     * </p>
      *
      * @return The list of common prefixes included in this version listing.
      *         Returns an empty list if no common prefixes are found.
@@ -405,7 +404,7 @@ public class VersionListing extends GenericResult {
      * is complete, indicating if additional calls to OSS are needed to obtain
      * complete version listing results.
      *
-     * @return The value <code>true</code> if this version listing is <b>not complete<b>, indicating
+     * @return The value <code>true</code> if this version listing is <b>not complete</b>, indicating
      *         additional calls to OSS are needed to obtain
      *         complete version listing results. Returns the value <code>false</code> if otherwise.
      */

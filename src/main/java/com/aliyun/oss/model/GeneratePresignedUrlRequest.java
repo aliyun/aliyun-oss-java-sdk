@@ -307,8 +307,8 @@ public class GeneratePresignedUrlRequest {
     }
 
     /**
-     * @param key
-     * @param value
+     * @param key query parameter key
+     * @param value query parameter value
      */
     public void addQueryParameter(String key, String value) {
         this.queryParam.put(key, value);
@@ -356,8 +356,8 @@ public class GeneratePresignedUrlRequest {
     }
 
     /**
-     * @param key
-     * @param value
+     * @param key header key
+     * @param value header value
      */
     public void addHeader(String key, String value) {
         this.headers.put(key, value);
@@ -388,6 +388,9 @@ public class GeneratePresignedUrlRequest {
 
     /**
      * Sets traffic limit speed , its unit is bit/s
+     *
+     * @param trafficLimit
+     *            traffic limit
      */
     public void setTrafficLimit(int trafficLimit) {
         this.trafficLimit = trafficLimit;

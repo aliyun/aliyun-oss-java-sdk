@@ -77,22 +77,32 @@ public class OSSClient implements OSS {
     private OSSDownloadOperation downloadOperation;
     private LiveChannelOperation liveChannelOperation;
 
-    /**Gets the inner multipartOperation, used for subclass to do implement opreation.*/
+    /**Gets the inner multipartOperation, used for subclass to do implement opreation.
+     * @return  the {@link OSSMultipartOperation} instance.
+     */
     public OSSMultipartOperation getMultipartOperation() {
         return multipartOperation;
     }
 
-    /**Gets the inner objectOperation, used for subclass to do implement opreation.*/
+    /**Gets the inner objectOperation, used for subclass to do implement opreation.
+     * @return  the {@link OSSObjectOperation} instance.
+     */
     public OSSObjectOperation getObjectOperation() {
         return objectOperation;
     }
 
-    /**Sets the inner downloadOperation.*/
+    /**Sets the inner downloadOperation.
+     * @param downloadOperation
+     *            the {@link OSSDownloadOperation} instance.
+     */
     public void setDownloadOperation(OSSDownloadOperation downloadOperation) {
         this.downloadOperation = downloadOperation;
     }
 
-    /**Sets the inner uploadOperation.*/
+    /**Sets the inner uploadOperation.
+     * @param uploadOperation
+     *            the {@link OSSUploadOperation} instance.
+     */
     public void setUploadOperation(OSSUploadOperation uploadOperation) {
         this.uploadOperation = uploadOperation;
     }
@@ -515,9 +525,6 @@ public class OSSClient implements OSS {
         return bucketOperation.doesBucketExists(genericRequest);
     }
 
-    /**
-     * Deprecated. Please use {@link OSSClient#doesBucketExist(String)} instead.
-     */
     @Deprecated
     public boolean isBucketExist(String bucketName) throws OSSException, ClientException {
         return this.doesBucketExist(bucketName);

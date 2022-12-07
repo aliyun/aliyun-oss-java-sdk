@@ -35,6 +35,7 @@ public class RestoreJobParameters {
 
     /**
      * Gets the priority of restore the {@link StorageClass#ColdArchive} object job.
+     * @return The {@link RestoreTier} instance.
      */
     public RestoreTier getRestoreTier() {
         return restoreTier;
@@ -42,6 +43,9 @@ public class RestoreJobParameters {
 
     /**
      * Sets the priority of restore the {@link StorageClass#ColdArchive} object job.
+     *
+     * @param restoreTier
+     *            The {@link RestoreTier} instance.
      */
     public void setRestoreTier(RestoreTier restoreTier) {
         this.restoreTier = restoreTier;

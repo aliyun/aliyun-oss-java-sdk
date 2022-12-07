@@ -31,8 +31,8 @@ public class InventorySchedule implements Serializable {
     private String frequency;
 
     /**
-     * Returns the frequency for producing inventory results
-     * in {@link String} format.
+     * Gets the frequency for producing inventory results.
+     * @return The frequency in {@link String} format.
      */
     public String getFrequency() {
         return frequency;
@@ -40,6 +40,9 @@ public class InventorySchedule implements Serializable {
 
     /**
      * Sets the frequency for producing inventory results.
+     *
+     * @param frequency
+     *            The frequency in {@link String} format.
      */
     public void setFrequency(String frequency) {
         this.frequency = frequency;
@@ -47,6 +50,9 @@ public class InventorySchedule implements Serializable {
 
     /**
      * Sets the frequency for producing inventory results.
+     *
+     * @param frequency
+     *            The {@link InventoryFrequency} instance.
      */
     public void setFrequency(InventoryFrequency frequency) {
         setFrequency(frequency == null ? (String) null : frequency.toString());
@@ -55,6 +61,11 @@ public class InventorySchedule implements Serializable {
     /**
      * Sets the frequency for producing inventory results.
      * And returns the {@link InventorySchedule} object itself.
+     *
+     * @param frequency
+     *           The frequency in {@link String} format.
+     *
+     * @return  The {@link InventorySchedule} instance.
      */
     public InventorySchedule withFrequency(String frequency) {
         setFrequency(frequency);
@@ -64,6 +75,11 @@ public class InventorySchedule implements Serializable {
     /**
      * Sets the frequency for producing inventory results
      * And returns the {@link InventorySchedule} object itself.
+     *
+     * @param frequency
+     *            The {@link InventoryFrequency} instance.
+     *
+     * @return  The {@link InventorySchedule} instance.
      */
     public InventorySchedule withFrequency(InventoryFrequency frequency) {
         setFrequency(frequency);

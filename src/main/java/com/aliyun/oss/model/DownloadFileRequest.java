@@ -228,6 +228,9 @@ public class DownloadFileRequest extends GenericRequest {
 
     /**
      * Sets traffic limit speed, its unit is bit/s
+     *
+     * @param trafficLimit
+     *            traffic limit.
      */
     public void setTrafficLimit(int trafficLimit) {
         this.trafficLimit = trafficLimit;

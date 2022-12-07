@@ -37,9 +37,7 @@ public class HttpUtil {
     private static final String[] ENCODED_CHARACTERS_WITHOUT_SLASHES = new String[]{"+", "*", "%7E"};
     private static final String[] ENCODED_CHARACTERS_WITHOUT_SLASHES_REPLACEMENTS = new String[]{"%20", "%2A", "~"};
 
-    /**
-     * Encode a URL segment with special chars replaced.
-     */
+    // Encode a URL segment with special chars replaced.
     public static String urlEncode(String value, String encoding) {
         if (value == null) {
             return "";
@@ -80,9 +78,7 @@ public class HttpUtil {
         }
     }
 
-    /**
-     * Encode request parameters to URL segment.
-     */
+    // Encode request parameters to URL segment.
     public static String paramToQueryString(Map<String, String> params, String charset) {
 
         if (params == null || params.isEmpty()) {

@@ -34,13 +34,17 @@ public class SetBucketPolicyRequest extends GenericRequest {
     
     /**
      *Set policy JSON text, please refer to the policy writing rules of Aliyun
+     *
+     * @param policyText
+     *            policy JSON text.
      */
     public void setPolicyText(String policyText) {
         this.policyText = policyText;
     }
     
     /**
-     * Return the raw policy JSON text. If no plicy has been set，this method returns null.
+     * Get the raw policy JSON text.
+     * @return the policy text in JSON or null.
      */
     public String getPolicyText() {
         return policyText;

@@ -100,6 +100,8 @@ public class ListBucketsRequest extends WebServiceRequest {
      * 
      * @param prefix
      *            The prefix filter.
+     *
+     * @return  The {@link ListBucketsRequest} instance.
      */
     public ListBucketsRequest withPrefix(String prefix) {
         setPrefix(prefix);
@@ -131,6 +133,8 @@ public class ListBucketsRequest extends WebServiceRequest {
      * 
      * @param marker
      *            The marker filter.
+     *
+     * @return  The {@link ListBucketsRequest} instance.
      */
     public ListBucketsRequest withMarker(String marker) {
         setMarker(marker);
@@ -167,6 +171,8 @@ public class ListBucketsRequest extends WebServiceRequest {
      * 
      * @param maxKeys
      *            The max number of buckets.
+     *
+     * @return  The {@link ListBucketsRequest} instance.
      */
     public ListBucketsRequest withMaxKeys(Integer maxKeys) {
         setMaxKeys(maxKeys);
@@ -195,6 +201,11 @@ public class ListBucketsRequest extends WebServiceRequest {
 
     /**
      * Sets the bucket tag.
+     *
+     * @param tagKey
+     *            bucket tag key.
+     * @param tagValue
+     *            bucket tag value.
      */
     public void setTag(String tagKey, String tagValue) {
         this.tagKey = tagKey;
@@ -246,6 +257,8 @@ public class ListBucketsRequest extends WebServiceRequest {
      *
      * @param resouceGroupId
      *            The resouce group id.
+     *
+     * @return  The {@link ListBucketsRequest} instance.
      */
     public ListBucketsRequest withResourceGroupId(String resouceGroupId) {
         setResourceGroupId(resouceGroupId);

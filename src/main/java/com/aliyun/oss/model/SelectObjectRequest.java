@@ -52,7 +52,7 @@ public class SelectObjectRequest extends GetObjectRequest {
      * For text file, we can define line range for select operations.
      * Select will only scan data between startLine and endLine, that is [startLine, endLine]
      *
-     * * @param startLine
+     * @param startLine
      *            <p>
      *            Start line number
      *            </p>
@@ -149,6 +149,7 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     /**
      * Get the expression which used to filter objects
+     * @return The Base64-encoded SQL statement.
      */
     public String getExpression() {
         return expression;
@@ -156,6 +157,9 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     /**
      * Set the expression which used to filter objects
+     *
+     * @param expression
+     *            The Base64-encoded SQL statement.
      */
     public void setExpression(String expression) {
         this.expression = expression;
@@ -194,7 +198,7 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     /**
      * Get the expression type, we only support SQL now.
-     * @return {@link ExpressionType}
+     * @return The {@link ExpressionType}
      */
     public ExpressionType getExpressionType() {
         return expressionType;
@@ -202,7 +206,7 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     /**
      * Get the input serialization, we use this to parse data
-     * @return {@link InputSerialization}
+     * @return The {@link InputSerialization}
      */
     public InputSerialization getInputSerialization() {
         return inputSerialization;
@@ -210,6 +214,9 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     /**
      * Set the input serialization, we use this to parse data
+     *
+     * @param inputSerialization
+     *            The {@link InputSerialization} instance.
      */
     public void setInputSerialization(InputSerialization inputSerialization) {
         if (inputSerialization.getSelectContentFormat() == SelectContentFormat.CSV) {
@@ -227,7 +234,7 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     /**
      * Get the output serialization, it defines the output format
-     * @return {@link OutputSerialization}
+     * @return The {@link OutputSerialization} instance.
      */
     public OutputSerialization getOutputSerialization() {
         return outputSerialization;
@@ -235,6 +242,9 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     /**
      * Set the output serialization, it defines the output format
+     *
+     * @param outputSerialization
+     *            The {@link OutputSerialization} instance.
      */
     public void setOutputSerialization(OutputSerialization outputSerialization) {
         this.outputSerialization = outputSerialization;
