@@ -41,7 +41,8 @@ public class RestoreConfiguration {
 
 
     /**
-     * @return Gets the days that it will stay in retrievable state after restore done.
+     * Gets the days that it will stay in retrievable state after restore done.
+     * @return  the duration of the restored state
      */
     public Integer getDays() {
         return days;

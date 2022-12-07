@@ -124,8 +124,9 @@ public class DeleteVersionsRequest extends GenericRequest {
     }
 
     /**
-     * @return Returns the quiet element for this request. When true, only errors will be
+     * Gets the quiet element for this request. When true, only errors will be
      * returned in the service response.
+     * @return the flag for this request.
      */
     public boolean getQuiet() {
         return quiet;
@@ -136,7 +137,7 @@ public class DeleteVersionsRequest extends GenericRequest {
      * returned in the service response.
      *
      * @param quiet
-     *            Sets the quiet element for this request.
+     *            the flag for this request.
      *
      * @return this, to chain multiple calls together.
      */
@@ -172,7 +173,8 @@ public class DeleteVersionsRequest extends GenericRequest {
     }
 
     /**
-     * @return Returns the list of keys to delete from this bucket.
+     * Gets the list of keys to delete from this bucket.
+     * @return the list of keys.
      */
     public List<KeyVersion> getKeys() {
         return keys;

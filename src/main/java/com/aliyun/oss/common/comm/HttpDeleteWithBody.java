@@ -35,11 +35,7 @@ public class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
         setURI(uri);
     }
 
-    /**
-     * @param uri
-     *            url address
-     * @throws IllegalArgumentException if the uri is invalid.
-     */
+    // throws IllegalArgumentException if the uri is invalid.
     public HttpDeleteWithBody(final String uri) {
         super();
         setURI(URI.create(uri));

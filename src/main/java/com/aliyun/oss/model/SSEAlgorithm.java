@@ -48,9 +48,9 @@ public enum SSEAlgorithm {
      * or null if and only if the given algorithm is null.
      *
      * @param algorithm
-     *            encryption algorithm.
+     *            The encryption algorithm.
      *
-     * @return  The {@link SSEAlgorithm} instance.
+     * @return  The {@link SSEAlgorithm} enum.
      *
      * @throws IllegalArgumentException if the specified algorithm is not
      * supported.
@@ -66,7 +66,8 @@ public enum SSEAlgorithm {
     }
 
     /**
-     * @return Returns the default server side encryption algorithm, which is AES256.
+     * Gets the default server side encryption algorithm, which is AES256.
+     * @return The {@link SSEAlgorithm} enum.
      */
     public static SSEAlgorithm getDefault() {
         return AES256;

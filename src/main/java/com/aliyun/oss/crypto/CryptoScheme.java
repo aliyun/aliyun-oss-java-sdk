@@ -74,7 +74,7 @@ public abstract class CryptoScheme {
      *            a 16-byte counter.
      * @param blockDelta
      *            the number of blocks (16-byte) to increment
-     * @return Return the byte after increment.
+     * @return Return a new 16-byte counter.
      */
     public static byte[] incrementBlocks(byte[] counter, long blockDelta) {
         if (blockDelta == 0)

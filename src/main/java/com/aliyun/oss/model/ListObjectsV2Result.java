@@ -93,7 +93,8 @@ public class ListObjectsV2Result extends GenericResult {
     private String encodingType;
 
     /**
-     * @return Gets the list of object summaries describing the objects stored in the bucket.
+     * Gets the list of object summaries describing the objects stored in the bucket.
+     * @return The {@link OSSObjectSummary} instance.
      */
     public List<OSSObjectSummary> getObjectSummaries() {
         return objectSummaries;
@@ -137,7 +138,8 @@ public class ListObjectsV2Result extends GenericResult {
     }
 
     /**
-     * @return Gets the bucket name that containing the objects listing
+     * Gets the bucket name that containing the objects listing
+     * @return the bucket name
      */
     public String getBucketName() {
         return bucketName;

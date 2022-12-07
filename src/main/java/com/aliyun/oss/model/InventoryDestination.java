@@ -33,7 +33,7 @@ public class InventoryDestination implements Serializable {
     private InventoryOSSBucketDestination ossBucketDestination;
 
     /**
-     * Returns the {@link InventoryOSSBucketDestination} which contains OSS bucket destination information
+     * Gets the {@link InventoryOSSBucketDestination} which contains OSS bucket destination information
      * of where inventory results are published.
      *
      * @return  The {@link InventoryOSSBucketDestination} instance.

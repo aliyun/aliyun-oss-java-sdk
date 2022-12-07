@@ -145,21 +145,19 @@ public class VersionListing extends GenericResult {
      * applications to organize and browse their keys hierarchically,
      * similar to how a file system organizes files
      * into directories.
+     * <p>
      * For example, consider a bucket that contains the keys:
-     * </p>
      * <ul>
      *  <li>"foo/bar/baz"</li>
      *  <li>"foo/bar/bash"</li>
      *  <li>"foo/bar/bang"</li>
      *  <li>"foo/boo"</li>
      * </ul>
-     * <p>
      * If calling <code>listVersions</code> with a prefix value of "foo/" and a delimiter
      * value of "/" on this
      * bucket, the returned <code>VersionListing</code> will contain one entry in the
      * common prefixes list ("foo/bar/") and none of the keys beginning with
      * that common prefix will be included in the version summaries list.
-     * </p>
      *
      * @return The list of common prefixes included in this version listing.
      *         Returns an empty list if no common prefixes are found.

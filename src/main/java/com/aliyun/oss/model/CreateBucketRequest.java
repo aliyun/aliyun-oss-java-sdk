@@ -119,14 +119,16 @@ public class CreateBucketRequest extends GenericRequest {
     }
 
     /**
-     * @return Gets the bucket's data redundancy type.
+     * Gets the bucket's data redundancy type.
+     * @return The {@link DataRedundancyType} instance.
      */
     public DataRedundancyType getDataRedundancyType() {
         return dataRedundancyType;
     }
 
     /**
-     * @return  Gets hierarchical namespace status.
+     * Gets hierarchical namespace status.
+     * @return  The hierarchical namespace status.
      */
     public String getHnsStatus() {
         return hnsStatus;
@@ -177,16 +179,17 @@ public class CreateBucketRequest extends GenericRequest {
     }
 
     /**
-     * @return  Gets the resouce group id.
+     * Gets the resource group id.
+     * @return The id of resource group.
      */
     public String getResourceGroupId() {
         return resourceGroupId;
     }
 
     /**
-     * Sets the resouce group id.
+     * Sets the resource group id.
      * @param resourceGroupId
-     *              The id of resouce group.
+     *              The id of resource group.
      */
     public void setResourceGroupId(String resourceGroupId) {
         this.resourceGroupId = resourceGroupId;
@@ -195,7 +198,7 @@ public class CreateBucketRequest extends GenericRequest {
     /**
      * Creates the instance with resouce group id.
      * @param resourceGroupId
-     *              The id of resouce group.
+     *              The id of resource group.
      *
      * @return  The {@link CreateBucketRequest} instance.
      */

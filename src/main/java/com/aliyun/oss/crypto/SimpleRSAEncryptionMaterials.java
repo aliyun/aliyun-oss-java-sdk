@@ -192,7 +192,7 @@ public class SimpleRSAEncryptionMaterials implements EncryptionMaterials {
      * Gets a rsa private key from PKCS1 pem string.
      *
      * @param privateKeyStr
-     *            private key from PKCS1 pem string.
+     *            The private key string in PKCS1 foramt.
      *
      * @return a new rsa private key
      */
@@ -222,7 +222,7 @@ public class SimpleRSAEncryptionMaterials implements EncryptionMaterials {
      * Gets a rsa private key from PKCS8 pem string.
      *
      * @param privateKeyStr
-     *            private key from PKCS8 pem string.
+     *            The private key string in PKCS8 format .
      *
      * @return a new rsa private key
      */
@@ -248,7 +248,7 @@ public class SimpleRSAEncryptionMaterials implements EncryptionMaterials {
      * Gets a rsa public key from PKCS8 pem string.
      *
      * @param publicKeyStr
-     *            public key from PKCS8 pem string.
+     *            The public key string in PKCS8 format.
      *
      * @return a new rsa public key
      */

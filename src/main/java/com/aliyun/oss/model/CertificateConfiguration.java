@@ -33,7 +33,8 @@ public class CertificateConfiguration {
 
 
     /**
-     * @return Gets the certificate public key
+     * Gets the certificate public key.
+     * @return the certificate public key.
      */
     public String getPublicKey() { return publicKey; }
 
@@ -41,7 +42,7 @@ public class CertificateConfiguration {
      * Sets the certificate public key.
      *
      * @param publicKey
-     *            certificate public key.
+     *            the certificate public key.
      */
     public void setPublicKey(String publicKey) { this.publicKey = publicKey; }
 
@@ -59,7 +60,8 @@ public class CertificateConfiguration {
     }
 
     /**
-     * @return Gets the certificate private key.
+     * Gets the certificate private key.
+     * @return the certificate private key.
      */
     public String getPrivateKey() { return privateKey; }
 
@@ -67,7 +69,7 @@ public class CertificateConfiguration {
      * Sets the certificate private key.
      *
      * @param privateKey
-     *            certificate private key.
+     *            the certificate private key.
      */
     public void setPrivateKey(String privateKey) { this.privateKey = privateKey; }
 
@@ -75,7 +77,7 @@ public class CertificateConfiguration {
      * Sets the certificate private key and return the updated CertificateConfiguration object.
      *
      * @param privateKey
-     *            certificate private key.
+     *            the certificate private key.
      *
      * @return  The {@link CertificateConfiguration} instance.
      */
@@ -85,7 +87,8 @@ public class CertificateConfiguration {
     }
 
     /**
-     * @return  Gets the certificate ID.
+     * Gets the certificate ID.
+     * @return the certificate ID
      */
     public String getId() { return id; }
 
@@ -93,7 +96,7 @@ public class CertificateConfiguration {
      * Sets the certificate ID.
      *
      * @param id
-     *            certificate ID.
+     *            the certificate ID
      */
     public void setId(String id) { this.id = id; }
 
@@ -101,7 +104,7 @@ public class CertificateConfiguration {
      * Sets the certificate ID and return the updated CertificateConfiguration object.
      *
      * @param id
-     *            certificate ID.
+     *            the certificate ID
      *
      * @return  The {@link CertificateConfiguration} instance.
      */
@@ -135,7 +138,8 @@ public class CertificateConfiguration {
     }
 
     /**
-     * @return  Gets the previous certificate ID.
+     * Gets the previous certificate ID.
+     * @return the previous certificate ID.
      */
     public String getPreviousId() { return previousId; }
 
@@ -143,7 +147,7 @@ public class CertificateConfiguration {
      * Sets the previous certificate ID.
      *
      * @param previousId
-     *            previous certificate ID.
+     *           the previous certificate ID.
      */
     public void setPreviousId(String previousId) { this.previousId = previousId; }
 
@@ -151,7 +155,7 @@ public class CertificateConfiguration {
      * Sets the previous certificate ID and return the updated CertificateConfiguration object.
      *
      * @param previousId
-     *            previous certificate ID.
+     *           the previous certificate ID.
      *
      * @return  The {@link CertificateConfiguration} instance.
      */
