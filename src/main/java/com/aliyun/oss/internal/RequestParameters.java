@@ -76,7 +76,7 @@ public final class RequestParameters {
     public static final String SUBRESOURCE_DIR_DELETE = "x-oss-delete";
     public static final String SUBRESOURCE_RENAME = "x-oss-rename";
     public static final String SUBRESOURCE_DIR = "x-oss-dir";
-    public static final String SUBRESOURCE_RESOURCE_GROUP = "resourcegroup";
+    public static final String SUBRESOURCE_RESOURCE_GROUP = "resourceGroup";
 
     public static final String SUBRESOURCE_UDF = "udf";
     public static final String SUBRESOURCE_UDF_NAME = "udfName";
