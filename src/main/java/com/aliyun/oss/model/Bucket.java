@@ -180,7 +180,7 @@ public class Bucket extends GenericResult {
     /**
      * Sets the bucket location.
      * 
-     * @param location bucket location
+     * @param location the bucket location
      */
     public void setLocation(String location) {
         this.location = location;
@@ -198,7 +198,7 @@ public class Bucket extends GenericResult {
     /**
      * Sets the bucket's storage class
      * 
-     * @param storageClass storage class
+     * @param storageClass the storage class
      */
     public void setStorageClass(StorageClass storageClass) {
         this.storageClass = storageClass;
@@ -273,7 +273,7 @@ public class Bucket extends GenericResult {
      * set hierarchical namespace status.
      *
      * @param hnsStatus
-     *            hierarchical namespace status.
+     *            the hierarchical namespace status.
      */
     public void setHnsStatus(String hnsStatus) {
         this.hnsStatus = hnsStatus;
@@ -292,7 +292,7 @@ public class Bucket extends GenericResult {
      * set the id of resource group.
      *
      * @param resourceGroupId
-     *            resource group id.
+     *            the resource group id.
      */
     public void setResourceGroupId(String resourceGroupId) {
         this.resourceGroupId = resourceGroupId;

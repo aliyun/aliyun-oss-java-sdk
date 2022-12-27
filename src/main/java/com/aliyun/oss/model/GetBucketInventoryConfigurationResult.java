@@ -23,7 +23,7 @@ public class GetBucketInventoryConfigurationResult extends GenericResult {
     private InventoryConfiguration inventoryConfiguration;
 
     /**
-     * Returns the requested inventory configuration.
+     * Gets the requested inventory configuration.
      *
      * @return  The {@link InventoryConfiguration} instance.
      */

@@ -53,7 +53,7 @@ public class InventoryEncryption implements Serializable {
     }
 
     /**
-     * Returns the server-side kms encryption.
+     * Gets the server-side kms encryption.
      *
      * @return  The {@link InventoryServerSideEncryptionKMS} instance.
      */
@@ -89,7 +89,7 @@ public class InventoryEncryption implements Serializable {
     }
 
     /**
-     * Returns the server-side oss encryption.
+     * Gets the server-side oss encryption.
      *
      * @return  The {@link InventoryServerSideEncryptionOSS} instance.
      */

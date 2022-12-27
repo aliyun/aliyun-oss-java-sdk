@@ -547,7 +547,6 @@ public interface OSS {
      * <p>
      * A bucket's versioning configuration can be in one of three possible
      * states:
-     * </p>
      *  <ul>
      *      <li>{@link BucketVersioningConfiguration#OFF}</li>
      *      <li>{@link BucketVersioningConfiguration#ENABLED}</li>
@@ -599,7 +598,6 @@ public interface OSS {
      * <p>
      * A bucket's versioning configuration can be in one of three possible
      * states:
-     * </p>
      *  <ul>
      *      <li>{@link BucketVersioningConfiguration#OFF}</li>
      *      <li>{@link BucketVersioningConfiguration#ENABLED}</li>
@@ -652,7 +650,6 @@ public interface OSS {
      * <p>
      * A bucket's versioning configuration can be in one of three possible
      * states:
-     * </p>
      *  <ul>
      *      <li>{@link BucketVersioningConfiguration#OFF}
      *      <li>{@link BucketVersioningConfiguration#ENABLED}
@@ -966,22 +963,19 @@ public interface OSS {
      * </p>
      * <p>
      * For example, consider a bucket that contains the following keys:
-     * </p>
      * <ul>
      * 	<li>"foo/bar/baz"</li>
      * 	<li>"foo/bar/bash"</li>
      * 	<li>"foo/bar/bang"</li>
      * 	<li>"foo/boo"</li>
      * </ul>
-     * <p>
      * If calling <code>listVersions</code> with
      * a <code>prefix</code> value of "foo/" and a <code>delimiter</code> value of "/"
      * on this bucket, a <code>VersionListing</code> is returned that contains:
-     * </p>
-     * 	<ul>
-     * 		<li>all the versions for one key ("foo/boo")</li>
-     * 		<li>one entry in the common prefixes list ("foo/bar/")</li>
-     * 	</ul>
+     * <ul>
+     * <li>all the versions for one key ("foo/boo")</li>
+     * <li>one entry in the common prefixes list ("foo/bar/")</li>
+     * </ul>
      * <p>
      * To see deeper into the virtual hierarchy, make
      * another call to <code>listVersions</code> setting the prefix parameter to any
@@ -1100,18 +1094,15 @@ public interface OSS {
      * </p>
      * <p>
      * For example, consider a bucket that contains the following keys:
-     * </p>
      * <ul>
      *  <li>"foo/bar/baz"</li>
      *  <li>"foo/bar/bash"</li>
      *  <li>"foo/bar/bang"</li>
      *  <li>"foo/boo"</li>
      * </ul>
-     * <p>
      * If calling <code>listVersions</code> with
      * a <code>prefix</code> value of "foo/" and a <code>delimiter</code> value of "/"
      * on this bucket, a <code>VersionListing</code> is returned that contains:
-     * </p>
      *  <ul>
      *      <li>all the versions for one key ("foo/boo")</li>
      *      <li>one entry in the common prefixes list ("foo/bar/")</li>
@@ -1126,7 +1117,7 @@ public interface OSS {
      * For more information about enabling versioning for a bucket, see
      * {@link #setBucketVersioning(SetBucketVersioningRequest)}.
      * </p>
-     * 
+     *
      * @param listVersionsRequest
      *            The request object containing all options for listing the
      *            versions in a specified bucket.

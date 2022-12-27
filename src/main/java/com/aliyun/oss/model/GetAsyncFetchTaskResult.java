@@ -26,7 +26,8 @@ public class GetAsyncFetchTaskResult extends GenericResult {
     private AsyncFetchTaskConfiguration asyncFetchTaskConfiguration;
 
     /**
-     * @return Gets the async fetch task id.
+     * Gets the async fetch task id.
+     * @return the task id.
      */
     public String getTaskId() {
         return taskId;
@@ -36,7 +37,7 @@ public class GetAsyncFetchTaskResult extends GenericResult {
      * Sets the async fetch task id.
      *
      * @param taskId
-     *            task id
+     *            the task id.
      */
     public void setTaskId(String taskId) {
         this.taskId = taskId;
@@ -63,7 +64,8 @@ public class GetAsyncFetchTaskResult extends GenericResult {
     }
 
     /**
-     * @return Gets the errorMsg that received from server.
+     * Gets the errorMsg that received from server.
+     * @return the error message.
      */
     public String getErrorMsg() {
         return errorMsg;
@@ -73,7 +75,7 @@ public class GetAsyncFetchTaskResult extends GenericResult {
      * Sets the errorMsg received from server.
      *
      * @param errorMsg
-     *            error message
+     *           the error message.
      */
     public void setErrorMsg(String errorMsg) {
         this.errorMsg = errorMsg;

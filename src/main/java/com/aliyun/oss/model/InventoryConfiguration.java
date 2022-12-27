@@ -48,7 +48,8 @@ public class InventoryConfiguration implements Serializable {
     private InventorySchedule schedule;
 
     /**
-     * @return Returns the ID used to identify the inventory configuration.
+     * Gets the ID used to identify the inventory configuration.
+     * @return the inventory id.
      */
     public String getInventoryId() {
         return inventoryId;
@@ -58,7 +59,7 @@ public class InventoryConfiguration implements Serializable {
      * Sets the ID used to identify the inventory configuration.
      *
      * @param inventoryId
-     *            inventory id
+     *           the inventory id
      */
     public void setInventoryId(String inventoryId) {
         this.inventoryId = inventoryId;
@@ -68,7 +69,7 @@ public class InventoryConfiguration implements Serializable {
      * Sets the ID used to identify the inventory configuration.
      * And returns the {@link InventoryConfiguration} object itself.
      * @param inventoryId
-     *            inventory id.
+     *            the inventory id
      *
      * @return The {@link InventoryConfiguration} instance.
      */
@@ -78,7 +79,7 @@ public class InventoryConfiguration implements Serializable {
     }
 
     /**
-     * Returns the {@link InventoryDestination} that contains information
+     * Gets the {@link InventoryDestination} that contains information
      * about where to publish the inventory results.
      *
      * @return The {@link InventoryDestination} instance.
@@ -114,8 +115,9 @@ public class InventoryConfiguration implements Serializable {
     }
 
     /**
-     * @return Returns true if the inventory configuration is enabled or
-     * false if it is disabled.
+     * Gets the inventory configuration status, true if the inventory configuration is enabled
+     * or false if it is disabled
+     * @return the status of inventory configuration.
      */
     public Boolean isEnabled() {
         return isEnabled;
@@ -136,7 +138,7 @@ public class InventoryConfiguration implements Serializable {
      * And returns the {@link InventoryConfiguration} object itself.
      *
      * @param enabled
-     *            inventory configuration is enabled or disabled.
+     *            the status of the inventory.
      *
      * @return The {@link InventoryConfiguration} instance.
      */
@@ -146,7 +148,7 @@ public class InventoryConfiguration implements Serializable {
     }
 
     /**
-     * Returns the inventoryFilter used to describe a set of objects
+     * Gets the inventoryFilter used to describe a set of objects
      * to include in inventory results.
      *
      * @return The {@link InventoryFilter} instance.
@@ -182,7 +184,8 @@ public class InventoryConfiguration implements Serializable {
     }
 
     /**
-     * @return Returns which object version(s) to included in the inventory results.
+     * Gets which object version(s) to included in the inventory results.
+     * @return  the versioning information.
      */
     public String getIncludedObjectVersions() {
         return includedObjectVersions;
@@ -192,7 +195,7 @@ public class InventoryConfiguration implements Serializable {
      * Sets which object version(s) to included in the inventory results.
      *
      * @param includedObjectVersions
-     *            included object versions.
+     *             the versioning information.
      */
     public void setIncludedObjectVersions(String includedObjectVersions) {
         this.includedObjectVersions = includedObjectVersions;
@@ -237,7 +240,8 @@ public class InventoryConfiguration implements Serializable {
     }
 
     /**
-     * @return Returns the optional fields that are included in the inventory results.
+     * Gets the optional fields that are included in the inventory results.
+     * @return a list of optional fields
      */
     public List<String> getOptionalFields() {
         return optionalFields;
@@ -247,7 +251,7 @@ public class InventoryConfiguration implements Serializable {
      * Sets the optional fields that are included in the inventory results.
      *
      * @param optionalFields
-     *            optional fields.
+     *            a list of optional fields
      */
     public void setOptionalFields(List<String> optionalFields) {
         this.optionalFields = optionalFields;
@@ -258,7 +262,7 @@ public class InventoryConfiguration implements Serializable {
      * And returns the {@link InventoryConfiguration} object itself.
      *
      * @param optionalFields
-     *            optional fields.
+     *           a list of optional fields
      *
      * @return  The {@link InventoryConfiguration} instance.
      */
@@ -271,7 +275,7 @@ public class InventoryConfiguration implements Serializable {
      * Add a field to the list of optional fields that are included in the inventory results.
      *
      * @param optionalField
-     *            optional field.
+     *            the optional field.
      */
     public void addOptionalField(String optionalField) {
         if (optionalField == null) {
@@ -283,7 +287,7 @@ public class InventoryConfiguration implements Serializable {
     }
 
     /**
-     * Returns the schedule for generating inventory results.
+     * Gets the schedule for generating inventory results.
      *
      * @return  The {@link InventorySchedule} instance.
      */
@@ -302,7 +306,7 @@ public class InventoryConfiguration implements Serializable {
     }
 
     /**
-     * Returns the schedule for generating inventory results.
+     * Gets the schedule for generating inventory results.
      * And returns the {@link InventoryConfiguration} object itself.
      *
      * @param schedule

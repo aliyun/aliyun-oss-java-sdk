@@ -43,7 +43,8 @@ public class SetBucketPolicyRequest extends GenericRequest {
     }
     
     /**
-     * @return Return the raw policy JSON text. If no plicy has been set，this method returns null.
+     * Get the raw policy JSON text.
+     * @return the policy text in JSON or null.
      */
     public String getPolicyText() {
         return policyText;

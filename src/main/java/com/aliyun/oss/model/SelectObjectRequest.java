@@ -148,7 +148,8 @@ public class SelectObjectRequest extends GetObjectRequest {
     }
 
     /**
-     * @return Get the expression which used to filter objects
+     * Get the expression which used to filter objects
+     * @return The Base64-encoded SQL statement.
      */
     public String getExpression() {
         return expression;
@@ -158,7 +159,7 @@ public class SelectObjectRequest extends GetObjectRequest {
      * Set the expression which used to filter objects
      *
      * @param expression
-     *            expression which used to filter objects.
+     *            The Base64-encoded SQL statement.
      */
     public void setExpression(String expression) {
         this.expression = expression;
@@ -197,7 +198,7 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     /**
      * Get the expression type, we only support SQL now.
-     * @return {@link ExpressionType}
+     * @return The {@link ExpressionType}
      */
     public ExpressionType getExpressionType() {
         return expressionType;
@@ -205,7 +206,7 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     /**
      * Get the input serialization, we use this to parse data
-     * @return {@link InputSerialization}
+     * @return The {@link InputSerialization}
      */
     public InputSerialization getInputSerialization() {
         return inputSerialization;
@@ -233,7 +234,7 @@ public class SelectObjectRequest extends GetObjectRequest {
 
     /**
      * Get the output serialization, it defines the output format
-     * @return {@link OutputSerialization}
+     * @return The {@link OutputSerialization} instance.
      */
     public OutputSerialization getOutputSerialization() {
         return outputSerialization;

@@ -34,7 +34,8 @@ public class SetBucketInventoryConfigurationRequest extends GenericRequest imple
     }
 
     /**
-     * @return Returns the inventory configuration.
+     * Gets the inventory configuration.
+     * @return The {@link InventoryConfiguration} instance.
      */
     public InventoryConfiguration getInventoryConfiguration() {
         return inventoryConfiguration;

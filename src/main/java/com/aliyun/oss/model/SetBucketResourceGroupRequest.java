@@ -34,7 +34,7 @@ public class SetBucketResourceGroupRequest extends GenericRequest{
     }
 
 	/**
-     * Returns the id of resource group.
+     * Set the id of resource group.
      *
      * @param resourceGroupId
      *            id of resource group.
@@ -44,7 +44,7 @@ public class SetBucketResourceGroupRequest extends GenericRequest{
     }
 
 	/**
-     * Sets the id of resource group.
+     * Get the id of resource group.
      *
      * @return  resource group id.
     */

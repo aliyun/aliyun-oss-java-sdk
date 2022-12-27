@@ -116,7 +116,7 @@ public class AccessControlList extends GenericResult implements Serializable {
     /**
      * Sets the ACL.
      * 
-     * @param cannedACL canned acl
+     * @param cannedACL the canned acl
      */
     public void setCannedACL(CannedAccessControlList cannedACL) {
         this.cannedACL = cannedACL;

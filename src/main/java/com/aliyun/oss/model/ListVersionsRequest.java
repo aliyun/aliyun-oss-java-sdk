@@ -73,7 +73,6 @@ import com.aliyun.oss.internal.OSSConstants;
  * To see deeper into the virtual hierarchy, make another
  * call to <code>listVersions</code> setting the prefix parameter to any interesting
  * common prefix to list the individual keys under that prefix.
- * </p>
  * <p>
  * The total number of keys in a bucket doesn't substantially affect list performance,
  * nor does the presence or absence of additional request parameters.

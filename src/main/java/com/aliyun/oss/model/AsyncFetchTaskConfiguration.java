@@ -28,7 +28,8 @@ public class AsyncFetchTaskConfiguration {
     private Boolean ignoreSameKey;
 
     /**
-     * @return  Gets the source object url.
+     * Gets the source object url.
+     * @return the object url.
      */
     public String getUrl() {
         return url;
@@ -38,7 +39,7 @@ public class AsyncFetchTaskConfiguration {
      * Sets the source object url.
      *
      * @param url
-     *            object url.
+     *            the object url.
      */
     public void setUrl(String url) {
         this.url = url;
@@ -57,7 +58,8 @@ public class AsyncFetchTaskConfiguration {
     }
 
     /**
-     * @return  Gets the destination object name
+     * Gets the destination object name
+     * @return the object name.
      */
     public String getObjectName() {
         return objectName;
@@ -67,7 +69,7 @@ public class AsyncFetchTaskConfiguration {
      * Sets the destination object name
      *
      * @param objectName
-     *            object name.
+     *            the object name.
      */
     public void setObjectName(String objectName) {
         this.objectName = objectName;
@@ -86,7 +88,8 @@ public class AsyncFetchTaskConfiguration {
     }
 
     /**
-     * @return Gets the host that you specified.
+     * Gets the host that you specified.
+     * @return the host.
      */
     public String getHost() {
         return host;
@@ -96,7 +99,7 @@ public class AsyncFetchTaskConfiguration {
      * Sets the host that you want to fetch, and it also can be null or empty.
      *
      * @param host
-     *            host.
+     *            the host.
      */
     public void setHost(String host) {
         this.host = host;
@@ -115,7 +118,8 @@ public class AsyncFetchTaskConfiguration {
     }
 
     /**
-     * @return  Gets the contentMd5 that you specified.
+     * Gets the contentMd5 that you specified.
+     * @return the content md5.
      */
     public String getContentMd5() {
         return contentMd5;
@@ -125,7 +129,7 @@ public class AsyncFetchTaskConfiguration {
      * Sets the contentMd5 of the source object, it also can be null or empty.
      *
      * @param contentMd5
-     *            content md5.
+     *           the content md5.
      */
     public void setContentMd5(String contentMd5) {
         this.contentMd5 = contentMd5;
@@ -136,7 +140,7 @@ public class AsyncFetchTaskConfiguration {
      * and returns the updated AsyncFetchTaskConfiguration object.
      *
      * @param contentMd5
-     *            content md5.
+     *           the content md5.
      * @return  The {@link AsyncFetchTaskConfiguration} instance.
      */
     public AsyncFetchTaskConfiguration withContentMd5(String contentMd5) {

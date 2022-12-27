@@ -31,8 +31,8 @@ public class InventorySchedule implements Serializable {
     private String frequency;
 
     /**
-     * @return Returns the frequency for producing inventory results
-     * in {@link String} format.
+     * Gets the frequency for producing inventory results.
+     * @return The frequency in {@link String} format.
      */
     public String getFrequency() {
         return frequency;
@@ -42,7 +42,7 @@ public class InventorySchedule implements Serializable {
      * Sets the frequency for producing inventory results.
      *
      * @param frequency
-     *            frequency for producing inventory results.
+     *            The frequency in {@link String} format.
      */
     public void setFrequency(String frequency) {
         this.frequency = frequency;
@@ -63,7 +63,7 @@ public class InventorySchedule implements Serializable {
      * And returns the {@link InventorySchedule} object itself.
      *
      * @param frequency
-     *            frequency for producing inventory results.
+     *           The frequency in {@link String} format.
      *
      * @return  The {@link InventorySchedule} instance.
      */
