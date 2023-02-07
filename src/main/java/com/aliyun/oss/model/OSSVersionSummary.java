@@ -263,8 +263,8 @@ public class OSSVersionSummary implements Serializable {
      * the <code>isDeleteMarker</code> property to record if this is a delete marker or not.
      * 
      * @param isDeleteMarker
-     *            Specify <code>true<code> if this version summary represents a delete marker,
-     *            otherwise <code>false<code> if it is a regular version summary.
+     *            Specify <code>true</code> if this version summary represents a delete marker,
+     *            otherwise <code>false</code> if it is a regular version summary.
      */
     public void setIsDeleteMarker(boolean isDeleteMarker) {
         this.isDeleteMarker = isDeleteMarker;

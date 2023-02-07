@@ -30,7 +30,6 @@ package com.aliyun.oss.model;
  *  <li>{@link BucketVersioningConfiguration#ENABLED}
  *  <li>{@link BucketVersioningConfiguration#SUSPENDED}
  * </ul>
- * </p>
  * <p>
  * By default, new buckets are created in the
  * {@link BucketVersioningConfiguration#OFF} state. Once versioning is

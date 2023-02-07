@@ -109,6 +109,8 @@ public class ListObjectsRequest extends GenericRequest {
      * 
      * @param prefix
      *            The prefix filter.
+     *
+     * @return  The {@link ListObjectsRequest} instance.
      */
     public ListObjectsRequest withPrefix(String prefix) {
         setPrefix(prefix);
@@ -140,6 +142,8 @@ public class ListObjectsRequest extends GenericRequest {
      * 
      * @param marker
      *            marker
+     *
+     * @return  The {@link ListObjectsRequest} instance.
      */
     public ListObjectsRequest withMarker(String marker) {
         setMarker(marker);
@@ -175,6 +179,8 @@ public class ListObjectsRequest extends GenericRequest {
      * 
      * @param maxKeys
      *            The max objects to return.
+     *
+     * @return  The {@link ListObjectsRequest} instance.
      */
     public ListObjectsRequest withMaxKeys(Integer maxKeys) {
         setMaxKeys(maxKeys);
@@ -206,6 +212,8 @@ public class ListObjectsRequest extends GenericRequest {
      * 
      * @param delimiter
      *            the delimiter to set
+     *
+     * @return  The {@link ListObjectsRequest} instance.
      */
     public ListObjectsRequest withDelimiter(String delimiter) {
         setDelimiter(delimiter);
@@ -239,6 +247,8 @@ public class ListObjectsRequest extends GenericRequest {
      * @param encodingType
      *            The encoding type of object names in response body. Valid
      *            values are 'null' or 'url'.
+     *
+     * @return  The {@link ListObjectsRequest} instance.
      */
     public ListObjectsRequest withEncodingType(String encodingType) {
         setEncodingType(encodingType);

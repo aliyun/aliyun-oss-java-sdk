@@ -30,6 +30,9 @@ import javax.crypto.SecretKey;
 public class ContentCryptoMaterialRW extends ContentCryptoMaterial {
     /**
      * Sets the content crypto algorithm to the specified algorithm.
+     *
+     * @param cententCryptoAlgorithm
+     *            crypto algorithm.
      */
     public void setContentCryptoAlgorithm(String cententCryptoAlgorithm) {
         this.contentCryptoAlgorithm = cententCryptoAlgorithm;
@@ -37,6 +40,9 @@ public class ContentCryptoMaterialRW extends ContentCryptoMaterial {
 
     /**
      * Sets the content encryption key to the specified key.
+     *
+     * @param cek
+     *            secret key.
      */
     public void setCEK(SecretKey cek) {
         this.cek = cek;
@@ -44,6 +50,9 @@ public class ContentCryptoMaterialRW extends ContentCryptoMaterial {
 
     /**
      * Sets the content crypto cipher start counter to the specified counter.
+     *
+     * @param iv
+     *            initialize vector.
      */
     public void setIV(byte[] iv) {
         this.iv = iv;
@@ -51,6 +60,9 @@ public class ContentCryptoMaterialRW extends ContentCryptoMaterial {
 
     /**
      * Sets the encrypted content encryption key to the specified array.
+     *
+     * @param encryptedCEK
+     *            encrypted secret key.
      */
     public void setEncryptedCEK(byte[] encryptedCEK) {
         this.encryptedCEK = encryptedCEK.clone();
@@ -58,6 +70,9 @@ public class ContentCryptoMaterialRW extends ContentCryptoMaterial {
 
     /**
      * Sets the encrypted content crypto cipher start counter to the specified array.
+     *
+     * @param encryptedIV
+     *            encrypted initialize vector.
      */
     public void setEncryptedIV(byte[] encryptedIV) {
         this.encryptedIV = encryptedIV.clone();
@@ -65,6 +80,9 @@ public class ContentCryptoMaterialRW extends ContentCryptoMaterial {
 
     /**
      * Sets the key wrap algorithm to the specified algorithm.
+     *
+     * @param keyWrapAlgorithm
+     *            key wrap algorithm.
      */
     public void setKeyWrapAlgorithm(String keyWrapAlgorithm) {
         this.keyWrapAlgorithm = keyWrapAlgorithm;
@@ -72,6 +90,9 @@ public class ContentCryptoMaterialRW extends ContentCryptoMaterial {
 
     /**
      * Sets the description of the encryption materials
+     *
+     * @param matdesc
+     *            description of the encryption materials.
      */
     public void setMaterialsDescription(Map<String, String> matdesc) {
         this.matdesc = Collections.unmodifiableMap(new TreeMap<String, String>(matdesc));

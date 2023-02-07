@@ -41,7 +41,8 @@ public class InventoryOSSBucketDestination implements Serializable {
     private InventoryEncryption encryption;
 
     /**
-     * Returns the account ID that owns the destination bucket.
+     * Gets the account ID that owns the destination bucket.
+     * @return the account ID.
      */
     public String getAccountId() {
         return accountId;
@@ -49,6 +50,9 @@ public class InventoryOSSBucketDestination implements Serializable {
 
     /**
      * Sets the account ID that owns the destination bucket.
+     *
+     * @param accountId
+     *            the account ID that owns the destination bucket.
      */
     public void setAccountId(String accountId) {
         this.accountId = accountId;
@@ -57,6 +61,11 @@ public class InventoryOSSBucketDestination implements Serializable {
     /**
      * Returns the account ID that owns the destination bucket.
      * And returns the {@link InventoryOSSBucketDestination} object itself.
+     *
+     * @param accountId
+     *            the account ID that owns the destination bucket.
+     *
+     * @return  The {@link InventoryOSSBucketDestination} instance.
      */
     public InventoryOSSBucketDestination withAccountId(String accountId) {
         setAccountId(accountId);
@@ -65,6 +74,8 @@ public class InventoryOSSBucketDestination implements Serializable {
 
     /**
      * Sets the name of the role arn.
+     *
+     * @return  the name of role.
      */
     public String getRoleArn() {
         return roleArn;
@@ -72,6 +83,9 @@ public class InventoryOSSBucketDestination implements Serializable {
 
     /**
      * Sets the name of the role arn.
+     *
+     * @param roleArn
+     *            the name of role.
      */
     public void setRoleArn(String roleArn) {
         this.roleArn = roleArn;
@@ -80,6 +94,11 @@ public class InventoryOSSBucketDestination implements Serializable {
     /**
      * Sets the name of the role arn.
      * And returns the {@link InventoryOSSBucketDestination} object itself.
+     *
+     * @param roleArn
+     *            the name of role.
+     *
+     * @return  The {@link InventoryOSSBucketDestination} instance.
      */
     public InventoryOSSBucketDestination withRoleArn(String roleArn) {
         setRoleArn(roleArn);
@@ -88,6 +107,9 @@ public class InventoryOSSBucketDestination implements Serializable {
 
     /**
      * Sets the bucket where the inventory results will be published.
+     *
+     * @param bucket
+     *            the bucket name.
      */
     public void setBucket(String bucket) {
         this.bucket = bucket;
@@ -95,6 +117,7 @@ public class InventoryOSSBucketDestination implements Serializable {
 
     /**
      * Gets the bucket where the inventory results will be published.
+     * @return the bucket name.
      */
     public String getBucket() {
         return bucket;
@@ -103,6 +126,11 @@ public class InventoryOSSBucketDestination implements Serializable {
     /**
      * Sets the bucket where the inventory results will be published.
      * And returns the {@link InventoryOSSBucketDestination} object itself.
+     *
+     * @param bucket
+     *            the bucket name.
+     *
+     * @return  The {@link InventoryOSSBucketDestination} instance.
      */
     public InventoryOSSBucketDestination withBucket(String bucket) {
         setBucket(bucket);
@@ -110,7 +138,8 @@ public class InventoryOSSBucketDestination implements Serializable {
     }
 
     /**
-     * Returns the output format of the inventory results.
+     *Gets the output format of the inventory results.
+     *  @return the output format.
      */
     public String getFormat() {
         return format;
@@ -118,6 +147,9 @@ public class InventoryOSSBucketDestination implements Serializable {
 
     /**
      * Sets the output format of the inventory results.
+     *
+     * @param format
+     *            the output format.
      */
     public void setFormat(String format) {
         this.format = format;
@@ -125,6 +157,9 @@ public class InventoryOSSBucketDestination implements Serializable {
 
     /**
      * Sets the output format of the inventory results.
+     *
+     * @param format
+     *            The {@link InventoryFormat} instance.
      */
     public void setFormat(InventoryFormat format) {
         setFormat(format == null ? (String) null : format.toString());
@@ -133,6 +168,11 @@ public class InventoryOSSBucketDestination implements Serializable {
     /**
      * Sets the output format of the inventory results.
      * And returns the {@link InventoryOSSBucketDestination} object itself.
+     *
+     * @param format
+     *            the output format.
+     *
+     * @return  The {@link InventoryOSSBucketDestination} instance.
      */
     public InventoryOSSBucketDestination withFormat(String format) {
         setFormat(format);
@@ -142,6 +182,11 @@ public class InventoryOSSBucketDestination implements Serializable {
     /**
      * Sets the output format of the inventory results
      * And returns the {@link InventoryOSSBucketDestination} object itself.
+     *
+     * @param format
+     *            The {@link InventoryFormat} instance.
+     *
+     * @return  The {@link InventoryOSSBucketDestination} instance.
      */
     public InventoryOSSBucketDestination withFormat(InventoryFormat format) {
         setFormat(format);
@@ -149,7 +194,8 @@ public class InventoryOSSBucketDestination implements Serializable {
     }
 
     /**
-     * Returns the prefix that is prepended to all inventory results.
+     * Gets the prefix that is prepended to all inventory results.
+     * @return the prefix string.
      */
     public String getPrefix() {
         return prefix;
@@ -157,6 +203,9 @@ public class InventoryOSSBucketDestination implements Serializable {
 
     /**
      * Sets the prefix that is prepended to all inventory results.
+     *
+     * @param prefix
+     *            the prefix string.
      */
     public void setPrefix(String prefix) {
         this.prefix = prefix;
@@ -165,6 +214,11 @@ public class InventoryOSSBucketDestination implements Serializable {
     /**
      * Sets the prefix that is prepended to all inventory results
      * And returns the {@link InventoryOSSBucketDestination} object itself.
+     *
+     * @param prefix
+     *            the prefix string.
+     *
+     * @return  The {@link InventoryOSSBucketDestination} instance.
      */
     public InventoryOSSBucketDestination withPrefix(String prefix) {
         setPrefix(prefix);
@@ -173,6 +227,8 @@ public class InventoryOSSBucketDestination implements Serializable {
 
     /**
      * Gets the inventory contents encryption.
+     *
+     * @return  The {@link InventoryEncryption} instance.
      */
     public InventoryEncryption getEncryption() {
         return encryption;
@@ -180,6 +236,9 @@ public class InventoryOSSBucketDestination implements Serializable {
 
     /**
      * Sets the inventory contents encryption.
+     *
+     * @param encryption
+     *            The {@link InventoryEncryption} instance.
      */
     public void setEncryption(InventoryEncryption encryption) {
         this.encryption = encryption;
@@ -188,6 +247,11 @@ public class InventoryOSSBucketDestination implements Serializable {
     /**
      * Sets the inventory contents encryption.
      * And returns the {@link InventoryOSSBucketDestination} object itself.
+     *
+     * @param encryption
+     *            The {@link InventoryEncryption} instance.
+     *
+     * @return  The {@link InventoryOSSBucketDestination} instance.
      */
     public InventoryOSSBucketDestination withEncryption(InventoryEncryption encryption) {
         setEncryption(encryption);

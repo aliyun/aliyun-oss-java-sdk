@@ -70,6 +70,8 @@ public interface OSS {
 
     /**
      * Get the statistics of the connection pool.
+     *
+     * @return A status in string format.
      */
     public String getConnectionPoolStats();
 
@@ -81,6 +83,14 @@ public interface OSS {
      * 
      * @param bucketName
      *            bucket name
+     *
+     * @return A {@link Bucket} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public Bucket createBucket(String bucketName) throws OSSException, ClientException;
 
@@ -91,6 +101,14 @@ public interface OSS {
      * @param createBucketRequest
      *            instance of {@link CreateBucketRequest}, which at least has
      *            bucket name information.
+     *
+     * @return A {@link Bucket} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public Bucket createBucket(CreateBucketRequest createBucketRequest) throws OSSException, ClientException;
 
@@ -103,6 +121,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteBucket(String bucketName) throws OSSException, ClientException;
 
@@ -115,6 +139,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteBucket(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -123,6 +153,12 @@ public interface OSS {
      * 
      * @return A list of {@link Bucket} instances. If there's no buckets, the
      *         list will be empty (instead of null).
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public List<Bucket> listBuckets() throws OSSException, ClientException;
 
@@ -144,6 +180,12 @@ public interface OSS {
      *            Max bucket count to return. The valid value is from 1 to 1000,
      *            default is 100 if it's null.
      * @return The list of {@link Bucket} instances.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public BucketList listBuckets(String prefix, String marker, Integer maxKeys) throws OSSException, ClientException;
 
@@ -155,6 +197,12 @@ public interface OSS {
      *            the ListBucketsRequest instance that defines the criteria
      *            which could have requirements on prefix, marker, maxKeys.
      * @return The list of {@link Bucket} instances.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public BucketList listBuckets(ListBucketsRequest listBucketsRequest) throws OSSException, ClientException;
 
@@ -170,6 +218,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult setBucketAcl(String bucketName, CannedAccessControlList acl) throws OSSException, ClientException;
 
@@ -182,6 +236,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult setBucketAcl(SetBucketAclRequest setBucketAclRequest) throws OSSException, ClientException;
 
@@ -191,6 +251,12 @@ public interface OSS {
      * @param bucketName
      *            Bucket Name.
      * @return Access Control List(ACL) {@link AccessControlList}.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public AccessControlList getBucketAcl(String bucketName) throws OSSException, ClientException;
 
@@ -201,6 +267,12 @@ public interface OSS {
      *            {@link GenericRequest} instance that has the bucket name
      *            information.
      * @return {@link AccessControlList} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public AccessControlList getBucketAcl(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -211,6 +283,12 @@ public interface OSS {
      *            Bucket name.
      *
      * @return The {@link BucketMetadata} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public BucketMetadata getBucketMetadata(String bucketName) throws OSSException, ClientException;
 
@@ -222,6 +300,11 @@ public interface OSS {
      *
      * @return The {@link BucketMetadata} instance.
      *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public BucketMetadata getBucketMetadata(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -237,6 +320,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult setBucketReferer(String bucketName, BucketReferer referer) throws OSSException, ClientException;
 
@@ -250,6 +339,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult setBucketReferer(SetBucketRefererRequest setBucketRefererRequest) throws OSSException, ClientException;
 
@@ -262,6 +357,12 @@ public interface OSS {
      * @return {@link BucketReferer} instance. The BucketReferer object with
      *         empty referer information is returned if there's no http referer
      *         information.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public BucketReferer getBucketReferer(String bucketName) throws OSSException, ClientException;
 
@@ -272,6 +373,12 @@ public interface OSS {
      * @param genericRequest
      *            {@link GenericRequest} instance that has the bucket name.
      * @return bucket http referer {@link BucketReferer}。
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public BucketReferer getBucketReferer(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -284,6 +391,12 @@ public interface OSS {
      * @param bucketName
      *            Bucket name.
      * @return The datacenter name in string.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public String getBucketLocation(String bucketName) throws OSSException, ClientException;
 
@@ -294,6 +407,12 @@ public interface OSS {
      * @param genericRequest
      *            {@link GenericRequest} instance with bucket name information.
      * @return The datacenter name in string.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public String getBucketLocation(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -308,6 +427,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult setBucketTagging(String bucketName, Map<String, String> tags) throws OSSException, ClientException;
 
@@ -322,6 +447,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult setBucketTagging(String bucketName, TagSet tagSet) throws OSSException, ClientException;
 
@@ -335,6 +466,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult setBucketTagging(SetBucketTaggingRequest setBucketTaggingRequest) throws OSSException, ClientException;
 
@@ -345,6 +482,12 @@ public interface OSS {
      *            Bucket name
      * @return A {@link TagSet} instance. If there's no tag, the TagSet object
      *         with empty tag information is returned.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public TagSet getBucketTagging(String bucketName) throws OSSException, ClientException;
 
@@ -354,6 +497,12 @@ public interface OSS {
      * @param genericRequest
      *            {@link GenericRequest} instance that has the bucket name.
      * @return A {@link TagSet} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public TagSet getBucketTagging(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -365,6 +514,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteBucketTagging(String bucketName) throws OSSException, ClientException;
 
@@ -376,6 +531,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteBucketTagging(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -387,11 +548,10 @@ public interface OSS {
      * A bucket's versioning configuration can be in one of three possible
      * states:
      *  <ul>
-     *      <li>{@link BucketVersioningConfiguration#OFF}
-     *      <li>{@link BucketVersioningConfiguration#ENABLED}
-     *      <li>{@link BucketVersioningConfiguration#SUSPENDED}
+     *      <li>{@link BucketVersioningConfiguration#OFF}</li>
+     *      <li>{@link BucketVersioningConfiguration#ENABLED}</li>
+     *      <li>{@link BucketVersioningConfiguration#SUSPENDED}</li>
      *  </ul>
-     * </p>
      * <p>
      * By default, new buckets are in the
      * {@link BucketVersioningConfiguration#OFF off} state. Once versioning is
@@ -420,11 +580,11 @@ public interface OSS {
      *
      * @return The bucket versioning configuration for the specified bucket.
      *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
      *             If any errors are encountered in the client while making the
      *             request or handling the response.
-     * @throws OSSException
-     *             If any errors occurred in OSS while processing the request.
      *
      * @see OSS#setBucketVersioning(SetBucketVersioningRequest)
      * @see OSS#getBucketVersioning(GenericRequest)
@@ -439,11 +599,10 @@ public interface OSS {
      * A bucket's versioning configuration can be in one of three possible
      * states:
      *  <ul>
-     *      <li>{@link BucketVersioningConfiguration#OFF}
-     *      <li>{@link BucketVersioningConfiguration#ENABLED}
-     *      <li>{@link BucketVersioningConfiguration#SUSPENDED}
+     *      <li>{@link BucketVersioningConfiguration#OFF}</li>
+     *      <li>{@link BucketVersioningConfiguration#ENABLED}</li>
+     *      <li>{@link BucketVersioningConfiguration#SUSPENDED}</li>
      *  </ul>
-     * </p>
      * <p>
      * By default, new buckets are in the
      * {@link BucketVersioningConfiguration#OFF off} state. Once versioning is
@@ -472,11 +631,11 @@ public interface OSS {
      *
      * @return The bucket versioning configuration for the specified bucket.
      *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
      *             If any errors are encountered in the client while making the
      *             request or handling the response.
-     * @throws OSSException
-     *             If any errors occurred in OSS while processing the request.
      *
      * @see OSS#setBucketVersioning(SetBucketVersioningRequest)
      * @see OSS#getBucketVersioning(String)
@@ -496,7 +655,6 @@ public interface OSS {
      *      <li>{@link BucketVersioningConfiguration#ENABLED}
      *      <li>{@link BucketVersioningConfiguration#SUSPENDED}
      *  </ul>
-     * </p>
      * <p>
      * By default, new buckets are in the
      * {@link BucketVersioningConfiguration#OFF off} state. Once versioning is
@@ -536,11 +694,11 @@ public interface OSS {
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
      *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
      *             If any errors are encountered in the client while making the
      *             request or handling the response.
-     * @throws OSSException
-     *             If any errors occurred in OSS while processing the request.
      *
      * @see OSS#getBucketVersioning(String)
      */
@@ -553,6 +711,12 @@ public interface OSS {
      * @param bucketName
      *            Bucket name.
      * @return Returns true if the bucket exists and false if not.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public boolean doesBucketExist(String bucketName) throws OSSException, ClientException;
 
@@ -562,6 +726,12 @@ public interface OSS {
      * @param genericRequest
      *            {@link GenericRequest} instance that has the bucket name.
      * @return Returns true if the bucket exists and false if not.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public boolean doesBucketExist(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -571,6 +741,12 @@ public interface OSS {
      * @param bucketName
      *            Bucket name
      * @return {@link ObjectListing} instance that has all objects.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public ObjectListing listObjects(String bucketName) throws OSSException, ClientException;
 
@@ -583,8 +759,12 @@ public interface OSS {
      * @param prefix
      *            The prefix returned object must have.
      * @return A {@link ObjectListing} instance that has all objects
+     *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public ObjectListing listObjects(String bucketName, String prefix) throws OSSException, ClientException;
 
@@ -598,8 +778,12 @@ public interface OSS {
      *            maxKeys, delimiter, etc.
      * @return A {@link ObjectListing} instance that has the objects meet the
      *         criteria
+     *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public ObjectListing listObjects(ListObjectsRequest listObjectsRequest) throws OSSException, ClientException;
 
@@ -616,7 +800,10 @@ public interface OSS {
      *         criteria
      *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public ListObjectsV2Result listObjectsV2(ListObjectsV2Request listObjectsV2Request) throws OSSException, ClientException;
 
@@ -630,7 +817,10 @@ public interface OSS {
      * @return A {@link ListObjectsV2Result} instance that has the listing result.
      *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public ListObjectsV2Result listObjectsV2(String bucketName) throws OSSException, ClientException;
 
@@ -646,7 +836,10 @@ public interface OSS {
      * @return A {@link ListObjectsV2Result} instance that has the listing result.
      *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public ListObjectsV2Result listObjectsV2(String bucketName, String prefix) throws OSSException, ClientException;
 
@@ -675,7 +868,10 @@ public interface OSS {
      * @return A {@link ListObjectsV2Result} instance that has the listing result.
      *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public ListObjectsV2Result listObjectsV2(String bucketName, String prefix, String continuationToken,
             String startAfter, String delimiter, Integer maxKeys, String encodingType, boolean fetchOwner)
@@ -776,11 +972,10 @@ public interface OSS {
      * If calling <code>listVersions</code> with
      * a <code>prefix</code> value of "foo/" and a <code>delimiter</code> value of "/"
      * on this bucket, a <code>VersionListing</code> is returned that contains:
-     * 	<ul>
-     * 		<li>all the versions for one key ("foo/boo")</li>
-     * 		<li>one entry in the common prefixes list ("foo/bar/")</li>
-     * 	</ul>
-     * </p>
+     * <ul>
+     * <li>all the versions for one key ("foo/boo")</li>
+     * <li>one entry in the common prefixes list ("foo/bar/")</li>
+     * </ul>
      * <p>
      * To see deeper into the virtual hierarchy, make
      * another call to <code>listVersions</code> setting the prefix parameter to any
@@ -912,7 +1107,6 @@ public interface OSS {
      *      <li>all the versions for one key ("foo/boo")</li>
      *      <li>one entry in the common prefixes list ("foo/bar/")</li>
      *  </ul>
-     * </p>
      * <p>
      * To see deeper into the virtual hierarchy, make
      * another call to <code>listVersions</code> setting the prefix parameter to any
@@ -923,7 +1117,7 @@ public interface OSS {
      * For more information about enabling versioning for a bucket, see
      * {@link #setBucketVersioning(SetBucketVersioningRequest)}.
      * </p>
-     * 
+     *
      * @param listVersionsRequest
      *            The request object containing all options for listing the
      *            versions in a specified bucket.
@@ -956,6 +1150,14 @@ public interface OSS {
      * @param input
      *            {@link InputStream} instance to write from. The must be
      *            readable.
+     *
+     * @return A {@link PutObjectResult} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public PutObjectResult putObject(String bucketName, String key, InputStream input)
             throws OSSException, ClientException;
@@ -975,6 +1177,14 @@ public interface OSS {
      *            The {@link ObjectMetadata} instance. If it does not specify
      *            the Content-Length information, the data is encoded by chunked
      *            tranfer encoding.
+     *
+     * @return A {@link PutObjectResult} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public PutObjectResult putObject(String bucketName, String key, InputStream input, ObjectMetadata metadata)
             throws OSSException, ClientException;
@@ -993,6 +1203,14 @@ public interface OSS {
      *            The {@link ObjectMetadata} instance. If it does not specify
      *            the Content-Length information, the data is encoded by chunked
      *            tranfer encoding.
+     *
+     * @return A {@link PutObjectResult} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public PutObjectResult putObject(String bucketName, String key, File file, ObjectMetadata metadata)
             throws OSSException, ClientException;
@@ -1006,6 +1224,14 @@ public interface OSS {
      *            Object key.
      * @param file
      *            File object to read from.
+     *
+     * @return A {@link PutObjectResult} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public PutObjectResult putObject(String bucketName, String key, File file) throws OSSException, ClientException;
 
@@ -1016,8 +1242,12 @@ public interface OSS {
      *            The {@link PutObjectRequest} instance that has bucket name,
      *            object key, metadata information.
      * @return A {@link PutObjectResult} instance.
+     *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public PutObjectResult putObject(PutObjectRequest putObjectRequest) throws OSSException, ClientException;
 
@@ -1035,6 +1265,12 @@ public interface OSS {
      *            Request headers, including standard or customized http headers
      *            documented by PutObject REST API.
      * @return A {@link PutObjectResult} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public PutObjectResult putObject(URL signedUrl, String filePath, Map<String, String> requestHeaders)
             throws OSSException, ClientException;
@@ -1055,6 +1291,12 @@ public interface OSS {
      * @param useChunkEncoding
      *            The flag of using chunked transfer encoding.
      * @return A {@link PutObjectResult} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public PutObjectResult putObject(URL signedUrl, String filePath, Map<String, String> requestHeaders,
             boolean useChunkEncoding) throws OSSException, ClientException;
@@ -1075,6 +1317,12 @@ public interface OSS {
      *            Request headers,including standard or customized http headers
      *            documented by PutObject REST API.
      * @return A {@link PutObjectResult} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public PutObjectResult putObject(URL signedUrl, InputStream requestContent, long contentLength,
             Map<String, String> requestHeaders) throws OSSException, ClientException;
@@ -1098,6 +1346,12 @@ public interface OSS {
      * @param useChunkEncoding
      *            The flag of using chunked transfer encoding.
      * @return A {@link PutObjectResult} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public PutObjectResult putObject(URL signedUrl, InputStream requestContent, long contentLength,
             Map<String, String> requestHeaders, boolean useChunkEncoding) throws OSSException, ClientException;
@@ -1115,8 +1369,12 @@ public interface OSS {
      * @param destinationKey
      *            Target object's key.
      * @return A {@link CopyObjectResult} instance.
+     *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public CopyObjectResult copyObject(String sourceBucketName, String sourceKey, String destinationBucketName,
             String destinationKey) throws OSSException, ClientException;
@@ -1129,8 +1387,12 @@ public interface OSS {
      *            A {@link CopyObjectRequest} instance that specifies source
      *            file, source bucket and target file, target bucket。
      * @return A {@link CopyObjectResult} instance.
+     *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public CopyObjectResult copyObject(CopyObjectRequest copyObjectRequest) throws OSSException, ClientException;
 
@@ -1143,6 +1405,12 @@ public interface OSS {
      *            Object Key.
      * @return A {@link OSSObject} instance. The caller is responsible to close
      *         the connection after usage.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public OSSObject getObject(String bucketName, String key) throws OSSException, ClientException;
 
@@ -1155,6 +1423,14 @@ public interface OSS {
      *            name and object key.
      * @param file
      *            Target file instance to download as.
+     *
+     * @return A {@link ObjectMetadata} instance of the bucket file meta.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public ObjectMetadata getObject(GetObjectRequest getObjectRequest, File file) throws OSSException, ClientException;
 
@@ -1167,6 +1443,12 @@ public interface OSS {
      *            name and the object key.
      * @return A {@link OSSObject} instance of the bucket file. The caller is
      *         responsible to close the connection after usage.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public OSSObject getObject(GetObjectRequest getObjectRequest) throws OSSException, ClientException;
 
@@ -1182,8 +1464,12 @@ public interface OSS {
      *              output serialization
      * @return A {@link OSSObject} instance will be returned. The caller is
      *          responsible to close the connection after usage.
+     *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public OSSObject selectObject(SelectObjectRequest selectObjectRequest) throws OSSException, ClientException;
 
@@ -1197,6 +1483,12 @@ public interface OSS {
      *            headers.
      * @return A{@link OSSObject} instance.The caller is responsible to close
      *         the connection after usage.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public OSSObject getObject(URL signedUrl, Map<String, String> requestHeaders) throws OSSException, ClientException;
 
@@ -1212,6 +1504,12 @@ public interface OSS {
      * @param key
      *            Object key.
      * @return A {@link SimplifiedObjectMeta} instance of the object.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public SimplifiedObjectMeta getSimplifiedObjectMeta(String bucketName, String key)
             throws OSSException, ClientException;
@@ -1226,6 +1524,12 @@ public interface OSS {
      * @param genericRequest
      *            Generic request which specifies the bucket name and object key
      * @return The {@link SimplifiedObjectMeta} instance of specified file.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public SimplifiedObjectMeta getSimplifiedObjectMeta(GenericRequest genericRequest)
             throws OSSException, ClientException;
@@ -1239,6 +1543,12 @@ public interface OSS {
      *            Object key.
      *
      * @return The {@link ObjectMetadata} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public ObjectMetadata getObjectMetadata(String bucketName, String key) throws OSSException, ClientException;
 
@@ -1251,6 +1561,11 @@ public interface OSS {
      *
      * @return The {@link ObjectMetadata} instance.
      *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public ObjectMetadata getObjectMetadata(GenericRequest genericRequest) throws OSSException, ClientException;
     
@@ -1261,6 +1576,12 @@ public interface OSS {
      *            {@link CreateSelectObjectMetadataRequest} create select object metadata request.
      *
      * @return The {@link SelectObjectMetadata} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public SelectObjectMetadata createSelectObjectMetadata(CreateSelectObjectMetadataRequest createSelectObjectMetadataRequest) throws OSSException, ClientException;
 
@@ -1273,6 +1594,12 @@ public interface OSS {
      *            Object key.
      *
      * @return The {@link ObjectMetadata} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public ObjectMetadata headObject(String bucketName, String key) throws OSSException, ClientException;
 
@@ -1283,6 +1610,12 @@ public interface OSS {
      *            A {@link HeadObjectRequest} instance which specifies the
      *            bucket name and object key, and some constraint information can be set.
      * @return The {@link ObjectMetadata} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public ObjectMetadata headObject(HeadObjectRequest headObjectRequest) throws OSSException, ClientException;
 
@@ -1295,6 +1628,12 @@ public interface OSS {
      *            bucket name, appendable object key, the file or the
      *            InputStream object to append.
      * @return A {@link AppendObjectResult} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public AppendObjectResult appendObject(AppendObjectRequest appendObjectRequest)
             throws OSSException, ClientException;
@@ -1309,6 +1648,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteObject(String bucketName, String key) throws OSSException, ClientException;
 
@@ -1322,6 +1667,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteObject(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -1335,6 +1686,12 @@ public interface OSS {
      * @return A {@link DeleteObjectsResult} instance which specifies each
      *         file's result in normal mode or only failed deletions in quite
      *         mode. By default it's normal mode.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public DeleteObjectsResult deleteObjects(DeleteObjectsRequest deleteObjectsRequest)
             throws OSSException, ClientException;
@@ -1373,11 +1730,11 @@ public interface OSS {
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
      *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
      *             If any errors are encountered in the client while making the
      *             request or handling the response.
-     * @throws OSSException
-     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult deleteVersion(String bucketName, String key, String versionId) throws OSSException, ClientException;
 
@@ -1412,11 +1769,11 @@ public interface OSS {
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
      *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
      *             If any errors are encountered in the client while making the
      *             request or handling the response.
-     * @throws OSSException
-     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult deleteVersion(DeleteVersionRequest deleteVersionRequest) throws OSSException, ClientException;
     
@@ -1430,6 +1787,12 @@ public interface OSS {
      * @return A {@link DeleteVersionsResult} instance which specifies each
      *         file's result in normal mode or only failed deletions in quite
      *         mode. By default it's normal mode.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public DeleteVersionsResult deleteVersions(DeleteVersionsRequest deleteVersionsRequest)
             throws OSSException, ClientException;
@@ -1444,6 +1807,12 @@ public interface OSS {
      * @param key
      *            Object Key.
      * @return True if exists; false if not.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public boolean doesObjectExist(String bucketName, String key) throws OSSException, ClientException;
 
@@ -1456,6 +1825,12 @@ public interface OSS {
      *            A {@link GenericRequest} instance which specifies the bucket
      *            and object key.
      * @return True if exists; false if not.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public boolean doesObjectExist(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -1474,6 +1849,12 @@ public interface OSS {
      *            from source to OSS when the file exists in source but is not
      *            in OSS yet.
      * @return True if the file exists; false if not.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public boolean doesObjectExist(String bucketName, String key, boolean isOnlyInOSS);
 
@@ -1491,6 +1872,12 @@ public interface OSS {
      *            from source to OSS when the file exists in source but is not
      *            in OSS yet.        
      * @return True if exists; false if not.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public boolean doesObjectExist(GenericRequest genericRequest, boolean isOnlyInOSS) throws OSSException, ClientException;
 
@@ -1501,6 +1888,12 @@ public interface OSS {
      *            A {@link HeadObjectRequest} instance which specifies the
      *            bucket name and object key. Constraint information is ignored.
      * @return True if the file exists; false if not.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     @Deprecated
     public boolean doesObjectExist(HeadObjectRequest headObjectRequest) throws OSSException, ClientException;
@@ -1518,6 +1911,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult setObjectAcl(String bucketName, String key, CannedAccessControlList cannedAcl)
             throws OSSException, ClientException;
@@ -1531,6 +1930,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult setObjectAcl(SetObjectAclRequest setObjectAclRequest) throws OSSException, ClientException;
 
@@ -1542,6 +1947,12 @@ public interface OSS {
      * @param key
      *            Object Key.
      * @return The {@link ObjectAcl} instance of the object.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public ObjectAcl getObjectAcl(String bucketName, String key) throws OSSException, ClientException;
 
@@ -1551,6 +1962,14 @@ public interface OSS {
      * @param genericRequest
      *            A {@link GenericRequest} instance which specifies the bucket
      *            name and object key.
+     *
+     * @return A {@link ObjectAcl} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public ObjectAcl getObjectAcl(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -1564,6 +1983,12 @@ public interface OSS {
      * @param key
      *            Object Key.
      * @return A {@link RestoreObjectResult} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public RestoreObjectResult restoreObject(String bucketName, String key) throws OSSException, ClientException;
 
@@ -1576,6 +2001,12 @@ public interface OSS {
      *            A {@link GenericRequest} instance that specifies the bucket
      *            name and object key.
      * @return A {@link RestoreObjectResult} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public RestoreObjectResult restoreObject(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -1592,6 +2023,12 @@ public interface OSS {
      * @param restoreConfiguration
      *            A {@link RestoreConfiguration} instance that specifies the restore configuration.
      * @return A {@link RestoreObjectResult} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public RestoreObjectResult restoreObject(String bucketName, String key, RestoreConfiguration restoreConfiguration)
             throws OSSException, ClientException;
@@ -1606,11 +2043,14 @@ public interface OSS {
      *            A {@link RestoreObjectRequest} instance that specifies the bucket
      *            name, object key and restore configuration.
      * @return A {@link RestoreObjectResult} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public RestoreObjectResult restoreObject(RestoreObjectRequest restoreObjectRequest) throws OSSException, ClientException;
-
-
-
 
     /**
      * Sets the tags on the OSS object.
@@ -1625,6 +2065,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult setObjectTagging(String bucketName, String key, Map<String, String> tags) throws OSSException, ClientException;
 
@@ -1641,6 +2087,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult setObjectTagging(String bucketName, String key, TagSet tagSet) throws OSSException, ClientException;
 
@@ -1653,6 +2105,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult setObjectTagging(SetObjectTaggingRequest setObjectTaggingRequest) throws OSSException, ClientException;
 
@@ -1665,6 +2123,12 @@ public interface OSS {
      *            Object name.
      * @return A {@link TagSet} instance. If there's no tag, the TagSet object
      *         with empty tag information is returned.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public TagSet getObjectTagging(String bucketName, String key) throws OSSException, ClientException;
 
@@ -1675,6 +2139,12 @@ public interface OSS {
      *            A {@link GenericRequest} instance that specifies the bucket
      *            name and object name.
      * @return A {@link TagSet} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public TagSet getObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -1688,6 +2158,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteObjectTagging(String bucketName, String key) throws OSSException, ClientException;
 
@@ -1700,6 +2176,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteObjectTagging(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -1715,7 +2197,10 @@ public interface OSS {
      *            URL's expiration time.
      * @return A signed URL that could be used for accessing the
      *         {@link OSSObject} object.
+     *
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public URL generatePresignedUrl(String bucketName, String key, Date expiration) throws ClientException;
 
@@ -1734,7 +2219,10 @@ public interface OSS {
      *            {@link HttpMethod#PUT} are supported.
      * @return A signed URL that could be used for accessing the
      *         {@link OSSObject} object.
+     *
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public URL generatePresignedUrl(String bucketName, String key, Date expiration, HttpMethod method)
             throws ClientException;
@@ -1749,7 +2237,10 @@ public interface OSS {
      *            the MD5 signature of the content, etc.
      * @return A signed URL that could be used for accessing the
      *         {@link OSSObject} object.
+     *
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public URL generatePresignedUrl(GeneratePresignedUrlRequest request) throws ClientException;
 
@@ -1764,7 +2255,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult putBucketImage(PutBucketImageRequest request) throws OSSException, ClientException;
 
@@ -1775,8 +2269,12 @@ public interface OSS {
      *            The bucket name
      * @return A {@link GetBucketImageResult} instance which has attributes of
      *         image processing
+     *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public GetBucketImageResult getBucketImage(String bucketName) throws OSSException, ClientException;
 
@@ -1789,8 +2287,12 @@ public interface OSS {
      *            The origin request.
      * @return A {@link GetBucketImageResult} which has the attributes of image
      *         processing.
+     *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public GetBucketImageResult getBucketImage(String bucketName, GenericRequest genericRequest)
             throws OSSException, ClientException;
@@ -1805,7 +2307,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteBucketImage(String bucketName) throws OSSException, ClientException;
 
@@ -1821,7 +2326,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteBucketImage(String bucketName, GenericRequest genericRequest)
             throws OSSException, ClientException;
@@ -1838,7 +2346,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteImageStyle(String bucketName, String styleName) throws OSSException, ClientException;
 
@@ -1856,7 +2367,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteImageStyle(String bucketName, String styleName, GenericRequest genericRequest)
             throws OSSException, ClientException;
@@ -1871,8 +2385,12 @@ public interface OSS {
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
      *
+     *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult putImageStyle(PutImageStyleRequest putImageStyleRequest) throws OSSException, ClientException;
 
@@ -1885,8 +2403,12 @@ public interface OSS {
      *            Style name.
      * @return A {@link GetImageStyleResult} instance which has the style
      *         information if successful or error code if failed.
+     *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public GetImageStyleResult getImageStyle(String bucketName, String styleName) throws OSSException, ClientException;
 
@@ -1901,8 +2423,12 @@ public interface OSS {
      *            The origin request.
      * @return A {@link GetImageStyleResult} instance which has the style
      *         information if successful or error code if failed.
+     *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public GetImageStyleResult getImageStyle(String bucketName, String styleName, GenericRequest genericRequest)
             throws OSSException, ClientException;
@@ -1914,8 +2440,12 @@ public interface OSS {
      *            Bucket name.
      * @return A {@link List} of all styles of the Bucket. If there's no style,
      *         it will be an empty list.
+     *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public List<Style> listImageStyle(String bucketName) throws OSSException, ClientException;
 
@@ -1928,10 +2458,12 @@ public interface OSS {
      *            The origin request.
      * @return A {@link List} of all styles of the Bucket. If there's no style,
      *         it will be an empty list.
+     *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public List<Style> listImageStyle(String bucketName, GenericRequest genericRequest)
             throws OSSException, ClientException;
@@ -1948,10 +2480,12 @@ public interface OSS {
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
      *
+     *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult setBucketProcess(SetBucketProcessRequest setBucketProcessRequest) throws OSSException, ClientException;
 
@@ -1962,10 +2496,12 @@ public interface OSS {
      *            Bucket name.
      * @return A {@link BucketProcess} which contains the image accessing
      *         configurations if succeeds.
+     *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public BucketProcess getBucketProcess(String bucketName) throws OSSException, ClientException;
 
@@ -1976,10 +2512,12 @@ public interface OSS {
      *            A {@link GenericRequest} instance that has the bucket name.
      * @return A {@link BucketProcess} which contains the image accessing
      *         configurations if succeeds.
+     *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public BucketProcess getBucketProcess(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -1999,7 +2537,12 @@ public interface OSS {
      *            specifies the bucket name, object key and metadata.
      * @return a {@link InitiateMultipartUploadResult} instance which has the
      *         global unique id if succeeds.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public InitiateMultipartUploadResult initiateMultipartUpload(InitiateMultipartUploadRequest request)
             throws OSSException, ClientException;
@@ -2026,7 +2569,12 @@ public interface OSS {
      *         Upon a successful call, it may has nextKeyMarker and
      *         nextUploadIdMarker for the next call in case OSS has remaining
      *         uploads not returned.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public MultipartUploadListing listMultipartUploads(ListMultipartUploadsRequest request)
             throws OSSException, ClientException;
@@ -2037,7 +2585,12 @@ public interface OSS {
      * @param request
      *            A {@link ListPartsRequest} instance.
      * @return PartListing
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public PartListing listParts(ListPartsRequest request) throws OSSException, ClientException;
 
@@ -2050,7 +2603,12 @@ public interface OSS {
      *            digest and chunked transfer encoding flag.
      * @return UploadPartResult A {@link UploadPartResult} instance to indicate
      *         the upload result.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public UploadPartResult uploadPart(UploadPartRequest request) throws OSSException, ClientException;
 
@@ -2066,8 +2624,12 @@ public interface OSS {
      *            non-match, etc.
      * @return A {@link UploadPartCopyResult} instance which has the part number
      *         and ETag upon a successful upload.
+     *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public UploadPartCopyResult uploadPartCopy(UploadPartCopyRequest request) throws OSSException, ClientException;
 
@@ -2083,7 +2645,11 @@ public interface OSS {
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
      *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult abortMultipartUpload(AbortMultipartUploadRequest request) throws OSSException, ClientException;
 
@@ -2107,7 +2673,12 @@ public interface OSS {
      *            specifies all parameters to complete multiple part upload.
      * @return A {@link CompleteMultipartUploadResult} instance which has the
      *         key, ETag, url of the final object.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public CompleteMultipartUploadResult completeMultipartUpload(CompleteMultipartUploadRequest request)
             throws OSSException, ClientException;
@@ -2127,7 +2698,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult setBucketCORS(SetBucketCORSRequest request) throws OSSException, ClientException;
 
@@ -2137,8 +2711,12 @@ public interface OSS {
      * @param bucketName
      *            Bucket name.
      * @return A list of {@link CORSRule} under the bucket.
+     *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public List<CORSRule> getBucketCORSRules(String bucketName) throws OSSException, ClientException;
 
@@ -2149,8 +2727,12 @@ public interface OSS {
      *            A {@link GenericRequest} instance that specifies the bucket
      *            name.
      * @return A list of {@link CORSRule} under the bucket.
+     *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public List<CORSRule> getBucketCORSRules(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -2161,8 +2743,12 @@ public interface OSS {
      *            A {@link GenericRequest} instance that specifies the bucket
      *            name.
      * @return A {@link CORSConfiguration} instance which has the CORS configuration under the bucket.
+     *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public CORSConfiguration getBucketCORS(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -2176,7 +2762,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteBucketCORSRules(String bucketName) throws OSSException, ClientException;
 
@@ -2191,12 +2780,19 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteBucketCORSRules(GenericRequest genericRequest) throws OSSException, ClientException;
 
     /**
      * Deprecated method.
+     * @param request
+     *            The {@link OptionsRequest} instance that specifies the bucket
+     *            name.
+     * @return A {@link ResponseMessage} instance contains some response information.
      */
     @Deprecated
     public ResponseMessage optionsObject(OptionsRequest request) throws OSSException, ClientException;
@@ -2215,6 +2811,12 @@ public interface OSS {
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult setBucketLogging(SetBucketLoggingRequest request) throws OSSException, ClientException;
 
@@ -2225,8 +2827,12 @@ public interface OSS {
      *            The bucket name.
      * @return A {@link BucketLoggingResult} instance which contains the logging
      *         settings such as target bucket for data, logging file prefix.
+     *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public BucketLoggingResult getBucketLogging(String bucketName) throws OSSException, ClientException;
 
@@ -2238,8 +2844,12 @@ public interface OSS {
      *            name.
      * @return A {@link BucketLoggingResult} instance which contains the logging
      *         settings such as target bucket for data, logging file prefix.
+     *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public BucketLoggingResult getBucketLogging(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -2253,7 +2863,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteBucketLogging(String bucketName) throws OSSException, ClientException;
 
@@ -2268,7 +2881,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteBucketLogging(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -2285,7 +2901,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult setBucketWebsite(SetBucketWebsiteRequest setBucketWebSiteRequest) throws OSSException, ClientException;
 
@@ -2295,8 +2914,12 @@ public interface OSS {
      * @param bucketName
      *            The bucket name.
      * @return A {@link BucketWebsiteResult} instance
+     *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public BucketWebsiteResult getBucketWebsite(String bucketName) throws OSSException, ClientException;
 
@@ -2307,8 +2930,12 @@ public interface OSS {
      *            The {@link GenericRequest} instance which specifies the bucket
      *            name.
      * @return A {@link BucketWebsiteResult} instance.
+     *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public BucketWebsiteResult getBucketWebsite(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -2323,7 +2950,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteBucketWebsite(String bucketName) throws OSSException, ClientException;
 
@@ -2339,7 +2969,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteBucketWebsite(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -2351,6 +2984,10 @@ public interface OSS {
      * @param conds
      *            Policy condition lists.
      * @return Policy string in JSON format.
+     *
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public String generatePostPolicy(Date expiration, PolicyConditions conds) throws ClientException;
 
@@ -2375,9 +3012,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult setBucketLifecycle(SetBucketLifecycleRequest setBucketLifecycleRequest)
             throws OSSException, ClientException;
@@ -2388,10 +3026,12 @@ public interface OSS {
      * @param bucketName
      *            Bucket name.
      * @return A list of {@link LifecycleRule}.
+     *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public List<LifecycleRule> getBucketLifecycle(String bucketName) throws OSSException, ClientException;
 
@@ -2402,10 +3042,12 @@ public interface OSS {
      *            The {@link GenericRequest} instance which specifies the bucket
      *            name.
      * @return A List of {@link LifecycleRule} instances.
+     *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public List<LifecycleRule> getBucketLifecycle(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -2419,9 +3061,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteBucketLifecycle(String bucketName) throws OSSException, ClientException;
 
@@ -2436,9 +3079,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteBucketLifecycle(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -2453,9 +3097,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult addBucketReplication(AddBucketReplicationRequest addBucketReplicationRequest)
             throws OSSException, ClientException;
@@ -2466,10 +3111,12 @@ public interface OSS {
      * @param bucketName
      *            Bucket name.
      * @return A list of {@link ReplicationRule} under the bucket.
+     *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public List<ReplicationRule> getBucketReplication(String bucketName) throws OSSException, ClientException;
 
@@ -2480,10 +3127,12 @@ public interface OSS {
      *            The {@link GenericRequest} instance which specifies the bucket
      *            name.
      * @return A list of {@link ReplicationRule} under the bucket.
+     *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public List<ReplicationRule> getBucketReplication(GenericRequest genericRequest)
             throws OSSException, ClientException;
@@ -2500,9 +3149,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteBucketReplication(String bucketName, String replicationRuleID)
             throws OSSException, ClientException;
@@ -2518,9 +3168,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteBucketReplication(DeleteBucketReplicationRequest deleteBucketReplicationRequest)
             throws OSSException, ClientException;
@@ -2535,10 +3186,12 @@ public interface OSS {
      *            Replication Rule Id.
      * @return The new data's and historical data's replication progress in
      *         float.
+     *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public BucketReplicationProgress getBucketReplicationProgress(String bucketName, String replicationRuleID)
             throws OSSException, ClientException;
@@ -2552,10 +3205,12 @@ public interface OSS {
      *            specifies the replication rule Id and bucket name.
      * @return The new data's and historical data's replication progress in
      *         float.
+     *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public BucketReplicationProgress getBucketReplicationProgress(
             GetBucketReplicationProgressRequest getBucketReplicationProgressRequest)
@@ -2567,10 +3222,12 @@ public interface OSS {
      * @param bucketName
      *            Bucket name.
      * @return Replication reachable data center list.
+     *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public List<String> getBucketReplicationLocation(String bucketName) throws OSSException, ClientException;
 
@@ -2581,10 +3238,12 @@ public interface OSS {
      *            The {@link GenericRequest} instance that specifies the bucket
      *            name.
      * @return Replication reachable data center list.
+     *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public List<String> getBucketReplicationLocation(GenericRequest genericRequest)
             throws OSSException, ClientException;
@@ -2600,9 +3259,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public AddBucketCnameResult addBucketCname(AddBucketCnameRequest addBucketCnameRequest) throws OSSException, ClientException;
 
@@ -2612,10 +3272,12 @@ public interface OSS {
      * @param bucketName
      *            Bucket name.
      * @return The list of Cnames under the bucket.
+     *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public List<CnameConfiguration> getBucketCname(String bucketName) throws OSSException, ClientException;
 
@@ -2626,10 +3288,12 @@ public interface OSS {
      *            The {@link GenericRequest} instance which specifies the bucket
      *            name.
      * @return The list of Cnames under the bucket.
+     *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public List<CnameConfiguration> getBucketCname(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -2645,9 +3309,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteBucketCname(String bucketName, String domain) throws OSSException, ClientException;
 
@@ -2663,9 +3328,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult deleteBucketCname(DeleteBucketCnameRequest deleteBucketCnameRequest)
             throws OSSException, ClientException;
@@ -2681,9 +3347,10 @@ public interface OSS {
      *         and some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public CreateBucketCnameTokenResult createBucketCnameToken(CreateBucketCnameTokenRequest createBucketCnameTokenRequest) throws OSSException, ClientException;
 
@@ -2697,9 +3364,10 @@ public interface OSS {
      *         and some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public GetBucketCnameTokenResult getBucketCnameToken(GetBucketCnameTokenRequest getBucketCnameTokenRequest) throws OSSException, ClientException;
 
@@ -2709,10 +3377,12 @@ public interface OSS {
      * @param bucketName
      *            The bucket name。
      * @return A {@link BucketInfo} instance.
+     *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public BucketInfo getBucketInfo(String bucketName) throws OSSException, ClientException;
 
@@ -2723,10 +3393,12 @@ public interface OSS {
      *            The {@link GenericRequest} instance which specifies the bucket
      *            name.
      * @return A {@link BucketInfo} instance.
+     *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public BucketInfo getBucketInfo(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -2735,12 +3407,14 @@ public interface OSS {
      * storage size and executing multipart uploads.
      * 
      * @param bucketName
-     *            The bucket name。
+     *            The bucket name.
      * @return A {@link BucketStat} instance.
+     *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public BucketStat getBucketStat(String bucketName) throws OSSException, ClientException;
 
@@ -2752,10 +3426,12 @@ public interface OSS {
      *            The {@link GenericRequest} instance which specifies the bucket
      *            name.
      * @return A {@link BucketStat} instance.
+     *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public BucketStat getBucketStat(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -2771,9 +3447,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors occurred in OSS while processing the request.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      */
     public VoidResult setBucketStorageCapacity(String bucketName, UserQos userQos) throws OSSException, ClientException;
 
@@ -2790,7 +3467,7 @@ public interface OSS {
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult setBucketStorageCapacity(SetBucketStorageCapacityRequest setBucketStorageCapacityRequest)
             throws OSSException, ClientException;
@@ -2804,7 +3481,7 @@ public interface OSS {
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public UserQos getBucketStorageCapacity(String bucketName) throws OSSException, ClientException;
 
@@ -2818,7 +3495,7 @@ public interface OSS {
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public UserQos getBucketStorageCapacity(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -2833,7 +3510,7 @@ public interface OSS {
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult setBucketEncryption(SetBucketEncryptionRequest setBucketEncryptionRequest)
     		throws OSSException, ClientException;
@@ -2848,7 +3525,7 @@ public interface OSS {
      * @throws OSSException
      *             OSS Server side exception.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public ServerSideEncryptionConfiguration getBucketEncryption(String bucketName) throws OSSException, ClientException;
 
@@ -2862,9 +3539,10 @@ public interface OSS {
      * @return A {@link ServerSideEncryptionConfiguration}.
      * 
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public ServerSideEncryptionConfiguration getBucketEncryption(GenericRequest genericRequest) 
     		throws OSSException, ClientException;
@@ -2879,9 +3557,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult deleteBucketEncryption(String bucketName) throws OSSException, ClientException;
 
@@ -2896,9 +3575,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult deleteBucketEncryption(GenericRequest genericRequest) throws OSSException, ClientException;
     
@@ -2914,9 +3594,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.           
+     *             If any errors occurred in OSS while processing the request.           
      */
     public VoidResult setBucketPolicy(String bucketName,  String policyText) throws OSSException, ClientException;
 
@@ -2931,9 +3612,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.        
+     *             If any errors occurred in OSS while processing the request.        
      */
     public VoidResult setBucketPolicy(SetBucketPolicyRequest setBucketPolicyRequest) throws OSSException, ClientException;
     
@@ -2944,9 +3626,10 @@ public interface OSS {
      *            {@link GenericRequest} instance that has the bucket name.
      * @return The policy's content in {@link InputStream}. 
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public GetBucketPolicyResult getBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException;
     
@@ -2957,9 +3640,10 @@ public interface OSS {
      *            Bucket name
      * @return The policy's content in {@link InputStream}. 
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public GetBucketPolicyResult getBucketPolicy(String bucketName) throws OSSException, ClientException;
     
@@ -2973,9 +3657,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult deleteBucketPolicy(GenericRequest genericRequest) throws OSSException, ClientException;
     
@@ -2989,9 +3674,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.           
+     *             If any errors occurred in OSS while processing the request.           
      */
     public VoidResult deleteBucketPolicy(String bucketName) throws OSSException, ClientException;
 
@@ -3014,6 +3700,7 @@ public interface OSS {
      * @return A {@link UploadFileRequest} instance which has the new uploaded
      *         file's key, ETag, location.
      * @throws Throwable
+     *         Base class for any exceptions.
      */
     public UploadFileResult uploadFile(UploadFileRequest uploadFileRequest) throws Throwable;
 
@@ -3037,6 +3724,7 @@ public interface OSS {
      * @return A {@link DownloadFileResult} instance that has the
      *         {@link ObjectMetadata} information.
      * @throws Throwable
+     *         Base class for any exceptions.
      */
     public DownloadFileResult downloadFile(DownloadFileRequest downloadFileRequest) throws Throwable;
 
@@ -3053,9 +3741,10 @@ public interface OSS {
      * @return A {@link CreateLiveChannelResult} instance that specifies the
      *         publish url and playback url.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public CreateLiveChannelResult createLiveChannel(CreateLiveChannelRequest createLiveChannelRequest)
             throws OSSException, ClientException;
@@ -3076,9 +3765,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult setLiveChannelStatus(String bucketName, String liveChannel, LiveChannelStatus status)
             throws OSSException, ClientException;
@@ -3096,9 +3786,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult setLiveChannelStatus(SetLiveChannelRequest setLiveChannelRequest) throws OSSException, ClientException;
 
@@ -3113,9 +3804,10 @@ public interface OSS {
      *         Channel's name, description, bucket name and its streaming
      *         storage information.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public LiveChannelInfo getLiveChannelInfo(String bucketName, String liveChannel)
             throws OSSException, ClientException;
@@ -3130,9 +3822,10 @@ public interface OSS {
      *         Channel's name, description, bucket name and its streaming
      *         storage information.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public LiveChannelInfo getLiveChannelInfo(LiveChannelGenericRequest liveChannelGenericRequest)
             throws OSSException, ClientException;
@@ -3147,9 +3840,10 @@ public interface OSS {
      * @return A {@link LiveChannelStat} instance that contains the media's
      *         resolution, frame rate and bandwidth.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public LiveChannelStat getLiveChannelStat(String bucketName, String liveChannel)
             throws OSSException, ClientException;
@@ -3163,9 +3857,10 @@ public interface OSS {
      * @return A {@link LiveChannelStat} instance that contains the media's
      *         resolution, frame rate and bandwidth.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public LiveChannelStat getLiveChannelStat(LiveChannelGenericRequest liveChannelGenericRequest)
             throws OSSException, ClientException;
@@ -3182,9 +3877,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult deleteLiveChannel(String bucketName, String liveChannel) throws OSSException, ClientException;
 
@@ -3202,9 +3898,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult deleteLiveChannel(LiveChannelGenericRequest liveChannelGenericRequest)
             throws OSSException, ClientException;
@@ -3216,9 +3913,10 @@ public interface OSS {
      *            Bucket name.
      * @return A list of all {@link LiveChannel} instances under the bucket.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public List<LiveChannel> listLiveChannels(String bucketName) throws OSSException, ClientException;
 
@@ -3233,9 +3931,10 @@ public interface OSS {
      * @return A list of {@link LiveChannel} instances that meet the
      *         requirements.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public LiveChannelListing listLiveChannels(ListLiveChannelsRequest listLiveChannelRequest)
             throws OSSException, ClientException;
@@ -3251,9 +3950,10 @@ public interface OSS {
      *            Live Channel name.
      * @return Recent (up to 10) {@link LiveRecord} for the live channel.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public List<LiveRecord> getLiveChannelHistory(String bucketName, String liveChannel)
             throws OSSException, ClientException;
@@ -3268,9 +3968,10 @@ public interface OSS {
      *            the bucket name and Live Channel name.
      * @return Recent (up to 10) {@link LiveRecord} for the live channel.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public List<LiveRecord> getLiveChannelHistory(LiveChannelGenericRequest liveChannelGenericRequest)
             throws OSSException, ClientException;
@@ -3296,9 +3997,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult generateVodPlaylist(String bucketName, String liveChannelName, String PlaylistName, long startTime,
             long endTime) throws OSSException, ClientException;
@@ -3315,9 +4017,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult generateVodPlaylist(GenerateVodPlaylistRequest generateVodPlaylistRequest)
             throws OSSException, ClientException;
@@ -3338,9 +4041,10 @@ public interface OSS {
      *            time is no later than it).
      * @return A {@link OSSObject} instance.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public OSSObject getVodPlaylist(String bucketName, String liveChannelName, long startTime,
                                     long endTime) throws OSSException, ClientException;
@@ -3354,9 +4058,10 @@ public interface OSS {
      *            the bucket name and the Live Channel name.
      * @return A {@link OSSObject} instance.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public OSSObject getVodPlaylist(GetVodPlaylistRequest getVodPlaylistRequest)
             throws OSSException, ClientException;
@@ -3374,9 +4079,10 @@ public interface OSS {
      *            Expiration time in epoch time, such as 1459922563.
      * @return Live Channel's RTMP pushing streaming address.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public String generateRtmpUri(String bucketName, String liveChannelName, String PlaylistName, long expires)
             throws OSSException, ClientException;
@@ -3389,9 +4095,10 @@ public interface OSS {
      *            bucket name and the Live Channel name.
      * @return Live Channel's RTMP pushing streaming address.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public String generateRtmpUri(GenerateRtmpUriRequest generatePushflowUrlRequest)
             throws OSSException, ClientException;
@@ -3411,9 +4118,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult createSymlink(String bucketName, String symlink, String target) throws OSSException, ClientException;
 
@@ -3429,9 +4137,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult createSymlink(CreateSymlinkRequest createSymlinkRequest) throws OSSException, ClientException;
 
@@ -3445,9 +4154,10 @@ public interface OSS {
      * @return The symlink information, including the target file name and its
      *         metadata.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public OSSSymlink getSymlink(String bucketName, String symlink) throws OSSException, ClientException;
 
@@ -3460,9 +4170,10 @@ public interface OSS {
      * @return The symlink information, including the target file name and its
      *         metadata.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public OSSSymlink getSymlink(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -3482,9 +4193,10 @@ public interface OSS {
      * @return A {@link GenericResult} instance which must be closed after the
      *         usage by the caller.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public GenericResult processObject(ProcessObjectRequest processObjectRequest) throws OSSException, ClientException;
 
@@ -3500,9 +4212,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult setBucketRequestPayment(String bucketName, Payer payer) throws OSSException, ClientException;
 
@@ -3517,9 +4230,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult setBucketRequestPayment(SetBucketRequestPaymentRequest setBucketRequestPaymentRequest) throws OSSException, ClientException;
 
@@ -3528,10 +4242,12 @@ public interface OSS {
      * 
      * @param bucketName
      *             The bucket name.
+     * @return  A {@link GetBucketRequestPaymentResult} instance.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public GetBucketRequestPaymentResult getBucketRequestPayment(String bucketName) throws OSSException, ClientException;
 
@@ -3540,10 +4256,12 @@ public interface OSS {
      * 
      * @param genericRequest
      *             {@link GenericRequest} instance that has the bucket name.
+     * @return  A {@link GetBucketRequestPaymentResult} instance.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public GetBucketRequestPaymentResult getBucketRequestPayment(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -3559,9 +4277,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult setBucketQosInfo(String bucketName, BucketQosInfo bucketQosInfo) throws OSSException, ClientException;
 
@@ -3575,9 +4294,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult setBucketQosInfo(SetBucketQosInfoRequest setBucketQosInfoRequest) throws OSSException, ClientException;
 
@@ -3588,9 +4308,10 @@ public interface OSS {
      *             The bucket name.
      * @return  A {@link BucketQosInfo} instance.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public BucketQosInfo getBucketQosInfo(String bucketName) throws OSSException, ClientException;
 
@@ -3601,9 +4322,10 @@ public interface OSS {
      *             {@link GenericRequest} instance that has the bucket name.
      * @return  A {@link BucketQosInfo} instance.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public BucketQosInfo getBucketQosInfo(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -3616,9 +4338,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult deleteBucketQosInfo(String bucketName) throws OSSException, ClientException;
  
@@ -3631,9 +4354,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult deleteBucketQosInfo(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -3642,9 +4366,10 @@ public interface OSS {
      *
      * @return  A {@link UserQosInfo} instance.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public UserQosInfo getUserQosInfo() throws OSSException, ClientException;
 
@@ -3657,9 +4382,10 @@ public interface OSS {
      *          The async fetch task configuration.
      * @return  A {@link SetAsyncFetchTaskResult} instance.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public SetAsyncFetchTaskResult setAsyncFetchTask(String bucketName,
             AsyncFetchTaskConfiguration asyncFetchTaskConfiguration) throws OSSException, ClientException;
@@ -3672,9 +4398,10 @@ public interface OSS {
      *          and the task configuration.
      * @return  A {@link SetAsyncFetchTaskResult} instance.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public SetAsyncFetchTaskResult setAsyncFetchTask(SetAsyncFetchTaskRequest setAsyncFetchTaskRequest)
             throws OSSException, ClientException;
@@ -3689,9 +4416,10 @@ public interface OSS {
      *          The id of the task which you want to get.
      * @return  A {@link GetAsyncFetchTaskResult} instance.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public GetAsyncFetchTaskResult getAsyncFetchTask(String bucketName, String taskId) throws OSSException, ClientException;
 
@@ -3704,9 +4432,10 @@ public interface OSS {
      *          and the task id.
      * @return  A {@link GetAsyncFetchTaskResult} instance.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public GetAsyncFetchTaskResult getAsyncFetchTask(GetAsyncFetchTaskRequest getAsyncFetchTaskRequest)
             throws OSSException, ClientException;
@@ -3717,9 +4446,10 @@ public interface OSS {
      *         A {@link CreateVpcipRequest} instance that specified the vpc information.
      * @return A {@link CreateVpcipResult} instance.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public CreateVpcipResult createVpcip(CreateVpcipRequest createVpcipRequest) throws OSSException, ClientException;
 
@@ -3729,9 +4459,10 @@ public interface OSS {
      * @return A list of {@link Vpcip} instances. If there's no Vpcips, the
      *         list will be empty (instead of null).
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public List<Vpcip> listVpcip() throws OSSException, ClientException;
 
@@ -3745,9 +4476,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult deleteVpcip(DeleteVpcipRequest deleteVpcipRequest) throws OSSException, ClientException;
 
@@ -3760,21 +4492,25 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult createBucketVpcip(CreateBucketVpcipRequest createBucketVpcipRequest) throws OSSException, ClientException;
 
     /**
      * Returns all {@link VpcPolicy} instances of the Bucket.
      *
+     * @param genericRequest
+     *              A {@link GenericRequest} instance that include the bucket name.
      * @return A list of {@link VpcPolicy} instances. If there's no list, the
      *         list will be empty (instead of null).
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public List<VpcPolicy> getBucketVpcip(GenericRequest genericRequest) throws OSSException, ClientException;
 
@@ -3788,9 +4524,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult deleteBucketVpcip(DeleteBucketVpcipRequest deleteBucketVpcipRequest) throws OSSException, ClientException;
 
@@ -3806,9 +4543,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult setBucketInventoryConfiguration(String bucketName, InventoryConfiguration inventoryConfiguration)
             throws OSSException, ClientException;
@@ -3823,9 +4561,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult setBucketInventoryConfiguration(SetBucketInventoryConfigurationRequest
             setBucketInventoryConfigurationRequest) throws OSSException, ClientException;
@@ -3839,9 +4578,10 @@ public interface OSS {
      *              The id of the inventory configuration that want to get.
      * @return A {@link GetBucketInventoryConfigurationResult} instance.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public GetBucketInventoryConfigurationResult getBucketInventoryConfiguration(String bucketName, String id)
             throws OSSException, ClientException;
@@ -3853,9 +4593,10 @@ public interface OSS {
      *          The {@link GetBucketInventoryConfigurationRequest} instance that has the bucketName and the configuration id.
      * @return A {@link GetBucketInventoryConfigurationResult} instance that has the result.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public GetBucketInventoryConfigurationResult getBucketInventoryConfiguration(GetBucketInventoryConfigurationRequest
             getBucketInventoryConfigurationRequest) throws OSSException, ClientException;
@@ -3935,7 +4676,7 @@ public interface OSS {
      * </p>
      *
      * @param initiateBucketWormRequest
-     *             The {@lin InitiateBucketWormRequest} instance includes worm configuration.
+     *             The {@link InitiateBucketWormRequest} instance includes worm configuration.
      *
      * @return A {@link InitiateBucketWormResult} instance that contains worm id.
      */
@@ -4161,9 +4902,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult setBucketResourceGroup(SetBucketResourceGroupRequest setBucketResourceGroupRequest) throws OSSException, ClientException;
 
@@ -4172,10 +4914,12 @@ public interface OSS {
      * 
      * @param bucketName
      *             The bucket name.
+     * @return A {@link GetBucketResourceGroupResult} instance.
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public GetBucketResourceGroupResult getBucketResourceGroup(String bucketName) throws OSSException, ClientException;
 
@@ -4189,9 +4933,10 @@ public interface OSS {
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
-     *             OSS Server side exception.
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
-     *             OSS Client side exception.
+     *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult createUdf(CreateUdfRequest createUdfRequest) throws OSSException, ClientException;
 
@@ -4229,95 +4974,131 @@ public interface OSS {
     /**
      * Set transferAcceleration configuration to the OSS Server
      * @param bucketName
+     *             The bucket name.
      * @param enable
-     *
+     *              The transfer acceleration status, true or false.
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
      */
     VoidResult setBucketTransferAcceleration(String bucketName, boolean enable) throws OSSException, ClientException;
 
     /**
      * Get transferAcceleration configuration from the OSS Server
      * @param bucketName
-     * @return
+     *             The bucket name.
+     * @return A {@link TransferAcceleration} instance.
      * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
      */
     TransferAcceleration getBucketTransferAcceleration(String bucketName) throws OSSException, ClientException;
 
     /**
      * Delete transferAcceleration configuration from the OSS Server
      * @param bucketName
-     *
+     *             The bucket name.
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
      */
     VoidResult deleteBucketTransferAcceleration(String bucketName) throws OSSException, ClientException;
 
     /**
      * Set BucketAccessMonitor configuration to the OSS Server
      * @param bucketName
+     *             The bucket name.
      * @param status
+     *             The bucket access monitor status.
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
      */
     VoidResult putBucketAccessMonitor(String bucketName, String status) throws OSSException, ClientException;
 
     /**
      * Get BucketAccessMonitor configuration from the OSS Server
      * @param bucketName
-     * @return
+     *             The bucket name.
+     * @return A {@link AccessMonitor} instance.
      * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
      */
     AccessMonitor getBucketAccessMonitor(String bucketName) throws OSSException, ClientException;
 
     /**
      * Open MetaQuery configuration to the OSS Server
      * @param bucketName
-     *
+     *             The bucket name.
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
      *
      * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
      */
     VoidResult openMetaQuery(String bucketName) throws OSSException, ClientException;
 
     /**
      * Get MetaQueryStatus configuration from the OSS Server
      * @param bucketName
-     * @return
+     *             The bucket name.
+     * @return A {@link GetMetaQueryStatusResult} instance.
      * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
      */
     GetMetaQueryStatusResult getMetaQueryStatus(String bucketName) throws OSSException, ClientException;
 
     /**
      * Query files that meet the specified criteria from the OSS Server
      * @param doMetaQueryRequest
-     * @return
+     *             The {@link DoMetaQueryRequest} instance
+     * @return A {@link DoMetaQueryResult} instance.
      * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
      */
     DoMetaQueryResult doMetaQuery(DoMetaQueryRequest doMetaQueryRequest) throws OSSException, ClientException;
 
     /**
      * Close metadata management from the OSS Server
      * @param bucketName
-     * @return
+     *             The bucket name.
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
      * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
      * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
      */
     VoidResult closeMetaQuery(String bucketName) throws OSSException, ClientException;
 }

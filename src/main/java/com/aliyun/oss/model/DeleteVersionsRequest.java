@@ -44,6 +44,9 @@ public class DeleteVersionsRequest extends GenericRequest {
 
         /**
          * Constructs a key without a version.
+         *
+         * @param key
+         *            key info.
          */
         public KeyVersion(String key) {
             this(key, null);
@@ -51,6 +54,11 @@ public class DeleteVersionsRequest extends GenericRequest {
 
         /**
          * Constructs a key-version pair.
+         *
+         * @param key
+         *            key info.
+         * @param version
+         *            version info.
          */
         public KeyVersion(String key, String version) {
             this.key = key;
@@ -107,14 +115,18 @@ public class DeleteVersionsRequest extends GenericRequest {
     /**
      * Sets the quiet element for this request. When true, only errors will be
      * returned in the service response.
+     *
+     * @param quiet
+     *            Sets the quiet element for this request.
      */
     public void setQuiet(boolean quiet) {
         this.quiet = quiet;
     }
 
     /**
-     * Returns the quiet element for this request. When true, only errors will be
+     * Gets the quiet element for this request. When true, only errors will be
      * returned in the service response.
+     * @return the flag for this request.
      */
     public boolean getQuiet() {
         return quiet;
@@ -123,6 +135,9 @@ public class DeleteVersionsRequest extends GenericRequest {
     /**
      * Sets the quiet element for this request. When true, only errors will be
      * returned in the service response.
+     *
+     * @param quiet
+     *            the flag for this request.
      *
      * @return this, to chain multiple calls together.
      */
@@ -158,7 +173,8 @@ public class DeleteVersionsRequest extends GenericRequest {
     }
 
     /**
-     * Returns the list of keys to delete from this bucket.
+     * Gets the list of keys to delete from this bucket.
+     * @return the list of keys.
      */
     public List<KeyVersion> getKeys() {
         return keys;

@@ -67,6 +67,9 @@ public class CRC64 implements Checksum {
 
     /**
      * Construct new CRC64 instance from byte array.
+     * @param b
+     *          the buffer into which the data is read.
+     * @return a {@link CRC64} instance.
      **/
     public static CRC64 fromBytes(byte[] b) {
         long l = 0;
@@ -79,6 +82,7 @@ public class CRC64 implements Checksum {
 
     /**
      * Get 8 byte representation of current CRC64 value.
+     * @return a CRC64 value in 8 byte.
      **/
     public byte[] getBytes() {
         byte[] b = new byte[8];
@@ -90,6 +94,7 @@ public class CRC64 implements Checksum {
 
     /**
      * Get long representation of current CRC64 value.
+     * @return a CRC64 value in long type.
      **/
     @Override
     public long getValue() {
@@ -98,6 +103,11 @@ public class CRC64 implements Checksum {
 
     /**
      * Update CRC64 with new byte block.
+     * @param b
+     *          the buffer into which the data is read.
+     * @param len
+     *          the maximum number of bytes to read.
+     *
      **/
     public void update(byte[] b, int len) {
         int idx = 0;
@@ -112,6 +122,8 @@ public class CRC64 implements Checksum {
 
     /**
      * Update CRC64 with new byte.
+     * @param b
+     *          the byte.
      **/
     public void update(byte b) {
         this.value = ~this.value;
@@ -162,6 +174,13 @@ public class CRC64 implements Checksum {
      * Return the CRC-64 of two sequential blocks, where summ1 is the CRC-64 of
      * the first block, summ2 is the CRC-64 of the second block, and len2 is the
      * length of the second block.
+     * @param summ1
+     *          the {@link CRC64} of the first block.
+     * @param summ2
+     *          the {@link CRC64} of the second block.
+     * @param len2
+     *          the length of the second block.
+     * @return a {@link CRC64} of two sequential blocks.
      */
     static public CRC64 combine(CRC64 summ1, CRC64 summ2, long len2) {
         // degenerate case.
@@ -221,6 +240,13 @@ public class CRC64 implements Checksum {
      * Return the CRC-64 of two sequential blocks, where summ1 is the CRC-64 of
      * the first block, summ2 is the CRC-64 of the second block, and len2 is the
      * length of the second block.
+     * @param crc1
+     *          the CRC-64 of the first block.
+     * @param crc2
+     *          the CRC-64 of the second block.
+     * @param len2
+     *          the length of the second block.
+     * @return a CRC-64 of two sequential blocks.
      */
     static public long combine(long crc1, long crc2, long len2) {
         // degenerate case.

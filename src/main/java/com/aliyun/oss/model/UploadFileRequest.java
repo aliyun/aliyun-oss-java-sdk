@@ -123,6 +123,9 @@ public class UploadFileRequest extends GenericRequest {
 
     /**
      * Sets traffic limit speed, its unit is bit/s
+     *
+     * @param trafficLimit
+     *            traffic limit speed
      */
     public void setTrafficLimit(int trafficLimit) {
         this.trafficLimit = trafficLimit;
@@ -138,6 +141,8 @@ public class UploadFileRequest extends GenericRequest {
 
     /**
      * Gets the sequential mode setting.
+     *
+     * @return sequential mode.
      */
     public Boolean getSequentialMode() {
         return sequentialMode;
@@ -145,6 +150,9 @@ public class UploadFileRequest extends GenericRequest {
 
     /**
      * Sets upload in sequential mode or not.
+     *
+     * @param sequentialMode
+     *            the sequential mode flag.
      */
     public void setSequentialMode(Boolean sequentialMode) {
         this.sequentialMode = sequentialMode;

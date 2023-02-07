@@ -164,6 +164,8 @@ public class GetObjectRequest extends GenericRequest {
      *            when end is -1 and start is 100. It means the download range
      *            will be all exception first 100 bytes.
      *            </p>
+     *
+     * @return  The {@link GetObjectRequest} instance.
      */
     public GetObjectRequest withRange(long start, long end) {
         setRange(start, end);
@@ -324,6 +326,9 @@ public class GetObjectRequest extends GenericRequest {
 
     /**
      * Sets traffic limit speed, its unit is bit/s
+     *
+     * @param trafficLimit
+     *            traffic limit.
      */
     public void setTrafficLimit(int trafficLimit) {
         this.trafficLimit = trafficLimit;

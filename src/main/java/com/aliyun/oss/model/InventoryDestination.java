@@ -33,8 +33,10 @@ public class InventoryDestination implements Serializable {
     private InventoryOSSBucketDestination ossBucketDestination;
 
     /**
-     * Returns the {@link InventoryOSSBucketDestination} which contains OSS bucket destination information
+     * Gets the {@link InventoryOSSBucketDestination} which contains OSS bucket destination information
      * of where inventory results are published.
+     *
+     * @return  The {@link InventoryOSSBucketDestination} instance.
      */
     public InventoryOSSBucketDestination getOssBucketDestination() {
         return ossBucketDestination;
@@ -43,6 +45,9 @@ public class InventoryDestination implements Serializable {
     /**
      * Sets the {@link InventoryOSSBucketDestination} which contains OSS bucket destination information
      * of where inventory results are published.
+     *
+     * @param ossBucketDestination
+     *            The {@link InventoryOSSBucketDestination} instance.
      */
     public void setOssBucketDestination(InventoryOSSBucketDestination ossBucketDestination) {
         this.ossBucketDestination = ossBucketDestination;
@@ -52,6 +57,11 @@ public class InventoryDestination implements Serializable {
      * Sets the {@link InventoryOSSBucketDestination} which contains OSS bucket destination information
      * of where inventory results are published.
      * And returns the {@link InventoryDestination} object itself.
+     *
+     * @param ossBucketDestination
+     *            The {@link InventoryOSSBucketDestination} instance.
+     *
+     * @return  The {@link InventoryDestination} instance.
      */
     public InventoryDestination withOSSBucketDestination(InventoryOSSBucketDestination ossBucketDestination) {
         setOssBucketDestination(ossBucketDestination);

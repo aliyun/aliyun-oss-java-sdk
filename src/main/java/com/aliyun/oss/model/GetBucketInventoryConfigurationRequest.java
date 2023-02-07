@@ -28,7 +28,8 @@ public class GetBucketInventoryConfigurationRequest extends GenericRequest {
     }
 
     /**
-     * Returns the inventory id used to identify the inventory configuration.
+     * Gets the inventory id used to identify the inventory configuration.
+     *  @return the inventory id.
      */
     public String getInventoryId() {
         return inventoryId;
@@ -36,6 +37,9 @@ public class GetBucketInventoryConfigurationRequest extends GenericRequest {
 
     /**
      * Sets the inventory id used to identify the inventory configuration.
+     *
+     * @param inventoryId
+     *           the inventory id.
      */
     public void setInventoryId(String inventoryId) {
         this.inventoryId = inventoryId;

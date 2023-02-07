@@ -132,7 +132,7 @@ public class CompleteMultipartUploadResult extends GenericResult implements Call
     /**
      * Sets version id.
      * 
-     * @param versionId
+     * @param versionId version id
      */
     public void setVersionId(String versionId) {
         this.versionId = versionId;

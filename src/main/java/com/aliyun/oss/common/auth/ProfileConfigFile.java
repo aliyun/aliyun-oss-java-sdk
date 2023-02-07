@@ -57,6 +57,9 @@ public class ProfileConfigFile {
     /**
      * Loads the OSS credential profiles from the file. The path of the file is
      * specified as a parameter to the constructor.
+     *
+     * @param filePath
+     *            File path to read from..
      */
     public ProfileConfigFile(String filePath) {
         this(new File(validateFilePath(filePath)));
@@ -65,6 +68,11 @@ public class ProfileConfigFile {
     /**
      * Loads the OSS credential profiles from the file. The path of the file is
      * specified as a parameter to the constructor.
+     *
+     * @param filePath
+     *            File path to read from..
+     * @param profileLoader
+     *            A {@link ProfileConfigLoader} instance.
      */
     public ProfileConfigFile(String filePath, ProfileConfigLoader profileLoader) {
         this(new File(validateFilePath(filePath)), profileLoader);
@@ -80,6 +88,9 @@ public class ProfileConfigFile {
     /**
      * Loads the OSS credential profiles from the file. The reference to the
      * file is specified as a parameter to the constructor.
+     *
+     * @param file
+     *            File object to read from..
      */
     public ProfileConfigFile(File file) {
         this(file, new ProfileConfigLoader());
@@ -88,6 +99,11 @@ public class ProfileConfigFile {
     /**
      * Loads the OSS credential profiles from the file. The reference to the
      * file is specified as a parameter to the constructor.
+     *
+     * @param file
+     *            File object to read from..
+     * @param profileLoader
+     *            A {@link ProfileConfigLoader} instance.
      */
     public ProfileConfigFile(File file, ProfileConfigLoader profileLoader) {
         this.profileFile = file;
@@ -97,6 +113,8 @@ public class ProfileConfigFile {
 
     /**
      * Returns the OSS credentials for the specified profile.
+     *
+     * @return credentials
      */
     public Credentials getCredentials() {
         refresh();

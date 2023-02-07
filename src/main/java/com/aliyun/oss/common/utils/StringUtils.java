@@ -248,6 +248,7 @@ public class StringUtils {
      * Joins the strings in parts with joiner between each string
      * @param joiner the string to insert between the strings in parts
      * @param parts the parts to join
+     * @return A string that consists of the elements of values by the separator character.
      */
     public static String join(String joiner, String... parts) {
         StringBuilder builder = new StringBuilder();
@@ -264,6 +265,7 @@ public class StringUtils {
      * Joins the strings in collection with joiner between each string
      * @param joiner the string to insert between the strings in collection
      * @param collection the collection to join
+     * @return A string that consists of the elements of values by the separator character
      */
     public static String join(String joiner, Collection<String> collection) {
         StringBuilder builder = new StringBuilder();
@@ -282,6 +284,8 @@ public class StringUtils {
     /**
      * A null-safe trim method. If the input string is null, returns null;
      * otherwise returns a trimmed version of the input.
+     * @param value the char to remove
+     * @return The string that remains after all instances of the character are removed
      */
     public static String trim(String value) {
         if (value == null) {
@@ -291,6 +295,8 @@ public class StringUtils {
     }
 
     /**
+     * Checks if a String is null or empty.
+     * @param value the String to be check.
      * @return true if the given value is either null or the empty string
      */
     public static boolean isNullOrEmpty(String value) {
@@ -298,6 +304,8 @@ public class StringUtils {
     }
 
     /**
+     * Checks if a String is not empty.
+     * @param str the String to be check.
      * @return true if the given value is non-null and non-empty
      */
     public static boolean hasValue(String str) {
@@ -376,6 +384,8 @@ public class StringUtils {
      * but does not create a Pattern object that needs to compile the match
      * string; it also prevents us from having to make a Matcher object as well.
      *
+     * @param destination A {@link StringBuilder} instance
+     * @param source a source string
      */
     public static void appendCompactedString(final StringBuilder destination, final String source) {
         boolean previousIsWhiteSpace = false;
@@ -398,7 +408,10 @@ public class StringUtils {
 
     /**
      * Performs a case insensitive comparison and returns true if the data
-     * begins with the given sequence. 
+     * begins with the given sequence.
+     * @param data The string be compared
+     * @param seq The string to compare
+     * @return true if seq matches the beginning of the data string; otherwise, false.
      */
     public static boolean beginsWithIgnoreCase(final String data, final String seq) {
       return data.regionMatches(true, 0, seq, 0, seq.length());

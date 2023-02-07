@@ -49,6 +49,8 @@ public class ListBucketInventoryConfigurationsResult extends GenericResult {
 
     /**
      * Returns the list of inventory configurations for a bucket.
+     *
+     * @return  The {@link InventoryConfiguration} instance.
      */
     public List<InventoryConfiguration> getInventoryConfigurationList() {
         return inventoryConfigurationList;
@@ -56,6 +58,9 @@ public class ListBucketInventoryConfigurationsResult extends GenericResult {
 
     /**
      * Sets the list of inventory configurations for a bucket.
+     *
+     * @param inventoryConfigurationList
+     *            list of inventory configurations for a bucket.
      */
     public void setInventoryConfigurationList(List<InventoryConfiguration> inventoryConfigurationList) {
         this.inventoryConfigurationList = inventoryConfigurationList;

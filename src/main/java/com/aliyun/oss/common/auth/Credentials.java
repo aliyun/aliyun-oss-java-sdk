@@ -26,21 +26,29 @@ package com.aliyun.oss.common.auth;
 public interface Credentials {
     /**
      * Returns the access key ID for this credentials.
+     *
+     * @return A access key id.
      */
     public String getAccessKeyId();
 
     /**
      * Returns the secret access key for this credentials.
+     *
+     * @return A access key secret.
      */
     public String getSecretAccessKey();
 
     /**
      * Returns the security token for this credentials.
+     *
+     * @return A security token.
      */
     public String getSecurityToken();
 
     /**
      * Determines whether to use security token for http requests.
+     *
+     * @return True if has security token; False if not.
      */
     public boolean useSecurityToken();
 }

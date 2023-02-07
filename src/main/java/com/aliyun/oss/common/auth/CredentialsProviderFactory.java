@@ -175,6 +175,7 @@ public class CredentialsProviderFactory {
      *            http://192.168.1.11:9090/sts/getsts.
      * @return A {@link CustomSessionCredentialsProvider} instance.
      * @throws ClientException
+     *             OSS Client side exception.
      */
     public static CustomSessionCredentialsProvider newCustomSessionCredentialsProvider(String ossAuthServerHost)
             throws ClientException {

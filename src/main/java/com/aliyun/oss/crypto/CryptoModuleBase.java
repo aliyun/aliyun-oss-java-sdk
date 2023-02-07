@@ -117,11 +117,10 @@ public abstract class CryptoModuleBase implements CryptoModule {
         }
     }
 
-    /**
-     * Returns the given {@link PutObjectRequest} instance but has the content as
-     * input stream wrapped with a cipher, and configured with some meta data and
-     * user metadata.
-     */
+
+    // Returns the given {@link PutObjectRequest} instance but has the content as
+    // input stream wrapped with a cipher, and configured with some meta data and
+    // user metadata.
     protected final PutObjectRequest wrapPutRequestWithCipher(final PutObjectRequest request,
             ContentCryptoMaterial cekMaterial) {
         // Create a new metadata object if there is no metadata already.
@@ -176,6 +175,11 @@ public abstract class CryptoModuleBase implements CryptoModule {
 
     /**
      * Checks there an encryption info in the metadata.
+     *
+     * @param metadata
+     *           the object metadata.
+     *
+     * @return True if has encryption info; False if not.
      */
     public static boolean hasEncryptionInfo(ObjectMetadata metadata) {
         Map<String, String> userMeta = metadata.getUserMetadata();
@@ -186,6 +190,9 @@ public abstract class CryptoModuleBase implements CryptoModule {
     /**
      * Gets the object in OSS, if it was an encrypted object then decrypt it and
      * return the result, otherwise return the object directly.
+     *
+     * @param req The {@link GetObjectRequest} instance.
+     * @return  The {@link OSSObject} instance.
      */
     @Override
     public OSSObject getObjectSecurely(GetObjectRequest req) {
@@ -223,9 +230,7 @@ public abstract class CryptoModuleBase implements CryptoModule {
         }
     }
 
-    /**
-     * Decrypt the encypted object by the metadata achieved.
-     */
+    // Decrypt the encypted object by the metadata achieved.
     protected OSSObject decipherWithMetadata(GetObjectRequest req,
             long[] desiredRange,
             long[] cryptoRange, OSSObject retrieved) {
@@ -258,12 +263,10 @@ public abstract class CryptoModuleBase implements CryptoModule {
         }
     }
 
-    /**
-     * Adjusts the retrieved OSSObject so that the object contents contain only the
-     * range of bytes desired by the user. Since encrypted contents can only be
-     * retrieved in CIPHER_BLOCK_SIZE (16 bytes) chunks, the OSSObject potentially
-     * contains more bytes than desired, so this method adjusts the contents range.
-     */
+    // Adjusts the retrieved OSSObject so that the object contents contain only the
+    // range of bytes desired by the user. Since encrypted contents can only be
+    // retrieved in CIPHER_BLOCK_SIZE (16 bytes) chunks, the OSSObject potentially
+    // contains more bytes than desired, so this method adjusts the contents range.
     protected final OSSObject adjustToDesiredRange(OSSObject OSSobject, long[] range) {
         if (range == null)
             return OSSobject;
@@ -291,6 +294,9 @@ public abstract class CryptoModuleBase implements CryptoModule {
     /**
      * Gets the object in OSS and write it in a file, if it was an encrypted object
      * then decrypt it, otherwise wirte the object directly.
+     * @param getObjectRequest The {@link GetObjectRequest} instance.
+     * @param file The {@link File} instance to write into.
+     * @return  The {@link ObjectMetadata} instance.
      */
     @Override
     public ObjectMetadata getObjectSecurely(GetObjectRequest getObjectRequest, File file) {
@@ -331,11 +337,13 @@ public abstract class CryptoModuleBase implements CryptoModule {
 
     /**
      * Initiates the multipart upload request, and bulid the crypto context.
-     * 
-     * @param context 
+     * @param req
+     *         The {@link InitiateMultipartUploadRequest} instance.
+     * @param context
      *         The multi part crypto context contains the content crypto materials and
      *         upload information, it should created on the outside with part-size and data-size set done, the 
      *         content crypto materials and other upload information will be filled after initiate request done.
+     * @return  The {@link InitiateMultipartUploadResult} instance.
      */
     @Override
     public InitiateMultipartUploadResult initiateMultipartUploadSecurely(InitiateMultipartUploadRequest req,
@@ -368,6 +376,13 @@ public abstract class CryptoModuleBase implements CryptoModule {
 
     /**
      * Uploads the part secured.
+     * @param req
+     *         The {@link UploadPartRequest} instance.
+     * @param context
+     *         The multi part crypto context contains the content crypto materials and
+     *         upload information, it should created on the outside with part-size and data-size set done, the
+     *         content crypto materials and other upload information will be filled after initiate request done.
+     * @return  The {@link UploadPartResult} instance.
      */
     @Override
     public UploadPartResult uploadPartSecurely(UploadPartRequest req, MultipartUploadCryptoContext context) {
@@ -402,9 +417,7 @@ public abstract class CryptoModuleBase implements CryptoModule {
         return result;
     }
 
-    /**
-     * Wraps the inputStream with an crypto cipher.
-     */
+    // Wraps the inputStream with an crypto cipher.
     private CipherInputStream newOSSCryptoCipherInputStream(PutObjectRequest req, CryptoCipher cryptoCipher) {
         final File fileOrig = req.getFile();
         final InputStream isOrig = req.getInputStream();
@@ -422,9 +435,7 @@ public abstract class CryptoModuleBase implements CryptoModule {
         }
     }
 
-    /**
-     * Returns the plaintext length from the request and metadata; or -1 if unknown.
-     */
+    // Returns the plaintext length from the request and metadata; or -1 if unknown.
     protected final long plaintextLength(PutObjectRequest request, ObjectMetadata metadata) {
         if (request.getFile() != null) {
             return request.getFile().length();
@@ -434,9 +445,7 @@ public abstract class CryptoModuleBase implements CryptoModule {
         return -1;
     }
 
-    /**
-     * Adjustes the range-get start offset to allgn with cipher block.
-     */
+    // Adjustes the range-get start offset to allgn with cipher block.
     long[] getAdjustedCryptoRange(long[] range) {
         if (range == null) {
             return null;
@@ -459,9 +468,7 @@ public abstract class CryptoModuleBase implements CryptoModule {
         return lowerBound;
     }
 
-    /**
-     * Build a new content crypto material read-only.
-     */
+    // Build a new content crypto material read-only.
     protected final ContentCryptoMaterial buildContentCryptoMaterials() {
         // Generate random CEK IV
         byte[] iv = generateIV();
@@ -477,9 +484,7 @@ public abstract class CryptoModuleBase implements CryptoModule {
         return contentMaterialRW;
     }
 
-    /**
-     * Add the upload part info into metadata.
-     */
+    // Add the upload part info into metadata.
     protected final ObjectMetadata updateMetadataWithUploadContext(ObjectMetadata metadata,
             MultipartUploadCryptoContext context) {
         if (metadata == null) {
@@ -492,9 +497,7 @@ public abstract class CryptoModuleBase implements CryptoModule {
         return metadata;
     }
 
-    /**
-     * Storages the encrytion materials in the object metadata.
-     */
+    // Storages the encrytion materials in the object metadata.
     protected final ObjectMetadata updateMetadataWithContentCryptoMaterial(ObjectMetadata metadata, File file,
             ContentCryptoMaterial contentCryptoMaterial) {
         if (metadata == null)
@@ -530,9 +533,7 @@ public abstract class CryptoModuleBase implements CryptoModule {
         return metadata;
     }
 
-    /**
-     * Builds a new content crypto material for decrypting the object achieved.
-     */
+    // Builds a new content crypto material for decrypting the object achieved.
     protected ContentCryptoMaterial createContentMaterialFromMetadata(ObjectMetadata meta) {
         Map<String, String> userMeta = meta.getUserMetadata();
         // Encrypted CEK and encrypted IV.
@@ -569,9 +570,7 @@ public abstract class CryptoModuleBase implements CryptoModule {
         return contentMaterialRW;
     }
 
-    /**
-     * @return the corresponding material description from the given json string.
-     */
+    // return the corresponding material description from the given json string.
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected static Map<String, String> getDescFromJsonString(String jsonString) {
         Map<String, String> map = new HashMap<String, String>();
@@ -592,11 +591,7 @@ public abstract class CryptoModuleBase implements CryptoModule {
         }
     }
 
-    /**
-     * Returns a srcret key for encrypting content.
-     * 
-     * @return content encrypt key.
-     */
+    // Returns a srcret key for encrypting content.
     protected SecretKey generateCEK() {
         KeyGenerator generator;
         final String keygenAlgo = contentCryptoScheme.getKeyGeneratorAlgorithm();

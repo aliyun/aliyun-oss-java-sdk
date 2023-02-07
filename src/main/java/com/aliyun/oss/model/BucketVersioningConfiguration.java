@@ -30,7 +30,6 @@ import java.io.Serializable;
  *      <li>{@link BucketVersioningConfiguration#ENABLED}
  *      <li>{@link BucketVersioningConfiguration#SUSPENDED}
  *  </ul>
- * </p>
  * <p>
  * By default, new buckets are in the
  * {@link BucketVersioningConfiguration#OFF off} state. Once versioning is

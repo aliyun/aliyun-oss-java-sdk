@@ -220,6 +220,8 @@ public class IniEditor {
      *            an array of characters to be recognized as starters of comment
      *            lines; the first of them will be used for newly created
      *            comments
+     * @param isCaseSensitive
+     *            option names are case-sensitive if this is true
      */
     public IniEditor(String commonName, char[] delims, boolean isCaseSensitive) {
         this.sections = new HashMap<String, Section>();

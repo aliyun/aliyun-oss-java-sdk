@@ -196,6 +196,9 @@ public class UploadPartRequest extends GenericRequest {
 
     /**
      * Sets traffic limit speed, its unit is bit/s
+     *
+     * @param trafficLimit
+     *           the limit speed
      */
     public void setTrafficLimit(int trafficLimit) {
         this.trafficLimit = trafficLimit;

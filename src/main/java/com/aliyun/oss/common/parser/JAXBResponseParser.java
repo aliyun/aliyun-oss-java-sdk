@@ -41,7 +41,7 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
 /**
- * Implementation of <code>ResponseParser<code> with JAXB.
+ * Implementation of {@link ResponseParser} with JAXB.
  */
 public class JAXBResponseParser implements ResponseParser<Object> {
 
