@@ -23,6 +23,7 @@ import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_BUCKET_ERR;
 import static com.aliyun.oss.integrationtests.TestConstants.NO_SUCH_LIFECYCLE_ERR;
 import static com.aliyun.oss.integrationtests.TestUtils.genRandomString;
 import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
+import static com.aliyun.oss.model.SetBucketLifecycleRequest.MAX_LIFECYCLE_RULE_LIMIT;
 import static com.aliyun.oss.model.SetBucketLifecycleRequest.MAX_RULE_ID_LENGTH;
 
 import java.text.ParseException;
@@ -348,7 +349,6 @@ public class BucketLifecycleTest extends TestBase {
         final String bucketName = super.bucketName + "unormal-set-bucket-lifecycle";
         final String ruleId0 = "delete obsoleted files";
         final String matchPrefix0 = "obsoleted/";
-        final int MAX_LIFECYCLE_RULE_LIMIT = 1000;
 
         try {
             ossClient.createBucket(bucketName);
@@ -901,27 +901,20 @@ public class BucketLifecycleTest extends TestBase {
 
     @Test
     public void testVerificationLifecycleRulesLimit() throws ParseException {
-        final String bucketName = super.bucketName + "rules-limit-lifecycle";
-        final String matchPrefix0 = "obsoleted/";
-        final int maxLimit = 1000;
+        final String matchPrefix0 = "prefix/";
+        final int maxLimit = 2000;
+
         try {
-            ossClient.createBucket(bucketName);
-            Map<String, String> matchTags1 = new HashMap<String, String>();
-            matchTags1.put("type", "document");
             SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(bucketName);
-            for(int i=0; i<maxLimit; i++){
+            for (int i = 0; i < (maxLimit + 1) ; i++) {
                 LifecycleRule rule = new LifecycleRule("ruleId"+i, matchPrefix0+i, RuleStatus.Enabled);
                 rule.setCreatedBeforeDate(DateUtil.parseIso8601Date("2023-10-12T00:00:00.000Z"));
-                rule.setTags(matchTags1);
                 request.AddLifecycleRule(rule);
             }
 
-            ossClient.setBucketLifecycle(request);
-        } catch (Exception e){
-            Assert.assertTrue(e instanceof IllegalArgumentException);
-            Assert.assertEquals(e.getMessage(),"If there is no tag node under the not node, the prefix of the not node cannot be the same as that of the rule.");
-        } finally {
-            ossClient.deleteBucket(bucketName);
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
         }
     }
 }

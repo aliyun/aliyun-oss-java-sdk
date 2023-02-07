@@ -26,6 +26,7 @@ import com.aliyun.oss.model.LifecycleRule.StorageTransition;
 
 public class SetBucketLifecycleRequest extends GenericRequest {
 
+    public static final int MAX_LIFECYCLE_RULE_LIMIT = 1000;
     public static final int MAX_RULE_ID_LENGTH = 255;
 
     private List<LifecycleRule> lifecycleRules = new ArrayList<LifecycleRule>();
