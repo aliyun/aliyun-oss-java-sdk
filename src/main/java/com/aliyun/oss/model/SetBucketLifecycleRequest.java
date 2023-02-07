@@ -26,7 +26,6 @@ import com.aliyun.oss.model.LifecycleRule.StorageTransition;
 
 public class SetBucketLifecycleRequest extends GenericRequest {
 
-    public static final int MAX_LIFECYCLE_RULE_LIMIT = 1000;
     public static final int MAX_RULE_ID_LENGTH = 255;
 
     private List<LifecycleRule> lifecycleRules = new ArrayList<LifecycleRule>();
@@ -44,10 +43,6 @@ public class SetBucketLifecycleRequest extends GenericRequest {
             throw new IllegalArgumentException("lifecycleRules should not be null or empty.");
         }
 
-        if (lifecycleRules.size() > MAX_LIFECYCLE_RULE_LIMIT) {
-            throw new IllegalArgumentException("One bucket not allow exceed one thousand items of LifecycleRules.");
-        }
-
         this.lifecycleRules.clear();
         this.lifecycleRules.addAll(lifecycleRules);
     }
@@ -59,10 +54,6 @@ public class SetBucketLifecycleRequest extends GenericRequest {
     public void AddLifecycleRule(LifecycleRule lifecycleRule) {
         if (lifecycleRule == null) {
             throw new IllegalArgumentException("lifecycleRule should not be null or empty.");
-        }
-
-        if (this.lifecycleRules.size() >= MAX_LIFECYCLE_RULE_LIMIT) {
-            throw new IllegalArgumentException("One bucket not allow exceed one thousand items of LifecycleRules.");
         }
 
         if (lifecycleRule.getId() != null && lifecycleRule.getId().length() > MAX_RULE_ID_LENGTH) {
