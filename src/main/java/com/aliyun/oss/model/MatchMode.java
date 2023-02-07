@@ -25,5 +25,7 @@ package com.aliyun.oss.model;
 public enum MatchMode {
     Unknown, Exact, // Exact match
     StartWith, // Starts With
-    Range // The range of file size
+    Range, // The range of file size
+    In,
+    NotIn
 }
