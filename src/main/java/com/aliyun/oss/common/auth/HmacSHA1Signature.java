@@ -64,4 +64,11 @@ public class HmacSHA1Signature extends ServiceSignature {
     public byte[] computeHash(byte[] key, byte[] data) {
         return sign(key, data, macInstance, LOCK, ALGORITHM);
     }
+
+    static {
+        try {
+            macInstance = Mac.getInstance(ALGORITHM);
+        } catch (Throwable e) {
+        }
+    }
 }
