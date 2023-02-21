@@ -67,6 +67,6 @@ public enum StorageClass {
             }
         }
 
-        throw new IllegalArgumentException("Unable to parse " + storageClassString);
+        return Unknown;
     }
 }
