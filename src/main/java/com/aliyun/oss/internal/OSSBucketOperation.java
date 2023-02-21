@@ -144,6 +144,10 @@ public class OSSBucketOperation extends OSSOperation {
             params.put(TAG_VALUE, listBucketRequest.getTagValue());
         }
 
+        if (listBucketRequest.getParameters() != null && listBucketRequest.getParameters().containsKey(SUBRESOURCE_REGION_LIST)) {
+            params.put(SUBRESOURCE_REGION_LIST, listBucketRequest.getParameters().get(SUBRESOURCE_REGION_LIST));
+        }
+
         Map<String, String> headers = new HashMap<String, String>();
         addOptionalResourceGroupIdHeader(headers, listBucketRequest.getResourceGroupId());
 

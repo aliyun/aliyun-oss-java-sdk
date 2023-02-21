@@ -898,4 +898,23 @@ public class BucketLifecycleTest extends TestBase {
             ossClient.deleteBucket(bucketName);
         }
     }
+
+    @Test
+    public void testVerificationLifecycleRulesLimit() throws ParseException {
+        final String matchPrefix0 = "prefix/";
+        final int maxLimit = 2000;
+
+        try {
+            SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(bucketName);
+            for (int i = 0; i < (maxLimit + 1) ; i++) {
+                LifecycleRule rule = new LifecycleRule("ruleId"+i, matchPrefix0+i, RuleStatus.Enabled);
+                rule.setCreatedBeforeDate(DateUtil.parseIso8601Date("2023-10-12T00:00:00.000Z"));
+                request.AddLifecycleRule(rule);
+            }
+
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
 }

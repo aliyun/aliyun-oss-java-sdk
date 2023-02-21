@@ -107,4 +107,50 @@ public class PostPolicyTest extends TestBase {
         }
     }
 
+
+    @Test
+    public void testGenPostPolicyWithInAndNotIn() {
+        final String bucketName = "gen-post-policy";
+        OSSClient client = null;
+
+        try {
+            client = new OSSClient(TestConfig.OSS_TEST_ENDPOINT, "AAAAAAAAAAAAAAAA", "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+            Date expiration = DateUtil.parseIso8601Date("2020-03-19T03:44:06.476Z");
+
+            PolicyConditions policyConds = new PolicyConditions();
+            policyConds.addConditionItem("bucket", bucketName);
+            policyConds.addConditionItem(MatchMode.Exact, PolicyConditions.COND_KEY, "user/eric/\\${filename}");
+            policyConds.addConditionItem(MatchMode.StartWith, PolicyConditions.COND_KEY, "user/eric");
+            policyConds.addConditionItem(MatchMode.StartWith, "x-oss-meta-tag", "dummy_etag");
+            policyConds.addConditionItem(PolicyConditions.COND_CONTENT_LENGTH_RANGE, 1, 1024);
+            policyConds.addConditionItem(MatchMode.In, PolicyConditions.COND_CONTENT_TYPE, new String[]{"image/jpg","image/png"});
+            policyConds.addConditionItem(MatchMode.NotIn, PolicyConditions.COND_CACHE_CONTROL, new String[]{"no-cache"});
+
+            String actualPostPolicy = client.generatePostPolicy(expiration, policyConds);
+            String expectedPostPolicy = String.format("{\"expiration\":\"2020-03-19T03:44:06.476Z\",\"conditions\":[{\"bucket\":\"%s\"},"
+                    + "[\"eq\",\"$key\",\"user/eric/\\${filename}\"],[\"starts-with\",\"$key\",\"user/eric\"],[\"starts-with\",\"$x-oss-meta-tag\","
+                    + "\"dummy_etag\"],[\"content-length-range\",1,1024],[\"in\",\"$content-type\",[\"image/jpg\",\"image/png\"]],[\"not-in\",\"$cache-control\",[\"no-cache\"]]]}", bucketName);
+            Assert.assertEquals(expectedPostPolicy, actualPostPolicy);
+
+            byte[] binaryData = actualPostPolicy.getBytes("utf-8");
+            String actualEncodedPolicy = BinaryUtil.toBase64String(binaryData);
+            String expectedEncodedPolicy = "eyJleHBpcmF0aW9uIjoiMjAyMC0wMy0xOVQwMzo0NDowNi40NzZaIiwiY29uZGl0aW9ucyI6W" +
+                    "3siYnVja2V0IjoiZ2VuLXBvc3QtcG9saWN5In0sWyJlcSIsIiRrZXkiLCJ1c2VyL2VyaWMvXCR7ZmlsZW5hbWV9Il0sWyJzd" +
+                    "GFydHMtd2l0aCIsIiRrZXkiLCJ1c2VyL2VyaWMiXSxbInN0YXJ0cy13aXRoIiwiJHgtb3NzLW1ldGEtdGFnIiwiZHVtbXlfZ" +
+                    "XRhZyJdLFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLDEsMTAyNF0sWyJpbiIsIiRjb250ZW50LXR5cGUiLFsiaW1hZ2UvanBnI" +
+                    "iwiaW1hZ2UvcG5nIl1dLFsibm90LWluIiwiJGNhY2hlLWNvbnRyb2wiLFsibm8tY2FjaGUiXV1dfQ==";
+            Assert.assertEquals(expectedEncodedPolicy, actualEncodedPolicy);
+
+            String actualPostSignature = client.calculatePostSignature(actualPostPolicy);
+
+            Assert.assertTrue(actualPostSignature.equals("xyOp/TIhzYWH8e+kjJ4bkY60BH8="));
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        } finally {
+            if (client != null) {
+                client.shutdown();
+            }
+        }
+    }
+
 }

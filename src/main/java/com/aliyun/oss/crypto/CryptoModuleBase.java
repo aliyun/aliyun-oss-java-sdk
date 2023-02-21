@@ -525,9 +525,12 @@ public abstract class CryptoModuleBase implements CryptoModule {
         // Put the crypto description into the object metadata
         Map<String, String> materialDesc = contentCryptoMaterial.getMaterialsDescription();
         if (materialDesc != null && materialDesc.size() > 0) {
-            JSONObject descJson = new JSONObject(materialDesc);
-            String descStr = descJson.toString();
-            metadata.addUserMetadata(CryptoHeaders.CRYPTO_MATDESC, descStr);
+            try {
+                JSONObject descJson = new JSONObject(materialDesc);
+                String descStr = descJson.toString();
+                metadata.addUserMetadata(CryptoHeaders.CRYPTO_MATDESC, descStr);
+            } catch (Exception e) {
+            }
         }
 
         return metadata;

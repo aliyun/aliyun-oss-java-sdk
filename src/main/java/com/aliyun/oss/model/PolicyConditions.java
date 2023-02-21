@@ -19,6 +19,7 @@
 
 package com.aliyun.oss.model;
 
+import com.aliyun.oss.common.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +42,7 @@ class ConditionItem {
     private TupleType tupleType;
     private long minimum;
     private long maximum;
+    private String[] contain;
 
     public ConditionItem(String name, String value) {
         this.matchMode = MatchMode.Exact;
@@ -64,6 +66,13 @@ class ConditionItem {
         this.tupleType = TupleType.Three;
     }
 
+    public ConditionItem(MatchMode matchMode, String name, String[] contain) {
+        this.matchMode = matchMode;
+        this.name = name;
+        this.contain = contain;
+        this.tupleType = TupleType.Three;
+    }
+
     public String jsonize() {
         String jsonizedCond = null;
         switch (tupleType) {
@@ -80,6 +89,12 @@ class ConditionItem {
                 break;
             case Range:
                 jsonizedCond = String.format("[\"content-length-range\",%d,%d],", minimum, maximum);
+                break;
+            case In:
+                jsonizedCond = String.format("[\"in\",\"$%s\",[\"%s\"]],", name,  StringUtils.join("\",\"",contain));
+                break;
+            case NotIn:
+                jsonizedCond = String.format("[\"not-in\",\"$%s\",[\"%s\"]],", name, StringUtils.join("\",\"",contain));
                 break;
             default:
                 throw new IllegalArgumentException(String.format("Unsupported match mode %s", matchMode.toString()));
@@ -162,6 +177,8 @@ public class PolicyConditions {
         List<MatchMode> ordinaryMatchModes = new ArrayList<MatchMode>();
         ordinaryMatchModes.add(MatchMode.Exact);
         ordinaryMatchModes.add(MatchMode.StartWith);
+        ordinaryMatchModes.add(MatchMode.In);
+        ordinaryMatchModes.add(MatchMode.NotIn);
         List<MatchMode> specialMatchModes = new ArrayList<MatchMode>();
         specialMatchModes.add(MatchMode.Range);
 
@@ -222,6 +239,21 @@ public class PolicyConditions {
         if (min > max)
             throw new IllegalArgumentException(String.format("Invalid range [%d, %d].", min, max));
         _conds.add(new ConditionItem(name, min, max));
+    }
+
+    /**
+     * Adds a condition item with specified {@link MatchMode} value.
+     *
+     * @param matchMode
+     *            Conditions match mode.
+     * @param name
+     *            Condition name.
+     * @param contain
+     *            Condition contain.
+     */
+    public void addConditionItem(MatchMode matchMode, String name, String[] contain) {
+        checkMatchModes(matchMode, name);
+        _conds.add(new ConditionItem(matchMode, name.toLowerCase(), contain));
     }
 
     private void checkMatchModes(MatchMode matchMode, String condName) {
