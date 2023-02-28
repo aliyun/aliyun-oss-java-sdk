@@ -20,6 +20,7 @@
 package com.aliyun.oss.internal;
 
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
+import com.aliyun.oss.HttpMethod;
 import org.apache.http.HttpStatus;
 
 import com.aliyun.oss.ClientException;
@@ -49,21 +50,25 @@ public class OSSErrorResponseHandler implements ResponseHandler {
         String requestId = response.getRequestId();
         int statusCode = response.getStatusCode();
         if (response.getContent() == null) {
+
+            if (HttpMethod.HEAD.equals(response.getRequest().getMethod())){
+                throw ExceptionFactory.createOSSException(requestId, String.valueOf(statusCode), response.getHttpResponse().getStatusLine().getReasonPhrase(), response.getErrorResponseAsString(), response.getHeaders().toString(), response.getHeaders().get("x-oss-ec"));
+            }
             /**
              * When HTTP response body is null, handle status code 404 Not
              * Found, 304 Not Modified, 412 Precondition Failed especially.
              */
             if (statusCode == HttpStatus.SC_NOT_FOUND) {
-                throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.NO_SUCH_KEY, "Not Found");
+                throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.NO_SUCH_KEY, "Not Found", response.getErrorResponseAsString(), response.getHeaders().get("x-oss-ec"));
             } else if (statusCode == HttpStatus.SC_NOT_MODIFIED) {
-                throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.NOT_MODIFIED, "Not Modified");
+                throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.NOT_MODIFIED, "Not Modified", response.getErrorResponseAsString(), response.getHeaders().get("x-oss-ec"));
             } else if (statusCode == HttpStatus.SC_PRECONDITION_FAILED) {
                 throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.PRECONDITION_FAILED,
-                        "Precondition Failed");
+                        "Precondition Failed", response.getErrorResponseAsString(), response.getHeaders().get("x-oss-ec"));
             } else if (statusCode == HttpStatus.SC_FORBIDDEN) {
-                throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.ACCESS_FORBIDDEN, "AccessForbidden");
+                throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.ACCESS_FORBIDDEN, "AccessForbidden", response.getErrorResponseAsString(), response.getHeaders().get("x-oss-ec"));
             } else {
-                throw ExceptionFactory.createUnknownOSSException(requestId, statusCode);
+                throw ExceptionFactory.createUnknownOSSException(requestId, statusCode, response.getHeaders().get("x-oss-ec"));
             }
         }
 

@@ -57,6 +57,7 @@ public class ServiceException extends RuntimeException {
     private String errorCode;
     private String requestId;
     private String hostId;
+    private String ec;
 
     private String rawResponseError;
 
@@ -161,6 +162,12 @@ public class ServiceException extends RuntimeException {
         this.rawResponseError = rawResponseError;
     }
 
+    public ServiceException(String errorMessage, String errorCode, String requestId, String hostId,
+                            String rawResponseError, Throwable cause, String ec) {
+        this(errorMessage, errorCode, requestId, hostId, rawResponseError, cause);
+        this.ec = ec;
+    }
+
     /**
      * Gets error message.
      * 
@@ -216,6 +223,15 @@ public class ServiceException extends RuntimeException {
         this.rawResponseError = rawResponseError;
     }
 
+    /**
+     * Gets the ec.
+     *
+     * @return The ec in string.
+     */
+    public String getEC() {
+        return ec;
+    }
+
     private String formatRawResponseError() {
         if (rawResponseError == null || rawResponseError.equals("")) {
             return "";
@@ -225,7 +241,7 @@ public class ServiceException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return getErrorMessage() + "\n[ErrorCode]: " + getErrorCode() + "\n[RequestId]: " + getRequestId()
+        return getErrorMessage() + "\n[ErrorCode]: " + getErrorCode() + "\n[EC]: " + getEC() + "\n[RequestId]: " + getRequestId()
                 + "\n[HostId]: " + getHostId() + formatRawResponseError();
     }
 }

@@ -101,7 +101,7 @@ public class ExceptionFactory {
 
     public static OSSException createOSSException(OSSErrorResult errorResult, String rawResponseError) {
         return new OSSException(errorResult.Message, errorResult.Code, errorResult.RequestId, errorResult.HostId,
-                errorResult.Header, errorResult.ResourceType, errorResult.Method, rawResponseError);
+                errorResult.Header, errorResult.ResourceType, errorResult.Method, rawResponseError, null, errorResult.EC);
     }
 
     public static OSSException createOSSException(String requestId, String errorCode, String message) {
@@ -113,8 +113,16 @@ public class ExceptionFactory {
         return new OSSException(message, errorCode, requestId, null, null, null, null, rawResponseError);
     }
 
-    public static OSSException createUnknownOSSException(String requestId, int statusCode) {
-        String message = "No body in response, http status code " + Integer.toString(statusCode);
-        return new OSSException(message, ClientErrorCode.UNKNOWN, requestId, null, null, null, null);
+    public static OSSException createOSSException(String requestId, String errorCode, String message, String rawResponseError, String ec) {
+        return new OSSException(message, errorCode, requestId, null, null, null, null, rawResponseError, null, ec);
+    }
+
+    public static OSSException createOSSException(String requestId, String errorCode, String message, String rawResponseError, String header, String ec) {
+        return new OSSException(message, errorCode, requestId, null, header, null, null, rawResponseError, null, ec);
+    }
+
+    public static OSSException createUnknownOSSException(String requestId, int statusCode, String ec) {
+        String message = "No body in response, http status code " + Integer.toString(statusCode) + "ec: " + ec;
+        return new OSSException(message, ClientErrorCode.UNKNOWN, requestId, null, null, null, null, ec);
     }
 }
