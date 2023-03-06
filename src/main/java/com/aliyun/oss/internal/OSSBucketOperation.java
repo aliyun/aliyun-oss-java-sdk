@@ -999,6 +999,28 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, getBucketReplicationLocationResponseParser, bucketName, null, true);
     }
 
+    /***
+     * New Get Bucket Replication Location
+     * @param genericRequest
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public BucketReplicationLocationResult getBucketReplicationLocationV2(GenericRequest genericRequest)
+            throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_REPLICATION_LOCATION, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
+
+        return doOperation(request, getBucketReplicationLocationV2ResponseParser, bucketName, null, true);
+    }
+
     public AddBucketCnameResult addBucketCname(AddBucketCnameRequest addBucketCnameRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(addBucketCnameRequest, "addBucketCnameRequest");
@@ -2118,6 +2140,20 @@ public class OSSBucketOperation extends OSSOperation {
                 .setMethod(HttpMethod.POST).setBucket(bucketName).setParameters(params)
                 .setOriginalRequest(genericRequest).setInputSize(0).setInputStream(new ByteArrayInputStream(new byte[0])).build();
 
+        return doOperation(request, requestIdResponseParser, bucketName, null, true);
+    }
+
+    public VoidResult putBucketRTC(PutBucketRTCRequest putBucketRTCRequest) throws OSSException, ClientException {
+        assertParameterNotNull(putBucketRTCRequest, "putBucketRTCRequest");
+        String bucketName = putBucketRTCRequest.getBucketName();
+        assertParameterNotNull(putBucketRTCRequest.getRuleID(), "ruleID");
+        assertParameterNotNull(putBucketRTCRequest.getStatus(), "status");
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RTC, null);
+        byte[] rawContent = putBucketRTCRequestMarshaller.marshall(putBucketRTCRequest);
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(putBucketRTCRequest).setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent)).build();
         return doOperation(request, requestIdResponseParser, bucketName, null, true);
     }
 }

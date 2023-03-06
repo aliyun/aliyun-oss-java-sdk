@@ -136,6 +136,22 @@ public class ReplicationRule {
         this.sourceBucketLocation = sourceBucketLocation;
     }
 
+    public String getRtcStatus() {
+        return rtcStatus;
+    }
+
+    public void setRtcStatus(String rtcStatus) {
+        this.rtcStatus = rtcStatus;
+    }
+
+    public String getTransferType() {
+        return transferType;
+    }
+
+    public void setTransferType(String transferType) {
+        this.transferType = transferType;
+    }
+
     private String replicationRuleID;
     private ReplicationStatus replicationStatus;
     private String targetBucketName;
@@ -149,5 +165,6 @@ public class ReplicationRule {
     private String replicaKmsKeyID;
     private String sseKmsEncryptedObjectsStatus;
     private String sourceBucketLocation;
-
+    private String rtcStatus;
+    private String transferType;
 }
