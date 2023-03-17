@@ -21,6 +21,8 @@ package com.aliyun.oss.internal;
 
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
 import com.aliyun.oss.HttpMethod;
+import com.aliyun.oss.common.utils.BinaryUtil;
+import com.aliyuncs.utils.StringUtils;
 import org.apache.http.HttpStatus;
 
 import com.aliyun.oss.ClientException;
@@ -33,6 +35,9 @@ import com.aliyun.oss.common.parser.ResponseParseException;
 import com.aliyun.oss.common.utils.ExceptionFactory;
 import com.aliyun.oss.internal.model.OSSErrorResult;
 import com.aliyun.oss.internal.ResponseParsers.ErrorResponseParser;
+
+import java.io.ByteArrayInputStream;
+
 /**
  * Used to handle error response from oss, when HTTP status code is not 2xx,
  * then throws <code>OSSException</code> with detailed error information(such as
@@ -50,28 +55,27 @@ public class OSSErrorResponseHandler implements ResponseHandler {
         String requestId = response.getRequestId();
         int statusCode = response.getStatusCode();
         if (response.getContent() == null) {
-
-            if (HttpMethod.HEAD.equals(response.getRequest().getMethod())){
-                throw ExceptionFactory.createOSSException(requestId, String.valueOf(statusCode), response.getHttpResponse().getStatusLine().getReasonPhrase(), response.getErrorResponseAsString(), response.getHeaders().toString(), response.getHeaders().get("x-oss-ec"));
-            }
-            /**
-             * When HTTP response body is null, handle status code 404 Not
-             * Found, 304 Not Modified, 412 Precondition Failed especially.
-             */
-            if (statusCode == HttpStatus.SC_NOT_FOUND) {
-                throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.NO_SUCH_KEY, "Not Found", response.getErrorResponseAsString(), response.getHeaders().get("x-oss-ec"));
-            } else if (statusCode == HttpStatus.SC_NOT_MODIFIED) {
-                throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.NOT_MODIFIED, "Not Modified", response.getErrorResponseAsString(), response.getHeaders().get("x-oss-ec"));
-            } else if (statusCode == HttpStatus.SC_PRECONDITION_FAILED) {
-                throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.PRECONDITION_FAILED,
-                        "Precondition Failed", response.getErrorResponseAsString(), response.getHeaders().get("x-oss-ec"));
-            } else if (statusCode == HttpStatus.SC_FORBIDDEN) {
-                throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.ACCESS_FORBIDDEN, "AccessForbidden", response.getErrorResponseAsString(), response.getHeaders().get("x-oss-ec"));
-            } else {
-                throw ExceptionFactory.createUnknownOSSException(requestId, statusCode, response.getHeaders().get("x-oss-ec"));
+            if (!StringUtils.isEmpty(response.getHeaders().get("x-oss-err"))){
+                response.setContent(new ByteArrayInputStream(BinaryUtil.fromBase64String(response.getHeaders().get("x-oss-err"))));
+            } else{
+                /**
+                 * When HTTP response body is null, and the header return of x-oss-err is also null, handle status code 404 Not
+                 * Found, 304 Not Modified, 412 Precondition Failed especially.
+                 */
+                if (statusCode == HttpStatus.SC_NOT_FOUND) {
+                    throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.NO_SUCH_KEY, "Not Found");
+                } else if (statusCode == HttpStatus.SC_NOT_MODIFIED) {
+                    throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.NOT_MODIFIED, "Not Modified");
+                } else if (statusCode == HttpStatus.SC_PRECONDITION_FAILED) {
+                    throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.PRECONDITION_FAILED,
+                            "Precondition Failed");
+                } else if (statusCode == HttpStatus.SC_FORBIDDEN) {
+                    throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.ACCESS_FORBIDDEN, "AccessForbidden");
+                } else {
+                    throw ExceptionFactory.createUnknownOSSException(requestId, statusCode);
+                }
             }
         }
-
         try {
             OSSErrorResult errorResult = errorResponseParser.parse(response);
             throw ExceptionFactory.createOSSException(errorResult, response.getErrorResponseAsString());
