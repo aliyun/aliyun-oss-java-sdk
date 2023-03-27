@@ -76,6 +76,7 @@ public class OSSClient implements OSS {
     private OSSUploadOperation uploadOperation;
     private OSSDownloadOperation downloadOperation;
     private LiveChannelOperation liveChannelOperation;
+    private OSSRegionOperation regionOperation;
 
     /**Gets the inner multipartOperation, used for subclass to do implement opreation.
      * @return  the {@link OSSMultipartOperation} instance.
@@ -266,6 +267,7 @@ public class OSSClient implements OSS {
         this.multipartOperation.setEndpoint(uri);
         this.corsOperation.setEndpoint(uri);
         this.liveChannelOperation.setEndpoint(uri);
+        this.regionOperation.setEndpoint(uri);
     }
 
     /**
@@ -319,6 +321,7 @@ public class OSSClient implements OSS {
         this.uploadOperation = new OSSUploadOperation(this.multipartOperation);
         this.downloadOperation = new OSSDownloadOperation(objectOperation);
         this.liveChannelOperation = new LiveChannelOperation(this.serviceClient, this.credsProvider);
+        this.regionOperation = new OSSRegionOperation(this.serviceClient, this.credsProvider);
     }
 
     private void initDefaultsByEndpoint() {
@@ -350,6 +353,7 @@ public class OSSClient implements OSS {
         this.multipartOperation.setSignVersion(version);
         this.corsOperation.setSignVersion(version);
         this.liveChannelOperation.setSignVersion(version);
+        this.regionOperation.setSignVersion(version);
     }
     /**
      * Sets the product name.
@@ -363,6 +367,7 @@ public class OSSClient implements OSS {
         this.multipartOperation.setProduct(product);
         this.corsOperation.setProduct(product);
         this.liveChannelOperation.setProduct(product);
+        this.regionOperation.setProduct(product);
     }
 
     /**
@@ -377,6 +382,7 @@ public class OSSClient implements OSS {
         this.multipartOperation.setRegion(region);
         this.corsOperation.setRegion(region);
         this.liveChannelOperation.setRegion(region);
+        this.regionOperation.setRegion(region);
     }
 
     /**
@@ -390,6 +396,7 @@ public class OSSClient implements OSS {
         this.multipartOperation.setCloudBoxId(cloudBoxId);
         this.corsOperation.setCloudBoxId(cloudBoxId);
         this.liveChannelOperation.setCloudBoxId(cloudBoxId);
+        this.regionOperation.setCloudBoxId(cloudBoxId);
     }
 
 
@@ -1955,6 +1962,11 @@ public class OSSClient implements OSS {
     @Override
     public VoidResult closeMetaQuery(String bucketName) throws OSSException, ClientException {
         return this.bucketOperation.closeMetaQuery(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public GetDescribeRegionsResult getDescribeRegions(GetDescribeRegionsRequest getDescribeRegionsRequest) throws OSSException, ClientException {
+        return this.regionOperation.getDescribeRegions(getDescribeRegionsRequest);
     }
 
     @Override

@@ -5140,4 +5140,51 @@ public class ResponseParsersTest {
         Assert.assertEquals("object-with-special-restore", result.getVersionSummaries().get(0).getKey());
         Assert.assertEquals("ongoing-request=\"true\"", result.getVersionSummaries().get(0).getRestoreInfo());
     }
+
+    @Test
+    public void testParseDescribeRegions() {
+        InputStream instream = null;
+        String respBody;
+
+        respBody = "" +
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<RegionInfoList>\n" +
+                "  <RegionInfo>\n" +
+                "     <Region>oss-cn-hangzhou</Region>\n" +
+                "     <InternetEndpoint>oss-cn-hangzhou.aliyuncs.com</InternetEndpoint>\n" +
+                "     <InternalEndpoint>oss-cn-hangzhou-internal.aliyuncs.com</InternalEndpoint>\n" +
+                "     <AccelerateEndpoint>oss-accelerate.aliyuncs.com</AccelerateEndpoint>  \n" +
+                "  </RegionInfo>\n" +
+                "  <RegionInfo>\n" +
+                "     <Region>oss-cn-shanghai</Region>\n" +
+                "     <InternetEndpoint>oss-cn-shanghai.aliyuncs.com</InternetEndpoint>\n" +
+                "     <InternalEndpoint>oss-cn-shanghai-internal.aliyuncs.com</InternalEndpoint>\n" +
+                "     <AccelerateEndpoint>oss-accelerate.aliyuncs.com</AccelerateEndpoint>  \n" +
+                "  </RegionInfo>\n" +
+                "</RegionInfoList>";
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        GetDescribeRegionsResult result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetDescribeRegionsResponseParser parser = new ResponseParsers.GetDescribeRegionsResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+
+        Assert.assertEquals("oss-cn-hangzhou", result.getRegionInfoList().get(0).getRegion());
+        Assert.assertEquals("oss-cn-hangzhou.aliyuncs.com", result.getRegionInfoList().get(0).getInternetEndpoint());
+        Assert.assertEquals("oss-cn-hangzhou-internal.aliyuncs.com", result.getRegionInfoList().get(0).getInternalEndpoint());
+        Assert.assertEquals("oss-accelerate.aliyuncs.com", result.getRegionInfoList().get(0).getAccelerateEndpoint());
+        Assert.assertEquals("oss-cn-shanghai", result.getRegionInfoList().get(1).getRegion());
+        Assert.assertEquals("oss-cn-shanghai.aliyuncs.com", result.getRegionInfoList().get(1).getInternetEndpoint());
+        Assert.assertEquals("oss-cn-shanghai-internal.aliyuncs.com", result.getRegionInfoList().get(1).getInternalEndpoint());
+        Assert.assertEquals("oss-accelerate.aliyuncs.com", result.getRegionInfoList().get(1).getAccelerateEndpoint());
+    }
 }
