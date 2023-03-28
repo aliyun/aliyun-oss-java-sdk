@@ -245,7 +245,6 @@ public final class RequestMarshallers {
             StringBuffer xmlBody = new StringBuffer();
             xmlBody.append("<RefererConfiguration>");
             xmlBody.append("<AllowEmptyReferer>" + br.isAllowEmptyReferer() + "</AllowEmptyReferer>");
-            xmlBody.append("<AllowTruncateQueryString>" + br.isAllowTruncateQueryString() + "</AllowTruncateQueryString>");
 
             if (!br.getRefererList().isEmpty()) {
                 xmlBody.append("<RefererList>");
@@ -257,7 +256,11 @@ public final class RequestMarshallers {
                 xmlBody.append("<RefererList/>");
             }
 
-            if (!br.getBlackRefererList().isEmpty()) {
+            if(br.isAllowTruncateQueryString() != null){
+                xmlBody.append("<AllowTruncateQueryString>" + br.isAllowTruncateQueryString() + "</AllowTruncateQueryString>");
+            }
+
+            if (br.getBlackRefererList() != null && !br.getBlackRefererList().isEmpty()) {
                 xmlBody.append("<RefererBlacklist>");
                 for (String referer : br.getBlackRefererList()) {
                     xmlBody.append("<Referer>" + referer + "</Referer>");

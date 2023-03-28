@@ -1603,7 +1603,6 @@ public final class ResponseParsers {
             Element root = getXmlRootElement(responseBody);
 
             boolean allowEmptyReferer = Boolean.valueOf(root.getChildText("AllowEmptyReferer"));
-            boolean allowTruncateQueryString = Boolean.valueOf(root.getChildText("AllowTruncateQueryString"));
             List<String> refererList = new ArrayList<String>();
             if (root.getChild("RefererList") != null) {
                 Element refererListElem = root.getChild("RefererList");
@@ -1613,6 +1612,11 @@ public final class ResponseParsers {
                         refererList.add(e.getText());
                     }
                 }
+            }
+
+            Boolean allowTruncateQueryString = null;
+            if(root.getChildText("AllowTruncateQueryString") != null){
+                allowTruncateQueryString = Boolean.valueOf(root.getChildText("AllowTruncateQueryString"));
             }
 
             List<String> blackRefererList = new ArrayList<String>();
@@ -1625,7 +1629,7 @@ public final class ResponseParsers {
                     }
                 }
             }
-            return new BucketReferer(allowEmptyReferer, allowTruncateQueryString, refererList, blackRefererList);
+            return new BucketReferer(allowEmptyReferer, refererList).withAllowTruncateQueryString(allowTruncateQueryString).withBlackRefererList(blackRefererList);
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {

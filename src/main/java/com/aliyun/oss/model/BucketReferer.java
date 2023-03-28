@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class BucketReferer extends GenericResult {
     private boolean allowEmptyReferer = true;
-    private boolean allowTruncateQueryString = true;
+    private Boolean allowTruncateQueryString = null;
     private List<String> refererList = new ArrayList<String>();
     private List<String> blackRefererList = new ArrayList<String>();
 
@@ -46,12 +46,6 @@ public class BucketReferer extends GenericResult {
         setRefererList(refererList);
     }
 
-    public BucketReferer(boolean allowEmptyReferer, boolean allowTruncateQueryString, List<String> refererList, List<String> blackRefererList) {
-        this.allowEmptyReferer = allowEmptyReferer;
-        this.allowTruncateQueryString = allowTruncateQueryString;
-        this.refererList = refererList;
-        this.blackRefererList = blackRefererList;
-    }
 
     @Deprecated
     public boolean allowEmpty() {
@@ -66,6 +60,11 @@ public class BucketReferer extends GenericResult {
         this.allowEmptyReferer = allowEmptyReferer;
     }
 
+    public BucketReferer withAllowEmptyReferer(boolean allowEmptyReferer) {
+        setAllowEmptyReferer(allowEmptyReferer);
+        return this;
+    }
+
     public List<String> getRefererList() {
         return refererList;
     }
@@ -77,16 +76,26 @@ public class BucketReferer extends GenericResult {
         }
     }
 
+    public BucketReferer withRefererList(List<String> refererList) {
+        setRefererList(refererList);
+        return this;
+    }
+
     public void clearRefererList() {
         this.refererList.clear();
     }
 
-    public boolean isAllowTruncateQueryString() {
+    public Boolean isAllowTruncateQueryString() {
         return allowTruncateQueryString;
     }
 
-    public void setAllowTruncateQueryString(boolean allowTruncateQueryString) {
+    public void setAllowTruncateQueryString(Boolean allowTruncateQueryString) {
         this.allowTruncateQueryString = allowTruncateQueryString;
+    }
+
+    public BucketReferer withAllowTruncateQueryString(Boolean allowTruncateQueryString) {
+        setAllowTruncateQueryString(allowTruncateQueryString);
+        return this;
     }
 
     public List<String> getBlackRefererList() {
@@ -95,6 +104,11 @@ public class BucketReferer extends GenericResult {
 
     public void setBlackRefererList(List<String> blackRefererList) {
         this.blackRefererList = blackRefererList;
+    }
+
+    public BucketReferer withBlackRefererList(List<String> blackRefererList) {
+        setBlackRefererList(blackRefererList);
+        return this;
     }
 
     public void clearBlackRefererList() {

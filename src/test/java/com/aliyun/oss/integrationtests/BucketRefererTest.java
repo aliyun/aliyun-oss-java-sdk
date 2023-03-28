@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aliyun.oss.model.SetBucketRefererRequest;
+import com.aliyun.oss.model.VoidResult;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -276,4 +277,59 @@ public class BucketRefererTest extends TestBase {
             ossClient.deleteBucket(bucketName);
         }
     }
+
+    @Test
+    public void testSpecialSetBucketRefererWithBlackRefer() {
+        final String bucketName = "unormal-set-bucket-blackreferer";
+
+
+        try {
+            ossClient.createBucket(bucketName);
+
+            // set null
+            BucketReferer r = new BucketReferer();
+            r.setRefererList(null);
+            r.setBlackRefererList(null);
+
+
+            SetBucketRefererRequest request = new SetBucketRefererRequest(bucketName)
+                    .withReferer(r);
+            VoidResult result = ossClient.setBucketReferer(request);
+            Assert.assertEquals(result.getResponse().getStatusCode(), 200);
+
+            r = ossClient.getBucketReferer(bucketName);
+            Assert.assertEquals(0, r.getRefererList().size());
+            Assert.assertEquals(0, r.getBlackRefererList().size());
+
+            // set empty
+            List<String> referer = new ArrayList<String>();
+            List<String> refererBlackList = new ArrayList<String>();
+            r.setRefererList(referer);
+            r.setBlackRefererList(refererBlackList);
+            SetBucketRefererRequest request2 = new SetBucketRefererRequest(bucketName)
+                    .withReferer(r);
+            VoidResult result2 = ossClient.setBucketReferer(request2);
+            Assert.assertEquals(result2.getResponse().getStatusCode(), 200);
+
+            r = ossClient.getBucketReferer(bucketName);
+            Assert.assertEquals(0, r.getRefererList().size());
+            Assert.assertEquals(0, r.getBlackRefererList().size());
+
+            // test with
+            BucketReferer r3 = new BucketReferer(true, null).withAllowTruncateQueryString(null).withBlackRefererList(null);
+            SetBucketRefererRequest request3 = new SetBucketRefererRequest(bucketName)
+                    .withReferer(r3);
+            VoidResult result3 = ossClient.setBucketReferer(request3);
+            Assert.assertEquals(result3.getResponse().getStatusCode(), 200);
+
+            r = ossClient.getBucketReferer(bucketName);
+            Assert.assertEquals(true, r.isAllowEmptyReferer());
+            Assert.assertEquals(Boolean.TRUE, r.isAllowTruncateQueryString());
+            Assert.assertEquals(0, r.getRefererList().size());
+            Assert.assertEquals(0, r.getBlackRefererList().size());
+        } finally {
+            ossClient.deleteBucket(bucketName);
+        }
+    }
+
 }

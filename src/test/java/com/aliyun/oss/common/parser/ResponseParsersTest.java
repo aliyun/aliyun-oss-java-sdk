@@ -5221,7 +5221,7 @@ public class ResponseParsersTest {
             Assert.assertTrue(false);
         }
         Assert.assertEquals(false, result3.isAllowEmptyReferer());
-        Assert.assertEquals(false, result3.isAllowTruncateQueryString());
+        Assert.assertEquals(Boolean.FALSE, result3.isAllowTruncateQueryString());
         Assert.assertEquals("http://www.aliyun.com", result3.getRefererList().get(0));
         Assert.assertEquals("https://www.aliyun.com", result3.getRefererList().get(1));
         Assert.assertEquals("http://www.*.com", result3.getRefererList().get(2));
@@ -5262,7 +5262,7 @@ public class ResponseParsersTest {
             Assert.assertTrue(false);
         }
         Assert.assertEquals(false, result4.isAllowEmptyReferer());
-        Assert.assertEquals(true, result4.isAllowTruncateQueryString());
+        Assert.assertEquals(Boolean.TRUE, Boolean.valueOf(result4.isAllowTruncateQueryString()));
         Assert.assertEquals("http://www.aliyun.com", result4.getRefererList().get(0));
         Assert.assertEquals("https://www.aliyun.com", result4.getRefererList().get(1));
         Assert.assertEquals("http://www.*.com", result4.getRefererList().get(2));
