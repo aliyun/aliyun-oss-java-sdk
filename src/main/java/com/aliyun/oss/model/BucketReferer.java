@@ -33,7 +33,9 @@ import java.util.List;
  */
 public class BucketReferer extends GenericResult {
     private boolean allowEmptyReferer = true;
+    private boolean allowTruncateQueryString = true;
     private List<String> refererList = new ArrayList<String>();
+    private List<String> blackRefererList = new ArrayList<String>();
 
     public BucketReferer() {
 
@@ -42,6 +44,13 @@ public class BucketReferer extends GenericResult {
     public BucketReferer(boolean allowEmptyReferer, List<String> refererList) {
         setAllowEmptyReferer(allowEmptyReferer);
         setRefererList(refererList);
+    }
+
+    public BucketReferer(boolean allowEmptyReferer, boolean allowTruncateQueryString, List<String> refererList, List<String> blackRefererList) {
+        this.allowEmptyReferer = allowEmptyReferer;
+        this.allowTruncateQueryString = allowTruncateQueryString;
+        this.refererList = refererList;
+        this.blackRefererList = blackRefererList;
     }
 
     @Deprecated
@@ -70,5 +79,25 @@ public class BucketReferer extends GenericResult {
 
     public void clearRefererList() {
         this.refererList.clear();
+    }
+
+    public boolean isAllowTruncateQueryString() {
+        return allowTruncateQueryString;
+    }
+
+    public void setAllowTruncateQueryString(boolean allowTruncateQueryString) {
+        this.allowTruncateQueryString = allowTruncateQueryString;
+    }
+
+    public List<String> getBlackRefererList() {
+        return blackRefererList;
+    }
+
+    public void setBlackRefererList(List<String> blackRefererList) {
+        this.blackRefererList = blackRefererList;
+    }
+
+    public void clearBlackRefererList() {
+        this.blackRefererList.clear();
     }
 }

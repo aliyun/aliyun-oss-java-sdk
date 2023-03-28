@@ -189,4 +189,91 @@ public class BucketRefererTest extends TestBase {
             ossClient.deleteBucket(bucketWithoutRefererRule);
         }
     }
+
+    @Test
+    public void testNormalSetBucketBlackReferer() {
+        final String bucketName = "normal-set-bucket-referer-source";
+
+        final String referer1 = "https://www.aliyun.com";
+        final String referer2 = "http://www.*.com";
+        final String referer3 = "https://www.?.aliyuncs.com";
+        final String blackReferer1 = "http://www.*.com";
+        final String blackReferer2 = "https://www.?.aliyuncs.com";
+        final String blackReferer3 = "https://www.————（）（*（*（*&&……@*……%%￥#@？》《}{.com";
+
+        try {
+            ossClient.createBucket(bucketName);
+
+            // Set non-empty referer list
+            BucketReferer r = new BucketReferer();
+            List<String> refererList = new ArrayList<String>();
+            refererList.add(referer1);
+            refererList.add(referer2);
+            refererList.add(referer3);
+            r.setRefererList(refererList);
+
+            List<String> refererBlackList = new ArrayList<String>();
+            refererBlackList.add(blackReferer1);
+            refererBlackList.add(blackReferer2);
+            refererBlackList.add(blackReferer3);
+            r.setBlackRefererList(refererBlackList);
+
+            ossClient.setBucketReferer(bucketName, r);
+
+            waitForCacheExpiration(5);
+
+            r = ossClient.getBucketReferer(bucketName);
+            List<String> returedRefererList = r.getRefererList();
+            List<String> returnBlackRefererList = r.getBlackRefererList();
+            Assert.assertTrue(r.isAllowEmptyReferer());
+            Assert.assertTrue(r.isAllowTruncateQueryString());
+
+            Assert.assertTrue(returedRefererList.contains(referer1));
+            Assert.assertTrue(returedRefererList.contains(referer2));
+            Assert.assertTrue(returedRefererList.contains(referer3));
+            Assert.assertTrue(returnBlackRefererList.contains(blackReferer1));
+            Assert.assertTrue(returnBlackRefererList.contains(blackReferer2));
+            Assert.assertTrue(returnBlackRefererList.contains(blackReferer3));
+            Assert.assertEquals(3, returedRefererList.size());
+            Assert.assertEquals(3, returnBlackRefererList.size());
+            Assert.assertEquals(r.getRequestId().length(), REQUEST_ID_LEN);
+
+            // Set empty referer list
+            r.clearRefererList();
+            r.clearBlackRefererList();
+            ossClient.setBucketReferer(bucketName, r);
+
+            r = ossClient.getBucketReferer(bucketName);
+            returedRefererList = r.getRefererList();
+            returnBlackRefererList = r.getRefererList();
+            Assert.assertTrue(r.isAllowEmptyReferer());
+            Assert.assertTrue(r.isAllowTruncateQueryString());
+            Assert.assertEquals(0, returedRefererList.size());
+            Assert.assertEquals(0, returnBlackRefererList.size());
+            Assert.assertEquals(r.getRequestId().length(), REQUEST_ID_LEN);
+
+            // only black referer
+            refererBlackList.clear();
+            refererBlackList.add(blackReferer1);
+            refererBlackList.add(blackReferer2);
+
+            r.setBlackRefererList(refererBlackList);
+            r.setAllowEmptyReferer(false);
+            r.setAllowTruncateQueryString(false);
+            ossClient.setBucketReferer(bucketName, r);
+
+            r = ossClient.getBucketReferer(bucketName);
+            returnBlackRefererList = r.getBlackRefererList();
+            Assert.assertFalse(r.isAllowEmptyReferer());
+            Assert.assertFalse(r.isAllowTruncateQueryString());
+            Assert.assertTrue(returnBlackRefererList.contains(blackReferer1));
+            Assert.assertTrue(returnBlackRefererList.contains(blackReferer2));
+            Assert.assertEquals(2, returnBlackRefererList.size());
+            Assert.assertEquals(r.getRequestId().length(), REQUEST_ID_LEN);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        } finally {
+            ossClient.deleteBucket(bucketName);
+        }
+    }
 }
