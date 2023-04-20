@@ -6,6 +6,7 @@ package com.aliyun.oss.common.parser;
 
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.comm.io.FixedLengthInputStream;
+import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.model.*;
 import junit.framework.Assert;
@@ -1413,4 +1414,27 @@ public class RequestMarshallersTest {
         Assert.assertEquals("key2", root.getChild("Rule").getChild("Filter").getChildren("Not").get(1).getChild("Tag").getChildText("Key"));
         Assert.assertEquals("value2", root.getChild("Rule").getChild("Filter").getChildren("Not").get(1).getChild("Tag").getChildText("Value"));
     }
+
+    @Test
+    public void testAsyncProcessObjectRequestMarshaller() {
+        String saveAsKey = "outobjprefix.mp4";
+        String originalVideo = "test-video.mp4/example.mp4";
+        String bucketName = "example-bucket";
+        StringBuilder styleBuilder = new StringBuilder();
+        styleBuilder.append("test-video.mp4/convert,f_mp4,vcodec_h265,s_1920x1080,vb_2000000,fps_30,acodec_aac,ab_100000,sn_1");  // resize
+        styleBuilder.append("|sys/saveas,");
+        styleBuilder.append("o_" + BinaryUtil.toBase64String(saveAsKey.getBytes()));
+        styleBuilder.append(",");
+        styleBuilder.append("b_" + BinaryUtil.toBase64String(bucketName.getBytes()));
+        AsyncProcessObjectRequest request = new AsyncProcessObjectRequest(bucketName, originalVideo, styleBuilder.toString());
+
+        byte[] data = asyncProcessObjectRequestMarshaller.marshall(request);
+
+        String returnData = new String(data);
+
+        String style = styleBuilder.toString();
+
+        Assert.assertTrue(returnData.equals("x-oss-async-process="+style.replaceAll("=","")));
+    }
+
 }
