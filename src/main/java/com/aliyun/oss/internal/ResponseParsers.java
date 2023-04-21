@@ -1619,10 +1619,11 @@ public final class ResponseParsers {
             Boolean allowTruncateQueryString = null;
             if(root.getChildText("AllowTruncateQueryString") != null){
                 allowTruncateQueryString = Boolean.valueOf(root.getChildText("AllowTruncateQueryString"));
+                bucketReferer.setAllowTruncateQueryString(allowTruncateQueryString);
             }
 
-            List<String> blackRefererList = new ArrayList<String>();
             if (root.getChild("RefererBlacklist") != null) {
+                List<String> blackRefererList = new ArrayList<String>();
                 Element refererListElem = root.getChild("RefererBlacklist");
                 List<Element> refererElems = refererListElem.getChildren("Referer");
                 if (refererElems != null && !refererElems.isEmpty()) {
@@ -1630,9 +1631,8 @@ public final class ResponseParsers {
                         blackRefererList.add(e.getText());
                     }
                 }
+                bucketReferer.setBlackRefererList(blackRefererList);
             }
-            bucketReferer.setAllowTruncateQueryString(allowTruncateQueryString);
-            bucketReferer.setBlackRefererList(blackRefererList);
             return bucketReferer;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
