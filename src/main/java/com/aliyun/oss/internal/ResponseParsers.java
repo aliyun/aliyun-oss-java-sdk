@@ -1614,6 +1614,8 @@ public final class ResponseParsers {
                 }
             }
 
+            BucketReferer bucketReferer = new BucketReferer(allowEmptyReferer, refererList);
+
             Boolean allowTruncateQueryString = null;
             if(root.getChildText("AllowTruncateQueryString") != null){
                 allowTruncateQueryString = Boolean.valueOf(root.getChildText("AllowTruncateQueryString"));
@@ -1629,7 +1631,9 @@ public final class ResponseParsers {
                     }
                 }
             }
-            return new BucketReferer(allowEmptyReferer, refererList).withAllowTruncateQueryString(allowTruncateQueryString).withBlackRefererList(blackRefererList);
+            bucketReferer.setAllowTruncateQueryString(allowTruncateQueryString);
+            bucketReferer.setBlackRefererList(blackRefererList);
+            return bucketReferer;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {

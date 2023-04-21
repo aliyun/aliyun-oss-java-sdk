@@ -266,8 +266,6 @@ public final class RequestMarshallers {
                     xmlBody.append("<Referer>" + referer + "</Referer>");
                 }
                 xmlBody.append("</RefererBlacklist>");
-            } else {
-                xmlBody.append("<RefererBlacklist/>");
             }
 
             xmlBody.append("</RefererConfiguration>");
