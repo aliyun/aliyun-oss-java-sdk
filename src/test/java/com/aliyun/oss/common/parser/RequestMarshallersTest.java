@@ -1413,4 +1413,51 @@ public class RequestMarshallersTest {
         Assert.assertEquals("key2", root.getChild("Rule").getChild("Filter").getChildren("Not").get(1).getChild("Tag").getChildText("Key"));
         Assert.assertEquals("value2", root.getChild("Rule").getChild("Filter").getChildren("Not").get(1).getChild("Tag").getChildText("Value"));
     }
+
+    @Test
+    public void testPutBucketRefererRequestMarshaller() {
+        final String bucketName = "unormal-set-bucket-referer";
+        final String referer0 = "http://www.aliyun.com";
+        final String referer1 = "https://www.aliyun.com";
+        final String refererBlack0 = "http://oss-cn-chengdu.aliyuncs.com";
+        final String refererBlack1 = "https://oss-cn-chengdu.aliyuncs.com";
+
+
+        BucketReferer r = new BucketReferer();
+        r.setAllowEmptyReferer(false);
+        r.setAllowTruncateQueryString(true);
+
+        List<String> refererList = new ArrayList<String>();
+        refererList.add(referer0);
+        refererList.add(referer1);
+        r.setRefererList(refererList);
+
+        List<String> refererBlackList = new ArrayList<String>();
+        refererBlackList.add(refererBlack0);
+        refererBlackList.add(refererBlack1);
+        r.setBlackRefererList(refererBlackList);
+
+        SetBucketRefererRequest request = new SetBucketRefererRequest(bucketName)
+                .withReferer(r);
+
+        FixedLengthInputStream is = bucketRefererMarshaller.marshall(r);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        Assert.assertEquals("false", root.getChildText("AllowEmptyReferer"));
+        Assert.assertEquals("true", root.getChildText("AllowTruncateQueryString"));
+        Assert.assertEquals("http://www.aliyun.com", root.getChild("RefererList").getChildren("Referer").get(0).getText());
+        Assert.assertEquals("https://www.aliyun.com", root.getChild("RefererList").getChildren("Referer").get(1).getText());
+        Assert.assertEquals("http://oss-cn-chengdu.aliyuncs.com", root.getChild("RefererBlacklist").getChildren("Referer").get(0).getText());
+        Assert.assertEquals("https://oss-cn-chengdu.aliyuncs.com", root.getChild("RefererBlacklist").getChildren("Referer").get(1).getText());
+    }
 }
