@@ -256,6 +256,18 @@ public final class RequestMarshallers {
                 xmlBody.append("<RefererList/>");
             }
 
+            if(br.isAllowTruncateQueryString() != null){
+                xmlBody.append("<AllowTruncateQueryString>" + br.isAllowTruncateQueryString() + "</AllowTruncateQueryString>");
+            }
+
+            if (br.getBlackRefererList() != null && !br.getBlackRefererList().isEmpty()) {
+                xmlBody.append("<RefererBlacklist>");
+                for (String referer : br.getBlackRefererList()) {
+                    xmlBody.append("<Referer>" + referer + "</Referer>");
+                }
+                xmlBody.append("</RefererBlacklist>");
+            }
+
             xmlBody.append("</RefererConfiguration>");
             return stringMarshaller.marshall(xmlBody.toString());
         }

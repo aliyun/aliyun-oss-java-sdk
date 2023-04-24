@@ -5140,4 +5140,162 @@ public class ResponseParsersTest {
         Assert.assertEquals("object-with-special-restore", result.getVersionSummaries().get(0).getKey());
         Assert.assertEquals("ongoing-request=\"true\"", result.getVersionSummaries().get(0).getRestoreInfo());
     }
+
+    @Test
+    public void testParseGetBucketBlackReferer() {
+        InputStream instream = null;
+        String respBody;
+
+        // referer1
+        respBody = "" +
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<RefererConfiguration>\n" +
+                "  <AllowEmptyReferer>true</AllowEmptyReferer>\n" +
+                "  <RefererList/>\n" +
+                "</RefererConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        BucketReferer result1 = null;
+        try {
+            result1 = ResponseParsers.parseGetBucketReferer(instream);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals(true, result1.isAllowEmptyReferer());
+
+        // referer2
+        respBody = "" +
+                "<RefererConfiguration>\n" +
+                "  <AllowEmptyReferer>true</AllowEmptyReferer>\n" +
+                "</RefererConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        BucketReferer result2 = null;
+        try {
+            result2 = ResponseParsers.parseGetBucketReferer(instream);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals(true, result2.isAllowEmptyReferer());
+
+        // referer3
+        respBody = "" +
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<RefererConfiguration>\n" +
+                "<AllowEmptyReferer>false</AllowEmptyReferer>\n" +
+                "<AllowTruncateQueryString>false</AllowTruncateQueryString>\n" +
+                "<RefererList>\n" +
+                "    <Referer>http://www.aliyun.com</Referer>\n" +
+                "    <Referer>https://www.aliyun.com</Referer>\n" +
+                "    <Referer>http://www.*.com</Referer>\n" +
+                "    <Referer>https://www.?.aliyuncs.com</Referer>\n" +
+                "</RefererList>\n" +
+                "</RefererConfiguration> ";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        BucketReferer result3 = null;
+        try {
+            result3 = ResponseParsers.parseGetBucketReferer(instream);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals(false, result3.isAllowEmptyReferer());
+        Assert.assertEquals(Boolean.FALSE, result3.isAllowTruncateQueryString());
+        Assert.assertEquals("http://www.aliyun.com", result3.getRefererList().get(0));
+        Assert.assertEquals("https://www.aliyun.com", result3.getRefererList().get(1));
+        Assert.assertEquals("http://www.*.com", result3.getRefererList().get(2));
+        Assert.assertEquals("https://www.?.aliyuncs.com", result3.getRefererList().get(3));
+
+        // referer4
+        respBody = "" +
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<RefererConfiguration>\n" +
+                "  <AllowEmptyReferer>false</AllowEmptyReferer>\n" +
+                "  <AllowTruncateQueryString>true</AllowTruncateQueryString>\n" +
+                "  <RefererList>\n" +
+                "        <Referer>http://www.aliyun.com</Referer>\n" +
+                "        <Referer>https://www.aliyun.com</Referer>\n" +
+                "        <Referer>http://www.*.com</Referer>\n" +
+                "        <Referer>https://www.?.aliyuncs.com</Referer>\n" +
+                "  </RefererList>\n" +
+                "  <RefererBlacklist>\n" +
+                "        <Referer>http://www.refuse.com</Referer>\n" +
+                "        <Referer>https://*.hack.com</Referer>\n" +
+                "        <Referer>http://ban.*.com</Referer>\n" +
+                "        <Referer>https://www.?.deny.com</Referer>\n" +
+                "  </RefererBlacklist>\n" +
+                "</RefererConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        BucketReferer result4 = null;
+        try {
+            result4 = ResponseParsers.parseGetBucketReferer(instream);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals(false, result4.isAllowEmptyReferer());
+        Assert.assertEquals(Boolean.TRUE, Boolean.valueOf(result4.isAllowTruncateQueryString()));
+        Assert.assertEquals("http://www.aliyun.com", result4.getRefererList().get(0));
+        Assert.assertEquals("https://www.aliyun.com", result4.getRefererList().get(1));
+        Assert.assertEquals("http://www.*.com", result4.getRefererList().get(2));
+        Assert.assertEquals("https://www.?.aliyuncs.com", result4.getRefererList().get(3));
+        Assert.assertEquals("http://www.refuse.com", result4.getBlackRefererList().get(0));
+        Assert.assertEquals("https://*.hack.com", result4.getBlackRefererList().get(1));
+        Assert.assertEquals("http://ban.*.com", result4.getBlackRefererList().get(2));
+        Assert.assertEquals("https://www.?.deny.com", result4.getBlackRefererList().get(3));
+
+        respBody = "invalid";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            BucketReferer result = ResponseParsers.parseGetBucketReferer(instream);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        try {
+            BucketReferer result = ResponseParsers.parseGetBucketReferer(null);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+    }
 }
