@@ -141,6 +141,7 @@ public final class ResponseParsers {
     public static final GetBucketAccessMonitorResponseParser getBucketAccessMonitorResponseParser = new GetBucketAccessMonitorResponseParser();
     public static final GetMetaQueryStatusResponseParser getMetaQueryStatusResponseParser = new GetMetaQueryStatusResponseParser();
     public static final DoMetaQueryResponseParser doMetaQueryResponseParser = new DoMetaQueryResponseParser();
+    public static final GetBucketCallbackPolicyResponseParser getBucketCallbackPolicyResponseParser = new GetBucketCallbackPolicyResponseParser();
 
     public static Long parseLongWithDefault(String defaultValue){
         if(defaultValue == null || "".equals(defaultValue)){
@@ -4152,6 +4153,41 @@ public final class ResponseParsers {
                 return doMetaQueryResult;
             } catch (JDOMParseException e) {
                 throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class GetBucketCallbackPolicyResponseParser implements ResponseParser<GetBucketCallbackPolicyResult> {
+
+        @Override
+        public GetBucketCallbackPolicyResult parse(ResponseMessage response) throws ResponseParseException {
+            GetBucketCallbackPolicyResult result = parseGetBucketCallbackPolicy(response.getContent());
+            setResultParameter(result, response);
+            return result;
+        }
+
+        private GetBucketCallbackPolicyResult parseGetBucketCallbackPolicy(InputStream inputStream) throws ResponseParseException {
+                GetBucketCallbackPolicyResult result = new GetBucketCallbackPolicyResult();
+                if (inputStream == null) {
+                    return result;
+                }
+
+                try {
+                    Element root = getXmlRootElement(inputStream);
+
+                    List<Element> fileElem = root.getChildren();
+                    List<PolicyCallbackItem> policyCallbackItems = new ArrayList<PolicyCallbackItem>();
+                    if(fileElem.size() >0 ){
+                        for(Element elem : fileElem){
+                            PolicyCallbackItem policyCallbackItem = new PolicyCallbackItem(elem.getChildText("PolicyName"), elem.getChildText("Callback"));
+                            policyCallbackItem.setCallbackVar(elem.getChildText("CallbackVar"));
+                            policyCallbackItems.add(policyCallbackItem);
+                        }
+                    }
+                    result.setPolicyCallbackItems(policyCallbackItems);
+                    return result;
             } catch (Exception e) {
                 throw new ResponseParseException(e.getMessage(), e);
             }

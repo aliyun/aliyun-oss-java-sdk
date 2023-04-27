@@ -1958,6 +1958,21 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public VoidResult setBucketCallbackPolicy(SetBucketCallbackPolicyRequest setBucketCallbackPolicyRequest) throws OSSException, ClientException {
+        return this.bucketOperation.setBucketCallbackPolicy(setBucketCallbackPolicyRequest);
+    }
+
+    @Override
+    public GetBucketCallbackPolicyResult getBucketCallbackPolicy(GenericRequest genericRequest) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketCallbackPolicy(genericRequest);
+    }
+
+    @Override
+    public VoidResult deleteBucketCallbackPolicy(GenericRequest genericRequest) throws OSSException, ClientException {
+        return this.bucketOperation.deleteBucketCallbackPolicy(genericRequest);
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();

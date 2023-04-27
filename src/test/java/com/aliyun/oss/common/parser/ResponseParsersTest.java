@@ -5140,4 +5140,66 @@ public class ResponseParsersTest {
         Assert.assertEquals("object-with-special-restore", result.getVersionSummaries().get(0).getKey());
         Assert.assertEquals("ongoing-request=\"true\"", result.getVersionSummaries().get(0).getRestoreInfo());
     }
+
+
+    @Test
+    public void testGetBucketCallbackPolicyParser() {
+        String respBody = "" +
+                "<BucketCallbackPolicy>\n" +
+                "  <PolicyItem>\n" +
+                "    <PolicyName>test1</PolicyName>\n" +
+                "    <Callback>eyJjYWxsYmFja1VybCI6Ind3dy5hYmMuY29tL2NhbGxiYWNrIiwiY2FsbGJhY2tCb2R5IjoiJHtldGFnfSJ9</Callback>\n" +
+                "    <CallbackVar>ewoieDp2YXIxIjoidmFsdWUxIiwKIng6dmFyMiI6InZhbHVlMiIKfQ==</CallbackVar>\n" +
+                "  </PolicyItem>\n" +
+                "  <PolicyItem>\n" +
+                "    <PolicyName>test_2</PolicyName>\n" +
+                "    <Callback>ewoiY2FsbGJhY2tVcmwiOiIja0JvZHkiOiJ7XCJtaW1lVHqc29uIgp9</Callback>\n" +
+                "    <CallbackVar>ewoia2V5MSI6InZhbDEiLAoia2V5MiI6InZhbDIiCn0=</CallbackVar>\n" +
+                "  </PolicyItem>\n" +
+                "</BucketCallbackPolicy>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        GetBucketCallbackPolicyResult result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketCallbackPolicyResponseParser parser = new ResponseParsers.GetBucketCallbackPolicyResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+
+        Assert.assertEquals("test1", result.getPolicyCallbackItems().get(0).getPolicyName());
+        Assert.assertEquals("eyJjYWxsYmFja1VybCI6Ind3dy5hYmMuY29tL2NhbGxiYWNrIiwiY2FsbGJhY2tCb2R5IjoiJHtldGFnfSJ9", result.getPolicyCallbackItems().get(0).getCallback());
+        Assert.assertEquals("ewoieDp2YXIxIjoidmFsdWUxIiwKIng6dmFyMiI6InZhbHVlMiIKfQ==", result.getPolicyCallbackItems().get(0).getCallbackVar());
+        Assert.assertEquals("test_2", result.getPolicyCallbackItems().get(1).getPolicyName());
+        Assert.assertEquals("ewoiY2FsbGJhY2tVcmwiOiIja0JvZHkiOiJ7XCJtaW1lVHqc29uIgp9", result.getPolicyCallbackItems().get(1).getCallback());
+        Assert.assertEquals("ewoia2V5MSI6InZhbDEiLAoia2V5MiI6InZhbDIiCn0=", result.getPolicyCallbackItems().get(1).getCallbackVar());
+
+        respBody = "" +
+                "<BucketCallbackPolicy>\n" +
+                "</BucketCallbackPolicy>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketCallbackPolicyResponseParser parser = new ResponseParsers.GetBucketCallbackPolicyResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+    }
 }

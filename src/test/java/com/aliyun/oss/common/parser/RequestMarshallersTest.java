@@ -6,6 +6,7 @@ package com.aliyun.oss.common.parser;
 
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.comm.io.FixedLengthInputStream;
+import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.model.*;
 import junit.framework.Assert;
@@ -1412,5 +1413,74 @@ public class RequestMarshallersTest {
         Assert.assertEquals("A0/not2-prefix", root.getChild("Rule").getChild("Filter").getChildren("Not").get(1).getChildText("Prefix"));
         Assert.assertEquals("key2", root.getChild("Rule").getChild("Filter").getChildren("Not").get(1).getChild("Tag").getChildText("Key"));
         Assert.assertEquals("value2", root.getChild("Rule").getChild("Filter").getChildren("Not").get(1).getChild("Tag").getChildText("Value"));
+    }
+
+    @Test
+    public void testSetBucketCallbackPolicyRequestMarshaller() {
+        String policyName = "test1";
+        String callbackContent = "{\"callbackUrl\":\"www.abc.com/callback\",\"callbackBody\":\"${etag}\"}";
+        String callbackVarContent = "{\n" +
+                "\"x:var1\":\"value1\",\n" +
+                "\"x:var2\":\"value2\"\n" +
+                "}";
+
+        String policyName2 = "test_2";
+        String callbackContent2 = "{\n" +
+                "\"callbackUrl\":\"42.192.82.9:9001/index.php?route=test/test/test\",\n" +
+                "\"callbackHost\":\"42.192.82.9\",\n" +
+                "\"callbackBody\":\"{\\\"mimeType\\\":${mimeType},\\\"size\\\":${size}}\",\n" +
+                "\"callbackBodyType\":\"application/json\"\n" +
+                "}";
+        String callbackVarContent2 = "{\n" +
+                "\"key1\":\"val1\",\n" +
+                "\"key2\":\"val2\"\n" +
+                "}";
+        String callback = BinaryUtil.toBase64String(callbackContent.getBytes());
+        String callback2 = BinaryUtil.toBase64String(callbackContent2.getBytes());
+        String callbackVar = BinaryUtil.toBase64String(callbackVarContent.getBytes());
+        String callbackVar2 = BinaryUtil.toBase64String(callbackVarContent2.getBytes());
+        List<PolicyCallbackItem> policyCallbackItems = new ArrayList<PolicyCallbackItem>();
+        PolicyCallbackItem policyCallbackItem = new PolicyCallbackItem(policyName, callback).withCallbackVar(callbackVar);
+        policyCallbackItem.setPolicyName(policyName);
+        policyCallbackItem.setCallback(callback);
+        policyCallbackItem.setCallbackVar(callbackVar);
+
+        PolicyCallbackItem policyCallbackItem2 = new PolicyCallbackItem(policyName2, callback2).withCallbackVar(callbackVar2);
+        policyCallbackItem2.setPolicyName(policyName2);
+        policyCallbackItem2.setCallback(callback2);
+        policyCallbackItem2.setCallbackVar(callbackVar2);
+
+        policyCallbackItems.add(policyCallbackItem);
+        policyCallbackItems.add(policyCallbackItem2);
+        SetBucketCallbackPolicyRequest setBucketCallbackPolicyRequest = new SetBucketCallbackPolicyRequest("bucket").withPolicyCallbackItems(policyCallbackItems);
+
+
+        byte[] data = setBucketCallbackPolicyRequestMarshaller.marshall(setBucketCallbackPolicyRequest);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        String policyNameReturn = root.getChildren("PolicyItem").get(0).getChildText("PolicyName");
+        String callbackReturn = root.getChildren("PolicyItem").get(0).getChildText("Callback");
+        String callbackVarReturn = root.getChildren("PolicyItem").get(0).getChildText("CallbackVar");
+        String policyNameReturn2 = root.getChildren("PolicyItem").get(1).getChildText("PolicyName");
+        String callbackReturn2 = root.getChildren("PolicyItem").get(1).getChildText("Callback");
+        String callbackVarReturn2 = root.getChildren("PolicyItem").get(1).getChildText("CallbackVar");
+
+        Assert.assertEquals(policyName, policyNameReturn);
+        Assert.assertEquals(callback, callbackReturn);
+        Assert.assertEquals(callbackVar, callbackVarReturn);
+        Assert.assertEquals(policyName2, policyNameReturn2);
+        Assert.assertEquals(callback2, callbackReturn2);
+        Assert.assertEquals(callbackVar2, callbackVarReturn2);
     }
 }
