@@ -45,4 +45,7 @@ public class OSSErrorResult {
     @XmlElement(name = "Header")
     public String Header;
 
+    @XmlElement(name = "EC")
+    public String EC;
+
 }

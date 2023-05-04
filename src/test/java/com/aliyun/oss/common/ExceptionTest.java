@@ -111,4 +111,74 @@ public class ExceptionTest {
         Assert.assertEquals(ClientErrorCode.UNKNOWN, clientException.getErrorCode());
     }
 
+    @Test
+    public void testServiceExceptionWithEC() {
+        ServiceException exception = new ServiceException("test err msg");
+        Assert.assertEquals("test err msg", exception.getErrorMessage());
+
+        exception = new ServiceException(new Throwable("test"));
+        Assert.assertNull(exception.getErrorMessage());
+
+        exception = new ServiceException("test err msg", "test err code", "test request id", "test host id",
+                "test rawResponseError", new Exception("123"), "test ec");
+        Assert.assertEquals("test err msg", exception.getErrorMessage());
+        Assert.assertEquals("test err code", exception.getErrorCode());
+        Assert.assertEquals("test request id", exception.getRequestId());
+        Assert.assertEquals("test host id", exception.getHostId());
+        Assert.assertEquals("test rawResponseError", exception.getRawResponseError());
+        Assert.assertEquals("123", exception.getCause().getMessage());
+        Assert.assertEquals("test ec", exception.getEC());
+
+        exception.setRawResponseError("test response err");
+        Assert.assertEquals("test response err", exception.getRawResponseError());
+        Assert.assertTrue(exception.getRawResponseError().contains("test response err"));
+        Assert.assertTrue(exception.toString().contains("\n[EC]: test ec"));
+
+        exception = new ServiceException("test err msg", "test err code", "test request id", "test host id",
+                "test rawResponseError 123", new Exception("456"));
+        Assert.assertEquals("test err msg", exception.getErrorMessage());
+        Assert.assertEquals("test err code", exception.getErrorCode());
+        Assert.assertEquals("test request id", exception.getRequestId());
+        Assert.assertEquals("test host id", exception.getHostId());
+        Assert.assertEquals("test rawResponseError 123", exception.getRawResponseError());
+        Assert.assertEquals("456", exception.getCause().getMessage());
+        Assert.assertEquals(null, exception.getEC());
+        Assert.assertFalse(exception.toString().contains("[EC]"));
+    }
+
+    @Test
+    public void testOSSExceptionWithEC() {
+        OSSException exception = new OSSException("test err msg");
+        Assert.assertEquals("test err msg", exception.getErrorMessage());
+
+        exception = new OSSException("test err msg", new Throwable("test"));
+        Assert.assertEquals("test err msg", exception.getErrorMessage());
+
+        exception = new OSSException("test err msg", "test err code", "test request id", "test host id",
+                "test header", "test resource type", "test method", new Throwable("test cause"));
+        Assert.assertEquals("test err msg", exception.getErrorMessage());
+        Assert.assertEquals("test err code", exception.getErrorCode());
+        Assert.assertEquals("test request id", exception.getRequestId());
+        Assert.assertEquals("test host id", exception.getHostId());
+        Assert.assertEquals(null, exception.getEC());
+
+        Assert.assertEquals("test header", exception.getHeader());
+        Assert.assertEquals("test resource type", exception.getResourceType());
+        Assert.assertEquals("test method", exception.getMethod());
+        Assert.assertEquals("test cause", exception.getCause().getMessage());
+
+        exception = new OSSException("test err msg", "test err code", "test request id", "test host id",
+                "test header", "test resource type", "test method", "test rawResponseError", new Throwable("test cause"), "test ec");
+        Assert.assertEquals("test err msg", exception.getErrorMessage());
+        Assert.assertEquals("test err code", exception.getErrorCode());
+        Assert.assertEquals("test request id", exception.getRequestId());
+        Assert.assertEquals("test host id", exception.getHostId());
+        Assert.assertEquals("test rawResponseError", exception.getRawResponseError());
+        Assert.assertEquals("test ec", exception.getEC());
+
+        Assert.assertEquals("test header", exception.getHeader());
+        Assert.assertEquals("test resource type", exception.getResourceType());
+        Assert.assertEquals("test method", exception.getMethod());
+        Assert.assertEquals("test cause", exception.getCause().getMessage());
+    }
 }
