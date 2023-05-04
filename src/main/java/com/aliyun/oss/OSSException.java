@@ -59,7 +59,12 @@ public class OSSException extends ServiceException {
 
     public OSSException(String errorMessage, String errorCode, String requestId, String hostId, String header,
             String resourceType, String method, String rawResponseError, Throwable cause) {
-        super(errorMessage, errorCode, requestId, hostId, rawResponseError, cause);
+        this(errorMessage, errorCode, requestId, hostId, header, resourceType, method, rawResponseError, cause, null);
+    }
+
+    public OSSException(String errorMessage, String errorCode, String requestId, String hostId, String header,
+                        String resourceType, String method, String rawResponseError, Throwable cause, String ec) {
+        super(errorMessage, errorCode, requestId, hostId, rawResponseError, cause, ec);
         this.resourceType = resourceType;
         this.header = header;
         this.method = method;

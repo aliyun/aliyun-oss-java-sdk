@@ -101,7 +101,7 @@ public class ExceptionFactory {
 
     public static OSSException createOSSException(OSSErrorResult errorResult, String rawResponseError) {
         return new OSSException(errorResult.Message, errorResult.Code, errorResult.RequestId, errorResult.HostId,
-                errorResult.Header, errorResult.ResourceType, errorResult.Method, rawResponseError);
+                errorResult.Header, errorResult.ResourceType, errorResult.Method, rawResponseError, null, errorResult.EC);
     }
 
     public static OSSException createOSSException(String requestId, String errorCode, String message) {

@@ -115,4 +115,6 @@ public interface OSSHeaders extends HttpHeaders {
     static final String OSS_DATE = "x-oss-date";
 
     static final String OSS_CONTENT_SHA256 = "x-oss-content-sha256";
+
+    static final String OSS_ERROR = "x-oss-err";
 }

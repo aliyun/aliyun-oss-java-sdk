@@ -1,11 +1,17 @@
 package com.aliyun.oss.common.parser;
 
+import com.aliyun.oss.OSSErrorCode;
+import com.aliyun.oss.OSSException;
+import com.aliyun.oss.common.comm.ResponseHandler;
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.utils.DateUtil;
+import com.aliyun.oss.internal.OSSErrorResponseHandler;
+import com.aliyun.oss.internal.OSSHeaders;
 import com.aliyun.oss.internal.ResponseParsers;
 import com.aliyun.oss.internal.model.OSSErrorResult;
 import com.aliyun.oss.model.*;
 import junit.framework.Assert;
+import org.apache.http.HttpStatus;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
@@ -14,10 +20,7 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by zhoufeng.chen on 2018/1/10.
@@ -5159,6 +5162,7 @@ public class ResponseParsersTest {
         } catch (UnsupportedEncodingException e) {
             Assert.fail("UnsupportedEncodingException");
         }
+
         BucketReferer result1 = null;
         try {
             result1 = ResponseParsers.parseGetBucketReferer(instream);
@@ -5252,6 +5256,7 @@ public class ResponseParsersTest {
         } catch (UnsupportedEncodingException e) {
             Assert.fail("UnsupportedEncodingException");
         }
+
         BucketReferer result4 = null;
         try {
             result4 = ResponseParsers.parseGetBucketReferer(instream);
@@ -5296,6 +5301,177 @@ public class ResponseParsersTest {
             Assert.assertTrue(true);
         } catch (Exception e) {
             Assert.assertTrue(false);
+        }
+    }
+    
+    @Test
+    public void testParseErrorResponseWithEC() {
+        InputStream instream = null;
+        String respBody;
+
+        respBody = "" +
+                "<Error>\n" +
+                "  <Code>MethodNotAllowed</Code>\n" +
+                "  <Message>The specified method is not allowed against this resource.</Message>\n" +
+                "  <RequestId>5CAC0CF8DE0170*****</RequestId>\n" +
+                "  <HostId>versioning-get.oss-cn-hangzhou.aliyunc*****</HostId>\n" +
+                "  <ResourceType>DeleteMarker</ResourceType>\n" +
+                "  <Method>GET</Method>\n" +
+                "  <Header>If-Modified-Since</Header>\n" +
+                "  <EC>0003-00000016</EC>\n" +
+                "</Error>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        OSSErrorResult result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.ErrorResponseParser parser = new ResponseParsers.ErrorResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+
+        Assert.assertEquals("MethodNotAllowed", result.Code);
+        Assert.assertEquals("The specified method is not allowed against this resource.", result.Message);
+        Assert.assertEquals("5CAC0CF8DE0170*****", result.RequestId);
+        Assert.assertEquals("versioning-get.oss-cn-hangzhou.aliyunc*****", result.HostId);
+        Assert.assertEquals("DeleteMarker", result.ResourceType);
+        Assert.assertEquals("GET", result.Method);
+        Assert.assertEquals("If-Modified-Since", result.Header);
+        Assert.assertEquals("0003-00000016", result.EC);
+
+        respBody = "" +
+                "<Error>\n" +
+                "  <Code></Code>\n" +
+                "  <Message></Message>\n" +
+                "  <RequestId></RequestId>\n" +
+                "  <HostId></HostId>\n" +
+                "  <ResourceType></ResourceType>\n" +
+                "  <Method></Method>\n" +
+                "  <Header></Header>\n" +
+                "</Error>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.ErrorResponseParser parser = new ResponseParsers.ErrorResponseParser();
+            result = parser.parse(response);
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.assertTrue(false);
+        }
+    }
+
+    @Test
+    public void testOSSErrorResponseHandler() {
+        String oss_err = "PEVycm9yPg0KICA8Q29kZT5NZXRob2ROb3RBbGxvd2VkPC9Db2RlPg0KICA8TWVzc2FnZT5UaGUgc3BlY2lmaWVkIG1ldGhvZCBpcyBub3QgYWxsb3dlZCBhZ2FpbnN0IHRoaXMgcmVzb3VyY2UuPC9NZXNzYWdlPg0KICA8UmVxdWVzdElkPjVDQUMwQ0Y4REUwMTcwKioqKio8L1JlcXVlc3RJZD4NCiAgPEhvc3RJZD52ZXJzaW9uaW5nLWdldC5vc3MtY24taGFuZ3pob3UuYWxpeXVuYyoqKioqPC9Ib3N0SWQ+DQogIDxSZXNvdXJjZVR5cGU+RGVsZXRlTWFya2VyPC9SZXNvdXJjZVR5cGU+DQogIDxNZXRob2Q+R0VUPC9NZXRob2Q+DQogIDxIZWFkZXI+SWYtTW9kaWZpZWQtU2luY2U8L0hlYWRlcj4NCiAgPEVDPjAwMDMtMDAwMDAwMTY8L0VDPg0KPC9FcnJvcj4";
+        String oss_err_xml = "" +
+                "<Error>\n" +
+                "  <Code>MethodNotAllowed</Code>\n" +
+                "  <Message>The specified method is not allowed against this resource.</Message>\n" +
+                "  <RequestId>5CAC0CF8DE0170*****</RequestId>\n" +
+                "  <HostId>versioning-get.oss-cn-hangzhou.aliyunc*****</HostId>\n" +
+                "  <ResourceType>DeleteMarker</ResourceType>\n" +
+                "  <Method>GET</Method>\n" +
+                "  <Header>If-Modified-Since</Header>\n" +
+                "  <EC>0003-00000016</EC>\n" +
+                "</Error>";
+
+        // No Content
+        try {
+            Map<String, String> headers = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(null);
+            response.setStatusCode(HttpStatus.SC_NOT_FOUND);
+            headers.put(OSSHeaders.OSS_HEADER_REQUEST_ID, "5CAC0CF8DE0170");
+            response.setHeaders(headers);
+            ResponseHandler handler = new OSSErrorResponseHandler();
+            handler.handle(response);
+            Assert.fail("handler should not here!");
+        } catch (OSSException e) {
+            Assert.assertEquals("5CAC0CF8DE0170", e.getRequestId());
+            Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
+            Assert.assertEquals("Not Found", e.getErrorMessage());
+        } catch (Throwable e) {
+            Assert.fail("handler should not here!");
+        }
+
+        // has x-oss-err header
+        // No Content
+        try {
+            Map<String, String> headers = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(null);
+            response.setStatusCode(HttpStatus.SC_NOT_FOUND);
+            headers.put(OSSHeaders.OSS_HEADER_REQUEST_ID, "5CAC0CF8DE0170*****");
+            headers.put(OSSHeaders.OSS_ERROR, oss_err);
+            response.setHeaders(headers);
+            ResponseHandler handler = new OSSErrorResponseHandler();
+            handler.handle(response);
+            Assert.fail("handler should not here!");
+        } catch (OSSException e) {
+            Assert.assertEquals("5CAC0CF8DE0170*****", e.getRequestId());
+            Assert.assertEquals("MethodNotAllowed", e.getErrorCode());
+            Assert.assertEquals("The specified method is not allowed against this resource.", e.getErrorMessage());
+            Assert.assertEquals("versioning-get.oss-cn-hangzhou.aliyunc*****", e.getHostId());
+            Assert.assertEquals("0003-00000016", e.getEC());
+        } catch (Throwable e) {
+            Assert.fail("handler should not here!");
+        }
+
+        //has invalid x-oss-err
+        // No Content
+        try {
+            Map<String, String> headers = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(null);
+            response.setStatusCode(HttpStatus.SC_NOT_FOUND);
+            headers.put(OSSHeaders.OSS_HEADER_REQUEST_ID, "5CAC0CF8DE0171");
+            headers.put(OSSHeaders.OSS_ERROR, "invalid x-oss-header");
+            response.setHeaders(headers);
+            ResponseHandler handler = new OSSErrorResponseHandler();
+            handler.handle(response);
+            Assert.fail("handler should not here!");
+        } catch (OSSException e) {
+            Assert.assertEquals("5CAC0CF8DE0171", e.getRequestId());
+            Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
+            Assert.assertEquals("Not Found", e.getErrorMessage());
+        } catch (Throwable e) {
+            Assert.fail("handler should not here!");
+        }
+
+        //has x-oss-err null
+        // No Content
+        try {
+            Map<String, String> headers = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(null);
+            response.setStatusCode(HttpStatus.SC_NOT_FOUND);
+            headers.put(OSSHeaders.OSS_HEADER_REQUEST_ID, "5CAC0CF8DE0171");
+            headers.put(OSSHeaders.OSS_ERROR, null);
+            response.setHeaders(headers);
+            ResponseHandler handler = new OSSErrorResponseHandler();
+            handler.handle(response);
+            Assert.fail("handler should not here!");
+        } catch (OSSException e) {
+            Assert.assertEquals("5CAC0CF8DE0171", e.getRequestId());
+            Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
+            Assert.assertEquals("Not Found", e.getErrorMessage());
+        } catch (Throwable e) {
+            Assert.fail("handler should not here!");
         }
     }
 }
