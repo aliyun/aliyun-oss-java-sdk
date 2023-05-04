@@ -171,7 +171,7 @@ public final class ResponseParsers {
             }
         }
 
-        private OSSErrorResult parseErrorResponse(InputStream inputStream) throws ResponseParseException {
+        OSSErrorResult parseErrorResponse(InputStream inputStream) throws ResponseParseException {
             OSSErrorResult ossErrorResult = new OSSErrorResult();
             if (inputStream == null) {
                 return ossErrorResult;
@@ -185,6 +185,7 @@ public final class ResponseParsers {
                 ossErrorResult.ResourceType = root.getChildText("ResourceType");
                 ossErrorResult.Method = root.getChildText("Method");
                 ossErrorResult.Header = root.getChildText("Header");
+                ossErrorResult.EC = root.getChildText("EC");
                 return ossErrorResult;
             } catch (JDOMParseException e) {
                 throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
