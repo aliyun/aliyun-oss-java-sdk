@@ -33,7 +33,9 @@ import java.util.List;
  */
 public class BucketReferer extends GenericResult {
     private boolean allowEmptyReferer = true;
+    private Boolean allowTruncateQueryString = null;
     private List<String> refererList = new ArrayList<String>();
+    private List<String> blackRefererList = new ArrayList<String>();
 
     public BucketReferer() {
 
@@ -43,6 +45,7 @@ public class BucketReferer extends GenericResult {
         setAllowEmptyReferer(allowEmptyReferer);
         setRefererList(refererList);
     }
+
 
     @Deprecated
     public boolean allowEmpty() {
@@ -57,6 +60,11 @@ public class BucketReferer extends GenericResult {
         this.allowEmptyReferer = allowEmptyReferer;
     }
 
+    public BucketReferer withAllowEmptyReferer(boolean allowEmptyReferer) {
+        setAllowEmptyReferer(allowEmptyReferer);
+        return this;
+    }
+
     public List<String> getRefererList() {
         return refererList;
     }
@@ -68,7 +76,42 @@ public class BucketReferer extends GenericResult {
         }
     }
 
+    public BucketReferer withRefererList(List<String> refererList) {
+        setRefererList(refererList);
+        return this;
+    }
+
     public void clearRefererList() {
         this.refererList.clear();
+    }
+
+    public Boolean isAllowTruncateQueryString() {
+        return allowTruncateQueryString;
+    }
+
+    public void setAllowTruncateQueryString(Boolean allowTruncateQueryString) {
+        this.allowTruncateQueryString = allowTruncateQueryString;
+    }
+
+    public BucketReferer withAllowTruncateQueryString(Boolean allowTruncateQueryString) {
+        setAllowTruncateQueryString(allowTruncateQueryString);
+        return this;
+    }
+
+    public List<String> getBlackRefererList() {
+        return blackRefererList;
+    }
+
+    public void setBlackRefererList(List<String> blackRefererList) {
+        this.blackRefererList = blackRefererList;
+    }
+
+    public BucketReferer withBlackRefererList(List<String> blackRefererList) {
+        setBlackRefererList(blackRefererList);
+        return this;
+    }
+
+    public void clearBlackRefererList() {
+        this.blackRefererList.clear();
     }
 }

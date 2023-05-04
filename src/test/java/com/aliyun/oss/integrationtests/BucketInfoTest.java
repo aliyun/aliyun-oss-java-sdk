@@ -121,4 +121,35 @@ public class BucketInfoTest extends TestBase {
         }
     }
 
+    @Test
+    public void testGetBucketInfoWithAuthenticatedRead() {
+        try {
+            ossClient.setBucketAcl(bucketName, CannedAccessControlList.AuthenticatedRead);
+
+            BucketInfo info = ossClient.getBucketInfo(bucketName);
+            Assert.assertNotNull(info.getComment());
+            Assert.assertNotNull(info.getDataRedundancyType());
+            Assert.assertEquals(info.getBucket().getName(), bucketName);
+            Assert.assertEquals(info.getBucket().getLocation(), TestConfig.OSS_TEST_REGION);
+            Assert.assertNotNull(info.getBucket().getCreationDate());
+            Assert.assertTrue(info.getBucket().getExtranetEndpoint().length() > 0);
+            Assert.assertTrue(info.getBucket().getIntranetEndpoint().length() > 0);
+            Assert.assertTrue(info.getBucket().getOwner().getId().length() > 0);
+            Assert.assertEquals(CannedAccessControlList.AuthenticatedRead, info.getCannedACL());
+            Assert.assertEquals(info.getBucket().getOwner().getDisplayName(), info.getBucket().getOwner().getId());
+            Assert.assertEquals(info.getRequestId().length(), REQUEST_ID_LEN);
+            for (Grant grant : info.getGrants()) {
+                Assert.assertEquals(grant.getGrantee(), GroupGrantee.AllUsers);
+                Assert.assertEquals(grant.getPermission(), Permission.Read);
+            }
+
+            ossClient.setBucketAcl(bucketName, CannedAccessControlList.AuthenticatedRead);
+            info = ossClient.getBucketInfo(bucketName);
+            Assert.assertEquals(CannedAccessControlList.AuthenticatedRead, info.getCannedACL());
+
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
 }
