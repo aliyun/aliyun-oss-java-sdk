@@ -19,6 +19,7 @@
 
 package com.aliyun.oss.internal;
 
+import static com.aliyun.oss.common.utils.CodingUtils.assertFileExist;
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.common.utils.LogUtils.logException;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
@@ -331,6 +332,7 @@ public class OSSUploadOperation {
         ensureObjectKeyValid(key);
 
         assertParameterNotNull(uploadFileRequest.getUploadFile(), "uploadFile");
+        assertFileExist(uploadFileRequest.getUploadFile(), "uploadFile");
 
         // The checkpoint is enabled without specifying the checkpoint file,
         // using the default one.

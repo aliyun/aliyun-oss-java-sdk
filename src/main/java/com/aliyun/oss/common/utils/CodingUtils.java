@@ -19,8 +19,10 @@
 
 package com.aliyun.oss.common.utils;
 
+import static com.aliyun.oss.common.utils.IOUtils.checkFile;
 import static com.aliyun.oss.internal.OSSUtils.COMMON_RESOURCE_MANAGER;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -93,6 +95,12 @@ public class CodingUtils {
             } else {
                 return false;
             }
+        }
+    }
+
+    public static void assertFileExist(String filePath, String key) {
+        if (!checkFile(new File(filePath))) {
+            throw new IllegalArgumentException(COMMON_RESOURCE_MANAGER.getFormattedString("FileNotExist", key));
         }
     }
 }
