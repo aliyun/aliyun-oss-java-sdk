@@ -518,6 +518,24 @@ public class UploadFileTest extends TestBase {
 
     }
 
+    @Test
+    public void testUploadFileNotExist() throws Throwable {
+        String key = "obj-upload-file-not-exist";
+        String filePath = "Files that do not exist";
+
+        try {
+            UploadFileRequest uploadFileRequest = new UploadFileRequest(bucketName, key);
+            uploadFileRequest.setUploadFile(filePath);
+            uploadFileRequest.setTaskNum(5);
+            uploadFileRequest.setPartSize(100*1024);
+
+            ossClient.uploadFile(uploadFileRequest);
+            Assert.fail("The file does not exist, it should have failed here");
+        } catch (IllegalArgumentException e) {
+            Assert.assertEquals("参数\"uploadFile\"无效，此路径中的文件不存在。", e.getMessage());
+        }
+    }
+
     public class UploadFileProgressListener implements ProgressListener {
         private long bytesWritten = 0;
         private long totalBytes = -1;
