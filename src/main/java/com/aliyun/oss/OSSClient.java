@@ -1958,6 +1958,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public DescribeRegionsResult describeRegions(DescribeRegionsRequest describeRegionsRequest) throws OSSException, ClientException {
+        return this.bucketOperation.describeRegions(describeRegionsRequest);
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();

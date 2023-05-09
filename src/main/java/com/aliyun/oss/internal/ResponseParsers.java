@@ -141,6 +141,7 @@ public final class ResponseParsers {
     public static final GetBucketAccessMonitorResponseParser getBucketAccessMonitorResponseParser = new GetBucketAccessMonitorResponseParser();
     public static final GetMetaQueryStatusResponseParser getMetaQueryStatusResponseParser = new GetMetaQueryStatusResponseParser();
     public static final DoMetaQueryResponseParser doMetaQueryResponseParser = new DoMetaQueryResponseParser();
+    public static final DescribeRegionsResponseParser describeRegionsResponseParser = new DescribeRegionsResponseParser();
 
     public static Long parseLongWithDefault(String defaultValue){
         if(defaultValue == null || "".equals(defaultValue)){
@@ -4171,6 +4172,49 @@ public final class ResponseParsers {
                 }
 
                 return doMetaQueryResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class DescribeRegionsResponseParser implements ResponseParser<DescribeRegionsResult> {
+        @Override
+        public DescribeRegionsResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                DescribeRegionsResult result = parseDescribeRegionsResult(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private DescribeRegionsResult parseDescribeRegionsResult(InputStream inputStream) throws ResponseParseException {
+            DescribeRegionsResult describeRegionsResult = new DescribeRegionsResult();
+            if (inputStream == null) {
+                return describeRegionsResult;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+                List<RegionInfo> regionInfoList = new ArrayList<RegionInfo>();
+
+                List<Element> regionListElems = root.getChildren("RegionInfo");
+                for (Element elem : regionListElems) {
+                    RegionInfo regionInfo = new RegionInfo();
+                    regionInfo.setRegion(elem.getChildText("Region"));
+                    regionInfo.setInternetEndpoint(elem.getChildText("InternetEndpoint"));
+                    regionInfo.setInternalEndpoint(elem.getChildText("InternalEndpoint"));
+                    regionInfo.setAccelerateEndpoint(elem.getChildText("AccelerateEndpoint"));
+
+                    regionInfoList.add(regionInfo);
+                }
+                describeRegionsResult.setRegionInfoList(regionInfoList);
+
+                return describeRegionsResult;
             } catch (JDOMParseException e) {
                 throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
             } catch (Exception e) {
