@@ -5101,4 +5101,16 @@ public interface OSS {
      *             If any errors occurred in OSS while processing the request.
      */
     VoidResult closeMetaQuery(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Describe regions from the OSS Server
+     * @param describeRegionsRequest
+     * @return A {@link DescribeRegionsResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    DescribeRegionsResult describeRegions(DescribeRegionsRequest describeRegionsRequest) throws OSSException, ClientException;
 }
