@@ -141,7 +141,7 @@ public final class ResponseParsers {
     public static final GetBucketAccessMonitorResponseParser getBucketAccessMonitorResponseParser = new GetBucketAccessMonitorResponseParser();
     public static final GetMetaQueryStatusResponseParser getMetaQueryStatusResponseParser = new GetMetaQueryStatusResponseParser();
     public static final DoMetaQueryResponseParser doMetaQueryResponseParser = new DoMetaQueryResponseParser();
-    public static final GetDescribeRegionsResponseParser getDescribeRegionsResponseParser = new GetDescribeRegionsResponseParser();
+    public static final DescribeRegionsResponseParser describeRegionsResponseParser = new DescribeRegionsResponseParser();
 
     public static Long parseLongWithDefault(String defaultValue){
         if(defaultValue == null || "".equals(defaultValue)){
@@ -4159,11 +4159,11 @@ public final class ResponseParsers {
         }
     }
 
-    public static final class GetDescribeRegionsResponseParser implements ResponseParser<GetDescribeRegionsResult> {
+    public static final class DescribeRegionsResponseParser implements ResponseParser<DescribeRegionsResult> {
         @Override
-        public GetDescribeRegionsResult parse(ResponseMessage response) throws ResponseParseException {
+        public DescribeRegionsResult parse(ResponseMessage response) throws ResponseParseException {
             try {
-                GetDescribeRegionsResult result = parseGetDescribeRegionsResult(response.getContent());
+                DescribeRegionsResult result = parseDescribeRegionsResult(response.getContent());
                 setResultParameter(result, response);
                 return result;
             } finally {
@@ -4171,10 +4171,10 @@ public final class ResponseParsers {
             }
         }
 
-        private GetDescribeRegionsResult parseGetDescribeRegionsResult(InputStream inputStream) throws ResponseParseException {
-            GetDescribeRegionsResult getDescribeRegionsResult = new GetDescribeRegionsResult();
+        private DescribeRegionsResult parseDescribeRegionsResult(InputStream inputStream) throws ResponseParseException {
+            DescribeRegionsResult describeRegionsResult = new DescribeRegionsResult();
             if (inputStream == null) {
-                return getDescribeRegionsResult;
+                return describeRegionsResult;
             }
 
             try {
@@ -4191,9 +4191,9 @@ public final class ResponseParsers {
 
                     regionInfoList.add(regionInfo);
                 }
-                getDescribeRegionsResult.setRegionInfoList(regionInfoList);
+                describeRegionsResult.setRegionInfoList(regionInfoList);
 
-                return getDescribeRegionsResult;
+                return describeRegionsResult;
             } catch (JDOMParseException e) {
                 throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
             } catch (Exception e) {

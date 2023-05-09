@@ -5104,13 +5104,13 @@ public interface OSS {
 
     /**
      * Get describe regions from the OSS Server
-     * @param getDescribeRegionsRequest
-     * @return A {@link GetDescribeRegionsResult} instance.
+     * @param describeRegionsRequest
+     * @return A {@link DescribeRegionsResult} instance.
      * @throws OSSException
      *             If any errors are encountered in the client while making the
      *             request or handling the response.
      * @throws ClientException
      *             If any errors occurred in OSS while processing the request.
      */
-    GetDescribeRegionsResult getDescribeRegions(GetDescribeRegionsRequest getDescribeRegionsRequest) throws OSSException, ClientException;
+    DescribeRegionsResult describeRegions(DescribeRegionsRequest describeRegionsRequest) throws OSSException, ClientException;
 }

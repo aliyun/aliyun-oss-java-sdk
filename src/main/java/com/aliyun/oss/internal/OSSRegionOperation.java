@@ -6,8 +6,8 @@ import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.comm.ServiceClient;
-import com.aliyun.oss.model.GetDescribeRegionsRequest;
-import com.aliyun.oss.model.GetDescribeRegionsResult;
+import com.aliyun.oss.model.DescribeRegionsRequest;
+import com.aliyun.oss.model.DescribeRegionsResult;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,11 +20,11 @@ public class OSSRegionOperation extends OSSOperation {
         super(client, credsProvider);
     }
 
-    public GetDescribeRegionsResult getDescribeRegions(GetDescribeRegionsRequest getDescribeRegionsRequest) throws OSSException, ClientException {
-        assertParameterNotNull(getDescribeRegionsRequest, "getDescribeRegionsRequest");
+    public DescribeRegionsResult describeRegions(DescribeRegionsRequest describeRegionsRequest) throws OSSException, ClientException {
+        assertParameterNotNull(describeRegionsRequest, "describeRegionsRequest");
 
-        String bucketName = getDescribeRegionsRequest.getBucketName();
-        String region = getDescribeRegionsRequest.getRegion();
+        String bucketName = describeRegionsRequest.getBucketName();
+        String region = describeRegionsRequest.getRegion();
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(REGIONS, region);
@@ -32,8 +32,8 @@ public class OSSRegionOperation extends OSSOperation {
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
                 .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
-                .setOriginalRequest(getDescribeRegionsRequest).build();
+                .setOriginalRequest(describeRegionsRequest).build();
 
-        return doOperation(request, getDescribeRegionsResponseParser, bucketName, null, true);
+        return doOperation(request, describeRegionsResponseParser, bucketName, null, true);
     }
 }

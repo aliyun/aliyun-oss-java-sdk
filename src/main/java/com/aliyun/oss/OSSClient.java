@@ -1965,8 +1965,8 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public GetDescribeRegionsResult getDescribeRegions(GetDescribeRegionsRequest getDescribeRegionsRequest) throws OSSException, ClientException {
-        return this.regionOperation.getDescribeRegions(getDescribeRegionsRequest);
+    public DescribeRegionsResult describeRegions(DescribeRegionsRequest describeRegionsRequest) throws OSSException, ClientException {
+        return this.regionOperation.describeRegions(describeRegionsRequest);
     }
 
     @Override

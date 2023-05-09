@@ -11,7 +11,7 @@ public class BucketDescribeRegionsTest extends TestBase {
     public void testBucketDescribeRegions() {
 
         try {
-            GetDescribeRegionsResult regionsResult = ossClient.getDescribeRegions(new GetDescribeRegionsRequest().WithRegion(region));
+            DescribeRegionsResult regionsResult = ossClient.describeRegions(new DescribeRegionsRequest().WithRegion(region));
 
             Assert.assertEquals(region, regionsResult.getRegionInfoList().get(0).getRegion());
             Assert.assertNotNull( regionsResult.getRegionInfoList().get(0).getInternalEndpoint());
@@ -23,10 +23,10 @@ public class BucketDescribeRegionsTest extends TestBase {
     }
 
     @Test
-    public void testBucketAccessMonitorException() {
+    public void testBucketDescribeRegionsException() {
 
         try {
-            GetDescribeRegionsResult regionsResult = ossClient.getDescribeRegions(new GetDescribeRegionsRequest());
+            DescribeRegionsResult regionsResult = ossClient.describeRegions(new DescribeRegionsRequest());
             Assert.assertNotNull( regionsResult.getRegionInfoList().size());
             Assert.assertNotNull( regionsResult.getRegionInfoList().get(0).getRegion());
             Assert.assertNotNull( regionsResult.getRegionInfoList().get(0).getInternetEndpoint());

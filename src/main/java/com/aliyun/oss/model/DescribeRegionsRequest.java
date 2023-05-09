@@ -1,14 +1,14 @@
 package com.aliyun.oss.model;
 
-public class GetDescribeRegionsRequest extends GenericRequest {
+public class DescribeRegionsRequest extends GenericRequest {
     private String region;
 
-    public GetDescribeRegionsRequest() {}
-    public GetDescribeRegionsRequest(String region) {
+    public DescribeRegionsRequest() {}
+    public DescribeRegionsRequest(String region) {
         this.region = region;
     }
 
-    public GetDescribeRegionsRequest(String bucketName, String region) {
+    public DescribeRegionsRequest(String bucketName, String region) {
         super(bucketName);
         this.region = region;
     }
@@ -21,7 +21,7 @@ public class GetDescribeRegionsRequest extends GenericRequest {
         this.region = region;
     }
 
-    public GetDescribeRegionsRequest WithRegion(String region) {
+    public DescribeRegionsRequest WithRegion(String region) {
         setRegion(region);
         return this;
     }

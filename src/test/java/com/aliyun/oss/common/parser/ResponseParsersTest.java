@@ -6,9 +6,6 @@ import com.aliyun.oss.internal.ResponseParsers;
 import com.aliyun.oss.internal.model.OSSErrorResult;
 import com.aliyun.oss.model.*;
 import junit.framework.Assert;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.input.SAXBuilder;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -5168,11 +5165,11 @@ public class ResponseParsersTest {
             Assert.fail("UnsupportedEncodingException");
         }
 
-        GetDescribeRegionsResult result = null;
+        DescribeRegionsResult result = null;
         try {
             ResponseMessage response = new ResponseMessage(null);
             response.setContent(instream);
-            ResponseParsers.GetDescribeRegionsResponseParser parser = new ResponseParsers.GetDescribeRegionsResponseParser();
+            ResponseParsers.DescribeRegionsResponseParser parser = new ResponseParsers.DescribeRegionsResponseParser();
             result = parser.parse(response);
         } catch (ResponseParseException e) {
             Assert.fail("parse delete directory response body fail!");

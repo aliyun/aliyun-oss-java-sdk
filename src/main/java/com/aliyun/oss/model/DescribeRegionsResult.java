@@ -3,7 +3,7 @@ package com.aliyun.oss.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetDescribeRegionsResult extends GenericResult {
+public class DescribeRegionsResult extends GenericResult {
 
     private List<RegionInfo> regionInfoList = new ArrayList<RegionInfo>();
 
