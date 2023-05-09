@@ -5103,7 +5103,7 @@ public interface OSS {
     VoidResult closeMetaQuery(String bucketName) throws OSSException, ClientException;
 
     /**
-     * Get describe regions from the OSS Server
+     * Describe regions from the OSS Server
      * @param describeRegionsRequest
      * @return A {@link DescribeRegionsResult} instance.
      * @throws OSSException
