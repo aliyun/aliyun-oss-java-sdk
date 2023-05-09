@@ -2120,4 +2120,21 @@ public class OSSBucketOperation extends OSSOperation {
 
         return doOperation(request, requestIdResponseParser, bucketName, null, true);
     }
+
+    public DescribeRegionsResult describeRegions(DescribeRegionsRequest describeRegionsRequest) throws OSSException, ClientException {
+        assertParameterNotNull(describeRegionsRequest, "describeRegionsRequest");
+
+        String bucketName = describeRegionsRequest.getBucketName();
+        String region = describeRegionsRequest.getRegion();
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(REGIONS, region);
+
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(describeRegionsRequest).build();
+
+        return doOperation(request, describeRegionsResponseParser, bucketName, null, true);
+    }
 }
