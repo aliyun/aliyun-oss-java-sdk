@@ -31,24 +31,45 @@ public class CRC64 implements Checksum {
     private final static long POLY = (long) 0xc96c5795d7870f42L; // ECMA-182
 
     /* CRC64 calculation table. */
-    private final static long[] table;
+    private final static long[][] table;
 
     /* Current CRC value. */
     private long value;
 
-    static {
-        table = new long[256];
+    static
+    {
+        /*
+         * Nested tables as described by Mark Adler:
+         * http://stackoverflow.com/a/20579405/58962
+         */
+        table = new long[8][256];
 
-        for (int n = 0; n < 256; n++) {
+        for (int n = 0; n < 256; n++)
+        {
             long crc = n;
-            for (int k = 0; k < 8; k++) {
-                if ((crc & 1) == 1) {
+            for (int k = 0; k < 8; k++)
+            {
+                if ((crc & 1) == 1)
+                {
                     crc = (crc >>> 1) ^ POLY;
-                } else {
+                }
+                else
+                {
                     crc = (crc >>> 1);
                 }
             }
-            table[n] = crc;
+            table[0][n] = crc;
+        }
+
+        /* generate nested CRC table for future slice-by-8 lookup */
+        for (int n = 0; n < 256; n++)
+        {
+            long crc = table[0][n];
+            for (int k = 1; k < 8; k++)
+            {
+                crc = table[0][(int) (crc & 0xff)] ^ (crc >>> 8);
+                table[k][n] = crc;
+            }
         }
     }
 
@@ -110,14 +131,7 @@ public class CRC64 implements Checksum {
      *
      **/
     public void update(byte[] b, int len) {
-        int idx = 0;
-        this.value = ~this.value;
-        while (len > 0) {
-            this.value = table[((int) (this.value ^ b[idx])) & 0xff] ^ (this.value >>> 8);
-            idx++;
-            len--;
-        }
-        this.value = ~this.value;
+        this.update(b, 0, len);
     }
 
     /**
@@ -126,21 +140,44 @@ public class CRC64 implements Checksum {
      *          the byte.
      **/
     public void update(byte b) {
-        this.value = ~this.value;
-        this.value = table[((int) (this.value ^ b)) & 0xff] ^ (this.value >>> 8);
-        this.value = ~this.value;
+        this.update(new byte[]{b}, 0, 1);
     }
 
     @Override
     public void update(int b) {
-        update((byte) (b & 0xFF));
+        this.update(new byte[]{(byte)b}, 0, 1);
     }
 
     @Override
     public void update(byte[] b, int off, int len) {
-        for (int i = off; len > 0; len--) {
-            update(b[i++]);
+        this.value = ~this.value;
+
+        /* fast middle processing, 8 bytes (aligned!) per loop */
+
+        int idx = off;
+        while (len >= 8)
+        {
+            value = table[7][(int) (value & 0xff ^ (b[idx] & 0xff))]
+                    ^ table[6][(int) ((value >>> 8) & 0xff ^ (b[idx + 1] & 0xff))]
+                    ^ table[5][(int) ((value >>> 16) & 0xff ^ (b[idx + 2] & 0xff))]
+                    ^ table[4][(int) ((value >>> 24) & 0xff ^ (b[idx + 3] & 0xff))]
+                    ^ table[3][(int) ((value >>> 32) & 0xff ^ (b[idx + 4] & 0xff))]
+                    ^ table[2][(int) ((value >>> 40) & 0xff ^ (b[idx + 5] & 0xff))]
+                    ^ table[1][(int) ((value >>> 48) & 0xff ^ (b[idx + 6] & 0xff))]
+                    ^ table[0][(int) ((value >>> 56) ^ b[idx + 7] & 0xff)];
+            idx += 8;
+            len -= 8;
         }
+
+        /* process remaining bytes (can't be larger than 8) */
+        while (len > 0)
+        {
+            value = table[0][(int) ((this.value ^ b[idx]) & 0xff)] ^ (this.value >>> 8);
+            idx++;
+            len--;
+        }
+
+        this.value = ~this.value;
     }
 
     @Override
