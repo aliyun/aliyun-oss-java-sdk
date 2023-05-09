@@ -172,7 +172,7 @@ public final class ResponseParsers {
             }
         }
 
-        private OSSErrorResult parseErrorResponse(InputStream inputStream) throws ResponseParseException {
+        OSSErrorResult parseErrorResponse(InputStream inputStream) throws ResponseParseException {
             OSSErrorResult ossErrorResult = new OSSErrorResult();
             if (inputStream == null) {
                 return ossErrorResult;
@@ -186,6 +186,7 @@ public final class ResponseParsers {
                 ossErrorResult.ResourceType = root.getChildText("ResourceType");
                 ossErrorResult.Method = root.getChildText("Method");
                 ossErrorResult.Header = root.getChildText("Header");
+                ossErrorResult.EC = root.getChildText("EC");
                 return ossErrorResult;
             } catch (JDOMParseException e) {
                 throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
@@ -1614,7 +1615,27 @@ public final class ResponseParsers {
                     }
                 }
             }
-            return new BucketReferer(allowEmptyReferer, refererList);
+
+            BucketReferer bucketReferer = new BucketReferer(allowEmptyReferer, refererList);
+
+            Boolean allowTruncateQueryString = null;
+            if(root.getChildText("AllowTruncateQueryString") != null){
+                allowTruncateQueryString = Boolean.valueOf(root.getChildText("AllowTruncateQueryString"));
+                bucketReferer.setAllowTruncateQueryString(allowTruncateQueryString);
+            }
+
+            if (root.getChild("RefererBlacklist") != null) {
+                List<String> blackRefererList = new ArrayList<String>();
+                Element refererListElem = root.getChild("RefererBlacklist");
+                List<Element> refererElems = refererListElem.getChildren("Referer");
+                if (refererElems != null && !refererElems.isEmpty()) {
+                    for (Element e : refererElems) {
+                        blackRefererList.add(e.getText());
+                    }
+                }
+                bucketReferer.setBlackRefererList(blackRefererList);
+            }
+            return bucketReferer;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {

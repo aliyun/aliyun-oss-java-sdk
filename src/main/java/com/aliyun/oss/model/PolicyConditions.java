@@ -20,6 +20,7 @@
 package com.aliyun.oss.model;
 
 import com.aliyun.oss.common.utils.StringUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,24 +78,24 @@ class ConditionItem {
         String jsonizedCond = null;
         switch (tupleType) {
         case Two:
-            jsonizedCond = String.format("{\"%s\":\"%s\"},", name, value);
+            jsonizedCond = String.format("{\"%s\":\"%s\"},", jsonEscape(name), jsonEscape(value));
             break;
         case Three:
             switch (matchMode) {
             case Exact:
-                jsonizedCond = String.format("[\"eq\",\"$%s\",\"%s\"],", name, value);
+                jsonizedCond = String.format("[\"eq\",\"$%s\",\"%s\"],", jsonEscape(name), jsonEscape(value));
                 break;
             case StartWith:
-                jsonizedCond = String.format("[\"starts-with\",\"$%s\",\"%s\"],", name, value);
+                jsonizedCond = String.format("[\"starts-with\",\"$%s\",\"%s\"],", jsonEscape(name), jsonEscape(value));
                 break;
             case Range:
                 jsonizedCond = String.format("[\"content-length-range\",%d,%d],", minimum, maximum);
                 break;
             case In:
-                jsonizedCond = String.format("[\"in\",\"$%s\",[\"%s\"]],", name,  StringUtils.join("\",\"",contain));
+                jsonizedCond = String.format("[\"in\",\"$%s\",[\"%s\"]],", jsonEscape(name),  StringUtils.join("\",\"",jsonEscape(contain)));
                 break;
             case NotIn:
-                jsonizedCond = String.format("[\"not-in\",\"$%s\",[\"%s\"]],", name, StringUtils.join("\",\"",contain));
+                jsonizedCond = String.format("[\"not-in\",\"$%s\",[\"%s\"]],", jsonEscape(name), StringUtils.join("\",\"",jsonEscape(contain)));
                 break;
             default:
                 throw new IllegalArgumentException(String.format("Unsupported match mode %s", matchMode.toString()));
@@ -151,6 +152,67 @@ class ConditionItem {
 
     public void setMaximum(long maximum) {
         this.maximum = maximum;
+    }
+
+    private static String[] jsonEscape(String[] ss) {
+        if (ss == null) {
+            return null;
+        }
+        String[] result = new String[ss.length];
+        for (int i = 0; i < ss.length; i++) {
+            result[i] = jsonEscape(ss[i]);
+        }
+        return result;
+    }
+
+    private static String jsonEscape(String s) {
+        if (s == null) {
+            return null;
+        }
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            switch (ch) {
+                case '"':
+                    sb.append("\\\"");
+                    break;
+                case '\\':
+                    sb.append("\\\\");
+                    break;
+                case '\b':
+                    sb.append("\\b");
+                    break;
+                case '\f':
+                    sb.append("\\f");
+                    break;
+                case '\n':
+                    sb.append("\\n");
+                    break;
+                case '\r':
+                    sb.append("\\r");
+                    break;
+                case '\t':
+                    sb.append("\\t");
+                    break;
+                case '/':
+                    sb.append("\\/");
+                    break;
+                default:
+                    if ((ch >= '\u0000' && ch <= '\u001F') ||
+                            (ch >= '\u007F' && ch <= '\u009F') ||
+                            (ch >= '\u2000' && ch <= '\u20FF')) {
+                        String ss = Integer.toHexString(ch);
+                        sb.append("\\u");
+                        for (int k = 0; k < 4 - ss.length(); k++) {
+                            sb.append('0');
+                        }
+                        sb.append(ss.toUpperCase());
+                    } else {
+                        sb.append(ch);
+                    }
+            }
+        }
+        return sb.toString();
     }
 }
 

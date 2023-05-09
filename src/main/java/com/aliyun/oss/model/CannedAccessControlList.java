@@ -50,7 +50,18 @@ public enum CannedAccessControlList {
      * Both the owner and {@link GroupGrantee#AllUsers} have
      * {@link Permission#FullControl}. It's not safe and thus not recommended.
      */
-    PublicReadWrite("public-read-write");
+    PublicReadWrite("public-read-write"),
+
+    /**
+     * The owner has the {@link Permission#FullControl}, other
+     * {@link GroupGrantee#AllUsers} have authenticated-read access.
+     */
+    AuthenticatedRead("authenticated-read"),
+
+    /**
+     * Unknown
+     */
+    Unknown("Unknown");
 
     private String cannedAclString;
 
@@ -70,6 +81,6 @@ public enum CannedAccessControlList {
             }
         }
 
-        throw new IllegalArgumentException("Unable to parse the provided acl " + acl);
+        return Unknown;
     }
 }

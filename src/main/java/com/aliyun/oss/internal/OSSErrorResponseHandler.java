@@ -27,11 +27,15 @@ import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.comm.ResponseHandler;
 import com.aliyun.oss.common.comm.ResponseMessage;
-import com.aliyun.oss.common.parser.JAXBResponseParser;
 import com.aliyun.oss.common.parser.ResponseParseException;
 import com.aliyun.oss.common.utils.ExceptionFactory;
-import com.aliyun.oss.internal.model.OSSErrorResult;
 import com.aliyun.oss.internal.ResponseParsers.ErrorResponseParser;
+import com.aliyun.oss.internal.model.OSSErrorResult;
+import com.aliyun.oss.common.utils.BinaryUtil;
+
+import java.io.ByteArrayInputStream;
+
+
 /**
  * Used to handle error response from oss, when HTTP status code is not 2xx,
  * then throws <code>OSSException</code> with detailed error information(such as
@@ -49,11 +53,27 @@ public class OSSErrorResponseHandler implements ResponseHandler {
         String requestId = response.getRequestId();
         int statusCode = response.getStatusCode();
         if (response.getContent() == null) {
+            //try to get error from x-oss-err header
+            OSSErrorResult result = null;
+            try {
+                if (response.getHeaders().containsKey(OSSHeaders.OSS_ERROR)) {
+                    byte[] data = BinaryUtil.fromBase64String(response.getHeaders().get(OSSHeaders.OSS_ERROR));
+                    result = errorResponseParser.parseErrorResponse(new ByteArrayInputStream(data));
+                    if (result.Code == null) {
+                        result = null;
+                    }
+                }
+            }catch (Throwable e) {
+                //ignore error
+            }
+
             /**
              * When HTTP response body is null, handle status code 404 Not
              * Found, 304 Not Modified, 412 Precondition Failed especially.
              */
-            if (statusCode == HttpStatus.SC_NOT_FOUND) {
+            if (result != null) {
+                throw ExceptionFactory.createOSSException(result, null);
+            } else if (statusCode == HttpStatus.SC_NOT_FOUND) {
                 throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.NO_SUCH_KEY, "Not Found");
             } else if (statusCode == HttpStatus.SC_NOT_MODIFIED) {
                 throw ExceptionFactory.createOSSException(requestId, OSSErrorCode.NOT_MODIFIED, "Not Modified");
