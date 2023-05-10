@@ -209,7 +209,7 @@ public class DefaultServiceClient extends ServiceClient {
             if (ex instanceof OSSException) {
                 String errorCode = ((OSSException) ex).getErrorCode();
                 // No need retry for invalid responses
-                if (errorCode.equals(OSSErrorCode.INVALID_RESPONSE)) {
+                if (OSSErrorCode.INVALID_RESPONSE.equals(errorCode)) {
                     return false;
                 }
             }
