@@ -5105,6 +5105,7 @@ public interface OSS {
     /**
      * Describe regions from the OSS Server
      * @param describeRegionsRequest
+     *             The {@link DescribeRegionsRequest} instance
      * @return A {@link DescribeRegionsResult} instance.
      * @throws OSSException
      *             If any errors are encountered in the client while making the
