@@ -4185,7 +4185,7 @@ public interface OSS {
      * must be closed by the calller to release connection via calling
      * getResponse().getContent().close().
      * </p>
-     * 
+     *
      * @param processObjectRequest
      *            A {@link ProcessObjectRequest} instance that specifies the
      *            bucket name, the object key and the process (such as
@@ -5162,4 +5162,25 @@ public interface OSS {
      *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult deleteBucketCallbackPolicy(GenericRequest genericRequest) throws OSSException, ClientException;
+
+    /**
+     * Apply async process on the specified image file.
+     * <p>
+     * The supported async process includes resize, rotate, crop, watermark, format,
+     * udf, customized style, etc.
+     * </p>
+     *
+     * @param asyncProcessObjectRequest
+     *            A {@link AsyncProcessObjectRequest} instance that specifies the
+     *            bucket name, the object key and the process (such as
+     *            video/convert,f_mp4,vcodec_h265,s_1920x1080,vb_2000000,fps_30,acodec_aac,ab_100000,sn_1)
+     * @return A {@link AsyncProcessObjectResult} instance which must be closed after the
+     *         usage by the caller.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public AsyncProcessObjectResult asyncProcessObject(AsyncProcessObjectRequest asyncProcessObjectRequest) throws OSSException, ClientException;
 }
