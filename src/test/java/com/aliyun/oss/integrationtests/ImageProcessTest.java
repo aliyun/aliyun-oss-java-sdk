@@ -25,6 +25,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Date;
 
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 
 import org.codehaus.jettison.json.JSONException;

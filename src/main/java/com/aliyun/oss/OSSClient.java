@@ -1978,6 +1978,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public AsyncProcessObjectResult asyncProcessObject(AsyncProcessObjectRequest asyncProcessObjectRequest) throws OSSException, ClientException {
+        return this.objectOperation.asyncProcessObject(asyncProcessObjectRequest);
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();
