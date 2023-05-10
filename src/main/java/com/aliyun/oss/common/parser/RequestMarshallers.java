@@ -100,6 +100,7 @@ public final class RequestMarshallers {
     public static final PutBucketTransferAccelerationRequestMarshaller putBucketTransferAccelerationRequestMarshaller = new PutBucketTransferAccelerationRequestMarshaller();
     public static final PutBucketAccessMonitorRequestMarshaller putBucketAccessMonitorRequestMarshaller = new PutBucketAccessMonitorRequestMarshaller();
     public static final DoMetaQueryRequestMarshaller doMetaQueryRequestMarshaller = new DoMetaQueryRequestMarshaller();
+    public static final SetBucketCallbackPolicyRequestMarshaller setBucketCallbackPolicyRequestMarshaller = new SetBucketCallbackPolicyRequestMarshaller();
 
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
 
@@ -1864,6 +1865,43 @@ public final class RequestMarshallers {
                 xmlBody.append("</Aggregations>");
             }
             xmlBody.append("</MetaQuery>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+    }
+
+    public static final class SetBucketCallbackPolicyRequestMarshaller implements RequestMarshaller2<SetBucketCallbackPolicyRequest> {
+
+        @Override
+        public byte[] marshall(SetBucketCallbackPolicyRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<BucketCallbackPolicy>");
+
+            if(request.getPolicyCallbackItems() != null && request.getPolicyCallbackItems().size() > 0){
+                for(PolicyCallbackItem policy : request.getPolicyCallbackItems()){
+                    xmlBody.append("<PolicyItem>");
+                    if(!StringUtils.isNullOrEmpty(policy.getPolicyName())){
+                        xmlBody.append("<PolicyName>"+ policy.getPolicyName() +"</PolicyName>");
+                    }
+                    if(!StringUtils.isNullOrEmpty(policy.getCallback())){
+                        xmlBody.append("<Callback>"+ policy.getCallback() +"</Callback>");
+                    }
+                    if(StringUtils.isNullOrEmpty(policy.getCallbackVar())){
+                        xmlBody.append("<CallbackVar></CallbackVar>");
+                    } else {
+                        xmlBody.append("<CallbackVar>"+ policy.getCallbackVar() +"</CallbackVar>");
+                    }
+
+                    xmlBody.append("</PolicyItem>");
+                }
+            }
+            xmlBody.append("</BucketCallbackPolicy>");
 
             byte[] rawData = null;
             try {

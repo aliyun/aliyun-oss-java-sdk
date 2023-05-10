@@ -5113,4 +5113,53 @@ public interface OSS {
      *             If any errors occurred in OSS while processing the request.
      */
     DescribeRegionsResult describeRegions(DescribeRegionsRequest describeRegionsRequest) throws OSSException, ClientException;
+
+    /**
+     * Sets the callback policy on the {@link Bucket} instance.
+     *
+     * @param setBucketCallbackPolicyRequest
+     *            {@link SetBucketCallbackPolicyRequest} instance that has bucket
+     *            information as well as policy information.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public VoidResult setBucketCallbackPolicy(SetBucketCallbackPolicyRequest setBucketCallbackPolicyRequest) throws OSSException, ClientException;
+
+    /**
+     * Gets callback policy of the {@link Bucket} instance.
+     *
+     * @param genericRequest
+     *            {@link GenericRequest} instance that has the bucket name.
+     * @return The policy's content in {@link InputStream}.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public GetBucketCallbackPolicyResult getBucketCallbackPolicy(GenericRequest genericRequest) throws OSSException, ClientException;
+
+    /**
+     * Delete callback policy of the {@link Bucket} instance.
+     *
+     * @param genericRequest
+     *            {@link GenericRequest} instance that has the bucket name.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public VoidResult deleteBucketCallbackPolicy(GenericRequest genericRequest) throws OSSException, ClientException;
 }

@@ -2137,4 +2137,61 @@ public class OSSBucketOperation extends OSSOperation {
 
         return doOperation(request, describeRegionsResponseParser, bucketName, null, true);
     }
+
+    public VoidResult setBucketCallbackPolicy(SetBucketCallbackPolicyRequest setBucketCallbackPolicyRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(setBucketCallbackPolicyRequest, "setBucketCallbackPolicyRequest");
+
+        String bucketName = setBucketCallbackPolicyRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_POLICY, null);
+        params.put(SUBRESOURCE_COMP, SUBRESOURCE_CALLBACK);
+
+        byte[] rawContent = setBucketCallbackPolicyRequestMarshaller.marshall(setBucketCallbackPolicyRequest);
+        Map<String, String> headers = new HashMap<String, String>();
+        addRequestRequiredHeaders(headers, rawContent);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(setBucketCallbackPolicyRequest))
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params)
+                .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+                .setOriginalRequest(setBucketCallbackPolicyRequest).build();
+
+        return doOperation(request, requestIdResponseParser, bucketName, null);
+    }
+
+    public GetBucketCallbackPolicyResult getBucketCallbackPolicy(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_POLICY, null);
+        params.put(SUBRESOURCE_COMP, SUBRESOURCE_CALLBACK);
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(genericRequest))
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
+        return doOperation(request, getBucketCallbackPolicyResponseParser, bucketName, null, true);
+    }
+
+    public VoidResult deleteBucketCallbackPolicy(GenericRequest genericRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SUBRESOURCE_POLICY, null);
+        params.put(SUBRESOURCE_COMP, SUBRESOURCE_CALLBACK);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(genericRequest))
+                .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
+
+        return doOperation(request, requestIdResponseParser, bucketName, null);
+    }
 }

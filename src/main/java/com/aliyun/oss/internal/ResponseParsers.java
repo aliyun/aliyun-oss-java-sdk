@@ -19,46 +19,40 @@
 
 package com.aliyun.oss.internal;
 
-import static com.aliyun.oss.common.utils.CodingUtils.isNullOrEmpty;
-import static com.aliyun.oss.internal.OSSHeaders.OSS_HEADER_WORM_ID;
-import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
-import static com.aliyun.oss.internal.OSSUtils.trimQuotes;
-
-import java.io.InputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.math.BigInteger;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.CheckedInputStream;
-
-import com.aliyun.oss.internal.model.OSSErrorResult;
-import com.aliyun.oss.model.*;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.input.JDOMParseException;
-import org.jdom2.input.SAXBuilder;
-
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.common.parser.ResponseParseException;
 import com.aliyun.oss.common.parser.ResponseParser;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.common.utils.StringUtils;
+import com.aliyun.oss.internal.model.OSSErrorResult;
+import com.aliyun.oss.model.*;
 import com.aliyun.oss.model.AddBucketReplicationRequest.ReplicationAction;
 import com.aliyun.oss.model.DeleteVersionsResult.DeletedVersion;
-import com.aliyun.oss.model.LiveChannelStat.AudioStat;
-import com.aliyun.oss.model.LiveChannelStat.VideoStat;
+import com.aliyun.oss.model.LifecycleRule.NoncurrentVersionExpiration;
+import com.aliyun.oss.model.LifecycleRule.NoncurrentVersionStorageTransition;
 import com.aliyun.oss.model.LifecycleRule.RuleStatus;
 import com.aliyun.oss.model.LifecycleRule.StorageTransition;
+import com.aliyun.oss.model.LiveChannelStat.AudioStat;
+import com.aliyun.oss.model.LiveChannelStat.VideoStat;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
-import com.aliyun.oss.model.LifecycleRule.NoncurrentVersionStorageTransition;
-import com.aliyun.oss.model.LifecycleRule.NoncurrentVersionExpiration;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.input.JDOMParseException;
+import org.jdom2.input.SAXBuilder;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.math.BigInteger;
+import java.text.ParseException;
+import java.util.*;
+import java.util.zip.CheckedInputStream;
+
+import static com.aliyun.oss.common.utils.CodingUtils.isNullOrEmpty;
+import static com.aliyun.oss.internal.OSSHeaders.OSS_HEADER_WORM_ID;
+import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
+import static com.aliyun.oss.internal.OSSUtils.trimQuotes;
 
 /*
  * A collection of parsers that parse HTTP reponses into corresponding human-readable results.
@@ -142,6 +136,7 @@ public final class ResponseParsers {
     public static final GetMetaQueryStatusResponseParser getMetaQueryStatusResponseParser = new GetMetaQueryStatusResponseParser();
     public static final DoMetaQueryResponseParser doMetaQueryResponseParser = new DoMetaQueryResponseParser();
     public static final DescribeRegionsResponseParser describeRegionsResponseParser = new DescribeRegionsResponseParser();
+    public static final GetBucketCallbackPolicyResponseParser getBucketCallbackPolicyResponseParser = new GetBucketCallbackPolicyResponseParser();
 
     public static Long parseLongWithDefault(String defaultValue){
         if(defaultValue == null || "".equals(defaultValue)){
@@ -4217,6 +4212,43 @@ public final class ResponseParsers {
                 return describeRegionsResult;
             } catch (JDOMParseException e) {
                 throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class GetBucketCallbackPolicyResponseParser implements ResponseParser<GetBucketCallbackPolicyResult> {
+
+        @Override
+        public GetBucketCallbackPolicyResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetBucketCallbackPolicyResult result = parseGetBucketCallbackPolicy(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private GetBucketCallbackPolicyResult parseGetBucketCallbackPolicy(InputStream inputStream) throws ResponseParseException {
+                GetBucketCallbackPolicyResult result = new GetBucketCallbackPolicyResult();
+                if (inputStream == null) {
+                    return result;
+                }
+
+                try {
+                    Element root = getXmlRootElement(inputStream);
+
+                    List<Element> fileElem = root.getChildren();
+                    List<PolicyCallbackItem> policyCallbackItems = new ArrayList<PolicyCallbackItem>();
+                    for(Element elem : fileElem){
+                        PolicyCallbackItem policyCallbackItem = new PolicyCallbackItem(elem.getChildText("PolicyName"), elem.getChildText("Callback"));
+                        policyCallbackItem.setCallbackVar(elem.getChildText("CallbackVar"));
+                        policyCallbackItems.add(policyCallbackItem);
+                    }
+                    result.setPolicyCallbackItems(policyCallbackItems);
+                    return result;
             } catch (Exception e) {
                 throw new ResponseParseException(e.getMessage(), e);
             }
