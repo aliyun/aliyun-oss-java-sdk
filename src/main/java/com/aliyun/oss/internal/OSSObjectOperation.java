@@ -1281,6 +1281,36 @@ public class OSSObjectOperation extends OSSOperation {
         populateTrafficLimitHeader(headers, getObjectRequest.getTrafficLimit());
     }
 
+    public AsyncProcessObjectResult asyncProcessObject(AsyncProcessObjectRequest asyncProcessObjectRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(asyncProcessObjectRequest, "asyncProcessObjectRequest");
+
+        String bucketName = asyncProcessObjectRequest.getBucketName();
+        String key = asyncProcessObjectRequest.getKey();
+        String process = asyncProcessObjectRequest.getProcess();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        assertParameterNotNull(key, "key");
+        ensureObjectKeyValid(key);
+        assertStringNotNullOrEmpty(process, "process");
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.X_OSS_ASYNC_PROCESS, null);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        populateRequestPayerHeader(headers, asyncProcessObjectRequest.getRequestPayer());
+
+        byte[] rawContent = asyncProcessObjectRequestMarshaller.marshall(asyncProcessObjectRequest);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(asyncProcessObjectRequest))
+                .setMethod(HttpMethod.POST).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(params)
+                .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+                .setOriginalRequest(asyncProcessObjectRequest).build();
+
+        return doOperation(request, ResponseParsers.asyncProcessObjectResponseParser, bucketName, key, true);
+    }
+
     private static void addDeleteObjectsRequiredHeaders(Map<String, String> headers, byte[] rawContent) {
         headers.put(HttpHeaders.CONTENT_LENGTH, String.valueOf(rawContent.length));
 

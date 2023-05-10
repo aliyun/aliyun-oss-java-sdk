@@ -156,5 +156,6 @@ public final class RequestParameters {
     public static final String ACCESS_MONITOR = "accessmonitor";
 
     public static final String SUBRESOURCE_REGION_LIST = "regionList";
+    public static final String X_OSS_ASYNC_PROCESS = "x-oss-async-process";
 
 }

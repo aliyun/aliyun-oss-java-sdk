@@ -24,6 +24,7 @@ import static com.aliyun.oss.internal.OSSHeaders.OSS_HEADER_WORM_ID;
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
 import static com.aliyun.oss.internal.OSSUtils.trimQuotes;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -37,8 +38,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.CheckedInputStream;
 
+import com.aliyun.oss.common.utils.IOUtils;
 import com.aliyun.oss.internal.model.OSSErrorResult;
 import com.aliyun.oss.model.*;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.JDOMParseException;
@@ -141,6 +145,7 @@ public final class ResponseParsers {
     public static final GetBucketAccessMonitorResponseParser getBucketAccessMonitorResponseParser = new GetBucketAccessMonitorResponseParser();
     public static final GetMetaQueryStatusResponseParser getMetaQueryStatusResponseParser = new GetMetaQueryStatusResponseParser();
     public static final DoMetaQueryResponseParser doMetaQueryResponseParser = new DoMetaQueryResponseParser();
+    public static final AsyncProcessObjectResponseParser asyncProcessObjectResponseParser = new AsyncProcessObjectResponseParser();
 
     public static Long parseLongWithDefault(String defaultValue){
         if(defaultValue == null || "".equals(defaultValue)){
@@ -4152,6 +4157,45 @@ public final class ResponseParsers {
                 return doMetaQueryResult;
             } catch (JDOMParseException e) {
                 throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class AsyncProcessObjectResponseParser implements ResponseParser<AsyncProcessObjectResult> {
+
+        @Override
+        public AsyncProcessObjectResult parse(ResponseMessage response) throws ResponseParseException {
+            AsyncProcessObjectResult result = parseAsyncProcessObject(response.getContent());
+            setResultParameter(result, response);
+            return result;
+        }
+
+        private AsyncProcessObjectResult parseAsyncProcessObject(InputStream inputStream) throws ResponseParseException {
+            AsyncProcessObjectResult asyncProcessObjectResult = new AsyncProcessObjectResult();
+            if (inputStream == null) {
+                return asyncProcessObjectResult;
+            }
+
+            try {
+                String jsonStr = null;
+                try {
+                    jsonStr = IOUtils.readStreamAsString(inputStream, "UTF-8");
+                    JSONObject jsonObject = new JSONObject(jsonStr);
+                    asyncProcessObjectResult.setAsyncRequestId(jsonObject.getString("RequestId"));
+                    asyncProcessObjectResult.setEventId(jsonObject.getString("EventId"));
+                    asyncProcessObjectResult.setTaskId(jsonObject.getString("TaskId"));
+                } catch (IOException e) {
+                    throw new ResponseParseException(e.getMessage(), e);
+                } catch (JSONException e) {
+                    throw new ResponseParseException(e.getMessage(), e);
+                } finally {
+                    if (inputStream != null){
+                        inputStream.close();
+                    }
+                }
+                return asyncProcessObjectResult;
             } catch (Exception e) {
                 throw new ResponseParseException(e.getMessage(), e);
             }
