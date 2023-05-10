@@ -5536,4 +5536,48 @@ public class ResponseParsersTest {
             Assert.fail("parse delete directory response body fail!");
         }
     }
+
+    @Test
+    public void testParseAsyncProcessObject() {
+        InputStream instream = null;
+        String respBody;
+
+        respBody = "{\"EventId\":\"3D7-1XxFtV2t3VtcOn2CXqI2ldsMN3i\",\"RequestId\":\"8DF65942-D483-5E7E-BC1A-B25C617A9C32\",\"TaskId\":\"MediaConvert-d2280366-cd33-48f7-90c6-a0dab65bed63\"}";
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        AsyncProcessObjectResult result = null;
+        try {
+
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.AsyncProcessObjectResponseParser parser = new ResponseParsers.AsyncProcessObjectResponseParser();
+            result = parser.parse(response);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals("8DF65942-D483-5E7E-BC1A-B25C617A9C32", result.getAsyncRequestId());
+        Assert.assertEquals("3D7-1XxFtV2t3VtcOn2CXqI2ldsMN3i", result.getEventId());
+        Assert.assertEquals("MediaConvert-d2280366-cd33-48f7-90c6-a0dab65bed63", result.getTaskId());
+
+        respBody = "";
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.AsyncProcessObjectResponseParser parser = new ResponseParsers.AsyncProcessObjectResponseParser();
+            result = parser.parse(response);
+        } catch (Exception e) {
+            Assert.assertEquals("A JSONObject text must begin with '{' at character 0 of ", e.getMessage());
+        }
+    }
 }

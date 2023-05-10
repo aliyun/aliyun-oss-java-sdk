@@ -24,6 +24,7 @@ import com.aliyun.oss.common.parser.ResponseParseException;
 import com.aliyun.oss.common.parser.ResponseParser;
 import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.common.utils.HttpUtil;
+import com.aliyun.oss.common.utils.IOUtils;
 import com.aliyun.oss.common.utils.StringUtils;
 import com.aliyun.oss.internal.model.OSSErrorResult;
 import com.aliyun.oss.model.*;
@@ -36,6 +37,7 @@ import com.aliyun.oss.model.LifecycleRule.StorageTransition;
 import com.aliyun.oss.model.LiveChannelStat.AudioStat;
 import com.aliyun.oss.model.LiveChannelStat.VideoStat;
 import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
+import org.codehaus.jettison.json.JSONObject;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.JDOMParseException;
@@ -137,6 +139,7 @@ public final class ResponseParsers {
     public static final DoMetaQueryResponseParser doMetaQueryResponseParser = new DoMetaQueryResponseParser();
     public static final DescribeRegionsResponseParser describeRegionsResponseParser = new DescribeRegionsResponseParser();
     public static final GetBucketCallbackPolicyResponseParser getBucketCallbackPolicyResponseParser = new GetBucketCallbackPolicyResponseParser();
+    public static final AsyncProcessObjectResponseParser asyncProcessObjectResponseParser = new AsyncProcessObjectResponseParser();
 
     public static Long parseLongWithDefault(String defaultValue){
         if(defaultValue == null || "".equals(defaultValue)){
@@ -4232,23 +4235,55 @@ public final class ResponseParsers {
         }
 
         private GetBucketCallbackPolicyResult parseGetBucketCallbackPolicy(InputStream inputStream) throws ResponseParseException {
-                GetBucketCallbackPolicyResult result = new GetBucketCallbackPolicyResult();
-                if (inputStream == null) {
-                    return result;
+            GetBucketCallbackPolicyResult result = new GetBucketCallbackPolicyResult();
+            if (inputStream == null) {
+                return result;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                List<Element> fileElem = root.getChildren();
+                List<PolicyCallbackItem> policyCallbackItems = new ArrayList<PolicyCallbackItem>();
+                for (Element elem : fileElem) {
+                    PolicyCallbackItem policyCallbackItem = new PolicyCallbackItem(elem.getChildText("PolicyName"), elem.getChildText("Callback"));
+                    policyCallbackItem.setCallbackVar(elem.getChildText("CallbackVar"));
+                    policyCallbackItems.add(policyCallbackItem);
                 }
+                result.setPolicyCallbackItems(policyCallbackItems);
+                return result;
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
 
-                try {
-                    Element root = getXmlRootElement(inputStream);
+    public static final class AsyncProcessObjectResponseParser implements ResponseParser<AsyncProcessObjectResult> {
 
-                    List<Element> fileElem = root.getChildren();
-                    List<PolicyCallbackItem> policyCallbackItems = new ArrayList<PolicyCallbackItem>();
-                    for(Element elem : fileElem){
-                        PolicyCallbackItem policyCallbackItem = new PolicyCallbackItem(elem.getChildText("PolicyName"), elem.getChildText("Callback"));
-                        policyCallbackItem.setCallbackVar(elem.getChildText("CallbackVar"));
-                        policyCallbackItems.add(policyCallbackItem);
-                    }
-                    result.setPolicyCallbackItems(policyCallbackItems);
-                    return result;
+        @Override
+        public AsyncProcessObjectResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                AsyncProcessObjectResult result = parseAsyncProcessObject(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private AsyncProcessObjectResult parseAsyncProcessObject(InputStream inputStream) throws ResponseParseException {
+            AsyncProcessObjectResult asyncProcessObjectResult = new AsyncProcessObjectResult();
+            if (inputStream == null) {
+                return asyncProcessObjectResult;
+            }
+
+            try {
+                String jsonStr = IOUtils.readStreamAsString(inputStream, "UTF-8");
+                JSONObject jsonObject = new JSONObject(jsonStr);
+                asyncProcessObjectResult.setAsyncRequestId(jsonObject.getString("RequestId"));
+                asyncProcessObjectResult.setEventId(jsonObject.getString("EventId"));
+                asyncProcessObjectResult.setTaskId(jsonObject.getString("TaskId"));
+                return asyncProcessObjectResult;
             } catch (Exception e) {
                 throw new ResponseParseException(e.getMessage(), e);
             }
