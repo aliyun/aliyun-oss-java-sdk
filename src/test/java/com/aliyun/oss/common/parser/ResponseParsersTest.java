@@ -5580,4 +5580,55 @@ public class ResponseParsersTest {
             Assert.assertEquals("A JSONObject text must begin with '{' at character 0 of ", e.getMessage());
         }
     }
+
+    @Test
+    public void testBucketReplicationResponseParserWithRTC() {
+        String respBody = "" +
+                "<ReplicationConfiguration>\n" +
+                "   <Rule>\n" +
+                "        <RTC>\n" +
+                "            <Status>enabling</Status>\n" +
+                "        </RTC>\n" +
+                "        <PrefixSet>\n" +
+                "            <Prefix>prefix_1</Prefix>\n" +
+                "            <Prefix>prefix_2</Prefix>\n" +
+                "        </PrefixSet>\n" +
+                "    <Status>doing</Status>\n" +
+                "        <Action>ALL,PUT</Action>\n" +
+                "        <Destination>\n" +
+                "            <Bucket>Target Bucket Name</Bucket>\n" +
+                "            <Location>oss-cn-hangzhou</Location>\n" +
+                "            <TransferType>oss_acc</TransferType>\n" +
+                "        </Destination>\n" +
+                "        <HistoricalObjectReplication>enabled</HistoricalObjectReplication>\n" +
+                "   </Rule>\n" +
+                "</ReplicationConfiguration>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        List<ReplicationRule> rules = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            rules = ResponseParsers.parseGetBucketReplication(instream);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+        ReplicationRule rule = rules.get(0);
+        Assert.assertEquals("enabling", rule.getRtcStatus().toString());
+        Assert.assertEquals("prefix_1", rule.getObjectPrefixList().get(0));
+        Assert.assertEquals("prefix_2", rule.getObjectPrefixList().get(1));
+        Assert.assertEquals(AddBucketReplicationRequest.ReplicationAction.ALL, rule.getReplicationActionList().get(0));
+        Assert.assertEquals(AddBucketReplicationRequest.ReplicationAction.PUT, rule.getReplicationActionList().get(1));
+        Assert.assertEquals("Target Bucket Name", rule.getTargetBucketName());
+        Assert.assertEquals("oss-cn-hangzhou", rule.getTargetBucketLocation());
+        Assert.assertEquals("oss_acc", rule.getTransferType());
+        Assert.assertEquals(true, rule.isEnableHistoricalObjectReplication());
+    }
+
 }

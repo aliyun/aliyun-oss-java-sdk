@@ -2634,6 +2634,12 @@ public final class ResponseParsers {
                     repRule.setSourceBucketLocation(ruleElem.getChild("Source").getChildText("Location"));
                 }
 
+                if (destination.getChild("TransferType") != null) {
+                    repRule.setTransferType(destination.getChildText("TransferType"));
+                }
+                if (ruleElem.getChild("RTC") != null) {
+                    repRule.setRtcStatus(ruleElem.getChild("RTC").getChildText("Status"));
+                }
                 repRules.add(repRule);
             }
 

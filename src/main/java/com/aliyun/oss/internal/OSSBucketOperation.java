@@ -2194,4 +2194,18 @@ public class OSSBucketOperation extends OSSOperation {
 
         return doOperation(request, requestIdResponseParser, bucketName, null);
     }
+
+    public VoidResult putBucketRTC(PutBucketRTCRequest putBucketRTCRequest) throws OSSException, ClientException {
+        assertParameterNotNull(putBucketRTCRequest, "putBucketRTCRequest");
+        String bucketName = putBucketRTCRequest.getBucketName();
+        assertParameterNotNull(putBucketRTCRequest.getRuleID(), "ruleID");
+        assertParameterNotNull(putBucketRTCRequest.getStatus(), "status");
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RTC, null);
+        byte[] rawContent = putBucketRTCRequestMarshaller.marshall(putBucketRTCRequest);
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(putBucketRTCRequest).setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent)).build();
+        return doOperation(request, requestIdResponseParser, bucketName, null, true);
+    }
 }

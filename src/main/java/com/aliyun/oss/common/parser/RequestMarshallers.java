@@ -102,6 +102,7 @@ public final class RequestMarshallers {
     public static final DoMetaQueryRequestMarshaller doMetaQueryRequestMarshaller = new DoMetaQueryRequestMarshaller();
     public static final SetBucketCallbackPolicyRequestMarshaller setBucketCallbackPolicyRequestMarshaller = new SetBucketCallbackPolicyRequestMarshaller();
     public static final AsyncProcessObjectRequestMarshaller asyncProcessObjectRequestMarshaller = new AsyncProcessObjectRequestMarshaller();
+    public static final PutBucketRTCRequestMarshaller putBucketRTCRequestMarshaller = new PutBucketRTCRequestMarshaller();
 
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
 
@@ -962,7 +963,9 @@ public final class RequestMarshallers {
                 xmlBody.append("<Cloud>" + request.getTargetCloud() + "</Cloud>");
                 xmlBody.append("<CloudLocation>" + request.getTargetCloudLocation() + "</CloudLocation>");
             }
-
+            if (request.getTransferType() != null) {
+                xmlBody.append("<TransferType>" + request.getTransferType() + "</TransferType>");
+            }
             xmlBody.append("</Destination>");
             if (request.isEnableHistoricalObjectReplication()) {
                 xmlBody.append("<HistoricalObjectReplication>" + "enabled" + "</HistoricalObjectReplication>");
@@ -1001,7 +1004,11 @@ public final class RequestMarshallers {
                 xmlBody.append("<Location>" + request.getSourceBucketLocation() + "</Location>");
                 xmlBody.append("</Source>");
             }
-
+            if (request.getRtcStatus() != null) {
+                xmlBody.append("<RTC>");
+                xmlBody.append("<Status>" + request.getRtcStatus() + "</Status>");
+                xmlBody.append("</RTC>");
+            }
             xmlBody.append("</Rule>");
             xmlBody.append("</ReplicationConfiguration>");
             return stringMarshaller.marshall(xmlBody.toString());
@@ -1932,6 +1939,27 @@ public final class RequestMarshallers {
             return rawData;
         }
 
+    }
+
+    public static final class PutBucketRTCRequestMarshaller implements RequestMarshaller2<PutBucketRTCRequest> {
+        @Override
+        public byte[] marshall(PutBucketRTCRequest input) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<ReplicationRule>");
+            xmlBody.append("<RTC>");
+            xmlBody.append("<Status>"+ input.getStatus() +"</Status>");
+            xmlBody.append("</RTC>");
+            xmlBody.append("<ID>"+ input.getRuleID() +"</ID>");
+            xmlBody.append("</ReplicationRule>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
     }
 
     private static enum EscapedChar {

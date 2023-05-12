@@ -5184,4 +5184,12 @@ public interface OSS {
      *             If any errors occurred in OSS while processing the request.
      */
     public AsyncProcessObjectResult asyncProcessObject(AsyncProcessObjectRequest asyncProcessObjectRequest) throws OSSException, ClientException;
+
+    /**
+     * Turn RTC on or off for an existing cross region replication rule
+     *
+     * @param putBucketRTCRequest
+     * @return VoidResult
+     */
+    VoidResult putBucketRTC(PutBucketRTCRequest putBucketRTCRequest) throws OSSException, ClientException;
 }

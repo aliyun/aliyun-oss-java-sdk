@@ -1983,6 +1983,12 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public VoidResult putBucketRTC(PutBucketRTCRequest putBucketRTCRequest) throws OSSException, ClientException {
+        return this.bucketOperation.putBucketRTC(putBucketRTCRequest);
+    }
+
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();
