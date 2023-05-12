@@ -78,6 +78,7 @@ public final class ResponseParsers {
     public static final GetBucketReplicationResponseParser getBucketReplicationResponseParser = new GetBucketReplicationResponseParser();
     public static final GetBucketReplicationProgressResponseParser getBucketReplicationProgressResponseParser = new GetBucketReplicationProgressResponseParser();
     public static final GetBucketReplicationLocationResponseParser getBucketReplicationLocationResponseParser = new GetBucketReplicationLocationResponseParser();
+    public static final GetBucketReplicationLocationV2ResponseParser getBucketReplicationLocationV2ResponseParser = new GetBucketReplicationLocationV2ResponseParser();
     public static final AddBucketCnameResponseParser addBucketCnameResponseParser = new AddBucketCnameResponseParser();
     public static final GetBucketCnameResponseParser getBucketCnameResponseParser = new GetBucketCnameResponseParser();
     public static final CreateBucketCnameTokenResponseParser createBucketCnameTokenResponseParser = new CreateBucketCnameTokenResponseParser();
@@ -764,6 +765,72 @@ public final class ResponseParsers {
             }
         }
 
+    }
+
+    public static final class GetBucketReplicationLocationV2ResponseParser implements ResponseParser<BucketReplicationLocationResult> {
+
+        @Override
+        public BucketReplicationLocationResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                return parseGetBucketReplicationLocationV2(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+    }
+
+    public static BucketReplicationLocationResult parseGetBucketReplicationLocationV2(InputStream responseBody)
+            throws ResponseParseException {
+        try {
+            BucketReplicationLocationResult bucketReplicationLocationResult = new BucketReplicationLocationResult();
+
+            List<LocationTransferType> locationTransferTypeConstraint = new ArrayList<LocationTransferType>();
+            List<String> locationRtcList = new ArrayList<String>();
+
+            Element root = getXmlRootElement(responseBody);
+
+            List<String> locationList = new ArrayList<String>();
+            List<Element> locElements = root.getChildren("Location");
+
+            for (Element locElem : locElements) {
+                locationList.add(locElem.getText());
+            }
+
+            if (root.getChild("LocationTransferTypeConstraint") != null ) {
+                List<Element> locationTransferTypes = root.getChild("LocationTransferTypeConstraint").getChildren("LocationTransferType");
+                for (Element e: locationTransferTypes ) {
+                    LocationTransferType locationTransferType = new LocationTransferType();
+                    locationTransferType.setRegion(e.getChildText("Location"));
+                    List<String> transferTypes = new ArrayList<String>();
+                    List<Element> transferTypesElement = new ArrayList<Element>();
+                    if (e.getChild("TransferTypes") != null) {
+                        transferTypesElement =  e.getChild("TransferTypes").getChildren("Type");
+                        for (Element p :transferTypesElement) {
+                            String typeContent = p.getText();
+                            transferTypes.add(typeContent);
+                        }
+                    }
+                    locationTransferType.setTransferTypes(transferTypes);
+                    locationTransferTypeConstraint.add(locationTransferType);
+                }
+            }
+
+            if (root.getChild("LocationRTCConstraint") != null) {
+                List<Element> locationRtcElements = root.getChild("LocationRTCConstraint").getChildren("Location");
+                for (Element locationRtcElem : locationRtcElements) {
+                    locationRtcList.add(locationRtcElem.getText());
+                }
+            }
+
+            bucketReplicationLocationResult.setLocations(locationList);
+            bucketReplicationLocationResult.setLocationTransferTypeConstraint(locationTransferTypeConstraint);
+            bucketReplicationLocationResult.setLocationRTCConstraint(locationRtcList);
+            return bucketReplicationLocationResult;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
     }
 
     public static final class ListObjectsReponseParser implements ResponseParser<ObjectListing> {

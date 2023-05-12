@@ -999,6 +999,29 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, getBucketReplicationLocationResponseParser, bucketName, null, true);
     }
 
+
+    /***
+     * New Get Bucket Replication Location
+     * @param genericRequest
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public BucketReplicationLocationResult getBucketReplicationLocationV2(GenericRequest genericRequest)
+            throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_REPLICATION_LOCATION, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
+
+        return doOperation(request, getBucketReplicationLocationV2ResponseParser, bucketName, null, true);
+    }
+
     public AddBucketCnameResult addBucketCname(AddBucketCnameRequest addBucketCnameRequest) throws OSSException, ClientException {
 
         assertParameterNotNull(addBucketCnameRequest, "addBucketCnameRequest");

@@ -582,6 +582,66 @@ public class ResponseParsersTest {
     }
 
     @Test
+    public void testGetBucketReplicationLocationV2ResponseParser() {
+        String respBody = null;
+        InputStream instream = null;
+
+        respBody = "" +
+                "<ReplicationLocation>\n" +
+                "  <Location>oss-cn-beijing</Location>\n" +
+                "  <Location>oss-cn-qingdao</Location>\n" +
+                "  <Location>oss-cn-shenzhen</Location>\n" +
+                "  <Location>oss-cn-hongkong</Location>\n" +
+                "  <Location>oss-us-west-1</Location>\n" +
+                "\t<LocationRTCConstraint>\n" +
+                "    <Location>oss-cn-qingdao</Location>\n" +
+                "    <Location>oss-cn-hongkong</Location>\n" +
+                "  </LocationRTCConstraint>\n" +
+                "  <LocationTransferTypeConstraint>\n" +
+                "    <LocationTransferType>\n" +
+                "      <Location>oss-cn-hongkong</Location>\n" +
+                "        <TransferTypes>\n" +
+                "          <Type>oss_acc</Type>          \n" +
+                "        </TransferTypes>\n" +
+                "      </LocationTransferType>\n" +
+                "      <LocationTransferType>\n" +
+                "        <Location>oss-us-west-1</Location>\n" +
+                "        <TransferTypes>\n" +
+                "          <Type>oss_acc</Type>\n" +
+                "        </TransferTypes>\n" +
+                "      </LocationTransferType>\n" +
+                "    </LocationTransferTypeConstraint>\n" +
+                "  </ReplicationLocation>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseMessage responseMessage = new ResponseMessage(null);;
+            responseMessage.setContent(instream);
+            ResponseParsers.GetBucketReplicationLocationV2ResponseParser parser = new ResponseParsers.GetBucketReplicationLocationV2ResponseParser();
+            BucketReplicationLocationResult result = parser.parse(responseMessage);
+            Assert.assertEquals(result.getLocations().get(0), "oss-cn-beijing");
+            Assert.assertEquals(result.getLocations().get(1), "oss-cn-qingdao");
+            Assert.assertEquals(result.getLocations().get(2), "oss-cn-shenzhen");
+            Assert.assertEquals(result.getLocations().get(3), "oss-cn-hongkong");
+            Assert.assertEquals(result.getLocations().get(4), "oss-us-west-1");
+
+            Assert.assertEquals(result.getLocationTransferTypeConstraint().get(0).getRegion(), "oss-cn-hongkong");
+            Assert.assertEquals(result.getLocationTransferTypeConstraint().get(0).getTransferTypes().get(0), "oss_acc");
+            Assert.assertEquals(result.getLocationTransferTypeConstraint().get(1).getRegion(), "oss-us-west-1");
+            Assert.assertEquals(result.getLocationTransferTypeConstraint().get(1).getTransferTypes().get(0), "oss_acc");
+            Assert.assertEquals(result.getLocationRTCConstraint().get(0), "oss-cn-qingdao");
+            Assert.assertEquals(result.getLocationRTCConstraint().get(1), "oss-cn-hongkong");
+        } catch (ResponseParseException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+    }
+
+    @Test
     public void testParseGetLiveChannelStat() {
         String respBody = "" +
                 "<LiveChannelStat>\n" +
