@@ -5140,4 +5140,114 @@ public class ResponseParsersTest {
         Assert.assertEquals("object-with-special-restore", result.getVersionSummaries().get(0).getKey());
         Assert.assertEquals("ongoing-request=\"true\"", result.getVersionSummaries().get(0).getRestoreInfo());
     }
+
+    @Test
+    public void testBucketReplicationResponseParserWithRTC() {
+        String respBody = "" +
+                "<ReplicationConfiguration>\n" +
+                "   <Rule>\n" +
+                "        <RTC>\n" +
+                "            <Status>enabling</Status>\n" +
+                "        </RTC>\n" +
+                "        <PrefixSet>\n" +
+                "            <Prefix>prefix_1</Prefix>\n" +
+                "            <Prefix>prefix_2</Prefix>\n" +
+                "        </PrefixSet>\n" +
+                "    <Status>doing</Status>\n" +
+                "        <Action>ALL,PUT</Action>\n" +
+                "        <Destination>\n" +
+                "            <Bucket>Target Bucket Name</Bucket>\n" +
+                "            <Location>oss-cn-hangzhou</Location>\n" +
+                "            <TransferType>oss_acc</TransferType>\n" +
+                "        </Destination>\n" +
+                "        <HistoricalObjectReplication>enabled</HistoricalObjectReplication>\n" +
+                "   </Rule>\n" +
+                "</ReplicationConfiguration>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        List<ReplicationRule> rules = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            rules = ResponseParsers.parseGetBucketReplication(instream);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+        ReplicationRule rule = rules.get(0);
+        Assert.assertEquals("enabling", rule.getRtcStatus().toString());
+        Assert.assertEquals("prefix_1", rule.getObjectPrefixList().get(0));
+        Assert.assertEquals("prefix_2", rule.getObjectPrefixList().get(1));
+        Assert.assertEquals(AddBucketReplicationRequest.ReplicationAction.ALL, rule.getReplicationActionList().get(0));
+        Assert.assertEquals(AddBucketReplicationRequest.ReplicationAction.PUT, rule.getReplicationActionList().get(1));
+        Assert.assertEquals("Target Bucket Name", rule.getTargetBucketName());
+        Assert.assertEquals("oss-cn-hangzhou", rule.getTargetBucketLocation());
+        Assert.assertEquals("oss_acc", rule.getTransferType());
+        Assert.assertEquals(true, rule.isEnableHistoricalObjectReplication());
+    }
+
+    @Test
+    public void testGetBucketReplicationLocationV2ResponseParser() {
+        String respBody = null;
+        InputStream instream = null;
+
+        respBody = "" +
+                "<ReplicationLocation>\n" +
+                "  <Location>oss-cn-beijing</Location>\n" +
+                "  <Location>oss-cn-qingdao</Location>\n" +
+                "  <Location>oss-cn-shenzhen</Location>\n" +
+                "  <Location>oss-cn-hongkong</Location>\n" +
+                "  <Location>oss-us-west-1</Location>\n" +
+                "\t<LocationRTCConstraint>\n" +
+                "    <Location>oss-cn-qingdao</Location>\n" +
+                "    <Location>oss-cn-hongkong</Location>\n" +
+                "  </LocationRTCConstraint>\n" +
+                "  <LocationTransferTypeConstraint>\n" +
+                "    <LocationTransferType>\n" +
+                "      <Location>oss-cn-hongkong</Location>\n" +
+                "        <TransferTypes>\n" +
+                "          <Type>oss_acc</Type>          \n" +
+                "        </TransferTypes>\n" +
+                "      </LocationTransferType>\n" +
+                "      <LocationTransferType>\n" +
+                "        <Location>oss-us-west-1</Location>\n" +
+                "        <TransferTypes>\n" +
+                "          <Type>oss_acc</Type>\n" +
+                "        </TransferTypes>\n" +
+                "      </LocationTransferType>\n" +
+                "    </LocationTransferTypeConstraint>\n" +
+                "  </ReplicationLocation>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseMessage responseMessage = new ResponseMessage(null);;
+            responseMessage.setContent(instream);
+            ResponseParsers.GetBucketReplicationLocationV2ResponseParser parser = new ResponseParsers.GetBucketReplicationLocationV2ResponseParser();
+            BucketReplicationLocationResult result = parser.parse(responseMessage);
+            Assert.assertEquals(result.getLocations().get(0), "oss-cn-beijing");
+            Assert.assertEquals(result.getLocations().get(1), "oss-cn-qingdao");
+            Assert.assertEquals(result.getLocations().get(2), "oss-cn-shenzhen");
+            Assert.assertEquals(result.getLocations().get(3), "oss-cn-hongkong");
+            Assert.assertEquals(result.getLocations().get(4), "oss-us-west-1");
+
+            Assert.assertEquals(result.getLocationTransferTypeConstraint().get(0).getRegion(), "oss-cn-hongkong");
+            Assert.assertEquals(result.getLocationTransferTypeConstraint().get(0).getTransferTypes().get(0), "oss_acc");
+            Assert.assertEquals(result.getLocationTransferTypeConstraint().get(1).getRegion(), "oss-us-west-1");
+            Assert.assertEquals(result.getLocationTransferTypeConstraint().get(1).getTransferTypes().get(0), "oss_acc");
+            Assert.assertEquals(result.getLocationRTCConstraint().get(0), "oss-cn-qingdao");
+            Assert.assertEquals(result.getLocationRTCConstraint().get(1), "oss-cn-hongkong");
+        } catch (ResponseParseException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+    }
 }

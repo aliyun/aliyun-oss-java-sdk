@@ -141,6 +141,7 @@ public final class ResponseParsers {
     public static final GetBucketAccessMonitorResponseParser getBucketAccessMonitorResponseParser = new GetBucketAccessMonitorResponseParser();
     public static final GetMetaQueryStatusResponseParser getMetaQueryStatusResponseParser = new GetMetaQueryStatusResponseParser();
     public static final DoMetaQueryResponseParser doMetaQueryResponseParser = new DoMetaQueryResponseParser();
+    public static final GetBucketReplicationLocationV2ResponseParser getBucketReplicationLocationV2ResponseParser = new GetBucketReplicationLocationV2ResponseParser();
 
     public static Long parseLongWithDefault(String defaultValue){
         if(defaultValue == null || "".equals(defaultValue)){
@@ -764,6 +765,18 @@ public final class ResponseParsers {
             }
         }
 
+    }
+
+    public static final class GetBucketReplicationLocationV2ResponseParser implements ResponseParser<BucketReplicationLocationResult> {
+
+        @Override
+        public BucketReplicationLocationResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                return parseGetBucketReplicationLocationV2(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
     }
 
     public static final class ListObjectsReponseParser implements ResponseParser<ObjectListing> {
@@ -1603,6 +1616,11 @@ public final class ResponseParsers {
             Element root = getXmlRootElement(responseBody);
 
             boolean allowEmptyReferer = Boolean.valueOf(root.getChildText("AllowEmptyReferer"));
+            boolean allowTruncateQueryString = true;
+            if (root.getChild("AllowTruncateQueryString") != null) {
+                allowTruncateQueryString  =  Boolean.valueOf(root.getChildText("AllowTruncateQueryString"));
+            }
+
             List<String> refererList = new ArrayList<String>();
             if (root.getChild("RefererList") != null) {
                 Element refererListElem = root.getChild("RefererList");
@@ -1613,7 +1631,7 @@ public final class ResponseParsers {
                     }
                 }
             }
-            return new BucketReferer(allowEmptyReferer, refererList);
+            return new BucketReferer(allowEmptyReferer, allowTruncateQueryString, refererList);
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {
@@ -2149,10 +2167,44 @@ public final class ResponseParsers {
             String sourceFileProtectSuffix = root.getChildText("SourceFileProtectSuffix");
             String styleDelimiters = root.getChildText("StyleDelimiters");
 
+            // process bucket channel config
+            List<BucketChannelConfig> bucketChannelConfigs = new ArrayList<BucketChannelConfig>();
+
+            if (root.getChild("BucketChannelConfig") != null) {
+                List<Element> ruleElements = root.getChild("BucketChannelConfig").getChild("RuleList").getChildren("Rule");
+                for(Element item: ruleElements) {
+                    BucketChannelConfig bucketChannelConfig = new BucketChannelConfig();
+                    if (item.getChildText("RuleName") != null) {
+                        bucketChannelConfig.setRuleName(item.getChildText("RuleName"));
+                    }
+
+                    if (item.getChildText("RuleRegex") != null) {
+                        bucketChannelConfig.setRuleRegex(item.getChildText("RuleRegex"));
+                    }
+
+                    if (item.getChildText("FrontContent") != null) {
+                        bucketChannelConfig.setFrontContent(item.getChildText("FrontContent"));
+                    }
+
+                    if (item.getChildText("CreateTime") != null) {
+                        bucketChannelConfig.setCreateTime(item.getChildText("CreateTime"));
+                    }
+
+                    if (item.getChildText("LastModifiedTime") != null) {
+                        bucketChannelConfig.setLastModifiedTime(item.getChildText("LastModifiedTime"));
+                    }
+
+                    bucketChannelConfigs.add(bucketChannelConfig);
+                }
+            }
+
             ImageProcess imageProcess = new ImageProcess(compliedHost, sourceFileProtect, sourceFileProtectSuffix,
                     styleDelimiters);
             if (root.getChildText("Version") != null) {
                 imageProcess.setVersion(Integer.parseInt(root.getChildText("Version")));
+            }
+            if (root.getChild("BucketChannelConfig") != null) {
+                imageProcess.setBucketChannelConfig(bucketChannelConfigs);
             }
 
             return new BucketProcess(imageProcess);
@@ -2186,6 +2238,9 @@ public final class ResponseParsers {
             }
             if (root.getChild("ErrorDocument") != null) {
                 result.setErrorDocument(root.getChild("ErrorDocument").getChildText("Key"));
+                if (root.getChild("ErrorDocument").getChild("HttpStatus") != null) {
+                    result.setHttpStatus(root.getChild("ErrorDocument").getChildText("HttpStatus"));
+                }
             }
             if (root.getChild("RoutingRules") != null) {
                 List<Element> ruleElements = root.getChild("RoutingRules").getChildren("RoutingRule");
@@ -2569,6 +2624,10 @@ public final class ResponseParsers {
                 repRule.setTargetBucketName(destination.getChildText("Bucket"));
                 repRule.setTargetBucketLocation(destination.getChildText("Location"));
 
+                if (destination.getChild("TransferType") != null) {
+                    repRule.setTransferType(destination.getChildText("TransferType"));
+                }
+
                 repRule.setTargetCloud(destination.getChildText("Cloud"));
                 repRule.setTargetCloudLocation(destination.getChildText("CloudLocation"));
 
@@ -2612,6 +2671,9 @@ public final class ResponseParsers {
 
                 if (ruleElem.getChild("Source") != null){
                     repRule.setSourceBucketLocation(ruleElem.getChild("Source").getChildText("Location"));
+                }
+                if (ruleElem.getChild("RTC") != null) {
+                    repRule.setRtcStatus(ruleElem.getChild("RTC").getChildText("Status"));
                 }
 
                 repRules.add(repRule);
@@ -2686,6 +2748,60 @@ public final class ResponseParsers {
             }
 
             return locationList;
+        } catch (JDOMParseException e) {
+            throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseParseException(e.getMessage(), e);
+        }
+    }
+
+    public static BucketReplicationLocationResult parseGetBucketReplicationLocationV2(InputStream responseBody)
+            throws ResponseParseException {
+        try {
+            BucketReplicationLocationResult bucketReplicationLocationResult = new BucketReplicationLocationResult();
+
+            List<LocationTransferType> locationTransferTypeConstraint = new ArrayList<LocationTransferType>();
+            List<String> locationRtcList = new ArrayList<String>();
+
+            Element root = getXmlRootElement(responseBody);
+
+            List<String> locationList = new ArrayList<String>();
+            List<Element> locElements = root.getChildren("Location");
+
+            for (Element locElem : locElements) {
+                locationList.add(locElem.getText());
+            }
+
+            if (root.getChild("LocationTransferTypeConstraint") != null ) {
+                List<Element> locationTransferTypes = root.getChild("LocationTransferTypeConstraint").getChildren("LocationTransferType");
+                for (Element e: locationTransferTypes ) {
+                    LocationTransferType locationTransferType = new LocationTransferType();
+                    locationTransferType.setRegion(e.getChildText("Location"));
+                    List<String> transferTypes = new ArrayList<String>();
+                    List<Element> transferTypesElement = new ArrayList<Element>();
+                    if (e.getChild("TransferTypes") != null) {
+                        transferTypesElement =  e.getChild("TransferTypes").getChildren("Type");
+                        for (Element p :transferTypesElement) {
+                            String typeContent = p.getText();
+                            transferTypes.add(typeContent);
+                        }
+                    }
+                    locationTransferType.setTransferTypes(transferTypes);
+                    locationTransferTypeConstraint.add(locationTransferType);
+                }
+            }
+
+            if (root.getChild("LocationRTCConstraint") != null) {
+                List<Element> locationRtcElements = root.getChild("LocationRTCConstraint").getChildren("Location");
+                for (Element locationRtcElem : locationRtcElements) {
+                    locationRtcList.add(locationRtcElem.getText());
+                }
+            }
+
+            bucketReplicationLocationResult.setLocations(locationList);
+            bucketReplicationLocationResult.setLocationTransferTypeConstraint(locationTransferTypeConstraint);
+            bucketReplicationLocationResult.setLocationRTCConstraint(locationRtcList);
+            return bucketReplicationLocationResult;
         } catch (JDOMParseException e) {
             throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
         } catch (Exception e) {

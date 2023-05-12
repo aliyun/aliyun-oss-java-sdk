@@ -184,6 +184,21 @@ public class AddBucketReplicationRequest extends GenericRequest {
         this.sourceBucketLocation = sourceBucketLocation;
     }
 
+    public RtcStatus getRtcStatus() {
+        return rtcStatus;
+    }
+    public void setRtcStatus(RtcStatus rtcStatus) {
+        this.rtcStatus = rtcStatus;
+    }
+
+    public String getTransferType() {
+        return transferType;
+    }
+
+    public void setTransferType(String transferType) {
+        this.transferType = transferType;
+    }
+
     public static final String DISABLED = "Disabled";
     public static final String ENABLED = "Enabled";
 
@@ -199,5 +214,6 @@ public class AddBucketReplicationRequest extends GenericRequest {
     private String replicaKmsKeyID;
     private String sseKmsEncryptedObjectsStatus;
     private String sourceBucketLocation;
-
+    private RtcStatus rtcStatus;
+    private String transferType;
 }

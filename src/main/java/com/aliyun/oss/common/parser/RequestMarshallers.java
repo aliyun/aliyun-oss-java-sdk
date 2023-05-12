@@ -100,6 +100,7 @@ public final class RequestMarshallers {
     public static final PutBucketTransferAccelerationRequestMarshaller putBucketTransferAccelerationRequestMarshaller = new PutBucketTransferAccelerationRequestMarshaller();
     public static final PutBucketAccessMonitorRequestMarshaller putBucketAccessMonitorRequestMarshaller = new PutBucketAccessMonitorRequestMarshaller();
     public static final DoMetaQueryRequestMarshaller doMetaQueryRequestMarshaller = new DoMetaQueryRequestMarshaller();
+    public static final PutBucketRTCRequestMarshaller putBucketRTCRequestMarshaller = new PutBucketRTCRequestMarshaller();
 
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
 
@@ -156,6 +157,34 @@ public final class RequestMarshallers {
             }
             xmlBody.append("<SourceFileProtectSuffix>" + imageProcessConf.getSourceFileProtectSuffix()
                     + "</SourceFileProtectSuffix>");
+
+            if (imageProcessConf.getBucketChannelConfig() != null ) {
+                List<BucketChannelConfig> bucketChannelConfigs = imageProcessConf.getBucketChannelConfig();
+                xmlBody.append("<BucketChannelConfig><RuleList>");
+                for (BucketChannelConfig item: bucketChannelConfigs) {
+                    xmlBody.append("<Rule>");
+                    xmlBody.append("<RuleName>" + item.getRuleName() + "</RuleName>");
+                    xmlBody.append("<RuleRegex>" + item.getRuleRegex()+ "</RuleRegex>");
+                    if (item.getFrontContent() != null) {
+                        xmlBody.append("<FrontContent>" + item.getFrontContent()+ "</FrontContent>");
+                    }
+
+                    if (item.getCreateTime() != null) {
+                        xmlBody.append("<CreateTime>" + item.getCreateTime() + "</CreateTime>");
+                    }
+
+                    if (item.getLastModifiedTime() != null) {
+                        xmlBody.append("<LastModifiedTime>" + item.getLastModifiedTime() + "</LastModifiedTime>");
+                    }
+                    xmlBody.append("</Rule>");
+                }
+                xmlBody.append(" </RuleList></BucketChannelConfig>");
+            }
+
+            if (imageProcessConf.getDeleteAllBucketChannel()) {
+                xmlBody.append("<BucketChannelConfig></BucketChannelConfig>>");
+            }
+
             xmlBody.append("<StyleDelimiters>" + imageProcessConf.getStyleDelimiters() + "</StyleDelimiters>");
             if (imageProcessConf.isSupportAtStyle() != null && imageProcessConf.isSupportAtStyle().booleanValue()) {
                 xmlBody.append("<OssDomainSupportAtProcess>Enabled</OssDomainSupportAtProcess>");
@@ -216,7 +245,7 @@ public final class RequestMarshallers {
         public FixedLengthInputStream marshall(CreateBucketRequest request) {
             StringBuffer xmlBody = new StringBuffer();
             if (request.getLocationConstraint() != null 
-                    || request.getStorageClass() != null 
+                    || request.getStorageClass() != null
                     || request.getDataRedundancyType() != null) {
                 xmlBody.append("<CreateBucketConfiguration>");
                 if (request.getLocationConstraint() != null) {
@@ -245,6 +274,7 @@ public final class RequestMarshallers {
             StringBuffer xmlBody = new StringBuffer();
             xmlBody.append("<RefererConfiguration>");
             xmlBody.append("<AllowEmptyReferer>" + br.isAllowEmptyReferer() + "</AllowEmptyReferer>");
+            xmlBody.append("<AllowTruncateQueryString>" + br.isAllowTruncateQueryString() + "</AllowTruncateQueryString>");
 
             if (!br.getRefererList().isEmpty()) {
                 xmlBody.append("<RefererList>");
@@ -306,6 +336,9 @@ public final class RequestMarshallers {
             if (request.getErrorDocument() != null) {
                 xmlBody.append("<ErrorDocument>");
                 xmlBody.append("<Key>" + request.getErrorDocument() + "</Key>");
+                if (request.getHttpStatus() != null) {
+                    xmlBody.append("<HttpStatus>" + request.getHttpStatus() + "</HttpStatus>");
+                }
                 xmlBody.append("</ErrorDocument>");
             }
 
@@ -597,7 +630,7 @@ public final class RequestMarshallers {
                         if (storageTransition.hasIsAccessTime()) {
                             xmlBody.append("<IsAccessTime>" + storageTransition.getIsAccessTime() + "</IsAccessTime>");
                         }
-                        if (storageTransition.hasReturnToStdWhenVisit()) {
+                        if ("true".equals(storageTransition.getIsAccessTime()) && storageTransition.hasReturnToStdWhenVisit()) {
                             xmlBody.append("<ReturnToStdWhenVisit>" + storageTransition.getReturnToStdWhenVisit() + "</ReturnToStdWhenVisit>");
                         }
 
@@ -625,7 +658,7 @@ public final class RequestMarshallers {
                         if (transition.hasIsAccessTime()) {
                             xmlBody.append("<IsAccessTime>" + transition.getIsAccessTime() + "</IsAccessTime>");
                         }
-                        if (transition.hasReturnToStdWhenVisit()) {
+                        if ("true".equals(transition.getIsAccessTime()) && transition.hasReturnToStdWhenVisit()) {
                             xmlBody.append("<ReturnToStdWhenVisit>" + transition.getReturnToStdWhenVisit() + "</ReturnToStdWhenVisit>");
                         }
 
@@ -949,6 +982,10 @@ public final class RequestMarshallers {
                 xmlBody.append("<CloudLocation>" + request.getTargetCloudLocation() + "</CloudLocation>");
             }
 
+            if (request.getTransferType() != null) {
+                xmlBody.append("<TransferType>" + request.getTransferType() + "</TransferType>");
+            }
+
             xmlBody.append("</Destination>");
             if (request.isEnableHistoricalObjectReplication()) {
                 xmlBody.append("<HistoricalObjectReplication>" + "enabled" + "</HistoricalObjectReplication>");
@@ -986,6 +1023,12 @@ public final class RequestMarshallers {
                 xmlBody.append("<Source>");
                 xmlBody.append("<Location>" + request.getSourceBucketLocation() + "</Location>");
                 xmlBody.append("</Source>");
+            }
+
+            if (request.getRtcStatus() != null) {
+                xmlBody.append("<RTC>");
+                xmlBody.append("<Status>" + request.getRtcStatus() + "</Status>");
+                xmlBody.append("</RTC>");
             }
 
             xmlBody.append("</Rule>");
@@ -1852,6 +1895,27 @@ public final class RequestMarshallers {
                 xmlBody.append("</Aggregations>");
             }
             xmlBody.append("</MetaQuery>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+    }
+
+    public static final class PutBucketRTCRequestMarshaller implements RequestMarshaller2<PutBucketRTCRequest> {
+        @Override
+        public byte[] marshall(PutBucketRTCRequest input) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<ReplicationRule>");
+            xmlBody.append("<RTC>");
+            xmlBody.append("<Status>"+ input.getStatus() +"</Status>");
+            xmlBody.append("</RTC>");
+            xmlBody.append("<ID>"+ input.getRuleID() +"</ID>");
+            xmlBody.append("</ReplicationRule>");
 
             byte[] rawData = null;
             try {

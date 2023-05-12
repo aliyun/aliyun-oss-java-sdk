@@ -19,6 +19,8 @@
 
 package com.aliyun.oss.model;
 
+import java.util.List;
+
 public class ImageProcess {
 
     public ImageProcess(String compliedHost, Boolean sourceFileProtect, String sourceFileProtectSuffix,
@@ -87,6 +89,22 @@ public class ImageProcess {
         this.supportAtStyle = supportAtStyle;
     }
 
+    public List<BucketChannelConfig> getBucketChannelConfig() {
+        return bucketChannelConfig;
+    }
+
+    public void setBucketChannelConfig(List<BucketChannelConfig> bucketChannelConfig) {
+        this.bucketChannelConfig = bucketChannelConfig;
+    }
+
+    public Boolean getDeleteAllBucketChannel() {
+        return isDeleteAllBucketChannel;
+    }
+
+    public void setDeleteAllBucketChannel(Boolean deleteAllBucketChannel) {
+        isDeleteAllBucketChannel = deleteAllBucketChannel;
+    }
+
     // Img表示设置的样式分隔符，只有Img能用；Both表示oss也能用Img的样式分隔符
     private String compliedHost;
     // 是否开启原图保护
@@ -99,5 +117,9 @@ public class ImageProcess {
     private Integer version;
     // 用户是否能够通过OSS域名使用老版图片处理接口，@格式。默认Disabled
     private Boolean supportAtStyle;
+    // 启用原图保护新规则
+    private List<BucketChannelConfig> bucketChannelConfig;
 
+    // 不传 bucketchannelconfig保持原值， 传入<bucketchannelconfig>覆盖</bucketchannelconfig>
+    private Boolean isDeleteAllBucketChannel;
 }

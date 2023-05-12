@@ -33,6 +33,7 @@ import java.util.List;
  */
 public class BucketReferer extends GenericResult {
     private boolean allowEmptyReferer = true;
+    private boolean allowTruncateQueryString = true;
     private List<String> refererList = new ArrayList<String>();
 
     public BucketReferer() {
@@ -41,6 +42,12 @@ public class BucketReferer extends GenericResult {
 
     public BucketReferer(boolean allowEmptyReferer, List<String> refererList) {
         setAllowEmptyReferer(allowEmptyReferer);
+        setRefererList(refererList);
+    }
+
+    public BucketReferer(boolean allowEmptyReferer, boolean allowTruncateQueryString, List<String> refererList) {
+        setAllowEmptyReferer(allowEmptyReferer);
+        setAllowTruncateQueryString(allowTruncateQueryString);
         setRefererList(refererList);
     }
 
@@ -70,5 +77,13 @@ public class BucketReferer extends GenericResult {
 
     public void clearRefererList() {
         this.refererList.clear();
+    }
+
+    public boolean isAllowTruncateQueryString() {
+        return allowTruncateQueryString;
+    }
+
+    public void setAllowTruncateQueryString(boolean allowTruncateQueryString) {
+        this.allowTruncateQueryString = allowTruncateQueryString;
     }
 }

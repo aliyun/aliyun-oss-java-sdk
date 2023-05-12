@@ -3249,6 +3249,23 @@ public interface OSS {
             throws OSSException, ClientException;
 
     /**
+     * @param bucketName
+     * @return
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public BucketReplicationLocationResult getBucketReplicationLocationV2(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * @param genericRequest
+     * @return
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public BucketReplicationLocationResult getBucketReplicationLocationV2(GenericRequest genericRequest)
+            throws OSSException, ClientException;
+
+    /**
      * Adds a Cname for the {@link Bucket} instance.
      * 
      * @param addBucketCnameRequest
@@ -5101,4 +5118,12 @@ public interface OSS {
      *             If any errors occurred in OSS while processing the request.
      */
     VoidResult closeMetaQuery(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Turn RTC on or off for an existing cross region replication rule
+     *
+     * @param putBucketRTCRequest
+     * @return VoidResult
+     */
+    VoidResult putBucketRTC(PutBucketRTCRequest putBucketRTCRequest) throws OSSException, ClientException;
 }

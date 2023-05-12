@@ -1413,4 +1413,62 @@ public class RequestMarshallersTest {
         Assert.assertEquals("key2", root.getChild("Rule").getChild("Filter").getChildren("Not").get(1).getChild("Tag").getChildText("Key"));
         Assert.assertEquals("value2", root.getChild("Rule").getChild("Filter").getChildren("Not").get(1).getChild("Tag").getChildText("Value"));
     }
+
+    @Test
+    public void testPutBucketRTCRequestMarshaller() {
+        PutBucketRTCRequest request = new PutBucketRTCRequest("bucket", "ruleId-1", RtcStatus.Enabled);
+        byte[] data = putBucketRTCRequestMarshaller.marshall(request);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Element root = doc.getRootElement();
+        Assert.assertEquals("ruleId-1", root.getChildText("ID"));
+        Assert.assertEquals("enabled", root.getChild("RTC").getChildText("Status"));
+    }
+    @Test
+    public void testAddBucketReplicationRequestMarshallerWithRTC() {
+        String bucketName = "alicloud-bucket";
+        String targetBucketName = "alicloud-targetBucketName";
+        String targetBucketLocation = "alicloud-targetBucketLocation";
+        String targetCloud = "testTargetCloud";
+        String targetCloudLocation = "testTargetCloudLocation";
+        RtcStatus rtcStatus = RtcStatus.Disabled;
+        AddBucketReplicationRequest addBucketReplicationRequest = new AddBucketReplicationRequest(bucketName);
+        addBucketReplicationRequest.setTargetBucketName(targetBucketName);
+        addBucketReplicationRequest.setTargetBucketLocation(targetBucketLocation);
+        addBucketReplicationRequest.setTargetCloud(targetCloud);
+        addBucketReplicationRequest.setTargetCloudLocation(targetCloudLocation);
+        addBucketReplicationRequest.setRtcStatus(rtcStatus);
+        FixedLengthInputStream is = addBucketReplicationRequestMarshaller.marshall(addBucketReplicationRequest);
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Element root = doc.getRootElement();
+        Element ruleElems = root.getChild("Rule");
+        Element destination = ruleElems.getChild("Destination");
+        String aTargetBucketName = destination.getChildText("Bucket");
+        String aTargetLocation = destination.getChildText("Location");
+        String aTargetCloud = destination.getChildText("Cloud");
+        String aTargetCloudLocation = destination.getChildText("CloudLocation");
+        String aRtcStatus = ruleElems.getChild("RTC").getChildText("Status");
+        Assert.assertEquals(targetBucketName, aTargetBucketName);
+        Assert.assertEquals(targetBucketLocation, aTargetLocation);
+        Assert.assertNull(aTargetCloud);
+        Assert.assertNull(aTargetCloudLocation);
+        Assert.assertEquals(rtcStatus.toString(), aRtcStatus);
+    }
+
 }

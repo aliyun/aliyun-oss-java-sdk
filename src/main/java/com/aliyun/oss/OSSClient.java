@@ -1293,6 +1293,16 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public BucketReplicationLocationResult getBucketReplicationLocationV2(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketReplicationLocationV2(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public BucketReplicationLocationResult getBucketReplicationLocationV2(GenericRequest genericRequest) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketReplicationLocationV2(genericRequest);
+    }
+
+    @Override
     public AddBucketCnameResult addBucketCname(AddBucketCnameRequest addBucketCnameRequest) throws OSSException, ClientException {
         return this.bucketOperation.addBucketCname(addBucketCnameRequest);
     }
@@ -1955,6 +1965,11 @@ public class OSSClient implements OSS {
     @Override
     public VoidResult closeMetaQuery(String bucketName) throws OSSException, ClientException {
         return this.bucketOperation.closeMetaQuery(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public VoidResult putBucketRTC(PutBucketRTCRequest putBucketRTCRequest) throws OSSException, ClientException {
+        return this.bucketOperation.putBucketRTC(putBucketRTCRequest);
     }
 
     @Override

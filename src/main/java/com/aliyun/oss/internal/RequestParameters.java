@@ -129,6 +129,7 @@ public final class RequestParameters {
     public static final String PLAYLIST_NAME = "playlistName";
     public static final String SINCE = "since";
     public static final String TAIL = "tail";
+    public static final String RTC = "rtc";
 
     /*  V1 signature params */
     public static final String SIGNATURE = "Signature";
