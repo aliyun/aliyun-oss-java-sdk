@@ -28,6 +28,7 @@ public class SetBucketWebsiteRequest extends GenericRequest {
     private String errorDocument;
     private boolean supportSubDir;
     private SubDirType subDirType;
+    private String httpStatus;
 
     private List<RoutingRule> routingRules = new ArrayList<RoutingRule>();
 
@@ -87,5 +88,12 @@ public class SetBucketWebsiteRequest extends GenericRequest {
 
     public void setSubDirType(SubDirType subDirType) {
         this.subDirType = subDirType;
+    }
+    public String getHttpStatus() {
+        return httpStatus;
+    }
+
+    public void setHttpStatus(String httpStatus) {
+        this.httpStatus = httpStatus;
     }
 }
