@@ -158,6 +158,34 @@ public final class RequestMarshallers {
             }
             xmlBody.append("<SourceFileProtectSuffix>" + imageProcessConf.getSourceFileProtectSuffix()
                     + "</SourceFileProtectSuffix>");
+
+            if (imageProcessConf.getBucketChannelConfig() != null ) {
+                List<BucketChannelConfig> bucketChannelConfigs = imageProcessConf.getBucketChannelConfig();
+                xmlBody.append("<BucketChannelConfig><RuleList>");
+                for (BucketChannelConfig item: bucketChannelConfigs) {
+                    xmlBody.append("<Rule>");
+                    xmlBody.append("<RuleName>" + item.getRuleName() + "</RuleName>");
+                    xmlBody.append("<RuleRegex>" + item.getRuleRegex()+ "</RuleRegex>");
+                    if (item.getFrontContent() != null) {
+                        xmlBody.append("<FrontContent>" + item.getFrontContent()+ "</FrontContent>");
+                    }
+
+                    if (item.getCreateTime() != null) {
+                        xmlBody.append("<CreateTime>" + item.getCreateTime() + "</CreateTime>");
+                    }
+
+                    if (item.getLastModifiedTime() != null) {
+                        xmlBody.append("<LastModifiedTime>" + item.getLastModifiedTime() + "</LastModifiedTime>");
+                    }
+                    xmlBody.append("</Rule>");
+                }
+                xmlBody.append(" </RuleList></BucketChannelConfig>");
+            }
+
+            if (imageProcessConf.getDeleteAllBucketChannel() != null) {
+                xmlBody.append("<BucketChannelConfig>" + imageProcessConf.getDeleteAllBucketChannel() + "</BucketChannelConfig>");
+            }
+
             xmlBody.append("<StyleDelimiters>" + imageProcessConf.getStyleDelimiters() + "</StyleDelimiters>");
             if (imageProcessConf.isSupportAtStyle() != null && imageProcessConf.isSupportAtStyle().booleanValue()) {
                 xmlBody.append("<OssDomainSupportAtProcess>Enabled</OssDomainSupportAtProcess>");

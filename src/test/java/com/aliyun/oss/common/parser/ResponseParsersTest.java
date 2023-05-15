@@ -5580,4 +5580,57 @@ public class ResponseParsersTest {
             Assert.assertEquals("A JSONObject text must begin with '{' at character 0 of ", e.getMessage());
         }
     }
+
+    @Test
+    public void testParseGetBucketImageProcessWithBucketChannelConfig() {
+        InputStream instream = null;
+        String respBody;
+
+        respBody = "" +
+                "<BucketImageProcessConf>\n" +
+                "<SourceFileProtect>Enabled</SourceFileProtect>\n" +
+                "</BucketImageProcessConf>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseParsers.parseGetBucketImageProcessConf(instream);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+
+        respBody = "invalid";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseParsers.parseGetBucketImageProcessConf(instream);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        try {
+            ResponseParsers.parseGetBucketImageProcessConf(null);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+    }
 }

@@ -2169,10 +2169,44 @@ public final class ResponseParsers {
             String sourceFileProtectSuffix = root.getChildText("SourceFileProtectSuffix");
             String styleDelimiters = root.getChildText("StyleDelimiters");
 
+            // process bucket channel config
+            List<BucketChannelConfig> bucketChannelConfigs = new ArrayList<BucketChannelConfig>();
+
+            if (root.getChild("BucketChannelConfig") != null) {
+                List<Element> ruleElements = root.getChild("BucketChannelConfig").getChild("RuleList").getChildren("Rule");
+                for(Element item: ruleElements) {
+                    BucketChannelConfig bucketChannelConfig = new BucketChannelConfig();
+                    if (item.getChildText("RuleName") != null) {
+                        bucketChannelConfig.setRuleName(item.getChildText("RuleName"));
+                    }
+
+                    if (item.getChildText("RuleRegex") != null) {
+                        bucketChannelConfig.setRuleRegex(item.getChildText("RuleRegex"));
+                    }
+
+                    if (item.getChildText("FrontContent") != null) {
+                        bucketChannelConfig.setFrontContent(item.getChildText("FrontContent"));
+                    }
+
+                    if (item.getChildText("CreateTime") != null) {
+                        bucketChannelConfig.setCreateTime(item.getChildText("CreateTime"));
+                    }
+
+                    if (item.getChildText("LastModifiedTime") != null) {
+                        bucketChannelConfig.setLastModifiedTime(item.getChildText("LastModifiedTime"));
+                    }
+
+                    bucketChannelConfigs.add(bucketChannelConfig);
+                }
+            }
+
             ImageProcess imageProcess = new ImageProcess(compliedHost, sourceFileProtect, sourceFileProtectSuffix,
                     styleDelimiters);
             if (root.getChildText("Version") != null) {
                 imageProcess.setVersion(Integer.parseInt(root.getChildText("Version")));
+            }
+            if (root.getChild("BucketChannelConfig") != null) {
+                imageProcess.setBucketChannelConfig(bucketChannelConfigs);
             }
 
             return new BucketProcess(imageProcess);

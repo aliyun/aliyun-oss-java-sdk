@@ -19,16 +19,16 @@
 
 package com.aliyun.oss.integrationtests;
 
+import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 
 import org.junit.Test;
 
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
-import com.aliyun.oss.model.BucketProcess;
-import com.aliyun.oss.model.GenericRequest;
-import com.aliyun.oss.model.ImageProcess;
-import com.aliyun.oss.model.SetBucketProcessRequest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 
@@ -162,6 +162,32 @@ public class BucketProcesTest extends TestBase {
         Assert.assertEquals("123", imageProcess.getCompliedHost());
         Assert.assertEquals("*", imageProcess.getSourceFileProtectSuffix());
         Assert.assertEquals("_", imageProcess.getStyleDelimiters());
+    }
+
+    @Test
+    public void setImageProcess() {
+        ImageProcess imageProcess = new ImageProcess("img", false, "*", "/,-");
+        BucketChannelConfig bucketChannelConfig = new BucketChannelConfig();
+        bucketChannelConfig.setRuleName("rule-test1");
+        bucketChannelConfig.setRuleRegex("");
+        bucketChannelConfig.setCreateTime("");
+        bucketChannelConfig.setFrontContent("");
+        bucketChannelConfig.setLastModifiedTime("");
+
+        List<BucketChannelConfig> bucketChannelConfigs = new ArrayList<BucketChannelConfig>();
+        bucketChannelConfigs.add(bucketChannelConfig);
+        imageProcess.setBucketChannelConfig(bucketChannelConfigs);
+        SetBucketProcessRequest request = new SetBucketProcessRequest(bucketName, imageProcess);
+
+        VoidResult result = ossClient.setBucketProcess(request);
+//        Assert.assertEquals("img", imageProcess.getCompliedHost());
+//        Assert.assertEquals("*", imageProcess.getSourceFileProtectSuffix());
+//        Assert.assertEquals("_", imageProcess.getStyleDelimiters());
+
+        BucketProcess getResult = ossClient.getBucketProcess(bucketName);
+
+        System.out.println(getResult.getImageProcess().getBucketChannelConfig().toString());
+
     }
 
 }
