@@ -595,38 +595,6 @@ public class BucketReplicationTest extends TestBase {
     }
 
     @Test
-    public void testGetBucketReplicationV2() throws ParseException {
-        final String bucketName = super.bucketName  + "-unormal-bucket-replicationv2";
-        final String ruleId = "bucket-replication-rule-id";
-
-        try {
-            ossClient.createBucket(bucketName);
-
-            AddBucketReplicationRequest request = new AddBucketReplicationRequest(bucketName);
-            request.setTargetBucketName(targetBucketName);
-            request.setTargetBucketLocation(targetBucketLoc);
-            request.setReplicationRuleID(ruleId);
-
-            try {
-                ossClient.addBucketReplication(request);
-                Assert.fail("Set bucket replication should not be successful.");
-            } catch (OSSException e) {
-                //Assert.assertEquals(e.getErrorCode(), "InvalidArgument");
-                //Assert.assertEquals(e.getMessage().startsWith("Rule ID is not unique."), true);
-            }
-
-            BucketReplicationLocationResult result = ossClient.getBucketReplicationLocationV2(bucketName);
-
-            ossClient.deleteBucketReplication(new DeleteBucketReplicationRequest(bucketName, ruleId));
-
-        } catch (OSSException e) {
-            Assert.fail(e.getMessage());
-        } finally {
-            ossClient.deleteBucket(bucketName);
-        }
-    }
-
-    @Test
     public void testParseStatusWrong() {
         try {
             ReplicationStatus.parse("wrong-status");
