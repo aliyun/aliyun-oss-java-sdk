@@ -1553,4 +1553,54 @@ public class RequestMarshallersTest {
         Assert.assertTrue(returnData.equals("x-oss-async-process="+style.replaceAll("=","")));
     }
 
+    @Test
+    public void testBucketImageProcessWithBucketChannelConfig() {
+        ImageProcess imageProcess = new ImageProcess("img", false, "jpg,png", "/");
+        BucketChannelConfig bucketChannelConfig = new BucketChannelConfig();
+        bucketChannelConfig.setRuleName("rule-test1");
+        bucketChannelConfig.setRuleRegex("L1swLTlhLWZBLUZdezZ9fFswLTlhLWZBLUZdezN9L2c");
+        bucketChannelConfig.setCreateTime("Wed, 02 Oct 2019 14:30:18 GMT");
+        bucketChannelConfig.setFrontContent("sagweg24524362");
+        bucketChannelConfig.setLastModifiedTime("Wed, 02 Oct 2023 14:30:18 GMT");
+
+        BucketChannelConfig bucketChannelConfig2 = new BucketChannelConfig();
+        bucketChannelConfig2.setRuleName("rule-test2");
+        bucketChannelConfig2.setRuleRegex("LyNbMC05YS1mQS1GXXs2fXxbMC05YS1mQS1GXXszfS9n");
+        bucketChannelConfig2.setCreateTime("Wed, 03 Oct 2018 14:30:18 GMT");
+        bucketChannelConfig2.setFrontContent("@$#%^%^*)*)+/");
+        bucketChannelConfig2.setLastModifiedTime("Wed, 02 Oct 2023 16:32:18 GMT");
+
+        List<BucketChannelConfig> bucketChannelConfigs = new ArrayList<BucketChannelConfig>();
+        bucketChannelConfigs.add(bucketChannelConfig);
+        bucketChannelConfigs.add(bucketChannelConfig2);
+        imageProcess.setBucketChannelConfig(bucketChannelConfigs);
+
+        FixedLengthInputStream is = bucketImageProcessConfMarshaller.marshall(imageProcess);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        Assert.assertEquals("img", root.getChildText("CompliedHost"));
+        Assert.assertEquals("Disabled", root.getChildText("SourceFileProtect"));
+        Assert.assertEquals("jpg,png", root.getChildText("SourceFileProtectSuffix"));
+        Assert.assertEquals("/", root.getChildText("StyleDelimiters"));
+        Assert.assertEquals("rule-test1", root.getChild("BucketChannelConfig").getChildren("RuleList").get(0).getChildren("Rule").get(0).getChildText("RuleName"));
+        Assert.assertEquals("L1swLTlhLWZBLUZdezZ9fFswLTlhLWZBLUZdezN9L2c", root.getChild("BucketChannelConfig").getChildren("RuleList").get(0).getChildren("Rule").get(0).getChildText("RuleRegex"));
+        Assert.assertEquals("sagweg24524362", root.getChild("BucketChannelConfig").getChildren("RuleList").get(0).getChildren("Rule").get(0).getChildText("FrontContent"));
+        Assert.assertEquals("Wed, 02 Oct 2019 14:30:18 GMT", root.getChild("BucketChannelConfig").getChildren("RuleList").get(0).getChildren("Rule").get(0).getChildText("CreateTime"));
+        Assert.assertEquals("Wed, 02 Oct 2023 14:30:18 GMT", root.getChild("BucketChannelConfig").getChildren("RuleList").get(0).getChildren("Rule").get(0).getChildText("LastModifiedTime"));
+        Assert.assertEquals("rule-test2", root.getChild("BucketChannelConfig").getChildren("RuleList").get(0).getChildren("Rule").get(1).getChildText("RuleName"));
+        Assert.assertEquals("LyNbMC05YS1mQS1GXXs2fXxbMC05YS1mQS1GXXszfS9n", root.getChild("BucketChannelConfig").getChildren("RuleList").get(0).getChildren("Rule").get(1).getChildText("RuleRegex"));
+        Assert.assertEquals("@$#%^%^*)*)+/", root.getChild("BucketChannelConfig").getChildren("RuleList").get(0).getChildren("Rule").get(1).getChildText("FrontContent"));
+        Assert.assertEquals("Wed, 03 Oct 2018 14:30:18 GMT", root.getChild("BucketChannelConfig").getChildren("RuleList").get(0).getChildren("Rule").get(1).getChildText("CreateTime"));
+        Assert.assertEquals("Wed, 02 Oct 2023 16:32:18 GMT", root.getChild("BucketChannelConfig").getChildren("RuleList").get(0).getChildren("Rule").get(1).getChildText("LastModifiedTime"));
+    }
 }

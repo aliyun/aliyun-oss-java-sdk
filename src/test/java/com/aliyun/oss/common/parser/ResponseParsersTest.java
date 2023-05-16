@@ -5583,54 +5583,64 @@ public class ResponseParsersTest {
 
     @Test
     public void testParseGetBucketImageProcessWithBucketChannelConfig() {
+        String respBody = "" +
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<BucketProcessConfiguration>\n" +
+                "  <Version>2</Version>\n" +
+                "  <CompliedHost>Img</CompliedHost>\n" +
+                "  <SourceFileProtect>Disabled</SourceFileProtect>\n" +
+                "  <SourceFileProtectSuffix>aaa/</SourceFileProtectSuffix>\n" +
+                "  <StyleDelimiters>-,/</StyleDelimiters>\n" +
+                "  <BucketChannelConfig>\n" +
+                "    <version>2</version>\n" +
+                "    <RuleList>\n" +
+                "      <Rule>\n" +
+                "        <RuleName>rule-test1</RuleName>\n" +
+                "        <RuleRegex>L1swLTlhLWZBLUZdezZ9fFswLTlhLWZBLUZdezN9L2c</RuleRegex>\n" +
+                "        <FrontContent>sagweg24524362</FrontContent>\n" +
+                "        <CreateTime>Wed, 02 Oct 2019 14:30:18 GMT</CreateTime>\n" +
+                "        <LastModifiedTime>Wed, 02 Oct 2023 14:30:18 GMT</LastModifiedTime>\n" +
+                "      </Rule>\n" +
+                "      <Rule>\n" +
+                "        <RuleName>rule-test2</RuleName>\n" +
+                "        <RuleRegex>LyNbMC05YS1mQS1GXXs2fXxbMC05YS1mQS1GXXszfS9n</RuleRegex>\n" +
+                "        <FrontContent>@$#%^%^*)*)+/</FrontContent>\n" +
+                "        <CreateTime>Wed, 03 Oct 2018 14:30:18 GMT</CreateTime>\n" +
+                "        <LastModifiedTime>Wed, 02 Oct 2023 16:32:18 GMT</LastModifiedTime>\n" +
+                "      </Rule>\n" +
+                "    </RuleList>\n" +
+                "  </BucketChannelConfig>\n" +
+                "  <LastModified>2023-05-16T08:09:20.000Z</LastModified>\n" +
+                "</BucketProcessConfiguration>";
+
         InputStream instream = null;
-        String respBody;
-
-        respBody = "" +
-                "<BucketImageProcessConf>\n" +
-                "<SourceFileProtect>Enabled</SourceFileProtect>\n" +
-                "</BucketImageProcessConf>";
-
         try {
             instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
             Assert.fail("UnsupportedEncodingException");
         }
 
+        BucketProcess result = null;
         try {
-            ResponseParsers.parseGetBucketImageProcessConf(instream);
-            Assert.assertTrue(true);
+            result = ResponseParsers.parseGetBucketImageProcessConf(instream);
         } catch (ResponseParseException e) {
-            Assert.assertTrue(false);
-        } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assert.fail("parse bucket image process response body fail!");
         }
 
-
-        respBody = "invalid";
-
-        try {
-            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
-        } catch (UnsupportedEncodingException e) {
-            Assert.fail("UnsupportedEncodingException");
-        }
-
-        try {
-            ResponseParsers.parseGetBucketImageProcessConf(instream);
-            Assert.assertTrue(false);
-        } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
-        } catch (Exception e) {
-            Assert.assertTrue(false);
-        }
-
-        try {
-            ResponseParsers.parseGetBucketImageProcessConf(null);
-            Assert.assertTrue(false);
-        } catch (ResponseParseException e) {
-            Assert.assertTrue(true);
-        } catch (Exception e) {
-            Assert.assertTrue(false);
-        }
+        Assert.assertEquals(Integer.valueOf(2), result.getImageProcess().getVersion());
+        Assert.assertEquals("Img", result.getImageProcess().getCompliedHost());
+        Assert.assertEquals(Boolean.FALSE, result.getImageProcess().isSourceFileProtect());
+        Assert.assertEquals("aaa/", result.getImageProcess().getSourceFileProtectSuffix());
+        Assert.assertEquals("-,/", result.getImageProcess().getStyleDelimiters());
+        Assert.assertEquals("rule-test1", result.getImageProcess().getBucketChannelConfig().get(0).getRuleName());
+        Assert.assertEquals("L1swLTlhLWZBLUZdezZ9fFswLTlhLWZBLUZdezN9L2c", result.getImageProcess().getBucketChannelConfig().get(0).getRuleRegex());
+        Assert.assertEquals("sagweg24524362", result.getImageProcess().getBucketChannelConfig().get(0).getFrontContent());
+        Assert.assertEquals("Wed, 02 Oct 2019 14:30:18 GMT", result.getImageProcess().getBucketChannelConfig().get(0).getCreateTime());
+        Assert.assertEquals("Wed, 02 Oct 2023 14:30:18 GMT", result.getImageProcess().getBucketChannelConfig().get(0).getLastModifiedTime());
+        Assert.assertEquals("rule-test2", result.getImageProcess().getBucketChannelConfig().get(1).getRuleName());
+        Assert.assertEquals("LyNbMC05YS1mQS1GXXs2fXxbMC05YS1mQS1GXXszfS9n", result.getImageProcess().getBucketChannelConfig().get(1).getRuleRegex());
+        Assert.assertEquals("@$#%^%^*)*)+/", result.getImageProcess().getBucketChannelConfig().get(1).getFrontContent());
+        Assert.assertEquals("Wed, 03 Oct 2018 14:30:18 GMT", result.getImageProcess().getBucketChannelConfig().get(1).getCreateTime());
+        Assert.assertEquals("Wed, 02 Oct 2023 16:32:18 GMT", result.getImageProcess().getBucketChannelConfig().get(1).getLastModifiedTime());
     }
 }

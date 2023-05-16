@@ -165,29 +165,46 @@ public class BucketProcesTest extends TestBase {
     }
 
     @Test
-    public void setImageProcess() {
-        ImageProcess imageProcess = new ImageProcess("img", false, "*", "/,-");
+    public void setImageProcessWithBucketChannel() {
+        ImageProcess imageProcess = new ImageProcess("img", false, "jpg,png", "/");
         BucketChannelConfig bucketChannelConfig = new BucketChannelConfig();
         bucketChannelConfig.setRuleName("rule-test1");
-        bucketChannelConfig.setRuleRegex("");
-        bucketChannelConfig.setCreateTime("");
-        bucketChannelConfig.setFrontContent("");
-        bucketChannelConfig.setLastModifiedTime("");
+        bucketChannelConfig.setRuleRegex("L1swLTlhLWZBLUZdezZ9fFswLTlhLWZBLUZdezN9L2c");
+        bucketChannelConfig.setCreateTime("Wed, 02 Oct 2019 14:30:18 GMT");
+        bucketChannelConfig.setFrontContent("sagweg24524362");
+        bucketChannelConfig.setLastModifiedTime("Wed, 02 Oct 2023 14:30:18 GMT");
+
+        BucketChannelConfig bucketChannelConfig2 = new BucketChannelConfig();
+        bucketChannelConfig2.setRuleName("rule-test2");
+        bucketChannelConfig2.setRuleRegex("LyNbMC05YS1mQS1GXXs2fXxbMC05YS1mQS1GXXszfS9n");
+        bucketChannelConfig2.setCreateTime("Wed, 03 Oct 2018 14:30:18 GMT");
+        bucketChannelConfig2.setFrontContent("@$#%^%^*)*)+/");
+        bucketChannelConfig2.setLastModifiedTime("Wed, 02 Oct 2023 16:32:18 GMT");
 
         List<BucketChannelConfig> bucketChannelConfigs = new ArrayList<BucketChannelConfig>();
         bucketChannelConfigs.add(bucketChannelConfig);
+        bucketChannelConfigs.add(bucketChannelConfig2);
         imageProcess.setBucketChannelConfig(bucketChannelConfigs);
         SetBucketProcessRequest request = new SetBucketProcessRequest(bucketName, imageProcess);
 
         VoidResult result = ossClient.setBucketProcess(request);
-//        Assert.assertEquals("img", imageProcess.getCompliedHost());
-//        Assert.assertEquals("*", imageProcess.getSourceFileProtectSuffix());
-//        Assert.assertEquals("_", imageProcess.getStyleDelimiters());
+        Assert.assertEquals(200, result.getResponse().getStatusCode());
 
         BucketProcess getResult = ossClient.getBucketProcess(bucketName);
-
-        System.out.println(getResult.getImageProcess().getBucketChannelConfig().toString());
-
+        Assert.assertEquals("Img", getResult.getImageProcess().getCompliedHost());
+//        Assert.assertEquals("jpg,png", getResult.getImageProcess().getSourceFileProtectSuffix());
+        Assert.assertEquals(Boolean.FALSE, getResult.getImageProcess().isSourceFileProtect());
+        Assert.assertEquals("/", getResult.getImageProcess().getStyleDelimiters());
+        Assert.assertEquals("rule-test1", getResult.getImageProcess().getBucketChannelConfig().get(0).getRuleName());
+        Assert.assertEquals("L1swLTlhLWZBLUZdezZ9fFswLTlhLWZBLUZdezN9L2c", getResult.getImageProcess().getBucketChannelConfig().get(0).getRuleRegex());
+        Assert.assertEquals("sagweg24524362", getResult.getImageProcess().getBucketChannelConfig().get(0).getFrontContent());
+        Assert.assertEquals("Wed, 02 Oct 2019 14:30:18 GMT", getResult.getImageProcess().getBucketChannelConfig().get(0).getCreateTime());
+        Assert.assertEquals("Wed, 02 Oct 2023 14:30:18 GMT", getResult.getImageProcess().getBucketChannelConfig().get(0).getLastModifiedTime());
+        Assert.assertEquals("rule-test2", getResult.getImageProcess().getBucketChannelConfig().get(1).getRuleName());
+        Assert.assertEquals("LyNbMC05YS1mQS1GXXs2fXxbMC05YS1mQS1GXXszfS9n", getResult.getImageProcess().getBucketChannelConfig().get(1).getRuleRegex());
+        Assert.assertEquals("@$#%^%^*)*)+/", getResult.getImageProcess().getBucketChannelConfig().get(1).getFrontContent());
+        Assert.assertEquals("Wed, 03 Oct 2018 14:30:18 GMT", getResult.getImageProcess().getBucketChannelConfig().get(1).getCreateTime());
+        Assert.assertEquals("Wed, 02 Oct 2023 16:32:18 GMT", getResult.getImageProcess().getBucketChannelConfig().get(1).getLastModifiedTime());
     }
 
 }
