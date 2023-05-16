@@ -2173,30 +2173,33 @@ public final class ResponseParsers {
             List<BucketChannelConfig> bucketChannelConfigs = new ArrayList<BucketChannelConfig>();
 
             if (root.getChild("BucketChannelConfig") != null) {
-                List<Element> ruleElements = root.getChild("BucketChannelConfig").getChild("RuleList").getChildren("Rule");
-                for(Element item: ruleElements) {
-                    BucketChannelConfig bucketChannelConfig = new BucketChannelConfig();
-                    if (item.getChildText("RuleName") != null) {
-                        bucketChannelConfig.setRuleName(item.getChildText("RuleName"));
-                    }
+                Element ele = root.getChild("BucketChannelConfig").getChild("RuleList");
+                if(ele != null){
+                    List<Element> ruleElements = ele.getChildren("Rule");
+                    for(Element item: ruleElements) {
+                        BucketChannelConfig bucketChannelConfig = new BucketChannelConfig();
+                        if (item.getChildText("RuleName") != null) {
+                            bucketChannelConfig.setRuleName(item.getChildText("RuleName"));
+                        }
 
-                    if (item.getChildText("RuleRegex") != null) {
-                        bucketChannelConfig.setRuleRegex(item.getChildText("RuleRegex"));
-                    }
+                        if (item.getChildText("RuleRegex") != null) {
+                            bucketChannelConfig.setRuleRegex(item.getChildText("RuleRegex"));
+                        }
 
-                    if (item.getChildText("FrontContent") != null) {
-                        bucketChannelConfig.setFrontContent(item.getChildText("FrontContent"));
-                    }
+                        if (item.getChildText("FrontContent") != null) {
+                            bucketChannelConfig.setFrontContent(item.getChildText("FrontContent"));
+                        }
 
-                    if (item.getChildText("CreateTime") != null) {
-                        bucketChannelConfig.setCreateTime(item.getChildText("CreateTime"));
-                    }
+                        if (item.getChildText("CreateTime") != null) {
+                            bucketChannelConfig.setCreateTime(item.getChildText("CreateTime"));
+                        }
 
-                    if (item.getChildText("LastModifiedTime") != null) {
-                        bucketChannelConfig.setLastModifiedTime(item.getChildText("LastModifiedTime"));
-                    }
+                        if (item.getChildText("LastModifiedTime") != null) {
+                            bucketChannelConfig.setLastModifiedTime(item.getChildText("LastModifiedTime"));
+                        }
 
-                    bucketChannelConfigs.add(bucketChannelConfig);
+                        bucketChannelConfigs.add(bucketChannelConfig);
+                    }
                 }
             }
 
