@@ -182,7 +182,7 @@ public class ListObjectsTest extends TestBase {
             }
             
             // List objects under bucket without ownership
-            final String bucketWithoutOwnership = "oss";
+            final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;
             try {
                 ossClient.listObjects(bucketWithoutOwnership);
                 Assert.fail("List objects should not be successful");

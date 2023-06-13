@@ -150,7 +150,7 @@ public class BucketLoggingTest extends TestBase {
     @Test
     public void testUnormalGetBucketLogging() {
         // Get non-existent bucket
-        final String nonexistentBucket = "unormal-get-bucket-logging";
+        final String nonexistentBucket = bucketName + "-unormal-get";
         try {
             ossClient.getBucketLogging(nonexistentBucket);
             Assert.fail("Get bucket logging should not be successful");
@@ -160,7 +160,7 @@ public class BucketLoggingTest extends TestBase {
         }
 
         // Get bucket without ownership
-        final String bucketWithoutOwnership = "oss";
+        final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;
         try {
             ossClient.getBucketLogging(bucketWithoutOwnership);
             Assert.fail("Get bucket logging should not be successful");
@@ -169,7 +169,7 @@ public class BucketLoggingTest extends TestBase {
         }
 
         // Get bucket without setting logging rule
-        final String bucketWithoutLoggingRule = "bucket-without-logging-rule";
+        final String bucketWithoutLoggingRule = bucketName + "-without-logging-rule";
         try {
             ossClient.createBucket(bucketWithoutLoggingRule);
 
@@ -186,7 +186,7 @@ public class BucketLoggingTest extends TestBase {
     @Test
     public void testUnormalDeleteBucketLogging() {
         // Delete non-existent bucket
-        final String nonexistentBucket = "unormal-delete-bucket-logging";
+        final String nonexistentBucket = bucketName + "-unormal-delete";
         try {
             ossClient.deleteBucketLogging(nonexistentBucket);
             Assert.fail("Delete bucket logging should not be successful");
@@ -196,7 +196,7 @@ public class BucketLoggingTest extends TestBase {
         }
 
         // Delete bucket without ownership
-        final String bucketWithoutOwnership = "oss";
+        final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;
         try {
             ossClient.deleteBucketLogging(bucketWithoutOwnership);
             Assert.fail("Delete bucket logging should not be successful");
@@ -205,7 +205,7 @@ public class BucketLoggingTest extends TestBase {
         }
 
         // Delete bucket without setting logging rule
-        final String bucketWithoutLoggingRule = "bucket-without-logging-rule";
+        final String bucketWithoutLoggingRule = bucketName + "-without-logging-rule";
         try {
             ossClient.createBucket(bucketWithoutLoggingRule);
 

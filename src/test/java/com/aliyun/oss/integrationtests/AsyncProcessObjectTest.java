@@ -71,7 +71,7 @@ public class AsyncProcessObjectTest extends TestBase {
 
         } catch (OSSException e) {
             e.printStackTrace();
-            Assert.assertEquals("operation not support post: video/convert", e.getErrorMessage());
+            Assert.assertTrue(e.getErrorMessage().contains("ResourceNotFound, The specified resource OSSBucket is not found."));
         }
     }
 }

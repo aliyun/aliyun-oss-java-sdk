@@ -125,7 +125,7 @@ public class CreateBucketTest extends TestBase {
     
     @Test
     public void testPutExistingBucketWithoutOwnership() {
-        final String bucketWithoutOwnership = "oss";
+        final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;
         
         try {
             ossClient.createBucket(bucketWithoutOwnership);    
@@ -461,11 +461,13 @@ public class CreateBucketTest extends TestBase {
     }
 
     @Test
-    public void testPutWithResouceGroupId() {
-        OSS client = new OSSClientBuilder().build("oss-ap-southeast-2.aliyuncs.com", TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
+    public void testPutWithResourceGroupId() {
+        OSS client = new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT, TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
         String bucketName = super.bucketName + "-rs-with-id";
-		//repalce by correct resouce group id
-        String rsId = "rg-*********";
+
+        //replace by correct resource group id
+        GetBucketResourceGroupResult grs = client.getBucketResourceGroup(super.bucketName);
+        String rsId = grs.getResourceGroupId();
 
         try {
             CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName)

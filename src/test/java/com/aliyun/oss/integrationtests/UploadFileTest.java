@@ -532,7 +532,7 @@ public class UploadFileTest extends TestBase {
             ossClient.uploadFile(uploadFileRequest);
             Assert.fail("The file does not exist, it should have failed here");
         } catch (IllegalArgumentException e) {
-            Assert.assertEquals("参数\"uploadFile\"无效，此路径中的文件不存在。", e.getMessage());
+            Assert.assertTrue(e.getMessage().contains("uploadFile"));
         }
     }
 

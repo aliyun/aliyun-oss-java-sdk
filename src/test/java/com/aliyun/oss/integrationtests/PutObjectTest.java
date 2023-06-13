@@ -250,7 +250,7 @@ public class PutObjectTest extends TestBase {
         } 
         
         // Try to put object into bucket without ownership
-        final String bucketWithoutOwnership = "oss";
+        final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;
         try {
             ossClient.putObject(bucketWithoutOwnership, key, genFixedLengthInputStream(128));
             Assert.fail("Put object should not be successful");

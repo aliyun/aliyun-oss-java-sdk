@@ -55,7 +55,7 @@ public class BucketPolicyTest extends TestBase {
         }
 
         // Set bucket without ownership
-        final String bucketWithoutOwnership = "oss";//AccessDenied
+        final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;//AccessDenied
         try {
             SetBucketPolicyRequest setPolicyReq = new SetBucketPolicyRequest(bucketWithoutOwnership, normalPolicyText);
             ossClient.setBucketPolicy(setPolicyReq);
@@ -100,7 +100,7 @@ public class BucketPolicyTest extends TestBase {
         }
 
         // Get bucket without ownership
-        final String bucketWithoutOwnership = "oss";//AccessDenied
+        final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;//AccessDenied
         try {
             GetBucketPolicyResult result = ossClient.getBucketPolicy(bucketWithoutOwnership);
             Assert.fail("Get bucket policy should not be successful");
@@ -134,7 +134,7 @@ public class BucketPolicyTest extends TestBase {
         }
 
         // Delete bucket without ownership
-        final String bucketWithoutOwnership = "oss";//AccessDenied
+        final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;//AccessDenied
         try {
             ossClient.deleteBucketPolicy(bucketWithoutOwnership);
             Assert.fail("Delete bucket policy should not be successful");

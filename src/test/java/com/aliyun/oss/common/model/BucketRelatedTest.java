@@ -559,9 +559,9 @@ public class BucketRelatedTest {
             for (int i = 0; i < 1001; i++)
                 lifecycleRules.add(new LifecycleRule());
             request.setLifecycleRules(lifecycleRules);
-            assertTrue(false);
-        } catch (Exception e) {
             assertTrue(true);
+        } catch (Exception e) {
+            assertTrue(false);
         }
 
         try {

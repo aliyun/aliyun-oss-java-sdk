@@ -240,7 +240,7 @@ public class DoesObjectExistTest extends TestBase {
             client.doesObjectExist(bucketName, nonexistentKey);
             Assert.fail("Does object exist should not be successful");
         } catch (OSSException ex) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, ex.getErrorCode());
+            Assert.assertEquals(OSSErrorCode.SIGNATURE_DOES_NOT_MATCH, ex.getErrorCode());
         } finally {
             client.shutdown();
         } 

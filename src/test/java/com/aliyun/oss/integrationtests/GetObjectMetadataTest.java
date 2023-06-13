@@ -62,7 +62,7 @@ public class GetObjectMetadataTest extends TestBase {
         try {
             ossClient.getObjectMetadata(bucketName + "non-exist", objectName);
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
+            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
         }
 
         try {
@@ -78,7 +78,7 @@ public class GetObjectMetadataTest extends TestBase {
             client.getObjectMetadata(bucketName, objectName + "non-exist");
             junit.framework.Assert.fail("Get simplified object meta should not be successful");
         } catch (OSSException ex) {
-            junit.framework.Assert.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, ex.getErrorCode());
+            junit.framework.Assert.assertEquals(OSSErrorCode.SIGNATURE_DOES_NOT_MATCH, ex.getErrorCode());
         } finally {
             client.shutdown();
         }

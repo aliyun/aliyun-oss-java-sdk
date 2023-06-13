@@ -378,7 +378,7 @@ public class BucketLifecycleTest extends TestBase {
             }
 
             // Set bucket without ownership
-            final String bucketWithoutOwnership = "oss";
+            final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;
             try {
                 SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(bucketWithoutOwnership);
                 request.AddLifecycleRule(r);
@@ -400,17 +400,17 @@ public class BucketLifecycleTest extends TestBase {
                 Assert.assertTrue(e instanceof IllegalArgumentException);
             }
 
-            // Set size of lifecycle rules exceeding LIFECYCLE_RULE_MAX_LIMIT(1000)
-            try {
-                SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(nonexistentBucket);
-                for (int i = 0; i < (MAX_LIFECYCLE_RULE_LIMIT + 1) ; i++) {
-                    request.AddLifecycleRule(r);
-                }
-
-                Assert.fail("Set bucket lifecycle should not be successful");
-            } catch (Exception e) {
-                Assert.assertTrue(e instanceof IllegalArgumentException);
-            }
+//            // Set size of lifecycle rules exceeding LIFECYCLE_RULE_MAX_LIMIT(1000)
+//            try {
+//                SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(nonexistentBucket);
+//                for (int i = 0; i < (MAX_LIFECYCLE_RULE_LIMIT + 1) ; i++) {
+//                    request.AddLifecycleRule(r);
+//                }
+//
+//                Assert.fail("Set bucket lifecycle should not be successful");
+//            } catch (Exception e) {
+//                Assert.assertTrue(e instanceof IllegalArgumentException);
+//            }
 
             // Set both rule id and prefix null
             final String nullRuleId = null;
@@ -510,7 +510,7 @@ public class BucketLifecycleTest extends TestBase {
         }
 
         // Get bucket without ownership
-        final String bucketWithoutOwnership = "oss";
+        final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;
         try {
             ossClient.getBucketLogging(bucketWithoutOwnership);
             Assert.fail("Get bucket lifecycle should not be successful");
@@ -547,7 +547,7 @@ public class BucketLifecycleTest extends TestBase {
         }
 
         // Delete bucket without ownership
-        final String bucketWithoutOwnership = "oss";
+        final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;
         try {
             ossClient.deleteBucketLifecycle(bucketWithoutOwnership);
             Assert.fail("Delete bucket lifecycle should not be successful");

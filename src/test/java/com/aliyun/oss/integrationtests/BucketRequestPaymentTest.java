@@ -74,7 +74,7 @@ public class BucketRequestPaymentTest extends TestBase {
         }
 
         // Set bucket without ownership
-        final String bucketWithoutOwnership = "oss";//AccessDenied
+        final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;//AccessDenied
         try {
             SetBucketRequestPaymentRequest request = new SetBucketRequestPaymentRequest(bucketWithoutOwnership);
             request.setPayer(payer);
@@ -101,7 +101,7 @@ public class BucketRequestPaymentTest extends TestBase {
         }
 
         // Get bucket without ownership
-        final String bucketWithoutOwnership = "oss";//AccessDenied
+        final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;//AccessDenied
         try {
             ossClient.getBucketRequestPayment(bucketWithoutOwnership);
             Assert.fail("Get bucket request payment should not be successful");
