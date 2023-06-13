@@ -48,8 +48,8 @@ public class CopyObjectTest extends TestBase {
     
     @Test
     public void testCopyExistingObject() {        
-        final String sourceBucket = "copy-existing-object-source-bucket";
-        final String targetBucket = "copy-existing-object-target-bucket";
+        final String sourceBucket = bucketName + "-object-source";
+        final String targetBucket = bucketName + "-object-target";
         final String sourceKey = "copy-existing-object-source-object";
         final String targetKey = "copy-existing-object-target-object";
         

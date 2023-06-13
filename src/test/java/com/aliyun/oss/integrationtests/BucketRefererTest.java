@@ -132,7 +132,7 @@ public class BucketRefererTest extends TestBase {
             }
 
             // Set bucket without ownership
-            final String bucketWithoutOwnership = "oss";
+            final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;
             try {
                 ossClient.setBucketReferer(bucketWithoutOwnership, r);
                 Assert.fail("Set bucket referer should not be successful");
@@ -168,7 +168,7 @@ public class BucketRefererTest extends TestBase {
         }
 
         // Get bucket without ownership
-        final String bucketWithoutOwnership = "oss";
+        final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;
         try {
             ossClient.getBucketReferer(bucketWithoutOwnership);
             Assert.fail("Get bucket referer should not be successful");

@@ -53,6 +53,12 @@
             <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.67</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <reporting>
@@ -94,9 +100,6 @@
                     <execution>
                         <id>run-test</id>
                         <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
                         <configuration>
                             <excludes>
                                 <exclude>**/integration/*.java</exclude>

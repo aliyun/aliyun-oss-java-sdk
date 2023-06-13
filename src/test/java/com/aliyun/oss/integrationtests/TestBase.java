@@ -78,7 +78,10 @@ public class TestBase {
     protected static final String DOWNLOAD_DIR = USER_DIR + File.separator + "download" + File.separator;
 
     protected static final int REQUEST_ID_LEN = "5A016E35CB3DB13FD2BAAB3A".length();
-   
+
+    protected static final String NOT_OWNERSHIP_BUCKET_SUFFIX = "-attachment";
+
+
     @BeforeClass
     public static void oneTimeSetUp() {
         try {

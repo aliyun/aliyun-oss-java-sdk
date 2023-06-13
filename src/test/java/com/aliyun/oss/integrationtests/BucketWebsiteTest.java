@@ -628,7 +628,7 @@ public class BucketWebsiteTest extends TestBase {
         }
 
         // Get bucket without ownership
-        final String bucketWithoutOwnership = "oss";
+        final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;
         try {
             ossClient.getBucketLogging(bucketWithoutOwnership);
             Assert.fail("Get bucket website should not be successful");
@@ -664,7 +664,7 @@ public class BucketWebsiteTest extends TestBase {
         }
 
         // Delete bucket without ownership
-        final String bucketWithoutOwnership = "oss";
+        final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;
         try {
             ossClient.deleteBucketWebsite(bucketWithoutOwnership);
             Assert.fail("Delete bucket website should not be successful");

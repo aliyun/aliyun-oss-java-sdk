@@ -387,7 +387,7 @@ public class BucketInventoryTest extends TestBase {
             Assert.assertEquals(InventoryFormat.CSV.toString(), actualDestin.getFormat());
             Assert.assertEquals("bucket-prefix", actualDestin.getPrefix());
             Assert.assertEquals(Long.valueOf(1637883649), actualConfig.getInventoryFilter().getLastModifyBeginTimeStamp());
-            Assert.assertEquals(Long.valueOf(1638347592), actualConfig.getInventoryFilter().getLastModifyBeginTimeStamp());
+            Assert.assertEquals(Long.valueOf(1638347592), actualConfig.getInventoryFilter().getLastModifyEndTimeStamp());
             Assert.assertEquals(Long.valueOf(1024L), actualConfig.getInventoryFilter().getLowerSizeBound());
             Assert.assertEquals(Long.valueOf(1048576L), actualConfig.getInventoryFilter().getUpperSizeBound());
             Assert.assertEquals("Standard,IA", actualConfig.getInventoryFilter().getStorageClass());
