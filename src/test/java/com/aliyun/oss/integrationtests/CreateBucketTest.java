@@ -217,6 +217,7 @@ public class CreateBucketTest extends TestBase {
         try {
             // Create bucket with default(private) acl
             ossClient.createBucket(createBucketRequest);
+            Thread.sleep(5000);
             AccessControlList returnedAcl = ossClient.getBucketAcl(bucketName);
             Set<Grant> grants = returnedAcl.getGrants();
             Assert.assertEquals(0, grants.size());
@@ -224,6 +225,7 @@ public class CreateBucketTest extends TestBase {
             
             // Try to create existing bucket without setting acl
             ossClient.createBucket(bucketName);
+            Thread.sleep(5000);
             waitForCacheExpiration(5);
             returnedAcl = ossClient.getBucketAcl(bucketName);
             grants = returnedAcl.getGrants();
@@ -232,6 +234,7 @@ public class CreateBucketTest extends TestBase {
             // Create bucket with public-read acl
             createBucketRequest.setCannedACL(CannedAccessControlList.PublicRead);
             ossClient.createBucket(createBucketRequest);
+            Thread.sleep(5000);
             waitForCacheExpiration(5);
             returnedAcl = ossClient.getBucketAcl(bucketName);
             grants = returnedAcl.getGrants();
@@ -243,6 +246,7 @@ public class CreateBucketTest extends TestBase {
             
             // Try to create existing bucket without setting acl
             ossClient.createBucket(bucketName);
+            Thread.sleep(5000);
             waitForCacheExpiration(5);
             returnedAcl = ossClient.getBucketAcl(bucketName);
             grants = returnedAcl.getGrants();
@@ -254,6 +258,7 @@ public class CreateBucketTest extends TestBase {
             // Create bucket with public-read-write acl
             createBucketRequest.setCannedACL(CannedAccessControlList.PublicReadWrite);
             ossClient.createBucket(createBucketRequest);
+            Thread.sleep(5000);
             waitForCacheExpiration(5);
             returnedAcl = ossClient.getBucketAcl(bucketName);
             grants = returnedAcl.getGrants();
@@ -265,6 +270,7 @@ public class CreateBucketTest extends TestBase {
             
             // Try to create existing bucket without setting acl
             ossClient.createBucket(bucketName);
+            Thread.sleep(5000);
             waitForCacheExpiration(5);
             returnedAcl = ossClient.getBucketAcl(bucketName);
             grants = returnedAcl.getGrants();
@@ -431,13 +437,13 @@ public class CreateBucketTest extends TestBase {
 
     @Test
     public void testPutWithDataRedundancyType() {
-        final String bucketName = super.bucketName + "-with-data-redundancy-type";
+        String bucketName = super.bucketName + "-data-redundancy-type-1";
 
         try {
             CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName)
                     .withDataRedundancyType(DataRedundancyType.LRS).withStorageType(StorageClass.Standard);
             ossClient.createBucket(createBucketRequest);
-            Thread.sleep(2000);
+            Thread.sleep(5000);
             BucketInfo bucketInfo = ossClient.getBucketInfo(bucketName);
             Assert.assertEquals(DataRedundancyType.LRS, bucketInfo.getDataRedundancyType());
         } catch (Exception e) {
@@ -446,11 +452,12 @@ public class CreateBucketTest extends TestBase {
             ossClient.deleteBucket(bucketName);
         }
 
+        bucketName = super.bucketName + "-data-redundancy-type-2";
         try {
             CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName)
                     .withDataRedundancyType(DataRedundancyType.ZRS).withStorageType(StorageClass.Standard);
             ossClient.createBucket(createBucketRequest);
-            Thread.sleep(2000);
+            Thread.sleep(5000);
             BucketInfo bucketInfo = ossClient.getBucketInfo(bucketName);
             Assert.assertEquals(DataRedundancyType.ZRS, bucketInfo.getDataRedundancyType());
         } catch (Exception e) {

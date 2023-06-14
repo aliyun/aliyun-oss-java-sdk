@@ -19,31 +19,37 @@
 
 package com.aliyun.oss.integrationtests;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.aliyun.oss.model.*;
-import org.junit.Test;
+import com.aliyun.kms.KmsTransferAcsClient;
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSSEncryptionClient;
 import com.aliyun.oss.OSSEncryptionClientBuilder;
 import com.aliyun.oss.common.auth.Credentials;
+import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.auth.DefaultCredentials;
+import com.aliyun.oss.common.utils.BinaryUtil;
+import com.aliyun.oss.crypto.ContentCryptoMaterialRW;
 import com.aliyun.oss.crypto.EncryptionMaterials;
-import com.aliyun.oss.crypto.KmsEncryptionMaterials;
 import com.aliyun.oss.crypto.MultipartUploadCryptoContext;
-
+import com.aliyun.oss.model.*;
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.http.FormatType;
+import com.aliyuncs.http.MethodType;
+import com.aliyuncs.http.ProtocolType;
+import com.aliyuncs.kms.model.v20160120.DecryptRequest;
+import com.aliyuncs.kms.model.v20160120.DecryptResponse;
+import com.aliyuncs.kms.model.v20160120.EncryptRequest;
+import com.aliyuncs.kms.model.v20160120.EncryptResponse;
+import com.aliyuncs.profile.DefaultProfile;
+import com.aliyuncs.profile.IClientProfile;
 import junit.framework.Assert;
+import org.junit.Test;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.util.*;
 
 public class EncryptionClientKmsTest extends TestBase {
     private OSSEncryptionClient ossEncryptionClient;
@@ -56,10 +62,11 @@ public class EncryptionClientKmsTest extends TestBase {
         matDesc = new HashMap<String, String>();
         matDesc.put("Desc1-Key1", "Desc1-Value1");
         kmsRegion = TestConfig.KMS_REGION;
-        EncryptionMaterials encryptionMaterials = new KmsEncryptionMaterials(kmsRegion, TestConfig.KMS_CMK_ID, matDesc);
+        KmsEncryptionMaterialsV3 encryptionMaterials = new KmsEncryptionMaterialsV3(kmsRegion, TestConfig.KMS_CMK_ID, matDesc);
         Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID,
                 TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
 
+        encryptionMaterials.setKmsCredentialsProvider(new DefaultCredentialProvider(credentials));
         ossEncryptionClient = new OSSEncryptionClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT,
                 new DefaultCredentialProvider(credentials), encryptionMaterials);
     }
@@ -320,9 +327,10 @@ public class EncryptionClientKmsTest extends TestBase {
             // Create new encryption materials.
             String newRegion = TestConfig.KMS_REGION_1;
             String newCmkId = TestConfig.KMS_CMK_ID_1;
-            KmsEncryptionMaterials encryptionMaterials = new KmsEncryptionMaterials(newRegion, newCmkId);
+            KmsEncryptionMaterialsV3 encryptionMaterials = new KmsEncryptionMaterialsV3(newRegion, newCmkId);
             Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
 
+            encryptionMaterials.setKmsCredentialsProvider(new DefaultCredentialProvider(credentials));
             // New encryption client has no object encryption materials, should be get
             // object faild.
             OSSEncryptionClient ossEncryptionClient2 = new OSSEncryptionClientBuilder().build(
@@ -364,7 +372,8 @@ public class EncryptionClientKmsTest extends TestBase {
             // Create new encryption materials.
             region2 = TestConfig.KMS_REGION;
             String cmk2 = TestConfig.KMS_CMK_ID;
-            KmsEncryptionMaterials encryptionMaterials = new KmsEncryptionMaterials(region2, cmk2, null);
+            KmsEncryptionMaterialsV3 encryptionMaterials = new KmsEncryptionMaterialsV3(region2, cmk2, null);
+            encryptionMaterials.setKmsCredentialsProvider(new DefaultCredentialProvider(credentials));
 
             OSSEncryptionClient encryptionClient2 = new OSSEncryptionClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT,
                     new DefaultCredentialProvider(credentials), encryptionMaterials);
@@ -384,7 +393,8 @@ public class EncryptionClientKmsTest extends TestBase {
             String newCmkId = TestConfig.KMS_CMK_ID_1;
             Map<String, String> desc = new HashMap<String, String>();
             desc.put("desc", "test-kms");
-            KmsEncryptionMaterials encryptionMaterials = new KmsEncryptionMaterials(newRegion, newCmkId, desc);
+            KmsEncryptionMaterialsV3 encryptionMaterials = new KmsEncryptionMaterialsV3(newRegion, newCmkId, desc);
+            encryptionMaterials.setKmsCredentialsProvider(new DefaultCredentialProvider(credentials));
             OSSEncryptionClient encryptionClient3 = new OSSEncryptionClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT,
                     new DefaultCredentialProvider(credentials), encryptionMaterials);
 
@@ -619,6 +629,190 @@ public class EncryptionClientKmsTest extends TestBase {
             fileNew.delete();
         } catch (Throwable e){
             Assert.fail(e.getMessage());
+        }
+    }
+
+    static class KmsEncryptionMaterialsV3 implements EncryptionMaterials {
+        private static final String KEY_WRAP_ALGORITHM = "KMS/ALICLOUD";
+        private String region;
+        private String cmk;
+        CredentialsProvider credentialsProvider;
+
+        private final Map<String, String> desc;
+        private final LinkedHashMap<KmsEncryptionMaterialsV3.KmsClientSuite, Map<String, String>> kmsDescMaterials =
+                new LinkedHashMap<KmsEncryptionMaterialsV3.KmsClientSuite, Map<String, String>>();
+
+        public KmsEncryptionMaterialsV3(String region, String cmk) {
+            assertParameterNotNull(region, "kms region");
+            assertParameterNotNull(cmk, "kms cmk");
+            this.region = region;
+            this.cmk = cmk;
+            this.desc = new HashMap<String, String>();
+        }
+
+        public KmsEncryptionMaterialsV3(String region, String cmk, Map<String, String> desc) {
+            assertParameterNotNull(region, "kms region");
+            assertParameterNotNull(region, "kms cmk");
+            this.region = region;
+            this.cmk = cmk;
+            this.desc = (desc == null) ? new HashMap<String, String>() : new HashMap<String, String>(desc);
+        }
+
+        private final class KmsClientSuite {
+            private String region;
+            private CredentialsProvider credentialsProvider;
+            KmsClientSuite(String region, CredentialsProvider credentialsProvider) {
+                this.region = region;
+                this.credentialsProvider = credentialsProvider;
+            }
+        }
+
+        public void setKmsCredentialsProvider(CredentialsProvider credentialsProvider) {
+            this.credentialsProvider = credentialsProvider;
+            kmsDescMaterials.put(new KmsEncryptionMaterialsV3.KmsClientSuite(region, credentialsProvider), desc);
+        }
+
+        private DefaultAcsClient createKmsClient(String region, CredentialsProvider credentialsPorvider) {
+            Credentials credentials = credentialsPorvider.getCredentials();
+            IClientProfile profile = DefaultProfile.getProfile(region, credentials.getAccessKeyId(),
+                    credentials.getSecretAccessKey(), credentials.getSecurityToken());
+            return new KmsTransferAcsClient(profile);
+        }
+
+        private EncryptResponse encryptPlainText(String keyId, String plainText) throws ClientException {
+            DefaultAcsClient kmsClient = createKmsClient(region, credentialsProvider);
+            final EncryptRequest encReq = new EncryptRequest();
+            encReq.setSysProtocol(ProtocolType.HTTPS);
+            encReq.setAcceptFormat(FormatType.JSON);
+            encReq.setSysMethod(MethodType.POST);
+            encReq.setKeyId(keyId);
+            encReq.setPlaintext(plainText);
+
+            final EncryptResponse encResponse;
+            try {
+                encResponse = kmsClient.getAcsResponse(encReq);
+            } catch (Exception e) {
+                throw new ClientException("the kms client encrypt data failed." + e.getMessage(), e);
+            }
+            return encResponse;
+        }
+
+        private DecryptResponse decryptCipherBlob(KmsEncryptionMaterialsV3.KmsClientSuite kmsClientSuite, String cipherBlob)
+                throws ClientException {
+            final DefaultAcsClient kmsClient = createKmsClient(kmsClientSuite.region, kmsClientSuite.credentialsProvider);
+            final DecryptRequest decReq = new DecryptRequest();
+            decReq.setSysProtocol(ProtocolType.HTTPS);
+            decReq.setAcceptFormat(FormatType.JSON);
+            decReq.setSysMethod(MethodType.POST);
+            decReq.setCiphertextBlob(cipherBlob);
+
+            final DecryptResponse decResponse;
+            try {
+                decResponse = kmsClient.getAcsResponse(decReq);
+            } catch (Exception e) {
+                throw new ClientException("The kms client decrypt data faild." + e.getMessage(), e);
+            }
+            return decResponse;
+        }
+
+        public void addKmsDescMaterial(String region, Map<String, String> description) {
+            addKmsDescMaterial(region, credentialsProvider, description);
+        }
+
+        public synchronized void addKmsDescMaterial(String region, CredentialsProvider credentialsProvider, Map<String, String> description) {
+            assertParameterNotNull(region, "region");
+            assertParameterNotNull(credentialsProvider, "credentialsProvider");
+            KmsEncryptionMaterialsV3.KmsClientSuite kmsClientSuite = new KmsEncryptionMaterialsV3.KmsClientSuite(region, credentialsProvider);
+            if (description != null) {
+                kmsDescMaterials.put(kmsClientSuite, new HashMap<String, String>(description));
+            } else {
+                kmsDescMaterials.put(kmsClientSuite, new HashMap<String, String>());
+            }
+        }
+
+        private KmsEncryptionMaterialsV3.KmsClientSuite findKmsClientSuiteByDescription(Map<String, String> desc) {
+            if (desc == null) {
+                return null;
+            }
+            for (Map.Entry<KmsEncryptionMaterialsV3.KmsClientSuite, Map<String, String>> entry : kmsDescMaterials.entrySet()) {
+                if (desc.equals(entry.getValue())) {
+                    return entry.getKey();
+                }
+            }
+            return null;
+        }
+
+        private <K, V> Map.Entry<K, V> getTailByReflection(LinkedHashMap<K, V> map)
+                throws NoSuchFieldException, IllegalAccessException {
+            Field tail = map.getClass().getDeclaredField("tail");
+            tail.setAccessible(true);
+            return (Map.Entry<K, V>) tail.get(map);
+        }
+
+        @Override
+        public void encryptCEK(ContentCryptoMaterialRW contentMaterialRW) {
+            try {
+                assertParameterNotNull(contentMaterialRW, "contentMaterialRW");
+                assertParameterNotNull(contentMaterialRW.getIV(), "contentMaterialRW#getIV");
+                assertParameterNotNull(contentMaterialRW.getCEK(), "contentMaterialRW#getCEK");
+
+                byte[] iv = contentMaterialRW.getIV();
+                EncryptResponse encryptresponse = encryptPlainText(cmk, BinaryUtil.toBase64String(iv));
+                byte[] encryptedIV = BinaryUtil.fromBase64String(encryptresponse.getCiphertextBlob());
+
+                SecretKey cek = contentMaterialRW.getCEK();
+                encryptresponse = encryptPlainText(cmk, BinaryUtil.toBase64String(cek.getEncoded()));
+                byte[] encryptedCEK = BinaryUtil.fromBase64String(encryptresponse.getCiphertextBlob());
+
+                contentMaterialRW.setEncryptedCEK(encryptedCEK);
+                contentMaterialRW.setEncryptedIV(encryptedIV);
+                contentMaterialRW.setKeyWrapAlgorithm(KEY_WRAP_ALGORITHM);
+                contentMaterialRW.setMaterialsDescription(desc);
+            } catch (Exception e) {
+                throw new ClientException("Kms encrypt CEK IV error. "
+                        + "Please check your cmk, region, accessKeyId and accessSecretId." + e.getMessage(), e);
+            }
+        }
+
+        @Override
+        public void decryptCEK(ContentCryptoMaterialRW contentMaterialRW) {
+            assertParameterNotNull(contentMaterialRW, "ContentCryptoMaterialRW");
+            assertParameterNotNull(contentMaterialRW.getEncryptedCEK(), "ContentCryptoMaterialRW#getEncryptedCEK");
+            assertParameterNotNull(contentMaterialRW.getEncryptedIV(), "ContentCryptoMaterialRW#getEncryptedIV");
+            assertParameterNotNull(contentMaterialRW.getKeyWrapAlgorithm(), "ContentCryptoMaterialRW#getKeyWrapAlgorithm");
+
+            if (!contentMaterialRW.getKeyWrapAlgorithm().toLowerCase().equals(KEY_WRAP_ALGORITHM.toLowerCase())) {
+                throw new ClientException(
+                        "Unrecognize your object key wrap algorithm: " + contentMaterialRW.getKeyWrapAlgorithm());
+            }
+
+            try {
+                KmsEncryptionMaterialsV3.KmsClientSuite kmsClientSuite = findKmsClientSuiteByDescription(contentMaterialRW.getMaterialsDescription());
+                if (kmsClientSuite == null) {
+                    Map.Entry<KmsEncryptionMaterialsV3.KmsClientSuite, Map<String, String>> entry = getTailByReflection(kmsDescMaterials);
+                    kmsClientSuite = entry.getKey();
+                }
+
+                DecryptResponse decryptIvResp = decryptCipherBlob(kmsClientSuite,
+                        BinaryUtil.toBase64String(contentMaterialRW.getEncryptedIV()));
+                byte[] iv = BinaryUtil.fromBase64String(decryptIvResp.getPlaintext());
+
+                DecryptResponse decryptCEKResp = decryptCipherBlob(kmsClientSuite,
+                        BinaryUtil.toBase64String(contentMaterialRW.getEncryptedCEK()));
+                byte[] cekBytes = BinaryUtil.fromBase64String(decryptCEKResp.getPlaintext());
+                SecretKey cek = new SecretKeySpec(cekBytes, "");
+
+                contentMaterialRW.setCEK(cek);
+                contentMaterialRW.setIV(iv);
+            } catch (Exception e) {
+                throw new ClientException("Unable to decrypt content secured key and iv. "
+                        + "Please check your kms region and materails description." + e.getMessage(), e);
+            }
+        }
+
+        private void assertParameterNotNull(Object parameterValue, String errorMessage) {
+            if (parameterValue == null)
+                throw new IllegalArgumentException(errorMessage);
         }
     }
 }
