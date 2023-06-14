@@ -247,7 +247,7 @@ public class ImageProcessTest extends TestBase {
         String style = "image/resize,m_fixed,w_100,h_100"; // 缩放
 
         try {
-            Date expiration = DateUtil.parseRfc822Date("Wed, 21 Dec 2022 14:20:00 GMT");
+            Date expiration = DateUtil.parseRfc822Date(DateUtil.formatRfc822Date(new Date(new Date().getTime() + 1000 * 60 *10)));
             GeneratePresignedUrlRequest req = new GeneratePresignedUrlRequest(bucketName, originalImage, HttpMethod.GET);
             req.setExpiration(expiration);
             req.setProcess(style);

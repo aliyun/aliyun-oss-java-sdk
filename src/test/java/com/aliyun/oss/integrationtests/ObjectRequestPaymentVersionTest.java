@@ -144,7 +144,7 @@ public class ObjectRequestPaymentVersionTest extends TestBase {
                 ossPayerClient.doesObjectExist(genericRequest);
                 Assert.fail("no such version , should not be successful");
             } catch(OSSException e) {
-                Assert.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, e.getErrorCode());
+                Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
             }
         } catch (Exception e) {
             Assert.fail(e.getMessage());

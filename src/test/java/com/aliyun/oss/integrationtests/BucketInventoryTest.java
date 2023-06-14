@@ -390,7 +390,7 @@ public class BucketInventoryTest extends TestBase {
             Assert.assertEquals(Long.valueOf(1638347592), actualConfig.getInventoryFilter().getLastModifyEndTimeStamp());
             Assert.assertEquals(Long.valueOf(1024L), actualConfig.getInventoryFilter().getLowerSizeBound());
             Assert.assertEquals(Long.valueOf(1048576L), actualConfig.getInventoryFilter().getUpperSizeBound());
-            Assert.assertEquals("Standard,IA", actualConfig.getInventoryFilter().getStorageClass());
+            Assert.assertEquals("IA,Standard", actualConfig.getInventoryFilter().getStorageClass());
             Assert.assertNotNull(actualDestin.getEncryption().getServerSideOssEncryption());
             Assert.assertNull(actualDestin.getEncryption().getServerSideKmsEncryption());
         } catch (ClientException e) {

@@ -56,10 +56,12 @@ public class BucketAclTest extends TestBase {
         
         try {
             ossClient.createBucket(bucketName);
+            Thread.sleep(2000);
             
             for (CannedAccessControlList acl : acls) {
                 ossClient.setBucketAcl(bucketName, acl);
-                
+                Thread.sleep(3000);
+
                 AccessControlList returnedAcl = ossClient.getBucketAcl(bucketName);
                 if (acl != null && !acl.equals(CannedAccessControlList.Private)) {
                     Set<Grant> grants = returnedAcl.getGrants();

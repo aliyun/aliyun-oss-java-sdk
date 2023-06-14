@@ -35,6 +35,7 @@ import static com.aliyun.oss.internal.OSSConstants.DEFAULT_OBJECT_CONTENT_TYPE;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,6 +45,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.aliyun.oss.common.utils.HttpUtil;
+import com.aliyun.oss.internal.OSSUtils;
 import junit.framework.Assert;
 
 import org.junit.Ignore;
@@ -501,7 +504,7 @@ public class GetObjectTest extends TestBase {
         final long inputStreamLength = 128 * 1024; //128KB
         //TODO: With chinese characters will be failed. 
         final String metaKey0 = "tag";
-        final String metaValue0 = "元值0";
+        final String metaValue0 = HttpUtil.urlEncode("元值0", true);
         
         try {
             ObjectMetadata metadata = new ObjectMetadata();
