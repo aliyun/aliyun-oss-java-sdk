@@ -33,7 +33,7 @@ public class InstanceProfileCredentialsProvider implements CredentialsProvider {
 
     public InstanceProfileCredentialsProvider(String roleName) {
         if (null == roleName) {
-            throw new NullPointerException("You must specifiy a valid role name.");
+            throw new NullPointerException("You must specify a valid role name, it cannot be null.");
         }
         this.roleName = roleName;
         this.fetcher = new InstanceProfileCredentialsFetcher();
