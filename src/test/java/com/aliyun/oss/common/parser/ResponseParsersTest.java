@@ -5617,4 +5617,47 @@ public class ResponseParsersTest {
             Assert.assertEquals("A JSONObject text must begin with '{' at character 0 of ", e.getMessage());
         }
     }
+
+    @Test
+    public void testParseGetBucketLifecycleFilterObjectSizeThan() {
+        InputStream inputStream = null;
+        String respBody;
+
+        respBody = "" +
+                "<LifecycleConfiguration>\n" +
+                "  <Rule>\n" +
+                "    <ID>RuleID</ID>\n" +
+                "    <Prefix>Prefix</Prefix>\n" +
+                "    <Status>Enabled</Status>\n" +
+                "    <Filter>\n" +
+                "      <ObjectSizeGreaterThan>500</ObjectSizeGreaterThan>\n" +
+                "      <ObjectSizeLessThan>64000</ObjectSizeLessThan>\n" +
+                "      <Not>\n" +
+                "        <Prefix>Prefix/not</Prefix>\n" +
+                "        <Tag><Key>notkey</Key><Value>notvalue</Value></Tag>\n" +
+                "       </Not>\n" +
+                "    </Filter>\n" +
+                "  </Rule>\n" +
+                "</LifecycleConfiguration>";
+
+        try {
+            inputStream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        List<LifecycleRule> rules = null;
+        try {
+            rules = ResponseParsers.parseGetBucketLifecycle(inputStream);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse response body fail!");
+        }
+
+        Assert.assertEquals("Prefix/not", rules.get(0).getFilter().getNotList().get(0).getPrefix());
+        Assert.assertEquals("notkey", rules.get(0).getFilter().getNotList().get(0).getTag().getKey());
+        Assert.assertEquals("notvalue", rules.get(0).getFilter().getNotList().get(0).getTag().getValue());
+        Assert.assertEquals(rules.get(0).getFilter().getObjectSizeGreaterThan(), Long.valueOf(String.valueOf(500)));
+        Assert.assertEquals(rules.get(0).getFilter().getObjectSizeLessThan(), Long.valueOf(String.valueOf(64000)));
+    }
+
 }
