@@ -1553,4 +1553,47 @@ public class RequestMarshallersTest {
         Assert.assertTrue(returnData.equals("x-oss-async-process="+style.replaceAll("=","")));
     }
 
+
+    @Test
+    public void testPutLifeCycleFilterObjectSizeThanRequestMarshaller() {
+        SetBucketLifecycleRequest request = new SetBucketLifecycleRequest("bucket");
+        String ruleId0 = "rule-object-size";
+        String matchPrefix0 = "object-size/";
+        Map<String, String> matchTags0 = new HashMap<String, String>();
+        matchTags0.put("object-size-key", "object-size-value");
+        LifecycleRule rule = new LifecycleRule(ruleId0, matchPrefix0, LifecycleRule.RuleStatus.Enabled, 3);
+        rule.setTags(matchTags0);
+        LifecycleFilter filter = new LifecycleFilter();
+        LifecycleNot not = new LifecycleNot();
+        List<LifecycleNot> notList = new ArrayList<LifecycleNot>();
+        Tag tag = new Tag("key","value");
+        not.setPrefix("not-prefix");
+        not.setTag(tag);
+        notList.add(not);
+        filter.setObjectSizeGreaterThan(100L);
+        filter.setObjectSizeLessThan(1000L);
+        filter.setNotList(notList);
+        rule.setFilter(filter);
+        request.AddLifecycleRule(rule);
+
+        FixedLengthInputStream is = setBucketLifecycleRequestMarshaller.marshall(request);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        Assert.assertEquals(matchPrefix0, root.getChild("Rule").getChildText("Prefix"));
+        Assert.assertEquals(Long.valueOf(100), Long.valueOf(root.getChild("Rule").getChild("Filter").getChildText("ObjectSizeGreaterThan")));
+        Assert.assertEquals(Long.valueOf(1000), Long.valueOf(root.getChild("Rule").getChild("Filter").getChildText("ObjectSizeLessThan")));
+        Assert.assertEquals("object-size/not-prefix", root.getChild("Rule").getChild("Filter").getChildren("Not").get(0).getChildText("Prefix"));
+        Assert.assertEquals("key", root.getChild("Rule").getChild("Filter").getChildren("Not").get(0).getChild("Tag").getChildText("Key"));
+        Assert.assertEquals("value", root.getChild("Rule").getChild("Filter").getChildren("Not").get(0).getChild("Tag").getChildText("Value"));
+    }
 }

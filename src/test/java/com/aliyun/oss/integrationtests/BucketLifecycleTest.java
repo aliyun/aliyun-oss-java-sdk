@@ -917,4 +917,80 @@ public class BucketLifecycleTest extends TestBase {
             Assert.fail(e.getMessage());
         }
     }
+
+    @Test
+    public void testBucketLifecycleWithFilterObjectSizeThan() throws ParseException {
+        final String bucketName = super.bucketName + "-bucket-lifecycle-object-size-than";
+        final String ruleId0 = "rule-object-size-than";
+        final String matchPrefix0 = "rule-object/";
+        final String ruleId1 = "rule2-object-size-than";
+        final String matchPrefix1 = "rule2-object/";
+        Long objectSizeGreaterThan = 120L;
+        Long objectSizeLessThan = 1240L;
+        Long objectSizeGreaterThan2 = 1024L;
+        Long objectSizeLessThan2 = 4096L;
+
+        try {
+            ossClient.createBucket(bucketName);
+
+            SetBucketLifecycleRequest request = new SetBucketLifecycleRequest(bucketName);
+
+            Map<String, String> tags = new HashMap<String, String>(1);
+            tags.put("tag1", "abc");
+            tags.put("tag2", "def");
+            LifecycleFilter filter = new LifecycleFilter();
+            LifecycleNot not = new LifecycleNot();
+            Tag tag = new Tag("tag-key","tag-value");
+            not.setPrefix("not-prefix");
+            not.setTag(tag);
+            List<LifecycleNot> notList = new ArrayList<LifecycleNot>();
+            notList.add(not);
+            filter.setNotList(notList);
+            filter.setObjectSizeGreaterThan(objectSizeGreaterThan);
+            filter.setObjectSizeLessThan(objectSizeLessThan);
+
+            // ruleId0
+            LifecycleRule rule = new LifecycleRule(ruleId0, matchPrefix0, RuleStatus.Enabled, 3);
+            rule.setTags(tags);
+            rule.setFilter(filter);
+            request.AddLifecycleRule(rule);
+
+            // ruleId1
+            LifecycleNot not1 = new LifecycleNot();
+            LifecycleFilter filter1 = new LifecycleFilter();
+            rule = new LifecycleRule(ruleId1, matchPrefix1, RuleStatus.Enabled,
+                    DateUtil.parseIso8601Date("2022-10-12T00:00:00.000Z"));
+            not1.setPrefix(matchPrefix1+"not-prefix1");
+
+            filter1.setObjectSizeGreaterThan(objectSizeGreaterThan2);
+            filter1.setObjectSizeLessThan(objectSizeLessThan2);
+            rule.setFilter(filter1);
+            request.AddLifecycleRule(rule);
+
+            ossClient.setBucketLifecycle(request);
+
+            List<LifecycleRule> rules = ossClient.getBucketLifecycle(bucketName);
+
+            LifecycleRule r0 = rules.get(0);
+            Assert.assertEquals(ruleId0, r0.getId());
+            Assert.assertEquals(matchPrefix0, r0.getPrefix());
+            Assert.assertEquals(RuleStatus.Enabled, r0.getStatus());
+            Assert.assertEquals(3, r0.getExpirationDays());
+            Assert.assertTrue(r0.getAbortMultipartUpload() == null);
+            Assert.assertEquals(2, r0.getTags().size());
+            Assert.assertEquals(objectSizeGreaterThan, r0.getFilter().getObjectSizeGreaterThan());
+            Assert.assertEquals(objectSizeLessThan, r0.getFilter().getObjectSizeLessThan());
+            Assert.assertEquals(matchPrefix0+"not-prefix", r0.getFilter().getNotList().get(0).getPrefix());
+            Assert.assertEquals("tag-key", r0.getFilter().getNotList().get(0).getTag().getKey());
+            Assert.assertEquals("tag-value", r0.getFilter().getNotList().get(0).getTag().getValue());
+            LifecycleRule r1 = rules.get(1);
+            Assert.assertEquals(ruleId1, r1.getId());
+            Assert.assertEquals(objectSizeGreaterThan2, r1.getFilter().getObjectSizeGreaterThan());
+            Assert.assertEquals(objectSizeLessThan2, r1.getFilter().getObjectSizeLessThan());
+        } catch (OSSException e) {
+            Assert.fail(e.getMessage());
+        } finally {
+            ossClient.deleteBucket(bucketName);
+        }
+    }
 }
