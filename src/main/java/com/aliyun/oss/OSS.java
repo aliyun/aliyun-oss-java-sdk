@@ -5184,4 +5184,24 @@ public interface OSS {
      *             If any errors occurred in OSS while processing the request.
      */
     public AsyncProcessObjectResult asyncProcessObject(AsyncProcessObjectRequest asyncProcessObjectRequest) throws OSSException, ClientException;
+
+    /**
+     * create archive direct Reading
+     *
+     * @param request request
+     * @return void
+     * @throws OSSException OSSException
+     * @throws ClientException ClientException
+     */
+    VoidResult putBucketArchiveDirectRead(PutBucketArchiveDirectReadRequest request) throws OSSException, ClientException;
+
+    /**
+     * get archive direct Reading
+     *
+     * @param bucketName
+     * @return
+     * @throws OSSException OSSException
+     * @throws ClientException ClientException
+     */
+    GetBucketArchiveDirectReadResult getBucketArchiveDirectRead(String bucketName) throws OSSException, ClientException;
 }

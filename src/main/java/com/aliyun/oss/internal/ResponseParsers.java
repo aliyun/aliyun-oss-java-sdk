@@ -140,6 +140,7 @@ public final class ResponseParsers {
     public static final DescribeRegionsResponseParser describeRegionsResponseParser = new DescribeRegionsResponseParser();
     public static final GetBucketCallbackPolicyResponseParser getBucketCallbackPolicyResponseParser = new GetBucketCallbackPolicyResponseParser();
     public static final AsyncProcessObjectResponseParser asyncProcessObjectResponseParser = new AsyncProcessObjectResponseParser();
+    public static final GetBucketArchiveDirectReadResponseParser getBucketArchiveDirectReadResponseParser = new GetBucketArchiveDirectReadResponseParser();
 
     public static Long parseLongWithDefault(String defaultValue){
         if(defaultValue == null || "".equals(defaultValue)){
@@ -4295,6 +4296,36 @@ public final class ResponseParsers {
                 asyncProcessObjectResult.setEventId(jsonObject.getString("EventId"));
                 asyncProcessObjectResult.setTaskId(jsonObject.getString("TaskId"));
                 return asyncProcessObjectResult;
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class GetBucketArchiveDirectReadResponseParser implements ResponseParser<GetBucketArchiveDirectReadResult> {
+        @Override
+        public GetBucketArchiveDirectReadResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetBucketArchiveDirectReadResult result = parseGetArchiveDirectRead(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+        private GetBucketArchiveDirectReadResult parseGetArchiveDirectRead(InputStream inputStream) throws ResponseParseException {
+            GetBucketArchiveDirectReadResult getBucketArchiveDirectReadResult = new GetBucketArchiveDirectReadResult();
+            if (inputStream == null) {
+                return getBucketArchiveDirectReadResult;
+            }
+            try {
+                Element root = getXmlRootElement(inputStream);
+                if (root.getChildText("Enabled") != null) {
+                    getBucketArchiveDirectReadResult.setEnabled(Boolean.valueOf(root.getChildText("Enabled")));
+                }
+                return getBucketArchiveDirectReadResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
             } catch (Exception e) {
                 throw new ResponseParseException(e.getMessage(), e);
             }

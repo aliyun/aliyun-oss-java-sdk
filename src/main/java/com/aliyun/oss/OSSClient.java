@@ -1983,6 +1983,16 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public VoidResult putBucketArchiveDirectRead(PutBucketArchiveDirectReadRequest request) throws OSSException, ClientException {
+        return this.bucketOperation.putBucketArchiveDirectRead(request);
+    }
+
+    @Override
+    public GetBucketArchiveDirectReadResult getBucketArchiveDirectRead(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketArchiveDirectRead(new GenericRequest(bucketName));
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();
