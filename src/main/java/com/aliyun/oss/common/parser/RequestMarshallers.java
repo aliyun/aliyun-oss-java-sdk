@@ -320,6 +320,9 @@ public final class RequestMarshallers {
             if (request.getErrorDocument() != null) {
                 xmlBody.append("<ErrorDocument>");
                 xmlBody.append("<Key>" + request.getErrorDocument() + "</Key>");
+                if (request.getHttpStatus() != null) {
+                    xmlBody.append("<HttpStatus>" + request.getHttpStatus() + "</HttpStatus>");
+                }
                 xmlBody.append("</ErrorDocument>");
             }
 
