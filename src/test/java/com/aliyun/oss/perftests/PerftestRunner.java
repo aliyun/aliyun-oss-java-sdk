@@ -19,13 +19,7 @@
 
 package com.aliyun.oss.perftests;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,6 +28,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.aliyun.oss.model.UploadFileRequest;
 import junit.framework.Assert;
 
 import org.apache.commons.logging.Log;
@@ -71,6 +66,11 @@ public class PerftestRunner {
     private byte[] byteArray100KB;
     private byte[] byteArray1MB;
     private byte[] byteArray4MB;
+
+    File file1KB;
+    File file100KB;
+    File file1MB;
+    File file4MB;
 
     private static TestScenario.Type determineScenarioType(
             final String scenarioTypeString) {
@@ -164,6 +164,16 @@ public class PerftestRunner {
             log.error(e.getMessage());
             Assert.fail(e.getMessage());
         }
+
+        try {
+            file1KB = createFixedLengthFile("file1KB", 1024);
+            file100KB = createFixedLengthFile("file100KB", 102400);
+            file1MB = createFixedLengthFile("file1MB", 1 * 1024 * 1024);
+            file4MB = createFixedLengthFile("file4MB", 4 * 1024 * 1024);
+        }catch (Exception e) {
+            log.error(e.getMessage());
+            Assert.fail(e.getMessage());
+        }
     }
 
     public void createBucket() {
@@ -190,6 +200,23 @@ public class PerftestRunner {
         return data;
     }
 
+    private static File createFixedLengthFile(String fileName, long size){
+        try {
+            File file = File.createTempFile(fileName, ".txt");
+            file.deleteOnExit();
+            String context = "abcdefghijklmnopqrstuvwxyz0123456789011234567890\n";
+
+            Writer writer = new OutputStreamWriter(new FileOutputStream(file));
+            for (int i = 0; i < size / context.length(); i++) {
+                writer.write(context);
+            }
+            writer.close();
+            return file;
+        }catch (Exception e) {
+            return null;
+        }
+    }
+
     private byte[] chooseByteArray(long contentLength) {
         if (contentLength == 1024) {
             return byteArray1KB;
@@ -199,6 +226,21 @@ public class PerftestRunner {
             return byteArray1MB;
         } else if (contentLength == 4 * 1024 * 1024) {
             return byteArray4MB;
+        } else {
+            throw new IllegalArgumentException(
+                    "Illegal content length, only support 1KB & 100KB & 1MB & 4MB");
+        }
+    }
+
+    private File chooseFilePath(long contentLength) {
+        if (contentLength == 1024) {
+            return file1KB;
+        } else if (contentLength == 102400) {
+            return file100KB;
+        } else if (contentLength == 1 * 1024 * 1024) {
+            return file1MB;
+        } else if (contentLength == 4 * 1024 * 1024) {
+            return file4MB;
         } else {
             throw new IllegalArgumentException(
                     "Illegal content length, only support 1KB & 100KB & 1MB & 4MB");
@@ -359,6 +401,7 @@ public class PerftestRunner {
     }
 
     public void testRun() {
+        final boolean uploadFile = false;
         int putThreadNumber = scenario.getPutThreadNumber();
         int getThreadNumber = scenario.getGetThreadNumber();
         int getQPS = scenario.getGetQPS();
@@ -376,6 +419,8 @@ public class PerftestRunner {
         final List<Long> getLatencyArray = new ArrayList<Long>();
         final PerftestRunner self = this;
 
+        final String filePath = chooseFilePath(contentLength).getPath();
+
         Thread[] putThreads = new Thread[putThreadNumber];
         try {
             for (int i = 0; i < putThreadNumber; i++) {
@@ -391,10 +436,13 @@ public class PerftestRunner {
 
                                 log.info("Begin put " + objectKey);
                                 Date from = new Date();
-                                ObjectMetadata metadata = new ObjectMetadata();
-                                metadata.setContentLength(contentLength);
-                                ossClient.putObject(bucketName, objectKey,
-                                        input, metadata);
+                                if (uploadFile) {
+                                    ossClient.uploadFile(new UploadFileRequest(bucketName, objectKey, filePath, 200*1024, 4));
+                                } else {
+                                    ObjectMetadata metadata = new ObjectMetadata();
+                                    metadata.setContentLength(contentLength);
+                                    ossClient.putObject(bucketName, objectKey, input, metadata);
+                                }
                                 Date to = new Date();
                                 long latency = to.getTime() - from.getTime();
                                 if (latency < putInterval) {
@@ -426,6 +474,8 @@ public class PerftestRunner {
                                 log.warn("Other unexpected exception "
                                         + e.getMessage());
                                 recordError(OperationType.PUT);
+                            } catch (Throwable throwable) {
+                                recordError(OperationType.PUT);;
                             } finally {
                                 if (input != null) {
                                     try {
@@ -554,7 +604,25 @@ public class PerftestRunner {
             file.delete();
         }
     }
-    
+
+    /*
+    runner_conf.xml sample
+    <Root>
+        <host>oss-cn-hangzhou.aliyuncs.com</host>
+        <accessid>your access key id</accessid>
+        <accesskey>your access key secret</accesskey>
+        <bucket>your bucket name</bucket>
+        <get-and-put-1vs1-1MB>
+            <size>1048576</size>
+            <putthread>10</putthread>
+            <getthread>0</getthread>
+            <time>600</time>
+            <getqps>100</getqps>
+            <putqps>100</putqps>
+        </get-and-put-1vs1-1MB>
+    </Root>
+     */
+
     public static void main(String[] args) {
         String realArgs[];
         if (args.length >= 1) {

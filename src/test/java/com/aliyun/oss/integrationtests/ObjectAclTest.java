@@ -226,10 +226,10 @@ public class ObjectAclTest extends TestBase {
 
     @Test
     public void testCopyObjectWithACLHeader() throws IOException {
-        final String sourceBucket = "copy-existing-object-source-bucket";
-        final String targetBucket = "copy-existing-object-target-bucket";
-        final String sourceKey = "copy-existing-object-source-object";
-        final String targetKey = "copy-existing-object-target-object";
+        final String sourceBucket = bucketName + "-object-source";
+        final String targetBucket = bucketName + "-object-target";
+        final String sourceKey = bucketName + "-object-source-object";
+        final String targetKey = bucketName + "-object-target-object";
 
         final String userMetaKey0 = "user";
         final String userMetaValue0 = "aliy";

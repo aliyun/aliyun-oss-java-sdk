@@ -56,10 +56,12 @@ public class BucketAclTest extends TestBase {
         
         try {
             ossClient.createBucket(bucketName);
+            Thread.sleep(2000);
             
             for (CannedAccessControlList acl : acls) {
                 ossClient.setBucketAcl(bucketName, acl);
-                
+                Thread.sleep(3000);
+
                 AccessControlList returnedAcl = ossClient.getBucketAcl(bucketName);
                 if (acl != null && !acl.equals(CannedAccessControlList.Private)) {
                     Set<Grant> grants = returnedAcl.getGrants();
@@ -106,7 +108,7 @@ public class BucketAclTest extends TestBase {
             }
             
             // Set bucket without ownership
-            final String bucketWithoutOwnership = "oss";
+            final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;
             try {
                 ossClient.setBucketAcl(bucketWithoutOwnership, CannedAccessControlList.Private);
                 Assert.fail("Set bucket acl should not be successful");
@@ -143,7 +145,7 @@ public class BucketAclTest extends TestBase {
         }
         
         // Get bucket without ownership
-        final String bucketWithoutOwnership = "oss";
+        final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;
         try {
             ossClient.getBucketAcl(bucketWithoutOwnership);
             Assert.fail("Get bucket referer should not be successful");

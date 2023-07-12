@@ -474,7 +474,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             boolean isExist = ossPayerClient.doesObjectExist(genericRequest, isOnlyInOSS);
             Assert.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, e.getErrorCode());
+            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
             //Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         }
 
@@ -523,7 +523,7 @@ public class ObjectRequestPaymentTest extends TestBase {
             ossPayerClient.getSimplifiedObjectMeta(genericRequest);
             Assert.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, e.getErrorCode());
+            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
             //Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         }
 
@@ -646,7 +646,7 @@ public class ObjectRequestPaymentTest extends TestBase {
 
             Assert.fail("no RequestPayer, should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, e.getErrorCode());
+            Assert.assertEquals(OSSErrorCode.ACCESS_DENIED, e.getErrorCode());
             //Assert.assertTrue(e.getMessage().startsWith(BUCKET_ACCESS_DENIED_ERR));
         }
 

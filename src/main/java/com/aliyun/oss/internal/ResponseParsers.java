@@ -2727,10 +2727,12 @@ public final class ResponseParsers {
 
             // owner
             Bucket bucket = new Bucket();
-            String id = bucketElem.getChild("Owner").getChildText("ID");
-            String displayName = bucketElem.getChild("Owner").getChildText("DisplayName");
-            Owner owner = new Owner(id, displayName);
-            bucket.setOwner(owner);
+            if (bucketElem.getChild("Owner") != null) {
+                String id = bucketElem.getChild("Owner").getChildText("ID");
+                String displayName = bucketElem.getChild("Owner").getChildText("DisplayName");
+                Owner owner = new Owner(id, displayName);
+                bucket.setOwner(owner);
+            }
 
             // bucket
             bucket.setName(bucketElem.getChildText("Name"));

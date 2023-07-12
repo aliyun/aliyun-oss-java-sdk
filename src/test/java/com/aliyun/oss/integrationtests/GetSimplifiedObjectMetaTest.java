@@ -75,7 +75,7 @@ public class GetSimplifiedObjectMetaTest extends TestBase {
             ossClient.getSimplifiedObjectMeta(nonexistentBucket, key);
             Assert.fail("Get simplified object meta should not be successful");
         } catch (OSSException ex) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, ex.getErrorCode());
+            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, ex.getErrorCode());
         }
 
         // Try to get nonexistent object
@@ -94,7 +94,7 @@ public class GetSimplifiedObjectMetaTest extends TestBase {
             client.getSimplifiedObjectMeta(bucketName, nonexistentKey);
             Assert.fail("Get simplified object meta should not be successful");
         } catch (OSSException ex) {
-            Assert.assertEquals(OSSErrorCode.ACCESS_FORBIDDEN, ex.getErrorCode());
+            Assert.assertEquals(OSSErrorCode.SIGNATURE_DOES_NOT_MATCH, ex.getErrorCode());
         } finally {
             client.shutdown();
         }

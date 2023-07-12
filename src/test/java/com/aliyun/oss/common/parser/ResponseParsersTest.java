@@ -931,6 +931,8 @@ public class ResponseParsersTest {
         Assert.assertEquals(CannedAccessControlList.Private, result.getCannedACL());
         Assert.assertEquals("oss-cn-hangzhou", result.getBucket().getLocation());
         Assert.assertEquals("oss-example", result.getBucket().getName());
+        Assert.assertEquals("username", result.getBucket().getOwner().getDisplayName());
+        Assert.assertEquals("27183473914****", result.getBucket().getOwner().getId());
     }
 
     @Test
@@ -1020,6 +1022,41 @@ public class ResponseParsersTest {
         Assert.assertEquals("oss-example", result.getBucket().getName());
         Assert.assertEquals(HnsStatus.Enabled.toString(), result.getBucket().getHnsStatus());
         Assert.assertEquals("xxx-id-123", result.getBucket().getResourceGroupId());
+    }
+
+    @Test
+    public void testParseGetBucketInfoUnsupportType() {
+        String respBody = "" +
+                "<BucketInfo>\n" +
+                "  <Bucket>\n" +
+                "           <CreationDate>2013-07-31T10:56:21.000Z</CreationDate>\n" +
+                "            <ExtranetEndpoint>oss-cn-hangzhou.aliyuncs.com</ExtranetEndpoint>\n" +
+                "            <IntranetEndpoint>oss-cn-hangzhou-internal.aliyuncs.com</IntranetEndpoint>\n" +
+                "            <Location>oss-cn-hangzhou</Location>\n" +
+                "            <AccessControlList>\n" +
+                "              <Grant>private</Grant>\n" +
+                "            </AccessControlList>\n" +
+                "            <Comment>test</Comment>\n" +
+                "            <DataRedundancyType>ZRSII</DataRedundancyType>\n" +
+                "   </Bucket>\n" +
+                " </BucketInfo>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        BucketInfo result = null;
+        try {
+            result = ResponseParsers.parseGetBucketInfo(instream);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse bucket replication response body fail!");
+        }
+
+        Assert.assertEquals(DataRedundancyType.Unknown, result.getDataRedundancyType());
+
     }
 
     @Test

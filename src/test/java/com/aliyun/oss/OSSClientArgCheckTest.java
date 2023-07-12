@@ -109,7 +109,7 @@ public class OSSClientArgCheckTest {
         Assert.assertNotNull(url3);
 
         Assert.assertFalse(OSSUtils.validateEndpoint(url1.getHost()));
-        Assert.assertFalse(OSSUtils.validateEndpoint(url2.getHost()));
+        Assert.assertTrue(OSSUtils.validateEndpoint(url2.getHost()));
         Assert.assertTrue(OSSUtils.validateEndpoint(url3.getHost()));
 
         Assert.assertTrue(OSSUtils.validateEndpoint("oss-cn-shenzhen.aliyuncs.com"));

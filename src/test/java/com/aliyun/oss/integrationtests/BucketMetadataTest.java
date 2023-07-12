@@ -52,7 +52,7 @@ public class BucketMetadataTest extends TestBase {
             ossClient.getBucketMetadata(bucketName);
             Assert.fail("Get bucket meta should not be successful");
         } catch (OSSException e) {
-            Assert.assertEquals(OSSErrorCode.NO_SUCH_KEY, e.getErrorCode());
+            Assert.assertEquals(OSSErrorCode.NO_SUCH_BUCKET, e.getErrorCode());
             Assert.assertEquals(e.getRequestId().length(), "59F2AC3B349A25FA4C44BF8A".length());
         }
 

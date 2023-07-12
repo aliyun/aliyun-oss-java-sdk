@@ -219,7 +219,7 @@ public class BucketCORSTest extends TestBase {
         }
 
         // Get bucket without ownership
-        final String bucketWithoutOwnership = "oss";
+        final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;
         try {
             ossClient.getBucketCORSRules(bucketWithoutOwnership);
             Assert.fail("Get bucket cors should not be successful");
@@ -255,7 +255,7 @@ public class BucketCORSTest extends TestBase {
         }
 
         // Delete bucket without ownership
-        final String bucketWithoutOwnership = "oss";
+        final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;
         try {
             ossClient.getBucketCORSRules(bucketWithoutOwnership);
             Assert.fail("Delete bucket cors should not be successful");

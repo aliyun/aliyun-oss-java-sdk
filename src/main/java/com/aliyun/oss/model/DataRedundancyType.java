@@ -31,7 +31,12 @@ public enum DataRedundancyType {
     /**
      * ZRS
      */
-    ZRS("ZRS");
+    ZRS("ZRS"),
+
+    /**
+     * Unknown
+     */
+    Unknown("Unknown");
 
     private final String dataRedundancyTypeString;
 
@@ -60,6 +65,6 @@ public enum DataRedundancyType {
             if (e.toString().equals(dataRedundancyTypeString))
                 return e;
         }
-        throw new IllegalArgumentException("Unsupported data redundancy type: " + dataRedundancyTypeString);
+        return Unknown;
     }
 }

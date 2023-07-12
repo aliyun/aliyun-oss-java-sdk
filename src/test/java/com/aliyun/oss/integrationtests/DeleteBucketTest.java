@@ -87,7 +87,7 @@ public class DeleteBucketTest extends TestBase {
     
     @Test
     public void testDeleteBucketWithoutOwnership() {
-        final String bucketWithoutOwnership = "oss";
+        final String bucketWithoutOwnership = "oss" + NOT_OWNERSHIP_BUCKET_SUFFIX;
         
         try {
             ossClient.deleteBucket(bucketWithoutOwnership);
