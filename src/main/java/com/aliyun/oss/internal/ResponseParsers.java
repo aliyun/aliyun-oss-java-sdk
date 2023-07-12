@@ -2206,6 +2206,9 @@ public final class ResponseParsers {
             }
             if (root.getChild("ErrorDocument") != null) {
                 result.setErrorDocument(root.getChild("ErrorDocument").getChildText("Key"));
+                if (root.getChild("ErrorDocument").getChild("HttpStatus") != null) {
+                    result.setHttpStatus(root.getChild("ErrorDocument").getChildText("HttpStatus"));
+                }
             }
             if (root.getChild("RoutingRules") != null) {
                 List<Element> ruleElements = root.getChild("RoutingRules").getChildren("RoutingRule");

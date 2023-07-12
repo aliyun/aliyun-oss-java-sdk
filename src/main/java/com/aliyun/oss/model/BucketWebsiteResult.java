@@ -28,6 +28,7 @@ public class BucketWebsiteResult extends GenericResult {
     private boolean supportSubDir;
     private String subDirType;
     private List<RoutingRule> routingRules;
+    private String httpStatus;
 
     public String getIndexDocument() {
         return indexDocument;
@@ -71,5 +72,13 @@ public class BucketWebsiteResult extends GenericResult {
 
     public void setSubDirType(String subDirType) {
         this.subDirType = subDirType;
+    }
+
+    public String getHttpStatus() {
+        return httpStatus;
+    }
+
+    public void setHttpStatus(String httpStatus) {
+        this.httpStatus = httpStatus;
     }
 }

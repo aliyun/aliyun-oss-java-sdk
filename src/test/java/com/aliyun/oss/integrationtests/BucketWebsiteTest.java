@@ -860,4 +860,56 @@ public class BucketWebsiteTest extends TestBase {
         }
     }
 
+    @Test
+    public void testSetBucketWebsiteWithHttpStatus() {
+        final String bucketName = super.bucketName + "unormal-set-bucket-website-http-status";
+        final String indexDocument = "index.html";
+        final String errorDocument = "errorDocument.html";
+
+        try {
+            ossClient.createBucket(bucketName);
+
+            SetBucketWebsiteRequest request = new SetBucketWebsiteRequest(bucketName);
+            RoutingRule rule = new RoutingRule();
+            rule.setNumber(1);
+            rule.getCondition().setHttpErrorCodeReturnedEquals(404);
+            rule.getRedirect().setRedirectType(RoutingRule.RedirectType.External);
+            rule.getRedirect().setMirrorURL("http://oss-test.aliyun-inc.com/mirror-test-source/");
+            request.setIndexDocument(indexDocument);
+            request.setErrorDocument(errorDocument);
+            request.setHttpStatus("404");
+            request.AddRoutingRule(rule);
+            rule.getRedirect().setRedirectType(RoutingRule.RedirectType.Mirror);
+            rule.getRedirect().setMirrorURL("http://oss-test.aliyun-inc.com/mirror-test/");
+
+            ossClient.setBucketWebsite(request);
+
+            waitForCacheExpiration(5);
+
+            // check
+            BucketWebsiteResult result = ossClient.getBucketWebsite(bucketName);
+            Assert.assertEquals(indexDocument, result.getIndexDocument());
+            Assert.assertEquals(result.getRoutingRules().size(), 1);
+            Assert.assertEquals(result.getErrorDocument(), "errorDocument.html");
+            Assert.assertEquals(result.getHttpStatus(), "404");
+            rule = result.getRoutingRules().get(0);
+            Assert.assertEquals(rule.getNumber().intValue(), 1);
+            Assert.assertEquals(rule.getCondition().getHttpErrorCodeReturnedEquals().intValue(), 404);
+            Assert.assertEquals(rule.getRedirect().getRedirectType(), RoutingRule.RedirectType.Mirror);
+            Assert.assertEquals(rule.getRedirect().getMirrorURL(), "http://oss-test.aliyun-inc.com/mirror-test/");
+            Assert.assertNull(rule.getRedirect().getMirrorSecondaryURL());
+            Assert.assertNull(rule.getRedirect().getMirrorProbeURL());
+            Assert.assertFalse(rule.getRedirect().isPassQueryString());
+            Assert.assertFalse(rule.getRedirect().isPassOriginalSlashes());
+            Assert.assertEquals(result.getRequestId().length(), REQUEST_ID_LEN);
+
+            ossClient.deleteBucketWebsite(bucketName);
+
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        } finally {
+            ossClient.deleteBucket(bucketName);
+        }
+    }
+
 }
