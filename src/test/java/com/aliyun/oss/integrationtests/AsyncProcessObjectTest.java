@@ -71,7 +71,7 @@ public class AsyncProcessObjectTest extends TestBase {
 
         } catch (OSSException e) {
             e.printStackTrace();
-            Assert.assertTrue(e.getErrorMessage().contains("ResourceNotFound, The specified resource OSSBucket is not found."));
+            Assert.assertTrue(e.getErrorMessage().contains("ResourceNotFound, The specified resource Attachment is not found."));
         }
     }
 }
