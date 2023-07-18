@@ -411,13 +411,7 @@ public class BucketRelatedTest {
     public void testDataRedundancyType() {
         assertEquals(DataRedundancyType.LRS, DataRedundancyType.parse("LRS"));
         assertEquals(DataRedundancyType.ZRS, DataRedundancyType.parse("ZRS"));
-
-        try {
-            DataRedundancyType type = DataRedundancyType.parse("ERROR");
-            assertTrue(false);
-        } catch (Exception e) {
-            assertTrue(true);
-        }
+        assertEquals(DataRedundancyType.Unknown, DataRedundancyType.parse("ERROR"));
     }
 
     @Test
