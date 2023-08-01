@@ -254,4 +254,57 @@ public class BucketCnameTest extends TestBase {
             Assert.assertEquals("CnameTokenNotFound", e.getErrorCode());
         }
     }
+
+    @Ignore
+    @Test
+    public void testGetBucketCname() {
+
+        final String bucketName = "normal-get-bucket-cname";
+        Date curDate;
+
+        try {
+            ossClient.createBucket(bucketName);
+
+            // set multi cname
+            for (String domain : domains) {
+                CreateBucketCnameTokenRequest createBucketCnameTokenRequest = new CreateBucketCnameTokenRequest(bucketName);
+                createBucketCnameTokenRequest.setDomain(domain);
+                ossClient.createBucketCnameToken(createBucketCnameTokenRequest);
+
+                AddBucketCnameRequest request = new AddBucketCnameRequest(bucketName);
+                request.setDomain(domain);
+                ossClient.addBucketCname(request);
+            }
+
+            waitForCacheExpiration(5);
+
+            curDate = new Date(System.currentTimeMillis());
+
+            List<CnameConfiguration> cnames = ossClient.getBucketCname(bucketName);
+            Assert.assertEquals(cnames.size(), domains.length);
+            for (int i = 0; i < cnames.size(); i++) {
+                System.out.println(cnames.get(i));
+                Assert.assertEquals(cnames.get(i).getDomain(), domains[i]);
+                Assert.assertEquals(cnames.get(i).getStatus(), CnameConfiguration.CnameStatus.Enabled);
+                Assert.assertEquals(cnames.get(i).getLastMofiedTime().getYear(), curDate.getYear());
+                Assert.assertEquals(cnames.get(i).getLastMofiedTime().getMonth(), curDate.getMonth());
+                Assert.assertEquals(cnames.get(i).getLastMofiedTime().getDay(), curDate.getDay());
+            }
+
+            for (String domain : domains) {
+                DeleteBucketCnameRequest req = new DeleteBucketCnameRequest(bucketName);
+                req.setDomain(domain);
+                ossClient.deleteBucketCname(req);
+            }
+
+            cnames = ossClient.getBucketCname(bucketName);
+            Assert.assertEquals(cnames.size(), 0);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        } finally {
+            ossClient.deleteBucket(bucketName);
+        }
+    }
 }
