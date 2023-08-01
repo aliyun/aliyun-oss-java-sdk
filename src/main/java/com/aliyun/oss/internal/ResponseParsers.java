@@ -3611,6 +3611,10 @@ public final class ResponseParsers {
                     cname.setCertType(CnameConfiguration.CertType.parse(certElem.getChildText("Type")));
                     cname.setCertStatus(CnameConfiguration.CertStatus.parse(certElem.getChildText("Status")));
                     cname.setCertId(certElem.getChildText("CertId"));
+                    cname.setCreationDate(certElem.getChildText("CreationDate"));
+                    cname.setFingerprint(certElem.getChildText("Fingerprint"));
+                    cname.setValidStartDate(certElem.getChildText("ValidStartDate"));
+                    cname.setValidEndDate(certElem.getChildText("ValidEndDate"));
                 }
 
                 cnames.add(cname);
