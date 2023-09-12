@@ -46,15 +46,7 @@ import static com.aliyun.oss.internal.OSSUtils.populateResponseHeaderParameters;
 import static com.aliyun.oss.internal.OSSUtils.populateRequestCallback;
 import static com.aliyun.oss.internal.OSSUtils.removeHeader;
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
-import static com.aliyun.oss.internal.RequestParameters.ENCODING_TYPE;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_ACL;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_DELETE;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_OBJECTMETA;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_SYMLINK;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_TAGGING;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_DIR;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_RENAME;
-import static com.aliyun.oss.internal.RequestParameters.SUBRESOURCE_DIR_DELETE;
+import static com.aliyun.oss.internal.RequestParameters.*;
 import static com.aliyun.oss.internal.ResponseParsers.appendObjectResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.copyObjectResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.deleteObjectsResponseParser;
@@ -1309,6 +1301,69 @@ public class OSSObjectOperation extends OSSOperation {
                 .setOriginalRequest(asyncProcessObjectRequest).build();
 
         return doOperation(request, ResponseParsers.asyncProcessObjectResponseParser, bucketName, key, true);
+    }
+
+    public VoidResult writeGetObjectResponse(WriteGetObjectResponseRequest writeGetObjectResponseRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(writeGetObjectResponseRequest, "writeGetObjectResponseRequest");
+        assertParameterNotNull(writeGetObjectResponseRequest.getRoute(), "route");
+
+        ObjectMetadata metadata = writeGetObjectResponseRequest.getMetadata();
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(WRITE_GET_OBJECT_RESPONSE, null);
+
+        if (metadata == null) {
+            metadata = new ObjectMetadata();
+        }
+
+        Map<String, String> headers = new HashMap<String, String>();
+        addHeaderIfNotNull(headers, OSSHeaders.OSS_REQUEST_ROUTE, writeGetObjectResponseRequest.getRoute());
+        addHeaderIfNotNull(headers, OSSHeaders.OSS_REQUEST_TOKEN, writeGetObjectResponseRequest.getToken());
+        addHeaderIfNotNull(headers, OSSHeaders.OSS_FWD_STATUS, String.valueOf(writeGetObjectResponseRequest.getStatus()));
+        populateRequestMetadata(headers, metadata);
+
+
+        InputStream originalInputStream = writeGetObjectResponseRequest.getInputStream();
+        InputStream repeatableInputStream = null;
+        if (writeGetObjectResponseRequest.getFile() != null) {
+            File toUpload = writeGetObjectResponseRequest.getFile();
+
+            if (!checkFile(toUpload)) {
+                getLog().info("Illegal file path: " + toUpload.getPath());
+                throw new ClientException("Illegal file path: " + toUpload.getPath());
+            }
+
+            metadata.setContentLength(toUpload.length());
+
+            try {
+                repeatableInputStream = new RepeatableFileInputStream(toUpload);
+            } catch (IOException ex) {
+                logException("Cannot locate file to upload: ", ex);
+                throw new ClientException("Cannot locate file to upload: ", ex);
+            }
+        } else {
+            assertTrue(originalInputStream != null, "Please specify input stream or file to upload");
+            try {
+                metadata.setContentLength(Long.valueOf(originalInputStream.available()));
+                repeatableInputStream = newRepeatableInputStream(originalInputStream);
+            } catch (IOException ex) {
+                logException("Cannot wrap to repeatable input stream: ", ex);
+                throw new ClientException("Cannot wrap to repeatable input stream: ", ex);
+            }
+        }
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(OSSUtils.toEndpointURI(writeGetObjectResponseRequest.getRoute(), this.client.getClientConfiguration().getProtocol().toString()))
+                .setMethod(HttpMethod.POST).setParameters(params).setHeaders(headers)
+                .setInputStream(repeatableInputStream).setInputSize(determineInputStreamLength(repeatableInputStream, metadata.getContentLength()))
+                .setOriginalRequest(writeGetObjectResponseRequest).build();
+
+        return doOperation(request, requestIdResponseParser, null, null, true);
+    }
+
+    private static void addHeaderIfNotNull(Map<String, String> headers, String header, String value) {
+        if (value != null) {
+            headers.put(header, value);
+        }
     }
 
     private static void addDeleteObjectsRequiredHeaders(Map<String, String> headers, byte[] rawContent) {

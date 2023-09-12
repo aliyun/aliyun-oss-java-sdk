@@ -117,4 +117,9 @@ public interface OSSHeaders extends HttpHeaders {
     static final String OSS_CONTENT_SHA256 = "x-oss-content-sha256";
 
     static final String OSS_ERROR = "x-oss-err";
+
+    static final String OSS_REQUEST_ROUTE = "x-oss-request-route";
+    static final String OSS_REQUEST_TOKEN = "x-oss-request-token";
+    static final String OSS_FWD_STATUS = "x-oss-fwd-status";
+
 }

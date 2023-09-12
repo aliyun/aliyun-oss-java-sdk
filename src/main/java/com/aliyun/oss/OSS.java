@@ -5184,4 +5184,20 @@ public interface OSS {
      *             If any errors occurred in OSS while processing the request.
      */
     public AsyncProcessObjectResult asyncProcessObject(AsyncProcessObjectRequest asyncProcessObjectRequest) throws OSSException, ClientException;
+
+    /**
+     * write get object response.
+     *
+     * @param writeGetObjectResponseRequest
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public VoidResult writeGetObjectResponse(WriteGetObjectResponseRequest writeGetObjectResponseRequest) throws OSSException, ClientException;
 }
