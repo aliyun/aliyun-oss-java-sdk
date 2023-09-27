@@ -129,10 +129,16 @@ public class IOUtils {
     public static InputStream newRepeatableInputStream(final InputStream original) throws IOException {
         InputStream repeatable = null;
         if (!original.markSupported()) {
-            if (original instanceof FileInputStream) {
-                repeatable = new RepeatableFileInputStream((FileInputStream) original);
-            } else {
-                repeatable = new BufferedInputStream(original, OSSConstants.DEFAULT_STREAM_BUFFER_SIZE);
+            try {
+                if (original instanceof FileInputStream) {
+                    repeatable = new RepeatableFileInputStream((FileInputStream) original);
+                } else {
+                    repeatable = new BufferedInputStream(original, OSSConstants.DEFAULT_STREAM_BUFFER_SIZE);
+                }
+            } catch (Throwable e) {
+                if (repeatable == null) {
+                    repeatable = original;
+                }
             }
         } else {
             repeatable = original;
