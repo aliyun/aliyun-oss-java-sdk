@@ -224,6 +224,7 @@ public class OSSObjectOperation extends OSSOperation {
                 .build();
 
         //create meta progress listener(scanned bytes)
+        CreateSelectMetaInputStream warppedStream = null;
         final ProgressListener selectProgressListener = createSelectObjectMetadataRequest.getSelectProgressListener();
         try {
             OSSObject ossObject = doOperation(request, new GetObjectResponseParser(bucketName, key), bucketName, key, true);
@@ -238,7 +239,7 @@ public class OSSObjectOperation extends OSSOperation {
                 selectContentMetadataBase = selectObjectMetadata.getJsonObjectMetadata();
             }
             InputStream in = ossObject.getObjectContent();
-            CreateSelectMetaInputStream warppedStream = new CreateSelectMetaInputStream(in, selectContentMetadataBase, selectProgressListener);
+            warppedStream = new CreateSelectMetaInputStream(in, selectContentMetadataBase, selectProgressListener);
             warppedStream.setRequestId(ossObject.getRequestId());
             while (warppedStream.read() != -1) {
                 //read until eof
@@ -250,6 +251,14 @@ public class OSSObjectOperation extends OSSOperation {
         } catch (RuntimeException e) {
             publishProgress(selectProgressListener, ProgressEventType.SELECT_FAILED_EVENT);
             throw e;
+        } finally {
+            try {
+                if(warppedStream != null){
+                    warppedStream.close();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
