@@ -243,6 +243,7 @@ public class OSSObjectOperation extends OSSOperation {
             while (warppedStream.read() != -1) {
                 //read until eof
             }
+            warppedStream.close();
             return selectObjectMetadata;
         } catch (IOException e) {
             publishProgress(selectProgressListener, ProgressEventType.SELECT_FAILED_EVENT);
