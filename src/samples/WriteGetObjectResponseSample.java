@@ -20,8 +20,8 @@ public class WriteGetObjectResponseSample {
         try {
             final int instreamLength = 128 * 1024;
             InputStream instream = null;
-            String route = "test-ap-process-name-1283641064516515-opap.oss-cn-beijing-internal.oss-object-process.aliyuncs.com";
-            String token = "OSSV1#UMoA43+Bi9b6Q1Lu6UjhLXnmq4I/wIFac3uZfBkgJtg2xtHkZJ4bZglDWyOgWRlGTrA8y/i6D9eH8PmAiq2NL2R/MD/UX6zvRhT8WMHUewgc9QWPs9LPHiZytkUZnGa39mnv/73cyPWTuxgxyk4dNhlzEE6U7PdzmCCu8gIrjuYLPrA9psRn0ZC8J2/DCZGVx0BE7AmIJTcNtLKTSjxsJyTts/wddfXzyDU87qIWa1k=";
+            String route = "test-ap-process-name-128364***6515-opap.oss-cn-beijing-internal.oss-object-process.aliyuncs.com";
+            String token = "OSSV1#UMoA43+Bi9b6Q1Lu6UjhLXnmq4I/wIFac3uZfBkgJtg2xtHkZJ4bZglDWyOgWRlGTrA8y/i6D9eH8PmAiq2NL2R/MD/UX6zvRhT8WMHUewgc9QWPs9LPHiZytkUZnGa39mnv/73cyPWTuxgxyk4dNhlzEE6U7PdzmCCu8gIrjuYLPrA9psRn0ZC8J2/DCZGVx0BE7AmIJTcNtLKTSjxsJyTts******";
             int status = 200;
 
             instream = genFixedLengthInputStream(instreamLength);
@@ -37,6 +37,10 @@ public class WriteGetObjectResponseSample {
             // writeGetObjectResponseRequest.addHeader("x-oss-fwd-header-Expires", "*** Provide your Expires ***");
             // writeGetObjectResponseRequest.addHeader("x-oss-fwd-header-Last-Modified", "*** Provide your Last Modified ***");
             // writeGetObjectResponseRequest.addHeader("x-oss-fwd-header-Location", "*** Provide your Location ***");
+
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(instreamLength);
+            writeGetObjectResponseRequest.setMetadata(metadata);
 
             ossClient.writeGetObjectResponse(writeGetObjectResponseRequest);
         } catch (OSSException oe) {

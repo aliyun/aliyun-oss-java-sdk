@@ -13,8 +13,8 @@ public class WriteGetObjectResponseTest extends TestBase{
     public void testWriteGetObjectResponse() {
         final int instreamLength = 128 * 1024;
         InputStream instream = null;
-        String route = "test-ap-process-name-1283641064516515-opap.oss-cn-beijing-internal.oss-object-process.aliyuncs.com";
-        String token = "OSSV1#UMoA43+Bi9b6Q1Lu6UjhLXnmq4I/wIFac3uZfBkgJtg2xtHkZJ4bZglDWyOgWRlGTrA8y/i6D9eH8PmAiq2NL2R/MD/UX6zvRhT8WMHUewgc9QWPs9LPHiZytkUZnGa39mnv/73cyPWTuxgxyk4dNhlzEE6U7PdzmCCu8gIrjuYLPrA9psRn0ZC8J2/DCZGVx0BE7AmIJTcNtLKTSjxsJyTts/wddfXzyDU87qIWa1k=";
+        String route = "test-ap-process-name-12836***16515-opap.oss-cn-beijing-internal.oss-object-process.aliyuncs.com";
+        String token = "OSSV1#UMoA43+Bi9b6Q1Lu6UjhLXnmq4I/wIFac3uZfBkgJtg2xtHkZJ4bZglDWyOgWRlGTrA8y/i6D9eH8PmAiq2NL2R/MD/UX6zvRhT8WMHUewgc9QWPs9LPHiZytkUZnGa39mnv/73cyPWTuxgxyk4dNhlzEE6U7PdzmCCu8gIrjuYLPrA9psRn0ZC8J2/DCZGVx0BE7AmIJTcNtLKTSjxsJyTts/******";
         int status = 200;
 
         try {

@@ -32,20 +32,7 @@ import static com.aliyun.oss.event.ProgressPublisher.publishProgress;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_BUFFER_SIZE;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
 import static com.aliyun.oss.internal.OSSHeaders.OSS_SELECT_OUTPUT_RAW;
-import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
-import static com.aliyun.oss.internal.OSSUtils.addDateHeader;
-import static com.aliyun.oss.internal.OSSUtils.addHeader;
-import static com.aliyun.oss.internal.OSSUtils.addStringListHeader;
-import static com.aliyun.oss.internal.OSSUtils.determineInputStreamLength;
-import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
-import static com.aliyun.oss.internal.OSSUtils.ensureObjectKeyValid;
-import static com.aliyun.oss.internal.OSSUtils.ensureCallbackValid;
-import static com.aliyun.oss.internal.OSSUtils.joinETags;
-import static com.aliyun.oss.internal.OSSUtils.populateRequestMetadata;
-import static com.aliyun.oss.internal.OSSUtils.populateResponseHeaderParameters;
-import static com.aliyun.oss.internal.OSSUtils.populateRequestCallback;
-import static com.aliyun.oss.internal.OSSUtils.removeHeader;
-import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
+import static com.aliyun.oss.internal.OSSUtils.*;
 import static com.aliyun.oss.internal.RequestParameters.*;
 import static com.aliyun.oss.internal.ResponseParsers.appendObjectResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.copyObjectResponseParser;
@@ -1316,7 +1303,7 @@ public class OSSObjectOperation extends OSSOperation {
             metadata = new ObjectMetadata();
         }
 
-        Map<String, String> headers = new HashMap<String, String>();
+        Map<String, String> headers = writeGetObjectResponseRequest.getHeaders();
         addHeaderIfNotNull(headers, OSSHeaders.OSS_REQUEST_ROUTE, writeGetObjectResponseRequest.getRoute());
         addHeaderIfNotNull(headers, OSSHeaders.OSS_REQUEST_TOKEN, writeGetObjectResponseRequest.getToken());
         addHeaderIfNotNull(headers, OSSHeaders.OSS_FWD_STATUS, String.valueOf(writeGetObjectResponseRequest.getStatus()));
@@ -1352,9 +1339,16 @@ public class OSSObjectOperation extends OSSOperation {
             }
         }
 
+        Long contentLength = (Long) metadata.getRawMetadata().get(OSSHeaders.CONTENT_LENGTH);
+        contentLength = contentLength == null ? -1 : contentLength.longValue();
+
+        if (contentLength < 0 || !repeatableInputStream.markSupported()) {
+            contentLength = Long.valueOf(-1);
+        }
+
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(OSSUtils.toEndpointURI(writeGetObjectResponseRequest.getRoute(), this.client.getClientConfiguration().getProtocol().toString()))
                 .setMethod(HttpMethod.POST).setParameters(params).setHeaders(headers)
-                .setInputStream(repeatableInputStream).setInputSize(determineInputStreamLength(repeatableInputStream, metadata.getContentLength()))
+                .setInputStream(repeatableInputStream).setInputSize(contentLength)
                 .setOriginalRequest(writeGetObjectResponseRequest).build();
 
         return doOperation(request, requestIdResponseParser, null, null, true);
