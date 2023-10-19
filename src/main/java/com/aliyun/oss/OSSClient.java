@@ -1983,6 +1983,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public VoidResult writeGetObjectResponse(WriteGetObjectResponseRequest writeGetObjectResponseRequest) throws OSSException, ClientException {
+        return this.objectOperation.writeGetObjectResponse(writeGetObjectResponseRequest);
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();
