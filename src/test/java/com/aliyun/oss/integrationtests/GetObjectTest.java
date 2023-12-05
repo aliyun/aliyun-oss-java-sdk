@@ -45,6 +45,11 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.aliyun.oss.ClientConfiguration;
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.common.auth.Credentials;
+import com.aliyun.oss.common.auth.DefaultCredentialProvider;
+import com.aliyun.oss.common.auth.DefaultCredentials;
 import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.internal.OSSUtils;
 import junit.framework.Assert;
@@ -743,6 +748,48 @@ public class GetObjectTest extends TestBase {
             
             rawExpiresValue = o.getObjectMetadata().getRawExpiresValue();
             Assert.assertEquals(illegalExpires, rawExpiresValue);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testGetObjectVerifyStrict() {
+        final String key = "?测\\r试-中.~,+\"'*&￥#@%！（文）+字符|？/.zip";
+        final long inputStreamLength = 128 * 1024; //128KB
+
+        try {
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key,
+                    genFixedLengthInputStream(inputStreamLength));
+            ossClient.putObject(putObjectRequest);
+            Assert.assertTrue(ossClient.getClientConfiguration().isVerifyObjectStrict());
+
+            GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
+            OSSObject o = ossClient.getObject(getObjectRequest);
+            Assert.assertEquals(bucketName, o.getBucketName());
+            Assert.assertEquals(key, o.getKey());
+            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+
+        try {
+            ClientConfiguration conf = new ClientConfiguration();
+            conf.setVerifyObjectStrictEnable(false);
+            Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
+            OSSClient ossClient1 = new OSSClient(TestConfig.OSS_TEST_ENDPOINT, new DefaultCredentialProvider(credentials), conf);
+            Assert.assertFalse(ossClient1.getClientConfiguration().isVerifyObjectStrict());
+
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key,
+                    genFixedLengthInputStream(inputStreamLength));
+            ossClient1.putObject(putObjectRequest);
+
+            // Override 1
+            GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, key);
+            OSSObject o = ossClient1.getObject(getObjectRequest);
+            Assert.assertEquals(bucketName, o.getBucketName());
+            Assert.assertEquals(key, o.getKey());
+            Assert.assertEquals(o.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }

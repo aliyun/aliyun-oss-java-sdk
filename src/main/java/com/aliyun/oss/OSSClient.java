@@ -26,7 +26,7 @@ import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_OSS_ENDPOINT;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
-import static com.aliyun.oss.internal.OSSUtils.ensureObjectKeyValid;
+import static com.aliyun.oss.internal.OSSUtils.ensureObjectKeyValidEx;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -913,7 +913,7 @@ public class OSSClient implements OSS {
         }
         ensureBucketNameValid(request.getBucketName());
         assertParameterNotNull(request.getKey(), "key");
-        ensureObjectKeyValid(request.getKey());
+        ensureObjectKeyValidEx(request.getKey(), serviceClient.getClientConfiguration().isVerifyObjectStrict());
 
         if (request.getExpiration() == null) {
             throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getString("MustSetExpiration"));

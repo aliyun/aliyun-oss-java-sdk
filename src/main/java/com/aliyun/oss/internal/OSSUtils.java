@@ -116,7 +116,10 @@ public class OSSUtils {
      * Validate object name.
      */
     public static boolean validateObjectKey(String key) {
+        return validateObjectKeyEx(key, false);
+    }
 
+    public static boolean validateObjectKeyEx(String key, boolean strict) {
         if (key == null || key.length() == 0) {
             return false;
         }
@@ -128,18 +131,29 @@ public class OSSUtils {
             return false;
         }
 
-        // Validate exculde xml unsupported chars
+        // Validate exclude xml unsupported chars
         char keyChars[] = key.toCharArray();
         char firstChar = keyChars[0];
         if (firstChar == '\\') {
             return false;
         }
 
+        if (strict && firstChar == '?') {
+            return false;
+        }
+
         return (bytes.length > 0 && bytes.length < OBJECT_NAME_MAX_LENGTH);
     }
 
+
     public static void ensureObjectKeyValid(String key) {
         if (!validateObjectKey(key)) {
+            throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getFormattedString("ObjectKeyInvalid", key));
+        }
+    }
+
+    public static void ensureObjectKeyValidEx(String key, boolean strict) {
+        if (!validateObjectKeyEx(key, strict)) {
             throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getFormattedString("ObjectKeyInvalid", key));
         }
     }
