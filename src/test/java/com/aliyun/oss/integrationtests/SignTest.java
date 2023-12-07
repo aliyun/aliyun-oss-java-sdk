@@ -603,4 +603,72 @@ public class SignTest extends  TestBase{
             Assert.fail(e.getMessage());
         }
     }
+
+    @Test
+    public void testGenerateSignedURLIsKeyStrictly() {
+        String key = "";
+        ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
+        conf.setSignatureVersion(SignVersion.V1);
+        Assert.assertTrue(conf.isVerifyObjectStrict());
+        OSS ossClient = new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT, TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET, conf);
+        Date expiration = new Date(new Date().getTime() + 1000 * 60 *10);
+        long ticks = new Date().getTime() / 1000 + new Random().nextInt(5000);
+        String bucket = TestBase.BUCKET_NAME_PREFIX + ticks;
+
+        key = "123";
+        try {
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key);
+            request.setExpiration(expiration);
+            URL url = ossClient.generatePresignedUrl(request);
+            //System.out.println(url.toString());
+            Assert.assertTrue(url.toString().contains("/123?Expires="));
+        } catch (Exception e) {
+            Assert.fail("should not here");
+        }
+
+        key = "?123";
+        try {
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key);
+            request.setExpiration(expiration);
+            ossClient.generatePresignedUrl(request);
+            Assert.fail("should not here");
+        } catch (Exception e) {
+            Assert.assertTrue(e.getMessage().contains("Object Key \"?123\""));
+        }
+
+        key = "?";
+        try {
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key);
+            request.setExpiration(expiration);
+            ossClient.generatePresignedUrl(request);
+            Assert.fail("should not here");
+        } catch (Exception e) {
+            Assert.assertTrue(e.getMessage().contains("Object Key \"?\""));
+        }
+
+        conf = new ClientBuilderConfiguration();
+        conf.setSignatureVersion(SignVersion.V1);
+        conf.setVerifyObjectStrictEnable(false);
+        ossClient = new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT, TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET, conf);
+        Assert.assertFalse(conf.isVerifyObjectStrict());
+
+        key = "123";
+        try {
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key);
+            request.setExpiration(expiration);
+            URL url = ossClient.generatePresignedUrl(request);
+            Assert.assertTrue(url.toString().contains("/123?Expires="));
+        } catch (Exception e) {
+            Assert.fail("should not here");
+        }
+        key = "?123";
+        try {
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key);
+            request.setExpiration(expiration);
+            URL url = ossClient.generatePresignedUrl(request);
+            Assert.assertTrue(url.toString().contains("/%3F123?Expires="));
+        } catch (Exception e) {
+            Assert.fail("should not here");
+        }
+    }
 }

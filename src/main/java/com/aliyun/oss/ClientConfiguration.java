@@ -123,6 +123,8 @@ public class ClientConfiguration {
 
     private boolean extractSettingFromEndpoint = true;
 
+    private boolean verifyObjectStrict = true;
+
     public ClientConfiguration() {
         super();
         AppendDefaultExcludeList(this.cnameExcludeList);
@@ -949,4 +951,25 @@ public class ClientConfiguration {
     public boolean isExtractSettingFromEndpointEnable() {
         return extractSettingFromEndpoint;
     }
+
+    /**
+     * Sets the flag of verifying object name strictly.
+     *
+     * @param enabled
+     *            True if it's enabled; False if it's disabled.
+     */
+    public void setVerifyObjectStrictEnable(boolean enabled) {
+        this.verifyObjectStrict = enabled;
+    }
+
+    /**
+     * Gets the flag of verifying object name strictly. By default it's true.
+     *
+     * @return true enabled; false disabled.
+     */
+    public boolean isVerifyObjectStrict() {
+        return verifyObjectStrict;
+    }
+
+
 }
