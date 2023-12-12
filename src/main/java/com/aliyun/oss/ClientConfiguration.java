@@ -26,6 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Date;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.net.ssl.HostnameVerifier;
@@ -124,6 +125,8 @@ public class ClientConfiguration {
     private boolean extractSettingFromEndpoint = true;
 
     private boolean verifyObjectStrict = true;
+
+    private ThreadPoolExecutor executor = null;
 
     public ClientConfiguration() {
         super();
@@ -971,5 +974,11 @@ public class ClientConfiguration {
         return verifyObjectStrict;
     }
 
+    public ThreadPoolExecutor getExecutor() {
+        return executor;
+    }
 
+    public void setExecutor(ThreadPoolExecutor executor) {
+        this.executor = executor;
+    }
 }
