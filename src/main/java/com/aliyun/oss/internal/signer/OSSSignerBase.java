@@ -2,6 +2,7 @@ package com.aliyun.oss.internal.signer;
 
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.common.auth.Credentials;
+import com.aliyun.oss.common.auth.RequestPresigner;
 import com.aliyun.oss.common.auth.RequestSigner;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.comm.SignVersion;
@@ -10,7 +11,7 @@ import com.aliyun.oss.internal.OSSHeaders;
 
 import java.util.Date;
 
-public abstract class OSSSignerBase implements RequestSigner {
+public abstract class OSSSignerBase implements RequestSigner, RequestPresigner {
     protected final OSSSignerParams signerParams;
 
     protected OSSSignerBase(OSSSignerParams signerParams) {
@@ -54,6 +55,16 @@ public abstract class OSSSignerBase implements RequestSigner {
     }
 
     public static RequestSigner createRequestSigner(SignVersion version, OSSSignerParams signerParams) {
+        if (SignVersion.V4.equals(version)) {
+            return new OSSV4Signer(signerParams);
+        } else if (SignVersion.V2.equals(version)) {
+            return new OSSV2Signer(signerParams);
+        } else {
+            return new OSSV1Signer(signerParams);
+        }
+    }
+
+    public static RequestPresigner createRequestPresigner(SignVersion version, OSSSignerParams signerParams) {
         if (SignVersion.V4.equals(version)) {
             return new OSSV4Signer(signerParams);
         } else if (SignVersion.V2.equals(version)) {

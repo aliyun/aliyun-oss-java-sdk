@@ -48,21 +48,19 @@ import static com.aliyun.oss.internal.ResponseParsers.headObjectResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.deleteVersionsResponseParser;
 import static com.aliyun.oss.internal.ResponseParsers.deleteDirectoryResponseParser;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.zip.CheckedInputStream;
 
+import com.aliyun.oss.common.auth.Credentials;
+import com.aliyun.oss.common.auth.RequestPresigner;
+import com.aliyun.oss.common.auth.ServiceSignature;
+import com.aliyun.oss.common.comm.SignVersion;
+import com.aliyun.oss.internal.signer.OSSSignerBase;
+import com.aliyun.oss.internal.signer.OSSSignerParams;
+import com.aliyun.oss.internal.signer.OSSV4Signer;
 import com.aliyun.oss.model.*;
 
 import com.aliyun.oss.ClientException;
@@ -1355,6 +1353,103 @@ public class OSSObjectOperation extends OSSOperation {
         return doOperation(request, requestIdResponseParser, null, null, true);
     }
 
+    public URL generatePresignedUrl(GeneratePresignedUrlRequest request) throws ClientException {
+        assertParameterNotNull(request, "request");
+        assertStringNotNullOrEmpty(request.getBucketName(), "bucket");
+        ensureBucketNameValid(request.getBucketName());
+        assertParameterNotNull(request.getKey(), "key");
+        ensureObjectKeyValid(request.getKey());
+        assertParameterNotNull(request.getExpiration(), "expiration");
+
+        Credentials credentials = credsProvider.getCredentials();
+        assertParameterNotNull(credentials, "credentials");
+
+        String bucketName = request.getBucketName();
+        boolean useSecurityToken = credentials.useSecurityToken();
+        HttpMethod method = request.getMethod() != null ? request.getMethod() : HttpMethod.GET;
+
+        String key = request.getKey();
+        String resourcePath = OSSUtils.determineResourcePath(bucketName, key, client.getClientConfiguration().isSLDEnabled());
+
+        RequestMessage requestMessage = new RequestMessage(bucketName, key);
+        requestMessage.setEndpoint(OSSUtils.determineFinalEndpoint(endpoint, bucketName, client.getClientConfiguration()));
+        requestMessage.setMethod(method);
+        requestMessage.setResourcePath(resourcePath);
+        requestMessage.setHeaders(request.getHeaders());
+
+        if (request.getContentType() != null && !request.getContentType().trim().equals("")) {
+            requestMessage.addHeader(HttpHeaders.CONTENT_TYPE, request.getContentType());
+        }
+        if (request.getContentMD5() != null && !request.getContentMD5().trim().equals("")) {
+            requestMessage.addHeader(HttpHeaders.CONTENT_MD5, request.getContentMD5());
+        }
+        for (Map.Entry<String, String> h : request.getUserMetadata().entrySet()) {
+            requestMessage.addHeader(OSSHeaders.OSS_USER_METADATA_PREFIX + h.getKey(), h.getValue());
+        }
+        Map<String, String> responseHeaderParams = new HashMap<String, String>();
+        populateResponseHeaderParameters(responseHeaderParams, request.getResponseHeaders());
+        populateTrafficLimitParams(responseHeaderParams, request.getTrafficLimit());
+        if (responseHeaderParams.size() > 0) {
+            requestMessage.setParameters(responseHeaderParams);
+        }
+
+        if (request.getQueryParameter() != null && request.getQueryParameter().size() > 0) {
+            for (Map.Entry<String, String> entry : request.getQueryParameter().entrySet()) {
+                requestMessage.addParameter(entry.getKey(), entry.getValue());
+            }
+        }
+
+        if (request.getProcess() != null && !request.getProcess().trim().equals("")) {
+            requestMessage.addParameter(RequestParameters.SUBRESOURCE_PROCESS, request.getProcess());
+        }
+
+        String canonicalResource = "/" + ((bucketName != null) ? bucketName + "/" : "") + ((key != null ? key : ""));
+        OSSSignerParams params = new OSSSignerParams(canonicalResource, credentials);
+        params.setProduct(product);
+        params.setRegion(region);
+        params.setCloudBoxId(cloudBoxId);
+        params.setExpiration(request.getExpiration());
+        params.setAdditionalHeaderNames(request.getAdditionalHeaderNames());
+        RequestPresigner singer = OSSSignerBase.createRequestPresigner(client.getClientConfiguration().getSignatureVersion(), params);
+
+        singer.presign(requestMessage);
+
+        String queryString = HttpUtil.paramToQueryString(requestMessage.getParameters(), DEFAULT_CHARSET_NAME);
+
+        String url = requestMessage.getEndpoint().toString();
+        if (!url.endsWith("/")) {
+            url += "/";
+        }
+        url += resourcePath + "?" + queryString;
+
+        try {
+            return new URL(url);
+        } catch (MalformedURLException e) {
+            throw new ClientException(e);
+        }
+    }
+
+    public String calculatePostSignature(String postPolicy, Date date) throws ClientException {
+        try {
+            byte[] binaryData = postPolicy.getBytes(DEFAULT_CHARSET_NAME);
+            String encPolicy = BinaryUtil.toBase64String(binaryData);
+            SignVersion signVersion = client.getClientConfiguration().getSignatureVersion();
+            if (SignVersion.V4.equals(signVersion)) {
+                OSSSignerParams params = new OSSSignerParams("", credsProvider.getCredentials());
+                params.setProduct(product);
+                params.setRegion(region);
+                params.setCloudBoxId(cloudBoxId);
+                OSSV4Signer singer = (OSSV4Signer)OSSSignerBase.createRequestSigner(signVersion, params);
+                return singer.signPolicy(postPolicy, date);
+            } else {
+                return ServiceSignature.create().computeSignature(credsProvider.getCredentials().getSecretAccessKey(),
+                        encPolicy);
+            }
+        } catch (UnsupportedEncodingException ex) {
+            throw new ClientException("Unsupported charset: " + ex.getMessage());
+        }
+    }
+
     private static void addHeaderIfNotNull(Map<String, String> headers, String header, String value) {
         if (value != null) {
             headers.put(header, value);
@@ -1430,4 +1525,9 @@ public class OSSObjectOperation extends OSSOperation {
         }
     }
 
+    private static void populateTrafficLimitParams(Map<String, String> params, int limit) {
+        if (limit > 0) {
+            params.put(RequestParameters.OSS_TRAFFIC_LIMIT, String.valueOf(limit));
+        }
+    }
 }

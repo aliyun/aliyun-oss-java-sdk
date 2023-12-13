@@ -920,10 +920,12 @@ public class OSSClient implements OSS {
         }
         String url;
 
-        if (serviceClient.getClientConfiguration().getSignatureVersion() != null && serviceClient.getClientConfiguration().getSignatureVersion() == SignVersion.V2) {
+        if (SignVersion.V1.equals(serviceClient.getClientConfiguration().getSignatureVersion())) {
+            url =   SignUtils.buildSignedURL(request, credsProvider.getCredentials(), serviceClient.getClientConfiguration(), endpoint);
+        } else if (SignVersion.V2.equals(serviceClient.getClientConfiguration().getSignatureVersion())) {
             url = SignV2Utils.buildSignedURL(request, credsProvider.getCredentials(), serviceClient.getClientConfiguration(), endpoint);
         } else {
-            url = SignUtils.buildSignedURL(request, credsProvider.getCredentials(), serviceClient.getClientConfiguration(), endpoint);
+            return  objectOperation.generatePresignedUrl(request);
         }
 
         try {
