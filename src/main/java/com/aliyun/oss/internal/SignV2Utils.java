@@ -40,7 +40,7 @@ public class SignV2Utils {
         return sb.toString();
     }
 
-    private static String buildSortedAdditionalHeaderNameStr(Set<String> headerNames, Set<String> additionalHeaderNames) {
+    public static String buildSortedAdditionalHeaderNameStr(Set<String> headerNames, Set<String> additionalHeaderNames) {
         Set<String> ts = buildSortedAdditionalHeaderNames(headerNames, additionalHeaderNames);
         StringBuilder sb = new StringBuilder();
         String separator = "";
@@ -66,7 +66,7 @@ public class SignV2Utils {
         return ts;
     }
 
-    private static Set<String> buildRawAdditionalHeaderNames(Set<String> headerNames, Set<String> additionalHeaderNames) {
+    public static Set<String> buildRawAdditionalHeaderNames(Set<String> headerNames, Set<String> additionalHeaderNames) {
         Set<String> hs = new HashSet<String>();
 
         if (headerNames != null && additionalHeaderNames != null) {
