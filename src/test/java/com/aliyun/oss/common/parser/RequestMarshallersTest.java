@@ -1596,4 +1596,37 @@ public class RequestMarshallersTest {
         Assert.assertEquals("key", root.getChild("Rule").getChild("Filter").getChildren("Not").get(0).getChild("Tag").getChildText("Key"));
         Assert.assertEquals("value", root.getChild("Rule").getChild("Filter").getChildren("Not").get(0).getChild("Tag").getChildText("Value"));
     }
+
+    @Test
+    public void testArchiveDirectRead() {
+        String bucketName = "testBucket-archiveDirectRead";
+        try {
+            PutBucketArchiveDirectReadRequest readRequest = new PutBucketArchiveDirectReadRequest(bucketName, true);
+            byte[] data = putBucketArchiveDirectReadRequestMarshaller.marshall(readRequest);
+            ByteArrayInputStream is = new ByteArrayInputStream(data);
+            SAXBuilder builder = new SAXBuilder();
+            Document doc = null;
+            doc = builder.build(is);
+            Element root = doc.getRootElement();
+            Assert.assertEquals("true", root.getChildText("Enabled"));
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            PutBucketArchiveDirectReadRequest readRequest = new PutBucketArchiveDirectReadRequest(bucketName, false);
+            byte[] data = putBucketArchiveDirectReadRequestMarshaller.marshall(readRequest);
+            ByteArrayInputStream is = new ByteArrayInputStream(data);
+            SAXBuilder builder = new SAXBuilder();
+            Document doc = null;
+            doc = builder.build(is);
+            Element root = doc.getRootElement();
+            Assert.assertEquals("false", root.getChildText("Enabled"));
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
