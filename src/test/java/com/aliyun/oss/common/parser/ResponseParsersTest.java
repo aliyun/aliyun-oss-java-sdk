@@ -5660,4 +5660,76 @@ public class ResponseParsersTest {
         Assert.assertEquals(rules.get(0).getFilter().getObjectSizeLessThan(), Long.valueOf(String.valueOf(64000)));
     }
 
+    @Test
+    public void testArchiveDirectReadResponseParser() {
+        String respBody = "" +
+                "<ArchiveDirectReadConfiguration>\n" +
+                "    <Enabled>true</Enabled>\n" +
+                "</ArchiveDirectReadConfiguration>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        GetBucketArchiveDirectReadResult result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketArchiveDirectReadResponseParser parser = new ResponseParsers.GetBucketArchiveDirectReadResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse archive direct read response body fail!");
+        }
+
+        Assert.assertEquals(true, result.getEnabled());
+
+
+        respBody = "" +
+                "<ArchiveDirectReadConfiguration>\n" +
+                "    <Enabled>false</Enabled>\n" +
+                "</ArchiveDirectReadConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketArchiveDirectReadResponseParser parser = new ResponseParsers.GetBucketArchiveDirectReadResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse archive direct read response body fail!");
+        }
+        Assert.assertEquals(false, result.getEnabled());
+
+
+
+        respBody = "" +
+                "<ArchiveDirectReadConfiguration>\n" +
+                "</ArchiveDirectReadConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketArchiveDirectReadResponseParser parser = new ResponseParsers.GetBucketArchiveDirectReadResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse archive direct read response body fail!");
+        }
+        Assert.assertEquals(false, result.getEnabled());
+    }
 }
