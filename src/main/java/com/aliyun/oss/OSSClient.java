@@ -307,6 +307,14 @@ public class OSSClient implements OSS {
         return false;
     }
 
+    private boolean isVerifyObjectStrict() {
+        ClientConfiguration conf = serviceClient.getClientConfiguration();
+        if (conf.signatureVersion == null || SignVersion.V1.equals(conf.signatureVersion)) {
+            return conf.isVerifyObjectStrict();
+        }
+        return false;
+    }
+
     private URI toURI(String endpoint) throws IllegalArgumentException {
         return OSSUtils.toEndpointURI(endpoint, this.serviceClient.getClientConfiguration().getProtocol().toString());
     }
@@ -913,17 +921,19 @@ public class OSSClient implements OSS {
         }
         ensureBucketNameValid(request.getBucketName());
         assertParameterNotNull(request.getKey(), "key");
-        ensureObjectKeyValidEx(request.getKey(), serviceClient.getClientConfiguration().isVerifyObjectStrict());
+        ensureObjectKeyValidEx(request.getKey(), isVerifyObjectStrict());
 
         if (request.getExpiration() == null) {
             throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getString("MustSetExpiration"));
         }
         String url;
 
-        if (serviceClient.getClientConfiguration().getSignatureVersion() != null && serviceClient.getClientConfiguration().getSignatureVersion() == SignVersion.V2) {
+        if (SignVersion.V1.equals(serviceClient.getClientConfiguration().getSignatureVersion())) {
+            url =   SignUtils.buildSignedURL(request, credsProvider.getCredentials(), serviceClient.getClientConfiguration(), endpoint);
+        } else if (SignVersion.V2.equals(serviceClient.getClientConfiguration().getSignatureVersion())) {
             url = SignV2Utils.buildSignedURL(request, credsProvider.getCredentials(), serviceClient.getClientConfiguration(), endpoint);
         } else {
-            url = SignUtils.buildSignedURL(request, credsProvider.getCredentials(), serviceClient.getClientConfiguration(), endpoint);
+            return  objectOperation.generatePresignedUrl(request);
         }
 
         try {

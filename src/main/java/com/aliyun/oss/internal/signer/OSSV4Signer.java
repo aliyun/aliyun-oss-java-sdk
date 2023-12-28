@@ -1,6 +1,7 @@
 package com.aliyun.oss.internal.signer;
 
 import com.aliyun.oss.ClientException;
+import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.ServiceSignature;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.utils.BinaryUtil;
@@ -13,6 +14,8 @@ import com.aliyun.oss.internal.SignParameters;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static com.aliyun.oss.internal.RequestParameters.SECURITY_TOKEN;
 
 public class OSSV4Signer extends OSSSignerBase {
     private static final List<String> DEFAULT_SIGNED_HEADERS = Arrays.asList(HttpHeaders.CONTENT_TYPE.toLowerCase(), HttpHeaders.CONTENT_MD5.toLowerCase());
@@ -82,13 +85,9 @@ public class OSSV4Signer extends OSSSignerBase {
         return orderMap;
     }
 
-    private void resolveAdditionalSignedHeaders(RequestMessage request) {
-        if (request.getOriginalRequest().getAdditionalHeaderNames().isEmpty()) {
-            additionalSignedHeaders = request.getOriginalRequest().getAdditionalHeaderNames();
-            return;
-        }
+    private void resolveAdditionalSignedHeaders(RequestMessage request, Set<String> headerNames) {
         Set<String> signedHeaders = new TreeSet<String>();
-        for (String additionalHeader : request.getOriginalRequest().getAdditionalHeaderNames()) {
+        for (String additionalHeader : headerNames) {
             String additionalHeaderKey = additionalHeader.toLowerCase();
             for (Map.Entry<String, String> header : request.getHeaders().entrySet()) {
                 String headerKey = header.getKey().toLowerCase();
@@ -167,6 +166,9 @@ public class OSSV4Signer extends OSSSignerBase {
 
         //Hashed PayLoad
         String hashedPayLoad = request.getHeaders().get(OSSHeaders.OSS_CONTENT_SHA256);
+        if (StringUtils.isNullOrEmpty(hashedPayLoad)) {
+            hashedPayLoad = "UNSIGNED-PAYLOAD";
+        }
         canonicalString.append(hashedPayLoad);
 
         return canonicalString.toString();
@@ -245,10 +247,65 @@ public class OSSV4Signer extends OSSSignerBase {
         if (isAnonymous()) {
             return;
         }
-        resolveAdditionalSignedHeaders(request);
+        resolveAdditionalSignedHeaders(request, request.getOriginalRequest().getAdditionalHeaderNames());
         addSignedHeaderIfNeeded(request);
         addSecurityTokenHeaderIfNeeded(request);
         addOSSContentSha256Header(request);
         addAuthorizationHeader(request);
+    }
+
+    @Override
+    public void presign(RequestMessage request) throws ClientException {
+        Credentials cred = signerParams.getCredentials();
+
+        // date
+        requestDateTime = new Date();
+        Date expiration = signerParams.getExpiration();
+        long expires = (expiration.getTime() - requestDateTime.getTime())/1000;
+        String expiresStr = String.valueOf(expires);
+        request.addParameter("x-oss-date", getIso8601DateTimeFormat().format(requestDateTime));
+        request.addParameter("x-oss-expires", expiresStr);
+
+        //signed header
+        resolveAdditionalSignedHeaders(request, signerParams.getAdditionalHeaderNames());
+        addSignedHeaderIfNeeded(request);
+        if (hasAdditionalSignedHeaders()) {
+            request.addParameter("x-oss-additional-headers", StringUtils.join(";", additionalSignedHeaders));
+        }
+
+        // token
+        if (cred.useSecurityToken()) {
+            request.addParameter("x-oss-security-token", cred.getSecurityToken());
+        }
+
+        request.addParameter("x-oss-signature-version", "OSS4-HMAC-SHA256");
+        request.addParameter("x-oss-credential", signerParams.getCredentials().getAccessKeyId() + SEPARATOR_BACKSLASH + buildScope());
+
+        // sign
+        String canonicalRequest = buildCanonicalRequest(request);
+        //String stringToSign = buildStringToSign(canonicalRequest);
+        String stringToSign = OSS4_HMAC_SHA256 + SignParameters.NEW_LINE +
+                getDateTime() + SignParameters.NEW_LINE +
+                buildScope() + SignParameters.NEW_LINE +
+                BinaryUtil.toHex(BinaryUtil.calculateSha256(canonicalRequest.getBytes(StringUtils.UTF8)));
+        byte[] signingKey = buildSigningKey();
+        String signature = buildSignature(signingKey, stringToSign);
+
+        //System.out.println("canonicalRequest:\n" + canonicalRequest);
+        //System.out.println("stringToSign:\n" + stringToSign);
+        //System.out.println("signingKey:\n" + BinaryUtil.toHex(signingKey));
+        //System.out.println("signature:\n" + signature);
+
+        request.addParameter("x-oss-signature", signature);
+    }
+
+    public String signPolicy(String policy, Date date) throws ClientException {
+        ServiceSignature signature = ServiceSignature.create("HmacSHA256");
+        byte[] signingSecret = (SECRET_KEY_PREFIX + signerParams.getCredentials().getSecretAccessKey()).getBytes(StringUtils.UTF8);
+        byte[] signingDate = signature.computeHash(signingSecret, getIso8601DateFormat().format(date).getBytes(StringUtils.UTF8));
+        byte[] signingRegion = signature.computeHash(signingDate, getRegion().getBytes(StringUtils.UTF8));
+        byte[] signingService = signature.computeHash(signingRegion, getProduct().getBytes(StringUtils.UTF8));
+        byte[] signingKey = signature.computeHash(signingService, TERMINATOR.getBytes(StringUtils.UTF8));
+        return buildSignature(signingKey, policy);
     }
 }

@@ -2,6 +2,9 @@ package com.aliyun.oss.internal.signer;
 
 import com.aliyun.oss.common.auth.Credentials;
 
+import java.util.Date;
+import java.util.Set;
+
 public class OSSSignerParams {
     /* Note that resource path should not have been url-encoded. */
     private String resourcePath;
@@ -15,6 +18,10 @@ public class OSSSignerParams {
     private long tickOffset;
 
     private String cloudBoxId;
+
+    private Date expiration;
+
+    private Set<String> additionalHeaderNames;
 
     public OSSSignerParams(String resourcePath, Credentials creds) {
         this.resourcePath = resourcePath;
@@ -68,5 +75,21 @@ public class OSSSignerParams {
 
     public void setCloudBoxId(String cloudBoxId) {
         this.cloudBoxId = cloudBoxId;
+    }
+
+    public Date getExpiration() {
+        return expiration;
+    }
+
+    public void setExpiration(Date expiration) {
+        this.expiration = expiration;
+    }
+
+    public Set<String> getAdditionalHeaderNames() {
+        return additionalHeaderNames;
+    }
+
+    public void setAdditionalHeaderNames(Set<String> additionalHeaderNames) {
+        this.additionalHeaderNames = additionalHeaderNames;
     }
 }
