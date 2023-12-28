@@ -275,9 +275,8 @@ public class OSSV4Signer extends OSSSignerBase {
 
         // token
         if (cred.useSecurityToken()) {
-            request.addParameter(SECURITY_TOKEN, cred.getSecurityToken());
+            request.addParameter("x-oss-security-token", cred.getSecurityToken());
         }
-
 
         request.addParameter("x-oss-signature-version", "OSS4-HMAC-SHA256");
         request.addParameter("x-oss-credential", signerParams.getCredentials().getAccessKeyId() + SEPARATOR_BACKSLASH + buildScope());
