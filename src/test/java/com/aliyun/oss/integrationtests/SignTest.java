@@ -4,6 +4,7 @@ import com.aliyun.oss.ClientBuilderConfiguration;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.common.auth.BasicCredentials;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.comm.SignVersion;
 import com.aliyun.oss.common.utils.BinaryUtil;
@@ -916,6 +917,28 @@ public class SignTest extends  TestBase{
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
+
+        //sts token
+        key = "test-sign-v4-url";
+        conf = new ClientBuilderConfiguration();
+        conf.setSignatureVersion(SignVersion.V4);
+        ossClient = OSSClientBuilder.create()
+                .endpoint(TestConfig.OSS_TEST_ENDPOINT)
+                .credentialsProvider(new DefaultCredentialProvider(new BasicCredentials("ak", "sk", "token")))
+                .clientConfiguration(conf)
+                .region(TestConfig.OSS_TEST_REGION)
+                .build();
+
+        expiration = new Date(new Date().getTime() + 1000 * 60 * 10);
+        GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key);
+        request.setExpiration(expiration);
+        url = ossClient.generatePresignedUrl(request);
+        Assert.assertTrue(url.toString().contains("x-oss-date"));
+        Assert.assertTrue(url.toString().contains("x-oss-expires"));
+        Assert.assertTrue(url.toString().contains("x-oss-signature-version"));
+        Assert.assertTrue(url.toString().contains("x-oss-credential"));
+        Assert.assertTrue(url.toString().contains("x-oss-signature"));
+        Assert.assertTrue(url.toString().contains("x-oss-security-token=token"));
     }
 
     @Test
