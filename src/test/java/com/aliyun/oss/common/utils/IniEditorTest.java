@@ -21,6 +21,7 @@ package com.aliyun.oss.common.utils;
 import junit.framework.*;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 
 public class IniEditorTest extends TestCase {
@@ -307,7 +308,7 @@ public class IniEditorTest extends TestCase {
         i.set("test", "hallo", "velo");
         i.addComment("test", "english");
         i.set("test", "hello", "bike");
-        File f = File.createTempFile("test", null);
+        File f = Files.createTempFile("test", null).toFile();
         // with output stream
         i.save(new FileOutputStream(f));
         Object[] saved = fileToStrings(f);
@@ -331,7 +332,7 @@ public class IniEditorTest extends TestCase {
         IniEditor i = new IniEditor("cmmn");
         i.addSection("tst");
         i.set("tst", "hllo", "vel");
-        File f = File.createTempFile("test", null);
+        File f = Files.createTempFile("test", null).toFile();
         i.save(new OutputStreamWriter(new FileOutputStream(f), charsetName));
         i = new IniEditor("cmmn");
         i.load(new InputStreamReader(new FileInputStream(f), charsetName));
@@ -345,7 +346,7 @@ public class IniEditorTest extends TestCase {
         IniEditor i = new IniEditor();
         i.addSection("test");
         i.set("test", "hallo", "velo");
-        File f = File.createTempFile("test", null);
+        File f = Files.createTempFile("test", null).toFile();
         i.save(f.toString());
         i = new IniEditor();
         i.load(f);
@@ -384,7 +385,7 @@ public class IniEditorTest extends TestCase {
         i.setOptionFormatString("%s%s%s");
         i.addSection("test");
         i.set("test", "hallo", "velo");
-        File f = File.createTempFile("test", null);
+        File f = Files.createTempFile("test", null).toFile();
         i.save(new FileOutputStream(f));
         Object[] saved = fileToStrings(f);
         assertEquals("hallo=velo", saved[1]);
