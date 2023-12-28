@@ -307,6 +307,14 @@ public class OSSClient implements OSS {
         return false;
     }
 
+    private boolean isVerifyObjectStrict() {
+        ClientConfiguration conf = serviceClient.getClientConfiguration();
+        if (conf.signatureVersion == null || SignVersion.V1.equals(conf.signatureVersion)) {
+            return conf.isVerifyObjectStrict();
+        }
+        return false;
+    }
+
     private URI toURI(String endpoint) throws IllegalArgumentException {
         return OSSUtils.toEndpointURI(endpoint, this.serviceClient.getClientConfiguration().getProtocol().toString());
     }
@@ -913,7 +921,7 @@ public class OSSClient implements OSS {
         }
         ensureBucketNameValid(request.getBucketName());
         assertParameterNotNull(request.getKey(), "key");
-        ensureObjectKeyValidEx(request.getKey(), serviceClient.getClientConfiguration().isVerifyObjectStrict());
+        ensureObjectKeyValidEx(request.getKey(), isVerifyObjectStrict());
 
         if (request.getExpiration() == null) {
             throw new IllegalArgumentException(OSS_RESOURCE_MANAGER.getString("MustSetExpiration"));

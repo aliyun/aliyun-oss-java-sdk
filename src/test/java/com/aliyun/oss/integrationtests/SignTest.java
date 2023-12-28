@@ -607,7 +607,7 @@ public class SignTest extends  TestBase{
     }
 
     @Test
-    public void testGenerateSignedURLIsKeyStrictly() {
+    public void testGenerateSignedURLIsKeyStrictlyV1() {
         String key = "";
         ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
         conf.setSignatureVersion(SignVersion.V1);
@@ -673,6 +673,164 @@ public class SignTest extends  TestBase{
             Assert.fail("should not here");
         }
     }
+
+    @Test
+    public void testGenerateSignedURLIsKeyStrictlyV2() {
+        String key = "";
+        ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
+        conf.setSignatureVersion(SignVersion.V2);
+        Assert.assertTrue(conf.isVerifyObjectStrict());
+        OSS ossClient = new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT, TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET, conf);
+        Date expiration = new Date(new Date().getTime() + 1000 * 60 *10);
+        long ticks = new Date().getTime() / 1000 + new Random().nextInt(5000);
+        String bucket = TestBase.BUCKET_NAME_PREFIX + ticks;
+
+        key = "123";
+        try {
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key);
+            request.setExpiration(expiration);
+            URL url = ossClient.generatePresignedUrl(request);
+            //System.out.println(url.toString());
+            Assert.assertTrue(url.toString().contains("/123?x-oss-signature="));
+            Assert.assertTrue(url.toString().contains("&x-oss-signature-version=OSS2"));
+        } catch (Exception e) {
+            Assert.fail("should not here");
+        }
+
+        key = "?123";
+        try {
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key);
+            request.setExpiration(expiration);
+            URL url = ossClient.generatePresignedUrl(request);
+            Assert.assertTrue(url.toString().contains("/%3F123?x-oss-signature="));
+            Assert.assertTrue(url.toString().contains("&x-oss-signature-version=OSS2"));
+        } catch (Exception e) {
+            Assert.fail("should not here");
+        }
+
+        key = "?";
+        try {
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key);
+            request.setExpiration(expiration);
+            URL url = ossClient.generatePresignedUrl(request);
+            Assert.assertTrue(url.toString().contains("/%3F?x-oss-signature="));
+            Assert.assertTrue(url.toString().contains("&x-oss-signature-version=OSS2"));
+        } catch (Exception e) {
+            Assert.fail("should not here");
+        }
+
+        conf = new ClientBuilderConfiguration();
+        conf.setSignatureVersion(SignVersion.V2);
+        conf.setVerifyObjectStrictEnable(false);
+        ossClient = new OSSClientBuilder().build(TestConfig.OSS_TEST_ENDPOINT, TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET, conf);
+        Assert.assertFalse(conf.isVerifyObjectStrict());
+
+        key = "123";
+        try {
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key);
+            request.setExpiration(expiration);
+            URL url = ossClient.generatePresignedUrl(request);
+            Assert.assertTrue(url.toString().contains("/123?x-oss-signature="));
+            Assert.assertTrue(url.toString().contains("&x-oss-signature-version=OSS2"));
+        } catch (Exception e) {
+            Assert.fail("should not here");
+        }
+        key = "?123";
+        try {
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key);
+            request.setExpiration(expiration);
+            URL url = ossClient.generatePresignedUrl(request);
+            Assert.assertTrue(url.toString().contains("/%3F123?x-oss-signature="));
+            Assert.assertTrue(url.toString().contains("&x-oss-signature-version=OSS2"));
+        } catch (Exception e) {
+            Assert.fail("should not here");
+        }
+    }
+
+    @Test
+    public void testGenerateSignedURLIsKeyStrictlyV4() {
+        String key = "";
+        ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
+        conf.setSignatureVersion(SignVersion.V4);
+        Assert.assertTrue(conf.isVerifyObjectStrict());
+        OSS ossClient = OSSClientBuilder.create()
+                .endpoint(TestConfig.OSS_TEST_ENDPOINT)
+                .credentialsProvider(new DefaultCredentialProvider(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET))
+                .clientConfiguration(conf)
+                .region(TestConfig.OSS_TEST_REGION)
+                .build();
+
+        Date expiration = new Date(new Date().getTime() + 1000 * 60 *10);
+        long ticks = new Date().getTime() / 1000 + new Random().nextInt(5000);
+        String bucket = TestBase.BUCKET_NAME_PREFIX + ticks;
+
+        key = "123";
+        try {
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key);
+            request.setExpiration(expiration);
+            URL url = ossClient.generatePresignedUrl(request);
+            //System.out.println(url.toString());
+            Assert.assertTrue(url.toString().contains("/123?x-oss-date="));
+            Assert.assertTrue(url.toString().contains("&x-oss-signature-version=OSS4-HMAC-SHA256"));
+        } catch (Exception e) {
+            Assert.fail("should not here");
+        }
+
+        key = "?123";
+        try {
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key);
+            request.setExpiration(expiration);
+            URL url = ossClient.generatePresignedUrl(request);
+            Assert.assertTrue(url.toString().contains("/%3F123?x-oss-date="));
+            Assert.assertTrue(url.toString().contains("&x-oss-signature-version=OSS4-HMAC-SHA256"));
+        } catch (Exception e) {
+            Assert.fail("should not here");
+        }
+
+        key = "?";
+        try {
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key);
+            request.setExpiration(expiration);
+            URL url = ossClient.generatePresignedUrl(request);
+            Assert.assertTrue(url.toString().contains("/%3F?x-oss-date="));
+            Assert.assertTrue(url.toString().contains("&x-oss-signature-version=OSS4-HMAC-SHA256"));
+        } catch (Exception e) {
+            Assert.fail("should not here");
+        }
+
+        conf = new ClientBuilderConfiguration();
+        conf.setSignatureVersion(SignVersion.V4);
+        conf.setVerifyObjectStrictEnable(false);
+        ossClient = OSSClientBuilder.create()
+                .endpoint(TestConfig.OSS_TEST_ENDPOINT)
+                .credentialsProvider(new DefaultCredentialProvider(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET))
+                .clientConfiguration(conf)
+                .region(TestConfig.OSS_TEST_REGION)
+                .build();
+        Assert.assertFalse(conf.isVerifyObjectStrict());
+
+        key = "123";
+        try {
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key);
+            request.setExpiration(expiration);
+            URL url = ossClient.generatePresignedUrl(request);
+            Assert.assertTrue(url.toString().contains("/123?x-oss-date="));
+            Assert.assertTrue(url.toString().contains("&x-oss-signature-version=OSS4-HMAC-SHA256"));
+        } catch (Exception e) {
+            Assert.fail("should not here");
+        }
+        key = "?123";
+        try {
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key);
+            request.setExpiration(expiration);
+            URL url = ossClient.generatePresignedUrl(request);
+            Assert.assertTrue(url.toString().contains("/%3F123?x-oss-date="));
+            Assert.assertTrue(url.toString().contains("&x-oss-signature-version=OSS4-HMAC-SHA256"));
+        } catch (Exception e) {
+            Assert.fail("should not here");
+        }
+    }
+
 
     @Test
     public void testGenerateSignedV1URL() {
