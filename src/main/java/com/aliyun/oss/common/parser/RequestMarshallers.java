@@ -102,6 +102,7 @@ public final class RequestMarshallers {
     public static final DoMetaQueryRequestMarshaller doMetaQueryRequestMarshaller = new DoMetaQueryRequestMarshaller();
     public static final SetBucketCallbackPolicyRequestMarshaller setBucketCallbackPolicyRequestMarshaller = new SetBucketCallbackPolicyRequestMarshaller();
     public static final AsyncProcessObjectRequestMarshaller asyncProcessObjectRequestMarshaller = new AsyncProcessObjectRequestMarshaller();
+    public static final PutBucketArchiveDirectReadRequestMarshaller putBucketArchiveDirectReadRequestMarshaller = new PutBucketArchiveDirectReadRequestMarshaller();
 
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
 
@@ -1940,6 +1941,23 @@ public final class RequestMarshallers {
             return rawData;
         }
 
+    }
+
+    public static final class PutBucketArchiveDirectReadRequestMarshaller implements RequestMarshaller2<PutBucketArchiveDirectReadRequest> {
+        @Override
+        public byte[] marshall(PutBucketArchiveDirectReadRequest input) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<ArchiveDirectReadConfiguration><Enabled>");
+            xmlBody.append(input.getEnabled());
+            xmlBody.append("</Enabled></ArchiveDirectReadConfiguration>");
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
     }
 
     private static enum EscapedChar {
