@@ -20,6 +20,7 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -1498,6 +1499,73 @@ public class ResponseParsersTest {
         } catch (ResponseParseException e) {
             Assert.assertTrue(true);
         }
+    }
+
+    @Test
+    public void testGetBucketCnameWithCreationDate() {
+        String respBody = null;
+        InputStream instream = null;
+        Date dt = new Date();
+        DateUtil.formatIso8601Date(dt);
+
+        respBody = "" +
+                "<ListCnameResult>\n" +
+                "  <Bucket>targetbucket</Bucket>\n" +
+                "  <Owner>testowner</Owner>\n" +
+                "  <Cname>\n" +
+                "    <Domain>example.com</Domain>\n" +
+                "    <LastModified>2021-09-15T02:35:07.000Z</LastModified>\n" +
+                "    <Status>Enabled</Status>\n" +
+                "    <Certificate>\n" +
+                "      <Type>CAS</Type>\n" +
+                "      <CertId>493****-cn-hangzhou</CertId>\n" +
+                "      <Status>Enabled</Status>\n" +
+                "      <CreationDate>Wed, 15 Sep 2021 02:35:06 GMT</CreationDate>\n" +
+                "      <Fingerprint>DE:01:CF:EC:7C:A7:98:CB:D8:6E:FB:1D:97:EB:A9:64:1D:4E:**:**</Fingerprint>\n" +
+                "      <ValidStartDate>Wed, 12 Apr 2023 10:14:51 GMT</ValidStartDate>\n" +
+                "      <ValidEndDate>Mon, 4 May 2048 10:14:51 GMT</ValidEndDate>\n" +
+                "    </Certificate>\n" +
+                "  </Cname>\n" +
+                "  <Cname>\n" +
+                "    <Domain>example.org</Domain>\n" +
+                "    <LastModified>2021-09-15T02:34:58.000Z</LastModified>\n" +
+                "    <Status>Enabled</Status>\n" +
+                "  </Cname>\n" +
+                "  <Cname>\n" +
+                "    <Domain>example.edu</Domain>\n" +
+                "    <LastModified>2021-09-15T02:50:34.000Z</LastModified>\n" +
+                "    <Status>Enabled</Status>\n" +
+                "  </Cname>\n" +
+                "</ListCnameResult>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseMessage responseMessage = new ResponseMessage(null);;
+            responseMessage.setContent(instream);
+            ResponseParsers.GetBucketCnameResponseParser parser = new ResponseParsers.GetBucketCnameResponseParser();
+            List<CnameConfiguration> result = parser.parse(responseMessage);
+            Assert.assertEquals(result.size(), 3);
+            Assert.assertEquals(result.get(0).getDomain(), "example.com");
+            Assert.assertEquals(result.get(0).getLastMofiedTime(), DateUtil.parseIso8601Date("2021-09-15T02:35:07.000Z"));
+            Assert.assertEquals(result.get(0).getStatus(), CnameConfiguration.CnameStatus.Enabled);
+            Assert.assertEquals(result.get(0).getCertType(), CnameConfiguration.CertType.CAS);
+            Assert.assertEquals(result.get(0).getStatus(), CnameConfiguration.CnameStatus.Enabled);
+            Assert.assertEquals(result.get(0).getCertId(), "493****-cn-hangzhou");
+            Assert.assertEquals(result.get(0).getCreationDate(), "Wed, 15 Sep 2021 02:35:06 GMT");
+            Assert.assertEquals(result.get(0).getFingerprint(), "DE:01:CF:EC:7C:A7:98:CB:D8:6E:FB:1D:97:EB:A9:64:1D:4E:**:**");
+            Assert.assertEquals(result.get(0).getValidStartDate(), "Wed, 12 Apr 2023 10:14:51 GMT");
+            Assert.assertEquals(result.get(0).getValidEndDate(), "Mon, 4 May 2048 10:14:51 GMT");
+        } catch (ResponseParseException e) {
+            Assert.fail("UnsupportedEncodingException");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Test
