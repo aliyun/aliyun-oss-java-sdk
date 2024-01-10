@@ -89,7 +89,7 @@ public class OSSDownloadOperation {
          */
         public synchronized void load(String cpFile) throws IOException, ClassNotFoundException {
             FileInputStream fileIn = new FileInputStream(cpFile);
-            ObjectInputStream in = new ObjectInputStream(fileIn);
+            CheckPointObjectInputStream in = new CheckPointObjectInputStream(fileIn);
             DownloadCheckPoint dcp = (DownloadCheckPoint) in.readObject();
             assign(dcp);
             in.close();
