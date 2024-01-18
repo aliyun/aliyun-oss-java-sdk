@@ -5660,4 +5660,209 @@ public class ResponseParsersTest {
         Assert.assertEquals(rules.get(0).getFilter().getObjectSizeLessThan(), Long.valueOf(String.valueOf(64000)));
     }
 
+
+    @Test
+    public void createBucketDataRedundancyTransitionResponseParserTest() {
+        String responseBody = "" +
+                "<BucketDataRedundancyTransition>\n" +
+                "    <TaskId>mockTaskId</TaskId>\n" +
+                "</BucketDataRedundancyTransition>";
+
+        InputStream inputStream = null;
+        try {
+            inputStream = new ByteArrayInputStream(responseBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException exception) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        ResponseMessage responseMessage = new ResponseMessage(null);;
+        responseMessage.setContent(inputStream);
+
+        ResponseParsers.CreateBucketDataRedundancyTransitionResponseParser parser = new ResponseParsers.CreateBucketDataRedundancyTransitionResponseParser();
+
+        try {
+            Assert.assertEquals(parser.parse(responseMessage).getTaskId(), "mockTaskId");
+        } catch (ResponseParseException exception) {
+            Assert.fail("parse create bucket data redundancy transition response body fail");
+        }
+    }
+
+    @Test
+    public void getBucketDataRedundancyTransitionParserTest() {
+        String responseBody = "" +
+                "<BucketDataRedundancyTransition>\n" +
+                "    <TaskId>mockTaskId</TaskId>\n" +
+                "    <CreateTime>2013-07-31T10:56:21.000Z</CreateTime>\n" +
+                "    <StartTime>2013-08-01T10:56:21.001Z</StartTime>\n" +
+                "    <EndTime>2013-08-12T10:56:21.002Z</EndTime>\n" +
+                "    <Status>Finished</Status>\n" +
+                "    <EstimatedRemainingTime>16</EstimatedRemainingTime>\n" +
+                "    <ProcessPercentage>50</ProcessPercentage>\n" +
+                "</BucketDataRedundancyTransition>";
+
+        InputStream inputStream = null;
+        try {
+            inputStream = new ByteArrayInputStream(responseBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException exception) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        ResponseMessage responseMessage = new ResponseMessage(null);
+        responseMessage.setContent(inputStream);
+
+        ResponseParsers.GetBucketDataRedundancyTransitionResponseParser parser = new ResponseParsers.GetBucketDataRedundancyTransitionResponseParser();
+
+        try {
+            GetBucketDataRedundancyTransitionResult result = parser.parse(responseMessage);
+            Assert.assertEquals(result.getTaskId(), "mockTaskId");
+            Assert.assertEquals(result.getCreateTime(), "2013-07-31T10:56:21.000Z");
+            Assert.assertEquals(result.getStartTime(), "2013-08-01T10:56:21.001Z");
+            Assert.assertEquals(result.getEndTime(), "2013-08-12T10:56:21.002Z");
+            Assert.assertEquals(result.getStatus(), "Finished");
+            Assert.assertEquals(result.getEstimatedRemainingTime(), 16);
+            Assert.assertEquals(result.getProcessPercentage(), 50);
+        } catch (ResponseParseException exception) {
+            Assert.fail("parse get bucket data redundancy transition response body fail");
+        }
+    }
+
+    @Test
+    public void listBucketDataRedundancyTransitionResponseParserTest() {
+        String responseBody = ""
+                + "<ListBucketDataRedundancyTransition>\n" +
+                "  <BucketDataRedundancyTransition>\n" +
+                "      <TaskId>mockTaskId1</TaskId>\n" +
+                "      <CreateTime>2013-07-31T10:56:21.000Z</CreateTime>\n" +
+                "      <StartTime>2013-07-31T10:56:21.001Z</StartTime>\n" +
+                "      <Status>Processing</Status>\n" +
+                "      <EstimatedRemainingTime>16</EstimatedRemainingTime>\n" +
+                "      <ProcessPercentage>50</ProcessPercentage>\n" +
+                "  </BucketDataRedundancyTransition>\n" +
+                "  <BucketDataRedundancyTransition>\n" +
+                "      <TaskId>mockTaskId2</TaskId>\n" +
+                "      <CreateTime>2013-07-31T10:56:21.003Z</CreateTime>\n" +
+                "      <StartTime>2013-07-31T10:56:21.004Z</StartTime>\n" +
+                "      <EndTime>2013-07-31T10:56:21.005Z</EndTime>\n" +
+                "      <Status>Failed</Status>\n" +
+                "      <EstimatedRemainingTime>52</EstimatedRemainingTime>\n" +
+                "      <ProcessPercentage>20</ProcessPercentage>\n" +
+                "  </BucketDataRedundancyTransition>\n" +
+                "</ListBucketDataRedundancyTransition>";
+
+        InputStream inputStream = null;
+        try {
+            inputStream = new ByteArrayInputStream(responseBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException exception) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        ResponseMessage responseMessage = new ResponseMessage(null);
+        responseMessage.setContent(inputStream);
+
+        ResponseParsers.ListBucketDataRedundancyTransitionResponseParser parser = new ResponseParsers.ListBucketDataRedundancyTransitionResponseParser();
+
+        try {
+            List<GetBucketDataRedundancyTransitionResult> results = parser.parse(responseMessage);
+            Assert.assertEquals(results.get(0).getTaskId(), "mockTaskId1");
+            Assert.assertNull(results.get(0).getEndTime());
+            Assert.assertEquals(results.get(0).getStatus(), "Processing");
+            Assert.assertEquals(results.get(0).getProcessPercentage(), 50);
+
+            Assert.assertEquals(results.get(1).getTaskId(), "mockTaskId2");
+            Assert.assertEquals(results.get(1).getStartTime(), "2013-07-31T10:56:21.004Z");
+            Assert.assertEquals(results.get(1).getEndTime(), "2013-07-31T10:56:21.005Z");
+            Assert.assertEquals(results.get(1).getStatus(), "Failed");
+            Assert.assertEquals(results.get(1).getEstimatedRemainingTime(), 52);
+            Assert.assertEquals(results.get(1).getProcessPercentage(), 20);
+        } catch (ResponseParseException exception) {
+            Assert.fail("parse list bucket data redundancy transition response body fail");
+        }
+
+        responseBody = ""
+                + "<ListBucketDataRedundancyTransition>\n" +
+                "</ListBucketDataRedundancyTransition>";
+        try {
+            inputStream = new ByteArrayInputStream(responseBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException exception) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        responseMessage.setContent(inputStream);
+
+        try {
+            List<GetBucketDataRedundancyTransitionResult> results = parser.parse(responseMessage);
+            Assert.assertEquals(results.size(), 0);
+        } catch (ResponseParseException exception) {
+            Assert.fail("parse list bucket data redundancy transition response body fail");
+        }
+    }
+
+    @Test
+    public void listUserDataRedundancyTransitionResponseParserTest() {
+        String responseBody = ""
+                + "<ListBucketDataRedundancyTransition>\n" +
+                "  <BucketDataRedundancyTransition>\n" +
+                "      <TaskId>mockTaskId1</TaskId>\n" +
+                "      <CreateTime>2013-07-31T10:56:21.000Z</CreateTime>\n" +
+                "      <StartTime>2013-07-31T10:56:21.001Z</StartTime>\n" +
+                "      <Status>Processing</Status>\n" +
+                "      <EstimatedRemainingTime>16</EstimatedRemainingTime>\n" +
+                "      <ProcessPercentage>50</ProcessPercentage>\n" +
+                "  </BucketDataRedundancyTransition>\n" +
+                "  <BucketDataRedundancyTransition>\n" +
+                "      <TaskId>mockTaskId2</TaskId>\n" +
+                "      <CreateTime>2013-07-31T10:56:21.003Z</CreateTime>\n" +
+                "      <StartTime>2013-07-31T10:56:21.004Z</StartTime>\n" +
+                "      <EndTime>2013-07-31T10:56:21.005Z</EndTime>\n" +
+                "      <Status>Failed</Status>\n" +
+                "      <EstimatedRemainingTime>52</EstimatedRemainingTime>\n" +
+                "      <ProcessPercentage>20</ProcessPercentage>\n" +
+                "  </BucketDataRedundancyTransition>\n" +
+                "  <IsTruncated>true</IsTruncated>\n" +
+                "  <NextContinuationToken>mockNextContinuation</NextContinuationToken>\n" +
+                "</ListBucketDataRedundancyTransition>";
+
+        InputStream inputStream = null;
+        try {
+            inputStream = new ByteArrayInputStream(responseBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException exception) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        ResponseMessage responseMessage = new ResponseMessage(null);
+        responseMessage.setContent(inputStream);
+
+        ResponseParsers.ListUserDataRedundancyTransitionResponseParser parser = new ResponseParsers.ListUserDataRedundancyTransitionResponseParser();
+
+        try {
+            ListUserDataRedundancyTransitionResult result = parser.parse(responseMessage);
+            Assert.assertTrue(result.isTruncated());
+            Assert.assertEquals(result.getNextContinuationToken(), "mockNextContinuation");
+            List<GetBucketDataRedundancyTransitionResult> list = result.getBucketDataRedundancyTransition();
+            Assert.assertEquals(list.size(), 2);
+            Assert.assertEquals(list.get(0).getTaskId(), "mockTaskId1");
+            Assert.assertEquals(list.get(0).getStatus(), "Processing");
+            Assert.assertEquals(list.get(1).getTaskId(), "mockTaskId2");
+            Assert.assertEquals(list.get(1).getStatus(), "Failed");
+        } catch (ResponseParseException exception) {
+            Assert.fail("parse list user data redundancy transition response body fail");
+        }
+
+        responseBody = ""
+                + "<ListBucketDataRedundancyTransition>\n" +
+                "  <IsTruncated>false</IsTruncated>\n" +
+                "</ListBucketDataRedundancyTransition>\n";
+        try {
+            inputStream = new ByteArrayInputStream(responseBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException exception) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        responseMessage.setContent(inputStream);
+
+        try {
+            ListUserDataRedundancyTransitionResult result = parser.parse(responseMessage);
+            Assert.assertFalse(result.isTruncated());
+            Assert.assertEquals(result.getBucketDataRedundancyTransition().size(), 0);
+        } catch (ResponseParseException exception) {
+            Assert.fail("parse list user data redundancy transition response body fail");
+        }
+    }
 }
