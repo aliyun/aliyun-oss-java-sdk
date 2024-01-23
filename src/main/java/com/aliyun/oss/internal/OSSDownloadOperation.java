@@ -49,6 +49,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import com.aliyun.oss.ClientException;
 import com.aliyun.oss.InconsistentException;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.common.utils.CRC64;
@@ -643,6 +644,8 @@ public class OSSDownloadOperation {
                 objectMetadata = ossObj.getObjectMetadata();
                 content = ossObj.getObjectContent();
 
+                this.checkStartRange(ossObj, getObjectRequest);
+
                 byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
                 int bytesRead = 0;
                 while ((bytesRead = IOUtils.readNBytes(content, buffer, 0, buffer.length)) > 0) {
@@ -678,6 +681,25 @@ public class OSSDownloadOperation {
             }
 
             return tr;
+        }
+
+        public void checkStartRange(OSSObject ossObj, GetObjectRequest getObjectRequest) {
+            if(ossObj.getResponse().getStatusCode() == 206){
+                long rangeSetStart = getObjectRequest.getRange()[0];
+
+                String returnSet = ossObj.getResponse().getHeaders().get("Content-Range");
+                String returnStartStr = returnSet.substring(returnSet.indexOf("bytes")+6,(returnSet.indexOf("-")));
+                Long returnSetStart = -1L;
+                try {
+                    returnSetStart = Long.parseLong(returnStartStr);
+                } catch(Exception e){
+                    logException("Failed to convert string to long", e);
+                }
+
+                if(rangeSetStart != returnSetStart){
+                    throw new ClientException("Range get fail, expect offset:" + getObjectRequest.getRange() + "return offset:" + returnSet);
+                }
+            }
         }
 
         public ObjectMetadata GetobjectMetadata() {
