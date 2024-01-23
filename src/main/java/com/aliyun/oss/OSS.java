@@ -5200,4 +5200,119 @@ public interface OSS {
      *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult writeGetObjectResponse(WriteGetObjectResponseRequest writeGetObjectResponseRequest) throws OSSException, ClientException;
+
+    /**
+     * create bucket data redundancy transition task
+     * default targetType is ZRS
+     *
+     * @param bucketName bucket name
+     * @return task id
+     * @throws OSSException OSSException
+     * @throws ClientException ClientException
+     */
+    public CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * create bucket data redundancy transition task
+     *
+     * @param bucketName bucket name
+     * @param targetType target type
+     * @return CreateBucketDataRedundancyTransitionResult
+     * @throws OSSException OSSException
+     * @throws ClientException ClientException
+     */
+    public CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(String bucketName, String targetType) throws OSSException, ClientException;
+
+    /**
+     * create bucket data redundancy transition task
+     *
+     * @param bucketName bucket name
+     * @param targetType target type
+     * @return CreateBucketDataRedundancyTransitionResult
+     * @throws OSSException OSSException
+     * @throws ClientException ClientException
+     */
+    public CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(String bucketName, DataRedundancyType targetType) throws OSSException, ClientException;
+
+    /**
+     * Create the data redundancy transition on the {@link Bucket} instance.
+     *
+     * @param createBucketDataRedundancyTransitionRequest request
+     * @return CreateBucketDataRedundancyTransitionResult
+     * @throws OSSException OSSException
+     * @throws ClientException ClientException
+     */
+    public CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(CreateBucketDataRedundancyTransitionRequest createBucketDataRedundancyTransitionRequest) throws OSSException, ClientException;
+
+    /**
+     * get bucket data redundancy transition task info
+     *
+     * @param bucketName bucket name
+     * @param taskId task id
+     * @return task info
+     * @throws OSSException OSSException
+     * @throws ClientException ClientException
+     */
+    GetBucketDataRedundancyTransitionResult getBucketDataRedundancyTransition(String bucketName, String taskId) throws OSSException, ClientException;
+
+    /**
+     *  get bucket data redundancy transition task info
+     *
+     * @param getBucketDataRedundancyTransitionRequest request
+     * @return GetBucketDataRedundancyTransitionResult
+     * @throws OSSException OSSException
+     * @throws ClientException ClientException
+     */
+    public GetBucketDataRedundancyTransitionResult getBucketDataRedundancyTransition(GetBucketDataRedundancyTransitionRequest getBucketDataRedundancyTransitionRequest) throws OSSException, ClientException;
+
+    /**
+     * delete bucket data redundancy transition task
+     *
+     * @param bucketName bucket name
+     * @param taskId task id
+     * @return void
+     * @throws OSSException OSSException
+     * @throws ClientException ClientException
+     */
+    public VoidResult deleteBucketDataRedundancyTransition(String bucketName, String taskId) throws OSSException, ClientException;
+
+    /**
+     * delete bucket data redundancy transition task
+     *
+     * @param deleteBucketDataRedundancyTransitionRequest request
+     * @return VoidResult
+     * @throws OSSException OSSException
+     * @throws ClientException ClientException
+     */
+    public VoidResult deleteBucketDataRedundancyTransition(DeleteBucketDataRedundancyTransitionRequest deleteBucketDataRedundancyTransitionRequest) throws OSSException, ClientException;
+
+    /**
+     * List the data redundancy type conversion tasks for all buckets under the user
+     *
+     * @param listUserDataRedundancyTransitionRequest request
+     * @return ListUserDataRedundancyTransitionResult
+     * @throws OSSException OSSException
+     * @throws ClientException ClientException
+     */
+    public ListUserDataRedundancyTransitionResult listUserDataRedundancyTransition(ListUserDataRedundancyTransitionRequest listUserDataRedundancyTransitionRequest) throws OSSException, ClientException;
+
+    /**
+     * List all data redundancy type conversion tasks under the bucket
+     *
+     * @param bucketName
+     * @return List<GetBucketDataRedundancyTransitionResult>
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public List<GetBucketDataRedundancyTransitionResult> listBucketDataRedundancyTransition(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * List all data redundancy type conversion tasks under the bucket
+     *
+     * @param request
+     * @return List<GetBucketDataRedundancyTransitionResult>
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public List<GetBucketDataRedundancyTransitionResult> listBucketDataRedundancyTransition(GenericRequest request) throws OSSException, ClientException;
 }
