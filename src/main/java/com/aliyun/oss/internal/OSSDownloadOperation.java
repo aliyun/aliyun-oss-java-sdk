@@ -540,11 +540,13 @@ public class OSSDownloadOperation {
         ProgressPublisher.publishResponseBytesTransferred(listener, completedLength);
         downloadFileRequest.setProgressListener(null);
 
+        SimplifiedObjectMeta meta = objectOperation.getSimplifiedObjectMeta(new GenericRequest(downloadFileRequest.getBucketName(), downloadFileRequest.getKey()));
+
         // Concurrently download parts.
         for (int i = 0; i < downloadCheckPoint.downloadParts.size(); i++) {
             if (!downloadCheckPoint.downloadParts.get(i).isCompleted) {
                 Task task = new Task(i, "download-" + i, downloadCheckPoint, i, downloadFileRequest, objectOperation,
-                        listener);
+                        listener, meta);
                 futures.add(service.submit(task));
                 tasks.add(task);
             } else {
@@ -593,7 +595,7 @@ public class OSSDownloadOperation {
 
         public Task(int id, String name, DownloadCheckPoint downloadCheckPoint, int partIndex,
                 DownloadFileRequest downloadFileRequest, OSSObjectOperation objectOperation,
-                ProgressListener progressListener) {
+                ProgressListener progressListener, SimplifiedObjectMeta simplifiedMeta) {
             this.id = id;
             this.name = name;
             this.downloadCheckPoint = downloadCheckPoint;
@@ -601,6 +603,7 @@ public class OSSDownloadOperation {
             this.downloadFileRequest = downloadFileRequest;
             this.objectOperation = objectOperation;
             this.progressListener = progressListener;
+            this.simplifiedMeta = simplifiedMeta;
         }
 
         @Override
@@ -644,7 +647,7 @@ public class OSSDownloadOperation {
                 objectMetadata = ossObj.getObjectMetadata();
                 content = ossObj.getObjectContent();
 
-                this.checkStartRange(ossObj, getObjectRequest);
+                this.verifyObjectMeta(ossObj, getObjectRequest, simplifiedMeta);
 
                 byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
                 int bytesRead = 0;
@@ -683,7 +686,7 @@ public class OSSDownloadOperation {
             return tr;
         }
 
-        public void checkStartRange(OSSObject ossObj, GetObjectRequest getObjectRequest) {
+        public void verifyObjectMeta(OSSObject ossObj, GetObjectRequest getObjectRequest, SimplifiedObjectMeta simplifiedMeta) {
             if(ossObj.getResponse().getStatusCode() == 206){
                 long rangeSetStart = getObjectRequest.getRange()[0];
 
@@ -700,6 +703,10 @@ public class OSSDownloadOperation {
                     throw new ClientException("Range get fail, expect offset:" + getObjectRequest.getRange() + "return offset:" + returnSet);
                 }
             }
+
+            if(simplifiedMeta.getLastModified().hashCode() != ossObj.getObjectMetadata().getLastModified().hashCode()){
+                throw new ClientException("The last modification time of the file has changed, Last file modification time:" + ossObj.getObjectMetadata().getLastModified() + ", The file modification time:" + simplifiedMeta.getLastModified());
+            }
         }
 
         public ObjectMetadata GetobjectMetadata() {
@@ -714,6 +721,7 @@ public class OSSDownloadOperation {
         private OSSObjectOperation objectOperation;
         private ObjectMetadata objectMetadata;
         private ProgressListener progressListener;
+        private SimplifiedObjectMeta simplifiedMeta;
     }
 
     private ArrayList<DownloadPart> splitFile(long start, long objectSize, long partSize) {
