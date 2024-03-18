@@ -6,10 +6,12 @@ import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.HmacSHA256Signature;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.utils.HttpHeaders;
+import com.aliyun.oss.common.utils.LogUtils;
 import com.aliyun.oss.internal.OSSHeaders;
 import com.aliyun.oss.internal.SignParameters;
 import com.aliyun.oss.internal.SignV2Utils;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
+
 import java.net.URI;
 import java.util.Set;
 
@@ -57,6 +59,7 @@ public class OSSV2Signer extends OSSSignerBase {
         Set<String> rawAdditionalHeaderNames = SignV2Utils.buildRawAdditionalHeaderNames(request.getHeaders().keySet(),
                 signerParams.getAdditionalHeaderNames());
         String canonicalString = SignV2Utils.buildCanonicalString(request.getMethod().toString(), canonicalResource, request, rawAdditionalHeaderNames);
+        LogUtils.getLog().debug("stringToSign: "+canonicalString);
         String signature = new HmacSHA256Signature().computeSignature(secretAccessKey, canonicalString);
 
         request.addParameter(OSS_SIGNATURE, signature);

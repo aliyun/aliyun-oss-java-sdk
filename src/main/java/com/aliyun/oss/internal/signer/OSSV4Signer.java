@@ -4,10 +4,7 @@ import com.aliyun.oss.ClientException;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.ServiceSignature;
 import com.aliyun.oss.common.comm.RequestMessage;
-import com.aliyun.oss.common.utils.BinaryUtil;
-import com.aliyun.oss.common.utils.HttpHeaders;
-import com.aliyun.oss.common.utils.HttpUtil;
-import com.aliyun.oss.common.utils.StringUtils;
+import com.aliyun.oss.common.utils.*;
 import com.aliyun.oss.internal.OSSHeaders;
 import com.aliyun.oss.internal.SignParameters;
 
@@ -227,7 +224,9 @@ public class OSSV4Signer extends OSSSignerBase {
     @Override
     protected void addAuthorizationHeader(RequestMessage request) {
         String canonicalRequest = buildCanonicalRequest(request);
+        LogUtils.getLog().debug("canonicalString: "+canonicalRequest);
         String stringToSign = buildStringToSign(canonicalRequest);
+        LogUtils.getLog().debug("stringToSign: "+stringToSign);
         byte[] signingKey = buildSigningKey();
         String signature = buildSignature(signingKey, stringToSign);
         String authorization = buildAuthorization(signature);
@@ -283,11 +282,13 @@ public class OSSV4Signer extends OSSSignerBase {
 
         // sign
         String canonicalRequest = buildCanonicalRequest(request);
+        LogUtils.getLog().debug("canonicalString: "+canonicalRequest);
         //String stringToSign = buildStringToSign(canonicalRequest);
         String stringToSign = OSS4_HMAC_SHA256 + SignParameters.NEW_LINE +
                 getDateTime() + SignParameters.NEW_LINE +
                 buildScope() + SignParameters.NEW_LINE +
                 BinaryUtil.toHex(BinaryUtil.calculateSha256(canonicalRequest.getBytes(StringUtils.UTF8)));
+        LogUtils.getLog().debug("stringToSign: "+stringToSign);
         byte[] signingKey = buildSigningKey();
         String signature = buildSignature(signingKey, stringToSign);
 

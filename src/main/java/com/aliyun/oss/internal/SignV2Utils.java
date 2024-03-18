@@ -8,6 +8,7 @@ import com.aliyun.oss.common.auth.HmacSHA256Signature;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.utils.HttpHeaders;
 import com.aliyun.oss.common.utils.HttpUtil;
+import com.aliyun.oss.common.utils.LogUtils;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 
 import java.io.UnsupportedEncodingException;
@@ -296,6 +297,7 @@ public class SignV2Utils {
     public static String buildSignature(String secretAccessKey, String httpMethod, String resourcePath, RequestMessage request) {
         String canonicalString = buildCanonicalString(httpMethod, resourcePath, request,
                 buildRawAdditionalHeaderNames(request.getOriginalRequest().getHeaders().keySet(), request.getOriginalRequest().getAdditionalHeaderNames()));
+        LogUtils.getLog().debug("stringToSign: "+canonicalString);
         return new HmacSHA256Signature().computeSignature(secretAccessKey, canonicalString);
     }
 

@@ -6,9 +6,11 @@ import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.ServiceSignature;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.utils.HttpHeaders;
+import com.aliyun.oss.common.utils.LogUtils;
 import com.aliyun.oss.internal.OSSHeaders;
 import com.aliyun.oss.internal.SignUtils;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
+
 import java.net.URI;
 
 import static com.aliyun.oss.internal.RequestParameters.*;
@@ -45,6 +47,7 @@ public class OSSV1Signer extends OSSSignerBase {
         request.addHeader(HttpHeaders.DATE, expires);
 
         String canonicalString = SignUtils.buildCanonicalString(request.getMethod().toString(), canonicalResource, request, expires);
+        LogUtils.getLog().debug("stringToSign: "+canonicalString);
         String signature = ServiceSignature.create().computeSignature(secretAccessKey, canonicalString);
 
         request.addParameter(HttpHeaders.EXPIRES, expires);

@@ -40,6 +40,7 @@ import com.aliyun.oss.common.auth.ServiceSignature;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.utils.HttpHeaders;
 import com.aliyun.oss.common.utils.HttpUtil;
+import com.aliyun.oss.common.utils.LogUtils;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 
 public class SignUtils {
@@ -225,6 +226,7 @@ public class SignUtils {
 
     public static String buildSignature(String secretAccessKey, String httpMethod, String resourcePath, RequestMessage request) {
         String canonicalString = buildCanonicalString(httpMethod, resourcePath, request, null);
+        LogUtils.getLog().debug("stringToSign: "+canonicalString);
         return ServiceSignature.create().computeSignature(secretAccessKey, canonicalString);
     }
 
