@@ -10,14 +10,18 @@ import com.aliyun.oss.common.utils.HttpUtil;
 import com.aliyun.oss.common.utils.StringUtils;
 import com.aliyun.oss.internal.OSSHeaders;
 import com.aliyun.oss.internal.SignParameters;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static com.aliyun.oss.internal.OSSConstants.LOGGER_PACKAGE_NAME;
 import static com.aliyun.oss.internal.RequestParameters.SECURITY_TOKEN;
 
 public class OSSV4Signer extends OSSSignerBase {
+    private static final Log log = LogFactory.getLog(LOGGER_PACKAGE_NAME);
     private static final List<String> DEFAULT_SIGNED_HEADERS = Arrays.asList(HttpHeaders.CONTENT_TYPE.toLowerCase(), HttpHeaders.CONTENT_MD5.toLowerCase());
     // ISO 8601 format
     private static final String ISO8601_DATETIME_FORMAT = "yyyyMMdd'T'HHmmss'Z'";
@@ -227,7 +231,9 @@ public class OSSV4Signer extends OSSSignerBase {
     @Override
     protected void addAuthorizationHeader(RequestMessage request) {
         String canonicalRequest = buildCanonicalRequest(request);
+        log.debug("canonicalString: "+canonicalRequest);
         String stringToSign = buildStringToSign(canonicalRequest);
+        log.debug("stringToSign: "+stringToSign);
         byte[] signingKey = buildSigningKey();
         String signature = buildSignature(signingKey, stringToSign);
         String authorization = buildAuthorization(signature);
@@ -283,11 +289,13 @@ public class OSSV4Signer extends OSSSignerBase {
 
         // sign
         String canonicalRequest = buildCanonicalRequest(request);
+        log.debug("canonicalString: "+canonicalRequest);
         //String stringToSign = buildStringToSign(canonicalRequest);
         String stringToSign = OSS4_HMAC_SHA256 + SignParameters.NEW_LINE +
                 getDateTime() + SignParameters.NEW_LINE +
                 buildScope() + SignParameters.NEW_LINE +
                 BinaryUtil.toHex(BinaryUtil.calculateSha256(canonicalRequest.getBytes(StringUtils.UTF8)));
+        log.debug("stringToSign: "+stringToSign);
         byte[] signingKey = buildSigningKey();
         String signature = buildSignature(signingKey, stringToSign);
 
