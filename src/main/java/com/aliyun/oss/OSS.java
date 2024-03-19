@@ -5221,4 +5221,24 @@ public interface OSS {
      * @throws ClientException ClientException
      */
     GetBucketArchiveDirectReadResult getBucketArchiveDirectRead(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Enable or disable TLS version settings for buckets.
+     *
+     * @param request request
+     * @return VoidResult
+     * @throws OSSException OSSException
+     * @throws ClientException ClientException
+     */
+    public VoidResult putBucketHttpsConfig(PutBucketHttpsConfigRequest request) throws OSSException, ClientException;
+
+    /**
+     * View the TLS version settings of the bucket.
+     *
+     * @param bucketName
+     * @return
+     * @throws OSSException OSSException
+     * @throws ClientException ClientException
+     */
+    public GetBucketHttpsConfigResult getBucketHttpsConfig(String bucketName) throws OSSException, ClientException;
 }

@@ -161,4 +161,5 @@ public final class RequestParameters {
     public static final String WRITE_GET_OBJECT_RESPONSE = "x-oss-write-get-object-response";
     public static final String ARCHIVE_DIRECT_READ = "bucketArchiveDirectRead";
 
+    public static final String HTTPS_CONFIG = "httpsConfig";
 }
