@@ -5800,4 +5800,156 @@ public class ResponseParsersTest {
         }
         Assert.assertEquals(false, result.getEnabled());
     }
+
+    
+    @Test
+    public void testParseGetBucketHttpsConfig() {
+        InputStream instream = null;
+        String respBody;
+
+        // https config 1
+        respBody = "" +
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<HttpsConfiguration>  \n" +
+                "</HttpsConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        GetBucketHttpsConfigResult result1 = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketHttpsConfigResponseParser parser = new ResponseParsers.GetBucketHttpsConfigResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals(false, result1.isEnable());
+
+        // https config 2
+        respBody = "" +
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<HttpsConfiguration>\n" +
+                "  <TLS>\n" +
+                "  </TLS>\n" +
+                "</HttpsConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        GetBucketHttpsConfigResult result2 = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketHttpsConfigResponseParser parser = new ResponseParsers.GetBucketHttpsConfigResponseParser();
+            result2 = parser.parse(response);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals(false, result2.isEnable());
+
+        // https config 3
+        respBody = "" +
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<HttpsConfiguration>\n" +
+                "  <TLS>\n" +
+                "    <Enable>true</Enable>\n" +
+                "  </TLS>\n" +
+                "</HttpsConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        GetBucketHttpsConfigResult result3 = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketHttpsConfigResponseParser parser = new ResponseParsers.GetBucketHttpsConfigResponseParser();
+            result3 = parser.parse(response);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals(true, result3.isEnable());
+
+
+        // https config 4
+        respBody = "" +
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<HttpsConfiguration>\n" +
+                "  <TLS>\n" +
+                "    <Enable>false</Enable>\n" +
+                "    <TLSVersion>TLSv1.2</TLSVersion>\n" +
+                "    <TLSVersion>TLSv1.3</TLSVersion>\n" +
+                "  </TLS>\n" +
+                "</HttpsConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        GetBucketHttpsConfigResult result4 = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketHttpsConfigResponseParser parser = new ResponseParsers.GetBucketHttpsConfigResponseParser();
+            result4 = parser.parse(response);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals(false, result4.isEnable());
+        Assert.assertEquals("TLSv1.2", result4.getTlsVersion().get(0));
+        Assert.assertEquals("TLSv1.3", result4.getTlsVersion().get(1));
+
+        respBody = "invalid";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketHttpsConfigResponseParser parser = new ResponseParsers.GetBucketHttpsConfigResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketHttpsConfigResponseParser parser = new ResponseParsers.GetBucketHttpsConfigResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+    }
 }

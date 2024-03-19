@@ -2221,4 +2221,41 @@ public class OSSBucketOperation extends OSSOperation {
                 .setOriginalRequest(genericRequest).build();
         return doOperation(request, getBucketArchiveDirectReadResponseParser, bucketName, null, true);
     }
+
+    public VoidResult putBucketHttpsConfig(PutBucketHttpsConfigRequest putBucketHttpsConfigRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(putBucketHttpsConfigRequest, "putBucketHttpsConfigRequest");
+
+        String bucketName = putBucketHttpsConfigRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(HTTPS_CONFIG, null);
+
+        byte[] rawContent = putBucketHttpsConfigRequestMarshaller.marshall(putBucketHttpsConfigRequest);
+        Map<String, String> headers = new HashMap<String, String>();
+        addRequestRequiredHeaders(headers, rawContent);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(putBucketHttpsConfigRequest))
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params)
+                .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+                .setOriginalRequest(putBucketHttpsConfigRequest).build();
+
+        return doOperation(request, requestIdResponseParser, bucketName, null, true);
+    }
+
+    public GetBucketHttpsConfigResult getBucketHttpsConfig(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(HTTPS_CONFIG, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(genericRequest))
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
+        return doOperation(request, getBucketHttpsConfigResponseParser, bucketName, null, true);
+    }
 }

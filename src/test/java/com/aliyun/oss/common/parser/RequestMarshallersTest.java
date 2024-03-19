@@ -1629,4 +1629,38 @@ public class RequestMarshallersTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void testPutBucketHttpsConfigRequestMarshaller() {
+        final String bucketName = "unormal-set-bucket-referer";
+        final String tls12 = "TLSv1.2";
+        final String tls13 = "TLSv1.3";
+
+        List<String> tlsVersionList = new ArrayList<String>();
+        tlsVersionList.add(tls12);
+        tlsVersionList.add(tls13);
+
+        PutBucketHttpsConfigRequest request = new PutBucketHttpsConfigRequest(bucketName)
+                .withEnabled(true)
+                .withTlsVersion(tlsVersionList);
+
+        byte[] data = putBucketHttpsConfigRequestMarshaller.marshall(request);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        Assert.assertEquals("true", root.getChild("TLS").getChildText("Enable"));
+        Assert.assertEquals("TLSv1.2", root.getChild("TLS").getChildren("TLSVersion").get(0).getText());
+        Assert.assertEquals("TLSv1.3", root.getChild("TLS").getChildren("TLSVersion").get(1).getText());
+
+    }
 }
