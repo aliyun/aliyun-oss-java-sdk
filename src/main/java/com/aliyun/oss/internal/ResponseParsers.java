@@ -140,6 +140,7 @@ public final class ResponseParsers {
     public static final DescribeRegionsResponseParser describeRegionsResponseParser = new DescribeRegionsResponseParser();
     public static final GetBucketCallbackPolicyResponseParser getBucketCallbackPolicyResponseParser = new GetBucketCallbackPolicyResponseParser();
     public static final AsyncProcessObjectResponseParser asyncProcessObjectResponseParser = new AsyncProcessObjectResponseParser();
+    public static final GetBucketHttpsConfigResponseParser getBucketHttpsConfigResponseParser = new GetBucketHttpsConfigResponseParser();
 
     public static Long parseLongWithDefault(String defaultValue){
         if(defaultValue == null || "".equals(defaultValue)){
@@ -4295,6 +4296,49 @@ public final class ResponseParsers {
                 asyncProcessObjectResult.setEventId(jsonObject.getString("EventId"));
                 asyncProcessObjectResult.setTaskId(jsonObject.getString("TaskId"));
                 return asyncProcessObjectResult;
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class GetBucketHttpsConfigResponseParser implements ResponseParser<GetBucketHttpsConfigResult> {
+
+        @Override
+        public GetBucketHttpsConfigResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetBucketHttpsConfigResult result = parseGetBucketHttpsConfig(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private GetBucketHttpsConfigResult parseGetBucketHttpsConfig(InputStream inputStream) throws ResponseParseException {
+            GetBucketHttpsConfigResult result = new GetBucketHttpsConfigResult();
+            if (inputStream == null) {
+                return result;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                Element tlsElem = root.getChild("TLS");
+                if(tlsElem != null){
+
+                    result.setEnable(Boolean.parseBoolean(tlsElem.getChildText("Enable")));
+                    List<String> tlsVersion = new ArrayList<String>();
+                    List<Element> tlsVersionElem = tlsElem.getChildren("TLSVersion");
+                    if(!tlsVersionElem.isEmpty()){
+                        for (Element elem : tlsVersionElem) {
+                            String version = elem.getValue();
+                            tlsVersion.add(version);
+                        }
+                        result.setTlsVersion(tlsVersion);
+                    }
+                }
+                return result;
             } catch (Exception e) {
                 throw new ResponseParseException(e.getMessage(), e);
             }

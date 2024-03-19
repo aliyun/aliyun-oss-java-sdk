@@ -102,6 +102,7 @@ public final class RequestMarshallers {
     public static final DoMetaQueryRequestMarshaller doMetaQueryRequestMarshaller = new DoMetaQueryRequestMarshaller();
     public static final SetBucketCallbackPolicyRequestMarshaller setBucketCallbackPolicyRequestMarshaller = new SetBucketCallbackPolicyRequestMarshaller();
     public static final AsyncProcessObjectRequestMarshaller asyncProcessObjectRequestMarshaller = new AsyncProcessObjectRequestMarshaller();
+    public static final PutBucketHttpsConfigRequestMarshaller putBucketHttpsConfigRequestMarshaller = new PutBucketHttpsConfigRequestMarshaller();
 
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
 
@@ -1940,6 +1941,30 @@ public final class RequestMarshallers {
             return rawData;
         }
 
+    }
+
+    public static final class PutBucketHttpsConfigRequestMarshaller implements RequestMarshaller2<PutBucketHttpsConfigRequest> {
+
+        @Override
+        public byte[] marshall(PutBucketHttpsConfigRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<HttpsConfiguration>");
+            xmlBody.append("<TLS>");
+            xmlBody.append("<Enable>"+ request.isEnable() +"</Enable>");
+            for(String version : request.getTlsVersion()) {
+                xmlBody.append("<TLSVersion>" + version + "</TLSVersion>");
+            }
+            xmlBody.append("</TLS>");
+            xmlBody.append("</HttpsConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
     }
 
     private static enum EscapedChar {
