@@ -1998,6 +1998,16 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public VoidResult putBucketHttpsConfig(PutBucketHttpsConfigRequest putBucketHttpsConfigRequest) throws OSSException, ClientException {
+        return this.bucketOperation.putBucketHttpsConfig(putBucketHttpsConfigRequest);
+    }
+
+    @Override
+    public GetBucketHttpsConfigResult getBucketHttpsConfig(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketHttpsConfig(new GenericRequest(bucketName));
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();
