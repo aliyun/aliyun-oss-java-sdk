@@ -1998,6 +1998,41 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public VoidResult putPublicAccessBlock(PutPublicAccessBlockRequest putPublicAccessBlockRequest) throws OSSException, ClientException {
+        return this.bucketOperation.putPublicAccessBlock(putPublicAccessBlockRequest);
+    }
+
+    @Override
+    public GetPublicAccessBlockResult getPublicAccessBlock(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.getPublicAccessBlock(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public VoidResult deletePublicAccessBlock(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.deletePublicAccessBlock(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public VoidResult putBucketPublicAccessBlock(PutBucketPublicAccessBlockRequest putBucketPublicAccessBlockRequest) throws OSSException, ClientException {
+        return this.bucketOperation.putBucketPublicAccessBlock(putBucketPublicAccessBlockRequest);
+    }
+
+    @Override
+    public GetBucketPublicAccessBlockResult getBucketPublicAccessBlock(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketPublicAccessBlock(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public VoidResult deleteBucketPublicAccessBlock(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.deleteBucketPublicAccessBlock(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public GetBucketPolicyStatusResult getBucketPolicyStatus(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketPolicyStatus(new GenericRequest(bucketName));
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();

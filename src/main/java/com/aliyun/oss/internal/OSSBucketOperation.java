@@ -2194,4 +2194,125 @@ public class OSSBucketOperation extends OSSOperation {
 
         return doOperation(request, requestIdResponseParser, bucketName, null);
     }
+
+    public VoidResult putPublicAccessBlock(PutPublicAccessBlockRequest putPublicAccessBlockRequest) throws OSSException, ClientException {
+        assertParameterNotNull(putPublicAccessBlockRequest, "putPublicAccessBlockRequest");
+
+        String bucketName = putPublicAccessBlockRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(PUBLIC_ACCESS_BLOCK, null);
+
+        byte[] rawContent = putPublicAccessBlockRequestMarshaller.marshall(putPublicAccessBlockRequest);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(putPublicAccessBlockRequest))
+                .setMethod(HttpMethod.PUT).setParameters(params)
+                .setOriginalRequest(putPublicAccessBlockRequest).setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent)).build();
+
+        return doOperation(request, requestIdResponseParser, null, null, true);
+    }
+
+    public GetPublicAccessBlockResult getPublicAccessBlock(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(PUBLIC_ACCESS_BLOCK, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(genericRequest))
+                .setMethod(HttpMethod.GET).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
+
+        return doOperation(request, getPublicAccessBlockResponseParser, null, null, true);
+    }
+
+    public VoidResult deletePublicAccessBlock(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(PUBLIC_ACCESS_BLOCK, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(genericRequest))
+                .setMethod(HttpMethod.DELETE).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
+
+        return doOperation(request, requestIdResponseParser, null, null);
+    }
+
+    public VoidResult putBucketPublicAccessBlock(PutBucketPublicAccessBlockRequest putBucketPublicAccessBlockRequest) throws OSSException, ClientException {
+        assertParameterNotNull(putBucketPublicAccessBlockRequest, "putBucketPublicAccessBlockRequest");
+
+        String bucketName = putBucketPublicAccessBlockRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(PUBLIC_ACCESS_BLOCK, null);
+
+        byte[] rawContent = putBucketPublicAccessBlockRequestMarshaller.marshall(putBucketPublicAccessBlockRequest);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(putBucketPublicAccessBlockRequest))
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(putBucketPublicAccessBlockRequest).setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent)).build();
+
+        return doOperation(request, requestIdResponseParser, bucketName, null, true);
+    }
+
+    public GetBucketPublicAccessBlockResult getBucketPublicAccessBlock(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(PUBLIC_ACCESS_BLOCK, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(genericRequest))
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
+
+        return doOperation(request, getBucketPublicAccessBlockResponseParser, bucketName, null, true);
+    }
+
+    public VoidResult deleteBucketPublicAccessBlock(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(PUBLIC_ACCESS_BLOCK, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(genericRequest))
+                .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
+
+        return doOperation(request, requestIdResponseParser, bucketName, null);
+    }
+
+    public GetBucketPolicyStatusResult getBucketPolicyStatus(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(POLICY_STATUS, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(genericRequest))
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
+
+        return doOperation(request, getBucketPolicyStatusResponseParser, bucketName, null, true);
+    }
 }
