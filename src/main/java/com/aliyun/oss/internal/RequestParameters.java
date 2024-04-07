@@ -159,5 +159,6 @@ public final class RequestParameters {
     public static final String REGIONS = "regions";
     public static final String X_OSS_ASYNC_PROCESS = "x-oss-async-process";
     public static final String WRITE_GET_OBJECT_RESPONSE = "x-oss-write-get-object-response";
-
+    public static final String SUBRESOURCE_ACCESS_POINT = "accessPoint";
+    public static final String SUBRESOURCE_ACCESS_POINT_POLICY = "accessPointPolicy";
 }

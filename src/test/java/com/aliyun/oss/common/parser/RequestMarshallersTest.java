@@ -22,7 +22,6 @@ import java.text.ParseException;
 import java.util.*;
 
 import static com.aliyun.oss.common.parser.RequestMarshallers.*;
-import static com.aliyun.oss.common.parser.RequestMarshallers.putBucketAccessMonitorRequestMarshaller;
 
 public class RequestMarshallersTest {
     @Test
@@ -1596,4 +1595,56 @@ public class RequestMarshallersTest {
         Assert.assertEquals("key", root.getChild("Rule").getChild("Filter").getChildren("Not").get(0).getChild("Tag").getChildText("Key"));
         Assert.assertEquals("value", root.getChild("Rule").getChild("Filter").getChildren("Not").get(0).getChild("Tag").getChildText("Value"));
     }
+
+    @Test
+    public void testCreateAccessPoint() {
+        String accessPointName = "test-ap-jt-3";
+        String networkOrigin = "Internet";
+        String vpcId = "vpc-id";
+        String bucketName = "testBucket";
+
+        CreateAccessPointRequest createAccessPointRequest = new CreateAccessPointRequest(bucketName)
+                .withAccessPointName(accessPointName)
+                .withNetworkOrigin(networkOrigin)
+                .withVpc(new AccessPointVpcConfiguration().withVpcId(vpcId));
+
+        byte[] data = createAccessPointRequestParser.marshall(createAccessPointRequest);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+
+        Assert.assertEquals(accessPointName, root.getChildText("AccessPointName"));
+        Assert.assertEquals(networkOrigin, root.getChildText("NetworkOrigin"));
+        Assert.assertEquals(vpcId, root.getChild("VpcConfiguration").getChildText("VpcId"));
+    }
+
+    @Test
+    public void testCreateAccessPointPolicy() {
+        String bucketName = "testBucket";
+        String accessPointName = "test-ap-jt-3";
+        String accessPointPolicy = "{\"Version\":\"1\",\"Statement\":[{\"Action\":[\"oss:PutObject\",\"oss:GetObject\"],\"Effect\":\"Deny\",\"Principal\":[\"1234567890\"],\"Resource\":[\"acs:oss:*:1234567890:*/*\"]}]}";
+
+        PutAccessPointPolicyRequest putAccessPointPolicyRequest = new PutAccessPointPolicyRequest(bucketName)
+                .withAccessPointName(accessPointName)
+                .withAccessPointPolicy(accessPointPolicy);
+
+        byte[] data = putAccessPointPolicyRequestParser.marshall(putAccessPointPolicyRequest);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        String returnData = new String(data);
+
+        Assert.assertEquals(accessPointPolicy, returnData);
+
+    }
+
 }

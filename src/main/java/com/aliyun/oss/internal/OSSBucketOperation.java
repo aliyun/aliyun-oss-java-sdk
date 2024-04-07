@@ -20,7 +20,6 @@
 package com.aliyun.oss.internal;
 
 import static com.aliyun.oss.common.parser.RequestMarshallers.*;
-import static com.aliyun.oss.common.parser.RequestMarshallers.putBucketAccessMonitorRequestMarshaller;
 import static com.aliyun.oss.common.utils.CodingUtils.assertParameterNotNull;
 import static com.aliyun.oss.internal.OSSUtils.OSS_RESOURCE_MANAGER;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
@@ -29,7 +28,7 @@ import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
 import static com.aliyun.oss.internal.RequestParameters.*;
 import static com.aliyun.oss.internal.RequestParameters.ACCESS_MONITOR;
 import static com.aliyun.oss.internal.ResponseParsers.*;
-import static com.aliyun.oss.internal.ResponseParsers.getBucketAccessMonitorResponseParser;
+import static com.aliyun.oss.internal.ResponseParsers.listAccessPointsResponseParser;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -2194,4 +2193,180 @@ public class OSSBucketOperation extends OSSOperation {
 
         return doOperation(request, requestIdResponseParser, bucketName, null);
     }
+
+    public CreateAccessPointResult createAccessPoint(CreateAccessPointRequest createAccessPointRequest) throws OSSException, ClientException {
+        assertParameterNotNull(createAccessPointRequest, "createAccessPointRequest");
+        assertParameterNotNull(createAccessPointRequest.getNetworkOrigin(), "networkOrigin");
+        assertParameterNotNull(createAccessPointRequest.getAccessPointName(), "accessPointName");
+
+        String bucketName = createAccessPointRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_ACCESS_POINT, null);
+
+        byte[] rawContent = createAccessPointRequestParser.marshall(createAccessPointRequest);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(createAccessPointRequest).setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent)).build();
+
+        return doOperation(request, createAccessPointResponseParser, bucketName, null, true);
+    }
+
+    public GetAccessPointResult getAccessPoint(GetAccessPointRequest getAccessPointRequest) throws OSSException, ClientException {
+        assertParameterNotNull(getAccessPointRequest, "getAccessPointRequest");
+        assertParameterNotNull(getAccessPointRequest.getAccessPointName(), "accessPointName");
+
+        String bucketName = getAccessPointRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put(OSSHeaders.OSS_ACCESS_POINT_NAME, getAccessPointRequest.getAccessPointName());
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_ACCESS_POINT, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params).setHeaders(headers)
+                .setOriginalRequest(getAccessPointRequest).build();
+
+        return doOperation(request, getAccessPointResponseParser, bucketName, null, true);
+    }
+
+    public VoidResult deleteAccessPoint(DeleteAccessPointRequest deleteAccessPointRequest) throws OSSException, ClientException {
+        assertParameterNotNull(deleteAccessPointRequest, "deleteAccessPointRequest");
+        assertParameterNotNull(deleteAccessPointRequest.getAccessPointName(), "accessPointName");
+
+        String bucketName = deleteAccessPointRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put(OSSHeaders.OSS_ACCESS_POINT_NAME, deleteAccessPointRequest.getAccessPointName());
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_ACCESS_POINT, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params).setHeaders(headers)
+                .setOriginalRequest(deleteAccessPointRequest).build();
+
+        return doOperation(request, requestIdResponseParser, bucketName, null, true);
+    }
+
+    public VoidResult putAccessPointPolicy(PutAccessPointPolicyRequest putAccessPointPolicyRequest) throws OSSException, ClientException {
+        assertParameterNotNull(putAccessPointPolicyRequest, "putAccessPointPolicyRequest");
+        assertParameterNotNull(putAccessPointPolicyRequest.getAccessPointName(), "accessPointName");
+
+        String bucketName = putAccessPointPolicyRequest.getBucketName();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put(OSSHeaders.OSS_ACCESS_POINT_NAME, putAccessPointPolicyRequest.getAccessPointName());
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_ACCESS_POINT_POLICY, null);
+
+        byte[] rawContent = putAccessPointPolicyRequestParser.marshall(putAccessPointPolicyRequest);
+
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.PUT).setBucket(bucketName).setParameters(params).setHeaders(headers)
+                .setInputSize(rawContent.length).setInputStream(new ByteArrayInputStream(rawContent))
+                .setOriginalRequest(putAccessPointPolicyRequest).build();
+
+        return doOperation(request, requestIdResponseParser, bucketName, null, true);
+    }
+
+    public GetAccessPointPolicyResult getAccessPointPolicy(GetAccessPointPolicyRequest getAccessPointPolicyRequest) throws OSSException, ClientException {
+        assertParameterNotNull(getAccessPointPolicyRequest, "getAccessPointPolicyRequest");
+        assertParameterNotNull(getAccessPointPolicyRequest.getAccessPointName(), "accessPointName");
+
+        String bucketName = getAccessPointPolicyRequest.getBucketName();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put(OSSHeaders.OSS_ACCESS_POINT_NAME, getAccessPointPolicyRequest.getAccessPointName());
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_ACCESS_POINT_POLICY, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params).setHeaders(headers)
+                .setOriginalRequest(getAccessPointPolicyRequest).build();
+
+        return doOperation(request, getAccessPointPolicyResponseParser, bucketName, null, true);
+    }
+
+    public VoidResult deleteAccessPointPolicy(DeleteAccessPointPolicyRequest deleteAccessPointPolicyRequest) throws OSSException, ClientException {
+        assertParameterNotNull(deleteAccessPointPolicyRequest, "deleteAccessPointPolicyRequest");
+        assertParameterNotNull(deleteAccessPointPolicyRequest.getAccessPointName(), "accessPointName");
+
+        String bucketName = deleteAccessPointPolicyRequest.getBucketName();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put(OSSHeaders.OSS_ACCESS_POINT_NAME, deleteAccessPointPolicyRequest.getAccessPointName());
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_ACCESS_POINT_POLICY, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params).setHeaders(headers)
+                .setOriginalRequest(deleteAccessPointPolicyRequest).build();
+
+        return doOperation(request, requestIdResponseParser, bucketName, null, true);
+    }
+
+    public ListAccessPointsResult listAccessPoints(ListAccessPointsRequest listAccessPointsRequest) throws OSSException, ClientException {
+        assertParameterNotNull(listAccessPointsRequest, "listAccessPointsRequest");
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_ACCESS_POINT, null);
+        if (null != listAccessPointsRequest.getMaxKeys()) {
+            params.put(MAX_KEYS, Integer.toString(listAccessPointsRequest.getMaxKeys()));
+        }
+        if (null != listAccessPointsRequest.getContinuationToken()) {
+            params.put(SUBRESOURCE_CONTINUATION_TOKEN, listAccessPointsRequest.getContinuationToken());
+        }
+
+        GenericRequest gGenericRequest = new GenericRequest();
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setParameters(params).setOriginalRequest(gGenericRequest).build();
+
+        return doOperation(request, listAccessPointsResponseParser, null, null, true);
+    }
+
+    public ListAccessPointsResult listBucketAccessPoints(ListBucketAccessPointsRequest listBucketAccessPointsRequest) throws OSSException, ClientException {
+        assertParameterNotNull(listBucketAccessPointsRequest, "listBucketAccessPointsRequest");
+
+        String bucketName = listBucketAccessPointsRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.SUBRESOURCE_ACCESS_POINT, null);
+        if (null != listBucketAccessPointsRequest.getMaxKeys()) {
+            params.put(MAX_KEYS, Integer.toString(listBucketAccessPointsRequest.getMaxKeys()));
+        }
+        if (null != listBucketAccessPointsRequest.getContinuationToken()) {
+            params.put(SUBRESOURCE_CONTINUATION_TOKEN, listBucketAccessPointsRequest.getContinuationToken());
+        }
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(listBucketAccessPointsRequest).build();
+
+        return doOperation(request, listAccessPointsResponseParser, bucketName, null, true);
+    }
+
 }

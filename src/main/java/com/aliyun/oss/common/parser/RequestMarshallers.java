@@ -102,6 +102,8 @@ public final class RequestMarshallers {
     public static final DoMetaQueryRequestMarshaller doMetaQueryRequestMarshaller = new DoMetaQueryRequestMarshaller();
     public static final SetBucketCallbackPolicyRequestMarshaller setBucketCallbackPolicyRequestMarshaller = new SetBucketCallbackPolicyRequestMarshaller();
     public static final AsyncProcessObjectRequestMarshaller asyncProcessObjectRequestMarshaller = new AsyncProcessObjectRequestMarshaller();
+    public static final CreateAccessPointRequestParser createAccessPointRequestParser = new CreateAccessPointRequestParser();
+    public static final PutAccessPointPolicyRequestParser putAccessPointPolicyRequestParser = new PutAccessPointPolicyRequestParser();
 
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
 
@@ -1940,6 +1942,51 @@ public final class RequestMarshallers {
             return rawData;
         }
 
+    }
+
+    public static final class CreateAccessPointRequestParser implements RequestMarshaller2<CreateAccessPointRequest> {
+        @Override
+        public byte[] marshall(CreateAccessPointRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<CreateAccessPointConfiguration>");
+            if(request.getAccessPointName() != null) {
+                xmlBody.append("<AccessPointName>").append(request.getAccessPointName()).append("</AccessPointName>");
+            }
+            if(request.getNetworkOrigin() != null) {
+                xmlBody.append("<NetworkOrigin>").append(request.getNetworkOrigin()).append("</NetworkOrigin>");
+            }
+            if(request.getVpc().getVpcId() != null) {
+                xmlBody.append("<VpcConfiguration>");
+                if(request.getVpc().getVpcId() != null){
+                    xmlBody.append("<VpcId>").append(request.getVpc().getVpcId()).append("</VpcId>");
+                }
+                xmlBody.append("</VpcConfiguration>");
+            }
+            xmlBody.append("</CreateAccessPointConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+    }
+
+    public static final class PutAccessPointPolicyRequestParser implements RequestMarshaller2<PutAccessPointPolicyRequest> {
+
+        @Override
+        public byte[] marshall(PutAccessPointPolicyRequest request) {
+
+            byte[] rawData = null;
+            try {
+                rawData = request.getAccessPointPolicy().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
     }
 
     private static enum EscapedChar {

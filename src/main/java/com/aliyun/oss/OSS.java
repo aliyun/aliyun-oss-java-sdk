@@ -5200,4 +5200,98 @@ public interface OSS {
      *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult writeGetObjectResponse(WriteGetObjectResponseRequest writeGetObjectResponseRequest) throws OSSException, ClientException;
+
+    /**
+     * Create access point
+     * @param createAccessPointRequest
+     *
+     * @return CreateAccessPointResult
+     *
+     * @throws OSSException
+     * @throws ClientException
+     */
+    CreateAccessPointResult createAccessPoint(CreateAccessPointRequest createAccessPointRequest) throws OSSException, ClientException;
+
+    /**
+     * Get access point from the OSS Server
+     * @param getAccessPointRequest
+     * @return GetAccessPointResult
+     * @throws OSSException
+     * @throws ClientException
+     */
+    GetAccessPointResult getAccessPoint(GetAccessPointRequest getAccessPointRequest) throws OSSException, ClientException;
+
+    /**
+     * Delete access point from the OSS Server
+     * @param deleteAccessPointRequest
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     * @throws ClientException
+     */
+    VoidResult deleteAccessPoint(DeleteAccessPointRequest deleteAccessPointRequest) throws OSSException, ClientException;
+
+    /**
+     * Put access point policy
+     * @param putAccessPointPolicyRequest
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     * @throws ClientException
+     */
+    VoidResult putAccessPointPolicy(PutAccessPointPolicyRequest putAccessPointPolicyRequest) throws OSSException, ClientException;
+
+    /**
+     * Get access point policy from the OSS Server
+     * @param getAccessPointPolicyRequest
+     * @return GetAccessPointPolicyResult
+     * @throws OSSException
+     * @throws ClientException
+     */
+    GetAccessPointPolicyResult getAccessPointPolicy(GetAccessPointPolicyRequest getAccessPointPolicyRequest) throws OSSException, ClientException;
+
+    /**
+     * Delete access point policy from the OSS Server
+     * @param deleteAccessPointPolicyRequest
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     * @throws ClientException
+     */
+    VoidResult deleteAccessPointPolicy(DeleteAccessPointPolicyRequest deleteAccessPointPolicyRequest) throws OSSException, ClientException;
+
+    /**
+     * List all access points for user {@link Bucket} in the parameter of
+     * {@link ListObjectsRequest}
+     *
+     * @param listAccessPointsRequest
+     *            The {@link ListAccessPointsRequest} instance that defines the
+     *            access point as well as the criteria such as max keys, continuation token.
+     *
+     * @return ListAccessPointsResult
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public ListAccessPointsResult listAccessPoints(ListAccessPointsRequest listAccessPointsRequest) throws OSSException, ClientException;
+
+    /**
+     * List all access points for bucket {@link Bucket} in the parameter of
+     * {@link ListObjectsRequest}
+     *
+     * @param listBucketAccessPointsRequest
+     *            The {@link ListBucketAccessPointsRequest} instance that defines the
+     *            access point as well as the criteria such as max keys, continuation token.
+     *
+     * @return ListAccessPointsResult
+     * @throws OSSException
+     * @throws ClientException
+     */
+    public ListAccessPointsResult listBucketAccessPoints(ListBucketAccessPointsRequest listBucketAccessPointsRequest) throws OSSException, ClientException;
+
 }

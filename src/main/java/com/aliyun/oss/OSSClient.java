@@ -1998,6 +1998,46 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public CreateAccessPointResult createAccessPoint(CreateAccessPointRequest createAccessPointRequest) throws OSSException, ClientException {
+        return bucketOperation.createAccessPoint(createAccessPointRequest);
+    }
+
+    @Override
+    public GetAccessPointResult getAccessPoint(GetAccessPointRequest getAccessPointRequest) throws OSSException, ClientException {
+        return bucketOperation.getAccessPoint(getAccessPointRequest);
+    }
+
+    @Override
+    public VoidResult deleteAccessPoint(DeleteAccessPointRequest deleteAccessPointRequest) throws OSSException, ClientException {
+        return bucketOperation.deleteAccessPoint(deleteAccessPointRequest);
+    }
+
+    @Override
+    public VoidResult putAccessPointPolicy(PutAccessPointPolicyRequest putAccessPointPolicyRequest) throws OSSException, ClientException {
+        return bucketOperation.putAccessPointPolicy(putAccessPointPolicyRequest);
+    }
+
+    @Override
+    public GetAccessPointPolicyResult getAccessPointPolicy(GetAccessPointPolicyRequest getAccessPointPolicyRequest) throws OSSException, ClientException {
+        return bucketOperation.getAccessPointPolicy(getAccessPointPolicyRequest);
+    }
+
+    @Override
+    public VoidResult deleteAccessPointPolicy(DeleteAccessPointPolicyRequest deleteAccessPointPolicyRequest) throws OSSException, ClientException {
+        return bucketOperation.deleteAccessPointPolicy(deleteAccessPointPolicyRequest);
+    }
+
+    @Override
+    public ListAccessPointsResult listAccessPoints(ListAccessPointsRequest listAccessPointsRequest) throws OSSException, ClientException {
+        return bucketOperation.listAccessPoints(listAccessPointsRequest);
+    }
+
+    @Override
+    public ListAccessPointsResult listBucketAccessPoints(ListBucketAccessPointsRequest listBucketAccessPointsRequest) throws OSSException, ClientException {
+        return bucketOperation.listBucketAccessPoints(listBucketAccessPointsRequest);
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();
