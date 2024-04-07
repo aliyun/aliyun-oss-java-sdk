@@ -121,5 +121,5 @@ public interface OSSHeaders extends HttpHeaders {
     static final String OSS_REQUEST_ROUTE = "x-oss-request-route";
     static final String OSS_REQUEST_TOKEN = "x-oss-request-token";
     static final String OSS_FWD_STATUS = "x-oss-fwd-status";
-
+    static final String OSS_ACCESS_POINT_NAME = "x-oss-access-point-name";
 }

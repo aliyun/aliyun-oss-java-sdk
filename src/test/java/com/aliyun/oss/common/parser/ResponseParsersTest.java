@@ -6350,4 +6350,161 @@ public class ResponseParsersTest {
             Assert.fail("parse list user data redundancy transition response body fail");
         }
     }
+    @Test
+    public void getAccessPointResponseParserTest() {
+        String responseBody = ""
+                + "<GetAccessPointResult>\n" +
+                "  <AccessPointName>test-ap-jt-3</AccessPointName>\n" +
+                "  <Bucket>test-jt-ap-3</Bucket>\n" +
+                "  <AccountId>aaabbb</AccountId>\n" +
+                "  <NetworkOrigin>Internet</NetworkOrigin>\n" +
+                "  <VpcConfiguration>\n" +
+                "     <VpcId>vpc-id</VpcId>\n" +
+                "  </VpcConfiguration>\n" +
+                "  <AccessPointArn>arn:aws:s3:us-east-1:920305101104:accesspoint/test-ap-jt-3</AccessPointArn>\n" +
+                "  <CreationDate>2022-01-05T05:39:53+00:00</CreationDate>\n" +
+                "  <Alias>test-ap-jt-3-pi1kg766wz34gwij4oan1tkep38gwuse1a-s3alias</Alias>\n" +
+                "  <Status>enable</Status>\n" +
+                "  <Endpoints>\n" +
+                "    <PublicEndpoint>s3-accesspoint-fips.dualstack.us-east-1.amazonaws.com</PublicEndpoint>\n" +
+                "    <InternalEndpoint>s3-accesspoint.dualstack.us-east-1.amazonaws.com</InternalEndpoint>\n" +
+                "  </Endpoints>\n" +
+                "</GetAccessPointResult>";
+
+        InputStream inputStream = null;
+        try {
+            inputStream = new ByteArrayInputStream(responseBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException exception) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        ResponseMessage responseMessage = new ResponseMessage(null);
+        responseMessage.setContent(inputStream);
+
+        ResponseParsers.GetAccessPointResponseParser parser = new ResponseParsers.GetAccessPointResponseParser();
+
+        try {
+            GetAccessPointResult result = parser.parse(responseMessage);
+
+            Assert.assertEquals(result.getAccessPointName(), "test-ap-jt-3");
+            Assert.assertEquals(result.getBucket(), "test-jt-ap-3");
+            Assert.assertEquals(result.getAccountId(), "aaabbb");
+            Assert.assertEquals(result.getNetworkOrigin(), "Internet");
+            Assert.assertEquals(result.getVpc().getVpcId(), "vpc-id");
+            Assert.assertEquals(result.getAccessPointArn(), "arn:aws:s3:us-east-1:920305101104:accesspoint/test-ap-jt-3");
+            Assert.assertEquals(result.getCreationDate(), "2022-01-05T05:39:53+00:00");
+            Assert.assertEquals(result.getAlias(), "test-ap-jt-3-pi1kg766wz34gwij4oan1tkep38gwuse1a-s3alias");
+            Assert.assertEquals(result.getStatus(), "enable");
+            Assert.assertEquals(result.getEndpoints().getPublicEndpoint(), "s3-accesspoint-fips.dualstack.us-east-1.amazonaws.com");
+            Assert.assertEquals(result.getEndpoints().getInternalEndpoint(), "s3-accesspoint.dualstack.us-east-1.amazonaws.com");
+
+        } catch (ResponseParseException exception) {
+            Assert.fail("parse access point response body fail");
+        }
+    }
+
+
+    @Test
+    public void createAccessPointResponseParserTest() {
+        String responseBody = ""
+                + "<CreateAccessPointResult>\n" +
+                "  <AccessPointArn>acs:oss:ap-southeast-2:1283641064516515:accesspoint/test-ap-zxl-list-bucket-02-3</AccessPointArn>\n" +
+                "  <Alias>test-ap-zxl-list-buc-45ee7945007a2f0bcb595f63e2215cb51b-ossalias</Alias>\n" +
+                "</CreateAccessPointResult>";
+
+        InputStream inputStream = null;
+        try {
+            inputStream = new ByteArrayInputStream(responseBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException exception) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        ResponseMessage responseMessage = new ResponseMessage(null);
+        responseMessage.setContent(inputStream);
+
+        ResponseParsers.CreateAccessPointResponseParser parser = new ResponseParsers.CreateAccessPointResponseParser();
+
+        try {
+            CreateAccessPointResult result = parser.parse(responseMessage);
+
+            Assert.assertEquals(result.getAccessPointArn(), "acs:oss:ap-southeast-2:1283641064516515:accesspoint/test-ap-zxl-list-bucket-02-3");
+            Assert.assertEquals(result.getAlias(), "test-ap-zxl-list-buc-45ee7945007a2f0bcb595f63e2215cb51b-ossalias");
+
+        } catch (ResponseParseException exception) {
+            Assert.fail("parse create access point response body fail");
+        }
+    }
+
+    @Test
+    public void getAccessPointPolicyResponseParserTest() {
+        String responseBody = "{\"Version\":\"1\",\"Statement\":[{\"Action\":[\"oss:PutObject\",\"oss:GetObject\"],\"Effect\":\"Deny\",\"Principal\":[\"1234567890\"],\"Resource\":[\"acs:oss:*:1234567890:*/*\"]}]}";
+
+        InputStream inputStream = null;
+        try {
+            inputStream = new ByteArrayInputStream(responseBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException exception) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        ResponseMessage responseMessage = new ResponseMessage(null);
+        responseMessage.setContent(inputStream);
+
+        ResponseParsers.GetAccessPointPolicyResponseParser parser = new ResponseParsers.GetAccessPointPolicyResponseParser();
+
+        try {
+            GetAccessPointPolicyResult result = parser.parse(responseMessage);
+
+            Assert.assertEquals(result.getAccessPointPolicy(), responseBody);
+
+
+        } catch (ResponseParseException exception) {
+            Assert.fail("parse access point response body fail");
+        }
+    }
+
+    @Test
+    public void listAccessPointResponseParserTest() {
+        String responseBody = ""
+                + "<ListAccessPointsResult>\n" +
+                "  <IsTruncated>true</IsTruncated>\n" +
+                "  <NextContinuationToken>sdfasfsagqeqg</NextContinuationToken>\n" +
+                "  <AccountId>aaabbb</AccountId>\n" +
+                "  <AccessPoints>\n" +
+                "    <AccessPoint>\n" +
+                "      <Bucket>Bucket</Bucket>\n" +
+                "      <AccessPointName>AccessPointName</AccessPointName>\n" +
+                "      <Alias>test-ap-jt-3-pi1kg766wz34gwij4oan1tkep38gwuse1a-s3alias</Alias>\n" +
+                "      <NetworkOrigin>Internet</NetworkOrigin>\n" +
+                "      <VpcConfiguration>\n" +
+                "        <VpcId>vpc-id</VpcId>\n" +
+                "      </VpcConfiguration>\n" +
+                "      <Status>false</Status>\n" +
+                "    </AccessPoint>\n" +
+                "  </AccessPoints>\n" +
+                "</ListAccessPointsResult>";
+
+        InputStream inputStream = null;
+        try {
+            inputStream = new ByteArrayInputStream(responseBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException exception) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        ResponseMessage responseMessage = new ResponseMessage(null);
+        responseMessage.setContent(inputStream);
+
+        ResponseParsers.ListAccessPointsResponseParser parser = new ResponseParsers.ListAccessPointsResponseParser();
+
+        try {
+            ListAccessPointsResult result = parser.parse(responseMessage);
+
+            Assert.assertEquals(result.getTruncated(), Boolean.valueOf("true"));
+            Assert.assertEquals(result.getNextContinuationToken(), "sdfasfsagqeqg");
+            Assert.assertEquals(result.getAccountId(), "aaabbb");
+            Assert.assertEquals(result.getAccessPoints().get(0).getAccessPointName(), "AccessPointName");
+            Assert.assertEquals(result.getAccessPoints().get(0).getBucket(), "Bucket");
+            Assert.assertEquals(result.getAccessPoints().get(0).getAlias(), "test-ap-jt-3-pi1kg766wz34gwij4oan1tkep38gwuse1a-s3alias");
+            Assert.assertEquals(result.getAccessPoints().get(0).getNetworkOrigin(), "Internet");
+            Assert.assertEquals(result.getAccessPoints().get(0).getVpc().getVpcId(), "vpc-id");
+            Assert.assertEquals(result.getAccessPoints().get(0).getStatus(), "false");
+        } catch (ResponseParseException exception) {
+            Assert.fail("parse list access point response body fail");
+        }
+    }
 }

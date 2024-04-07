@@ -149,6 +149,10 @@ public final class ResponseParsers {
     public static final GetBucketDataRedundancyTransitionResponseParser getBucketDataRedundancyTransitionResponseParser = new GetBucketDataRedundancyTransitionResponseParser();
     public static final ListBucketDataRedundancyTransitionResponseParser listBucketDataRedundancyTransitionResponseParser = new ListBucketDataRedundancyTransitionResponseParser();
     public static final ListUserDataRedundancyTransitionResponseParser listUserDataRedundancyTransitionResponseParser = new ListUserDataRedundancyTransitionResponseParser();
+    public static final CreateAccessPointResponseParser createAccessPointResponseParser = new CreateAccessPointResponseParser();
+    public static final GetAccessPointResponseParser getAccessPointResponseParser = new GetAccessPointResponseParser();
+    public static final GetAccessPointPolicyResponseParser getAccessPointPolicyResponseParser = new GetAccessPointPolicyResponseParser();
+    public static final ListAccessPointsResponseParser listAccessPointsResponseParser = new ListAccessPointsResponseParser();
 
 
     public static Long parseLongWithDefault(String defaultValue){
@@ -4643,6 +4647,188 @@ public final class ResponseParsers {
                 }
 
                 return getBucketPolicyStatusResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class CreateAccessPointResponseParser implements ResponseParser<CreateAccessPointResult> {
+        @Override
+        public CreateAccessPointResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                CreateAccessPointResult result = parseCreateAccessPoint(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private CreateAccessPointResult parseCreateAccessPoint(InputStream inputStream) throws ResponseParseException {
+            CreateAccessPointResult createAccessPointResult = new CreateAccessPointResult();
+            if (inputStream == null) {
+                return createAccessPointResult;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                createAccessPointResult.setAccessPointArn(root.getChildText("AccessPointArn"));
+                createAccessPointResult.setAlias(root.getChildText("Alias"));
+
+                return createAccessPointResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class GetAccessPointResponseParser implements ResponseParser<GetAccessPointResult> {
+        @Override
+        public GetAccessPointResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetAccessPointResult result = parseGetAccessPoint(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private GetAccessPointResult parseGetAccessPoint(InputStream inputStream) throws ResponseParseException {
+            GetAccessPointResult getAccessPointResult = new GetAccessPointResult();
+            if (inputStream == null) {
+                return getAccessPointResult;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                getAccessPointResult.setAccessPointName(root.getChildText("AccessPointName"));
+                getAccessPointResult.setBucket(root.getChildText("Bucket"));
+                getAccessPointResult.setAccountId(root.getChildText("AccountId"));
+                getAccessPointResult.setNetworkOrigin(root.getChildText("NetworkOrigin"));
+                if (root.getChild("VpcConfiguration").getChildText("VpcId") != null) {
+                    AccessPointVpcConfiguration accessPointVpcConfiguration = new AccessPointVpcConfiguration();
+                    accessPointVpcConfiguration.setVpcId(root.getChild("VpcConfiguration").getChildText("VpcId"));
+                    getAccessPointResult.setVpc(accessPointVpcConfiguration);
+                }
+                getAccessPointResult.setAccessPointArn(root.getChildText("AccessPointArn"));
+                if (root.getChildText("CreationDate") != null) {
+                    getAccessPointResult.setCreationDate(root.getChildText("CreationDate"));
+                }
+                getAccessPointResult.setAlias(root.getChildText("Alias"));
+                getAccessPointResult.setStatus(root.getChildText("Status"));
+
+                if (root.getChild("Endpoints") != null) {
+                    AccessPointEndpoints accessPointEndpoints = new AccessPointEndpoints();
+                    if (root.getChild("Endpoints").getChildText("PublicEndpoint") != null) {
+                        accessPointEndpoints.setPublicEndpoint(root.getChild("Endpoints").getChildText("PublicEndpoint"));
+                    }
+                    if (root.getChild("Endpoints").getChildText("InternalEndpoint") != null) {
+                        accessPointEndpoints.setInternalEndpoint(root.getChild("Endpoints").getChildText("InternalEndpoint"));
+                    }
+                    getAccessPointResult.setEndpoints(accessPointEndpoints);
+                }
+
+                return getAccessPointResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class GetAccessPointPolicyResponseParser implements ResponseParser<GetAccessPointPolicyResult> {
+        @Override
+        public GetAccessPointPolicyResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetAccessPointPolicyResult result = parseGetAccessPointPolicy(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private GetAccessPointPolicyResult parseGetAccessPointPolicy(InputStream inputStream) throws ResponseParseException {
+            GetAccessPointPolicyResult getAccessPointPolicyResult = new GetAccessPointPolicyResult();
+            if (inputStream == null) {
+                return getAccessPointPolicyResult;
+            }
+
+            try {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                StringBuilder sb = new StringBuilder();
+
+                String s ;
+                while (( s = reader.readLine()) != null) {
+                    sb.append(s);
+                }
+
+                getAccessPointPolicyResult.setAccessPointPolicy(sb.toString());
+
+                return getAccessPointPolicyResult;
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class ListAccessPointsResponseParser implements ResponseParser<ListAccessPointsResult> {
+        @Override
+        public ListAccessPointsResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                ListAccessPointsResult result = parseListAccessPoint(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private ListAccessPointsResult parseListAccessPoint(InputStream inputStream) throws ResponseParseException {
+            ListAccessPointsResult listAccessPointsResult = new ListAccessPointsResult();
+            if (inputStream == null) {
+                return listAccessPointsResult;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+                if(root.getChildText("IsTruncated") != null){
+                    listAccessPointsResult.setTruncated(Boolean.valueOf(root.getChildText("IsTruncated")));
+                }
+
+                listAccessPointsResult.setNextContinuationToken(root.getChildText("NextContinuationToken"));
+                listAccessPointsResult.setAccountId(root.getChildText("AccountId"));
+
+                if (root.getChild("AccessPoints") != null) {
+                    List<Element> accessElems = root.getChild("AccessPoints").getChildren("AccessPoint");
+                    List<AccessPoint> accessPoints = new ArrayList<AccessPoint>();
+                    for (Element e : accessElems) {
+                        AccessPoint accessPoint = new AccessPoint();
+                        accessPoint.setBucket(e.getChildText("Bucket"));
+                        accessPoint.setAccessPointName(e.getChildText("AccessPointName"));
+                        accessPoint.setAlias(e.getChildText("Alias"));
+                        accessPoint.setNetworkOrigin(e.getChildText("NetworkOrigin"));
+                        accessPoint.setStatus(e.getChildText("Status"));
+
+                        if (e.getChild("VpcConfiguration").getChildText("VpcId") != null) {
+                            AccessPointVpcConfiguration accessPointVpcConfiguration = new AccessPointVpcConfiguration();
+                            accessPointVpcConfiguration.setVpcId(e.getChild("VpcConfiguration").getChildText("VpcId"));
+                            accessPoint.setVpc(accessPointVpcConfiguration);
+                        }
+                        accessPoints.add(accessPoint);
+                    }
+                    listAccessPointsResult.setAccessPoints(accessPoints);
+                }
+                return listAccessPointsResult;
             } catch (JDOMParseException e) {
                 throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
             } catch (Exception e) {

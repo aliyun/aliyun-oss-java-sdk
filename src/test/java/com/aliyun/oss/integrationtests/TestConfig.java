@@ -22,6 +22,7 @@ package com.aliyun.oss.integrationtests;
 public final class TestConfig {
 
     // OSS test configuration
+    public static String OSS_TEST_USER_ID = null;
     public static String OSS_TEST_ENDPOINT = null;
     public static String OSS_TEST_REGION = null;
     public static String OSS_TEST_ACCESS_KEY_ID = null;

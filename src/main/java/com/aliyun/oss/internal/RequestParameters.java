@@ -166,5 +166,6 @@ public final class RequestParameters {
     public static final String REDUNDANCY_TRANSITION = "redundancyTransition";
     public static final String X_OSS_TARGET_REDUNDANCY_TYPE = "x-oss-target-redundancy-type";
     public static final String X_OSS_REDUNDANCY_TRANSITION_TASK_ID = "x-oss-redundancy-transition-taskid";
-
+    public static final String SUBRESOURCE_ACCESS_POINT = "accessPoint";
+    public static final String SUBRESOURCE_ACCESS_POINT_POLICY = "accessPointPolicy";
 }
