@@ -1,3 +1,6 @@
 {
-    "cmake.configureOnOpen": true
+    "cmake.configureOnOpen": true,
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "master"
+    ]
 }
