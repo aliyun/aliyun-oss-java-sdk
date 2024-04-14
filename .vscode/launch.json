@@ -1,0 +1,89 @@
++{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.*.0",
+    "configurations": [
+        {
+            "name": "(gdb) Attach",
+            "type": "cppdbg",
+            "request": "attach",
+            "program": "enter program name, for example ${workspaceFolder}/a.exe",
+            "MIMode": "gdb",
+            "miDebuggerPath": "/path/to/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+        {
+            "name": "(gdb) Attach",
+            "type": "cppdbg",
+            "request": "attach",
+            "program": "enter program name, for example ${workspaceFolder}/a.exe",
+            "MIMode": "gdb",
+            "miDebuggerPath": "/path/to/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+
+
+        {
+            "version": "0.2.0",
+            "configurations": [],
+            "compounds": []
+        }
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "IniEditorTest",
+            "request": "launch",
+            "mainClass": "com.aliyun.oss.common.utils.IniEditorTest",
+            "projectName": "aliyun-sdk-oss"
+        },
+        {
+            "type": "java",
+            "name": "IniSectionTest",
+            "request": "launch",
+            "mainClass": "com.aliyun.oss.common.utils.IniSectionTest",
+            "projectName": "aliyun-sdk-oss"
+        },
+        {
+            "type": "java",
+            "name": "BucketAccessMonitorAllowSmallSizeTest",
+            "request": "launch",
+            "mainClass": "com.aliyun.oss.integrationtests.BucketAccessMonitorAllowSmallSizeTest",
+            "projectName": "aliyun-sdk-oss"
+        },
+        {
+            "type": "java",
+            "name": "PerftestRunner",
+            "request": "launch",
+            "mainClass": "com.aliyun.oss.perftests.PerftestRunner",
+            "projectName": "aliyun-sdk-oss"
+        }
+    ]
+}
