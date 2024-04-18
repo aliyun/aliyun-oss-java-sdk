@@ -141,6 +141,10 @@ public final class ResponseParsers {
     public static final GetBucketCallbackPolicyResponseParser getBucketCallbackPolicyResponseParser = new GetBucketCallbackPolicyResponseParser();
     public static final AsyncProcessObjectResponseParser asyncProcessObjectResponseParser = new AsyncProcessObjectResponseParser();
     public static final GetBucketArchiveDirectReadResponseParser getBucketArchiveDirectReadResponseParser = new GetBucketArchiveDirectReadResponseParser();
+    public static final CreateBucketDataRedundancyTransitionResponseParser createBucketDataRedundancyTransitionResponseParser = new CreateBucketDataRedundancyTransitionResponseParser();
+    public static final GetBucketDataRedundancyTransitionResponseParser getBucketDataRedundancyTransitionResponseParser = new GetBucketDataRedundancyTransitionResponseParser();
+    public static final ListBucketDataRedundancyTransitionResponseParser listBucketDataRedundancyTransitionResponseParser = new ListBucketDataRedundancyTransitionResponseParser();
+    public static final ListUserDataRedundancyTransitionResponseParser listUserDataRedundancyTransitionResponseParser = new ListUserDataRedundancyTransitionResponseParser();
 
 
     public static Long parseLongWithDefault(String defaultValue){
@@ -4335,5 +4339,166 @@ public final class ResponseParsers {
                 throw new ResponseParseException(e.getMessage(), e);
             }
         }
+    }
+
+    public static final class CreateBucketDataRedundancyTransitionResponseParser implements ResponseParser<CreateBucketDataRedundancyTransitionResult> {
+
+        @Override
+        public CreateBucketDataRedundancyTransitionResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                CreateBucketDataRedundancyTransitionResult result = parseCreateBucketDataRedundancyTransition(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private CreateBucketDataRedundancyTransitionResult parseCreateBucketDataRedundancyTransition(InputStream inputStream) throws ResponseParseException {
+            CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransitionResult = new CreateBucketDataRedundancyTransitionResult();
+            if (inputStream == null) {
+                return createBucketDataRedundancyTransitionResult;
+            }
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                createBucketDataRedundancyTransitionResult.setTaskId(root.getChildText("TaskId"));
+                return createBucketDataRedundancyTransitionResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class GetBucketDataRedundancyTransitionResponseParser implements ResponseParser<GetBucketDataRedundancyTransitionResult> {
+
+        @Override
+        public GetBucketDataRedundancyTransitionResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetBucketDataRedundancyTransitionResult result = parseGetBucketDataRedundancyTransition(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private GetBucketDataRedundancyTransitionResult parseGetBucketDataRedundancyTransition(InputStream responseBody)
+                throws ResponseParseException {
+            try {
+                Element root = getXmlRootElement(responseBody);
+                return parseBucketDataRedundancyTransitionResult(root);
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+
+    }
+
+    public static final class ListBucketDataRedundancyTransitionResponseParser implements ResponseParser<List<GetBucketDataRedundancyTransitionResult>> {
+
+        @Override
+        public List<GetBucketDataRedundancyTransitionResult> parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                return parseListBucketDataRedundancyTransitionResult(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private List<GetBucketDataRedundancyTransitionResult> parseListBucketDataRedundancyTransitionResult(InputStream responseBody)
+                throws ResponseParseException {
+            try {
+
+                Element root = getXmlRootElement(responseBody);
+
+                List<GetBucketDataRedundancyTransitionResult> result = new ArrayList<GetBucketDataRedundancyTransitionResult>();
+                List<Element> bucketDataRedundancyTransitions = root.getChildren("BucketDataRedundancyTransition");
+
+                for (Element e : bucketDataRedundancyTransitions) {
+                    GetBucketDataRedundancyTransitionResult getBucketDataRedundancyTransitionResult = parseBucketDataRedundancyTransitionResult(e);
+                    result.add(getBucketDataRedundancyTransitionResult);
+                }
+
+                return result;
+
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+
+    }
+
+    public static final class ListUserDataRedundancyTransitionResponseParser implements ResponseParser<ListUserDataRedundancyTransitionResult> {
+        @Override
+        public ListUserDataRedundancyTransitionResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                ListUserDataRedundancyTransitionResult result = parseListDataRedundancyTransition(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private ListUserDataRedundancyTransitionResult parseListDataRedundancyTransition(InputStream inputStream) throws ResponseParseException {
+            ListUserDataRedundancyTransitionResult listUserDataRedundancyTransitionResult = new ListUserDataRedundancyTransitionResult();
+            List<GetBucketDataRedundancyTransitionResult> bucketDataRedundancyTransitionResultList = new ArrayList<GetBucketDataRedundancyTransitionResult>();
+            if (inputStream == null) {
+                return listUserDataRedundancyTransitionResult;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+                if(root.getChildText("IsTruncated") != null){
+                    listUserDataRedundancyTransitionResult.setTruncated(Boolean.valueOf(root.getChildText("IsTruncated")));
+                }
+
+                listUserDataRedundancyTransitionResult.setNextContinuationToken(root.getChildText("NextContinuationToken"));
+
+                List<Element> bucketDataRedundancyTransitions = root.getChildren("BucketDataRedundancyTransition");
+                for (Element e : bucketDataRedundancyTransitions) {
+                    GetBucketDataRedundancyTransitionResult getBucketDataRedundancyTransitionResult = parseBucketDataRedundancyTransitionResult(e);
+                    bucketDataRedundancyTransitionResultList.add(getBucketDataRedundancyTransitionResult);
+                }
+                listUserDataRedundancyTransitionResult.setBucketDataRedundancyTransition(bucketDataRedundancyTransitionResultList);
+                return listUserDataRedundancyTransitionResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static GetBucketDataRedundancyTransitionResult parseBucketDataRedundancyTransitionResult(Element element) {
+        GetBucketDataRedundancyTransitionResult result = new GetBucketDataRedundancyTransitionResult();
+
+        result.setTaskId(element.getChildText("TaskId"));
+        result.setCreateTime(element.getChildText("CreateTime"));
+        if (null != element.getChild("StartTime")) {
+            result.setStartTime(element.getChildText("StartTime"));
+        }
+        if (null != element.getChild("EndTime")) {
+            result.setEndTime(element.getChildText("EndTime"));
+        }
+        result.setStatus(element.getChildText("Status"));
+        if (null != element.getChild("EstimatedRemainingTime")) {
+            result.setEstimatedRemainingTime(Integer.parseInt(element.getChildText("EstimatedRemainingTime")));
+        }
+        if (null != element.getChild("ProcessPercentage")) {
+            result.setProcessPercentage(Integer.parseInt(element.getChildText("ProcessPercentage")));
+        }
+        if (null != element.getChild("Bucket")) {
+            result.setBucket(element.getChildText("Bucket"));
+        }
+
+        return result;
     }
 }

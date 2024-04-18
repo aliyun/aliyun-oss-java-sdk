@@ -2221,4 +2221,108 @@ public class OSSBucketOperation extends OSSOperation {
                 .setOriginalRequest(genericRequest).build();
         return doOperation(request, getBucketArchiveDirectReadResponseParser, bucketName, null, true);
     }
+
+    public CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(CreateBucketDataRedundancyTransitionRequest createBucketDataRedundancyTransitionRequest) throws OSSException, ClientException {
+        assertParameterNotNull(createBucketDataRedundancyTransitionRequest, "createBucketDataRedundancyTransitionRequest");
+        assertParameterNotNull(createBucketDataRedundancyTransitionRequest.getTargetType(), "targetType");
+
+        String bucketName = createBucketDataRedundancyTransitionRequest.getBucketName();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.REDUNDANCY_TRANSITION, null);
+        if (null != createBucketDataRedundancyTransitionRequest.getTargetType()) {
+            params.put(X_OSS_TARGET_REDUNDANCY_TYPE, createBucketDataRedundancyTransitionRequest.getTargetType().toString());
+        }
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.POST).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(createBucketDataRedundancyTransitionRequest)
+                .setInputSize(0).setInputStream(new ByteArrayInputStream(new byte[0]))
+                .build();
+
+        return doOperation(request, createBucketDataRedundancyTransitionResponseParser, bucketName, null, true);
+    }
+
+    public GetBucketDataRedundancyTransitionResult getBucketDataRedundancyTransition(GetBucketDataRedundancyTransitionRequest getBucketDataRedundancyTransitionRequest) throws OSSException, ClientException {
+        assertParameterNotNull(getBucketDataRedundancyTransitionRequest, "getBucketDataRedundancyTransitionRequest");
+        assertParameterNotNull(getBucketDataRedundancyTransitionRequest.getTaskId(), "taskId");
+
+        String bucketName = getBucketDataRedundancyTransitionRequest.getBucketName();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.REDUNDANCY_TRANSITION, null);
+        if (null != getBucketDataRedundancyTransitionRequest.getTaskId()) {
+            params.put(X_OSS_REDUNDANCY_TRANSITION_TASK_ID, getBucketDataRedundancyTransitionRequest.getTaskId());
+        }
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(getBucketDataRedundancyTransitionRequest).build();
+
+        return doOperation(request, getBucketDataRedundancyTransitionResponseParser, bucketName, null, true);
+    }
+
+    public VoidResult deleteBucketDataRedundancyTransition(DeleteBucketDataRedundancyTransitionRequest deleteBucketDataRedundancyTransitionRequest) throws OSSException, ClientException {
+        assertParameterNotNull(deleteBucketDataRedundancyTransitionRequest, "deleteBucketDataRedundancyTransitionRequest");
+        assertParameterNotNull(deleteBucketDataRedundancyTransitionRequest.getTaskId(), "taskId");
+
+        String bucketName = deleteBucketDataRedundancyTransitionRequest.getBucketName();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.REDUNDANCY_TRANSITION, null);
+        if (null != deleteBucketDataRedundancyTransitionRequest.getTaskId()) {
+            params.put(X_OSS_REDUNDANCY_TRANSITION_TASK_ID, deleteBucketDataRedundancyTransitionRequest.getTaskId());
+        }
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.DELETE).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(deleteBucketDataRedundancyTransitionRequest).build();
+
+        return doOperation(request, requestIdResponseParser, bucketName, null, true);
+    }
+
+    public ListUserDataRedundancyTransitionResult listUserDataRedundancyTransition(ListUserDataRedundancyTransitionRequest listUserDataRedundancyTransitionRequest) throws OSSException, ClientException {
+        assertParameterNotNull(listUserDataRedundancyTransitionRequest, "listUserDataRedundancyTransitionRequest");
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.REDUNDANCY_TRANSITION, null);
+        if (null != listUserDataRedundancyTransitionRequest.getMaxKeys()) {
+            params.put(MAX_KEYS, Integer.toString(listUserDataRedundancyTransitionRequest.getMaxKeys()));
+        }
+        if (null != listUserDataRedundancyTransitionRequest.getContinuationToken()) {
+            params.put(SUBRESOURCE_CONTINUATION_TOKEN, listUserDataRedundancyTransitionRequest.getContinuationToken());
+        }
+
+        GenericRequest gGenericRequest = new GenericRequest();
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setParameters(params).setOriginalRequest(gGenericRequest).build();
+
+        return doOperation(request, listUserDataRedundancyTransitionResponseParser, null, null, true);
+    }
+
+    public List<GetBucketDataRedundancyTransitionResult> listBucketDataRedundancyTransition(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RequestParameters.REDUNDANCY_TRANSITION, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(genericRequest).build();
+
+        return doOperation(request, listBucketDataRedundancyTransitionResponseParser, bucketName, null, true);
+    }
 }
