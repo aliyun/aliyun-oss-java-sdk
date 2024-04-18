@@ -2053,6 +2053,61 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(String bucketName) throws OSSException, ClientException {
+        return this.createBucketDataRedundancyTransition(new CreateBucketDataRedundancyTransitionRequest(bucketName, "ZRS"));
+    }
+
+    @Override
+    public CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(String bucketName, String targetType) throws OSSException, ClientException {
+        return this.createBucketDataRedundancyTransition(new CreateBucketDataRedundancyTransitionRequest(bucketName, targetType));
+    }
+
+    @Override
+    public CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(String bucketName, DataRedundancyType targetType) throws OSSException, ClientException {
+        return this.createBucketDataRedundancyTransition(new CreateBucketDataRedundancyTransitionRequest(bucketName, targetType.toString()));
+    }
+
+    @Override
+    public CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(CreateBucketDataRedundancyTransitionRequest createBucketDataRedundancyTransitionRequest) throws OSSException, ClientException {
+        return this.bucketOperation.createBucketDataRedundancyTransition(createBucketDataRedundancyTransitionRequest);
+    }
+
+    @Override
+    public GetBucketDataRedundancyTransitionResult getBucketDataRedundancyTransition(String bucketName, String taskId) throws OSSException, ClientException {
+        return this.getBucketDataRedundancyTransition(new GetBucketDataRedundancyTransitionRequest(bucketName, taskId));
+    }
+
+    @Override
+    public GetBucketDataRedundancyTransitionResult getBucketDataRedundancyTransition(GetBucketDataRedundancyTransitionRequest getBucketDataRedundancyTransitionRequest) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketDataRedundancyTransition(getBucketDataRedundancyTransitionRequest);
+    }
+
+    @Override
+    public VoidResult deleteBucketDataRedundancyTransition(String bucketName, String taskId) throws OSSException, ClientException {
+        return this.deleteBucketDataRedundancyTransition(new DeleteBucketDataRedundancyTransitionRequest(bucketName, taskId));
+    }
+
+    @Override
+    public VoidResult deleteBucketDataRedundancyTransition(DeleteBucketDataRedundancyTransitionRequest deleteBucketDataRedundancyTransitionRequest) throws OSSException, ClientException {
+        return this.bucketOperation.deleteBucketDataRedundancyTransition(deleteBucketDataRedundancyTransitionRequest);
+    }
+
+    @Override
+    public ListUserDataRedundancyTransitionResult listUserDataRedundancyTransition(ListUserDataRedundancyTransitionRequest listUserDataRedundancyTransitionRequest) throws OSSException, ClientException {
+        return this.bucketOperation.listUserDataRedundancyTransition(listUserDataRedundancyTransitionRequest);
+    }
+
+    @Override
+    public List<GetBucketDataRedundancyTransitionResult> listBucketDataRedundancyTransition(String bucketName) throws OSSException, ClientException {
+        return this.listBucketDataRedundancyTransition(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public List<GetBucketDataRedundancyTransitionResult> listBucketDataRedundancyTransition(GenericRequest request) throws OSSException, ClientException {
+        return this.bucketOperation.listBucketDataRedundancyTransition(request);
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();

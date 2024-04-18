@@ -163,5 +163,8 @@ public final class RequestParameters {
     public static final String HTTPS_CONFIG = "httpsConfig";
     public static final String PUBLIC_ACCESS_BLOCK = "publicAccessBlock";
     public static final String POLICY_STATUS = "policyStatus";
+    public static final String REDUNDANCY_TRANSITION = "redundancyTransition";
+    public static final String X_OSS_TARGET_REDUNDANCY_TYPE = "x-oss-target-redundancy-type";
+    public static final String X_OSS_REDUNDANCY_TRANSITION_TASK_ID = "x-oss-redundancy-transition-taskid";
 
 }
