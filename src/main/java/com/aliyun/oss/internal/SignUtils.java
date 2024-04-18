@@ -20,7 +20,6 @@
 package com.aliyun.oss.internal;
 
 import static com.aliyun.oss.common.utils.CodingUtils.assertTrue;
-import static com.aliyun.oss.internal.OSSConstants.LOGGER_PACKAGE_NAME;
 import static com.aliyun.oss.internal.RequestParameters.*;
 
 import java.util.Arrays;
@@ -41,12 +40,10 @@ import com.aliyun.oss.common.auth.ServiceSignature;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.utils.HttpHeaders;
 import com.aliyun.oss.common.utils.HttpUtil;
+import com.aliyun.oss.common.utils.LogUtils;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 public class SignUtils {
-    private static final Log log = LogFactory.getLog(LOGGER_PACKAGE_NAME);
 
     public static String composeRequestAuthorization(String accessKeyId, String signature) {
         return AUTHORIZATION_PREFIX + accessKeyId + ":" + signature;
@@ -229,7 +226,7 @@ public class SignUtils {
 
     public static String buildSignature(String secretAccessKey, String httpMethod, String resourcePath, RequestMessage request) {
         String canonicalString = buildCanonicalString(httpMethod, resourcePath, request, null);
-        log.debug("stringToSign: "+canonicalString);
+        LogUtils.getLog().debug("stringToSign: "+canonicalString);
         return ServiceSignature.create().computeSignature(secretAccessKey, canonicalString);
     }
 

@@ -6,19 +6,16 @@ import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.ServiceSignature;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.utils.HttpHeaders;
+import com.aliyun.oss.common.utils.LogUtils;
 import com.aliyun.oss.internal.OSSHeaders;
 import com.aliyun.oss.internal.SignUtils;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.net.URI;
 
-import static com.aliyun.oss.internal.OSSConstants.LOGGER_PACKAGE_NAME;
 import static com.aliyun.oss.internal.RequestParameters.*;
 
 public class OSSV1Signer extends OSSSignerBase {
-    private static final Log log = LogFactory.getLog(LOGGER_PACKAGE_NAME);
 
     public OSSV1Signer(OSSSignerParams signerParams) {
         super(signerParams);
@@ -50,7 +47,7 @@ public class OSSV1Signer extends OSSSignerBase {
         request.addHeader(HttpHeaders.DATE, expires);
 
         String canonicalString = SignUtils.buildCanonicalString(request.getMethod().toString(), canonicalResource, request, expires);
-        log.debug("stringToSign: "+canonicalString);
+        LogUtils.getLog().debug("stringToSign: "+canonicalString);
         String signature = ServiceSignature.create().computeSignature(secretAccessKey, canonicalString);
 
         request.addParameter(HttpHeaders.EXPIRES, expires);

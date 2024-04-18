@@ -6,22 +6,19 @@ import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.HmacSHA256Signature;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.utils.HttpHeaders;
+import com.aliyun.oss.common.utils.LogUtils;
 import com.aliyun.oss.internal.OSSHeaders;
 import com.aliyun.oss.internal.SignParameters;
 import com.aliyun.oss.internal.SignV2Utils;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.net.URI;
 import java.util.Set;
 
-import static com.aliyun.oss.internal.OSSConstants.LOGGER_PACKAGE_NAME;
 import static com.aliyun.oss.internal.RequestParameters.*;
 import static com.aliyun.oss.internal.RequestParameters.OSS_SIGNATURE;
 
 public class OSSV2Signer extends OSSSignerBase {
-    private static final Log log = LogFactory.getLog(LOGGER_PACKAGE_NAME);
 
     protected OSSV2Signer(OSSSignerParams signerParams) {
         super(signerParams);
@@ -62,7 +59,7 @@ public class OSSV2Signer extends OSSSignerBase {
         Set<String> rawAdditionalHeaderNames = SignV2Utils.buildRawAdditionalHeaderNames(request.getHeaders().keySet(),
                 signerParams.getAdditionalHeaderNames());
         String canonicalString = SignV2Utils.buildCanonicalString(request.getMethod().toString(), canonicalResource, request, rawAdditionalHeaderNames);
-        log.debug("stringToSign: "+canonicalString);
+        LogUtils.getLog().debug("stringToSign: "+canonicalString);
         String signature = new HmacSHA256Signature().computeSignature(secretAccessKey, canonicalString);
 
         request.addParameter(OSS_SIGNATURE, signature);

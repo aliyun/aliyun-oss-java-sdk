@@ -8,9 +8,8 @@ import com.aliyun.oss.common.auth.HmacSHA256Signature;
 import com.aliyun.oss.common.comm.RequestMessage;
 import com.aliyun.oss.common.utils.HttpHeaders;
 import com.aliyun.oss.common.utils.HttpUtil;
+import com.aliyun.oss.common.utils.LogUtils;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -18,7 +17,6 @@ import java.util.*;
 
 import static com.aliyun.oss.common.utils.CodingUtils.assertTrue;
 import static com.aliyun.oss.internal.OSSConstants.DEFAULT_CHARSET_NAME;
-import static com.aliyun.oss.internal.OSSConstants.LOGGER_PACKAGE_NAME;
 import static com.aliyun.oss.internal.OSSUtils.populateResponseHeaderParameters;
 import static com.aliyun.oss.internal.RequestParameters.*;
 import static com.aliyun.oss.internal.SignParameters.AUTHORIZATION_ACCESS_KEY_ID;
@@ -27,7 +25,6 @@ import static com.aliyun.oss.internal.SignParameters.AUTHORIZATION_PREFIX_V2;
 import static com.aliyun.oss.internal.SignParameters.AUTHORIZATION_SIGNATURE;
 
 public class SignV2Utils {
-    private static final Log log = LogFactory.getLog(LOGGER_PACKAGE_NAME);
 
     public static String composeRequestAuthorization(String accessKeyId, String signature, RequestMessage request) {
         StringBuilder sb = new StringBuilder();
@@ -300,7 +297,7 @@ public class SignV2Utils {
     public static String buildSignature(String secretAccessKey, String httpMethod, String resourcePath, RequestMessage request) {
         String canonicalString = buildCanonicalString(httpMethod, resourcePath, request,
                 buildRawAdditionalHeaderNames(request.getOriginalRequest().getHeaders().keySet(), request.getOriginalRequest().getAdditionalHeaderNames()));
-        log.debug("stringToSign: "+canonicalString);
+        LogUtils.getLog().debug("stringToSign: "+canonicalString);
         return new HmacSHA256Signature().computeSignature(secretAccessKey, canonicalString);
     }
 
