@@ -3,12 +3,10 @@ package com.aliyun.oss.model;
 public class PutPublicAccessBlockRequest extends GenericRequest {
     private boolean blockPublicAccess = false;
 
-    public PutPublicAccessBlockRequest(String bucketName) {
-        super(bucketName);
+    public PutPublicAccessBlockRequest() {
     }
 
-    public PutPublicAccessBlockRequest(String bucketName, boolean blockPublicAccess) {
-        super(bucketName);
+    public PutPublicAccessBlockRequest(boolean blockPublicAccess) {
         this.blockPublicAccess = blockPublicAccess;
     }
 

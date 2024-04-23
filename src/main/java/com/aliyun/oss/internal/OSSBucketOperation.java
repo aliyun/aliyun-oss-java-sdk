@@ -2198,10 +2198,6 @@ public class OSSBucketOperation extends OSSOperation {
     public VoidResult putPublicAccessBlock(PutPublicAccessBlockRequest putPublicAccessBlockRequest) throws OSSException, ClientException {
         assertParameterNotNull(putPublicAccessBlockRequest, "putPublicAccessBlockRequest");
 
-        String bucketName = putPublicAccessBlockRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
-
         Map<String, String> params = new HashMap<String, String>();
         params.put(PUBLIC_ACCESS_BLOCK, null);
 
@@ -2217,10 +2213,6 @@ public class OSSBucketOperation extends OSSOperation {
     public GetPublicAccessBlockResult getPublicAccessBlock(GenericRequest genericRequest) throws OSSException, ClientException {
         assertParameterNotNull(genericRequest, "genericRequest");
 
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
-
         Map<String, String> params = new HashMap<String, String>();
         params.put(PUBLIC_ACCESS_BLOCK, null);
 
@@ -2233,9 +2225,6 @@ public class OSSBucketOperation extends OSSOperation {
 
     public VoidResult deletePublicAccessBlock(GenericRequest genericRequest) throws OSSException, ClientException {
         assertParameterNotNull(genericRequest, "genericRequest");
-        String bucketName = genericRequest.getBucketName();
-        assertParameterNotNull(bucketName, "bucketName");
-        ensureBucketNameValid(bucketName);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(PUBLIC_ACCESS_BLOCK, null);

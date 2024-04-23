@@ -5213,12 +5213,10 @@ public interface OSS {
      * @throws ClientException
      *             If any errors occurred in OSS while processing the request.
      */
-    VoidResult putPublicAccessBlock(PutPublicAccessBlockRequest putPublicAccessBlockRequest) throws OSSException, ClientException;
+    public VoidResult putPublicAccessBlock(PutPublicAccessBlockRequest putPublicAccessBlockRequest) throws OSSException, ClientException;
 
     /**
      * Get publicAccessBlock from the OSS Server
-     * @param bucketName
-     *             The bucket name.
      * @return A {@link GetPublicAccessBlockResult} instance.
      * @throws OSSException
      *             If any errors are encountered in the client while making the
@@ -5226,12 +5224,10 @@ public interface OSS {
      * @throws ClientException
      *             If any errors occurred in OSS while processing the request.
      */
-    GetPublicAccessBlockResult getPublicAccessBlock(String bucketName) throws OSSException, ClientException;
+    public GetPublicAccessBlockResult getPublicAccessBlock() throws OSSException, ClientException;
 
     /**
      * Delete publicAccessBlock from the OSS Server
-     * @param bucketName
-     *             The bucket name.
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
      *
@@ -5241,7 +5237,7 @@ public interface OSS {
      * @throws ClientException
      *             If any errors occurred in OSS while processing the request.
      */
-    VoidResult deletePublicAccessBlock(String bucketName) throws OSSException, ClientException;
+    public VoidResult deletePublicAccessBlock() throws OSSException, ClientException;
 
     /**
      * Set bucketPublicAccessBlock to the OSS Server
@@ -5255,7 +5251,7 @@ public interface OSS {
      * @throws ClientException
      *             If any errors occurred in OSS while processing the request.
      */
-    VoidResult putBucketPublicAccessBlock(PutBucketPublicAccessBlockRequest putBucketPublicAccessBlockRequest) throws OSSException, ClientException;
+    public VoidResult putBucketPublicAccessBlock(PutBucketPublicAccessBlockRequest putBucketPublicAccessBlockRequest) throws OSSException, ClientException;
 
     /**
      * Get bucketPublicAccessBlock from the OSS Server
@@ -5268,7 +5264,7 @@ public interface OSS {
      * @throws ClientException
      *             If any errors occurred in OSS while processing the request.
      */
-    GetBucketPublicAccessBlockResult getBucketPublicAccessBlock(String bucketName) throws OSSException, ClientException;
+    public GetBucketPublicAccessBlockResult getBucketPublicAccessBlock(String bucketName) throws OSSException, ClientException;
 
     /**
      * Delete bucketPublicAccessBlock from the OSS Server
@@ -5283,7 +5279,7 @@ public interface OSS {
      * @throws ClientException
      *             If any errors occurred in OSS while processing the request.
      */
-    VoidResult deleteBucketPublicAccessBlock(String bucketName) throws OSSException, ClientException;
+    public VoidResult deleteBucketPublicAccessBlock(String bucketName) throws OSSException, ClientException;
 
     /**
      * Get bucketPolicyStatus from the OSS Server
@@ -5296,5 +5292,5 @@ public interface OSS {
      * @throws ClientException
      *             If any errors occurred in OSS while processing the request.
      */
-    GetBucketPolicyStatusResult getBucketPolicyStatus(String bucketName) throws OSSException, ClientException;
+    public GetBucketPolicyStatusResult getBucketPolicyStatus(String bucketName) throws OSSException, ClientException;
 }

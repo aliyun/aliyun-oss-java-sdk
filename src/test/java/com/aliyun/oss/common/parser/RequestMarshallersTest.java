@@ -1601,7 +1601,7 @@ public class RequestMarshallersTest {
     public void testPutPublicAccessBlockMarshaller() {
         final String bucketName = "unormal-set-public-block";
 
-        PutPublicAccessBlockRequest request = new PutPublicAccessBlockRequest(bucketName)
+        PutPublicAccessBlockRequest request = new PutPublicAccessBlockRequest()
                 .withBlockPublicAccess(true);
 
         byte[] data = putPublicAccessBlockRequestMarshaller.marshall(request);

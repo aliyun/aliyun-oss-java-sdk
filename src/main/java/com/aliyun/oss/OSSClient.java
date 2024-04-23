@@ -2003,13 +2003,13 @@ public class OSSClient implements OSS {
     }
 
     @Override
-    public GetPublicAccessBlockResult getPublicAccessBlock(String bucketName) throws OSSException, ClientException {
-        return this.bucketOperation.getPublicAccessBlock(new GenericRequest(bucketName));
+    public GetPublicAccessBlockResult getPublicAccessBlock() throws OSSException, ClientException {
+        return this.bucketOperation.getPublicAccessBlock(new GenericRequest());
     }
 
     @Override
-    public VoidResult deletePublicAccessBlock(String bucketName) throws OSSException, ClientException {
-        return this.bucketOperation.deletePublicAccessBlock(new GenericRequest(bucketName));
+    public VoidResult deletePublicAccessBlock() throws OSSException, ClientException {
+        return this.bucketOperation.deletePublicAccessBlock(new GenericRequest());
     }
 
     @Override
