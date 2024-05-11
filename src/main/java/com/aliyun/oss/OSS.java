@@ -5200,4 +5200,14 @@ public interface OSS {
      *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult writeGetObjectResponse(WriteGetObjectResponseRequest writeGetObjectResponseRequest) throws OSSException, ClientException;
+
+    /**
+     * invoke operation
+     *
+     * @param request request
+     * @return result
+     * @throws OSSException
+     * @throws ClientException
+     */
+    <T> CommonApiResult<T> invokeOperation(CommonApiRequest<T> request) throws OSSException, ClientException;
 }
