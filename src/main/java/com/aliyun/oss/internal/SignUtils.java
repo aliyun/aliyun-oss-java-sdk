@@ -95,7 +95,8 @@ public class SignUtils {
         }
 
         // Append canonical resource to canonical string
-        canonicalString.append(buildCanonicalizedResource(resourcePath, request.getParameters()));
+        canonicalString.append(buildCanonicalizedResource(resourcePath, request.getParameters(), request.getSignedParameterNames()));
+
 
         return canonicalString.toString();
     }
@@ -194,6 +195,10 @@ public class SignUtils {
     }
 
     public static String buildCanonicalizedResource(String resourcePath, Map<String, String> parameters) {
+        return buildCanonicalizedResource(resourcePath, parameters, null);
+    }
+
+    public static String buildCanonicalizedResource(String resourcePath, Map<String, String> parameters, Set<String> signedParameterNames) {
         assertTrue(resourcePath.startsWith("/"), "Resource path should start with slash character");
 
         StringBuilder builder = new StringBuilder();
@@ -205,7 +210,8 @@ public class SignUtils {
 
             char separator = '?';
             for (String paramName : parameterNames) {
-                if (!SignParameters.SIGNED_PARAMTERS.contains(paramName)) {
+                boolean notByParam = signedParameterNames == null || !signedParameterNames.contains(paramName);
+                if (!SignParameters.SIGNED_PARAMTERS.contains(paramName) && notByParam) {
                     continue;
                 }
 

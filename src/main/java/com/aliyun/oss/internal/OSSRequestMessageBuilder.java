@@ -26,11 +26,7 @@ import static com.aliyun.oss.internal.OSSUtils.determineResourcePath;
 
 import java.io.InputStream;
 import java.net.URI;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.HttpMethod;
@@ -57,6 +53,7 @@ public class OSSRequestMessageBuilder {
     private boolean useChunkEncoding = false;
 
     private WebServiceRequest originalRequest;
+    private Set<String> signedParameterNames = new HashSet<String>();
 
     public OSSRequestMessageBuilder(ServiceClient innerClient) {
         this.innerClient = innerClient;
@@ -166,6 +163,15 @@ public class OSSRequestMessageBuilder {
         return this;
     }
 
+    public Set<String> getSignedParameterNames() {
+        return signedParameterNames;
+    }
+
+    public OSSRequestMessageBuilder setSignedParameterNames(Set<String> signedParameterNames) {
+        this.signedParameterNames = signedParameterNames;
+        return this;
+    }
+
     public RequestMessage build() {
         ClientConfiguration clientCofig = this.innerClient.getClientConfiguration();
         Map<String, String> sentHeaders = new HashMap<String, String>(this.headers);
@@ -182,7 +188,7 @@ public class OSSRequestMessageBuilder {
         request.setContent(this.inputStream);
         request.setContentLength(this.inputSize);
         request.setUseChunkEncoding(this.inputSize == -1 ? true : this.useChunkEncoding);
-
+        request.setSignedParameterNames(new HashSet<String>(this.signedParameterNames));
         return request;
     }
 

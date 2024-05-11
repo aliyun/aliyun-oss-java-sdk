@@ -21,8 +21,10 @@ package com.aliyun.oss.common.comm;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.model.WebServiceRequest;
@@ -62,12 +64,26 @@ public class RequestMessage extends HttpMesssage {
     /* The original request provided by user */
     private final WebServiceRequest originalRequest;
 
+    /**
+     * 只有common api生效
+     * 不影响generatePresignedUrlV1等方法
+     */
+    private Set<String> signedParameterNames = new HashSet<String>();
+
     public RequestMessage(String bucketName, String key) {
         this(null, bucketName, key);
     }
 
     public RequestMessage(WebServiceRequest originalRequest, String bucketName, String key) {
         this.originalRequest = (originalRequest == null) ? WebServiceRequest.NOOP : originalRequest;
+    }
+
+    public Set<String> getSignedParameterNames() {
+        return signedParameterNames;
+    }
+
+    public void setSignedParameterNames(Set<String> signedParameterNames) {
+        this.signedParameterNames = signedParameterNames;
     }
 
     public HttpMethod getMethod() {
