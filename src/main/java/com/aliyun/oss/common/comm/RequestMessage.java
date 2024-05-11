@@ -65,8 +65,8 @@ public class RequestMessage extends HttpMesssage {
     private final WebServiceRequest originalRequest;
 
     /**
-     * 只有common api生效
-     * 不影响generatePresignedUrlV1等方法
+     * Only the common API is effective
+     * Does not affect methods such as generatePresentedUrl V1
      */
     private Set<String> signedParameterNames = new HashSet<String>();
 
