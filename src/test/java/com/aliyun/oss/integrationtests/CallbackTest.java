@@ -750,5 +750,92 @@ public class CallbackTest extends TestBase {
             Assert.fail(ex.getMessage());
         }
     }
-    
+
+    /**
+     * callback sni，type of callback body is url
+     */
+    @Test
+    public void testPutObjectCallbackSNIWithURL() throws Exception {
+        String key = "put-callback-sni";
+
+        try {
+            InputStream instream = genFixedLengthInputStream(instreamLength);
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, instream);
+
+            Callback callback = new Callback();
+            callback.setCallbackUrl(callbackUrl);
+            callback.setCallbackHost("oss-cn-hangzhou.aliyuncs.com");
+            callback.setCallbackBody("bucket=${bucket}&object=${object}&etag=${etag}&size=${size}&"
+                    + "mimeType=${mimeType}&my_var1=${x:var1}&my_var2=${x:var2}");
+            callback.setCalbackBodyType(CalbackBodyType.URL);
+            callback.addCallbackVar("x:var1", "value1");
+            callback.addCallbackVar("x:var2", "value2");
+            callback.setCallbackSNI(true);
+            putObjectRequest.setCallback(callback);
+
+            PutObjectResult putObjectResult = ossClient.putObject(putObjectRequest);
+            byte[] buffer = new byte[bufferLength];
+            int nRead = putObjectResult.getResponse().getContent().read(buffer);
+            putObjectResult.getResponse().getContent().close();
+//            Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
+
+            OSSObject obj = ossClient.getObject(bucketName, key);
+            Assert.assertEquals(key, obj.getKey());
+            Assert.assertEquals(instreamLength, obj.getObjectMetadata().getContentLength());
+
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        }
+    }
+
+    /**
+     * callback sni，type of callback body is json
+     */
+    @Test
+    public void testPutObjectCallbackSNIWithJSON() {
+        String key = "multipart-upload-callback-json-sni";
+
+        try {
+            String uploadId = claimUploadId(ossClient, bucketName, key);
+            InputStream instream = genFixedLengthInputStream(instreamLength);
+            List<PartETag> partETags = new ArrayList<PartETag>();
+
+            UploadPartRequest uploadPartRequest = new UploadPartRequest();
+            uploadPartRequest.setBucketName(bucketName);
+            uploadPartRequest.setKey(key);
+            uploadPartRequest.setInputStream(instream);
+            uploadPartRequest.setPartNumber(1);
+            uploadPartRequest.setPartSize(instreamLength);
+            uploadPartRequest.setUploadId(uploadId);
+            UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
+            partETags.add(uploadPartResult.getPartETag());
+
+            Callback callback = new Callback();
+            callback.setCallbackUrl(callbackUrl);
+            callback.setCallbackHost("oss-cn-hangzhou.aliyuncs.com");
+            callback.setCallbackBody("{\\\"上片\\\":\\\"夏日好，月色白如雪。\\\" ,\\\"下片\\\":\\\"东山照欢会，西山照离别。 夏日好，花月有清阴。\\\"}");
+            callback.setCalbackBodyType(CalbackBodyType.JSON);
+            callback.addCallbackVar("x:键值1", "值1：凌波不过横塘路，但目送，芳尘去。");
+            callback.addCallbackVar("x:键值2", "值2：长记曾携手处，千树压、西湖寒碧。");
+            callback.setCallbackSNI(true);
+
+            CompleteMultipartUploadRequest completeMultipartUploadRequest =
+                    new CompleteMultipartUploadRequest(bucketName, key, uploadId, partETags);
+            completeMultipartUploadRequest.setCallback(callback);
+            CompleteMultipartUploadResult completeMultipartUploadResult =
+                    ossClient.completeMultipartUpload(completeMultipartUploadRequest);
+
+            byte[] buffer = new byte[bufferLength];
+            int nRead = completeMultipartUploadResult.getCallbackResponseBody().read(buffer);
+            completeMultipartUploadResult.getCallbackResponseBody().close();
+//            Assert.assertEquals(callbackResponse, new String(buffer, 0, nRead));
+
+            OSSObject obj = ossClient.getObject(bucketName, key);
+            Assert.assertEquals(key, obj.getKey());
+            Assert.assertEquals(instreamLength, obj.getObjectMetadata().getContentLength());
+
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        }
+    }
 }
