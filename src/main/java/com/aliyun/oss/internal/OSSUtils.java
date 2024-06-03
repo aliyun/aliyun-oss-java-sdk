@@ -472,6 +472,11 @@ public class OSSUtils {
         } else if (callback.getCalbackBodyType() == CalbackBodyType.URL) {
             jsonBody.append(",\"callbackBodyType\":\"application/x-www-form-urlencoded\"");
         }
+
+        // SNI, optional
+        if (callback.getCallbackSNI()) {
+            jsonBody.append(",\"callbackSNI\":" + callback.getCallbackSNI());
+        }
         jsonBody.append("}");
 
         return jsonBody.toString();

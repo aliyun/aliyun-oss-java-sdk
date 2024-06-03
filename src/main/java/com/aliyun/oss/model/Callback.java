@@ -157,6 +157,23 @@ public class Callback {
         return false;
     }
 
+    public boolean getCallbackSNI() {
+        return callbackSNI;
+    }
+
+    /**
+     *  Sets the callback SNI.
+     *  When the client initiates a callback request, Does OSS send a Server Name Indication (SNI) to the return source address specified through callbackUrl.
+     *  Whether to send SNI depends on the server's configuration and requirements.
+     *  For servers hosting multiple TLS/SSL certificates using the same IP address, it is recommended to choose to send SNI.
+     *
+     * @param callbackSNI
+     *            Whether to send SNI.
+     */
+    public void setCallbackSNI(boolean callbackSNI) {
+        this.callbackSNI = callbackSNI;
+    }
+
     /**
      * The callbackUrl after a successful upload
      */
@@ -183,5 +200,10 @@ public class Callback {
      * The custom parameters
      */
     private Map<String, String> callbackVar = new HashMap<String, String>();
+
+    /**
+     * When the client initiates a callback request, does the OSS send a server name indication SNI to the return source address specified through callbackUrl
+     */
+    private boolean callbackSNI = false;
 
 }
