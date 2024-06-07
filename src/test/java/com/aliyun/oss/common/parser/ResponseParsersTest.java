@@ -5952,4 +5952,189 @@ public class ResponseParsersTest {
             Assert.assertTrue(false);
         }
     }
+    @Test
+    public void testParseGetPublicAccessBlock() {
+        InputStream instream = null;
+        String respBody;
+
+        respBody = "" +
+                "<PublicAccessBlockConfiguration>\n" +
+                "  <BlockPublicAccess>true</BlockPublicAccess>\n" +
+                "</PublicAccessBlockConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        GetPublicAccessBlockResult result1 = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetPublicAccessBlockResponseParser parser = new ResponseParsers.GetPublicAccessBlockResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals(true, result1.getBlockPublicAccess());
+
+        respBody = "invalid";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetPublicAccessBlockResponseParser parser = new ResponseParsers.GetPublicAccessBlockResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetPublicAccessBlockResponseParser parser = new ResponseParsers.GetPublicAccessBlockResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+    }
+
+    @Test
+    public void testParseGetBucketPublicAccessBlock() {
+        InputStream instream = null;
+        String respBody;
+
+        respBody = "" +
+                "<PublicAccessBlockConfiguration>\n" +
+                "  <BlockPublicAccess>true</BlockPublicAccess>\n" +
+                "</PublicAccessBlockConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        GetBucketPublicAccessBlockResult result1 = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketPublicAccessBlockResponseParser parser = new ResponseParsers.GetBucketPublicAccessBlockResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals(true, result1.getBlockPublicAccess());
+
+        respBody = "invalid";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketPublicAccessBlockResponseParser parser = new ResponseParsers.GetBucketPublicAccessBlockResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketPublicAccessBlockResponseParser parser = new ResponseParsers.GetBucketPublicAccessBlockResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+    }
+
+    @Test
+    public void testParseGetBucketPolicyStatus() {
+        InputStream instream = null;
+        String respBody;
+
+        respBody = "" +
+                "<PolicyStatus>\n" +
+                "   <IsPublic>true</IsPublic>\n" +
+                "</PolicyStatus>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        GetBucketPolicyStatusResult result1 = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketPolicyStatusResponseParser parser = new ResponseParsers.GetBucketPolicyStatusResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals(true, result1.isPublic());
+
+        respBody = "invalid";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketPolicyStatusResponseParser parser = new ResponseParsers.GetBucketPolicyStatusResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketPolicyStatusResponseParser parser = new ResponseParsers.GetBucketPolicyStatusResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+    }
 }

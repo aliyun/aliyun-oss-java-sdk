@@ -5241,4 +5241,97 @@ public interface OSS {
      * @throws ClientException ClientException
      */
     public GetBucketHttpsConfigResult getBucketHttpsConfig(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Set publicAccessBlock to the OSS Server
+     * @param putPublicAccessBlockRequest
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public VoidResult putPublicAccessBlock(PutPublicAccessBlockRequest putPublicAccessBlockRequest) throws OSSException, ClientException;
+
+    /**
+     * Get publicAccessBlock from the OSS Server
+     * @return A {@link GetPublicAccessBlockResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public GetPublicAccessBlockResult getPublicAccessBlock() throws OSSException, ClientException;
+
+    /**
+     * Delete publicAccessBlock from the OSS Server
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public VoidResult deletePublicAccessBlock() throws OSSException, ClientException;
+
+    /**
+     * Set bucketPublicAccessBlock to the OSS Server
+     * @param putBucketPublicAccessBlockRequest
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public VoidResult putBucketPublicAccessBlock(PutBucketPublicAccessBlockRequest putBucketPublicAccessBlockRequest) throws OSSException, ClientException;
+
+    /**
+     * Get bucketPublicAccessBlock from the OSS Server
+     * @param bucketName
+     *             The bucket name.
+     * @return A {@link GetBucketPublicAccessBlockResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public GetBucketPublicAccessBlockResult getBucketPublicAccessBlock(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Delete bucketPublicAccessBlock from the OSS Server
+     * @param bucketName
+     *             The bucket name.
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public VoidResult deleteBucketPublicAccessBlock(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Get bucketPolicyStatus from the OSS Server
+     * @param bucketName
+     *             The bucket name.
+     * @return A {@link GetBucketPolicyStatusResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public GetBucketPolicyStatusResult getBucketPolicyStatus(String bucketName) throws OSSException, ClientException;
 }

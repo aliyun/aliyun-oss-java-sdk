@@ -1663,4 +1663,54 @@ public class RequestMarshallersTest {
         Assert.assertEquals("TLSv1.3", root.getChild("TLS").getChildren("TLSVersion").get(1).getText());
 
     }
+
+    @Test
+    public void testPutPublicAccessBlockMarshaller() {
+        final String bucketName = "unormal-set-public-block";
+
+        PutPublicAccessBlockRequest request = new PutPublicAccessBlockRequest()
+                .withBlockPublicAccess(true);
+
+        byte[] data = putPublicAccessBlockRequestMarshaller.marshall(request);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        Assert.assertEquals("true", root.getChildText("BlockPublicAccess"));
+
+    }
+
+    @Test
+    public void testPutBucketPublicAccessBlockMarshaller() {
+        final String bucketName = "unormal-set-bucket-block";
+
+        PutBucketPublicAccessBlockRequest request = new PutBucketPublicAccessBlockRequest(bucketName)
+                .withBlockPublicAccess(true);
+
+        byte[] data = putBucketPublicAccessBlockRequestMarshaller.marshall(request);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        Assert.assertEquals("true", root.getChildText("BlockPublicAccess"));
+
+    }
 }
