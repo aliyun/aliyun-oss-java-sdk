@@ -142,6 +142,9 @@ public final class ResponseParsers {
     public static final AsyncProcessObjectResponseParser asyncProcessObjectResponseParser = new AsyncProcessObjectResponseParser();
     public static final GetBucketArchiveDirectReadResponseParser getBucketArchiveDirectReadResponseParser = new GetBucketArchiveDirectReadResponseParser();
     public static final GetBucketHttpsConfigResponseParser getBucketHttpsConfigResponseParser = new GetBucketHttpsConfigResponseParser();
+    public static final GetPublicAccessBlockResponseParser getPublicAccessBlockResponseParser = new GetPublicAccessBlockResponseParser();
+    public static final GetBucketPublicAccessBlockResponseParser getBucketPublicAccessBlockResponseParser = new GetBucketPublicAccessBlockResponseParser();
+    public static final GetBucketPolicyStatusResponseParser getBucketPolicyStatusResponseParser = new GetBucketPolicyStatusResponseParser();
 
 
     public static Long parseLongWithDefault(String defaultValue){
@@ -4375,6 +4378,108 @@ public final class ResponseParsers {
                     }
                 }
                 return result;
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class GetPublicAccessBlockResponseParser implements ResponseParser<GetPublicAccessBlockResult> {
+        @Override
+        public GetPublicAccessBlockResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetPublicAccessBlockResult result = parseGetPublicAccessBlock(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private GetPublicAccessBlockResult parseGetPublicAccessBlock(InputStream inputStream) throws ResponseParseException {
+            GetPublicAccessBlockResult getPublicAccessBlockResult = new GetPublicAccessBlockResult();
+            if (inputStream == null) {
+                return getPublicAccessBlockResult;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                if (root.getChildText("BlockPublicAccess") != null) {
+                    getPublicAccessBlockResult.setBlockPublicAccess(Boolean.valueOf(root.getChildText("BlockPublicAccess")));
+                }
+
+                return getPublicAccessBlockResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class GetBucketPublicAccessBlockResponseParser implements ResponseParser<GetBucketPublicAccessBlockResult> {
+        @Override
+        public GetBucketPublicAccessBlockResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetBucketPublicAccessBlockResult result = parseGetBucketPublicAccessBlock(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private GetBucketPublicAccessBlockResult parseGetBucketPublicAccessBlock(InputStream inputStream) throws ResponseParseException {
+            GetBucketPublicAccessBlockResult getBucketPublicAccessBlockResult = new GetBucketPublicAccessBlockResult();
+            if (inputStream == null) {
+                return getBucketPublicAccessBlockResult;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                if (root.getChildText("BlockPublicAccess") != null) {
+                    getBucketPublicAccessBlockResult.setBlockPublicAccess(Boolean.valueOf(root.getChildText("BlockPublicAccess")));
+                }
+
+                return getBucketPublicAccessBlockResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class GetBucketPolicyStatusResponseParser implements ResponseParser<GetBucketPolicyStatusResult> {
+        @Override
+        public GetBucketPolicyStatusResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetBucketPolicyStatusResult result = parseGetBucketPolicyStatus(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private GetBucketPolicyStatusResult parseGetBucketPolicyStatus(InputStream inputStream) throws ResponseParseException {
+            GetBucketPolicyStatusResult getBucketPolicyStatusResult = new GetBucketPolicyStatusResult();
+            if (inputStream == null) {
+                return getBucketPolicyStatusResult;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                if (root.getChildText("IsPublic") != null) {
+                    getBucketPolicyStatusResult.setPublic(Boolean.valueOf(root.getChildText("IsPublic")));
+                }
+
+                return getBucketPolicyStatusResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
             } catch (Exception e) {
                 throw new ResponseParseException(e.getMessage(), e);
             }

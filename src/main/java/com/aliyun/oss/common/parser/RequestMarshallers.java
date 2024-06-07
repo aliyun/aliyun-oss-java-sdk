@@ -104,6 +104,8 @@ public final class RequestMarshallers {
     public static final AsyncProcessObjectRequestMarshaller asyncProcessObjectRequestMarshaller = new AsyncProcessObjectRequestMarshaller();
     public static final PutBucketArchiveDirectReadRequestMarshaller putBucketArchiveDirectReadRequestMarshaller = new PutBucketArchiveDirectReadRequestMarshaller();
     public static final PutBucketHttpsConfigRequestMarshaller putBucketHttpsConfigRequestMarshaller = new PutBucketHttpsConfigRequestMarshaller();
+    public static final PutPublicAccessBlockRequestMarshaller putPublicAccessBlockRequestMarshaller = new PutPublicAccessBlockRequestMarshaller();
+    public static final PutBucketPublicAccessBlockRequestMarshaller putBucketPublicAccessBlockRequestMarshaller = new PutBucketPublicAccessBlockRequestMarshaller();
 
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
 
@@ -1984,6 +1986,45 @@ public final class RequestMarshallers {
             return rawData;
         }
     }
+
+    public static final class PutPublicAccessBlockRequestMarshaller implements RequestMarshaller2<PutPublicAccessBlockRequest> {
+        @Override
+        public byte[] marshall(PutPublicAccessBlockRequest input) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<PublicAccessBlockConfiguration><BlockPublicAccess>");
+            xmlBody.append(input.getBlockPublicAccess());
+            xmlBody.append("</BlockPublicAccess></PublicAccessBlockConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+
+            return rawData;
+        }
+    }
+
+    public static final class PutBucketPublicAccessBlockRequestMarshaller implements RequestMarshaller2<PutBucketPublicAccessBlockRequest> {
+        @Override
+        public byte[] marshall(PutBucketPublicAccessBlockRequest input) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<PublicAccessBlockConfiguration><BlockPublicAccess>");
+            xmlBody.append(input.getBlockPublicAccess());
+            xmlBody.append("</BlockPublicAccess></PublicAccessBlockConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+
+            return rawData;
+        }
+    }
+
 
     private static enum EscapedChar {
         // "\r"
