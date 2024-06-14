@@ -29,6 +29,7 @@ import java.util.List;
 
 import com.aliyun.core.tracing.AlibabaCloudSpan;
 import com.aliyun.core.tracing.AlibabaCloudTracer;
+import com.aliyun.core.tracing.AlibabaCloudTracerProvider;
 import com.aliyun.oss.*;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.CredentialsProvider;
@@ -168,16 +169,11 @@ public abstract class OSSOperation {
             throws OSSException, ClientException {
         AlibabaCloudSpan alibabaCloudSpan = null;
         if (client.getClientConfiguration().isOpenTracer()){
-            OssTracerProvider ossTracerProvider = new OssTracerProvider();
-            AlibabaCloudTracer alibabaCloudTracer = ossTracerProvider.getTracer();
-            alibabaCloudTracer.spanBuilder(request.getEndpoint().getHost());
-            alibabaCloudSpan = alibabaCloudTracer.startSpan(request.getEndpoint().getHost());
-
+            AlibabaCloudTracer alibabaCloudTracer = AlibabaCloudTracerProvider.getInstance().getTracer();
+            alibabaCloudSpan = alibabaCloudTracer.startSpan("");
 
             Attributes attributes = Attributes.builder()
                     .put("alibaba.cloud.service", getProduct())
-//                .put("alibaba.cloud.action", methodName)
-                    .put("alibaba.cloud.api_version", client.getClientConfiguration().getUserAgent())
                     .put("alibaba.cloud.signature_version", client.getClientConfiguration().getSignatureVersion().toString())
                     .put("alibaba.cloud.resource.type", "oss")
                     .put("http.request.method", request.getMethod().toString())
@@ -227,23 +223,24 @@ public abstract class OSSOperation {
             OSSException oe = ExceptionFactory.createInvalidResponseException(response.getRequestId(), rpe.getMessage(),
                     rpe);
             logException("Unable to parse response error: ", rpe);
-            if (client.getClientConfiguration().isOpenTracer()) {
-                alibabaCloudSpan.setAttribute("alibaba.cloud.error.code", rpe.getMessage());
-            }
             throw oe;
         } catch (OSSException e) {
-            if (client.getClientConfiguration().isOpenTracer()) {
-                alibabaCloudSpan.setAttribute("alibaba.cloud.error.code", e.getEC());
+            if (alibabaCloudSpan != null) {
+                alibabaCloudSpan.setAttribute("alibaba.cloud.error.code", e.getErrorCode());
             }
             throw e;
+        } catch (ClientException ce) {
+            if (alibabaCloudSpan != null) {
+                alibabaCloudSpan.setAttribute("alibaba.cloud.error.code", ce.getErrorCode());
+            }
+            throw ce;
         } finally {
-            if (client.getClientConfiguration().isOpenTracer()) {
+            if (alibabaCloudSpan != null) {
                 alibabaCloudSpan.setAttribute("alibaba.cloud.request_id", response.getRequestId());
                 alibabaCloudSpan.setAttribute("http.response.status_code", response.getStatusCode());
                 alibabaCloudSpan.end();
             }
         }
-
     }
 
     private RequestSigner createSigner(String bucketName, String key, Credentials creds, ClientConfiguration config) {
