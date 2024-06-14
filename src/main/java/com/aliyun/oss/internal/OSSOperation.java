@@ -43,14 +43,7 @@ import com.aliyun.oss.internal.ResponseParsers.RequestIdResponseParser;
 import com.aliyun.oss.internal.signer.OSSSignerBase;
 import com.aliyun.oss.internal.signer.OSSSignerParams;
 import com.aliyun.oss.model.WebServiceRequest;
-import com.aliyuncs.utils.HttpHeadersInjectAdapter;
-import com.aliyuncs.utils.MapUtils;
 import io.opentelemetry.api.common.Attributes;
-import io.opentracing.Span;
-import io.opentracing.Tracer;
-import io.opentracing.propagation.Format;
-import io.opentracing.tag.Tags;
-import io.opentracing.util.GlobalTracer;
 
 /**
  * Abstract base class that provides some common functionalities for OSS
