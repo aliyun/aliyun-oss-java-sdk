@@ -125,6 +125,8 @@ public class ClientConfiguration {
 
     private boolean verifyObjectStrict = true;
 
+    private boolean openTracer = false;
+
     public ClientConfiguration() {
         super();
         AppendDefaultExcludeList(this.cnameExcludeList);
@@ -972,4 +974,11 @@ public class ClientConfiguration {
     }
 
 
+    public boolean isOpenTracer() {
+        return openTracer;
+    }
+
+    public void setOpenTracer(boolean openTracer) {
+        this.openTracer = openTracer;
+    }
 }

@@ -27,6 +27,8 @@ import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
 import java.net.URI;
 import java.util.List;
 
+import com.aliyun.core.tracing.AlibabaCloudSpan;
+import com.aliyun.core.tracing.AlibabaCloudTracer;
 import com.aliyun.oss.*;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.CredentialsProvider;
@@ -40,6 +42,14 @@ import com.aliyun.oss.internal.ResponseParsers.RequestIdResponseParser;
 import com.aliyun.oss.internal.signer.OSSSignerBase;
 import com.aliyun.oss.internal.signer.OSSSignerParams;
 import com.aliyun.oss.model.WebServiceRequest;
+import com.aliyuncs.utils.HttpHeadersInjectAdapter;
+import com.aliyuncs.utils.MapUtils;
+import io.opentelemetry.api.common.Attributes;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
+import io.opentracing.propagation.Format;
+import io.opentracing.tag.Tags;
+import io.opentracing.util.GlobalTracer;
 
 /**
  * Abstract base class that provides some common functionalities for OSS
@@ -156,6 +166,26 @@ public abstract class OSSOperation {
     protected <T> T doOperation(RequestMessage request, ResponseParser<T> parser, String bucketName, String key,
             boolean keepResponseOpen, List<RequestHandler> requestHandlers, List<ResponseHandler> reponseHandlers)
             throws OSSException, ClientException {
+        AlibabaCloudSpan alibabaCloudSpan = null;
+        if (client.getClientConfiguration().isOpenTracer()){
+            OssTracerProvider ossTracerProvider = new OssTracerProvider();
+            AlibabaCloudTracer alibabaCloudTracer = ossTracerProvider.getTracer();
+            alibabaCloudTracer.spanBuilder(request.getEndpoint().getHost());
+            alibabaCloudSpan = alibabaCloudTracer.startSpan(request.getEndpoint().getHost());
+
+
+            Attributes attributes = Attributes.builder()
+                    .put("alibaba.cloud.service", getProduct())
+//                .put("alibaba.cloud.action", methodName)
+                    .put("alibaba.cloud.api_version", client.getClientConfiguration().getUserAgent())
+                    .put("alibaba.cloud.signature_version", client.getClientConfiguration().getSignatureVersion().toString())
+                    .put("alibaba.cloud.resource.type", "oss")
+                    .put("http.request.method", request.getMethod().toString())
+                    .build();
+
+            alibabaCloudSpan.setAllAttributes(attributes);
+        }
+
 
         final WebServiceRequest originalRequest = request.getOriginalRequest();
         request.getHeaders().putAll(client.getClientConfiguration().getDefaultHeaders());
@@ -189,16 +219,31 @@ public abstract class OSSOperation {
             }
         }
 
-        ResponseMessage response = send(request, context, keepResponseOpen);
-
+        ResponseMessage response = null;
         try {
+            response = send(request, context, keepResponseOpen);
             return parser.parse(response);
         } catch (ResponseParseException rpe) {
             OSSException oe = ExceptionFactory.createInvalidResponseException(response.getRequestId(), rpe.getMessage(),
                     rpe);
             logException("Unable to parse response error: ", rpe);
+            if (client.getClientConfiguration().isOpenTracer()) {
+                alibabaCloudSpan.setAttribute("alibaba.cloud.error.code", rpe.getMessage());
+            }
             throw oe;
+        } catch (OSSException e) {
+            if (client.getClientConfiguration().isOpenTracer()) {
+                alibabaCloudSpan.setAttribute("alibaba.cloud.error.code", e.getEC());
+            }
+            throw e;
+        } finally {
+            if (client.getClientConfiguration().isOpenTracer()) {
+                alibabaCloudSpan.setAttribute("alibaba.cloud.request_id", response.getRequestId());
+                alibabaCloudSpan.setAttribute("http.response.status_code", response.getStatusCode());
+                alibabaCloudSpan.end();
+            }
         }
+
     }
 
     private RequestSigner createSigner(String bucketName, String key, Credentials creds, ClientConfiguration config) {

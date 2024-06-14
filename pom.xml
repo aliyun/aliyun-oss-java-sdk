@@ -65,6 +65,12 @@
             <version>0.1.0</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>java-trace-api</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <reporting>
@@ -238,5 +244,8 @@
             <id>sonatype-nexus-staging</id>
             <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
+
     </distributionManagement>
+
+
 </project>
