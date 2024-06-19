@@ -172,7 +172,9 @@ public abstract class OSSOperation {
                     .put("http.request.method", request.getMethod().toString())
                     .build();
 
-            alibabaCloudSpan.setAllAttributes(attributes);
+            if (alibabaCloudSpan != null) {
+                alibabaCloudSpan.setAllAttributes(attributes);
+            }
         }
 
 
