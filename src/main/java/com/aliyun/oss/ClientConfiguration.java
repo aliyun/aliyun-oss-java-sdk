@@ -125,6 +125,8 @@ public class ClientConfiguration {
 
     private boolean verifyObjectStrict = true;
 
+    private boolean openTracer = false;
+
     public ClientConfiguration() {
         super();
         AppendDefaultExcludeList(this.cnameExcludeList);
@@ -971,5 +973,22 @@ public class ClientConfiguration {
         return verifyObjectStrict;
     }
 
+    /**
+     * Gets the flag of trace.
+     *
+     * @return True is open; False means it has not been opened
+     */
+    public boolean isOpenTracer() {
+        return openTracer;
+    }
 
+    /**
+     * Set whether to open trace.
+     *
+     * @param openTracer
+     *            True indicates that it is open; If not opened, it is False.
+     */
+    public void setOpenTracer(boolean openTracer) {
+        this.openTracer = openTracer;
+    }
 }
