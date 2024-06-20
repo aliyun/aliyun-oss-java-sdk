@@ -169,8 +169,8 @@ public abstract class OSSOperation {
             Attributes attributes = Attributes.builder()
                     .put("alibaba.cloud.service", getProduct())
                     .put("alibaba.cloud.signature_version", client.getClientConfiguration().getSignatureVersion().toString())
-                    .put("alibaba.cloud.resource.type", "oss")
-                    .put("http.request.method", request.getMethod().toString())
+                    .put("alibaba.cloud.resource.type", "OSS")
+                    .put("http.request.method", request.getMethod().name())
                     .build();
 
             AlibabaCloudSpanBuilder alibabaCloudSpanBuilder = alibabaCloudTracer.spanBuilder(bucketName);
@@ -233,7 +233,7 @@ public abstract class OSSOperation {
         } finally {
             if (span != null) {
                 span.setAttribute("alibaba.cloud.request_id", response.getRequestId());
-                span.setAttribute("http.response.status_code", response.getStatusCode());
+                span.setAttribute("http.response.status_code", String.valueOf(response.getStatusCode()));
                 span.end();
             }
         }
