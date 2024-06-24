@@ -68,7 +68,7 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>java-trace-api</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>0.2.9-beta</version>
         </dependency>
     </dependencies>
 
