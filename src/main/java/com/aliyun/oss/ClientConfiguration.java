@@ -51,7 +51,7 @@ public class ClientConfiguration {
 
     public static final int DEFAULT_MAX_RETRIES = 3;
 
-    public static final int DEFAULT_CONNECTION_REQUEST_TIMEOUT = -1;
+    public static final int DEFAULT_CONNECTION_REQUEST_TIMEOUT = 5 * 60 * 1000;
     public static final int DEFAULT_CONNECTION_TIMEOUT = 50 * 1000;
     public static final int DEFAULT_SOCKET_TIMEOUT = 50 * 1000;
     public static final int DEFAULT_MAX_CONNECTIONS = 1024;
