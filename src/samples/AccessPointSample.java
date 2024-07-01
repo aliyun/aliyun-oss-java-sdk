@@ -19,7 +19,7 @@ public class AccessPointSample {
 
         try {
             String accessPointName = "test-ap-jt-3";
-            String networkOrigin = "vpc";
+            String networkOrigin = "internet";
             String accessPointPolicy = "{\"Version\":\"1\",\"Statement\":[{\"Action\":[\"oss:PutObject\",\"oss:GetObject\"],\"Effect\":\"Deny\",\"Principal\":[\""+TestConfig.OSS_TEST_USER_ID+"\"],\"Resource\":[\"acs:oss:"+TestConfig.OSS_TEST_REGION+":"+TestConfig.OSS_TEST_USER_ID+":accesspoint/"+accessPointName+"\",\"acs:oss:"+TestConfig.OSS_TEST_REGION+":"+TestConfig.OSS_TEST_USER_ID+":accesspoint/"+accessPointName+"/object/*\"]}]}";
 
             CreateAccessPointRequest createAccessPointRequest = new CreateAccessPointRequest(bucketName)
