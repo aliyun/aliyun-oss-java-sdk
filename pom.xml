@@ -65,6 +65,11 @@
             <version>0.1.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>java-trace-api</artifactId>
+            <version>0.2.9-beta</version>
+        </dependency>
     </dependencies>
 
     <reporting>
