@@ -27,10 +27,7 @@ import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
 import java.net.URI;
 import java.util.List;
 
-import com.aliyun.core.tracing.AlibabaCloudSpan;
-import com.aliyun.core.tracing.AlibabaCloudSpanBuilder;
-import com.aliyun.core.tracing.AlibabaCloudTracer;
-import com.aliyun.core.tracing.AlibabaCloudTracerProvider;
+import com.aliyun.core.tracing.*;
 import com.aliyun.oss.*;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.CredentialsProvider;
@@ -164,9 +161,10 @@ public abstract class OSSOperation {
             throws OSSException, ClientException {
 
         Span span = null;
-        if (client.getClientConfiguration().isOpenTracer()){
+        if (client.getClientConfiguration().isTracerEnabled()){
             AlibabaCloudTracer alibabaCloudTracer = AlibabaCloudTracerProvider.getInstance().getTracer();
-            Attributes attributes = Attributes.builder()
+            AlibabaCloudAttributesBuilder AttributesBuilder = new AlibabaCloudAttributesBuilder();
+            Attributes attributes = AttributesBuilder.getAttributesBuilder()
                     .put("alibaba.cloud.service", getProduct())
                     .put("alibaba.cloud.signature_version", client.getClientConfiguration().getSignatureVersion().toString())
                     .put("alibaba.cloud.resource.type", "OSS")

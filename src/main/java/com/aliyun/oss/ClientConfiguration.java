@@ -125,7 +125,7 @@ public class ClientConfiguration {
 
     private boolean verifyObjectStrict = true;
 
-    private boolean openTracer = false;
+    private boolean tracerEnabled = false;
 
     public ClientConfiguration() {
         super();
@@ -974,21 +974,21 @@ public class ClientConfiguration {
     }
 
     /**
-     * Gets the flag of trace.
+     * Gets the flag of tracer.
      *
-     * @return True is open; False means it has not been opened
+     * @return  True if it's enabled; False if it's disabled.
      */
-    public boolean isOpenTracer() {
-        return openTracer;
+    public boolean isTracerEnabled() {
+        return tracerEnabled;
     }
 
     /**
-     * Set whether to open trace.
+     * Sets the flag of tracer.
      *
-     * @param openTracer
-     *            True indicates that it is open; If not opened, it is False.
+     * @param enabled
+     *            True if it's enabled; False if it's disabled.
      */
-    public void setOpenTracer(boolean openTracer) {
-        this.openTracer = openTracer;
+    public void setTracerEnabled(boolean enabled) {
+        this.tracerEnabled = enabled;
     }
 }
