@@ -2844,6 +2844,9 @@ public final class ResponseParsers {
             Long coldArchiveStorage = parseLongWithDefault(root.getChildText("ColdArchiveStorage"));
             Long coldArchiveRealStorage = parseLongWithDefault(root.getChildText("ColdArchiveRealStorage"));
             Long coldArchiveObjectCount = parseLongWithDefault(root.getChildText("ColdArchiveObjectCount"));
+            Long deepColdArchiveStorage = parseLongWithDefault(root.getChildText("DeepColdArchiveStorage"));
+            Long deepColdArchiveRealStorage = parseLongWithDefault(root.getChildText("DeepColdArchiveRealStorage"));
+            Long deepColdArchiveObjectCount = parseLongWithDefault(root.getChildText("DeepColdArchiveObjectCount"));
             BucketStat bucketStat = new BucketStat()
                     .withStorageSize(storage)
                     .withObjectCount(objectCount)
@@ -2860,7 +2863,10 @@ public final class ResponseParsers {
                     .withArchiveObjectCount(archiveObjectCount)
                     .withColdArchiveStorage(coldArchiveStorage)
                     .withColdArchiveRealStorage(coldArchiveRealStorage)
-                    .withColdArchiveObjectCount(coldArchiveObjectCount);
+                    .withColdArchiveObjectCount(coldArchiveObjectCount)
+                    .withDeepColdArchiveStorage(deepColdArchiveStorage)
+                    .withDeepColdArchiveRealStorage(deepColdArchiveRealStorage)
+                    .withDeepColdArchiveObjectCount(deepColdArchiveObjectCount);
 
             return bucketStat;
         } catch (JDOMParseException e) {
