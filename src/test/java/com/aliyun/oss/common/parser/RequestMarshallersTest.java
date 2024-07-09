@@ -22,7 +22,6 @@ import java.text.ParseException;
 import java.util.*;
 
 import static com.aliyun.oss.common.parser.RequestMarshallers.*;
-import static com.aliyun.oss.common.parser.RequestMarshallers.putBucketAccessMonitorRequestMarshaller;
 
 public class RequestMarshallersTest {
     @Test
@@ -1596,4 +1595,173 @@ public class RequestMarshallersTest {
         Assert.assertEquals("key", root.getChild("Rule").getChild("Filter").getChildren("Not").get(0).getChild("Tag").getChildText("Key"));
         Assert.assertEquals("value", root.getChild("Rule").getChild("Filter").getChildren("Not").get(0).getChild("Tag").getChildText("Value"));
     }
+
+    @Test
+    public void testArchiveDirectRead() {
+        String bucketName = "testBucket-archiveDirectRead";
+        try {
+            PutBucketArchiveDirectReadRequest readRequest = new PutBucketArchiveDirectReadRequest(bucketName, true);
+            byte[] data = putBucketArchiveDirectReadRequestMarshaller.marshall(readRequest);
+            ByteArrayInputStream is = new ByteArrayInputStream(data);
+            SAXBuilder builder = new SAXBuilder();
+            Document doc = null;
+            doc = builder.build(is);
+            Element root = doc.getRootElement();
+            Assert.assertEquals("true", root.getChildText("Enabled"));
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            PutBucketArchiveDirectReadRequest readRequest = new PutBucketArchiveDirectReadRequest(bucketName, false);
+            byte[] data = putBucketArchiveDirectReadRequestMarshaller.marshall(readRequest);
+            ByteArrayInputStream is = new ByteArrayInputStream(data);
+            SAXBuilder builder = new SAXBuilder();
+            Document doc = null;
+            doc = builder.build(is);
+            Element root = doc.getRootElement();
+            Assert.assertEquals("false", root.getChildText("Enabled"));
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testPutBucketHttpsConfigRequestMarshaller() {
+        final String bucketName = "unormal-set-bucket-referer";
+        final String tls12 = "TLSv1.2";
+        final String tls13 = "TLSv1.3";
+
+        List<String> tlsVersionList = new ArrayList<String>();
+        tlsVersionList.add(tls12);
+        tlsVersionList.add(tls13);
+
+        PutBucketHttpsConfigRequest request = new PutBucketHttpsConfigRequest(bucketName)
+                .withEnabled(true)
+                .withTlsVersion(tlsVersionList);
+
+        byte[] data = putBucketHttpsConfigRequestMarshaller.marshall(request);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        Assert.assertEquals("true", root.getChild("TLS").getChildText("Enable"));
+        Assert.assertEquals("TLSv1.2", root.getChild("TLS").getChildren("TLSVersion").get(0).getText());
+        Assert.assertEquals("TLSv1.3", root.getChild("TLS").getChildren("TLSVersion").get(1).getText());
+
+    }
+
+    @Test
+    public void testPutPublicAccessBlockMarshaller() {
+        final String bucketName = "unormal-set-public-block";
+
+        PutPublicAccessBlockRequest request = new PutPublicAccessBlockRequest()
+                .withBlockPublicAccess(true);
+
+        byte[] data = putPublicAccessBlockRequestMarshaller.marshall(request);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        Assert.assertEquals("true", root.getChildText("BlockPublicAccess"));
+
+    }
+
+    @Test
+    public void testPutBucketPublicAccessBlockMarshaller() {
+        final String bucketName = "unormal-set-bucket-block";
+
+        PutBucketPublicAccessBlockRequest request = new PutBucketPublicAccessBlockRequest(bucketName)
+                .withBlockPublicAccess(true);
+
+        byte[] data = putBucketPublicAccessBlockRequestMarshaller.marshall(request);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+        Assert.assertEquals("true", root.getChildText("BlockPublicAccess"));
+
+    }
+
+    @Test
+    public void testCreateAccessPoint() {
+        String accessPointName = "test-ap-jt-3";
+        String networkOrigin = "Internet";
+        String vpcId = "vpc-id";
+        String bucketName = "testBucket";
+
+        CreateAccessPointRequest createAccessPointRequest = new CreateAccessPointRequest(bucketName)
+                .withAccessPointName(accessPointName)
+                .withNetworkOrigin(networkOrigin)
+                .withVpc(new AccessPointVpcConfiguration().withVpcId(vpcId));
+
+        byte[] data = createAccessPointRequestParser.marshall(createAccessPointRequest);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Element root = doc.getRootElement();
+
+        Assert.assertEquals(accessPointName, root.getChildText("AccessPointName"));
+        Assert.assertEquals(networkOrigin, root.getChildText("NetworkOrigin"));
+        Assert.assertEquals(vpcId, root.getChild("VpcConfiguration").getChildText("VpcId"));
+    }
+
+    @Test
+    public void testCreateAccessPointPolicy() {
+        String bucketName = "testBucket";
+        String accessPointName = "test-ap-jt-3";
+        String accessPointPolicy = "{\"Version\":\"1\",\"Statement\":[{\"Action\":[\"oss:PutObject\",\"oss:GetObject\"],\"Effect\":\"Deny\",\"Principal\":[\"1234567890\"],\"Resource\":[\"acs:oss:*:1234567890:*/*\"]}]}";
+
+        PutAccessPointPolicyRequest putAccessPointPolicyRequest = new PutAccessPointPolicyRequest(bucketName)
+                .withAccessPointName(accessPointName)
+                .withAccessPointPolicy(accessPointPolicy);
+
+        byte[] data = putAccessPointPolicyRequestParser.marshall(putAccessPointPolicyRequest);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+
+        String returnData = new String(data);
+
+        Assert.assertEquals(accessPointPolicy, returnData);
+
+    }
+
 }

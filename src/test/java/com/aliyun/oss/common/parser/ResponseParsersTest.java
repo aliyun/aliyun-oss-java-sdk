@@ -20,6 +20,7 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -1498,6 +1499,73 @@ public class ResponseParsersTest {
         } catch (ResponseParseException e) {
             Assert.assertTrue(true);
         }
+    }
+
+    @Test
+    public void testGetBucketCnameWithCreationDate() {
+        String respBody = null;
+        InputStream instream = null;
+        Date dt = new Date();
+        DateUtil.formatIso8601Date(dt);
+
+        respBody = "" +
+                "<ListCnameResult>\n" +
+                "  <Bucket>targetbucket</Bucket>\n" +
+                "  <Owner>testowner</Owner>\n" +
+                "  <Cname>\n" +
+                "    <Domain>example.com</Domain>\n" +
+                "    <LastModified>2021-09-15T02:35:07.000Z</LastModified>\n" +
+                "    <Status>Enabled</Status>\n" +
+                "    <Certificate>\n" +
+                "      <Type>CAS</Type>\n" +
+                "      <CertId>493****-cn-hangzhou</CertId>\n" +
+                "      <Status>Enabled</Status>\n" +
+                "      <CreationDate>Wed, 15 Sep 2021 02:35:06 GMT</CreationDate>\n" +
+                "      <Fingerprint>DE:01:CF:EC:7C:A7:98:CB:D8:6E:FB:1D:97:EB:A9:64:1D:4E:**:**</Fingerprint>\n" +
+                "      <ValidStartDate>Wed, 12 Apr 2023 10:14:51 GMT</ValidStartDate>\n" +
+                "      <ValidEndDate>Mon, 4 May 2048 10:14:51 GMT</ValidEndDate>\n" +
+                "    </Certificate>\n" +
+                "  </Cname>\n" +
+                "  <Cname>\n" +
+                "    <Domain>example.org</Domain>\n" +
+                "    <LastModified>2021-09-15T02:34:58.000Z</LastModified>\n" +
+                "    <Status>Enabled</Status>\n" +
+                "  </Cname>\n" +
+                "  <Cname>\n" +
+                "    <Domain>example.edu</Domain>\n" +
+                "    <LastModified>2021-09-15T02:50:34.000Z</LastModified>\n" +
+                "    <Status>Enabled</Status>\n" +
+                "  </Cname>\n" +
+                "</ListCnameResult>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseMessage responseMessage = new ResponseMessage(null);;
+            responseMessage.setContent(instream);
+            ResponseParsers.GetBucketCnameResponseParser parser = new ResponseParsers.GetBucketCnameResponseParser();
+            List<CnameConfiguration> result = parser.parse(responseMessage);
+            Assert.assertEquals(result.size(), 3);
+            Assert.assertEquals(result.get(0).getDomain(), "example.com");
+            Assert.assertEquals(result.get(0).getLastMofiedTime(), DateUtil.parseIso8601Date("2021-09-15T02:35:07.000Z"));
+            Assert.assertEquals(result.get(0).getStatus(), CnameConfiguration.CnameStatus.Enabled);
+            Assert.assertEquals(result.get(0).getCertType(), CnameConfiguration.CertType.CAS);
+            Assert.assertEquals(result.get(0).getStatus(), CnameConfiguration.CnameStatus.Enabled);
+            Assert.assertEquals(result.get(0).getCertId(), "493****-cn-hangzhou");
+            Assert.assertEquals(result.get(0).getCreationDate(), "Wed, 15 Sep 2021 02:35:06 GMT");
+            Assert.assertEquals(result.get(0).getFingerprint(), "DE:01:CF:EC:7C:A7:98:CB:D8:6E:FB:1D:97:EB:A9:64:1D:4E:**:**");
+            Assert.assertEquals(result.get(0).getValidStartDate(), "Wed, 12 Apr 2023 10:14:51 GMT");
+            Assert.assertEquals(result.get(0).getValidEndDate(), "Mon, 4 May 2048 10:14:51 GMT");
+        } catch (ResponseParseException e) {
+            Assert.fail("UnsupportedEncodingException");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Test
@@ -5660,6 +5728,785 @@ public class ResponseParsersTest {
         Assert.assertEquals(rules.get(0).getFilter().getObjectSizeLessThan(), Long.valueOf(String.valueOf(64000)));
     }
 
+    @Test
+    public void testArchiveDirectReadResponseParser() {
+        String respBody = "" +
+                "<ArchiveDirectReadConfiguration>\n" +
+                "    <Enabled>true</Enabled>\n" +
+                "</ArchiveDirectReadConfiguration>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        GetBucketArchiveDirectReadResult result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketArchiveDirectReadResponseParser parser = new ResponseParsers.GetBucketArchiveDirectReadResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse archive direct read response body fail!");
+        }
+
+        Assert.assertEquals(true, result.getEnabled());
+
+
+        respBody = "" +
+                "<ArchiveDirectReadConfiguration>\n" +
+                "    <Enabled>false</Enabled>\n" +
+                "</ArchiveDirectReadConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketArchiveDirectReadResponseParser parser = new ResponseParsers.GetBucketArchiveDirectReadResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse archive direct read response body fail!");
+        }
+        Assert.assertEquals(false, result.getEnabled());
+
+
+
+        respBody = "" +
+                "<ArchiveDirectReadConfiguration>\n" +
+                "</ArchiveDirectReadConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketArchiveDirectReadResponseParser parser = new ResponseParsers.GetBucketArchiveDirectReadResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse archive direct read response body fail!");
+        }
+        Assert.assertEquals(false, result.getEnabled());
+    }
+
+
+    @Test
+    public void testParseGetBucketHttpsConfig() {
+        InputStream instream = null;
+        String respBody;
+
+        // https config 1
+        respBody = "" +
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<HttpsConfiguration>  \n" +
+                "</HttpsConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        GetBucketHttpsConfigResult result1 = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketHttpsConfigResponseParser parser = new ResponseParsers.GetBucketHttpsConfigResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals(false, result1.isEnable());
+
+        // https config 2
+        respBody = "" +
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<HttpsConfiguration>\n" +
+                "  <TLS>\n" +
+                "  </TLS>\n" +
+                "</HttpsConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        GetBucketHttpsConfigResult result2 = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketHttpsConfigResponseParser parser = new ResponseParsers.GetBucketHttpsConfigResponseParser();
+            result2 = parser.parse(response);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals(false, result2.isEnable());
+
+        // https config 3
+        respBody = "" +
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<HttpsConfiguration>\n" +
+                "  <TLS>\n" +
+                "    <Enable>true</Enable>\n" +
+                "  </TLS>\n" +
+                "</HttpsConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        GetBucketHttpsConfigResult result3 = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketHttpsConfigResponseParser parser = new ResponseParsers.GetBucketHttpsConfigResponseParser();
+            result3 = parser.parse(response);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals(true, result3.isEnable());
+
+
+        // https config 4
+        respBody = "" +
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<HttpsConfiguration>\n" +
+                "  <TLS>\n" +
+                "    <Enable>false</Enable>\n" +
+                "    <TLSVersion>TLSv1.2</TLSVersion>\n" +
+                "    <TLSVersion>TLSv1.3</TLSVersion>\n" +
+                "  </TLS>\n" +
+                "</HttpsConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        GetBucketHttpsConfigResult result4 = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketHttpsConfigResponseParser parser = new ResponseParsers.GetBucketHttpsConfigResponseParser();
+            result4 = parser.parse(response);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals(false, result4.isEnable());
+        Assert.assertEquals("TLSv1.2", result4.getTlsVersion().get(0));
+        Assert.assertEquals("TLSv1.3", result4.getTlsVersion().get(1));
+
+        respBody = "invalid";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketHttpsConfigResponseParser parser = new ResponseParsers.GetBucketHttpsConfigResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketHttpsConfigResponseParser parser = new ResponseParsers.GetBucketHttpsConfigResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+    }
+    @Test
+    public void testParseGetPublicAccessBlock() {
+        InputStream instream = null;
+        String respBody;
+
+        respBody = "" +
+                "<PublicAccessBlockConfiguration>\n" +
+                "  <BlockPublicAccess>true</BlockPublicAccess>\n" +
+                "</PublicAccessBlockConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        GetPublicAccessBlockResult result1 = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetPublicAccessBlockResponseParser parser = new ResponseParsers.GetPublicAccessBlockResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals(true, result1.getBlockPublicAccess());
+
+        respBody = "invalid";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetPublicAccessBlockResponseParser parser = new ResponseParsers.GetPublicAccessBlockResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetPublicAccessBlockResponseParser parser = new ResponseParsers.GetPublicAccessBlockResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+    }
+
+    @Test
+    public void testParseGetBucketPublicAccessBlock() {
+        InputStream instream = null;
+        String respBody;
+
+        respBody = "" +
+                "<PublicAccessBlockConfiguration>\n" +
+                "  <BlockPublicAccess>true</BlockPublicAccess>\n" +
+                "</PublicAccessBlockConfiguration>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        GetBucketPublicAccessBlockResult result1 = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketPublicAccessBlockResponseParser parser = new ResponseParsers.GetBucketPublicAccessBlockResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals(true, result1.getBlockPublicAccess());
+
+        respBody = "invalid";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketPublicAccessBlockResponseParser parser = new ResponseParsers.GetBucketPublicAccessBlockResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketPublicAccessBlockResponseParser parser = new ResponseParsers.GetBucketPublicAccessBlockResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+    }
+
+    @Test
+    public void testParseGetBucketPolicyStatus() {
+        InputStream instream = null;
+        String respBody;
+
+        respBody = "" +
+                "<PolicyStatus>\n" +
+                "   <IsPublic>true</IsPublic>\n" +
+                "</PolicyStatus>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        GetBucketPolicyStatusResult result1 = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketPolicyStatusResponseParser parser = new ResponseParsers.GetBucketPolicyStatusResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(true);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals(true, result1.isPublic());
+
+        respBody = "invalid";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketPolicyStatusResponseParser parser = new ResponseParsers.GetBucketPolicyStatusResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.GetBucketPolicyStatusResponseParser parser = new ResponseParsers.GetBucketPolicyStatusResponseParser();
+            result1 = parser.parse(response);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+    }
+
+    @Test
+    public void createBucketDataRedundancyTransitionResponseParserTest() {
+        String responseBody = "" +
+                "<BucketDataRedundancyTransition>\n" +
+                "    <TaskId>mockTaskId</TaskId>\n" +
+                "</BucketDataRedundancyTransition>";
+
+        InputStream inputStream = null;
+        try {
+            inputStream = new ByteArrayInputStream(responseBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException exception) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        ResponseMessage responseMessage = new ResponseMessage(null);;
+        responseMessage.setContent(inputStream);
+
+        ResponseParsers.CreateBucketDataRedundancyTransitionResponseParser parser = new ResponseParsers.CreateBucketDataRedundancyTransitionResponseParser();
+
+        try {
+            Assert.assertEquals(parser.parse(responseMessage).getTaskId(), "mockTaskId");
+        } catch (ResponseParseException exception) {
+            Assert.fail("parse create bucket data redundancy transition response body fail");
+        }
+    }
+
+    @Test
+    public void getBucketDataRedundancyTransitionParserTest() {
+        String responseBody = "" +
+                "<BucketDataRedundancyTransition>\n" +
+                "    <TaskId>mockTaskId</TaskId>\n" +
+                "    <CreateTime>2013-07-31T10:56:21.000Z</CreateTime>\n" +
+                "    <StartTime>2013-08-01T10:56:21.001Z</StartTime>\n" +
+                "    <EndTime>2013-08-12T10:56:21.002Z</EndTime>\n" +
+                "    <Status>Finished</Status>\n" +
+                "    <EstimatedRemainingTime>16</EstimatedRemainingTime>\n" +
+                "    <ProcessPercentage>50</ProcessPercentage>\n" +
+                "</BucketDataRedundancyTransition>";
+
+        InputStream inputStream = null;
+        try {
+            inputStream = new ByteArrayInputStream(responseBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException exception) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        ResponseMessage responseMessage = new ResponseMessage(null);
+        responseMessage.setContent(inputStream);
+
+        ResponseParsers.GetBucketDataRedundancyTransitionResponseParser parser = new ResponseParsers.GetBucketDataRedundancyTransitionResponseParser();
+
+        try {
+            GetBucketDataRedundancyTransitionResult result = parser.parse(responseMessage);
+            Assert.assertEquals(result.getTaskId(), "mockTaskId");
+            Assert.assertEquals(result.getCreateTime(), "2013-07-31T10:56:21.000Z");
+            Assert.assertEquals(result.getStartTime(), "2013-08-01T10:56:21.001Z");
+            Assert.assertEquals(result.getEndTime(), "2013-08-12T10:56:21.002Z");
+            Assert.assertEquals(result.getStatus(), "Finished");
+            Assert.assertEquals(result.getEstimatedRemainingTime(), 16);
+            Assert.assertEquals(result.getProcessPercentage(), 50);
+        } catch (ResponseParseException exception) {
+            Assert.fail("parse get bucket data redundancy transition response body fail");
+        }
+    }
+
+    @Test
+    public void listBucketDataRedundancyTransitionResponseParserTest() {
+        String responseBody = ""
+                + "<ListBucketDataRedundancyTransition>\n" +
+                "  <BucketDataRedundancyTransition>\n" +
+                "      <TaskId>mockTaskId1</TaskId>\n" +
+                "      <CreateTime>2013-07-31T10:56:21.000Z</CreateTime>\n" +
+                "      <StartTime>2013-07-31T10:56:21.001Z</StartTime>\n" +
+                "      <Status>Processing</Status>\n" +
+                "      <EstimatedRemainingTime>16</EstimatedRemainingTime>\n" +
+                "      <ProcessPercentage>50</ProcessPercentage>\n" +
+                "  </BucketDataRedundancyTransition>\n" +
+                "  <BucketDataRedundancyTransition>\n" +
+                "      <TaskId>mockTaskId2</TaskId>\n" +
+                "      <CreateTime>2013-07-31T10:56:21.003Z</CreateTime>\n" +
+                "      <StartTime>2013-07-31T10:56:21.004Z</StartTime>\n" +
+                "      <EndTime>2013-07-31T10:56:21.005Z</EndTime>\n" +
+                "      <Status>Failed</Status>\n" +
+                "      <EstimatedRemainingTime>52</EstimatedRemainingTime>\n" +
+                "      <ProcessPercentage>20</ProcessPercentage>\n" +
+                "  </BucketDataRedundancyTransition>\n" +
+                "</ListBucketDataRedundancyTransition>";
+
+        InputStream inputStream = null;
+        try {
+            inputStream = new ByteArrayInputStream(responseBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException exception) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        ResponseMessage responseMessage = new ResponseMessage(null);
+        responseMessage.setContent(inputStream);
+
+        ResponseParsers.ListBucketDataRedundancyTransitionResponseParser parser = new ResponseParsers.ListBucketDataRedundancyTransitionResponseParser();
+
+        try {
+            List<GetBucketDataRedundancyTransitionResult> results = parser.parse(responseMessage);
+            Assert.assertEquals(results.get(0).getTaskId(), "mockTaskId1");
+            Assert.assertNull(results.get(0).getEndTime());
+            Assert.assertEquals(results.get(0).getStatus(), "Processing");
+            Assert.assertEquals(results.get(0).getProcessPercentage(), 50);
+
+            Assert.assertEquals(results.get(1).getTaskId(), "mockTaskId2");
+            Assert.assertEquals(results.get(1).getStartTime(), "2013-07-31T10:56:21.004Z");
+            Assert.assertEquals(results.get(1).getEndTime(), "2013-07-31T10:56:21.005Z");
+            Assert.assertEquals(results.get(1).getStatus(), "Failed");
+            Assert.assertEquals(results.get(1).getEstimatedRemainingTime(), 52);
+            Assert.assertEquals(results.get(1).getProcessPercentage(), 20);
+        } catch (ResponseParseException exception) {
+            Assert.fail("parse list bucket data redundancy transition response body fail");
+        }
+
+        responseBody = ""
+                + "<ListBucketDataRedundancyTransition>\n" +
+                "</ListBucketDataRedundancyTransition>";
+        try {
+            inputStream = new ByteArrayInputStream(responseBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException exception) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        responseMessage.setContent(inputStream);
+
+        try {
+            List<GetBucketDataRedundancyTransitionResult> results = parser.parse(responseMessage);
+            Assert.assertEquals(results.size(), 0);
+        } catch (ResponseParseException exception) {
+            Assert.fail("parse list bucket data redundancy transition response body fail");
+        }
+    }
+
+    @Test
+    public void listUserDataRedundancyTransitionResponseParserTest() {
+        String responseBody = ""
+                + "<ListBucketDataRedundancyTransition>\n" +
+                "  <BucketDataRedundancyTransition>\n" +
+                "      <TaskId>mockTaskId1</TaskId>\n" +
+                "      <CreateTime>2013-07-31T10:56:21.000Z</CreateTime>\n" +
+                "      <StartTime>2013-07-31T10:56:21.001Z</StartTime>\n" +
+                "      <Status>Processing</Status>\n" +
+                "      <EstimatedRemainingTime>16</EstimatedRemainingTime>\n" +
+                "      <ProcessPercentage>50</ProcessPercentage>\n" +
+                "  </BucketDataRedundancyTransition>\n" +
+                "  <BucketDataRedundancyTransition>\n" +
+                "      <TaskId>mockTaskId2</TaskId>\n" +
+                "      <CreateTime>2013-07-31T10:56:21.003Z</CreateTime>\n" +
+                "      <StartTime>2013-07-31T10:56:21.004Z</StartTime>\n" +
+                "      <EndTime>2013-07-31T10:56:21.005Z</EndTime>\n" +
+                "      <Status>Failed</Status>\n" +
+                "      <EstimatedRemainingTime>52</EstimatedRemainingTime>\n" +
+                "      <ProcessPercentage>20</ProcessPercentage>\n" +
+                "  </BucketDataRedundancyTransition>\n" +
+                "  <IsTruncated>true</IsTruncated>\n" +
+                "  <NextContinuationToken>mockNextContinuation</NextContinuationToken>\n" +
+                "</ListBucketDataRedundancyTransition>";
+
+        InputStream inputStream = null;
+        try {
+            inputStream = new ByteArrayInputStream(responseBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException exception) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        ResponseMessage responseMessage = new ResponseMessage(null);
+        responseMessage.setContent(inputStream);
+
+        ResponseParsers.ListUserDataRedundancyTransitionResponseParser parser = new ResponseParsers.ListUserDataRedundancyTransitionResponseParser();
+
+        try {
+            ListUserDataRedundancyTransitionResult result = parser.parse(responseMessage);
+            Assert.assertTrue(result.isTruncated());
+            Assert.assertEquals(result.getNextContinuationToken(), "mockNextContinuation");
+            List<GetBucketDataRedundancyTransitionResult> list = result.getBucketDataRedundancyTransition();
+            Assert.assertEquals(list.size(), 2);
+            Assert.assertEquals(list.get(0).getTaskId(), "mockTaskId1");
+            Assert.assertEquals(list.get(0).getStatus(), "Processing");
+            Assert.assertEquals(list.get(0).getCreateTime(), "2013-07-31T10:56:21.000Z");
+            Assert.assertEquals(list.get(0).getStartTime(), "2013-07-31T10:56:21.001Z");
+            Assert.assertEquals(list.get(0).getEstimatedRemainingTime(), 16);
+            Assert.assertEquals(list.get(0).getProcessPercentage(), 50);
+            Assert.assertEquals(list.get(1).getTaskId(), "mockTaskId2");
+            Assert.assertEquals(list.get(1).getStatus(), "Failed");
+            Assert.assertEquals(list.get(1).getStartTime(), "2013-07-31T10:56:21.004Z");
+            Assert.assertEquals(list.get(1).getEndTime(), "2013-07-31T10:56:21.005Z");
+            Assert.assertEquals(list.get(1).getEstimatedRemainingTime(), 52);
+            Assert.assertEquals(list.get(1).getProcessPercentage(), 20);
+        } catch (ResponseParseException exception) {
+            Assert.fail("parse list user data redundancy transition response body fail");
+        }
+
+        responseBody = ""
+                + "<ListBucketDataRedundancyTransition>\n" +
+                "  <IsTruncated>false</IsTruncated>\n" +
+                "</ListBucketDataRedundancyTransition>\n";
+        try {
+            inputStream = new ByteArrayInputStream(responseBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException exception) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        responseMessage.setContent(inputStream);
+
+        try {
+            ListUserDataRedundancyTransitionResult result = parser.parse(responseMessage);
+            Assert.assertFalse(result.isTruncated());
+            Assert.assertEquals(result.getBucketDataRedundancyTransition().size(), 0);
+        } catch (ResponseParseException exception) {
+            Assert.fail("parse list user data redundancy transition response body fail");
+        }
+    }
+    @Test
+    public void getAccessPointResponseParserTest() {
+        String responseBody = ""
+                + "<GetAccessPointResult>\n" +
+                "  <AccessPointName>test-ap-jt-3</AccessPointName>\n" +
+                "  <Bucket>test-jt-ap-3</Bucket>\n" +
+                "  <AccountId>aaabbb</AccountId>\n" +
+                "  <NetworkOrigin>Internet</NetworkOrigin>\n" +
+                "  <VpcConfiguration>\n" +
+                "     <VpcId>vpc-id</VpcId>\n" +
+                "  </VpcConfiguration>\n" +
+                "  <AccessPointArn>arn:aws:s3:us-east-1:920305101104:accesspoint/test-ap-jt-3</AccessPointArn>\n" +
+                "  <CreationDate>2022-01-05T05:39:53+00:00</CreationDate>\n" +
+                "  <Alias>test-ap-jt-3-pi1kg766wz34gwij4oan1tkep38gwuse1a-s3alias</Alias>\n" +
+                "  <Status>enable</Status>\n" +
+                "  <Endpoints>\n" +
+                "    <PublicEndpoint>s3-accesspoint-fips.dualstack.us-east-1.amazonaws.com</PublicEndpoint>\n" +
+                "    <InternalEndpoint>s3-accesspoint.dualstack.us-east-1.amazonaws.com</InternalEndpoint>\n" +
+                "  </Endpoints>\n" +
+                "</GetAccessPointResult>";
+
+        InputStream inputStream = null;
+        try {
+            inputStream = new ByteArrayInputStream(responseBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException exception) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        ResponseMessage responseMessage = new ResponseMessage(null);
+        responseMessage.setContent(inputStream);
+
+        ResponseParsers.GetAccessPointResponseParser parser = new ResponseParsers.GetAccessPointResponseParser();
+
+        try {
+            GetAccessPointResult result = parser.parse(responseMessage);
+
+            Assert.assertEquals(result.getAccessPointName(), "test-ap-jt-3");
+            Assert.assertEquals(result.getBucket(), "test-jt-ap-3");
+            Assert.assertEquals(result.getAccountId(), "aaabbb");
+            Assert.assertEquals(result.getNetworkOrigin(), "Internet");
+            Assert.assertEquals(result.getVpc().getVpcId(), "vpc-id");
+            Assert.assertEquals(result.getAccessPointArn(), "arn:aws:s3:us-east-1:920305101104:accesspoint/test-ap-jt-3");
+            Assert.assertEquals(result.getCreationDate(), "2022-01-05T05:39:53+00:00");
+            Assert.assertEquals(result.getAlias(), "test-ap-jt-3-pi1kg766wz34gwij4oan1tkep38gwuse1a-s3alias");
+            Assert.assertEquals(result.getStatus(), "enable");
+            Assert.assertEquals(result.getEndpoints().getPublicEndpoint(), "s3-accesspoint-fips.dualstack.us-east-1.amazonaws.com");
+            Assert.assertEquals(result.getEndpoints().getInternalEndpoint(), "s3-accesspoint.dualstack.us-east-1.amazonaws.com");
+
+        } catch (ResponseParseException exception) {
+            Assert.fail("parse access point response body fail");
+        }
+    }
+
+
+    @Test
+    public void createAccessPointResponseParserTest() {
+        String responseBody = ""
+                + "<CreateAccessPointResult>\n" +
+                "  <AccessPointArn>acs:oss:ap-southeast-2:1283641064516515:accesspoint/test-ap-zxl-list-bucket-02-3</AccessPointArn>\n" +
+                "  <Alias>test-ap-zxl-list-buc-45ee7945007a2f0bcb595f63e2215cb51b-ossalias</Alias>\n" +
+                "</CreateAccessPointResult>";
+
+        InputStream inputStream = null;
+        try {
+            inputStream = new ByteArrayInputStream(responseBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException exception) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        ResponseMessage responseMessage = new ResponseMessage(null);
+        responseMessage.setContent(inputStream);
+
+        ResponseParsers.CreateAccessPointResponseParser parser = new ResponseParsers.CreateAccessPointResponseParser();
+
+        try {
+            CreateAccessPointResult result = parser.parse(responseMessage);
+
+            Assert.assertEquals(result.getAccessPointArn(), "acs:oss:ap-southeast-2:1283641064516515:accesspoint/test-ap-zxl-list-bucket-02-3");
+            Assert.assertEquals(result.getAlias(), "test-ap-zxl-list-buc-45ee7945007a2f0bcb595f63e2215cb51b-ossalias");
+
+        } catch (ResponseParseException exception) {
+            Assert.fail("parse create access point response body fail");
+        }
+    }
+
+    @Test
+    public void getAccessPointPolicyResponseParserTest() {
+        String responseBody = "{\"Version\":\"1\",\"Statement\":[{\"Action\":[\"oss:PutObject\",\"oss:GetObject\"],\"Effect\":\"Deny\",\"Principal\":[\"1234567890\"],\"Resource\":[\"acs:oss:*:1234567890:*/*\"]}]}";
+
+        InputStream inputStream = null;
+        try {
+            inputStream = new ByteArrayInputStream(responseBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException exception) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        ResponseMessage responseMessage = new ResponseMessage(null);
+        responseMessage.setContent(inputStream);
+
+        ResponseParsers.GetAccessPointPolicyResponseParser parser = new ResponseParsers.GetAccessPointPolicyResponseParser();
+
+        try {
+            GetAccessPointPolicyResult result = parser.parse(responseMessage);
+
+            Assert.assertEquals(result.getAccessPointPolicy(), responseBody);
+
+
+        } catch (ResponseParseException exception) {
+            Assert.fail("parse access point response body fail");
+        }
+    }
+
+    @Test
+    public void listAccessPointResponseParserTest() {
+        String responseBody = ""
+                + "<ListAccessPointsResult>\n" +
+                "  <IsTruncated>true</IsTruncated>\n" +
+                "  <NextContinuationToken>sdfasfsagqeqg</NextContinuationToken>\n" +
+                "  <AccountId>aaabbb</AccountId>\n" +
+                "  <AccessPoints>\n" +
+                "    <AccessPoint>\n" +
+                "      <Bucket>Bucket</Bucket>\n" +
+                "      <AccessPointName>AccessPointName</AccessPointName>\n" +
+                "      <Alias>test-ap-jt-3-pi1kg766wz34gwij4oan1tkep38gwuse1a-s3alias</Alias>\n" +
+                "      <NetworkOrigin>Internet</NetworkOrigin>\n" +
+                "      <VpcConfiguration>\n" +
+                "        <VpcId>vpc-id</VpcId>\n" +
+                "      </VpcConfiguration>\n" +
+                "      <Status>false</Status>\n" +
+                "    </AccessPoint>\n" +
+                "  </AccessPoints>\n" +
+                "</ListAccessPointsResult>";
+
+        InputStream inputStream = null;
+        try {
+            inputStream = new ByteArrayInputStream(responseBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException exception) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+        ResponseMessage responseMessage = new ResponseMessage(null);
+        responseMessage.setContent(inputStream);
+
+        ResponseParsers.ListAccessPointsResponseParser parser = new ResponseParsers.ListAccessPointsResponseParser();
+
+        try {
+            ListAccessPointsResult result = parser.parse(responseMessage);
+
+            Assert.assertEquals(result.getTruncated(), Boolean.valueOf("true"));
+            Assert.assertEquals(result.getNextContinuationToken(), "sdfasfsagqeqg");
+            Assert.assertEquals(result.getAccountId(), "aaabbb");
+            Assert.assertEquals(result.getAccessPoints().get(0).getAccessPointName(), "AccessPointName");
+            Assert.assertEquals(result.getAccessPoints().get(0).getBucket(), "Bucket");
+            Assert.assertEquals(result.getAccessPoints().get(0).getAlias(), "test-ap-jt-3-pi1kg766wz34gwij4oan1tkep38gwuse1a-s3alias");
+            Assert.assertEquals(result.getAccessPoints().get(0).getNetworkOrigin(), "Internet");
+            Assert.assertEquals(result.getAccessPoints().get(0).getVpc().getVpcId(), "vpc-id");
+            Assert.assertEquals(result.getAccessPoints().get(0).getStatus(), "false");
+        } catch (ResponseParseException exception) {
+            Assert.fail("parse list access point response body fail");
+        }
+    }
 
     @Test
     public void testParseGetBucketStatWithDeepCold() {

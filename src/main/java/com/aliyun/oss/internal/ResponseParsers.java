@@ -140,6 +140,20 @@ public final class ResponseParsers {
     public static final DescribeRegionsResponseParser describeRegionsResponseParser = new DescribeRegionsResponseParser();
     public static final GetBucketCallbackPolicyResponseParser getBucketCallbackPolicyResponseParser = new GetBucketCallbackPolicyResponseParser();
     public static final AsyncProcessObjectResponseParser asyncProcessObjectResponseParser = new AsyncProcessObjectResponseParser();
+    public static final GetBucketArchiveDirectReadResponseParser getBucketArchiveDirectReadResponseParser = new GetBucketArchiveDirectReadResponseParser();
+    public static final GetBucketHttpsConfigResponseParser getBucketHttpsConfigResponseParser = new GetBucketHttpsConfigResponseParser();
+    public static final GetPublicAccessBlockResponseParser getPublicAccessBlockResponseParser = new GetPublicAccessBlockResponseParser();
+    public static final GetBucketPublicAccessBlockResponseParser getBucketPublicAccessBlockResponseParser = new GetBucketPublicAccessBlockResponseParser();
+    public static final GetBucketPolicyStatusResponseParser getBucketPolicyStatusResponseParser = new GetBucketPolicyStatusResponseParser();
+    public static final CreateBucketDataRedundancyTransitionResponseParser createBucketDataRedundancyTransitionResponseParser = new CreateBucketDataRedundancyTransitionResponseParser();
+    public static final GetBucketDataRedundancyTransitionResponseParser getBucketDataRedundancyTransitionResponseParser = new GetBucketDataRedundancyTransitionResponseParser();
+    public static final ListBucketDataRedundancyTransitionResponseParser listBucketDataRedundancyTransitionResponseParser = new ListBucketDataRedundancyTransitionResponseParser();
+    public static final ListUserDataRedundancyTransitionResponseParser listUserDataRedundancyTransitionResponseParser = new ListUserDataRedundancyTransitionResponseParser();
+    public static final CreateAccessPointResponseParser createAccessPointResponseParser = new CreateAccessPointResponseParser();
+    public static final GetAccessPointResponseParser getAccessPointResponseParser = new GetAccessPointResponseParser();
+    public static final GetAccessPointPolicyResponseParser getAccessPointPolicyResponseParser = new GetAccessPointPolicyResponseParser();
+    public static final ListAccessPointsResponseParser listAccessPointsResponseParser = new ListAccessPointsResponseParser();
+
 
     public static Long parseLongWithDefault(String defaultValue){
         if(defaultValue == null || "".equals(defaultValue)){
@@ -3617,6 +3631,10 @@ public final class ResponseParsers {
                     cname.setCertType(CnameConfiguration.CertType.parse(certElem.getChildText("Type")));
                     cname.setCertStatus(CnameConfiguration.CertStatus.parse(certElem.getChildText("Status")));
                     cname.setCertId(certElem.getChildText("CertId"));
+                    cname.setCreationDate(certElem.getChildText("CreationDate"));
+                    cname.setFingerprint(certElem.getChildText("Fingerprint"));
+                    cname.setValidStartDate(certElem.getChildText("ValidStartDate"));
+                    cname.setValidEndDate(certElem.getChildText("ValidEndDate"));
                 }
 
                 cnames.add(cname);
@@ -4301,6 +4319,524 @@ public final class ResponseParsers {
                 asyncProcessObjectResult.setEventId(jsonObject.getString("EventId"));
                 asyncProcessObjectResult.setTaskId(jsonObject.getString("TaskId"));
                 return asyncProcessObjectResult;
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class GetBucketArchiveDirectReadResponseParser implements ResponseParser<GetBucketArchiveDirectReadResult> {
+        @Override
+        public GetBucketArchiveDirectReadResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetBucketArchiveDirectReadResult result = parseGetArchiveDirectRead(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+        private GetBucketArchiveDirectReadResult parseGetArchiveDirectRead(InputStream inputStream) throws ResponseParseException {
+            GetBucketArchiveDirectReadResult getBucketArchiveDirectReadResult = new GetBucketArchiveDirectReadResult();
+            if (inputStream == null) {
+                return getBucketArchiveDirectReadResult;
+            }
+            try {
+                Element root = getXmlRootElement(inputStream);
+                if (root.getChildText("Enabled") != null) {
+                    getBucketArchiveDirectReadResult.setEnabled(Boolean.valueOf(root.getChildText("Enabled")));
+                }
+                return getBucketArchiveDirectReadResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class CreateBucketDataRedundancyTransitionResponseParser implements ResponseParser<CreateBucketDataRedundancyTransitionResult> {
+
+        @Override
+        public CreateBucketDataRedundancyTransitionResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                CreateBucketDataRedundancyTransitionResult result = parseCreateBucketDataRedundancyTransition(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private CreateBucketDataRedundancyTransitionResult parseCreateBucketDataRedundancyTransition(InputStream inputStream) throws ResponseParseException {
+            CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransitionResult = new CreateBucketDataRedundancyTransitionResult();
+            if (inputStream == null) {
+                return createBucketDataRedundancyTransitionResult;
+            }
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                createBucketDataRedundancyTransitionResult.setTaskId(root.getChildText("TaskId"));
+                return createBucketDataRedundancyTransitionResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class GetBucketDataRedundancyTransitionResponseParser implements ResponseParser<GetBucketDataRedundancyTransitionResult> {
+
+        @Override
+        public GetBucketDataRedundancyTransitionResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetBucketDataRedundancyTransitionResult result = parseGetBucketDataRedundancyTransition(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private GetBucketDataRedundancyTransitionResult parseGetBucketDataRedundancyTransition(InputStream responseBody)
+                throws ResponseParseException {
+            try {
+                Element root = getXmlRootElement(responseBody);
+                return parseBucketDataRedundancyTransitionResult(root);
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+
+    }
+
+    public static final class ListBucketDataRedundancyTransitionResponseParser implements ResponseParser<List<GetBucketDataRedundancyTransitionResult>> {
+
+        @Override
+        public List<GetBucketDataRedundancyTransitionResult> parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                return parseListBucketDataRedundancyTransitionResult(response.getContent());
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private List<GetBucketDataRedundancyTransitionResult> parseListBucketDataRedundancyTransitionResult(InputStream responseBody)
+                throws ResponseParseException {
+            try {
+
+                Element root = getXmlRootElement(responseBody);
+
+                List<GetBucketDataRedundancyTransitionResult> result = new ArrayList<GetBucketDataRedundancyTransitionResult>();
+                List<Element> bucketDataRedundancyTransitions = root.getChildren("BucketDataRedundancyTransition");
+
+                for (Element e : bucketDataRedundancyTransitions) {
+                    GetBucketDataRedundancyTransitionResult getBucketDataRedundancyTransitionResult = parseBucketDataRedundancyTransitionResult(e);
+                    result.add(getBucketDataRedundancyTransitionResult);
+                }
+
+                return result;
+
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+
+    }
+
+    public static final class ListUserDataRedundancyTransitionResponseParser implements ResponseParser<ListUserDataRedundancyTransitionResult> {
+        @Override
+        public ListUserDataRedundancyTransitionResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                ListUserDataRedundancyTransitionResult result = parseListDataRedundancyTransition(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private ListUserDataRedundancyTransitionResult parseListDataRedundancyTransition(InputStream inputStream) throws ResponseParseException {
+            ListUserDataRedundancyTransitionResult listUserDataRedundancyTransitionResult = new ListUserDataRedundancyTransitionResult();
+            List<GetBucketDataRedundancyTransitionResult> bucketDataRedundancyTransitionResultList = new ArrayList<GetBucketDataRedundancyTransitionResult>();
+            if (inputStream == null) {
+                return listUserDataRedundancyTransitionResult;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+                if(root.getChildText("IsTruncated") != null){
+                    listUserDataRedundancyTransitionResult.setTruncated(Boolean.valueOf(root.getChildText("IsTruncated")));
+                }
+
+                listUserDataRedundancyTransitionResult.setNextContinuationToken(root.getChildText("NextContinuationToken"));
+
+                List<Element> bucketDataRedundancyTransitions = root.getChildren("BucketDataRedundancyTransition");
+                for (Element e : bucketDataRedundancyTransitions) {
+                    GetBucketDataRedundancyTransitionResult getBucketDataRedundancyTransitionResult = parseBucketDataRedundancyTransitionResult(e);
+                    bucketDataRedundancyTransitionResultList.add(getBucketDataRedundancyTransitionResult);
+                }
+                listUserDataRedundancyTransitionResult.setBucketDataRedundancyTransition(bucketDataRedundancyTransitionResultList);
+                return listUserDataRedundancyTransitionResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static GetBucketDataRedundancyTransitionResult parseBucketDataRedundancyTransitionResult(Element element) {
+        GetBucketDataRedundancyTransitionResult result = new GetBucketDataRedundancyTransitionResult();
+
+        result.setTaskId(element.getChildText("TaskId"));
+        result.setCreateTime(element.getChildText("CreateTime"));
+        if (null != element.getChild("StartTime")) {
+            result.setStartTime(element.getChildText("StartTime"));
+        }
+        if (null != element.getChild("EndTime")) {
+            result.setEndTime(element.getChildText("EndTime"));
+        }
+        result.setStatus(element.getChildText("Status"));
+        if (null != element.getChild("EstimatedRemainingTime")) {
+            result.setEstimatedRemainingTime(Integer.parseInt(element.getChildText("EstimatedRemainingTime")));
+        }
+        if (null != element.getChild("ProcessPercentage")) {
+            result.setProcessPercentage(Integer.parseInt(element.getChildText("ProcessPercentage")));
+        }
+        if (null != element.getChild("Bucket")) {
+            result.setBucket(element.getChildText("Bucket"));
+        }
+
+        return result;
+    }
+
+    public static final class GetBucketHttpsConfigResponseParser implements ResponseParser<GetBucketHttpsConfigResult> {
+
+        @Override
+        public GetBucketHttpsConfigResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetBucketHttpsConfigResult result = parseGetBucketHttpsConfig(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private GetBucketHttpsConfigResult parseGetBucketHttpsConfig(InputStream inputStream) throws ResponseParseException {
+            GetBucketHttpsConfigResult result = new GetBucketHttpsConfigResult();
+            if (inputStream == null) {
+                return result;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                Element tlsElem = root.getChild("TLS");
+                if(tlsElem != null){
+
+                    result.setEnable(Boolean.parseBoolean(tlsElem.getChildText("Enable")));
+                    List<String> tlsVersion = new ArrayList<String>();
+                    List<Element> tlsVersionElem = tlsElem.getChildren("TLSVersion");
+                    if(!tlsVersionElem.isEmpty()){
+                        for (Element elem : tlsVersionElem) {
+                            String version = elem.getValue();
+                            tlsVersion.add(version);
+                        }
+                        result.setTlsVersion(tlsVersion);
+                    }
+                }
+                return result;
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class GetPublicAccessBlockResponseParser implements ResponseParser<GetPublicAccessBlockResult> {
+        @Override
+        public GetPublicAccessBlockResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetPublicAccessBlockResult result = parseGetPublicAccessBlock(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private GetPublicAccessBlockResult parseGetPublicAccessBlock(InputStream inputStream) throws ResponseParseException {
+            GetPublicAccessBlockResult getPublicAccessBlockResult = new GetPublicAccessBlockResult();
+            if (inputStream == null) {
+                return getPublicAccessBlockResult;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                if (root.getChildText("BlockPublicAccess") != null) {
+                    getPublicAccessBlockResult.setBlockPublicAccess(Boolean.valueOf(root.getChildText("BlockPublicAccess")));
+                }
+
+                return getPublicAccessBlockResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class GetBucketPublicAccessBlockResponseParser implements ResponseParser<GetBucketPublicAccessBlockResult> {
+        @Override
+        public GetBucketPublicAccessBlockResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetBucketPublicAccessBlockResult result = parseGetBucketPublicAccessBlock(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private GetBucketPublicAccessBlockResult parseGetBucketPublicAccessBlock(InputStream inputStream) throws ResponseParseException {
+            GetBucketPublicAccessBlockResult getBucketPublicAccessBlockResult = new GetBucketPublicAccessBlockResult();
+            if (inputStream == null) {
+                return getBucketPublicAccessBlockResult;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                if (root.getChildText("BlockPublicAccess") != null) {
+                    getBucketPublicAccessBlockResult.setBlockPublicAccess(Boolean.valueOf(root.getChildText("BlockPublicAccess")));
+                }
+
+                return getBucketPublicAccessBlockResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class GetBucketPolicyStatusResponseParser implements ResponseParser<GetBucketPolicyStatusResult> {
+        @Override
+        public GetBucketPolicyStatusResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetBucketPolicyStatusResult result = parseGetBucketPolicyStatus(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private GetBucketPolicyStatusResult parseGetBucketPolicyStatus(InputStream inputStream) throws ResponseParseException {
+            GetBucketPolicyStatusResult getBucketPolicyStatusResult = new GetBucketPolicyStatusResult();
+            if (inputStream == null) {
+                return getBucketPolicyStatusResult;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                if (root.getChildText("IsPublic") != null) {
+                    getBucketPolicyStatusResult.setPublic(Boolean.valueOf(root.getChildText("IsPublic")));
+                }
+
+                return getBucketPolicyStatusResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class CreateAccessPointResponseParser implements ResponseParser<CreateAccessPointResult> {
+        @Override
+        public CreateAccessPointResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                CreateAccessPointResult result = parseCreateAccessPoint(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private CreateAccessPointResult parseCreateAccessPoint(InputStream inputStream) throws ResponseParseException {
+            CreateAccessPointResult createAccessPointResult = new CreateAccessPointResult();
+            if (inputStream == null) {
+                return createAccessPointResult;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                createAccessPointResult.setAccessPointArn(root.getChildText("AccessPointArn"));
+                createAccessPointResult.setAlias(root.getChildText("Alias"));
+
+                return createAccessPointResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class GetAccessPointResponseParser implements ResponseParser<GetAccessPointResult> {
+        @Override
+        public GetAccessPointResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetAccessPointResult result = parseGetAccessPoint(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private GetAccessPointResult parseGetAccessPoint(InputStream inputStream) throws ResponseParseException {
+            GetAccessPointResult getAccessPointResult = new GetAccessPointResult();
+            if (inputStream == null) {
+                return getAccessPointResult;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+
+                getAccessPointResult.setAccessPointName(root.getChildText("AccessPointName"));
+                getAccessPointResult.setBucket(root.getChildText("Bucket"));
+                getAccessPointResult.setAccountId(root.getChildText("AccountId"));
+                getAccessPointResult.setNetworkOrigin(root.getChildText("NetworkOrigin"));
+                if (root.getChild("VpcConfiguration").getChildText("VpcId") != null) {
+                    AccessPointVpcConfiguration accessPointVpcConfiguration = new AccessPointVpcConfiguration();
+                    accessPointVpcConfiguration.setVpcId(root.getChild("VpcConfiguration").getChildText("VpcId"));
+                    getAccessPointResult.setVpc(accessPointVpcConfiguration);
+                }
+                getAccessPointResult.setAccessPointArn(root.getChildText("AccessPointArn"));
+                if (root.getChildText("CreationDate") != null) {
+                    getAccessPointResult.setCreationDate(root.getChildText("CreationDate"));
+                }
+                getAccessPointResult.setAlias(root.getChildText("Alias"));
+                getAccessPointResult.setStatus(root.getChildText("Status"));
+
+                if (root.getChild("Endpoints") != null) {
+                    AccessPointEndpoints accessPointEndpoints = new AccessPointEndpoints();
+                    if (root.getChild("Endpoints").getChildText("PublicEndpoint") != null) {
+                        accessPointEndpoints.setPublicEndpoint(root.getChild("Endpoints").getChildText("PublicEndpoint"));
+                    }
+                    if (root.getChild("Endpoints").getChildText("InternalEndpoint") != null) {
+                        accessPointEndpoints.setInternalEndpoint(root.getChild("Endpoints").getChildText("InternalEndpoint"));
+                    }
+                    getAccessPointResult.setEndpoints(accessPointEndpoints);
+                }
+
+                return getAccessPointResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class GetAccessPointPolicyResponseParser implements ResponseParser<GetAccessPointPolicyResult> {
+        @Override
+        public GetAccessPointPolicyResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                GetAccessPointPolicyResult result = parseGetAccessPointPolicy(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private GetAccessPointPolicyResult parseGetAccessPointPolicy(InputStream inputStream) throws ResponseParseException {
+            GetAccessPointPolicyResult getAccessPointPolicyResult = new GetAccessPointPolicyResult();
+            if (inputStream == null) {
+                return getAccessPointPolicyResult;
+            }
+
+            try {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                StringBuilder sb = new StringBuilder();
+
+                String s ;
+                while (( s = reader.readLine()) != null) {
+                    sb.append(s);
+                }
+
+                getAccessPointPolicyResult.setAccessPointPolicy(sb.toString());
+
+                return getAccessPointPolicyResult;
+            } catch (Exception e) {
+                throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+    }
+
+    public static final class ListAccessPointsResponseParser implements ResponseParser<ListAccessPointsResult> {
+        @Override
+        public ListAccessPointsResult parse(ResponseMessage response) throws ResponseParseException {
+            try {
+                ListAccessPointsResult result = parseListAccessPoint(response.getContent());
+                setResultParameter(result, response);
+                return result;
+            } finally {
+                safeCloseResponse(response);
+            }
+        }
+
+        private ListAccessPointsResult parseListAccessPoint(InputStream inputStream) throws ResponseParseException {
+            ListAccessPointsResult listAccessPointsResult = new ListAccessPointsResult();
+            if (inputStream == null) {
+                return listAccessPointsResult;
+            }
+
+            try {
+                Element root = getXmlRootElement(inputStream);
+                if(root.getChildText("IsTruncated") != null){
+                    listAccessPointsResult.setTruncated(Boolean.valueOf(root.getChildText("IsTruncated")));
+                }
+
+                listAccessPointsResult.setNextContinuationToken(root.getChildText("NextContinuationToken"));
+                listAccessPointsResult.setAccountId(root.getChildText("AccountId"));
+
+                if (root.getChild("AccessPoints") != null) {
+                    List<Element> accessElems = root.getChild("AccessPoints").getChildren("AccessPoint");
+                    List<AccessPoint> accessPoints = new ArrayList<AccessPoint>();
+                    for (Element e : accessElems) {
+                        AccessPoint accessPoint = new AccessPoint();
+                        accessPoint.setBucket(e.getChildText("Bucket"));
+                        accessPoint.setAccessPointName(e.getChildText("AccessPointName"));
+                        accessPoint.setAlias(e.getChildText("Alias"));
+                        accessPoint.setNetworkOrigin(e.getChildText("NetworkOrigin"));
+                        accessPoint.setStatus(e.getChildText("Status"));
+
+                        if (e.getChild("VpcConfiguration").getChildText("VpcId") != null) {
+                            AccessPointVpcConfiguration accessPointVpcConfiguration = new AccessPointVpcConfiguration();
+                            accessPointVpcConfiguration.setVpcId(e.getChild("VpcConfiguration").getChildText("VpcId"));
+                            accessPoint.setVpc(accessPointVpcConfiguration);
+                        }
+                        accessPoints.add(accessPoint);
+                    }
+                    listAccessPointsResult.setAccessPoints(accessPoints);
+                }
+                return listAccessPointsResult;
+            } catch (JDOMParseException e) {
+                throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
             } catch (Exception e) {
                 throw new ResponseParseException(e.getMessage(), e);
             }

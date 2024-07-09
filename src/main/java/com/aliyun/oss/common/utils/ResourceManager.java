@@ -30,7 +30,11 @@ public class ResourceManager {
     private ResourceBundle bundle;
 
     ResourceManager(String baseName, Locale locale) {
-        this.bundle = ResourceBundle.getBundle(baseName, locale);
+        try{
+            this.bundle = ResourceBundle.getBundle(baseName, locale);
+        } catch (Exception e){
+            this.bundle = ResourceBundle.getBundle(baseName);
+        }
     }
 
     public static ResourceManager getInstance(String baseName) {

@@ -5189,6 +5189,7 @@ public interface OSS {
      * write get object response.
      *
      * @param writeGetObjectResponseRequest
+     *          The {@link WriteGetObjectResponseRequest} instance
      *
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
@@ -5200,4 +5201,451 @@ public interface OSS {
      *             If any errors occurred in OSS while processing the request.
      */
     public VoidResult writeGetObjectResponse(WriteGetObjectResponseRequest writeGetObjectResponseRequest) throws OSSException, ClientException;
+
+
+    /**
+     * create archive direct Reading
+     *
+     * @param request
+     *          The {@link PutBucketArchiveDirectReadRequest} instance
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public VoidResult putBucketArchiveDirectRead(PutBucketArchiveDirectReadRequest request) throws OSSException, ClientException;
+
+    /**
+     * get archive direct Reading
+     *
+     * @param bucketName
+     *          The bucket name.
+     *
+     * @return A {@link GetBucketArchiveDirectReadResult} instance
+     *
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public GetBucketArchiveDirectReadResult getBucketArchiveDirectRead(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Enable or disable TLS version settings for buckets.
+     *
+     * @param request
+     *          The {@link PutBucketHttpsConfigRequest} instance
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public VoidResult putBucketHttpsConfig(PutBucketHttpsConfigRequest request) throws OSSException, ClientException;
+
+    /**
+     * View the TLS version settings of the bucket.
+     *
+     * @param bucketName
+     *          The bucket name.
+     *
+     * @return A {@link GetBucketHttpsConfigResult} instance.
+     *
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public GetBucketHttpsConfigResult getBucketHttpsConfig(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Set publicAccessBlock to the OSS Server
+     * @param putPublicAccessBlockRequest
+     *             The {@link PutPublicAccessBlockRequest} instance
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *             contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public VoidResult putPublicAccessBlock(PutPublicAccessBlockRequest putPublicAccessBlockRequest) throws OSSException, ClientException;
+
+    /**
+     * Get publicAccessBlock from the OSS Server
+     * @return A {@link GetPublicAccessBlockResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public GetPublicAccessBlockResult getPublicAccessBlock() throws OSSException, ClientException;
+
+    /**
+     * Delete publicAccessBlock from the OSS Server
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public VoidResult deletePublicAccessBlock() throws OSSException, ClientException;
+
+    /**
+     * Set bucketPublicAccessBlock to the OSS Server
+     * @param putBucketPublicAccessBlockRequest
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public VoidResult putBucketPublicAccessBlock(PutBucketPublicAccessBlockRequest putBucketPublicAccessBlockRequest) throws OSSException, ClientException;
+
+    /**
+     * Get bucketPublicAccessBlock from the OSS Server
+     * @param bucketName
+     *             The bucket name.
+     * @return A {@link GetBucketPublicAccessBlockResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public GetBucketPublicAccessBlockResult getBucketPublicAccessBlock(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Delete bucketPublicAccessBlock from the OSS Server
+     * @param bucketName
+     *             The bucket name.
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public VoidResult deleteBucketPublicAccessBlock(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * Get bucketPolicyStatus from the OSS Server
+     * @param bucketName
+     *             The bucket name.
+     * @return A {@link GetBucketPolicyStatusResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public GetBucketPolicyStatusResult getBucketPolicyStatus(String bucketName) throws OSSException, ClientException;
+
+
+    /**
+     * create bucket data redundancy transition task
+     * default targetType is ZRS
+     *
+     * @param bucketName
+     *              The bucket name.
+     * @return A {@link CreateBucketDataRedundancyTransitionResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * create bucket data redundancy transition task
+     *
+     * @param bucketName
+     *              the bucket name
+     * @param targetType
+     *              the target type
+     * @return A {@link CreateBucketDataRedundancyTransitionResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(String bucketName, String targetType) throws OSSException, ClientException;
+
+    /**
+     * create bucket data redundancy transition task
+     *
+     * @param bucketName
+     *              the bucket name
+     * @param targetType
+     *              the target type
+     * @return A {@link CreateBucketDataRedundancyTransitionResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(String bucketName, DataRedundancyType targetType) throws OSSException, ClientException;
+
+    /**
+     * Create the data redundancy transition on the {@link Bucket} instance.
+     *
+     * @param createBucketDataRedundancyTransitionRequest
+     *              A {@link CreateBucketDataRedundancyTransitionRequest} instance.
+     * @return A {@link CreateBucketDataRedundancyTransitionResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(CreateBucketDataRedundancyTransitionRequest createBucketDataRedundancyTransitionRequest) throws OSSException, ClientException;
+
+    /**
+     * get bucket data redundancy transition task info
+     *
+     * @param bucketName
+     *              the bucket name
+     * @param taskId
+     *              the task id
+     * @return A {@link GetBucketDataRedundancyTransitionResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public GetBucketDataRedundancyTransitionResult getBucketDataRedundancyTransition(String bucketName, String taskId) throws OSSException, ClientException;
+
+    /**
+     *  get bucket data redundancy transition task info
+     *
+     * @param getBucketDataRedundancyTransitionRequest
+     *              A {@link GetBucketDataRedundancyTransitionRequest} instance.
+     * @return A {@link GetBucketDataRedundancyTransitionResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public GetBucketDataRedundancyTransitionResult getBucketDataRedundancyTransition(GetBucketDataRedundancyTransitionRequest getBucketDataRedundancyTransitionRequest) throws OSSException, ClientException;
+
+    /**
+     * delete bucket data redundancy transition task
+     *
+     * @param bucketName
+     *          the bucket name
+     * @param taskId
+     *          the task id
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public VoidResult deleteBucketDataRedundancyTransition(String bucketName, String taskId) throws OSSException, ClientException;
+
+    /**
+     * delete bucket data redundancy transition task
+     *
+     * @param deleteBucketDataRedundancyTransitionRequest
+     *             A {@link DeleteBucketDataRedundancyTransitionRequest} instance.
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public VoidResult deleteBucketDataRedundancyTransition(DeleteBucketDataRedundancyTransitionRequest deleteBucketDataRedundancyTransitionRequest) throws OSSException, ClientException;
+
+    /**
+     * List the data redundancy type conversion tasks for all buckets under the user
+     *
+     * @param listUserDataRedundancyTransitionRequest
+     *              A {@link ListUserDataRedundancyTransitionRequest} instance.
+     * @return A {@link ListUserDataRedundancyTransitionResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public ListUserDataRedundancyTransitionResult listUserDataRedundancyTransition(ListUserDataRedundancyTransitionRequest listUserDataRedundancyTransitionRequest) throws OSSException, ClientException;
+
+    /**
+     * List all data redundancy type conversion tasks under the bucket
+     *
+     * @param bucketName
+     *              the bucket name.
+     * @return A list of {@link GetBucketDataRedundancyTransitionResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public List<GetBucketDataRedundancyTransitionResult> listBucketDataRedundancyTransition(String bucketName) throws OSSException, ClientException;
+
+    /**
+     * List all data redundancy type conversion tasks under the bucket
+     *
+     * @param request
+     *              A {@link GenericRequest} instance.
+     * @return A list of {@link GetBucketDataRedundancyTransitionResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public List<GetBucketDataRedundancyTransitionResult> listBucketDataRedundancyTransition(GenericRequest request) throws OSSException, ClientException;
+
+    /**
+     * Create access point
+     * @param createAccessPointRequest
+     *              A {@link CreateAccessPointRequest} instance.
+     * @return A {@link CreateAccessPointResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public CreateAccessPointResult createAccessPoint(CreateAccessPointRequest createAccessPointRequest) throws OSSException, ClientException;
+
+    /**
+     * Get access point from the OSS Server
+     * @param getAccessPointRequest
+     *              A {@link GetAccessPointRequest} instance.
+     * @return A {@link GetAccessPointResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public GetAccessPointResult getAccessPoint(GetAccessPointRequest getAccessPointRequest) throws OSSException, ClientException;
+
+    /**
+     * Delete access point from the OSS Server
+     * @param deleteAccessPointRequest
+     *          A {@link DeleteAccessPointRequest} instance.
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public VoidResult deleteAccessPoint(DeleteAccessPointRequest deleteAccessPointRequest) throws OSSException, ClientException;
+
+    /**
+     * Put access point policy
+     * @param putAccessPointPolicyRequest
+     *              A {@link PutAccessPointPolicyRequest} instance.
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public VoidResult putAccessPointPolicy(PutAccessPointPolicyRequest putAccessPointPolicyRequest) throws OSSException, ClientException;
+
+    /**
+     * Get access point policy from the OSS Server
+     * @param getAccessPointPolicyRequest
+     *              A {@link GetAccessPointPolicyRequest} instance.
+     * @return A {@link GetAccessPointPolicyResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public GetAccessPointPolicyResult getAccessPointPolicy(GetAccessPointPolicyRequest getAccessPointPolicyRequest) throws OSSException, ClientException;
+
+    /**
+     * Delete access point policy from the OSS Server
+     * @param deleteAccessPointPolicyRequest
+     *              A {@link DeleteAccessPointPolicyRequest} instance.
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public VoidResult deleteAccessPointPolicy(DeleteAccessPointPolicyRequest deleteAccessPointPolicyRequest) throws OSSException, ClientException;
+
+    /**
+     * List all access points for user {@link Bucket} in the parameter of
+     * {@link ListObjectsRequest}
+     *
+     * @param listAccessPointsRequest
+     *            The {@link ListAccessPointsRequest} instance that defines the
+     *            access point as well as the criteria such as max keys, continuation token.
+     *
+     * @return  A {@link ListAccessPointsResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public ListAccessPointsResult listAccessPoints(ListAccessPointsRequest listAccessPointsRequest) throws OSSException, ClientException;
+
+    /**
+     * List all access points for bucket {@link Bucket} in the parameter of
+     * {@link ListObjectsRequest}
+     *
+     * @param listBucketAccessPointsRequest
+     *            The {@link ListBucketAccessPointsRequest} instance that defines the
+     *            access point as well as the criteria such as max keys, continuation token.
+     *
+     * @return A {@link ListAccessPointsResult} instance.
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public ListAccessPointsResult listBucketAccessPoints(ListBucketAccessPointsRequest listBucketAccessPointsRequest) throws OSSException, ClientException;
+
 }

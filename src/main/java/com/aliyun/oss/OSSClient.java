@@ -1998,6 +1998,156 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public VoidResult putBucketArchiveDirectRead(PutBucketArchiveDirectReadRequest request) throws OSSException, ClientException {
+        return this.bucketOperation.putBucketArchiveDirectRead(request);
+    }
+
+    @Override
+    public GetBucketArchiveDirectReadResult getBucketArchiveDirectRead(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketArchiveDirectRead(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public VoidResult putBucketHttpsConfig(PutBucketHttpsConfigRequest putBucketHttpsConfigRequest) throws OSSException, ClientException {
+        return this.bucketOperation.putBucketHttpsConfig(putBucketHttpsConfigRequest);
+    }
+
+    @Override
+    public GetBucketHttpsConfigResult getBucketHttpsConfig(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketHttpsConfig(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public VoidResult putPublicAccessBlock(PutPublicAccessBlockRequest putPublicAccessBlockRequest) throws OSSException, ClientException {
+        return this.bucketOperation.putPublicAccessBlock(putPublicAccessBlockRequest);
+    }
+
+    @Override
+    public GetPublicAccessBlockResult getPublicAccessBlock() throws OSSException, ClientException {
+        return this.bucketOperation.getPublicAccessBlock(new GenericRequest());
+    }
+
+    @Override
+    public VoidResult deletePublicAccessBlock() throws OSSException, ClientException {
+        return this.bucketOperation.deletePublicAccessBlock(new GenericRequest());
+    }
+
+    @Override
+    public VoidResult putBucketPublicAccessBlock(PutBucketPublicAccessBlockRequest putBucketPublicAccessBlockRequest) throws OSSException, ClientException {
+        return this.bucketOperation.putBucketPublicAccessBlock(putBucketPublicAccessBlockRequest);
+    }
+
+    @Override
+    public GetBucketPublicAccessBlockResult getBucketPublicAccessBlock(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketPublicAccessBlock(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public VoidResult deleteBucketPublicAccessBlock(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.deleteBucketPublicAccessBlock(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public GetBucketPolicyStatusResult getBucketPolicyStatus(String bucketName) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketPolicyStatus(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(String bucketName) throws OSSException, ClientException {
+        return this.createBucketDataRedundancyTransition(new CreateBucketDataRedundancyTransitionRequest(bucketName, "ZRS"));
+    }
+
+    @Override
+    public CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(String bucketName, String targetType) throws OSSException, ClientException {
+        return this.createBucketDataRedundancyTransition(new CreateBucketDataRedundancyTransitionRequest(bucketName, targetType));
+    }
+
+    @Override
+    public CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(String bucketName, DataRedundancyType targetType) throws OSSException, ClientException {
+        return this.createBucketDataRedundancyTransition(new CreateBucketDataRedundancyTransitionRequest(bucketName, targetType.toString()));
+    }
+
+    @Override
+    public CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(CreateBucketDataRedundancyTransitionRequest createBucketDataRedundancyTransitionRequest) throws OSSException, ClientException {
+        return this.bucketOperation.createBucketDataRedundancyTransition(createBucketDataRedundancyTransitionRequest);
+    }
+
+    @Override
+    public GetBucketDataRedundancyTransitionResult getBucketDataRedundancyTransition(String bucketName, String taskId) throws OSSException, ClientException {
+        return this.getBucketDataRedundancyTransition(new GetBucketDataRedundancyTransitionRequest(bucketName, taskId));
+    }
+
+    @Override
+    public GetBucketDataRedundancyTransitionResult getBucketDataRedundancyTransition(GetBucketDataRedundancyTransitionRequest getBucketDataRedundancyTransitionRequest) throws OSSException, ClientException {
+        return this.bucketOperation.getBucketDataRedundancyTransition(getBucketDataRedundancyTransitionRequest);
+    }
+
+    @Override
+    public VoidResult deleteBucketDataRedundancyTransition(String bucketName, String taskId) throws OSSException, ClientException {
+        return this.deleteBucketDataRedundancyTransition(new DeleteBucketDataRedundancyTransitionRequest(bucketName, taskId));
+    }
+
+    @Override
+    public VoidResult deleteBucketDataRedundancyTransition(DeleteBucketDataRedundancyTransitionRequest deleteBucketDataRedundancyTransitionRequest) throws OSSException, ClientException {
+        return this.bucketOperation.deleteBucketDataRedundancyTransition(deleteBucketDataRedundancyTransitionRequest);
+    }
+
+    @Override
+    public ListUserDataRedundancyTransitionResult listUserDataRedundancyTransition(ListUserDataRedundancyTransitionRequest listUserDataRedundancyTransitionRequest) throws OSSException, ClientException {
+        return this.bucketOperation.listUserDataRedundancyTransition(listUserDataRedundancyTransitionRequest);
+    }
+
+    @Override
+    public List<GetBucketDataRedundancyTransitionResult> listBucketDataRedundancyTransition(String bucketName) throws OSSException, ClientException {
+        return this.listBucketDataRedundancyTransition(new GenericRequest(bucketName));
+    }
+
+    @Override
+    public List<GetBucketDataRedundancyTransitionResult> listBucketDataRedundancyTransition(GenericRequest request) throws OSSException, ClientException {
+        return this.bucketOperation.listBucketDataRedundancyTransition(request);
+    }
+
+    @Override
+    public CreateAccessPointResult createAccessPoint(CreateAccessPointRequest createAccessPointRequest) throws OSSException, ClientException {
+        return bucketOperation.createAccessPoint(createAccessPointRequest);
+    }
+
+    @Override
+    public GetAccessPointResult getAccessPoint(GetAccessPointRequest getAccessPointRequest) throws OSSException, ClientException {
+        return bucketOperation.getAccessPoint(getAccessPointRequest);
+    }
+
+    @Override
+    public VoidResult deleteAccessPoint(DeleteAccessPointRequest deleteAccessPointRequest) throws OSSException, ClientException {
+        return bucketOperation.deleteAccessPoint(deleteAccessPointRequest);
+    }
+
+    @Override
+    public VoidResult putAccessPointPolicy(PutAccessPointPolicyRequest putAccessPointPolicyRequest) throws OSSException, ClientException {
+        return bucketOperation.putAccessPointPolicy(putAccessPointPolicyRequest);
+    }
+
+    @Override
+    public GetAccessPointPolicyResult getAccessPointPolicy(GetAccessPointPolicyRequest getAccessPointPolicyRequest) throws OSSException, ClientException {
+        return bucketOperation.getAccessPointPolicy(getAccessPointPolicyRequest);
+    }
+
+    @Override
+    public VoidResult deleteAccessPointPolicy(DeleteAccessPointPolicyRequest deleteAccessPointPolicyRequest) throws OSSException, ClientException {
+        return bucketOperation.deleteAccessPointPolicy(deleteAccessPointPolicyRequest);
+    }
+
+    @Override
+    public ListAccessPointsResult listAccessPoints(ListAccessPointsRequest listAccessPointsRequest) throws OSSException, ClientException {
+        return bucketOperation.listAccessPoints(listAccessPointsRequest);
+    }
+
+    @Override
+    public ListAccessPointsResult listBucketAccessPoints(ListBucketAccessPointsRequest listBucketAccessPointsRequest) throws OSSException, ClientException {
+        return bucketOperation.listBucketAccessPoints(listBucketAccessPointsRequest);
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();

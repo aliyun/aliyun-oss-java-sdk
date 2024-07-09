@@ -102,6 +102,12 @@ public final class RequestMarshallers {
     public static final DoMetaQueryRequestMarshaller doMetaQueryRequestMarshaller = new DoMetaQueryRequestMarshaller();
     public static final SetBucketCallbackPolicyRequestMarshaller setBucketCallbackPolicyRequestMarshaller = new SetBucketCallbackPolicyRequestMarshaller();
     public static final AsyncProcessObjectRequestMarshaller asyncProcessObjectRequestMarshaller = new AsyncProcessObjectRequestMarshaller();
+    public static final PutBucketArchiveDirectReadRequestMarshaller putBucketArchiveDirectReadRequestMarshaller = new PutBucketArchiveDirectReadRequestMarshaller();
+    public static final PutBucketHttpsConfigRequestMarshaller putBucketHttpsConfigRequestMarshaller = new PutBucketHttpsConfigRequestMarshaller();
+    public static final PutPublicAccessBlockRequestMarshaller putPublicAccessBlockRequestMarshaller = new PutPublicAccessBlockRequestMarshaller();
+    public static final PutBucketPublicAccessBlockRequestMarshaller putBucketPublicAccessBlockRequestMarshaller = new PutBucketPublicAccessBlockRequestMarshaller();
+    public static final CreateAccessPointRequestParser createAccessPointRequestParser = new CreateAccessPointRequestParser();
+    public static final PutAccessPointPolicyRequestParser putAccessPointPolicyRequestParser = new PutAccessPointPolicyRequestParser();
 
     public interface RequestMarshaller<R> extends Marshaller<FixedLengthInputStream, R> {
 
@@ -1940,6 +1946,129 @@ public final class RequestMarshallers {
             return rawData;
         }
 
+    }
+
+    public static final class PutBucketArchiveDirectReadRequestMarshaller implements RequestMarshaller2<PutBucketArchiveDirectReadRequest> {
+        @Override
+        public byte[] marshall(PutBucketArchiveDirectReadRequest input) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<ArchiveDirectReadConfiguration><Enabled>");
+            xmlBody.append(input.getEnabled());
+            xmlBody.append("</Enabled></ArchiveDirectReadConfiguration>");
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+    }
+
+    public static final class PutBucketHttpsConfigRequestMarshaller implements RequestMarshaller2<PutBucketHttpsConfigRequest> {
+
+        @Override
+        public byte[] marshall(PutBucketHttpsConfigRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<HttpsConfiguration>");
+            xmlBody.append("<TLS>");
+            xmlBody.append("<Enable>"+ request.isEnable() +"</Enable>");
+            for(String version : request.getTlsVersion()) {
+                xmlBody.append("<TLSVersion>" + version + "</TLSVersion>");
+            }
+            xmlBody.append("</TLS>");
+            xmlBody.append("</HttpsConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+    }
+
+    public static final class PutPublicAccessBlockRequestMarshaller implements RequestMarshaller2<PutPublicAccessBlockRequest> {
+        @Override
+        public byte[] marshall(PutPublicAccessBlockRequest input) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<PublicAccessBlockConfiguration><BlockPublicAccess>");
+            xmlBody.append(input.getBlockPublicAccess());
+            xmlBody.append("</BlockPublicAccess></PublicAccessBlockConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+
+            return rawData;
+        }
+    }
+
+    public static final class PutBucketPublicAccessBlockRequestMarshaller implements RequestMarshaller2<PutBucketPublicAccessBlockRequest> {
+        @Override
+        public byte[] marshall(PutBucketPublicAccessBlockRequest input) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<PublicAccessBlockConfiguration><BlockPublicAccess>");
+            xmlBody.append(input.getBlockPublicAccess());
+            xmlBody.append("</BlockPublicAccess></PublicAccessBlockConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+    }
+
+    public static final class CreateAccessPointRequestParser implements RequestMarshaller2<CreateAccessPointRequest> {
+        @Override
+        public byte[] marshall(CreateAccessPointRequest request) {
+            StringBuffer xmlBody = new StringBuffer();
+            xmlBody.append("<CreateAccessPointConfiguration>");
+            if(request.getAccessPointName() != null) {
+                xmlBody.append("<AccessPointName>").append(request.getAccessPointName()).append("</AccessPointName>");
+            }
+            if(request.getNetworkOrigin() != null) {
+                xmlBody.append("<NetworkOrigin>").append(request.getNetworkOrigin()).append("</NetworkOrigin>");
+            }
+            if(request.getVpc().getVpcId() != null) {
+                xmlBody.append("<VpcConfiguration>");
+                if(request.getVpc().getVpcId() != null){
+                    xmlBody.append("<VpcId>").append(request.getVpc().getVpcId()).append("</VpcId>");
+                }
+                xmlBody.append("</VpcConfiguration>");
+            }
+            xmlBody.append("</CreateAccessPointConfiguration>");
+
+            byte[] rawData = null;
+            try {
+                rawData = xmlBody.toString().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
+    }
+
+    public static final class PutAccessPointPolicyRequestParser implements RequestMarshaller2<PutAccessPointPolicyRequest> {
+
+        @Override
+        public byte[] marshall(PutAccessPointPolicyRequest request) {
+
+            byte[] rawData = null;
+            try {
+                rawData = request.getAccessPointPolicy().getBytes(DEFAULT_CHARSET_NAME);
+            } catch (UnsupportedEncodingException e) {
+                throw new ClientException("Unsupported encoding " + e.getMessage(), e);
+            }
+            return rawData;
+        }
     }
 
     private static enum EscapedChar {

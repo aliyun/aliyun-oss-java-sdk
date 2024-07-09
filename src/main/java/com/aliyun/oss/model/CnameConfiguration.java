@@ -188,6 +188,38 @@ public class CnameConfiguration {
 
     public void setCertId(String certId) { this.certId = certId; }
 
+    public String getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(String creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getFingerprint() {
+        return fingerprint;
+    }
+
+    public void setFingerprint(String fingerprint) {
+        this.fingerprint = fingerprint;
+    }
+
+    public String getValidStartDate() {
+        return validStartDate;
+    }
+
+    public void setValidStartDate(String validStartDate) {
+        this.validStartDate = validStartDate;
+    }
+
+    public String getValidEndDate() {
+        return validEndDate;
+    }
+
+    public void setValidEndDate(String validEndDate) {
+        this.validEndDate = validEndDate;
+    }
+
     @Override
     public String toString() {
         return "CnameConfiguration [domain=" + domain + ", status=" + status + ", lastMofiedTime=" + lastMofiedTime
@@ -202,4 +234,9 @@ public class CnameConfiguration {
     private CertStatus certStatus;
     private CertType certType;
     private String certId;
+    private String creationDate;
+    private String fingerprint;
+    private String validStartDate;
+    private String validEndDate;
+
 }
