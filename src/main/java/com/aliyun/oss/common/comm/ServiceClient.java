@@ -124,6 +124,7 @@ public abstract class ServiceClient {
                     if (requestContent != null && requestContent.markSupported()) {
                         try {
                             requestContent.reset();
+                            request.setContent(requestContent);
                         } catch (IOException ex) {
                             logException("Failed to reset the request input stream: ", ex);
                             throw new ClientException("Failed to reset the request input stream: ", ex);
