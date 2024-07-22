@@ -1440,7 +1440,7 @@ public class OSSObjectOperation extends OSSOperation {
                 params.setRegion(region);
                 params.setCloudBoxId(cloudBoxId);
                 OSSV4Signer singer = (OSSV4Signer)OSSSignerBase.createRequestSigner(signVersion, params);
-                return singer.signPolicy(postPolicy, date);
+                return singer.signPolicy(encPolicy, date);
             } else {
                 return ServiceSignature.create().computeSignature(credsProvider.getCredentials().getSecretAccessKey(),
                         encPolicy);

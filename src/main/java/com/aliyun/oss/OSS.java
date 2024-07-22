@@ -3002,6 +3002,17 @@ public interface OSS {
     public String calculatePostSignature(String postPolicy);
 
     /**
+     * Calculates the signature based on the policy and access key secret.
+     *
+     * @param postPolicy
+     *            Post policy string in JSON which is generated from
+     *            {@link #generatePostPolicy(Date, PolicyConditions)}.
+     * @param date the signing time
+     * @return Post signature in bas464 string.
+     */
+    public String calculatePostSignature(String postPolicy, Date date);
+
+    /**
      * Sets the {@link Bucket}'s lifecycle rule.
      * 
      * @param setBucketLifecycleRequest
