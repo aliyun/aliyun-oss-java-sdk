@@ -217,10 +217,14 @@ public abstract class OSSOperation {
             OSSException oe = ExceptionFactory.createInvalidResponseException(response.getRequestId(), rpe.getMessage(),
                     rpe);
             logException("Unable to parse response error: ", rpe);
+            if (span != null) {
+                span.setAttribute("alibaba.cloud.error.code", "ParseResponseError");
+            }
             throw oe;
         } catch (OSSException e) {
             if (span != null) {
                 span.setAttribute("alibaba.cloud.error.code", e.getErrorCode());
+                span.setAttribute("alibaba.cloud.request_id", e.getRequestId());
             }
             throw e;
         } catch (ClientException ce) {
@@ -230,8 +234,10 @@ public abstract class OSSOperation {
             throw ce;
         } finally {
             if (span != null) {
-                span.setAttribute("alibaba.cloud.request_id", response.getRequestId());
-                span.setAttribute("http.response.status_code", String.valueOf(response.getStatusCode()));
+                if (response != null) {
+                    span.setAttribute("alibaba.cloud.request_id", response.getRequestId());
+                    span.setAttribute("http.response.status_code", String.valueOf(response.getStatusCode()));
+                }
                 span.end();
             }
         }
