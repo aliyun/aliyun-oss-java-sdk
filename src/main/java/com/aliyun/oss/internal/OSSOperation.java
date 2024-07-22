@@ -27,6 +27,7 @@ import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
 import java.net.URI;
 import java.util.List;
 
+import com.aliyun.core.tracing.*;
 import com.aliyun.oss.*;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.CredentialsProvider;
@@ -40,6 +41,8 @@ import com.aliyun.oss.internal.ResponseParsers.RequestIdResponseParser;
 import com.aliyun.oss.internal.signer.OSSSignerBase;
 import com.aliyun.oss.internal.signer.OSSSignerParams;
 import com.aliyun.oss.model.WebServiceRequest;
+import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.trace.Span;
 
 /**
  * Abstract base class that provides some common functionalities for OSS
@@ -157,6 +160,23 @@ public abstract class OSSOperation {
             boolean keepResponseOpen, List<RequestHandler> requestHandlers, List<ResponseHandler> reponseHandlers)
             throws OSSException, ClientException {
 
+        Span span = null;
+        if (client.getClientConfiguration().isTracerEnabled()){
+            AlibabaCloudTracer alibabaCloudTracer = AlibabaCloudTracerProvider.getInstance().getTracer();
+            AlibabaCloudAttributesBuilder AttributesBuilder = new AlibabaCloudAttributesBuilder();
+            Attributes attributes = AttributesBuilder.getAttributesBuilder()
+                    .put("alibaba.cloud.service", getProduct())
+                    .put("alibaba.cloud.signature_version", client.getClientConfiguration().getSignatureVersion().toString())
+                    .put("alibaba.cloud.resource.type", "OSS")
+                    .put("http.request.method", request.getMethod().name())
+                    .build();
+
+            AlibabaCloudSpanBuilder alibabaCloudSpanBuilder = alibabaCloudTracer.spanBuilder(bucketName);
+            if (alibabaCloudSpanBuilder != null) {
+                span = alibabaCloudSpanBuilder.setAllAttributes(attributes).startSpan();
+            }
+        }
+
         final WebServiceRequest originalRequest = request.getOriginalRequest();
         request.getHeaders().putAll(client.getClientConfiguration().getDefaultHeaders());
         request.getHeaders().putAll(originalRequest.getHeaders());
@@ -189,15 +209,37 @@ public abstract class OSSOperation {
             }
         }
 
-        ResponseMessage response = send(request, context, keepResponseOpen);
-
+        ResponseMessage response = null;
         try {
+            response = send(request, context, keepResponseOpen);
             return parser.parse(response);
         } catch (ResponseParseException rpe) {
             OSSException oe = ExceptionFactory.createInvalidResponseException(response.getRequestId(), rpe.getMessage(),
                     rpe);
             logException("Unable to parse response error: ", rpe);
+            if (span != null) {
+                span.setAttribute("alibaba.cloud.error.code", "ParseResponseError");
+            }
             throw oe;
+        } catch (OSSException e) {
+            if (span != null) {
+                span.setAttribute("alibaba.cloud.error.code", e.getErrorCode());
+                span.setAttribute("alibaba.cloud.request_id", e.getRequestId());
+            }
+            throw e;
+        } catch (ClientException ce) {
+            if (span != null) {
+                span.setAttribute("alibaba.cloud.error.code", ce.getErrorCode());
+            }
+            throw ce;
+        } finally {
+            if (span != null) {
+                if (response != null) {
+                    span.setAttribute("alibaba.cloud.request_id", response.getRequestId());
+                    span.setAttribute("http.response.status_code", String.valueOf(response.getStatusCode()));
+                }
+                span.end();
+            }
         }
     }
 

@@ -4,7 +4,7 @@
 
     <groupId>com.aliyun.oss</groupId>
     <artifactId>aliyun-sdk-oss</artifactId>
-    <version>3.18.0</version>
+    <version>3.18.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Aliyun OSS SDK for Java</name>
     <description>The Aliyun OSS SDK for Java used for accessing Aliyun Object Storage Service</description>
@@ -64,6 +64,11 @@
             <artifactId>kms-transfer-client</artifactId>
             <version>0.1.0</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>java-trace-api</artifactId>
+            <version>0.2.11-beta</version>
         </dependency>
     </dependencies>
 
