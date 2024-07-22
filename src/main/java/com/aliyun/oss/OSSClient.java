@@ -1188,6 +1188,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public String calculatePostSignature(String postPolicy, Date date) {
+        return objectOperation.calculatePostSignature(postPolicy, date);
+    }
+
+    @Override
     public VoidResult setBucketLifecycle(SetBucketLifecycleRequest setBucketLifecycleRequest)
             throws OSSException, ClientException {
         return bucketOperation.setBucketLifecycle(setBucketLifecycleRequest);
