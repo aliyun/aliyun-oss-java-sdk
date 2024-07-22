@@ -125,6 +125,8 @@ public class ClientConfiguration {
 
     private boolean verifyObjectStrict = true;
 
+    private boolean tracerEnabled = false;
+
     public ClientConfiguration() {
         super();
         AppendDefaultExcludeList(this.cnameExcludeList);
@@ -971,5 +973,22 @@ public class ClientConfiguration {
         return verifyObjectStrict;
     }
 
+    /**
+     * Gets the flag of tracer.
+     *
+     * @return  True if it's enabled; False if it's disabled.
+     */
+    public boolean isTracerEnabled() {
+        return tracerEnabled;
+    }
 
+    /**
+     * Sets the flag of tracer.
+     *
+     * @param enabled
+     *            True if it's enabled; False if it's disabled.
+     */
+    public void setTracerEnabled(boolean enabled) {
+        this.tracerEnabled = enabled;
+    }
 }
