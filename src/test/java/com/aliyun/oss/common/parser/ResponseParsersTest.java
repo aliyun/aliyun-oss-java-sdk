@@ -5801,7 +5801,7 @@ public class ResponseParsersTest {
         Assert.assertEquals(false, result.getEnabled());
     }
 
-    
+
     @Test
     public void testParseGetBucketHttpsConfig() {
         InputStream instream = null;
@@ -6505,6 +6505,60 @@ public class ResponseParsersTest {
             Assert.assertEquals(result.getAccessPoints().get(0).getStatus(), "false");
         } catch (ResponseParseException exception) {
             Assert.fail("parse list access point response body fail");
+        }
+    }
+
+    @Test
+    public void testParseGetBucketStatWithDeepCold() {
+        InputStream instream = null;
+
+        String respBody = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<BucketStat>\n" +
+                "  <Storage>1600</Storage>\n" +
+                "  <ObjectCount>230</ObjectCount>\n" +
+                "  <MultipartUploadCount>40</MultipartUploadCount>\n" +
+                "  <LiveChannelCount>4</LiveChannelCount>\n" +
+                "  <LastModifiedTime>0</LastModifiedTime>\n" +
+                "  <StandardStorage>430</StandardStorage>\n" +
+                "  <StandardObjectCount>66</StandardObjectCount>\n" +
+                "  <InfrequentAccessStorage>2359296</InfrequentAccessStorage>\n" +
+                "  <InfrequentAccessRealStorage>360</InfrequentAccessRealStorage>\n" +
+                "  <InfrequentAccessObjectCount>54</InfrequentAccessObjectCount>\n" +
+                "  <ArchiveStorage>2949120</ArchiveStorage>\n" +
+                "  <ArchiveRealStorage>450</ArchiveRealStorage>\n" +
+                "  <ArchiveObjectCount>74</ArchiveObjectCount>\n" +
+                "  <ColdArchiveStorage>2359296</ColdArchiveStorage>\n" +
+                "  <ColdArchiveRealStorage>360</ColdArchiveRealStorage>\n" +
+                "  <ColdArchiveObjectCount>36</ColdArchiveObjectCount>\n" +
+                "  <DeepColdArchiveStorage>23592961</DeepColdArchiveStorage>\n" +
+                "  <DeepColdArchiveRealStorage>3601</DeepColdArchiveRealStorage>\n" +
+                "  <DeepColdArchiveObjectCount>361</DeepColdArchiveObjectCount>\n" +
+                "</BucketStat>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+            BucketStat result = ResponseParsers.parseGetBucketStat(instream);
+            Assert.assertEquals(Long.valueOf(1600), result.getStorageSize());
+            Assert.assertEquals(Long.valueOf(230), result.getObjectCount());
+            Assert.assertEquals(Long.valueOf(40), result.getMultipartUploadCount());
+            Assert.assertEquals(Long.valueOf(4), result.getLiveChannelCount());
+            Assert.assertEquals(Long.valueOf(0), result.getLastModifiedTime());
+            Assert.assertEquals(Long.valueOf(430), result.getStandardStorage());
+            Assert.assertEquals(Long.valueOf(66), result.getStandardObjectCount());
+            Assert.assertEquals(Long.valueOf(2359296), result.getInfrequentAccessStorage());
+            Assert.assertEquals(Long.valueOf(360), result.getInfrequentAccessRealStorage());
+            Assert.assertEquals(Long.valueOf(54), result.getInfrequentAccessObjectCount());
+            Assert.assertEquals(Long.valueOf(2949120), result.getArchiveStorage());
+            Assert.assertEquals(Long.valueOf(450), result.getArchiveRealStorage());
+            Assert.assertEquals(Long.valueOf(74), result.getArchiveObjectCount());
+            Assert.assertEquals(Long.valueOf(2359296), result.getColdArchiveStorage());
+            Assert.assertEquals(Long.valueOf(360), result.getColdArchiveRealStorage());
+            Assert.assertEquals(Long.valueOf(36), result.getColdArchiveObjectCount());
+            Assert.assertEquals(Long.valueOf(23592961), result.getDeepColdArchiveStorage());
+            Assert.assertEquals(Long.valueOf(3601), result.getDeepColdArchiveRealStorage());
+            Assert.assertEquals(Long.valueOf(361), result.getDeepColdArchiveObjectCount());
+        } catch (Exception e) {
+            Assert.assertTrue(false);
         }
     }
 }
