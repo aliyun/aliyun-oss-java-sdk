@@ -52,7 +52,7 @@ public class BucketAclTest extends TestBase {
     
     @Test
     public void testNormalSetBucketAcl() {
-        final String bucketName = super.bucketName + "normal-set-bucket-acl";
+        final String bucketName = genBucketName() + "normal-set-bucket-acl";
         
         try {
             ossClient.createBucket(bucketName);
@@ -92,7 +92,7 @@ public class BucketAclTest extends TestBase {
     
     @Test
     public void testUnormalSetBucketAcl() {
-        final String nonexistentBucket = super.bucketName + "unormal-set-bucket-acl";
+        final String nonexistentBucket = genBucketName() + "unormal-set-bucket-acl";
         
         try {            
             // set non-existent bucket
@@ -135,7 +135,7 @@ public class BucketAclTest extends TestBase {
     @Test
     public void testUnormalGetBucketAcl() {
         // Get non-existent bucket
-        final String nonexistentBucket = super.bucketName + "unormal-get-bucket-acl";
+        final String nonexistentBucket = genBucketName() + "-bucket-acl";
         try {
             ossClient.getBucketAcl(nonexistentBucket);
             Assert.fail("Get bucket acl should not be successful");
@@ -154,7 +154,7 @@ public class BucketAclTest extends TestBase {
         }
         
         // Get bucket using default acl
-        final String bucketUsingDefaultAcl = "bucket-using-default-acl";
+        final String bucketUsingDefaultAcl = genBucketName() + "-default-acl";
         try {
             ossClient.createBucket(bucketUsingDefaultAcl);
             
@@ -171,7 +171,7 @@ public class BucketAclTest extends TestBase {
     
     @Test
     public void testUnormalDoesBucketExist() {
-        final String nonexistentBucket = super.bucketName + "unormal-does-bucket-exist";
+        final String nonexistentBucket = genBucketName() + "-exist";
         
         try {
             Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);

@@ -42,7 +42,7 @@ public class BucketCORSTest extends TestBase {
 
     @Test
     public void testNormalSetBucketCORS() {
-        final String bucketName = "normal-set-bucket-cors";
+        final String bucketName = genBucketName() + "-cors";
 
         try {
             ossClient.createBucket(bucketName);
@@ -101,7 +101,7 @@ public class BucketCORSTest extends TestBase {
 
     @Test
     public void testUnormalSetBucketCORS() {
-        final String bucketName = "unormal-set-bucket-cors";
+        final String bucketName = genBucketName() + "-cors";
 
         try {
             ossClient.createBucket(bucketName);
@@ -209,7 +209,7 @@ public class BucketCORSTest extends TestBase {
     @Test
     public void testUnormalGetBucketCORS() {
         // Get non-existent bucket
-        final String nonexistentBucket = "unormal-get-bucket-cors";
+        final String nonexistentBucket = genBucketName() + "-cors";
         try {
             ossClient.getBucketCORSRules(nonexistentBucket);
             Assert.fail("Get bucket cors should not be successful");
@@ -228,7 +228,7 @@ public class BucketCORSTest extends TestBase {
         }
 
         // Get bucket without setting cors rules
-        final String bucketWithoutCORSRules = "bucket-without-cors-rules";
+        final String bucketWithoutCORSRules = genBucketName() + "-cors-rules";
         try {
             ossClient.createBucket(bucketWithoutCORSRules);
 
@@ -245,7 +245,7 @@ public class BucketCORSTest extends TestBase {
     @Test
     public void testUnormalDeleteBucketCORS() {
         // Delete non-existent bucket
-        final String nonexistentBucket = "unormal-delete-bucket-cors";
+        final String nonexistentBucket = genBucketName() + "-cors";
         try {
             ossClient.getBucketCORSRules(nonexistentBucket);
             Assert.fail("Delete bucket cors should not be successful");
@@ -266,7 +266,7 @@ public class BucketCORSTest extends TestBase {
 
     @Test
     public void testSetBucketCORSWithResponseVary() {
-        final String bucketName = "set-bucket-cors-vary";
+        final String bucketName = genBucketName() + "set-bucket-cors-vary";
 
         try {
             ossClient.createBucket(bucketName);

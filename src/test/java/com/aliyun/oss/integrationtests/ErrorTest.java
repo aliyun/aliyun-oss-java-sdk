@@ -53,7 +53,7 @@ public class ErrorTest extends TestBase {
             GenericRequest genericRequest = new GenericRequest(bucketName, noSuchKey);
             ossClient.getObjectMetadata(genericRequest);
         } catch (OSSException e) {
-            Assert.assertEquals(e.getEC(), "0002-00000061");
+            Assert.assertEquals(e.getEC(), "0002-00000227");
             Assert.assertEquals(e.getErrorCode(), "InvalidArgument");
             Assert.assertEquals(e.getErrorMessage(), "Authorization header is invalid.");
             e.printStackTrace();

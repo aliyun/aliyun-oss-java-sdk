@@ -33,7 +33,7 @@ public class BucketWormTest extends TestBase {
 
     @Test
     public void testBucketWormNormal() {
-        String bucketName = super.bucketName + "test-bucket-worm-normal";
+        String bucketName = genBucketName() + "test-bucket-worm-normal";
 
         try {
             ossClient.createBucket(bucketName);
@@ -71,7 +71,7 @@ public class BucketWormTest extends TestBase {
 
     @Test
     public void testAbortBucketWorm() {
-        final String bucketName = super.bucketName + "test-abort-bucket-worm";
+        final String bucketName = genBucketName() + "test-abort-bucket-worm";
         ossClient.createBucket(bucketName);
 
         try {
@@ -96,7 +96,7 @@ public class BucketWormTest extends TestBase {
 
     @Test
     public void testExtendBucketWormIllegal() {
-        final String bucketName = super.bucketName + "test-extent-bucket-worm-illegal";
+        final String bucketName = genBucketName() + "-worm-illegal";
         ossClient.createBucket(bucketName);
 
         try {

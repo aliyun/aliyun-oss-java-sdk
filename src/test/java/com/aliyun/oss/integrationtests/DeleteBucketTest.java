@@ -38,7 +38,7 @@ public class DeleteBucketTest extends TestBase {
 
     @Test
     public void testDeleteExistingBucket() {
-        final String bucketName = "delete-existing-bucket";
+        final String bucketName = genBucketName();
         
         try {
             ossClient.createBucket(bucketName);
@@ -50,7 +50,7 @@ public class DeleteBucketTest extends TestBase {
 
     @Test
     public void testDeleteNonexistentBucket() {
-        final String bucketName = "delete-nonexistent-bucket";
+        final String bucketName = genBucketName();
         
         try {
             ossClient.deleteBucket(bucketName);
@@ -63,7 +63,7 @@ public class DeleteBucketTest extends TestBase {
     
     @Test
     public void testDeleteNonemptyBucket() {
-        final String bucketName = "delete-nonempty-bucket";
+        final String bucketName = genBucketName();
         final String key = "delete-nonempty-bucket-key";
         
         try {

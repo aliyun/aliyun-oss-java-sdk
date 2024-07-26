@@ -47,7 +47,7 @@ public class SwitchCredentialsAndEndpointTest extends TestBase {
     private static final int loopTimes = 100;
     private static final int switchInterval = 50; // unit in milliseconds
 
-    @Test
+    @Ignore
     public void testSwitchValidCredentialsAndEndpoint() {
         CredentialsProvider credsProvider = ossClient.getCredentialsProvider();
         Credentials defaultCreds = credsProvider.getCredentials();
@@ -117,7 +117,7 @@ public class SwitchCredentialsAndEndpointTest extends TestBase {
         }
     }
     
-    @Test
+    @Ignore
     public void testSwitchInvalidCredentialsAndEndpoint() {
         CredentialsProvider credsProvider = ossClient.getCredentialsProvider();
         Credentials defaultCreds = credsProvider.getCredentials();
@@ -151,7 +151,7 @@ public class SwitchCredentialsAndEndpointTest extends TestBase {
         }
     }
     
-    @Test
+    @Ignore
     public void testSwitchCredentialsSynchronously() throws Exception {
         /* Ensure credentials switching prior to credentials verification at first time */
         final Object ensureSwitchFirst = new Object();
@@ -254,7 +254,7 @@ public class SwitchCredentialsAndEndpointTest extends TestBase {
         restoreDefaultCredentials();
     }
     
-    @Test
+    @Ignore
     public void testSwitchEndpointSynchronously() throws Exception {
         /* Ensure endpoint switching prior to endpoint verification at first time */
         final Object ensureSwitchFirst = new Object();

@@ -46,7 +46,7 @@ public class BucketEncryptionTest extends TestBase {
     public void setUp() throws Exception {
         super.setUp();
 
-        bucketName = super.bucketName + "-encryption";
+        bucketName = genBucketName() + "-encryption";
         endpoint = "http://oss-ap-southeast-5.aliyuncs.com";
 
         //create client

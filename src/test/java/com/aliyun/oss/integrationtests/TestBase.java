@@ -112,10 +112,18 @@ public class TestBase {
         }
         return ossClient;
     }
-    
+
+    public static String genBucketName() {
+        long ticks = new Date().getTime() / 1000;
+        long ranint = new Random().nextInt(5000);
+        long ranint1 = new Random().nextInt(5000);
+        return BUCKET_NAME_PREFIX + ticks + "-" + ranint + "-" + ranint1;
+    }
+
     public static String createBucket() {
-        long ticks = new Date().getTime() / 1000 + new Random().nextInt(5000);
-        String bucketName = BUCKET_NAME_PREFIX + ticks;
+        long ticks = new Date().getTime() / 1000;
+        long ranint = new Random().nextInt(5000);
+        String bucketName = BUCKET_NAME_PREFIX + ticks + "-" + ranint;
         getOSSClient().createBucket(bucketName);
         waitForCacheExpiration(2);
         return bucketName;

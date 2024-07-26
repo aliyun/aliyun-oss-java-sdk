@@ -36,9 +36,9 @@ public class BucketLoggingTest extends TestBase {
 
     @Test
     public void testNormalSetBucketLogging() {
-        final String sourceBucket = "normal-set-bucket-logging-source-1";
-        final String targetBucket = "normal-set-bucket-logging-target-1";
-        final String targetPrefix = "normal-set-bucket-logging-prefix";
+        final String sourceBucket = genBucketName() + "-source-1";
+        final String targetBucket = genBucketName() + "-target-1";
+        final String targetPrefix = genBucketName() + "-prefix";
 
         try {
             ossClient.createBucket(sourceBucket);
@@ -103,9 +103,9 @@ public class BucketLoggingTest extends TestBase {
 
     @Test
     public void testUnormalSetBucketLogging() {
-        final String sourceBucket = "unormal-set-bucket-logging-source";
-        final String targetBucket = "unormal-set-bucket-logging-target";
-        final String targetPrefix = "unormal-set-bucket-logging-prefix";
+        final String sourceBucket = genBucketName() + "-source";
+        final String targetBucket = genBucketName() + "-target";
+        final String targetPrefix = genBucketName() + "-prefix";
 
         try {
             ossClient.createBucket(sourceBucket);

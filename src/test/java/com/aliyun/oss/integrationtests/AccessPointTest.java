@@ -17,7 +17,7 @@ import static com.aliyun.oss.integrationtests.TestUtils.genFixedLengthInputStrea
 
 public class AccessPointTest extends TestBase {
     private static OSS ossClient;
-    private static String bucketName = "oss-java-sdk-test-example4";
+    private static String bucketName = genBucketName();
     private static OSS apClientTest;
     private static String arnEndpoint = "http://oss-ap-southeast-2.oss-accesspoint.aliyuncs.com";
     private static String apArn = "";

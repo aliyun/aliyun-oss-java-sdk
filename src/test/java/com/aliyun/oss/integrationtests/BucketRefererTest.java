@@ -41,7 +41,7 @@ public class BucketRefererTest extends TestBase {
 
     @Test
     public void testNormalSetBucketReferer() {
-        final String bucketName = "normal-set-bucket-referer-source";
+        final String bucketName = genBucketName() + "-referer-source";
         final String referer0 = "http://www.aliyun.com";
         final String referer1 = "https://www.aliyun.com";
         final String referer2 = "http://www.*.com";
@@ -106,7 +106,7 @@ public class BucketRefererTest extends TestBase {
 
     @Test
     public void testUnormalSetBucketReferer() {
-        final String bucketName = "unormal-set-bucket-referer";
+        final String bucketName = genBucketName() + "unormal-set-bucket-referer";
         final String referer0 = "http://www.aliyun.com";
         final String referer1 = "https://www.aliyun.com";
 
@@ -158,7 +158,7 @@ public class BucketRefererTest extends TestBase {
     @Test
     public void testUnormalGetBucketReferer() {
         // Get non-existent bucket
-        final String nonexistentBucket = "unormal-get-bucket-referer";
+        final String nonexistentBucket = genBucketName() + "unormal-get-bucket-referer";
         try {
             ossClient.getBucketReferer(nonexistentBucket);
             Assert.fail("Get bucket referer should not be successful");
@@ -177,7 +177,7 @@ public class BucketRefererTest extends TestBase {
         }
 
         // Get bucket without setting referer list
-        final String bucketWithoutRefererRule = "bucket-without-referer";
+        final String bucketWithoutRefererRule = genBucketName() + "bucket-without-referer";
         try {
             ossClient.createBucket(bucketWithoutRefererRule);
 
@@ -193,7 +193,7 @@ public class BucketRefererTest extends TestBase {
 
     @Test
     public void testNormalSetBucketBlackReferer() {
-        final String bucketName = "normal-set-bucket-referer-source";
+        final String bucketName = genBucketName() + "-referer-source";
 
         final String referer1 = "https://www.aliyun.com";
         final String referer2 = "http://www.*.com";
@@ -280,7 +280,7 @@ public class BucketRefererTest extends TestBase {
 
     @Test
     public void testSpecialSetBucketRefererWithBlackRefer() {
-        final String bucketName = "unormal-set-bucket-blackreferer";
+        final String bucketName = genBucketName() + "-blackreferer";
 
 
         try {
