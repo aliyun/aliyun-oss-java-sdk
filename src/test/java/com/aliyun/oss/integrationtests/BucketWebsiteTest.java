@@ -39,7 +39,7 @@ public class BucketWebsiteTest extends TestBase {
 
     @Test
     public void testNormalSetBucketWebsite() {
-        final String bucketName = super.bucketName + "normal-set-bucket-website";
+        final String bucketName = genBucketName() + "-website";
         final String indexDocument = "index.html";
         final String errorDocument = "error.html";
 
@@ -84,7 +84,7 @@ public class BucketWebsiteTest extends TestBase {
 
     @Test
     public void testNormalSetBucketWebsiteWithMirror() {
-        final String bucketName = super.bucketName + "normal-set-bucket-website-mirror";
+        final String bucketName = genBucketName() + "-website-mirror";
         final String indexDocument = "index.html";
 
         try {
@@ -229,7 +229,7 @@ public class BucketWebsiteTest extends TestBase {
 
     @Test
     public void testNormalSetBucketWebsiteWithRedirect() {
-        final String bucketName = super.bucketName + "normal-set-bucket-website-redirect";
+        final String bucketName = genBucketName() + "-website-redirect";
         final String indexDocument = "index.html";
 
         try {
@@ -332,7 +332,7 @@ public class BucketWebsiteTest extends TestBase {
 
     @Test
     public void testNormalSetBucketWebsiteWithCDNRedirect() {
-        final String bucketName = super.bucketName + "normal-set-bucket-website-redirect-cdn";
+        final String bucketName = genBucketName() + "-website-redirect-cdn";
         final String indexDocument = "index.html";
 
         try {
@@ -434,7 +434,7 @@ public class BucketWebsiteTest extends TestBase {
 
     @Test
     public void testUnormalSetBucketWebsiteWithMirror() {
-        final String bucketName = super.bucketName + "unormal-set-bucket-website-mirror";
+        final String bucketName = genBucketName() + "-website-mirror";
         final String indexDocument = "index.html";
 
         try {
@@ -514,7 +514,7 @@ public class BucketWebsiteTest extends TestBase {
 
     @Test
     public void testUnormalSetBucketWebsiteWithRedirect() {
-        final String bucketName = super.bucketName + "unormal-set-bucket-website-redirect";
+        final String bucketName = genBucketName() + "-website-redirect";
         final String indexDocument = "index.html";
 
         try {
@@ -578,7 +578,7 @@ public class BucketWebsiteTest extends TestBase {
 
     @Test
     public void testUnormalSetBucketWebsite() {
-        final String bucketName = super.bucketName + "unormal-set-bucket-website";
+        final String bucketName = genBucketName() + "-bucket-website";
         final String indexDocument = "index.html";
         final String errorDocument = "error.html";
 
@@ -618,7 +618,7 @@ public class BucketWebsiteTest extends TestBase {
     @Test
     public void testUnormalGetBucketWebsite() {
         // Get non-existent bucket
-        final String nonexistentBucket = super.bucketName + "unormal-get-bucket-website";
+        final String nonexistentBucket = genBucketName() + "-website";
         try {
             ossClient.getBucketWebsite(nonexistentBucket);
             Assert.fail("Get bucket website should not be successful");
@@ -637,7 +637,7 @@ public class BucketWebsiteTest extends TestBase {
         }
 
         // Get bucket without setting website configuration
-        final String bucketWithoutWebsiteConfiguration = "bucket-without-website-configuration";
+        final String bucketWithoutWebsiteConfiguration =  genBucketName() + "-configuration";
         try {
             ossClient.createBucket(bucketWithoutWebsiteConfiguration);
 
@@ -654,7 +654,7 @@ public class BucketWebsiteTest extends TestBase {
     @Test
     public void testUnormalDeleteBucketWebsite() {
         // Delete non-existent bucket
-        final String nonexistentBucket = super.bucketName + "unormal-delete-bucket-website";
+        final String nonexistentBucket = genBucketName() + "-website";
         try {
             ossClient.deleteBucketWebsite(nonexistentBucket);
             Assert.fail("Delete bucket website should not be successful");
@@ -673,7 +673,7 @@ public class BucketWebsiteTest extends TestBase {
         }
 
         // Delete bucket without setting website configuration
-        final String bucketWithoutWebsiteConfiguration = "bucket-without-website-configuration";
+        final String bucketWithoutWebsiteConfiguration = genBucketName() + "-configuration";
         try {
             ossClient.createBucket(bucketWithoutWebsiteConfiguration);
             ossClient.deleteBucketWebsite(bucketWithoutWebsiteConfiguration);
@@ -688,7 +688,7 @@ public class BucketWebsiteTest extends TestBase {
 
     @Test
     public void test() {
-        final String bucketName = super.bucketName + "-test-redirect";
+        final String bucketName = genBucketName() + "-test-redirect";
         final String indexDocument = "index.html";
 
         try {
@@ -862,7 +862,7 @@ public class BucketWebsiteTest extends TestBase {
 
     @Test
     public void testSetBucketWebsiteWithHttpStatus() {
-        final String bucketName = super.bucketName + "unormal-set-bucket-website-http-status";
+        final String bucketName = genBucketName() + "-http-status";
         final String indexDocument = "index.html";
         final String errorDocument = "errorDocument.html";
 

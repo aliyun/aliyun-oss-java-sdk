@@ -41,7 +41,7 @@ public class ArchiveTest extends TestBase {
 
     @Test
     public void testNormalCreateArchiveBucket() {
-        String bucketName = "create-archive-test-bucket";
+        String bucketName = genBucketName() + "-archive";
         String key = "normal-create-archive.txt";
         String filePath = null;
         
@@ -67,7 +67,7 @@ public class ArchiveTest extends TestBase {
     
     @Ignore
     public void testNormalRestoreObject() {
-        String bucketName = "restore-object-test-bucket";
+        String bucketName = genBucketName() + "-restore";
         String key = "normal-restore-object.txt";
         String filePath = null;
         
@@ -116,7 +116,7 @@ public class ArchiveTest extends TestBase {
     
     @Test
     public void testUnormalOutofRestore() {
-        String bucketName = "unnormal-restore-test-bucket";
+        String bucketName = genBucketName() + "-restore";
         String key = "unnormal-restore-object.txt";
         String filePath = null;
         

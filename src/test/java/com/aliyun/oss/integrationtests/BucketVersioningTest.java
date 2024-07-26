@@ -40,7 +40,7 @@ public class BucketVersioningTest extends TestBase {
 
         try {
             final String endpoint = TestConfig.OSS_TEST_ENDPOINT;
-            final String bucketName = super.bucketName + "-bucket-versioning";
+            final String bucketName = genBucketName() + "-bucket-versioning";
 
             //create client
             ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);

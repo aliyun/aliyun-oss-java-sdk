@@ -143,7 +143,7 @@ public class BucketCnameTest extends TestBase {
 
     @Test
     public void testUnormaladdBucketCname() {
-        final String bucketName = "unormal-set-bucket-cname";
+        final String bucketName = genBucketName() + "-cname";
 
         // parameter invalid
         try {
@@ -204,7 +204,7 @@ public class BucketCnameTest extends TestBase {
                 ossClient.addBucketCname(new AddBucketCnameRequest(bucketName).withDomain("your.com"));
                 Assert.fail("Set bucket cname should not be successful");
             } catch (OSSException e) {
-                Assert.assertEquals("NoSuchCnameInRecord", e.getErrorCode());
+                Assert.assertEquals("NeedVerifyDomainOwnership", e.getErrorCode());
             }
 
         } catch (Exception e) {
@@ -217,7 +217,7 @@ public class BucketCnameTest extends TestBase {
     @Test
     public void testBucketCnameToken() {
         final String endpoint = "oss-ap-southeast-2.aliyuncs.com";
-        final String bucketName = super.bucketName + "-bucket-cname";
+        final String bucketName = genBucketName() + "-bucket-cname";
 
         //create client
         ClientConfiguration conf = new ClientBuilderConfiguration();

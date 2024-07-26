@@ -32,7 +32,7 @@ public class BucketLifecycleVersioningTest extends TestBase {
     public void setUp() throws Exception {
         super.setUp();
 
-        bucketName = super.bucketName + "-lifecycle-version";
+        bucketName = genBucketName() + "-lifecycle-version";
         endpoint = TestConfig.OSS_TEST_ENDPOINT;
 
         //create client

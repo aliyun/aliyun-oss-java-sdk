@@ -48,7 +48,7 @@ public class BucketLifecycleTest extends TestBase {
 
     @Test
     public void testNormalSetBucketLifecycle() throws ParseException {
-        final String bucketName = super.bucketName + "normal-set-bucket-lifecycle";
+        final String bucketName = genBucketName() + "-lifecycle";
         final String ruleId0 = "delete obsoleted files";
         final String matchPrefix0 = "obsoleted0/";
         final String ruleId1 = "delete temporary files";
@@ -200,7 +200,7 @@ public class BucketLifecycleTest extends TestBase {
 
     @Test
     public void testNormalSetBucketLifecyclWithTagging() throws ParseException {
-        final String bucketName = super.bucketName + "normal-set-bucket-lifecycle-tagging";
+        final String bucketName = genBucketName() + "-lifecycle-tagging";
         final String ruleId0 = "delete obsoleted files";
         final String matchPrefix0 = "obsoleted0/";
         final String ruleId1 = "delete temporary files";
@@ -346,7 +346,7 @@ public class BucketLifecycleTest extends TestBase {
 
     @Test
     public void testUnormalSetBucketLifecycle() throws ParseException {
-        final String bucketName = super.bucketName + "unormal-set-bucket-lifecycle";
+        final String bucketName = genBucketName() + "-lifecycle";
         final String ruleId0 = "delete obsoleted files";
         final String matchPrefix0 = "obsoleted/";
 
@@ -500,7 +500,7 @@ public class BucketLifecycleTest extends TestBase {
     @Test
     public void testUnormalGetBucketLifecycle() {
         // Get non-existent bucket
-        final String nonexistentBucket = "unormal-get-bucket-lifecycle";
+        final String nonexistentBucket = genBucketName() + "-lifecycle";
         try {
             ossClient.getBucketLifecycle(nonexistentBucket);
             Assert.fail("Get bucket lifecycle should not be successful");
@@ -519,7 +519,7 @@ public class BucketLifecycleTest extends TestBase {
         }
 
         // Get bucket without setting lifecycle configuration
-        final String bucketWithoutLifecycleConfiguration = super.bucketName + "bucket-without-lifecycle-configuration";
+        final String bucketWithoutLifecycleConfiguration = genBucketName() + "-configuration";
         try {
             ossClient.createBucket(bucketWithoutLifecycleConfiguration);
 
@@ -537,7 +537,7 @@ public class BucketLifecycleTest extends TestBase {
     @Test
     public void testUnormalDeleteBucketLifecycle() {
         // Delete non-existent bucket
-        final String nonexistentBucket = super.bucketName + "unormal-delete-bucket-lifecycle";
+        final String nonexistentBucket = genBucketName() + "-lifecycle";
         try {
             ossClient.deleteBucketLifecycle(nonexistentBucket);
             Assert.fail("Delete bucket lifecycle should not be successful");
@@ -556,7 +556,7 @@ public class BucketLifecycleTest extends TestBase {
         }
 
         // Delete bucket without setting lifecycle configuration
-        final String bucketWithoutLifecycleConfiguration = super.bucketName + "bucket-without-lifecycle-configuration";
+        final String bucketWithoutLifecycleConfiguration = genBucketName() + "-configuration";
         try {
             ossClient.createBucket(bucketWithoutLifecycleConfiguration);
             ossClient.deleteBucketLifecycle(bucketWithoutLifecycleConfiguration);
@@ -569,7 +569,7 @@ public class BucketLifecycleTest extends TestBase {
 
     @Test
     public void testNormalSetBucketLifecycleWithAccessMonitor() throws ParseException {
-        final String bucketName = super.bucketName + "normal-set-bucket-lifecycle";
+        final String bucketName = genBucketName() + "-lifecycle";
         final String ruleId0 = "delete obsoleted files";
         final String matchPrefix0 = "obsoleted0/";
         final String ruleId1 = "delete temporary files";
@@ -740,7 +740,7 @@ public class BucketLifecycleTest extends TestBase {
 
     @Test
     public void testUnormalSetBucketLifecycleWithAccessMonitor() throws ParseException {
-        final String bucketName = super.bucketName + "unormal-set-bucket-lifecycle";
+        final String bucketName = genBucketName() + "-lifecycle";
         final String ruleId0 = "delete obsoleted files";
         final String matchPrefix0 = "obsoleted/";
 
@@ -800,7 +800,7 @@ public class BucketLifecycleTest extends TestBase {
 
     @Test
     public void testUnormalSetBucketLifecycleWithNot() throws ParseException {
-        final String bucketName = super.bucketName + "unormal-set-bucket-lifecycle";
+        final String bucketName = genBucketName() + "-lifecycle";
         final String ruleId0 = "delete obsoleted files";
         final String matchPrefix0 = "obsoleted/";
 
@@ -829,7 +829,7 @@ public class BucketLifecycleTest extends TestBase {
 
     @Test
     public void testNormalSetBucketLifecycleWithNot() throws ParseException {
-        final String bucketName = super.bucketName + "normal-set-bucket-lifecycle-tagging";
+        final String bucketName = genBucketName() + "-lifecycle-tagging";
         final String ruleId0 = "delete obsoleted files";
         final String matchPrefix0 = "obsoleted0/";
         final String ruleId1 = "delete temporary files";
@@ -920,7 +920,7 @@ public class BucketLifecycleTest extends TestBase {
 
     @Test
     public void testBucketLifecycleWithFilterObjectSizeThan() throws ParseException {
-        final String bucketName = super.bucketName + "-bucket-lifecycle-object-size-than";
+        final String bucketName = genBucketName() + "-object-size-than";
         final String ruleId0 = "rule-object-size-than";
         final String matchPrefix0 = "rule-object/";
         final String ruleId1 = "rule2-object-size-than";

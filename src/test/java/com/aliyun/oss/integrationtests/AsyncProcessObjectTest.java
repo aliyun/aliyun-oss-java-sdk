@@ -28,7 +28,7 @@ public class AsyncProcessObjectTest extends TestBase {
     public void setUp() throws Exception {
         super.setUp();
 
-        bucketName = super.bucketName + "-async-process";
+        bucketName = genBucketName() + "-async-process";
         endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
 
         //create client

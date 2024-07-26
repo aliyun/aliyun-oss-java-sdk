@@ -40,7 +40,7 @@ public class BucketInventoryTest extends TestBase {
     public void setUp() throws Exception {
         super.setUp();
 
-        bucketName = super.bucketName + "-inventory";
+        bucketName = genBucketName() + "-inventory";
         endpoint = TestConfig.OSS_TEST_ENDPOINT;
 
         //create client

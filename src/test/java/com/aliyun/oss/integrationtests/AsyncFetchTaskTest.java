@@ -36,7 +36,7 @@ import org.junit.Test;
 import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 
 public class AsyncFetchTaskTest extends TestBase {
-    private final String objectName = "test-async-fetch-task-object";
+    private final String objectName = genBucketName() + "test-async-fetch-task-object";
     private String contentMd5;
     private String url;
 
@@ -48,7 +48,7 @@ public class AsyncFetchTaskTest extends TestBase {
     public void setUp() throws Exception {
         super.setUp();
 
-        bucketName = super.bucketName + "-aysnc-fetch-task";
+        bucketName = genBucketName() + "-aysnc-fetch-task";
         endpoint = TestConfig.OSS_TEST_ENDPOINT;
 
         //create client
@@ -66,7 +66,7 @@ public class AsyncFetchTaskTest extends TestBase {
 
         Date expiration = new Date(new Date().getTime() + 3600 * 1000);
         URL signedUrl = ossClient.generatePresignedUrl(bucketName, objectName, expiration);
-        url = signedUrl.toString();
+        url = signedUrl.toString().replace("-internal", "");;
     }
 
     @Override

@@ -636,7 +636,7 @@ public class SignTest extends  TestBase{
             ossClient.generatePresignedUrl(request);
             Assert.fail("should not here");
         } catch (Exception e) {
-            Assert.assertTrue(e.getMessage().contains("Object Key \"?123\""));
+            Assert.assertTrue(e.getMessage().contains("object key \"?123\""));
         }
 
         key = "?";
@@ -646,7 +646,7 @@ public class SignTest extends  TestBase{
             ossClient.generatePresignedUrl(request);
             Assert.fail("should not here");
         } catch (Exception e) {
-            Assert.assertTrue(e.getMessage().contains("Object Key \"?\""));
+            Assert.assertTrue(e.getMessage().contains("object key \"?\""));
         }
 
         conf = new ClientBuilderConfiguration();
