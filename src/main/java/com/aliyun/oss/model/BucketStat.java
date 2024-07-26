@@ -394,6 +394,75 @@ public class BucketStat extends GenericResult {
         return this;
     }
 
+    /**
+     * Gets the deep cold archive storage.
+     *
+     * @return The deep cold archive storage.
+     */
+    public Long getDeepColdArchiveStorage() {
+        return deepColdArchiveStorage;
+    }
+
+    /**
+     * Sets the deep cold archive storage and returns the current BucketStat instance
+     * (this).
+     *
+     * @param deepColdArchiveStorage
+     *            The deep cold archive storage.
+     *
+     * @return  The {@link BucketStat} instance.
+     */
+    public BucketStat withDeepColdArchiveStorage(Long deepColdArchiveStorage) {
+        this.deepColdArchiveStorage = deepColdArchiveStorage;
+        return this;
+    }
+
+    /**
+     * Gets the deep cold archive real storage.
+     *
+     * @return The cold archive real storage.
+     */
+    public Long getDeepColdArchiveRealStorage() {
+        return deepColdArchiveRealStorage;
+    }
+
+    /**
+     * Sets the deep cold archive real storage and returns the current BucketStat instance
+     * (this).
+     *
+     * @param deepColdArchiveRealStorage
+     *            The deep cold archive real storage.
+     *
+     * @return  The {@link BucketStat} instance.
+     */
+    public BucketStat withDeepColdArchiveRealStorage(Long deepColdArchiveRealStorage) {
+        this.deepColdArchiveRealStorage = deepColdArchiveRealStorage;
+        return this;
+    }
+
+    /**
+     * Gets the deep cold archive object count.
+     *
+     * @return The deep cold archive object count.
+     */
+    public Long getDeepColdArchiveObjectCount() {
+        return deepColdArchiveObjectCount;
+    }
+
+    /**
+     * Sets the deep cold archive object count and returns the current BucketStat instance
+     * (this).
+     *
+     * @param deepColdArchiveObjectCount
+     *            The deep cold archive object count.
+     *
+     * @return  The {@link BucketStat} instance.
+     */
+    public BucketStat withDeepColdArchiveObjectCount(Long deepColdArchiveObjectCount) {
+        this.deepColdArchiveObjectCount = deepColdArchiveObjectCount;
+        return this;
+    }
+
     private Long storageSize; // bytes
     private Long objectCount;
     private Long multipartUploadCount;
@@ -410,4 +479,7 @@ public class BucketStat extends GenericResult {
     private Long coldArchiveStorage;
     private Long coldArchiveRealStorage;
     private Long coldArchiveObjectCount;
+    private Long deepColdArchiveStorage;
+    private Long deepColdArchiveRealStorage;
+    private Long deepColdArchiveObjectCount;
 }
