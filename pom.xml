@@ -200,8 +200,9 @@
         </license>
     </licenses>
     <scm>
-        <url></url>
-        <connection></connection>
+        <connection>scm:git:git@github.com:aliyun/aliyun-oss-java-sdk.git</connection>
+        <developerConnection>scm:git:git@github.com:aliyun/aliyun-oss-java-sdk.git</developerConnection>
+        <url>https://github.com/aliyun/aliyun-oss-java-sdk</url>
     </scm>
     <developers>
         <developer>
