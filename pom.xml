@@ -3,136 +3,114 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.aliyun.oss</groupId>
-    <artifactId>aliyun-sdk-oss</artifactId>
-    <version>3.18.1</version>
-    <packaging>jar</packaging>
-    <name>Aliyun OSS SDK for Java</name>
-    <description>The Aliyun OSS SDK for Java used for accessing Aliyun Object Storage Service</description>
+    <artifactId>aliyun-sdk-oss-shade</artifactId>
+    <version>3.18.1-dev</version>
+    <name>Aliyun OSS SDK for Java Shade</name>
+    <description>The Aliyun OSS SDK for Java used for accessing Aliyun Object Storage Service, includes all service and dependent JARs.</description>
     <url>http://www.aliyun.com/product/oss</url>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.13</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jdom</groupId>
-            <artifactId>jdom2</artifactId>
-            <version>2.0.6.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jettison</groupId>
-            <artifactId>jettison</artifactId>
-            <version>1.5.4</version>
-        </dependency>
-        <dependency>
-            <groupId>com.aliyun</groupId>
-            <artifactId>aliyun-java-sdk-core</artifactId>
-            <version>4.5.10</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.json</groupId>
-                    <artifactId>json</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.aliyun</groupId>
-            <artifactId>aliyun-java-sdk-ram</artifactId>
-            <version>3.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.aliyun</groupId>
-            <artifactId>aliyun-java-sdk-kms</artifactId>
-            <version>2.11.0</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.67</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.aliyun.kms</groupId>
-            <artifactId>kms-transfer-client</artifactId>
-            <version>0.1.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.aliyun</groupId>
-            <artifactId>java-trace-api</artifactId>
-            <version>0.2.11-beta</version>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>3.18.1</version>
+            <optional>false</optional>
         </dependency>
     </dependencies>
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.7</version>
-            </plugin>
-        </plugins>
-    </reporting>
 
     <build>
         <plugins>
             <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.10</version>
-                <configuration>
-                    <argLine>-Dfile.encoding=UTF-8</argLine>
-                </configuration>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.6.0</version>
                 <executions>
                     <execution>
-                        <id>run-test</id>
-                        <phase>test</phase>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/integration/*.java</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.6</version>
-                <configuration>
-                    <argLine>-Dfile.encoding=UTF-8</argLine>
-                </configuration>
-                <executions>
-                    <execution>
+                        <phase>package</phase>
                         <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
+                            <goal>shade</goal>
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <artifactSet>
+                        <includes>
+                            <include>com.aliyun.oss:aliyun-sdk-oss</include>
+                            <include>org.apache.httpcomponents:*</include>
+                            <include>org.jdom:jdom2</include>
+                            <include>org.codehaus.jettison:jettison</include>
+                            <include>com.aliyun:*</include>
+                            <include>io.opentracing:*</include>
+                            <include>io.opentelemetry:*</include>
+                            <include>commons-logging:commons-logging</include>
+                            <include>commons-codec:commons-codec</include>
+                            <include>com.google.code.gson:gson</include>
+                            <include>javax.xml.bind:jaxb-api</include>
+                            <include>javax.activation:javax.activation-api</include>
+                        </includes>
+                    </artifactSet>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.apache.http</pattern>
+                            <shadedPattern>com.aliyun.oss.shade.org.apache.http</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.apache.commons</pattern>
+                            <shadedPattern>com.aliyun.oss.shade.org.apache.commons</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.jdom</pattern>
+                            <shadedPattern>com.aliyun.oss.shade.org.jdom</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.codehaus.jettison</pattern>
+                            <shadedPattern>com.aliyun.oss.shade.org.codehaus.jettison</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.aliyun.core</pattern>
+                            <shadedPattern>com.aliyun.oss.shade.com.aliyun.core</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.aliyuncs</pattern>
+                            <shadedPattern>com.aliyun.oss.shade.com.aliyuncs</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>io.opentracing</pattern>
+                            <shadedPattern>com.aliyun.oss.shade.io.opentracing</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>io.opentelemetry</pattern>
+                            <shadedPattern>com.aliyun.oss.shade.io.opentelemetry</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.google.gson</pattern>
+                            <shadedPattern>com.aliyun.oss.shade.com.google.gson</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>javax.xml.bind</pattern>
+                            <shadedPattern>com.aliyun.oss.shade.javax.xml.bind</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>javax.activation</pattern>
+                            <shadedPattern>com.aliyun.oss.shade.javax.activation</shadedPattern>
+                        </relocation>
+                    </relocations>
+                    <shadedArtifactAttached>false</shadedArtifactAttached>
+                    <createDependencyReducedPom>true</createDependencyReducedPom>
+                    <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml
+                    </dependencyReducedPomLocation>
+                    <createSourcesJar>true</createSourcesJar>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                                <exclude>META-INF/*.SF</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -149,7 +127,6 @@
                     </tags>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>

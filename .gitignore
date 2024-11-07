@@ -2,3 +2,6 @@
 /.settings/
 .classpath
 .project
+.idea/
+.vs/
+aliyun-sdk-oss-shade.iml
