@@ -2153,6 +2153,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public VoidResult cleanRestore(GenericRequest genericRequest) throws OSSException, ClientException {
+        return objectOperation.cleanRestore(genericRequest);
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();

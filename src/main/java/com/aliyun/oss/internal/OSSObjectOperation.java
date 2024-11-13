@@ -1429,6 +1429,29 @@ public class OSSObjectOperation extends OSSOperation {
         }
     }
 
+    public VoidResult cleanRestore(GenericRequest genericRequest) throws OSSException, ClientException {
+        assertParameterNotNull(genericRequest, "genericRequest");
+        String bucketName = genericRequest.getBucketName();
+        String key = genericRequest.getKey();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        ensureObjectKeyValid(key);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(CLEAN_RESTORE_OBJECT, null);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        populateRequestPayerHeader(headers, genericRequest.getRequestPayer());
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(genericRequest))
+                .setMethod(HttpMethod.POST).setBucket(bucketName).setKey(key).setParameters(params).setHeaders(headers)
+                .setInputStream(new ByteArrayInputStream(new byte[0])).setInputSize(0)
+                .setOriginalRequest(genericRequest).build();
+
+        return doOperation(request, requestIdResponseParser, bucketName, key);
+    }
+
     public String calculatePostSignature(String postPolicy, Date date) throws ClientException {
         try {
             byte[] binaryData = postPolicy.getBytes(DEFAULT_CHARSET_NAME);
