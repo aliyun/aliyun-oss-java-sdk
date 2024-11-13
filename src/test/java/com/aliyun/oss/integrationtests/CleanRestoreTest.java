@@ -11,47 +11,6 @@ import java.util.List;
 
 public class CleanRestoreTest extends TestBase {
 
-    @Ignore
-    @Test
-    public void testCleanRestore() {
-        String objectNameEXample = "testCleanRestore.txt";
-
-        try {
-            GenericRequest genericRequest = new GenericRequest()
-                    .withBucketName(bucketName)
-                    .withKey(objectNameEXample);
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectNameEXample,
-                    new ByteArrayInputStream("ColdArchive file".getBytes()));
-
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setHeader(OSSHeaders.OSS_STORAGE_CLASS, StorageClass.ColdArchive.toString());
-            putObjectRequest.setMetadata(metadata);
-            ossClient.putObject(putObjectRequest);
-
-            metadata = ossClient.getObjectMetadata(bucketName, objectNameEXample);
-            Assert.assertEquals(StorageClass.ColdArchive, metadata.getObjectStorageClass());
-
-
-            RestoreJobParameters jobParameters = new RestoreJobParameters(RestoreTier.RESTORE_TIER_EXPEDITED);
-            RestoreConfiguration configuration = new RestoreConfiguration(1, jobParameters);
-
-            StorageClass storageClass = metadata.getObjectStorageClass();
-            if (storageClass == StorageClass.ColdArchive) {
-                ossClient.restoreObject(bucketName, objectNameEXample, configuration);
-                do {
-                    Thread.sleep(1000);
-                    metadata = ossClient.getObjectMetadata(bucketName, objectNameEXample);
-                } while (!metadata.isRestoreCompleted());
-            }
-
-            ossClient.cleanRestore(genericRequest);
-        } catch (OSSException e1) {
-            e1.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Test
     public void testCleanRestoreException() {
         String objectNameEXample1 = "testCleanRestore-1.txt";
