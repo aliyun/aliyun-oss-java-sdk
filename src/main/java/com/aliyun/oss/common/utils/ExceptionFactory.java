@@ -79,11 +79,8 @@ public class ExceptionFactory {
                 COMMON_RESOURCE_MANAGER.getFormattedString("FailedToParseResponse", cause.getMessage()));
     }
 
-    public static OSSException createInvalidResponseException(String requestId, String rawResponseError,
-            Throwable cause) {
-        return createInvalidResponseException(requestId,
-                COMMON_RESOURCE_MANAGER.getFormattedString("FailedToParseResponse", cause.getMessage()),
-                rawResponseError);
+    public static OSSException createInvalidResponseException(String requestId, String rawResponseError, Throwable cause) {
+        return createOSSException(requestId, OSSErrorCode.INVALID_RESPONSE, COMMON_RESOURCE_MANAGER.getFormattedString("FailedToParseResponse", cause.getMessage()), rawResponseError, cause, null);
     }
 
     public static OSSException createInvalidResponseException(String requestId, String message) {
@@ -111,6 +108,10 @@ public class ExceptionFactory {
     public static OSSException createOSSException(String requestId, String errorCode, String message,
             String rawResponseError) {
         return new OSSException(message, errorCode, requestId, null, null, null, null, rawResponseError);
+    }
+
+    public static OSSException createOSSException(String requestId, String errorCode, String message, String rawResponseError, Throwable cause, String ec) {
+        return new OSSException(message, errorCode, requestId, null, null, null, null, rawResponseError, cause, ec);
     }
 
     public static OSSException createUnknownOSSException(String requestId, int statusCode) {
