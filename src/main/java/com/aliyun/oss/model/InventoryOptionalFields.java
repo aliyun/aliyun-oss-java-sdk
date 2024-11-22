@@ -35,4 +35,6 @@ public interface InventoryOptionalFields {
     public static final String IsMultipartUploaded = "IsMultipartUploaded";
 
     public static final String EncryptionStatus = "EncryptionStatus";
+
+    public static final String TransitionTime = "TransitionTime";
 }

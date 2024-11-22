@@ -188,6 +188,75 @@ public class BucketInventoryTest extends TestBase {
     }
 
     @Test
+    public void testBucketInventoryNormalWithTransitionTime() {
+        String inventoryId = "testid-transition-time";
+        // fields
+        List<String> fields = new ArrayList<String>();
+        fields.add(InventoryOptionalFields.Size);
+        fields.add(InventoryOptionalFields.LastModifiedDate);
+        fields.add(InventoryOptionalFields.ETag);
+        fields.add(InventoryOptionalFields.StorageClass);
+        fields.add(InventoryOptionalFields.IsMultipartUploaded);
+        fields.add(InventoryOptionalFields.EncryptionStatus);
+        fields.add(InventoryOptionalFields.TransitionTime);
+
+        // schedule
+        InventorySchedule inventorySchedule = new InventorySchedule().withFrequency(InventoryFrequency.Weekly);
+
+        // filter
+        InventoryFilter inventoryFilter = new InventoryFilter().withPrefix("testPrefix");
+
+        // destination
+        InventoryEncryption inventoryEncryption = new InventoryEncryption();
+        inventoryEncryption.setServerSideOssEncryption(new InventoryServerSideEncryptionOSS());
+        InventoryOSSBucketDestination ossBucketDestin = new InventoryOSSBucketDestination()
+                .withFormat(InventoryFormat.CSV)
+                .withPrefix("bucket-prefix")
+                .withAccountId(TestConfig.RAM_UID)
+                .withRoleArn(TestConfig.RAM_ROLE_ARN)
+                .withBucket(destinBucket)
+                .withEncryption(inventoryEncryption);
+
+        InventoryDestination destination = new InventoryDestination().withOSSBucketDestination(ossBucketDestin);
+
+        InventoryConfiguration inventoryConfiguration = new InventoryConfiguration()
+                .withInventoryId(inventoryId)
+                .withEnabled(false)
+                .withIncludedObjectVersions(InventoryIncludedObjectVersions.All)
+                .withOptionalFields(fields)
+                .withFilter(inventoryFilter)
+                .withSchedule(inventorySchedule)
+                .withDestination(destination);
+
+        // put
+        try {
+            ossClient.setBucketInventoryConfiguration(bucketName, inventoryConfiguration);
+        } catch (ClientException e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        // get and delete
+        try {
+            GetBucketInventoryConfigurationResult result = ossClient.getBucketInventoryConfiguration(
+                    new GetBucketInventoryConfigurationRequest(bucketName, inventoryId));
+
+            InventoryConfiguration actualConfig = result.getInventoryConfiguration();
+            Assert.assertEquals(inventoryId, actualConfig.getInventoryId());
+            Assert.assertEquals(InventoryIncludedObjectVersions.All.toString(), actualConfig.getIncludedObjectVersions());
+            Assert.assertEquals("testPrefix", actualConfig.getInventoryFilter().getPrefix());
+            Assert.assertEquals(InventoryFrequency.Weekly.toString(), actualConfig.getSchedule().getFrequency());
+            Assert.assertEquals(7, actualConfig.getOptionalFields().size());
+
+        } catch (ClientException e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        } finally {
+            ossClient.deleteBucketInventoryConfiguration(new DeleteBucketInventoryConfigurationRequest(bucketName, inventoryId));
+        }
+    }
+
+    @Test
     public void testErrorInventoryEncryption() {
         try {
             InventoryEncryption inventoryEncryption = new InventoryEncryption();

@@ -5659,4 +5659,18 @@ public interface OSS {
      */
     public ListAccessPointsResult listBucketAccessPoints(ListBucketAccessPointsRequest listBucketAccessPointsRequest) throws OSSException, ClientException;
 
+    /**
+     * Cold archiving, deep cold archiving supports users to actively call cleanRestore to clean up replicas in advance
+     * @param genericRequest
+     *          A {@link GenericRequest} instance.
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     * @throws ClientException
+     *             If any errors occurred in OSS while processing the request.
+     */
+    public VoidResult cleanRestoredObject(GenericRequest genericRequest) throws OSSException, ClientException;
 }
