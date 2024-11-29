@@ -1315,7 +1315,9 @@ public final class ResponseParsers {
                 String id = elem.getChild("Owner").getChildText("ID");
                 String displayName = elem.getChild("Owner").getChildText("DisplayName");
                 ossObjectSummary.setOwner(new Owner(id, displayName));
-
+                if (elem.getChild("TransitionTime") != null) {
+                    ossObjectSummary.setTransitionTime(DateUtil.parseIso8601Date(elem.getChildText("TransitionTime")));
+                }
                 objectListing.addObjectSummary(ossObjectSummary);
             }
 
@@ -1402,7 +1404,9 @@ public final class ResponseParsers {
                     String displayName = elem.getChild("Owner").getChildText("DisplayName");
                     ossObjectSummary.setOwner(new Owner(id, displayName));
                 }
-
+                if (elem.getChild("TransitionTime") != null) {
+                    ossObjectSummary.setTransitionTime(DateUtil.parseIso8601Date(elem.getChildText("TransitionTime")));
+                }
                 result.addObjectSummary(ossObjectSummary);
             }
 
@@ -1499,6 +1503,9 @@ public final class ResponseParsers {
                 String displayName = elem.getChild("Owner").getChildText("DisplayName");
                 ossVersionSummary.setOwner(new Owner(id, displayName));
 
+                if (elem.getChild("TransitionTime") != null) {
+                    ossVersionSummary.setTransitionTime(DateUtil.parseIso8601Date(elem.getChildText("TransitionTime")));
+                }
                 versionListing.getVersionSummaries().add(ossVersionSummary);
             }
 

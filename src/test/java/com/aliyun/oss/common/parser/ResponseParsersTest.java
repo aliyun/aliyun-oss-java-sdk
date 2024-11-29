@@ -6561,4 +6561,141 @@ public class ResponseParsersTest {
             Assert.assertTrue(false);
         }
     }
+
+    @Test
+    public void testParseListObjectsWithTransitionTime()  throws Exception{
+        InputStream instream = null;
+        String respBody;
+
+        respBody = "" +
+                "<ListBucketResult>\n" +
+                "  <Name>oss-java-sdk-1667542813</Name>\n" +
+                "  <Prefix></Prefix>\n" +
+                "  <Marker></Marker>\n" +
+                "  <MaxKeys>100</MaxKeys>\n" +
+                "  <Delimiter></Delimiter>\n" +
+                "  <IsTruncated>false</IsTruncated>\n" +
+                "  <Contents>\n" +
+                "    <Key>object-with-special-restore</Key>\n" +
+                "    <LastModified>2022-11-04T05:23:18.000Z</LastModified>\n" +
+                "    <ETag>\"AB56B4D92B40713ACC5AF89985D4B786\"</ETag>\n" +
+                "    <Type>Normal</Type>\n" +
+                "    <Size>5</Size>\n" +
+                "    <StorageClass>Archive</StorageClass>\n" +
+                "    <Owner>\n" +
+                "      <ID>1283641064516515</ID>\n" +
+                "      <DisplayName>1283641064516515</DisplayName>\n" +
+                "    </Owner>\n" +
+                "    <RestoreInfo>ongoing-request=\"true\"</RestoreInfo>\n" +
+                "    <TransitionTime>2021-09-15T02:35:07.000Z</TransitionTime>\n" +
+                "  </Contents>\n" +
+                "</ListBucketResult>";
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        ObjectListing result = null;
+        try {
+            result = ResponseParsers.parseListObjects(instream);
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals("object-with-special-restore", result.getObjectSummaries().get(0).getKey());
+        Assert.assertEquals("ongoing-request=\"true\"", result.getObjectSummaries().get(0).getRestoreInfo());
+        Assert.assertEquals(DateUtil.parseIso8601Date("2021-09-15T02:35:07.000Z"), result.getObjectSummaries().get(0).getTransitionTime());
+    }
+
+    @Test
+    public void testParseListObjectsV2WithTransitionTime() throws Exception{
+        InputStream instream = null;
+        String respBody;
+
+        respBody = "" +
+                "<ListBucketResult>\n" +
+                "  <Name>oss-java-sdk-1667548362-list-v2</Name>\n" +
+                "  <Prefix></Prefix>\n" +
+                "  <MaxKeys>100</MaxKeys>\n" +
+                "  <Delimiter></Delimiter>\n" +
+                "  <IsTruncated>false</IsTruncated>\n" +
+                "  <Contents>\n" +
+                "    <Key>object-with-special-restore</Key>\n" +
+                "    <LastModified>2022-11-04T07:37:25.000Z</LastModified>\n" +
+                "    <ETag>\"AB56B4D92B40713ACC5AF89985D4B786\"</ETag>\n" +
+                "    <Type>Normal</Type>\n" +
+                "    <Size>5</Size>\n" +
+                "    <StorageClass>Archive</StorageClass>\n" +
+                "    <RestoreInfo>ongoing-request=\"false\", expiry-date=\"Sat, 05 Nov 2022 07:38:08 GMT\"</RestoreInfo>\n" +
+                "    <TransitionTime>2021-09-15T02:35:07.000Z</TransitionTime>\n" +
+                "  </Contents>\n" +
+                "  <KeyCount>1</KeyCount>\n" +
+                "</ListBucketResult>\n";
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        ListObjectsV2Result result = null;
+        try {
+            result = ResponseParsers.parseListObjectsV2(instream);
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals("object-with-special-restore", result.getObjectSummaries().get(0).getKey());
+        Assert.assertEquals("ongoing-request=\"false\", expiry-date=\"Sat, 05 Nov 2022 07:38:08 GMT\"", result.getObjectSummaries().get(0).getRestoreInfo());
+        Assert.assertEquals(DateUtil.parseIso8601Date("2021-09-15T02:35:07.000Z"), result.getObjectSummaries().get(0).getTransitionTime());
+    }
+
+    @Test
+    public void testParseListVersionsWithTransitionTime() throws Exception{
+        InputStream instream = null;
+        String respBody;
+
+        respBody = "" +
+                "<ListVersionsResult>\n" +
+                "  <Name>oss-java-sdk-1667549556-list-versions</Name>\n" +
+                "  <Prefix></Prefix>\n" +
+                "  <KeyMarker></KeyMarker>\n" +
+                "  <VersionIdMarker></VersionIdMarker>\n" +
+                "  <MaxKeys>100</MaxKeys>\n" +
+                "  <Delimiter></Delimiter>\n" +
+                "  <IsTruncated>false</IsTruncated>\n" +
+                "  <Version>\n" +
+                "    <Key>object-with-special-restore</Key>\n" +
+                "    <VersionId>CAEQDxiBgID78pyGohgiIDFhNWM0ODYxMDcyNTQ0ODJiZDJjZDlmNjRhZmU5MWEy</VersionId>\n" +
+                "    <IsLatest>true</IsLatest>\n" +
+                "    <LastModified>2022-11-04T07:32:45.000Z</LastModified>\n" +
+                "    <ETag>\"AB56B4D92B40713ACC5AF89985D4B786\"</ETag>\n" +
+                "    <Type>Normal</Type>\n" +
+                "    <Size>5</Size>\n" +
+                "    <StorageClass>Archive</StorageClass>\n" +
+                "    <RestoreInfo>ongoing-request=\"true\"</RestoreInfo>\n" +
+                "    <Owner>\n" +
+                "      <ID>1283641064516515</ID>\n" +
+                "      <DisplayName>1283641064516515</DisplayName>\n" +
+                "    </Owner>\n" +
+                "    <TransitionTime>2021-09-15T02:35:07.000Z</TransitionTime>\n" +
+                "  </Version>\n" +
+                "</ListVersionsResult>";
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        VersionListing result = null;
+        try {
+            result = ResponseParsers.parseListVersions(instream);
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+        Assert.assertEquals("object-with-special-restore", result.getVersionSummaries().get(0).getKey());
+        Assert.assertEquals("ongoing-request=\"true\"", result.getVersionSummaries().get(0).getRestoreInfo());
+        Assert.assertEquals(DateUtil.parseIso8601Date("2021-09-15T02:35:07.000Z"), result.getVersionSummaries().get(0).getTransitionTime());
+    }
 }

@@ -74,4 +74,13 @@ public class ExceptionFactoryTest {
         ose = ExceptionFactory.createOSSException(new OSSErrorResult());
         assertNotNull(ose);
     }
+
+    @Test
+    public void testCreateExceptionWithThrowable() {
+        OSSException ose = ExceptionFactory.createInvalidResponseException("request id", "rawResponseError", new ConnectTimeoutException());
+        assertNotNull(ose);
+        assertEquals("request id", ose.getRequestId());
+        assertEquals("rawResponseError", ose.getRawResponseError());
+        assertNotNull(ose.getCause());
+    }
 }
