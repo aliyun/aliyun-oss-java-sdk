@@ -30,6 +30,8 @@ import com.aliyun.oss.*;
 import com.aliyun.oss.common.auth.Credentials;
 import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
+import com.aliyun.oss.endpoint.DefaultEndpointResolver;
+import com.aliyun.oss.endpoint.EndpointResolver;
 import com.aliyun.oss.internal.OSSConstants;
 import com.aliyun.oss.internal.RequestParameters;
 import com.aliyun.oss.model.GetObjectRequest;
@@ -482,5 +484,18 @@ public class OSSClientTest {
         Assert.assertEquals("region", clientImpl.getObjectOperation().getRegion());
         Assert.assertEquals("oss-cloudbox", clientImpl.getObjectOperation().getProduct());
     }
+
+    @Test
+    public void testConfigurationWithEndpointResolver() {
+        ClientConfiguration clientConfiguration = new ClientConfiguration();
+
+        clientConfiguration.setRefreshEndpointAddr(true);
+        Assert.assertEquals(true, clientConfiguration.isRefreshEndpointAddr());
+
+        DefaultEndpointResolver defaultEndpointResolver = new DefaultEndpointResolver();
+        clientConfiguration.setEndpointResolver(defaultEndpointResolver);
+        Assert.assertEquals(defaultEndpointResolver, clientConfiguration.getEndpointResolver());
+    }
+
 }
 

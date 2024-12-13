@@ -91,6 +91,14 @@ public abstract class OSSOperation {
 
     public URI getEndpoint(WebServiceRequest request) {
         String reqEndpoint = request.getEndpoint();
+        if (client.getClientConfiguration().isRefreshEndpointAddr()) {
+            if (client.getClientConfiguration().isSupportCname()){
+                reqEndpoint = client.getClientConfiguration().getEndpointResolver().resolveGetServiceApiEndpoint(reqEndpoint);
+            } else {
+                reqEndpoint = client.getClientConfiguration().getEndpointResolver().resolveGeneralApiEndpoint(reqEndpoint);
+            }
+        }
+
          if (reqEndpoint == null) {
              return getEndpoint();
 

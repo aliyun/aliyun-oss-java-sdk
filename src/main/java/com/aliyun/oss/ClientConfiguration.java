@@ -40,6 +40,8 @@ import com.aliyun.oss.common.comm.RetryStrategy;
 import com.aliyun.oss.common.comm.SignVersion;
 import com.aliyun.oss.common.utils.ResourceManager;
 import com.aliyun.oss.common.utils.VersionInfoUtils;
+import com.aliyun.oss.endpoint.DefaultEndpointResolver;
+import com.aliyun.oss.endpoint.EndpointResolver;
 import com.aliyun.oss.internal.OSSConstants;
 
 /**
@@ -126,6 +128,10 @@ public class ClientConfiguration {
     private boolean verifyObjectStrict = true;
 
     private boolean tracerEnabled = false;
+
+    private boolean isRefreshEndpointAddr = false;
+
+    private EndpointResolver endpointResolver = new DefaultEndpointResolver();
 
     public ClientConfiguration() {
         super();
@@ -991,4 +997,41 @@ public class ClientConfiguration {
     public void setTracerEnabled(boolean enabled) {
         this.tracerEnabled = enabled;
     }
+
+    /**
+     * Gets the flag of refresh endpoint.
+     *
+     * @return  True if it's enabled; False if it's disabled.
+     */
+    public boolean isRefreshEndpointAddr() {
+        return isRefreshEndpointAddr;
+    }
+
+    /**
+     * Sets the flag of refresh endpoint.
+     *
+     * @param refreshEndpointAddr True if it's enabled; False if it's disabled.
+     */
+    public void setRefreshEndpointAddr(boolean refreshEndpointAddr) {
+        isRefreshEndpointAddr = refreshEndpointAddr;
+    }
+
+    /**
+     * Gets the endpoint resolver.
+     *
+     * @return endpoint resolver.
+     */
+    public EndpointResolver getEndpointResolver() {
+        return endpointResolver;
+    }
+
+    /**
+     * Sets the endpoint resolver.
+     *
+     * @param endpointResolver
+     */
+    public void setEndpointResolver(EndpointResolver endpointResolver) {
+        this.endpointResolver = endpointResolver;
+    }
+
 }
