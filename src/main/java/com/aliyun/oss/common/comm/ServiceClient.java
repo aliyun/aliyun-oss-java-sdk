@@ -28,8 +28,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.util.List;
 
+import com.aliyun.oss.internal.OSSUtils;
 import org.apache.http.HttpMessage;
 
 import com.aliyun.oss.ClientConfiguration;
@@ -120,6 +122,9 @@ public abstract class ServiceClient {
         while (true) {
             try {
                 if (retries > 0) {
+                    if (config.isRefreshEndpointAddr()) {
+                        refreshEndpointAddr(request);
+                    }
                     pause(retries, retryStrategy);
                     if (requestContent != null && requestContent.markSupported()) {
                         try {
@@ -391,5 +396,18 @@ public abstract class ServiceClient {
         public void setUseChunkEncoding(boolean useChunkEncoding) {
             this.useChunkEncoding = useChunkEncoding;
         }
+    }
+
+    public void refreshEndpointAddr(RequestMessage request)
+            throws ServiceException, ClientException {
+        String endpoint = "";
+        if (config.isSupportCname()){
+            endpoint = config.getEndpointResolver().resolveGetServiceApiEndpoint(request.getEndpoint().toString());
+        } else {
+            endpoint = config.getEndpointResolver().resolveGeneralApiEndpoint(request.getEndpoint().toString());
+        }
+        String defaultProto = config.getProtocol().toString();
+        URI uri = OSSUtils.toEndpointURI(endpoint, defaultProto);
+        request.setEndpoint(uri);
     }
 }
