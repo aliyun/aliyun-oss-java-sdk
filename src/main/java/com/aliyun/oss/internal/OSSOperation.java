@@ -62,6 +62,14 @@ public abstract class OSSOperation {
     protected static RequestIdResponseParser requestIdResponseParser = new RequestIdResponseParser();
     protected static RetryStrategy noRetryStrategy = new NoRetryStrategy();
 
+    /**
+     * use for self define error handle, default OSSErrorResponseHandler response data is too sample
+     * @param handler
+     */
+    public static void setDefaultOSSErrorResponseHandler(OSSErrorResponseHandler handler){
+        errorResponseHandler = handler;
+    }
+
     protected OSSOperation(ServiceClient client, CredentialsProvider credsProvider) {
         this.client = client;
         this.credsProvider = credsProvider;
