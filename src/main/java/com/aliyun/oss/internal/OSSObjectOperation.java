@@ -1135,6 +1135,13 @@ public class OSSObjectOperation extends OSSOperation {
         } else {
             assertTrue(originalInputStream != null, "Please specify input stream or file to upload");
 
+            try {
+                metadata.setContentLength((long)originalInputStream.available());
+            } catch (IOException ex) {
+                getLog().info("Cannot read length from input stream: ", ex);
+                throw new ClientException("Cannot read length from input stream: ", ex);
+            }
+
             if (metadata.getContentType() == null) {
                 metadata.setContentType(Mimetypes.getInstance().getMimetype(key));
             }
