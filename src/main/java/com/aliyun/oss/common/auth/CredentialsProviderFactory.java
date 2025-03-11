@@ -53,7 +53,7 @@ public class CredentialsProviderFactory {
      *            Security Token from STS.
      * @return A {@link DefaultCredentialProvider} instance.
      */
-    public DefaultCredentialProvider newDefaultCredentialProvider(String accessKeyId, String secretAccessKey,
+    public static DefaultCredentialProvider newDefaultCredentialProvider(String accessKeyId, String secretAccessKey,
             String securityToken) {
         return new DefaultCredentialProvider(accessKeyId, secretAccessKey, securityToken);
     }
