@@ -28,8 +28,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.List;
 
+import com.aliyun.oss.common.utils.DateUtil;
 import org.apache.http.HttpMessage;
 
 import com.aliyun.oss.ClientConfiguration;
@@ -160,6 +162,17 @@ public abstract class ServiceClient {
             } catch (ServiceException sex) {
                 logException("[Server]Unable to execute HTTP request: ", sex,
                         request.getOriginalRequest().isLogEnabled());
+
+                if (response != null && response.getStatusCode() == 403) {
+                    if ("RequestTimeTooSkewed".equals(sex.getErrorCode()) && this.config.isEnableAutoCorrectClockSkew()) {
+                        try {
+                            Date serverTime = DateUtil.parseIso8601Date(sex.getErrorMap().get("ServerTime"));
+                            this.config.setTickOffset(serverTime.getTime());
+                        } catch (Exception e) {
+                            throw new ClientException(e.getMessage(), e);
+                        }
+                    }
+                }
 
                 // Notice that the response should not be closed in the
                 // finally block because if the request is successful,

@@ -127,6 +127,8 @@ public class ClientConfiguration {
 
     private boolean tracerEnabled = false;
 
+    private boolean enableAutoCorrectClockSkew = false;
+
     public ClientConfiguration() {
         super();
         AppendDefaultExcludeList(this.cnameExcludeList);
@@ -990,5 +992,29 @@ public class ClientConfiguration {
      */
     public void setTracerEnabled(boolean enabled) {
         this.tracerEnabled = enabled;
+    }
+
+    /**
+     * Checks whether the automatic clock skew correction feature is enabled.
+     *
+     * @return
+     *     {@code true} if the client is configured to automatically adjust its clock
+     *     based on server time when a significant time discrepancy is detected;
+     *     {@code false} otherwise.
+     */
+    public boolean isEnableAutoCorrectClockSkew() {
+        return enableAutoCorrectClockSkew;
+    }
+
+    /**
+     * Enables or disables the automatic clock skew correction feature.
+     *
+     * @param enableAutoCorrectClockSkew
+     *     {@code true} to enable automatic clock adjustment (client will correct time offsets
+     *     detected during requests based on server time);
+     *     {@code false} to disable this feature.
+     */
+    public void setEnableAutoCorrectClockSkew(boolean enableAutoCorrectClockSkew) {
+        this.enableAutoCorrectClockSkew = enableAutoCorrectClockSkew;
     }
 }

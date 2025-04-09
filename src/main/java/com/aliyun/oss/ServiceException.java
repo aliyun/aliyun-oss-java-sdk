@@ -19,6 +19,14 @@
 
 package com.aliyun.oss;
 
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.input.SAXBuilder;
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  * This is the base exception class to represent any expected or unexpected OSS
@@ -256,6 +264,27 @@ public class ServiceException extends RuntimeException {
             return "";
         }
         return String.format("\n[ResponseError]:\n%s", this.rawResponseError);
+    }
+
+    public Map<String, String> getErrorMap(){
+        Map<String, String> result = new HashMap<String, String>();
+        try {
+            SAXBuilder builder = new SAXBuilder();
+            builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
+            builder.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            builder.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            builder.setExpandEntities(false);
+            Document doc = builder.build(new StringReader(this.getRawResponseError()));
+
+            Element root = doc.getRootElement();
+            List<Element> children = root.getChildren();
+            for (Element child : children) {
+                result.put(child.getName(), child.getTextTrim());
+            }
+        } catch (Exception e) {
+            throw new ClientException(e.getMessage(), e);
+        }
+        return result;
     }
 
     @Override
