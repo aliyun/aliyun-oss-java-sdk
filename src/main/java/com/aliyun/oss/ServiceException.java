@@ -26,6 +26,7 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * <p>
@@ -68,6 +69,9 @@ public class ServiceException extends RuntimeException {
     private String ec;
 
     private String rawResponseError;
+
+    private Map<String, String> headers = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+    private Map<String, Object> errorFields = new TreeMap<String, Object>(String.CASE_INSENSITIVE_ORDER);
 
     /**
      * Creates a default instance.
@@ -195,6 +199,18 @@ public class ServiceException extends RuntimeException {
         this.ec = ec;
     }
 
+    public ServiceException(String errorMessage, String errorCode, String requestId, String hostId,
+                            String rawResponseError, Throwable cause, String ec, Map<String, String> headers, Map<String, Object> errorFields) {
+        this(errorMessage, cause);
+        this.errorCode = errorCode;
+        this.requestId = requestId;
+        this.hostId = hostId;
+        this.rawResponseError = rawResponseError;
+        this.ec = ec;
+        this.headers = headers;
+        this.errorFields = errorFields;
+    }
+
     /**
      * Gets error message.
      * 
@@ -266,25 +282,20 @@ public class ServiceException extends RuntimeException {
         return String.format("\n[ResponseError]:\n%s", this.rawResponseError);
     }
 
-    public Map<String, String> getErrorMap(){
-        Map<String, String> result = new HashMap<String, String>();
-        try {
-            SAXBuilder builder = new SAXBuilder();
-            builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
-            builder.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            builder.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-            builder.setExpandEntities(false);
-            Document doc = builder.build(new StringReader(this.getRawResponseError()));
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
 
-            Element root = doc.getRootElement();
-            List<Element> children = root.getChildren();
-            for (Element child : children) {
-                result.put(child.getName(), child.getTextTrim());
-            }
-        } catch (Exception e) {
-            throw new ClientException(e.getMessage(), e);
-        }
-        return result;
+    public void setHeaders(Map<String, String> headers) {
+        this.headers = headers;
+    }
+
+    public Map<String, Object> getErrorFields() {
+        return errorFields;
+    }
+
+    public void setErrorFields(Map<String, Object> errorFields) {
+        this.errorFields = errorFields;
     }
 
     @Override

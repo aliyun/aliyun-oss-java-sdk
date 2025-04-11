@@ -178,13 +178,13 @@ public final class ResponseParsers {
         @Override
         public OSSErrorResult parse(ResponseMessage response) throws ResponseParseException {
             try {
-                return parseErrorResponse(response.getContent());
+                return parseErrorResponse(response.getContent(), response.getHeaders());
             } finally {
                 safeCloseResponse(response);
             }
         }
 
-        OSSErrorResult parseErrorResponse(InputStream inputStream) throws ResponseParseException {
+        OSSErrorResult parseErrorResponse(InputStream inputStream, Map<String, String> headers) throws ResponseParseException {
             OSSErrorResult ossErrorResult = new OSSErrorResult();
             if (inputStream == null) {
                 return ossErrorResult;
@@ -199,11 +199,30 @@ public final class ResponseParsers {
                 ossErrorResult.Method = root.getChildText("Method");
                 ossErrorResult.Header = root.getChildText("Header");
                 ossErrorResult.EC = root.getChildText("EC");
+
+                Map<String, Object> map = new TreeMap<String, Object>();
+                parseElement(root, map);
+
+                ossErrorResult.Headers = headers;
+                ossErrorResult.ErrorFields = map;
                 return ossErrorResult;
             } catch (JDOMParseException e) {
                 throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
             } catch (Exception e) {
                 throw new ResponseParseException(e.getMessage(), e);
+            }
+        }
+
+        private static void parseElement(Element element, Map<String, Object> map) {
+            List<Element> children = element.getChildren();
+            for (Element child : children) {
+                if (child.getChildren().isEmpty()) {
+                    map.put(child.getName(), child.getTextTrim());
+                } else {
+                    Map<String, Object> subMap = new TreeMap<>();
+                    parseElement(child, subMap);
+                    map.put(child.getName(), subMap);
+                }
             }
         }
     }

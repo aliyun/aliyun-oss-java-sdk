@@ -94,6 +94,12 @@ public class ErrorTest extends TestBase {
             Assert.assertEquals(e.getEC(), "0002-00000504");
             Assert.assertEquals(e.getErrorCode(), "RequestTimeTooSkewed");
             Assert.assertEquals(e.getErrorMessage(), "The difference between the request time and the current time is too large.");
+            Assert.assertEquals("0002-00000504", e.getHeaders().get("x-oss-ec"));
+            Assert.assertNotNull(e.getHeaders().get("Date"));
+            Assert.assertNotNull(e.getHeaders().get("Content-Type"));
+            Assert.assertNotNull(e.getHeaders().get("x-oss-request-id"));
+            Assert.assertNotNull(e.getErrorFields().get("RequestTime").toString());
+            Assert.assertNotNull(e.getErrorFields().get("ServerTime").toString());
             e.printStackTrace();
 
             result = ossClient.getBucketAcl(bucketName);
@@ -134,6 +140,12 @@ public class ErrorTest extends TestBase {
             Assert.assertEquals(e.getEC(), "0002-00000504");
             Assert.assertEquals(e.getErrorCode(), "RequestTimeTooSkewed");
             Assert.assertEquals(e.getErrorMessage(), "The difference between the request time and the current time is too large.");
+            Assert.assertEquals("0002-00000504", e.getHeaders().get("x-oss-ec"));
+            Assert.assertNotNull(e.getHeaders().get("Date"));
+            Assert.assertNotNull(e.getHeaders().get("Content-Type"));
+            Assert.assertNotNull(e.getHeaders().get("x-oss-request-id"));
+            Assert.assertNotNull(e.getErrorFields().get("RequestTime").toString());
+            Assert.assertNotNull(e.getErrorFields().get("ServerTime").toString());
             e.printStackTrace();
 
             result = ossClient.getBucketAcl(bucketName);

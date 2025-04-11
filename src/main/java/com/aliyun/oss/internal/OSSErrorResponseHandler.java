@@ -58,7 +58,7 @@ public class OSSErrorResponseHandler implements ResponseHandler {
             try {
                 if (response.getHeaders().containsKey(OSSHeaders.OSS_ERROR)) {
                     byte[] data = BinaryUtil.fromBase64String(response.getHeaders().get(OSSHeaders.OSS_ERROR));
-                    result = errorResponseParser.parseErrorResponse(new ByteArrayInputStream(data));
+                    result = errorResponseParser.parseErrorResponse(new ByteArrayInputStream(data), response.getHeaders());
                     if (result.Code == null) {
                         result = null;
                     }

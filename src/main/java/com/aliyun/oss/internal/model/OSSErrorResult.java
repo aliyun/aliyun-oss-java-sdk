@@ -21,6 +21,7 @@ package com.aliyun.oss.internal.model;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Map;
 
 @XmlRootElement(name = "Error")
 public class OSSErrorResult {
@@ -48,4 +49,9 @@ public class OSSErrorResult {
     @XmlElement(name = "EC")
     public String EC;
 
+    @XmlElement(name = "Headers")
+    public Map<String, String> Headers;
+
+    @XmlElement(name = "ErrorFields")
+    public Map<String, Object> ErrorFields;
 }

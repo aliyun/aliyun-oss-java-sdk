@@ -166,7 +166,7 @@ public abstract class ServiceClient {
                 if (response != null && response.getStatusCode() == 403) {
                     if ("RequestTimeTooSkewed".equals(sex.getErrorCode()) && this.config.isEnableAutoCorrectClockSkew()) {
                         try {
-                            Date serverTime = DateUtil.parseIso8601Date(sex.getErrorMap().get("ServerTime"));
+                            Date serverTime = DateUtil.parseIso8601Date(sex.getErrorFields().get("ServerTime").toString());
                             this.config.setTickOffset(serverTime.getTime());
                         } catch (Exception e) {
                             throw new ClientException(e.getMessage(), e);

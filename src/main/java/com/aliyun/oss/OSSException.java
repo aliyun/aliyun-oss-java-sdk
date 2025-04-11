@@ -19,6 +19,8 @@
 
 package com.aliyun.oss;
 
+import java.util.Map;
+
 /**
  * The OSSException is thrown upon error when accessing OSS.
  */
@@ -65,6 +67,15 @@ public class OSSException extends ServiceException {
     public OSSException(String errorMessage, String errorCode, String requestId, String hostId, String header,
                         String resourceType, String method, String rawResponseError, Throwable cause, String ec) {
         super(errorMessage, errorCode, requestId, hostId, rawResponseError, cause, ec);
+        this.resourceType = resourceType;
+        this.header = header;
+        this.method = method;
+    }
+
+    public OSSException(String errorMessage, String errorCode, String requestId, String hostId, String header,
+                        String resourceType, String method, String rawResponseError, Throwable cause, String ec,
+                        Map<String, String> headers, Map<String, Object> errorFields) {
+        super(errorMessage, errorCode, requestId, hostId, rawResponseError, cause, ec, headers, errorFields);
         this.resourceType = resourceType;
         this.header = header;
         this.method = method;
