@@ -26,7 +26,6 @@ import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameValid;
 import static com.aliyun.oss.internal.OSSUtils.ensureBucketNameCreationValid;
 import static com.aliyun.oss.internal.OSSUtils.safeCloseResponse;
 import static com.aliyun.oss.internal.RequestParameters.*;
-import static com.aliyun.oss.internal.RequestParameters.ACCESS_MONITOR;
 import static com.aliyun.oss.internal.ResponseParsers.*;
 import static com.aliyun.oss.internal.ResponseParsers.listAccessPointsResponseParser;
 
@@ -2065,6 +2064,28 @@ public class OSSBucketOperation extends OSSOperation {
         return doOperation(request, requestIdResponseParser, bucketName, null, true);
     }
 
+    public VoidResult openMetaQuery(OpenMetaQueryRequest openMetaQueryRequest) throws OSSException, ClientException {
+        assertParameterNotNull(openMetaQueryRequest, "openMetaQueryRequest");
+
+        String bucketName = openMetaQueryRequest.getBucketName();
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+
+        MetaQueryMode metaQueryMode = openMetaQueryRequest.getMetaQueryMode();
+        assertParameterNotNull(metaQueryMode, "metaQueryMode");
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(META_QUERY, null);
+        params.put(SUBRESOURCE_COMP, COMP_ADD);
+        params.put(MODE, metaQueryMode.toString());
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
+                .setMethod(HttpMethod.POST).setBucket(bucketName).setParameters(params)
+                .setOriginalRequest(openMetaQueryRequest).setInputSize(0).setInputStream(new ByteArrayInputStream(new byte[0])).build();
+
+        return doOperation(request, requestIdResponseParser, bucketName, null, true);
+    }
+
     public GetMetaQueryStatusResult getMetaQueryStatus(GenericRequest genericRequest) throws OSSException, ClientException {
         assertParameterNotNull(genericRequest, "genericRequest");
 
@@ -2092,6 +2113,13 @@ public class OSSBucketOperation extends OSSOperation {
         Map<String, String> params = new HashMap<String, String>();
         params.put(META_QUERY, null);
         params.put(SUBRESOURCE_COMP, COMP_QUERY);
+
+        if (null != doMetaQueryRequest.getEncodingType()) {
+            params.put(ENCODING_TYPE, doMetaQueryRequest.getEncodingType());
+        }
+        if (null != doMetaQueryRequest.getMetaQueryMode()) {
+            params.put(MODE, doMetaQueryRequest.getMetaQueryMode().toString());
+        }
 
         byte[] rawContent = doMetaQueryRequestMarshaller.marshall(doMetaQueryRequest);
 

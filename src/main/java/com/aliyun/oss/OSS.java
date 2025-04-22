@@ -5074,6 +5074,31 @@ public interface OSS {
     VoidResult openMetaQuery(String bucketName) throws OSSException, ClientException;
 
     /**
+     * Open MetaQuery configuration to the OSS Server
+     * @param bucketName bucket name
+     * @param metaQueryMode meta query support mode
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException oss exception
+     * @throws ClientException client exception
+     */
+    VoidResult openMetaQuery(String bucketName, MetaQueryMode metaQueryMode) throws OSSException, ClientException;
+
+    /**
+     * Open MetaQuery configuration to the OSS Server
+     * @param openMetaQueryRequest open meta query request
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException oss exception
+     * @throws ClientException client exception
+     */
+    VoidResult openMetaQuery(OpenMetaQueryRequest openMetaQueryRequest) throws OSSException, ClientException;
+
+    /**
      * Get MetaQueryStatus configuration from the OSS Server
      * @param bucketName
      *             The bucket name.

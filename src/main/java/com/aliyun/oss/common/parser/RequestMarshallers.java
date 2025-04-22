@@ -1879,6 +1879,16 @@ public final class RequestMarshallers {
                 }
                 xmlBody.append("</Aggregations>");
             }
+            if (input.getMediaTypes() != null && !input.getMediaTypes().isEmpty()) {
+                xmlBody.append("<MediaTypes>");
+                for (String mediaType : input.getMediaTypes()) {
+                    xmlBody.append("<MediaType>" + mediaType + "</MediaType>");
+                }
+                xmlBody.append("</MediaTypes>");
+            }
+            if (input.getSimpleQuery() != null) {
+                xmlBody.append("<SimpleQuery>" + input.getSimpleQuery() + "</SimpleQuery>");
+            }
             xmlBody.append("</MetaQuery>");
 
             byte[] rawData = null;

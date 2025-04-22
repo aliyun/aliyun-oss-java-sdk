@@ -1958,6 +1958,16 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public VoidResult openMetaQuery(String bucketName, MetaQueryMode metaQueryMode) throws OSSException, ClientException {
+        return this.openMetaQuery(new OpenMetaQueryRequest(bucketName, metaQueryMode));
+    }
+
+    @Override
+    public VoidResult openMetaQuery(OpenMetaQueryRequest openMetaQueryRequest) throws OSSException, ClientException {
+        return this.bucketOperation.openMetaQuery(openMetaQueryRequest);
+    }
+
+    @Override
     public GetMetaQueryStatusResult getMetaQueryStatus(String bucketName) throws OSSException, ClientException {
         return this.bucketOperation.getMetaQueryStatus(new GenericRequest(bucketName, null));
     }
