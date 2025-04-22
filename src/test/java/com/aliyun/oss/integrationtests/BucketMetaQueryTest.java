@@ -9,10 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class BucketMetaQueryTest extends TestBase {
@@ -211,4 +208,76 @@ public class BucketMetaQueryTest extends TestBase {
         }
     }
 
+
+    @Test
+    public void testBucketMetaQueryFileWithSemantic() {
+        List<String> mediaTypes = new ArrayList<String>();
+        mediaTypes.add("document");
+
+        String querySemantic = "Snow";
+        String simpleQuery = "{\"Operation\":\"gt\", \"Field\": \"Size\", \"Value\": \"1\"}";
+        String semanticFileName1 = "semanticFile-Snow.docx";
+        String semanticFileName2 = "semanticFile-test.docx";
+
+        long ticks = new Date().getTime() / 1000;
+        long ranint = new Random().nextInt(5000);
+        String semanticBucketName = "oss-java-sdk-semantic-test" + ticks + "-" + ranint;
+
+        ossClient.createBucket(semanticBucketName);
+
+        PutObjectRequest putObjectRequest = new PutObjectRequest(semanticBucketName, semanticFileName1, new ByteArrayInputStream("Hello OSS, Snow".getBytes()));
+        ossClient.putObject(putObjectRequest);
+
+        PutObjectRequest putObjectRequest2 = new PutObjectRequest(semanticBucketName, semanticFileName2, new ByteArrayInputStream("Hello OSS, ".getBytes()));
+        ossClient.putObject(putObjectRequest2);
+
+        try {
+
+            try {
+                ossClient.openMetaQuery(semanticBucketName, MetaQueryMode.SEMANTIC);
+            }  catch (OSSException e) {
+                Assert.assertEquals(OSSErrorCode.META_QUERY_ALREADY_EXIST, e.getRawResponseError().substring(e.getRawResponseError().indexOf("<Code>")+6, e.getRawResponseError().indexOf("</Code>")));
+            }
+
+            DoMetaQueryResult doMetaQueryResult = null;
+            while (true) {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                GetMetaQueryStatusResult getResult = ossClient.getMetaQueryStatus(semanticBucketName);
+                Assert.assertEquals(200, getResult.getResponse().getStatusCode());
+                Assert.assertEquals(MetaQueryMode.SEMANTIC, getResult.getMetaQueryMode());
+                DoMetaQueryRequest doMetaQueryRequest = new DoMetaQueryRequest(semanticBucketName, maxResults, querySemantic, sort, MetaQueryMode.SEMANTIC, mediaTypes, simpleQuery);
+                doMetaQueryRequest.setOrder(SortOrder.DESC);
+                if ("Running".equals(getResult.getState())) {
+                    doMetaQueryResult = ossClient.doMetaQuery(doMetaQueryRequest);
+                    if (doMetaQueryResult.getFiles() != null) {
+                        Assert.assertNotNull(doMetaQueryResult.getFiles().getFile().get(0).getUri());
+                        Assert.assertNotNull(doMetaQueryResult.getFiles().getFile().get(0).getFileModifiedTime());
+                        Assert.assertNotNull(doMetaQueryResult.getFiles().getFile().get(0).getETag());
+                        Assert.assertNotNull(doMetaQueryResult.getFiles().getFile().get(0).getOssCRC64());
+                        Assert.assertEquals(semanticFileName1, doMetaQueryResult.getFiles().getFile().get(0).getFilename());
+                        Assert.assertEquals("default", doMetaQueryResult.getFiles().getFile().get(0).getObjectACL());
+                        Assert.assertEquals("text/plain; charset=utf-8", doMetaQueryResult.getFiles().getFile().get(0).getContentType());
+                        Assert.assertEquals("document", doMetaQueryResult.getFiles().getFile().get(0).getMediaType());
+                        Assert.assertEquals("Normal", doMetaQueryResult.getFiles().getFile().get(0).getOssObjectType());
+                        Assert.assertEquals("Standard", doMetaQueryResult.getFiles().getFile().get(0).getOssStorageClass());
+
+                        break;
+                    }
+                }
+            }
+
+
+        } catch (OSSException e) {
+            System.out.println("ErrorCode:" + e.getErrorCode() + "Message:" + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            ossClient.deleteObject(semanticBucketName, semanticFileName1);
+            ossClient.deleteObject(semanticBucketName, semanticFileName2);
+            ossClient.deleteBucket(semanticBucketName);
+        }
+    }
 }

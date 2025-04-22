@@ -4079,6 +4079,9 @@ public final class ResponseParsers {
                 if (root.getChildText("UpdateTime") != null) {
                     getMetaQueryStatusResult.setUpdateTime(root.getChildText("UpdateTime"));
                 }
+                if (root.getChildText("MetaQueryMode") != null) {
+                    getMetaQueryStatusResult.setMetaQueryMode(MetaQueryMode.parse(root.getChildText("MetaQueryMode")));
+                }
                 return getMetaQueryStatusResult;
             } catch (JDOMParseException e) {
                 throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
@@ -4119,6 +4122,9 @@ public final class ResponseParsers {
                     List<ObjectFile> fileList = new ArrayList<ObjectFile>();
                     for(Element elem : fileElem){
                         ObjectFile objectFile = new ObjectFile();
+                        if (elem.getChild("URI") != null) {
+                            objectFile.setUri(elem.getChildText("URI"));
+                        }
                         objectFile.setFilename(elem.getChildText("Filename"));
                         if(!StringUtils.isNullOrEmpty(elem.getChildText("Size"))){
                             objectFile.setSize(Long.parseLong(elem.getChildText("Size")));
@@ -4164,6 +4170,170 @@ public final class ResponseParsers {
                             ossUserMeta.setUserMeta(userMetaList);
                             objectFile.setOssUserMeta(ossUserMeta);
                         }
+
+                        if (elem.getChild("MediaType") != null) {
+                            objectFile.setMediaType(elem.getChildText("MediaType"));
+                        }
+                        if (elem.getChild("ContentType") != null) {
+                            objectFile.setContentType(elem.getChildText("ContentType"));
+                        }
+
+                        objectFile.setServerSideEncryption(elem.getChildText("ServerSideEncryption"));
+                        objectFile.setServerSideEncryptionCustomerAlgorithm(elem.getChildText("ServerSideEncryptionCustomerAlgorithm"));
+                        objectFile.setProduceTime(elem.getChildText("ProduceTime"));
+                        objectFile.setMediaType(elem.getChildText("MediaType"));
+                        objectFile.setContentType(elem.getChildText("ContentType"));
+                        objectFile.setLatLong(elem.getChildText("LatLong"));
+                        objectFile.setTitle(elem.getChildText("Title"));
+                        objectFile.setOssExpiration(elem.getChildText("OSSExpiration"));
+                        objectFile.setAccessControlAllowOrigin(elem.getChildText("AccessControlAllowOrigin"));
+                        objectFile.setAccessControlRequestMethod(elem.getChildText("AccessControlRequestMethod"));
+                        objectFile.setServerSideDataEncryption(elem.getChildText("ServerSideDataEncryption"));
+                        objectFile.setServerSideEncryptionKeyId(elem.getChildText("ServerSideEncryptionKeyId"));
+                        objectFile.setCacheControl(elem.getChildText("CacheControl"));
+                        objectFile.setContentDisposition(elem.getChildText("ContentDisposition"));
+                        objectFile.setContentEncoding(elem.getChildText("ContentEncoding"));
+                        objectFile.setContentLanguage(elem.getChildText("ContentLanguage"));
+
+                        if (elem.getChild("ImageHeight") != null) {
+                            objectFile.setImageHeight(Long.parseLong(elem.getChildText("ImageHeight")));
+                        }
+                        if (elem.getChild("ImageWidth") != null) {
+                            objectFile.setImageWidth(Long.parseLong(elem.getChildText("ImageWidth")));
+                        }
+                        if (elem.getChild("VideoHeight") != null) {
+                            objectFile.setVideoHeight(Long.parseLong(elem.getChildText("VideoHeight")));
+                        }
+                        if (elem.getChild("VideoWidth") != null) {
+                            objectFile.setVideoWidth(Long.parseLong(elem.getChildText("VideoWidth")));
+                        }
+
+                        Element videoStreamElem = elem.getChild("VideoStreams");
+                        if(videoStreamElem != null){
+                            List<Element> videoElem = videoStreamElem.getChildren();
+                            List<VideoStream> videoStreamList = new ArrayList<VideoStream>();
+                            for(Element ele : videoElem){
+                                VideoStream videoStream = new VideoStream();
+                                videoStream.setCodecName(ele.getChildText("CodecName"));
+                                videoStream.setLanguage(ele.getChildText("Language"));
+                                if (ele.getChild("Bitrate") != null) {
+                                    videoStream.setBitrate(Long.parseLong(ele.getChildText("Bitrate")));
+                                }
+                                videoStream.setFrameRate(ele.getChildText("FrameRate"));
+                                if (ele.getChild("StartTime") != null) {
+                                    videoStream.setStartTime(Double.parseDouble(ele.getChildText("StartTime")));
+                                }
+                                if (ele.getChild("Duration") != null) {
+                                    videoStream.setDuration(Double.parseDouble(ele.getChildText("Duration")));
+                                }
+                                if (ele.getChild("FrameCount") != null) {
+                                    videoStream.setFrameCount(Long.parseLong(ele.getChildText("FrameCount")));
+                                }
+                                if (ele.getChild("BitDepth") != null) {
+                                    videoStream.setBitDepth(Long.parseLong(ele.getChildText("BitDepth")));
+                                }
+                                videoStream.setPixelFormat(ele.getChildText("PixelFormat"));
+                                videoStream.setColorSpace(ele.getChildText("ColorSpace"));
+                                if (ele.getChild("Height") != null) {
+                                    videoStream.setHeight(Long.parseLong(ele.getChildText("Height")));
+                                }
+                                if (ele.getChild("Width") != null) {
+                                    videoStream.setWidth(Long.parseLong(ele.getChildText("Width")));
+                                }
+
+                                videoStreamList.add(videoStream);
+                            }
+
+                            objectFile.setVideoStreams(videoStreamList);
+                        }
+
+                        Element audioStreamElem = elem.getChild("AudioStreams");
+                        if(audioStreamElem != null) {
+                            List<Element> audioElem = audioStreamElem.getChildren();
+                            List<AudioStream> audioStreamList = new ArrayList<AudioStream>();
+                            for(Element ele : audioElem){
+                                AudioStream audioStream = new AudioStream();
+                                audioStream.setCodecName(ele.getChildText("CodecName"));
+                                if (ele.getChild("Bitrate") != null) {
+                                    audioStream.setBitrate(Long.parseLong(ele.getChildText("Bitrate")));
+                                }
+                                if (ele.getChild("SampleRate") != null) {
+                                    audioStream.setSampleRate(Long.parseLong(ele.getChildText("SampleRate")));
+                                }
+                                if (ele.getChild("StartTime") != null) {
+                                    audioStream.setStartTime(Double.parseDouble(ele.getChildText("StartTime")));
+                                }
+
+                                if (ele.getChild("Duration") != null) {
+                                    audioStream.setDuration(Double.parseDouble(ele.getChildText("Duration")));
+                                }
+
+                                if (ele.getChild("Channels") != null) {
+                                    audioStream.setChannels(Long.parseLong(ele.getChildText("Channels")));
+                                }
+
+                                audioStream.setLanguage(ele.getChildText("Language"));
+
+                                audioStreamList.add(audioStream);
+                            }
+                            objectFile.setAudioStreams(audioStreamList);
+                        }
+
+                        Element subtitleElem = elem.getChild("Subtitles");
+                        if (subtitleElem != null) {
+                            List<Element> subtitleElemList = subtitleElem.getChildren();
+                            List<Subtitle> subtitleList = new ArrayList<Subtitle>();
+                            for (Element ele : subtitleElemList) {
+                                Subtitle subtitle = new Subtitle();
+                                subtitle.setCodecName(ele.getChildText("CodecName"));
+                                subtitle.setLanguage(ele.getChildText("Language"));
+
+                                if (ele.getChild("StartTime") != null) {
+                                    subtitle.setStartTime(Double.parseDouble(ele.getChildText("StartTime")));
+                                }
+
+                                if (ele.getChild("Duration") != null) {
+                                    subtitle.setDuration(Double.parseDouble(ele.getChildText("Duration")));
+                                }
+
+                                subtitleList.add(subtitle);
+                            }
+                            objectFile.setSubtitles(subtitleList);
+                        }
+
+                        if (elem.getChild("Bitrate") != null) {
+                            objectFile.setBitrate(Long.parseLong(elem.getChildText("Bitrate")));
+                        }
+
+                        objectFile.setArtist(elem.getChildText("Artist"));
+                        objectFile.setAlbumArtist(elem.getChildText("AlbumArtist"));
+                        objectFile.setComposer(elem.getChildText("Composer"));
+                        objectFile.setPerformer(elem.getChildText("Performer"));
+                        objectFile.setAlbum(elem.getChildText("Album"));
+
+                        if (elem.getChild("Duration") != null) {
+                            objectFile.setDuration(Double.parseDouble(elem.getChildText("Duration")));
+                        }
+
+                        Element addressElem = elem.getChild("Addresses");
+                        if (addressElem != null) {
+                            List<Element> addressElemList = addressElem.getChildren();
+                            List<MetaQueryAddress> addressList = new ArrayList<MetaQueryAddress>();
+                            for (Element ele : addressElemList) {
+                                MetaQueryAddress address = new MetaQueryAddress();
+                                address.setAddressLine(ele.getChildText("AddressLine"));
+                                address.setCity(ele.getChildText("City"));
+                                address.setCountry(ele.getChildText("Country"));
+                                address.setDistrict(ele.getChildText("District"));
+                                address.setLanguage(ele.getChildText("Language"));
+                                address.setProvince(ele.getChildText("Province"));
+                                address.setTownship(ele.getChildText("Township"));
+
+                                addressList.add(address);
+                            }
+                            objectFile.setAddresses(addressList);
+                        }
+
                         fileList.add(objectFile);
                     }
                     objectFiles.setFile(fileList);

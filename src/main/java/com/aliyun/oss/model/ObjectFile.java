@@ -1,6 +1,9 @@
 package com.aliyun.oss.model;
 
+import java.util.List;
+
 public class ObjectFile {
+    private String uri;
     private String filename;
     private long size;
     private String fileModifiedTime;
@@ -14,6 +17,39 @@ public class ObjectFile {
     private int ossTaggingCount;
     private OSSTagging ossTagging;
     private OSSUserMeta ossUserMeta;
+    private String serverSideEncryption;
+    private String serverSideEncryptionCustomerAlgorithm;
+    private String produceTime;
+    private String contentType;
+    private String mediaType;
+    private String latLong;
+    private String title;
+    private String ossExpiration;
+    private String accessControlAllowOrigin;
+    private String accessControlRequestMethod;
+    private String serverSideDataEncryption;
+    private String serverSideEncryptionKeyId;
+    private String cacheControl;
+    private String contentDisposition;
+    private String contentEncoding;
+    private String contentLanguage;
+    private long imageHeight;
+    private long imageWidth;
+    private long videoHeight;
+    private long videoWidth;
+    private List<VideoStream> videoStreams;
+    private List<AudioStream> audioStreams;
+    private List<Subtitle> subtitles;
+    private long bitrate;
+    private String artist;
+    private String albumArtist;
+    private String composer;
+    private String performer;
+    private String album;
+    private double duration;
+    private List<MetaQueryAddress> addresses;
+
+
 
     public String getFilename() {
         return filename;
@@ -117,5 +153,262 @@ public class ObjectFile {
 
     public void setOssUserMeta(OSSUserMeta ossUserMeta) {
         this.ossUserMeta = ossUserMeta;
+    }
+
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
+    public String getServerSideEncryption() {
+        return serverSideEncryption;
+    }
+
+    public void setServerSideEncryption(String serverSideEncryption) {
+        this.serverSideEncryption = serverSideEncryption;
+    }
+
+    public String getServerSideEncryptionCustomerAlgorithm() {
+        return serverSideEncryptionCustomerAlgorithm;
+    }
+
+    public void setServerSideEncryptionCustomerAlgorithm(String serverSideEncryptionCustomerAlgorithm) {
+        this.serverSideEncryptionCustomerAlgorithm = serverSideEncryptionCustomerAlgorithm;
+    }
+
+    public String getProduceTime() {
+        return produceTime;
+    }
+
+    public void setProduceTime(String produceTime) {
+        this.produceTime = produceTime;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public String getMediaType() {
+        return mediaType;
+    }
+
+    public void setMediaType(String mediaType) {
+        this.mediaType = mediaType;
+    }
+
+    public String getLatLong() {
+        return latLong;
+    }
+
+    public void setLatLong(String latLong) {
+        this.latLong = latLong;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getOssExpiration() {
+        return ossExpiration;
+    }
+
+    public void setOssExpiration(String ossExpiration) {
+        this.ossExpiration = ossExpiration;
+    }
+
+    public String getAccessControlAllowOrigin() {
+        return accessControlAllowOrigin;
+    }
+
+    public void setAccessControlAllowOrigin(String accessControlAllowOrigin) {
+        this.accessControlAllowOrigin = accessControlAllowOrigin;
+    }
+
+    public String getAccessControlRequestMethod() {
+        return accessControlRequestMethod;
+    }
+
+    public void setAccessControlRequestMethod(String accessControlRequestMethod) {
+        this.accessControlRequestMethod = accessControlRequestMethod;
+    }
+
+    public String getServerSideDataEncryption() {
+        return serverSideDataEncryption;
+    }
+
+    public void setServerSideDataEncryption(String serverSideDataEncryption) {
+        this.serverSideDataEncryption = serverSideDataEncryption;
+    }
+
+    public String getServerSideEncryptionKeyId() {
+        return serverSideEncryptionKeyId;
+    }
+
+    public void setServerSideEncryptionKeyId(String serverSideEncryptionKeyId) {
+        this.serverSideEncryptionKeyId = serverSideEncryptionKeyId;
+    }
+
+    public String getCacheControl() {
+        return cacheControl;
+    }
+
+    public void setCacheControl(String cacheControl) {
+        this.cacheControl = cacheControl;
+    }
+
+    public String getContentDisposition() {
+        return contentDisposition;
+    }
+
+    public void setContentDisposition(String contentDisposition) {
+        this.contentDisposition = contentDisposition;
+    }
+
+    public String getContentEncoding() {
+        return contentEncoding;
+    }
+
+    public void setContentEncoding(String contentEncoding) {
+        this.contentEncoding = contentEncoding;
+    }
+
+    public String getContentLanguage() {
+        return contentLanguage;
+    }
+
+    public void setContentLanguage(String contentLanguage) {
+        this.contentLanguage = contentLanguage;
+    }
+
+    public long getImageHeight() {
+        return imageHeight;
+    }
+
+    public void setImageHeight(long imageHeight) {
+        this.imageHeight = imageHeight;
+    }
+
+    public long getImageWidth() {
+        return imageWidth;
+    }
+
+    public void setImageWidth(long imageWidth) {
+        this.imageWidth = imageWidth;
+    }
+
+    public long getVideoHeight() {
+        return videoHeight;
+    }
+
+    public void setVideoHeight(long videoHeight) {
+        this.videoHeight = videoHeight;
+    }
+
+    public long getVideoWidth() {
+        return videoWidth;
+    }
+
+    public void setVideoWidth(long videoWidth) {
+        this.videoWidth = videoWidth;
+    }
+
+    public List<VideoStream> getVideoStreams() {
+        return videoStreams;
+    }
+
+    public void setVideoStreams(List<VideoStream> videoStreams) {
+        this.videoStreams = videoStreams;
+    }
+
+    public List<AudioStream> getAudioStreams() {
+        return audioStreams;
+    }
+
+    public void setAudioStreams(List<AudioStream> audioStreams) {
+        this.audioStreams = audioStreams;
+    }
+
+    public List<Subtitle> getSubtitles() {
+        return subtitles;
+    }
+
+    public void setSubtitles(List<Subtitle> subtitles) {
+        this.subtitles = subtitles;
+    }
+
+    public long getBitrate() {
+        return bitrate;
+    }
+
+    public void setBitrate(long bitrate) {
+        this.bitrate = bitrate;
+    }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    public String getAlbumArtist() {
+        return albumArtist;
+    }
+
+    public void setAlbumArtist(String albumArtist) {
+        this.albumArtist = albumArtist;
+    }
+
+    public String getComposer() {
+        return composer;
+    }
+
+    public void setComposer(String composer) {
+        this.composer = composer;
+    }
+
+    public String getPerformer() {
+        return performer;
+    }
+
+    public void setPerformer(String performer) {
+        this.performer = performer;
+    }
+
+    public String getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(String album) {
+        this.album = album;
+    }
+
+    public double getDuration() {
+        return duration;
+    }
+
+    public void setDuration(double duration) {
+        this.duration = duration;
+    }
+
+    public List<MetaQueryAddress> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<MetaQueryAddress> addresses) {
+        this.addresses = addresses;
     }
 }
