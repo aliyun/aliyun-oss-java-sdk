@@ -6,6 +6,7 @@ public class GetMetaQueryStatusResult extends GenericResult {
     private String state;
     private String createTime;
     private String updateTime;
+    private MetaQueryMode metaQueryMode;
 
     public String getPhase() {
         return phase;
@@ -37,5 +38,13 @@ public class GetMetaQueryStatusResult extends GenericResult {
 
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public MetaQueryMode getMetaQueryMode() {
+        return metaQueryMode;
+    }
+
+    public void setMetaQueryMode(MetaQueryMode metaQueryMode) {
+        this.metaQueryMode = metaQueryMode;
     }
 }

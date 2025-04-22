@@ -1,5 +1,7 @@
 package com.aliyun.oss.model;
 
+import java.util.List;
+
 public class DoMetaQueryRequest extends GenericRequest {
     private String nextToken;
     private int maxResults;
@@ -7,6 +9,10 @@ public class DoMetaQueryRequest extends GenericRequest {
     private String sort;
     private SortOrder order;
     private Aggregations aggregations;
+    private String encodingType;
+    private MetaQueryMode metaQueryMode;
+    private List<String> mediaTypes;
+    private String simpleQuery;
 
     public DoMetaQueryRequest(String bucketName, int maxResults) {
         super(bucketName);
@@ -18,6 +24,14 @@ public class DoMetaQueryRequest extends GenericRequest {
         this.maxResults = maxResults;
         this.query = query;
         this.sort = sort;
+    }
+
+    public DoMetaQueryRequest(String bucketName, int maxResults, String query, String sort, MetaQueryMode metaQueryMode,
+                              List<String> mediaTypes, String simpleQuery) {
+        this(bucketName, maxResults, query, sort);
+        this.metaQueryMode = metaQueryMode;
+        this.mediaTypes = mediaTypes;
+        this.simpleQuery = simpleQuery;
     }
 
     public String getNextToken() {
@@ -66,5 +80,37 @@ public class DoMetaQueryRequest extends GenericRequest {
 
     public void setAggregations(Aggregations aggregations) {
         this.aggregations = aggregations;
+    }
+
+    public String getEncodingType() {
+        return encodingType;
+    }
+
+    public void setEncodingType(String encodingType) {
+        this.encodingType = encodingType;
+    }
+
+    public MetaQueryMode getMetaQueryMode() {
+        return metaQueryMode;
+    }
+
+    public void setMetaQueryMode(MetaQueryMode metaQueryMode) {
+        this.metaQueryMode = metaQueryMode;
+    }
+
+    public List<String> getMediaTypes() {
+        return mediaTypes;
+    }
+
+    public void setMediaTypes(List<String> mediaTypes) {
+        this.mediaTypes = mediaTypes;
+    }
+
+    public String getSimpleQuery() {
+        return simpleQuery;
+    }
+
+    public void setSimpleQuery(String simpleQuery) {
+        this.simpleQuery = simpleQuery;
     }
 }

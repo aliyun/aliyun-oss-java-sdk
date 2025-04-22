@@ -5051,6 +5051,279 @@ public class ResponseParsersTest {
     }
 
     @Test
+    public void testDoMetaQueryResponseParserWithSemantic() {
+        String respBody = ""
+                + "<MetaQuery>\n"
+                + "  <Files>\n"
+                + "    <File>\n"
+                + "      <URI>oss://examplebucket/test-object.jpg</URI>\n"
+                + "      <Filename>sampleobject.jpg</Filename>\n"
+                + "      <Size>1000</Size>\n"
+                + "      <ObjectACL>default</ObjectACL>\n"
+                + "      <FileModifiedTime>2021-06-29T14:50:14.011643661+08:00</FileModifiedTime>\n"
+                + "      <ServerSideEncryption>AES256</ServerSideEncryption>\n"
+                + "      <ServerSideEncryptionCustomerAlgorithm>SM4</ServerSideEncryptionCustomerAlgorithm>\n"
+                + "      <ETag>\"1D9C280A7C4F67F7EF873E28449****\"</ETag>\n"
+                + "      <OSSCRC64>559890638950338001</OSSCRC64>\n"
+                + "      <ProduceTime>2021-06-29T14:50:15.011643661+08:00</ProduceTime>\n"
+                + "      <ContentType>image/jpeg</ContentType>\n"
+                + "      <MediaType>image</MediaType>\n"
+                + "      <LatLong>30.134390,120.074997</LatLong>\n"
+                + "      <Title>test</Title>\n"
+                + "      <OSSExpiration>2024-12-01T12:00:00.000Z</OSSExpiration>\n"
+                + "      <AccessControlAllowOrigin>https://aliyundoc.com</AccessControlAllowOrigin>\n"
+                + "      <AccessControlRequestMethod>PUT</AccessControlRequestMethod>\n"
+                + "      <ServerSideDataEncryption>SM4</ServerSideDataEncryption>\n"
+                + "      <ServerSideEncryptionKeyId>9468da86-3509-4f8d-a61e-6eab1eac****</ServerSideEncryptionKeyId>\n"
+                + "      <CacheControl>no-cache</CacheControl>\n"
+                + "      <ContentDisposition>attachment; filename=test.jpg</ContentDisposition>\n"
+                + "      <ContentEncoding>UTF-8</ContentEncoding>\n"
+                + "      <ContentLanguage>zh-CN</ContentLanguage>\n"
+                + "      <ImageHeight>500</ImageHeight>\n"
+                + "      <ImageWidth>270</ImageWidth>\n"
+                + "      <VideoWidth>1080</VideoWidth>\n"
+                + "      <VideoHeight>1920</VideoHeight>\n"
+                + "      <VideoStreams>\n"
+                + "        <VideoStream>\n"
+                + "          <CodecName>h264</CodecName>\n"
+                + "          <Language>en</Language>\n"
+                + "          <Bitrate>5407765</Bitrate>\n"
+                + "          <FrameRate>25/1</FrameRate>\n"
+                + "          <StartTime>0.000000</StartTime>\n"
+                + "          <Duration>22.88</Duration>\n"
+                + "          <FrameCount>572</FrameCount>\n"
+                + "          <BitDepth>8</BitDepth>\n"
+                + "          <PixelFormat>yuv420p</PixelFormat>\n"
+                + "          <ColorSpace>bt709</ColorSpace>\n"
+                + "          <Height>720</Height>\n"
+                + "          <Width>1280</Width>\n"
+                + "        </VideoStream>\n"
+                + "        <VideoStream>\n"
+                + "          <CodecName>h265</CodecName>\n"
+                + "          <Language>zh</Language>\n"
+                + "          <Bitrate>540776</Bitrate>\n"
+                + "          <FrameRate>2/1</FrameRate>\n"
+                + "          <StartTime>0</StartTime>\n"
+                + "          <Duration>22.8</Duration>\n"
+                + "          <FrameCount>57</FrameCount>\n"
+                + "          <BitDepth>8</BitDepth>\n"
+                + "          <PixelFormat>yuv1420p</PixelFormat>\n"
+                + "          <ColorSpace>bt709</ColorSpace>\n"
+                + "          <Height>1080</Height>\n"
+                + "          <Width>1920</Width>\n"
+                + "        </VideoStream>\n"
+                + "      </VideoStreams>\n"
+                + "      <AudioStreams>\n"
+                + "        <AudioStream>\n"
+                + "          <CodecName>aac</CodecName>\n"
+                + "          <Bitrate>1048576</Bitrate>\n"
+                + "          <SampleRate>48000</SampleRate>\n"
+                + "          <StartTime>0.0235</StartTime>\n"
+                + "          <Duration>3.690667</Duration>\n"
+                + "          <Channels>2</Channels>\n"
+                + "          <Language>en</Language>\n"
+                + "        </AudioStream>\n"
+                + "      </AudioStreams>\n"
+                + "      <Subtitles>\n"
+                + "        <Subtitle>\n"
+                + "          <CodecName>mov_text</CodecName>\n"
+                + "          <Language>en</Language>\n"
+                + "          <StartTime>0</StartTime>\n"
+                + "          <Duration>71.378</Duration>\n"
+                + "        </Subtitle>\n"
+                + "        <Subtitle>\n"
+                + "          <CodecName>mov_text</CodecName>\n"
+                + "          <Language>en</Language>\n"
+                + "          <StartTime>72</StartTime>\n"
+                + "          <Duration>71.378</Duration>\n"
+                + "        </Subtitle>\n"
+                + "      </Subtitles>\n"
+                + "      <Bitrate>5407765</Bitrate>\n"
+                + "      <Artist>Jane</Artist>\n"
+                + "      <AlbumArtist>Jenny</AlbumArtist>\n"
+                + "      <Composer>Jane</Composer>\n"
+                + "      <Performer>Jane</Performer>\n"
+                + "      <Album>FirstAlbum</Album>\n"
+                + "      <Duration>71.378</Duration>\n"
+                + "      <Addresses>\n"
+                + "        <Address>\n"
+                + "          <AddressLine>中国浙江省杭州市余杭区文一西路969号</AddressLine>\n"
+                + "          <City>杭州市</City>\n"
+                + "          <Country>中国</Country>\n"
+                + "          <District>余杭区</District>\n"
+                + "          <Language>zh-Hans</Language>\n"
+                + "          <Province>浙江省</Province>\n"
+                + "          <Township>文一西路</Township>\n"
+                + "        </Address>\n"
+                + "        <Address>\n"
+                + "          <AddressLine>中国浙江省杭州市余杭区文一西路970号</AddressLine>\n"
+                + "          <City>杭州市</City>\n"
+                + "          <Country>中国</Country>\n"
+                + "          <District>余杭区</District>\n"
+                + "          <Language>zh-Hans</Language>\n"
+                + "          <Province>浙江省</Province>\n"
+                + "          <Township>文一西路</Township>\n"
+                + "        </Address>\n"
+                + "      </Addresses>\n"
+                + "      <OSSObjectType>Normal</OSSObjectType>\n"
+                + "      <OSSStorageClass>Standard</OSSStorageClass>\n"
+                + "      <OSSTaggingCount>2</OSSTaggingCount>\n"
+                + "      <OSSTagging>\n"
+                + "        <Tagging>\n"
+                + "          <Key>key</Key>\n"
+                + "          <Value>val</Value>\n"
+                + "        </Tagging>\n"
+                + "        <Tagging>\n"
+                + "          <Key>key2</Key>\n"
+                + "          <Value>val2</Value>\n"
+                + "        </Tagging>\n"
+                + "      </OSSTagging>\n"
+                + "      <OSSUserMeta>\n"
+                + "        <UserMeta>\n"
+                + "          <Key>key</Key>\n"
+                + "          <Value>val</Value>\n"
+                + "        </UserMeta>\n"
+                + "      </OSSUserMeta>\n"
+                + "    </File>\n"
+                + "  </Files>\n"
+                + "</MetaQuery>";
+
+        InputStream instream = null;
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        DoMetaQueryResult result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.DoMetaQueryResponseParser parser = new ResponseParsers.DoMetaQueryResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+
+
+        Assert.assertEquals("oss://examplebucket/test-object.jpg", result.getFiles().getFile().get(0).getUri());
+        Assert.assertEquals("sampleobject.jpg", result.getFiles().getFile().get(0).getFilename());
+        Assert.assertEquals(1000L, result.getFiles().getFile().get(0).getSize());
+        Assert.assertEquals("default", result.getFiles().getFile().get(0).getObjectACL());
+        Assert.assertEquals("2021-06-29T14:50:14.011643661+08:00", result.getFiles().getFile().get(0).getFileModifiedTime());
+        Assert.assertEquals("AES256", result.getFiles().getFile().get(0).getServerSideEncryption());
+        Assert.assertEquals("SM4", result.getFiles().getFile().get(0).getServerSideEncryptionCustomerAlgorithm());
+        Assert.assertEquals("\"1D9C280A7C4F67F7EF873E28449****\"", result.getFiles().getFile().get(0).getETag());
+        Assert.assertEquals("559890638950338001", result.getFiles().getFile().get(0).getOssCRC64());
+        Assert.assertEquals("2021-06-29T14:50:15.011643661+08:00", result.getFiles().getFile().get(0).getProduceTime());
+        Assert.assertEquals("image/jpeg", result.getFiles().getFile().get(0).getContentType());
+        Assert.assertEquals("image", result.getFiles().getFile().get(0).getMediaType());
+        Assert.assertEquals("30.134390,120.074997", result.getFiles().getFile().get(0).getLatLong());
+        Assert.assertEquals("test", result.getFiles().getFile().get(0).getTitle());
+        Assert.assertEquals("2024-12-01T12:00:00.000Z", result.getFiles().getFile().get(0).getOssExpiration());
+        Assert.assertEquals("https://aliyundoc.com", result.getFiles().getFile().get(0).getAccessControlAllowOrigin());
+        Assert.assertEquals("PUT", result.getFiles().getFile().get(0).getAccessControlRequestMethod());
+        Assert.assertEquals("SM4", result.getFiles().getFile().get(0).getServerSideDataEncryption());
+        Assert.assertEquals("9468da86-3509-4f8d-a61e-6eab1eac****", result.getFiles().getFile().get(0).getServerSideEncryptionKeyId());
+        Assert.assertEquals("no-cache", result.getFiles().getFile().get(0).getCacheControl());
+        Assert.assertEquals("attachment; filename=test.jpg", result.getFiles().getFile().get(0).getContentDisposition());
+        Assert.assertEquals("UTF-8", result.getFiles().getFile().get(0).getContentEncoding());
+        Assert.assertEquals("zh-CN", result.getFiles().getFile().get(0).getContentLanguage());
+        Assert.assertEquals(500, result.getFiles().getFile().get(0).getImageHeight());
+        Assert.assertEquals(270, result.getFiles().getFile().get(0).getImageWidth());
+        Assert.assertEquals(1080, result.getFiles().getFile().get(0).getVideoWidth());
+        Assert.assertEquals(1920, result.getFiles().getFile().get(0).getVideoHeight());
+
+        List<VideoStream> videoStreams = result.getFiles().getFile().get(0).getVideoStreams();
+        Assert.assertEquals("h264", videoStreams.get(0).getCodecName());
+        Assert.assertEquals("en", videoStreams.get(0).getLanguage());
+        Assert.assertEquals(5407765L, videoStreams.get(0).getBitrate());
+        Assert.assertEquals("25/1", videoStreams.get(0).getFrameRate());
+        Assert.assertEquals(0.000000, videoStreams.get(0).getStartTime(), 0.0);
+        Assert.assertEquals(22.88, videoStreams.get(0).getDuration(), 0.01);
+        Assert.assertEquals(572, videoStreams.get(0).getFrameCount());
+        Assert.assertEquals(8, videoStreams.get(0).getBitDepth());
+        Assert.assertEquals("yuv420p", videoStreams.get(0).getPixelFormat());
+        Assert.assertEquals("bt709", videoStreams.get(0).getColorSpace());
+        Assert.assertEquals(720, videoStreams.get(0).getHeight());
+        Assert.assertEquals(1280, videoStreams.get(0).getWidth());
+
+        Assert.assertEquals("h265", videoStreams.get(1).getCodecName());
+        Assert.assertEquals("zh", videoStreams.get(1).getLanguage());
+        Assert.assertEquals(540776L, videoStreams.get(1).getBitrate());
+        Assert.assertEquals("2/1", videoStreams.get(1).getFrameRate());
+        Assert.assertEquals(0.0, videoStreams.get(1).getStartTime(), 0.0);
+        Assert.assertEquals(22.8, videoStreams.get(1).getDuration(), 0.01);
+        Assert.assertEquals(57, videoStreams.get(1).getFrameCount());
+        Assert.assertEquals(8, videoStreams.get(1).getBitDepth());
+        Assert.assertEquals("yuv1420p", videoStreams.get(1).getPixelFormat());
+        Assert.assertEquals("bt709", videoStreams.get(1).getColorSpace());
+        Assert.assertEquals(1080, videoStreams.get(1).getHeight());
+        Assert.assertEquals(1920, videoStreams.get(1).getWidth());
+
+        List<AudioStream> audioStreams = result.getFiles().getFile().get(0).getAudioStreams();
+        Assert.assertEquals("aac", audioStreams.get(0).getCodecName());
+        Assert.assertEquals(1048576L, audioStreams.get(0).getBitrate());
+        Assert.assertEquals(48000L, audioStreams.get(0).getSampleRate());
+        Assert.assertEquals(0.0235, audioStreams.get(0).getStartTime(), 0.0);
+        Assert.assertEquals(3.690667, audioStreams.get(0).getDuration(), 0.000001);
+        Assert.assertEquals(2, audioStreams.get(0).getChannels());
+        Assert.assertEquals("en", audioStreams.get(0).getLanguage());
+
+        List<Subtitle> subtitles = result.getFiles().getFile().get(0).getSubtitles();
+        Assert.assertEquals("mov_text", subtitles.get(0).getCodecName());
+        Assert.assertEquals("en", subtitles.get(0).getLanguage());
+        Assert.assertEquals(0.0, subtitles.get(0).getStartTime(), 0.0);
+        Assert.assertEquals(71.378, subtitles.get(0).getDuration(), 0.001);
+
+        Assert.assertEquals("mov_text", subtitles.get(1).getCodecName());
+        Assert.assertEquals("en", subtitles.get(1).getLanguage());
+        Assert.assertEquals(72.0, subtitles.get(1).getStartTime(), 0.0);
+        Assert.assertEquals(71.378, subtitles.get(1).getDuration(), 0.001);
+
+        Assert.assertEquals(5407765L, result.getFiles().getFile().get(0).getBitrate());
+        Assert.assertEquals("Jane", result.getFiles().getFile().get(0).getArtist());
+        Assert.assertEquals("Jenny", result.getFiles().getFile().get(0).getAlbumArtist());
+        Assert.assertEquals("Jane", result.getFiles().getFile().get(0).getComposer());
+        Assert.assertEquals("Jane", result.getFiles().getFile().get(0).getPerformer());
+        Assert.assertEquals("FirstAlbum", result.getFiles().getFile().get(0).getAlbum());
+        Assert.assertEquals(71.378, result.getFiles().getFile().get(0).getDuration(), 0.001);
+
+        List<MetaQueryAddress> addresses = result.getFiles().getFile().get(0).getAddresses();
+        Assert.assertEquals("中国浙江省杭州市余杭区文一西路969号", addresses.get(0).getAddressLine());
+        Assert.assertEquals("杭州市", addresses.get(0).getCity());
+        Assert.assertEquals("中国", addresses.get(0).getCountry());
+        Assert.assertEquals("余杭区", addresses.get(0).getDistrict());
+        Assert.assertEquals("zh-Hans", addresses.get(0).getLanguage());
+        Assert.assertEquals("浙江省", addresses.get(0).getProvince());
+        Assert.assertEquals("文一西路", addresses.get(0).getTownship());
+
+        Assert.assertEquals("中国浙江省杭州市余杭区文一西路970号", addresses.get(1).getAddressLine());
+        Assert.assertEquals("杭州市", addresses.get(1).getCity());
+        Assert.assertEquals("中国", addresses.get(1).getCountry());
+        Assert.assertEquals("余杭区", addresses.get(1).getDistrict());
+        Assert.assertEquals("zh-Hans", addresses.get(1).getLanguage());
+        Assert.assertEquals("浙江省", addresses.get(1).getProvince());
+        Assert.assertEquals("文一西路", addresses.get(1).getTownship());
+
+        Assert.assertEquals("Normal", result.getFiles().getFile().get(0).getOssObjectType());
+        Assert.assertEquals("Standard", result.getFiles().getFile().get(0).getOssStorageClass());
+        Assert.assertEquals(2, result.getFiles().getFile().get(0).getOssTaggingCount());
+
+        List<Tagging> ossTaggings = result.getFiles().getFile().get(0).getOssTagging().getTagging();
+        Assert.assertEquals(2, ossTaggings.size());
+        Assert.assertEquals("key", ossTaggings.get(0).getKey());
+        Assert.assertEquals("val", ossTaggings.get(0).getValue());
+        Assert.assertEquals("key2", ossTaggings.get(1).getKey());
+        Assert.assertEquals("val2", ossTaggings.get(1).getValue());
+
+        List<UserMeta> userMetas = result.getFiles().getFile().get(0).getOssUserMeta().getUserMeta();
+        Assert.assertEquals(1, userMetas.size());
+        Assert.assertEquals("key", userMetas.get(0).getKey());
+        Assert.assertEquals("val", userMetas.get(0).getValue());
+    }
+
+    @Test
     public void testParseErrorResponse() {
         InputStream instream = null;
         String respBody;
