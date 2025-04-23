@@ -1,6 +1,6 @@
 package com.aliyun.oss.model;
 
-public class AudioStream {
+public class MetaQueryAudioStream {
     private String codecName;
     private long bitrate;
     private long sampleRate;
@@ -9,10 +9,10 @@ public class AudioStream {
     private long channels;
     private String language;
 
-    public AudioStream() {
+    public MetaQueryAudioStream() {
     }
 
-    public AudioStream(String codecName, long bitrate, long sampleRate, double startTime, double duration, long channels, String language) {
+    public MetaQueryAudioStream(String codecName, long bitrate, long sampleRate, double startTime, double duration, long channels, String language) {
         this.codecName = codecName;
         this.bitrate = bitrate;
         this.sampleRate = sampleRate;

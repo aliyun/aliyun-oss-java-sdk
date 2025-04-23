@@ -4211,94 +4211,94 @@ public final class ResponseParsers {
                         Element videoStreamElem = elem.getChild("VideoStreams");
                         if(videoStreamElem != null){
                             List<Element> videoElem = videoStreamElem.getChildren();
-                            List<VideoStream> videoStreamList = new ArrayList<VideoStream>();
+                            List<MetaQueryVideoStream> metaQueryVideoStreamList = new ArrayList<MetaQueryVideoStream>();
                             for(Element ele : videoElem){
-                                VideoStream videoStream = new VideoStream();
-                                videoStream.setCodecName(ele.getChildText("CodecName"));
-                                videoStream.setLanguage(ele.getChildText("Language"));
+                                MetaQueryVideoStream metaQueryVideoStream = new MetaQueryVideoStream();
+                                metaQueryVideoStream.setCodecName(ele.getChildText("CodecName"));
+                                metaQueryVideoStream.setLanguage(ele.getChildText("Language"));
                                 if (ele.getChild("Bitrate") != null) {
-                                    videoStream.setBitrate(Long.parseLong(ele.getChildText("Bitrate")));
+                                    metaQueryVideoStream.setBitrate(Long.parseLong(ele.getChildText("Bitrate")));
                                 }
-                                videoStream.setFrameRate(ele.getChildText("FrameRate"));
+                                metaQueryVideoStream.setFrameRate(ele.getChildText("FrameRate"));
                                 if (ele.getChild("StartTime") != null) {
-                                    videoStream.setStartTime(Double.parseDouble(ele.getChildText("StartTime")));
+                                    metaQueryVideoStream.setStartTime(Double.parseDouble(ele.getChildText("StartTime")));
                                 }
                                 if (ele.getChild("Duration") != null) {
-                                    videoStream.setDuration(Double.parseDouble(ele.getChildText("Duration")));
+                                    metaQueryVideoStream.setDuration(Double.parseDouble(ele.getChildText("Duration")));
                                 }
                                 if (ele.getChild("FrameCount") != null) {
-                                    videoStream.setFrameCount(Long.parseLong(ele.getChildText("FrameCount")));
+                                    metaQueryVideoStream.setFrameCount(Long.parseLong(ele.getChildText("FrameCount")));
                                 }
                                 if (ele.getChild("BitDepth") != null) {
-                                    videoStream.setBitDepth(Long.parseLong(ele.getChildText("BitDepth")));
+                                    metaQueryVideoStream.setBitDepth(Long.parseLong(ele.getChildText("BitDepth")));
                                 }
-                                videoStream.setPixelFormat(ele.getChildText("PixelFormat"));
-                                videoStream.setColorSpace(ele.getChildText("ColorSpace"));
+                                metaQueryVideoStream.setPixelFormat(ele.getChildText("PixelFormat"));
+                                metaQueryVideoStream.setColorSpace(ele.getChildText("ColorSpace"));
                                 if (ele.getChild("Height") != null) {
-                                    videoStream.setHeight(Long.parseLong(ele.getChildText("Height")));
+                                    metaQueryVideoStream.setHeight(Long.parseLong(ele.getChildText("Height")));
                                 }
                                 if (ele.getChild("Width") != null) {
-                                    videoStream.setWidth(Long.parseLong(ele.getChildText("Width")));
+                                    metaQueryVideoStream.setWidth(Long.parseLong(ele.getChildText("Width")));
                                 }
 
-                                videoStreamList.add(videoStream);
+                                metaQueryVideoStreamList.add(metaQueryVideoStream);
                             }
 
-                            objectFile.setVideoStreams(videoStreamList);
+                            objectFile.setMetaQueryVideoStreams(metaQueryVideoStreamList);
                         }
 
                         Element audioStreamElem = elem.getChild("AudioStreams");
                         if(audioStreamElem != null) {
                             List<Element> audioElem = audioStreamElem.getChildren();
-                            List<AudioStream> audioStreamList = new ArrayList<AudioStream>();
+                            List<MetaQueryAudioStream> metaQueryAudioStreamList = new ArrayList<MetaQueryAudioStream>();
                             for(Element ele : audioElem){
-                                AudioStream audioStream = new AudioStream();
-                                audioStream.setCodecName(ele.getChildText("CodecName"));
+                                MetaQueryAudioStream metaQueryAudioStream = new MetaQueryAudioStream();
+                                metaQueryAudioStream.setCodecName(ele.getChildText("CodecName"));
                                 if (ele.getChild("Bitrate") != null) {
-                                    audioStream.setBitrate(Long.parseLong(ele.getChildText("Bitrate")));
+                                    metaQueryAudioStream.setBitrate(Long.parseLong(ele.getChildText("Bitrate")));
                                 }
                                 if (ele.getChild("SampleRate") != null) {
-                                    audioStream.setSampleRate(Long.parseLong(ele.getChildText("SampleRate")));
+                                    metaQueryAudioStream.setSampleRate(Long.parseLong(ele.getChildText("SampleRate")));
                                 }
                                 if (ele.getChild("StartTime") != null) {
-                                    audioStream.setStartTime(Double.parseDouble(ele.getChildText("StartTime")));
+                                    metaQueryAudioStream.setStartTime(Double.parseDouble(ele.getChildText("StartTime")));
                                 }
 
                                 if (ele.getChild("Duration") != null) {
-                                    audioStream.setDuration(Double.parseDouble(ele.getChildText("Duration")));
+                                    metaQueryAudioStream.setDuration(Double.parseDouble(ele.getChildText("Duration")));
                                 }
 
                                 if (ele.getChild("Channels") != null) {
-                                    audioStream.setChannels(Long.parseLong(ele.getChildText("Channels")));
+                                    metaQueryAudioStream.setChannels(Long.parseLong(ele.getChildText("Channels")));
                                 }
 
-                                audioStream.setLanguage(ele.getChildText("Language"));
+                                metaQueryAudioStream.setLanguage(ele.getChildText("Language"));
 
-                                audioStreamList.add(audioStream);
+                                metaQueryAudioStreamList.add(metaQueryAudioStream);
                             }
-                            objectFile.setAudioStreams(audioStreamList);
+                            objectFile.setMetaQueryAudioStreams(metaQueryAudioStreamList);
                         }
 
                         Element subtitleElem = elem.getChild("Subtitles");
                         if (subtitleElem != null) {
                             List<Element> subtitleElemList = subtitleElem.getChildren();
-                            List<Subtitle> subtitleList = new ArrayList<Subtitle>();
+                            List<MetaQuerySubtitle> metaQuerySubtitleList = new ArrayList<MetaQuerySubtitle>();
                             for (Element ele : subtitleElemList) {
-                                Subtitle subtitle = new Subtitle();
-                                subtitle.setCodecName(ele.getChildText("CodecName"));
-                                subtitle.setLanguage(ele.getChildText("Language"));
+                                MetaQuerySubtitle metaQuerySubtitle = new MetaQuerySubtitle();
+                                metaQuerySubtitle.setCodecName(ele.getChildText("CodecName"));
+                                metaQuerySubtitle.setLanguage(ele.getChildText("Language"));
 
                                 if (ele.getChild("StartTime") != null) {
-                                    subtitle.setStartTime(Double.parseDouble(ele.getChildText("StartTime")));
+                                    metaQuerySubtitle.setStartTime(Double.parseDouble(ele.getChildText("StartTime")));
                                 }
 
                                 if (ele.getChild("Duration") != null) {
-                                    subtitle.setDuration(Double.parseDouble(ele.getChildText("Duration")));
+                                    metaQuerySubtitle.setDuration(Double.parseDouble(ele.getChildText("Duration")));
                                 }
 
-                                subtitleList.add(subtitle);
+                                metaQuerySubtitleList.add(metaQuerySubtitle);
                             }
-                            objectFile.setSubtitles(subtitleList);
+                            objectFile.setMetaQuerySubtitles(metaQuerySubtitleList);
                         }
 
                         if (elem.getChild("Bitrate") != null) {

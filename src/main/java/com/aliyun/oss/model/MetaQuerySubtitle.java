@@ -1,14 +1,14 @@
 package com.aliyun.oss.model;
 
-public class Subtitle {
+public class MetaQuerySubtitle {
     private String codecName;
     private String language;
     private double startTime;
     private double duration;
 
-    public Subtitle() {}
+    public MetaQuerySubtitle() {}
 
-    public Subtitle(String codecName, String language, double startTime, double duration) {
+    public MetaQuerySubtitle(String codecName, String language, double startTime, double duration) {
         this.codecName = codecName;
         this.language = language;
         this.startTime = startTime;
