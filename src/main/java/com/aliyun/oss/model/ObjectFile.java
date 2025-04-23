@@ -37,9 +37,9 @@ public class ObjectFile {
     private long imageWidth;
     private long videoHeight;
     private long videoWidth;
-    private List<VideoStream> videoStreams;
-    private List<AudioStream> audioStreams;
-    private List<Subtitle> subtitles;
+    private List<MetaQueryVideoStream> metaQueryVideoStreams;
+    private List<MetaQueryAudioStream> metaQueryAudioStreams;
+    private List<MetaQuerySubtitle> metaQuerySubtitles;
     private long bitrate;
     private String artist;
     private String albumArtist;
@@ -324,28 +324,28 @@ public class ObjectFile {
         this.videoWidth = videoWidth;
     }
 
-    public List<VideoStream> getVideoStreams() {
-        return videoStreams;
+    public List<MetaQueryVideoStream> getMetaQueryVideoStreams() {
+        return metaQueryVideoStreams;
     }
 
-    public void setVideoStreams(List<VideoStream> videoStreams) {
-        this.videoStreams = videoStreams;
+    public void setMetaQueryVideoStreams(List<MetaQueryVideoStream> metaQueryVideoStreams) {
+        this.metaQueryVideoStreams = metaQueryVideoStreams;
     }
 
-    public List<AudioStream> getAudioStreams() {
-        return audioStreams;
+    public List<MetaQueryAudioStream> getMetaQueryAudioStreams() {
+        return metaQueryAudioStreams;
     }
 
-    public void setAudioStreams(List<AudioStream> audioStreams) {
-        this.audioStreams = audioStreams;
+    public void setMetaQueryAudioStreams(List<MetaQueryAudioStream> metaQueryAudioStreams) {
+        this.metaQueryAudioStreams = metaQueryAudioStreams;
     }
 
-    public List<Subtitle> getSubtitles() {
-        return subtitles;
+    public List<MetaQuerySubtitle> getMetaQuerySubtitles() {
+        return metaQuerySubtitles;
     }
 
-    public void setSubtitles(List<Subtitle> subtitles) {
-        this.subtitles = subtitles;
+    public void setMetaQuerySubtitles(List<MetaQuerySubtitle> metaQuerySubtitles) {
+        this.metaQuerySubtitles = metaQuerySubtitles;
     }
 
     public long getBitrate() {

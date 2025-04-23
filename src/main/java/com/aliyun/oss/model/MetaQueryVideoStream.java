@@ -1,6 +1,6 @@
 package com.aliyun.oss.model;
 
-public class VideoStream {
+public class MetaQueryVideoStream {
     private String codecName;
     private String language;
     private long bitrate;
@@ -15,9 +15,9 @@ public class VideoStream {
     private long width;
 
 
-    public VideoStream() {}
+    public MetaQueryVideoStream() {}
 
-    public VideoStream(String codecName, String language, long bitrate, String frameRate, double startTime, double duration, long frameCount, long bitDepth, String pixelFormat, String colorSpace, long height, long width) {
+    public MetaQueryVideoStream(String codecName, String language, long bitrate, String frameRate, double startTime, double duration, long frameCount, long bitDepth, String pixelFormat, String colorSpace, long height, long width) {
         this.codecName = codecName;
         this.language = language;
         this.bitrate = bitrate;
