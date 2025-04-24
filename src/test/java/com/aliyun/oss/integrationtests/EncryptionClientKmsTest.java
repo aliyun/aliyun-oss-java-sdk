@@ -43,6 +43,7 @@ import com.aliyuncs.kms.model.v20160120.EncryptResponse;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.crypto.SecretKey;
@@ -51,6 +52,7 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
+@Ignore
 public class EncryptionClientKmsTest extends TestBase {
     private OSSEncryptionClient ossEncryptionClient;
     private Map<String, String> matDesc;

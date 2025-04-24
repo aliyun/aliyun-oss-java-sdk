@@ -53,13 +53,13 @@ public class CreateBucketTest extends TestBase {
         try {
         	Bucket bucket = ossClient.createBucket(bucketName);
             String loc = ossClient.getBucketLocation(bucketName);
-            Assert.assertEquals(OSS_TEST_REGION, loc);
+            Assert.assertEquals("oss-" + OSS_TEST_REGION, loc);
             Assert.assertEquals(bucket.getRequestId().length(), REQUEST_ID_LEN);
             
             // Create bucket with the same name again.
             bucket = ossClient.createBucket(bucketName);
             loc = ossClient.getBucketLocation(bucketName);
-            Assert.assertEquals(OSS_TEST_REGION, loc);
+            Assert.assertEquals("oss-" + OSS_TEST_REGION, loc);
             Assert.assertEquals(bucket.getRequestId().length(), REQUEST_ID_LEN);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
@@ -107,7 +107,7 @@ public class CreateBucketTest extends TestBase {
         try {
             ossClient.createBucket(bucketName);
             String loc = ossClient.getBucketLocation(bucketName);
-            Assert.assertEquals(OSS_TEST_REGION, loc);
+            Assert.assertEquals("oss-" + OSS_TEST_REGION, loc);
             
             // Try to modify location of existing bucket
             CreateBucketRequest request = new CreateBucketRequest(bucketName);

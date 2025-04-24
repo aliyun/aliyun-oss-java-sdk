@@ -35,19 +35,17 @@ import java.io.ByteArrayInputStream;
 public class RestoreConfigurationTest extends TestBase {
     private OSSClient ossClient;
     private String bucketName;
-    private String endpoint;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
 
         bucketName = super.bucketName + "-cold";
-        endpoint = "http://oss-ap-southeast-2.aliyuncs.com";
 
         //create client
         ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);
         Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
-        ossClient = new OSSClient(endpoint, new DefaultCredentialProvider(credentials), conf);
+        ossClient = new OSSClient(TestConfig.OSS_TEST_ENDPOINT, new DefaultCredentialProvider(credentials), conf);
 
         ossClient.createBucket(bucketName);
         Thread.sleep(2000);

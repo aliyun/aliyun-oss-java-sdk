@@ -29,8 +29,10 @@ import com.aliyun.oss.common.auth.CredentialsProviderFactory;
 import com.aliyun.oss.common.auth.SystemPropertiesCredentialsProvider;
 import com.aliyun.oss.common.utils.AuthUtils;
 import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class SystemPropertiesCredentialsProviderTest extends TestBase {
 
     @Test

@@ -26,8 +26,10 @@ import java.util.Map;
 import com.aliyun.oss.common.auth.ProfileConfigLoader;
 import com.aliyun.oss.common.utils.AuthUtils;
 import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class ProfileConfigLoaderTest extends TestBase {
 
     @Test

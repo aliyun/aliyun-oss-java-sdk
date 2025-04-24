@@ -69,7 +69,7 @@ public class ListBucketsTest extends TestBase {
                     newlyBuckets.add(bucketName);
                     waitForCacheExpiration(5);
                     String loc = ossClient.getBucketLocation(bucketName);
-                    Assert.assertEquals(OSS_TEST_REGION, loc);
+                    Assert.assertEquals("oss-" + OSS_TEST_REGION, loc);
                 } catch (Exception e) {
                     Assert.fail(e.getMessage());
                 }
