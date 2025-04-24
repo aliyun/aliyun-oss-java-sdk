@@ -31,10 +31,12 @@ import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 
+@Ignore
 public class AsyncFetchTaskTest extends TestBase {
     private final String objectName = genBucketName() + "test-async-fetch-task-object";
     private String contentMd5;

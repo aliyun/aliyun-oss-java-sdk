@@ -216,13 +216,12 @@ public class BucketCnameTest extends TestBase {
 
     @Test
     public void testBucketCnameToken() {
-        final String endpoint = "oss-ap-southeast-2.aliyuncs.com";
         final String bucketName = genBucketName() + "-bucket-cname";
 
         //create client
         ClientConfiguration conf = new ClientBuilderConfiguration();
         Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
-        OSS client = new OSSClient(endpoint, new DefaultCredentialProvider(credentials), conf);
+        OSS client = new OSSClient(TestConfig.OSS_TEST_ENDPOINT, new DefaultCredentialProvider(credentials), conf);
 
         client.createBucket(bucketName);
         CreateBucketCnameTokenResult cresult;

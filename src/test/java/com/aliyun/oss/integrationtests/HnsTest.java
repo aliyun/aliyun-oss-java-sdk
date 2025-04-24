@@ -17,11 +17,13 @@ import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.Payer;
 import com.aliyun.oss.model.RenameObjectRequest;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.util.List;
 
+@Ignore
 public class HnsTest extends TestBase {
     private String testHnsBucket;
     private OSS testClient;

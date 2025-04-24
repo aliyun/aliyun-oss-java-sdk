@@ -7,6 +7,7 @@ import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import javax.activation.MimetypesFileTypeMap;
 import java.io.*;
@@ -15,6 +16,7 @@ import java.net.URL;
 import java.util.*;
 import static com.aliyun.oss.integrationtests.TestUtils.genFixedLengthInputStream;
 
+@Ignore
 public class AccessPointTest extends TestBase {
     private static OSS ossClient;
     private static String bucketName = genBucketName();

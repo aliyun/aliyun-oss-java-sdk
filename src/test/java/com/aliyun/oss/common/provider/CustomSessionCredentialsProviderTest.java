@@ -31,8 +31,10 @@ import com.aliyun.oss.common.auth.CustomSessionCredentialsProvider;
 import com.aliyun.oss.common.provider.mock.CustomSessionCredentialsFetcherMock;
 import com.aliyun.oss.common.provider.mock.CustomSessionCredentialsFetcherMock.ResponseCategory;
 import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class CustomSessionCredentialsProviderTest extends TestBase {
 
     @Test

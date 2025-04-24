@@ -47,18 +47,16 @@ public class ListObjectsV2Test extends TestBase {
 
     private OSSClient ossClient;
     private String bucketName;
-    private String endpoint;
 
     public void setUp() throws Exception {
         super.setUp();
 
         bucketName = super.bucketName + "-list-v2";
-        endpoint = "http://oss-ap-southeast-2.aliyuncs.com";
 
         // create client
         ClientConfiguration conf = new ClientConfiguration().setSupportCname(false);
         Credentials credentials = new DefaultCredentials(TestConfig.OSS_TEST_ACCESS_KEY_ID, TestConfig.OSS_TEST_ACCESS_KEY_SECRET);
-        ossClient = new OSSClient(endpoint, new DefaultCredentialProvider(credentials), conf);
+        ossClient = new OSSClient(TestConfig.OSS_TEST_ENDPOINT, new DefaultCredentialProvider(credentials), conf);
 
         ossClient.createBucket(bucketName);
         waitForCacheExpiration(2);

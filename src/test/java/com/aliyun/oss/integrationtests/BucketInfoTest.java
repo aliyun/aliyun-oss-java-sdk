@@ -45,7 +45,7 @@ public class BucketInfoTest extends TestBase {
             Assert.assertNotNull(info.getComment());
             Assert.assertNotNull(info.getDataRedundancyType());
             Assert.assertEquals(info.getBucket().getName(), bucketName);
-            Assert.assertEquals(info.getBucket().getLocation(), TestConfig.OSS_TEST_REGION);
+            Assert.assertEquals(info.getBucket().getLocation(), "oss-" + TestConfig.OSS_TEST_REGION);
             Assert.assertNotNull(info.getBucket().getCreationDate());
             Assert.assertTrue(info.getBucket().getExtranetEndpoint().length() > 0);
             Assert.assertTrue(info.getBucket().getIntranetEndpoint().length() > 0);
@@ -130,7 +130,7 @@ public class BucketInfoTest extends TestBase {
             Assert.assertNotNull(info.getComment());
             Assert.assertNotNull(info.getDataRedundancyType());
             Assert.assertEquals(info.getBucket().getName(), bucketName);
-            Assert.assertEquals(info.getBucket().getLocation(), TestConfig.OSS_TEST_REGION);
+            Assert.assertEquals(info.getBucket().getLocation(), "oss-" + TestConfig.OSS_TEST_REGION);
             Assert.assertNotNull(info.getBucket().getCreationDate());
             Assert.assertTrue(info.getBucket().getExtranetEndpoint().length() > 0);
             Assert.assertTrue(info.getBucket().getIntranetEndpoint().length() > 0);

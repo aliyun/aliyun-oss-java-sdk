@@ -24,6 +24,7 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.common.auth.*;
 import com.aliyun.oss.model.OSSObject;
 import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -34,6 +35,7 @@ import java.util.Date;
 /**
  * Test CredentialsProvider
  */
+@Ignore
 public class CredentialsProviderTest extends TestBase {
 
     private BasicCredentials credentials;

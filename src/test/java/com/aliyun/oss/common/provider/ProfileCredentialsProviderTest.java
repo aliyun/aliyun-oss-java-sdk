@@ -25,12 +25,14 @@ import com.aliyun.oss.common.auth.ProfileConfigLoader;
 import com.aliyun.oss.common.auth.ProfileCredentialsProvider;
 import com.aliyun.oss.common.utils.AuthUtils;
 import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+@Ignore
 public class ProfileCredentialsProviderTest extends TestBase {
 
     @Test

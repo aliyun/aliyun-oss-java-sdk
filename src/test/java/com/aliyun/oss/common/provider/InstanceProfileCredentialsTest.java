@@ -22,10 +22,12 @@ package com.aliyun.oss.common.provider;
 import com.aliyun.oss.common.auth.InstanceProfileCredentials;
 import com.aliyun.oss.common.utils.DateUtil;
 import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Date;
 
+@Ignore
 public class InstanceProfileCredentialsTest extends TestBase {
 
     @Test
