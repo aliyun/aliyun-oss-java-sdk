@@ -5850,6 +5850,125 @@ public class ResponseParsersTest {
         }
     }
 
+    @Test
+    public void testParseErrorResponseWithMap() {
+        InputStream instream = null;
+        String respBody;
+
+        respBody = "" +
+                "<Error>\n" +
+                "  <Code>RequestTimeTooSkewed</Code>\n" +
+                "  <Message>The difference between the request time and the current time is too large.</Message>\n" +
+                "  <RequestId>5CAC0CF8DE0170*****</RequestId>\n" +
+                "  <HostId>versioning-get.oss-cn-hangzhou.aliyunc*****</HostId>\n" +
+                "  <MaxAllowedSkewMilliseconds>900000</MaxAllowedSkewMilliseconds>\n" +
+                "  <RequestTime>2025-04-10T11:00:57.000Z</RequestTime>\n" +
+                "  <ServerTime>2025-04-10T10:00:57.000Z</ServerTime>\n" +
+                "  <EC>0002-00000504</EC>\n" +
+                "  <RecommendDoc>https://api.aliyun.com/troubleshoot?q=0002-00000504</RecommendDoc>\n" +
+                "</Error>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        OSSErrorResult result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.ErrorResponseParser parser = new ResponseParsers.ErrorResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+
+        Assert.assertEquals("RequestTimeTooSkewed", result.Code);
+        Assert.assertEquals("The difference between the request time and the current time is too large.", result.Message);
+        Assert.assertEquals("5CAC0CF8DE0170*****", result.RequestId);
+        Assert.assertEquals("versioning-get.oss-cn-hangzhou.aliyunc*****", result.HostId);
+        Assert.assertEquals("0002-00000504", result.EC);
+        Assert.assertEquals("2025-04-10T11:00:57.000Z", result.ErrorFields.get("RequestTime").toString());
+        Assert.assertEquals("2025-04-10T10:00:57.000Z", result.ErrorFields.get("ServerTime").toString());
+
+
+        respBody = "" +
+                "<Error>\n" +
+                "  <Code>RequestTimeTooSkewed</Code>\n" +
+                "  <Message>The difference between the request time and the current time is too large.</Message>\n" +
+                "  <RequestId>5CAC0CF8DE0170*****</RequestId>\n" +
+                "  <HostId>versioning-get.oss-cn-hangzhou.aliyunc*****</HostId>\n" +
+                "  <MaxAllowedSkewMilliseconds>900000</MaxAllowedSkewMilliseconds>\n" +
+                "  <Detail>\n" +
+                "       <RequestTime>2025-04-10T11:00:57.000Z</RequestTime>\n" +
+                "       <ServerTime>2025-04-10T10:00:57.000Z</ServerTime>\n" +
+                "  </Detail>\n" +
+                "  <EC>0002-00000504</EC>\n" +
+                "  <RecommendDoc>https://api.aliyun.com/troubleshoot?q=0002-00000504</RecommendDoc>\n" +
+                "</Error>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.ErrorResponseParser parser = new ResponseParsers.ErrorResponseParser();
+            result = parser.parse(response);
+        } catch (ResponseParseException e) {
+            Assert.fail("parse delete directory response body fail!");
+        }
+
+        Assert.assertEquals("RequestTimeTooSkewed", result.Code);
+        Assert.assertEquals("The difference between the request time and the current time is too large.", result.Message);
+        Assert.assertEquals("5CAC0CF8DE0170*****", result.RequestId);
+        Assert.assertEquals("versioning-get.oss-cn-hangzhou.aliyunc*****", result.HostId);
+        Assert.assertEquals("0002-00000504", result.EC);
+
+
+        Object value = result.ErrorFields.get("Detail");
+        if (value instanceof Map) {
+            Map<String, Object> nestedMap = (Map<String, Object>) value;
+            Assert.assertEquals("2025-04-10T11:00:57.000Z", nestedMap.get("RequestTime").toString());
+            Assert.assertEquals("2025-04-10T10:00:57.000Z", nestedMap.get("ServerTime").toString());
+        }
+
+
+        respBody = "" +
+                "<Error>\n" +
+                "  <Code></Code>\n" +
+                "  <Message></Message>\n" +
+                "  <RequestId></RequestId>\n" +
+                "  <HostId></HostId>\n" +
+                "  <ResourceType></ResourceType>\n" +
+                "  <Method></Method>\n" +
+                "  <Header></Header>\n" +
+                "  <RequestTime></RequestTime>\n" +
+                "  <ServerTime></ServerTime>\n" +
+                "</Error>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(instream);
+            ResponseParsers.ErrorResponseParser parser = new ResponseParsers.ErrorResponseParser();
+            result = parser.parse(response);
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.assertTrue(false);
+        }
+    }
+
 
     @Test
     public void testGetBucketCallbackPolicyParser() {

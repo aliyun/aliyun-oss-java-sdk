@@ -28,8 +28,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.List;
 
+import com.aliyun.oss.common.utils.DateUtil;
 import org.apache.http.HttpMessage;
 
 import com.aliyun.oss.ClientConfiguration;
@@ -165,6 +167,8 @@ public abstract class ServiceClient {
                 // finally block because if the request is successful,
                 // the response should be returned to the callers.
                 closeResponseSilently(response);
+
+                adjustTickOffset(sex);
 
                 if (!shouldRetry(sex, request, response, retries, retryStrategy)) {
                     throw sex;
@@ -340,6 +344,22 @@ public abstract class ServiceClient {
                 "Request cost %d seconds, endpoint %s, resourcePath %s, " + "method %s, Date '%s', statusCode %d, requestId %s.",
                 useTimesMs / 1000, request.getEndpoint(), request.getResourcePath(), request.getMethod(), request.getHeaders().get(HttpHeaders.DATE),
                 response.getStatusCode(), response.getRequestId());
+    }
+
+    private void adjustTickOffset(ServiceException exception) {
+        if (!this.config.isEnableAutoCorrectClockSkew()) {
+            return;
+        }
+        if ("RequestTimeTooSkewed".equals(exception.getErrorCode())) {
+            try {
+                if (exception.getErrorFields() != null) {
+                    Date serverTime = DateUtil.parseIso8601Date(exception.getErrorFields().get("ServerTime"));
+                    this.config.setTickOffset(serverTime.getTime());
+                }
+            } catch (Exception e) {
+                // ignore
+            }
+        }
     }
 
     protected abstract RetryStrategy getDefaultRetryStrategy();

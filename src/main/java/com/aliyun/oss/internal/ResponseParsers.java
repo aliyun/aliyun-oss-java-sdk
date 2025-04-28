@@ -199,12 +199,25 @@ public final class ResponseParsers {
                 ossErrorResult.Method = root.getChildText("Method");
                 ossErrorResult.Header = root.getChildText("Header");
                 ossErrorResult.EC = root.getChildText("EC");
+
+                ossErrorResult.ErrorFields = getErrorFields(root);
                 return ossErrorResult;
             } catch (JDOMParseException e) {
                 throw new ResponseParseException(e.getPartialDocument() + ": " + e.getMessage(), e);
             } catch (Exception e) {
                 throw new ResponseParseException(e.getMessage(), e);
             }
+        }
+
+        private static Map<String, String> getErrorFields(Element element) {
+            Map<String, String> map = new HashMap<String, String>();
+            List<Element> children = element.getChildren();
+            for (Element child : children) {
+                if (child.getChildren().isEmpty()) {
+                    map.put(child.getName(), child.getTextTrim());
+                }
+            }
+            return map;
         }
     }
 
