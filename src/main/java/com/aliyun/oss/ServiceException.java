@@ -19,6 +19,8 @@
 
 package com.aliyun.oss;
 
+import java.util.Map;
+
 /**
  * <p>
  * This is the base exception class to represent any expected or unexpected OSS
@@ -60,6 +62,8 @@ public class ServiceException extends RuntimeException {
     private String ec;
 
     private String rawResponseError;
+
+    private Map<String, String> errorFields;
 
     /**
      * Creates a default instance.
@@ -256,6 +260,14 @@ public class ServiceException extends RuntimeException {
             return "";
         }
         return String.format("\n[ResponseError]:\n%s", this.rawResponseError);
+    }
+
+    public Map<String, String> getErrorFields() {
+        return errorFields;
+    }
+
+    public void setErrorFields(Map<String, String> errorFields) {
+        this.errorFields = errorFields;
     }
 
     @Override
