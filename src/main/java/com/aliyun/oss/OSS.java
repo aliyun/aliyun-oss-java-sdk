@@ -5348,6 +5348,7 @@ public interface OSS {
     /**
      * Set bucketPublicAccessBlock to the OSS Server
      * @param putBucketPublicAccessBlockRequest
+     *          The {@link PutBucketPublicAccessBlockRequest} instance
      * @return A {@link VoidResult} instance wrapped void return and
      *         contains some basic response options, such as requestId.
      *
