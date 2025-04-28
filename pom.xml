@@ -53,18 +53,18 @@
             <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
             <version>1.67</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
+        </dependency-->
+        <!--dependency>
             <groupId>com.aliyun.kms</groupId>
             <artifactId>kms-transfer-client</artifactId>
             <version>0.1.0</version>
             <scope>test</scope>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>java-trace-api</artifactId>
