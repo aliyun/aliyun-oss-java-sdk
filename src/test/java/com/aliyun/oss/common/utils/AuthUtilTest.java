@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.file.Files;
 
 import static com.aliyun.oss.common.utils.AuthUtils.loadPrivateKeyFromFile;
 import static com.aliyun.oss.common.utils.AuthUtils.loadPublicKeyFromFile;
@@ -78,7 +79,7 @@ public class AuthUtilTest {
     public void testLoadNonRsaPrivateKeyFromFile() {
         File file = null;
         try {
-            file = File.createTempFile("test-private-key", ".pem");
+            file = Files.createTempFile("test-private-key", ".pem").toFile();
             file.deleteOnExit();
             String privateKeyContent = "-----BEGIN PRIVATE KEY-----\n" +
                     "abc\n" +
