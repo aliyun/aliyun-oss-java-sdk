@@ -71,6 +71,8 @@ public class OSSVersionSummary implements Serializable {
     /** The restore info status of the object  */
     private String restoreInfo;
 
+    /** The transition time of the object  */
+    private Date  transitionTime;
     
     /**
      * Gets the name of the OSS bucket in which this version is stored.
@@ -356,5 +358,24 @@ public class OSSVersionSummary implements Serializable {
      */
     public void setRestoreInfo(String restoreInfo) {
         this.restoreInfo = restoreInfo;
+    }
+
+    /**
+     * Gets the transition time.
+     *
+     * @return Object transition time.
+     */
+    public Date getTransitionTime() {
+        return transitionTime;
+    }
+
+    /**
+     * Sets the transition time of the object.
+     *
+     * @param transitionTime
+     *            object transition time
+     */
+    public void setTransitionTime(Date transitionTime) {
+        this.transitionTime = transitionTime;
     }
 }

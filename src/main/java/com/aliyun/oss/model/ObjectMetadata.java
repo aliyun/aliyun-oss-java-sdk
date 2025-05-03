@@ -466,5 +466,30 @@ public class ObjectMetadata {
             metadata.put(OSSHeaders.OSS_TAGGING, builder.toString());
         }
     }
-    
+
+    /**
+     * Sets the x-oss-transition-time header.
+     *
+     * @param transitionTime
+     *            transition time.
+     */
+    public void setTransitionTime(Date transitionTime) {
+        metadata.put(OSSHeaders.TRANSITION_TIME, DateUtil.formatRfc822Date(transitionTime));
+    }
+
+    /**
+     * Gets the value of x-oss-transition-time header, which means the transition
+     * time of the object.
+     *
+     * @return Object's transition time.
+     */
+    public Date getTransitionTime() throws ParseException {
+        String transitionTime = (String) metadata.get(OSSHeaders.TRANSITION_TIME);
+
+        if (transitionTime != null)
+            return DateUtil.parseRfc822Date((String) metadata.get(OSSHeaders.TRANSITION_TIME));
+
+        return null;
+
+    }
 }

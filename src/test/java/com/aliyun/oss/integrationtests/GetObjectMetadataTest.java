@@ -23,12 +23,16 @@ import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
+import com.aliyun.oss.common.utils.DateUtil;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectRequest;
+import com.aliyun.oss.model.StorageClass;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
+import java.text.ParseException;
+import java.util.Date;
 
 public class GetObjectMetadataTest extends TestBase {
 
@@ -82,5 +86,19 @@ public class GetObjectMetadataTest extends TestBase {
         } finally {
             client.shutdown();
         }
+    }
+
+    @Test
+    public void testGetObjectMetaWithTransitionTime() throws ParseException {
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        Date date = new Date();
+        objectMetadata.setTransitionTime(date);
+        Date date2 = objectMetadata.getTransitionTime();
+        Assert.assertEquals(date.toString(), date2.toString());
+
+        ObjectMetadata objectMetadata2 = new ObjectMetadata();
+        String dateStr = "Wed, 13 Nov 2024 00:18:12 GMT";
+        objectMetadata2.setHeader("x-oss-transition-time", "Wed, 13 Nov 2024 00:18:12 GMT");
+        Assert.assertEquals(DateUtil.parseRfc822Date(dateStr).toString(), objectMetadata2.getTransitionTime().toString());
     }
 }
