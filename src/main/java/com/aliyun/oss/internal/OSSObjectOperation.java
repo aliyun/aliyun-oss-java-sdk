@@ -1450,6 +1450,37 @@ public class OSSObjectOperation extends OSSOperation {
         }
     }
 
+    /**
+     * seal append object.
+     */
+    public VoidResult sealAppendObject(GenericRequest genericRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(genericRequest, "genericRequest");
+
+        String bucketName = genericRequest.getBucketName();
+        String key = genericRequest.getKey();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        assertParameterNotNull(key, "key");
+        ensureObjectKeyValid(key);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        populateRequestPayerHeader(headers, genericRequest.getRequestPayer());
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SEAL, null);
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(genericRequest))
+                .setMethod(HttpMethod.POST).setBucket(bucketName).setKey(key).setHeaders(headers).setParameters(params)
+                .setInputStream(new ByteArrayInputStream(new byte[0])).setInputSize(0)
+                .setOriginalRequest(genericRequest)
+                .build();
+
+        return doOperation(request, requestIdResponseParser, bucketName, key, true);
+    }
+
+
     private static void addHeaderIfNotNull(Map<String, String> headers, String header, String value) {
         if (value != null) {
             headers.put(header, value);

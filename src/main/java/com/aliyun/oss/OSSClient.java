@@ -2163,6 +2163,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public VoidResult sealAppendObject(String bucketName, String key) throws OSSException, ClientException {
+        return this.objectOperation.sealAppendObject(new GenericRequest(bucketName, key));
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();
