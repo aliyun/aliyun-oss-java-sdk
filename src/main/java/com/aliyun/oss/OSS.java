@@ -5685,4 +5685,22 @@ public interface OSS {
      */
     public ListAccessPointsResult listBucketAccessPoints(ListBucketAccessPointsRequest listBucketAccessPointsRequest) throws OSSException, ClientException;
 
+    /**
+     * Used to stop an Object of the type Appendable Object from further writing.
+     *
+     * @param bucketName
+     *            Bucket name.
+     * @param key
+     *            Object key.
+     *
+     * @return A {@link VoidResult} instance wrapped void return and
+     *         contains some basic response options, such as requestId.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     */
+    public VoidResult sealAppendObject(String bucketName, String key) throws OSSException, ClientException;
 }

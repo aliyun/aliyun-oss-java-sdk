@@ -40,5 +40,5 @@ public interface HttpHeaders {
     public static final String RANGE = "Range";
     public static final String LOCATION = "Location";
     public static final String CONNECTION = "Connection";
-
+    public static final String SEALED_TIME = "x-oss-sealed-time";
 }
