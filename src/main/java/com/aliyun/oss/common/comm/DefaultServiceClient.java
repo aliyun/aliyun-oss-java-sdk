@@ -248,7 +248,11 @@ public class DefaultServiceClient extends ServiceClient {
 
             // get trustManager using default certification from jdk
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            tmf.init((KeyStore) null);
+            if (config.getKeyStore() != null){
+                tmf.init(config.getKeyStore());
+            } else {
+                tmf.init((KeyStore) null);
+            }
             trustManagerList.addAll(Arrays.asList(tmf.getTrustManagers()));
 
             final List<X509TrustManager> finalTrustManagerList = new ArrayList<X509TrustManager>();
