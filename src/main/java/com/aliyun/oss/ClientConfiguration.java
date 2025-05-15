@@ -19,6 +19,7 @@
 
 package com.aliyun.oss;
 
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -128,6 +129,8 @@ public class ClientConfiguration {
     private boolean tracerEnabled = false;
 
     private boolean enableAutoCorrectClockSkew = false;
+
+    private KeyStore keyStore = null;
 
     public ClientConfiguration() {
         super();
@@ -1016,5 +1019,36 @@ public class ClientConfiguration {
      */
     public void setEnableAutoCorrectClockSkew(boolean enableAutoCorrectClockSkew) {
         this.enableAutoCorrectClockSkew = enableAutoCorrectClockSkew;
+    }
+
+    /**
+     * Gets the KeyStore currently configured for SSL/TLS operations.
+     * <p>
+     * This KeyStore typically contains trusted certificates (for server verification)
+     * or client certificates (for mutual authentication). The returned KeyStore is
+     * the same instance that was set via {@link #setKeyStore(KeyStore)}.
+     * <p>
+     * Note: If no KeyStore has been explicitly set, this method may return `null`.
+     * Applications should ensure the KeyStore is properly initialized and configured
+     * before use in SSL/TLS contexts.
+     *
+     * @return the KeyStore instance (e.g., JKS or PKCS12 format), or `null` if not set.
+     */
+    public KeyStore getKeyStore() {
+        return keyStore;
+    }
+
+    /**
+     * Sets the KeyStore to be used for SSL/TLS operations.
+     * <p>
+     * This KeyStore typically contains trusted certificates (for server verification)
+     * or client certificates (for mutual authentication). The KeyStore must be
+     * pre-initialized and populated with the necessary certificates/keys before being set.
+     *
+     * @param keyStore the KeyStore instance (e.g., JKS or PKCS12 format) to be used.
+     *                 Must not be null.
+     */
+    public void setKeyStore(KeyStore keyStore) {
+        this.keyStore = keyStore;
     }
 }
