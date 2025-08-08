@@ -51,18 +51,7 @@ import com.aliyun.oss.common.utils.CRC64;
 import com.aliyun.oss.event.ProgressEventType;
 import com.aliyun.oss.event.ProgressListener;
 import com.aliyun.oss.event.ProgressPublisher;
-import com.aliyun.oss.model.CannedAccessControlList;
-import com.aliyun.oss.model.CompleteMultipartUploadRequest;
-import com.aliyun.oss.model.CompleteMultipartUploadResult;
-import com.aliyun.oss.model.InitiateMultipartUploadRequest;
-import com.aliyun.oss.model.InitiateMultipartUploadResult;
-import com.aliyun.oss.model.ObjectMetadata;
-import com.aliyun.oss.model.PartETag;
-import com.aliyun.oss.model.Payer;
-import com.aliyun.oss.model.UploadFileRequest;
-import com.aliyun.oss.model.UploadFileResult;
-import com.aliyun.oss.model.UploadPartRequest;
-import com.aliyun.oss.model.UploadPartResult;
+import com.aliyun.oss.model.*;
 
 /**
  * OSSUploadOperation
@@ -477,11 +466,12 @@ public class OSSUploadOperation {
         ProgressPublisher.publishRequestBytesTransferred(listener, completedLength);
         uploadFileRequest.setProgressListener(null);
 
+        File file = new File(uploadCheckPoint.uploadFile);
         // Upload parts.
         for (int i = 0; i < uploadCheckPoint.uploadParts.size(); i++) {
             if (!uploadCheckPoint.uploadParts.get(i).isCompleted) {
                 futures.add(service.submit(new Task(i, "upload-" + i, uploadCheckPoint, i, uploadFileRequest,
-                        multipartOperation, listener)));
+                        multipartOperation, listener, file.lastModified())));
             } else {
                 taskResults.add(new PartResult(i + 1, uploadCheckPoint.uploadParts.get(i).offset,
                         uploadCheckPoint.uploadParts.get(i).size, uploadCheckPoint.uploadParts.get(i).crc));
@@ -517,7 +507,7 @@ public class OSSUploadOperation {
 
         public Task(int id, String name, UploadCheckPoint uploadCheckPoint, int partIndex,
                 UploadFileRequest uploadFileRequest, OSSMultipartOperation multipartOperation,
-                ProgressListener progressListener) {
+                ProgressListener progressListener, long lastModified) {
             this.id = id;
             this.name = name;
             this.uploadCheckPoint = uploadCheckPoint;
@@ -525,6 +515,7 @@ public class OSSUploadOperation {
             this.uploadFileRequest = uploadFileRequest;
             this.multipartOperation = multipartOperation;
             this.progressListener = progressListener;
+            this.lastModified = lastModified;
         }
 
         @Override
@@ -532,6 +523,8 @@ public class OSSUploadOperation {
             PartResult tr = null;
             InputStream instream = null;
 
+            File file = new File(uploadCheckPoint.uploadFile);
+            this.verifyObjectMeta(lastModified, file.lastModified());
             try {
                 UploadPart uploadPart = uploadCheckPoint.uploadParts.get(partIndex);
                 tr = new PartResult(partIndex + 1, uploadPart.offset, uploadPart.size);
@@ -584,6 +577,12 @@ public class OSSUploadOperation {
             return tr;
         }
 
+        public void verifyObjectMeta(long lastModified, long currentLastModified) {
+            if(lastModified != currentLastModified){
+                throw new ClientException("The last modification time of the file has changed, Last file modification time:" + currentLastModified + ", The file modification time:" + lastModified);
+            }
+        }
+
         private int id;
         private String name;
         private UploadCheckPoint uploadCheckPoint;
@@ -591,6 +590,7 @@ public class OSSUploadOperation {
         private UploadFileRequest uploadFileRequest;
         private OSSMultipartOperation multipartOperation;
         private ProgressListener progressListener;
+        private long lastModified;
     }
 
     private CompleteMultipartUploadResult complete(UploadCheckPoint uploadCheckPoint,
