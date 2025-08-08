@@ -21,6 +21,7 @@ package com.aliyun.oss.common.utils;
 import junit.framework.*;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 
 public class IniSectionTest extends TestCase {
@@ -150,7 +151,7 @@ public class IniSectionTest extends TestCase {
         s.set("hallo", "velo");
         s.addComment("english");
         s.set("hello", "bike");
-        File f = File.createTempFile("test", null);
+        File f = Files.createTempFile("test", null).toFile();
         s.save(new PrintWriter(new FileOutputStream(f)));
         Object[] saved = fileToStrings(f);
         assertTrue(Arrays.equals(expected, saved));
@@ -202,7 +203,7 @@ public class IniSectionTest extends TestCase {
             IniEditor.Section s = new IniEditor.Section("test");
             s.setOptionFormatString(formats[i]);
             s.set("hallo", "velo");
-            File f = File.createTempFile("test", null);
+            File f = Files.createTempFile("test", null).toFile();
             s.save(new PrintWriter(new FileOutputStream(f)));
             Object[] saved = fileToStrings(f);
             assertEquals(expected[i], saved[0]);
@@ -231,7 +232,7 @@ public class IniSectionTest extends TestCase {
     }
 
     private static File toTempFile(String text) throws IOException {
-        File temp = File.createTempFile("inieditortest", null);
+        File temp = Files.createTempFile("inieditortest", null).toFile();
         FileWriter fw = new FileWriter(temp);
         fw.write(text);
         fw.close();
