@@ -20,6 +20,7 @@
 package com.aliyun.oss.common.auth;
 
 import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
 
 import com.aliyun.oss.common.utils.BinaryUtil;
@@ -40,8 +41,11 @@ public class HmacSHA256Signature extends ServiceSignature {
 
     private static final Object LOCK = new Object();
 
-    /* Prototype of the Mac instance. */
-    private static Mac macInstance;
+    private final ThreadLocal<Mac> reference;
+
+    public HmacSHA256Signature() {
+        this.reference = new HmacSHA256Signature.MacThreadLocal();
+    }
 
     public String getAlgorithm() {
         return ALGORITHM;
@@ -53,8 +57,8 @@ public class HmacSHA256Signature extends ServiceSignature {
 
     public String computeSignature(String key, String data) {
         try {
-            byte[] signData = sign(key.getBytes(DEFAULT_ENCODING), data.getBytes(DEFAULT_ENCODING), macInstance,
-                                LOCK, ALGORITHM);
+            byte[] signData = sign(key.getBytes(DEFAULT_ENCODING), data.getBytes(DEFAULT_ENCODING), getMac(),
+                    LOCK, ALGORITHM);
             return BinaryUtil.toBase64String(signData);
         } catch (UnsupportedEncodingException ex) {
             throw new RuntimeException("Unsupported algorithm: " + DEFAULT_ENCODING, ex);
@@ -62,7 +66,23 @@ public class HmacSHA256Signature extends ServiceSignature {
     }
 
     public byte[] computeHash(byte[] key, byte[] data) {
-        return sign(key, data, macInstance, LOCK, ALGORITHM);
+        return sign(key, data, getMac(), LOCK, ALGORITHM);
+    }
+
+    public Mac getMac() {
+        return reference.get();
+    }
+
+    private static class MacThreadLocal extends ThreadLocal<Mac> {
+
+        @Override
+        protected Mac initialValue() {
+            try {
+                return Mac.getInstance(HmacSHA256Signature.ALGORITHM);
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException("Unsupported algorithm: " + HmacSHA256Signature.ALGORITHM, e);
+            }
+        }
     }
 
     static {
