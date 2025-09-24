@@ -1,0 +1,38 @@
+{
+    "resources":
+    {
+        "includes":
+        [
+            {
+                "condition":
+                {
+                    "typeReachable": "com.aliyun.oss.OSS"
+                },
+                "pattern": "\\Qoss.mime.types\\E"
+            },
+            {
+                "condition":
+                {
+                    "typeReachable": "com.aliyun.oss.OSS"
+                },
+                "pattern": "\\Qoss.properties\\E"
+            },
+            {
+                "condition":
+                {
+                    "typeReachable": "com.aliyun.oss.OSS"
+                },
+                "pattern": "\\Qversioninfo.properties\\E"
+            }
+        ]
+    },
+    "bundles":
+    [
+        {
+            "name": "common"
+        },
+        {
+            "name": "oss"
+        }
+    ]
+}
