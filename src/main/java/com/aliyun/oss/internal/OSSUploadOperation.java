@@ -103,7 +103,7 @@ public class OSSUploadOperation {
          */
         public synchronized void load(String cpFile) throws IOException, ClassNotFoundException {
             FileInputStream fileIn = new FileInputStream(cpFile);
-            ObjectInputStream in = new ObjectInputStream(fileIn);
+            CheckPointObjectInputStream in = new CheckPointObjectInputStream(fileIn);
             UploadCheckPoint ucp = (UploadCheckPoint) in.readObject();
             assign(ucp);
             in.close();
