@@ -2163,6 +2163,11 @@ public class OSSClient implements OSS {
     }
 
     @Override
+    public VoidResult sealAppendObject(SealAppendObjectRequest sealAppendObjectRequest) throws OSSException, ClientException {
+        return this.objectOperation.sealAppendObject(sealAppendObjectRequest);
+    }
+
+    @Override
     public void shutdown() {
         try {
             serviceClient.shutdown();

@@ -466,6 +466,20 @@ public class OSSObjectOperation extends OSSOperation {
 
         assertParameterNotNull(copyObjectRequest, "copyObjectRequest");
 
+        String dstBucketName = copyObjectRequest.getDestinationBucketName();
+        String dstKey = copyObjectRequest.getDestinationKey();
+        String srcBucketName = copyObjectRequest.getSourceBucketName();
+        String srcKey = copyObjectRequest.getSourceKey();
+
+        assertParameterNotNull(dstBucketName, "DestinationBucketName");
+        ensureBucketNameValid(dstBucketName);
+        assertParameterNotNull(dstKey, "DestinationKey");
+        ensureObjectKeyValid(dstKey);
+        assertParameterNotNull(srcBucketName, "SourceBucketName");
+        ensureBucketNameValid(srcBucketName);
+        assertParameterNotNull(srcKey, "SourceKey");
+        ensureObjectKeyValid(srcKey);
+
         Map<String, String> headers = new HashMap<String, String>();
         populateCopyObjectHeaders(copyObjectRequest, headers);
 
@@ -1452,6 +1466,43 @@ public class OSSObjectOperation extends OSSOperation {
             throw new ClientException("Unsupported charset: " + ex.getMessage());
         }
     }
+
+    /**
+     * seal append object.
+     */
+    public VoidResult sealAppendObject(SealAppendObjectRequest sealAppendObjectRequest) throws OSSException, ClientException {
+
+        assertParameterNotNull(sealAppendObjectRequest, "sealAppendObjectRequest");
+
+        String bucketName = sealAppendObjectRequest.getBucketName();
+        String key = sealAppendObjectRequest.getKey();
+        Long position = sealAppendObjectRequest.getPosition();
+
+        assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
+        assertParameterNotNull(key, "key");
+        ensureObjectKeyValid(key);
+        assertParameterNotNull(position, "position");
+
+        Map<String, String> headers = new HashMap<String, String>();
+        populateRequestPayerHeader(headers, sealAppendObjectRequest.getRequestPayer());
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(SEAL, null);
+        params.put(RequestParameters.POSITION, String.valueOf(sealAppendObjectRequest.getPosition()));
+
+        RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint(sealAppendObjectRequest))
+                .setMethod(HttpMethod.POST)
+                .setBucket(bucketName)
+                .setKey(key)
+                .setHeaders(headers)
+                .setParameters(params)
+                .setOriginalRequest(sealAppendObjectRequest)
+                .build();
+
+        return doOperation(request, requestIdResponseParser, bucketName, key, true);
+    }
+
 
     private static void addHeaderIfNotNull(Map<String, String> headers, String header, String value) {
         if (value != null) {

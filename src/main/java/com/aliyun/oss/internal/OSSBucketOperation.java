@@ -1545,10 +1545,12 @@ public class OSSBucketOperation extends OSSOperation {
     }
 
     public VoidResult createBucketVpcip(CreateBucketVpcipRequest createBucketVpcipRequest) {
+        assertParameterNotNull(createBucketVpcipRequest, "createBucketVpcipRequest");
 
         String bucketName = createBucketVpcipRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
-        assertParameterNotNull(createBucketVpcipRequest, "createBucketVpcipRequest");
+        ensureBucketNameValid(bucketName);
+
         VpcPolicy vpcPolicy = createBucketVpcipRequest.getVpcPolicy();
         String region = vpcPolicy.getRegion();
         String vpcId = vpcPolicy.getVpcId();
@@ -1572,10 +1574,12 @@ public class OSSBucketOperation extends OSSOperation {
     }
 
     public VoidResult deleteBucketVpcip(DeleteBucketVpcipRequest deleteBucketVpcipRequest) {
+        assertParameterNotNull(deleteBucketVpcipRequest, "deleteBucketVpcipRequest");
 
         String bucketName = deleteBucketVpcipRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
-        assertParameterNotNull(deleteBucketVpcipRequest, "deleteBucketVpcipRequest");
+        ensureBucketNameValid(bucketName);
+
         VpcPolicy vpcPolicy = deleteBucketVpcipRequest.getVpcPolicy();
         String region = vpcPolicy.getRegion();
         String vpcId = vpcPolicy.getVpcId();
@@ -1598,9 +1602,11 @@ public class OSSBucketOperation extends OSSOperation {
     }
 
     public List<VpcPolicy> getBucketVpcip(GenericRequest genericRequest) {
+        assertParameterNotNull(genericRequest, "genericRequest");
 
         String bucketName = genericRequest.getBucketName();
         assertParameterNotNull(bucketName, "bucketName");
+        ensureBucketNameValid(bucketName);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(RequestParameters.VIP, null);
@@ -2151,7 +2157,6 @@ public class OSSBucketOperation extends OSSOperation {
     public DescribeRegionsResult describeRegions(DescribeRegionsRequest describeRegionsRequest) throws OSSException, ClientException {
         assertParameterNotNull(describeRegionsRequest, "describeRegionsRequest");
 
-        String bucketName = describeRegionsRequest.getBucketName();
         String region = describeRegionsRequest.getRegion();
 
         Map<String, String> params = new HashMap<String, String>();
@@ -2159,10 +2164,10 @@ public class OSSBucketOperation extends OSSOperation {
 
 
         RequestMessage request = new OSSRequestMessageBuilder(getInnerClient()).setEndpoint(getEndpoint())
-                .setMethod(HttpMethod.GET).setBucket(bucketName).setParameters(params)
+                .setMethod(HttpMethod.GET).setParameters(params)
                 .setOriginalRequest(describeRegionsRequest).build();
 
-        return doOperation(request, describeRegionsResponseParser, bucketName, null, true);
+        return doOperation(request, describeRegionsResponseParser, null, null, true);
     }
 
     public VoidResult setBucketCallbackPolicy(SetBucketCallbackPolicyRequest setBucketCallbackPolicyRequest) throws OSSException, ClientException {

@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.aliyun.oss.model.*;
 import junit.framework.Assert;
 
 import org.junit.Ignore;
@@ -38,11 +39,6 @@ import org.junit.Test;
 
 import com.aliyun.oss.OSSErrorCode;
 import com.aliyun.oss.OSSException;
-import com.aliyun.oss.model.CopyObjectRequest;
-import com.aliyun.oss.model.CopyObjectResult;
-import com.aliyun.oss.model.OSSObject;
-import com.aliyun.oss.model.ObjectMetadata;
-import com.aliyun.oss.model.PutObjectResult;
 
 public class CopyObjectTest extends TestBase {
     
@@ -393,6 +389,89 @@ public class CopyObjectTest extends TestBase {
         } finally {
             deleteBucketWithObjects(ossClient, sourceBucket);
             deleteBucketWithObjects(ossClient, targetBucket);
+        }
+    }
+
+    @Test
+    public void testCopyObjectFail() {
+        try {
+            String dstBucket = null;
+            String dstKey = null;
+            String srcBucket = null;
+            String srcKey = null;
+            ossClient.copyObject(new CopyObjectRequest(srcBucket, srcKey, dstBucket, dstKey));
+        } catch (NullPointerException e) {
+            Assert.assertTrue(e.getMessage().contains("DestinationBucket"));
+        }
+
+        try {
+            String dstBucket = "12/";
+            String dstKey = null;
+            String srcBucket = null;
+            String srcKey = null;
+            ossClient.copyObject(new CopyObjectRequest(srcBucket, srcKey, dstBucket, dstKey));
+        } catch (IllegalArgumentException e) {
+            Assert.assertTrue(e.getMessage().contains("Bucket \"12/\""));
+        }
+
+        try {
+            String dstBucket = "bucket-123";
+            String dstKey = null;
+            String srcBucket = null;
+            String srcKey = null;
+            ossClient.copyObject(new CopyObjectRequest(srcBucket, srcKey, dstBucket, dstKey));
+        } catch (NullPointerException e) {
+            Assert.assertTrue(e.getMessage().contains("DestinationKey"));
+        }
+
+        try {
+            String dstBucket = "bucket-123";
+            String dstKey = "";
+            String srcBucket = null;
+            String srcKey = null;
+            ossClient.copyObject(new CopyObjectRequest(srcBucket, srcKey, dstBucket, dstKey));
+        } catch (IllegalArgumentException e) {
+            Assert.assertTrue(e.getMessage().contains("Key"));
+        }
+
+        try {
+            String dstBucket = "bucket-123";
+            String dstKey = "key";
+            String srcBucket = null;
+            String srcKey = null;
+            ossClient.copyObject(new CopyObjectRequest(srcBucket, srcKey, dstBucket, dstKey));
+        } catch (NullPointerException e) {
+            Assert.assertTrue(e.getMessage().contains("SourceBucket"));
+        }
+
+        try {
+            String dstBucket = "bucket-123";
+            String dstKey = "key";
+            String srcBucket = "1";
+            String srcKey = null;
+            ossClient.copyObject(new CopyObjectRequest(srcBucket, srcKey, dstBucket, dstKey));
+        } catch (IllegalArgumentException e) {
+            Assert.assertTrue(e.getMessage().contains("Bucket \"1\""));
+        }
+
+        try {
+            String dstBucket = "bucket-123";
+            String dstKey = "key";
+            String srcBucket = "bucket-1234";
+            String srcKey = null;
+            ossClient.copyObject(new CopyObjectRequest(srcBucket, srcKey, dstBucket, dstKey));
+        } catch (NullPointerException e) {
+            Assert.assertTrue(e.getMessage().contains("SourceKey"));
+        }
+
+        try {
+            String dstBucket = "bucket-123";
+            String dstKey = "key";
+            String srcBucket = "bucket-1234";
+            String srcKey = "";
+            ossClient.copyObject(new CopyObjectRequest(srcBucket, srcKey, dstBucket, dstKey));
+        } catch (IllegalArgumentException e) {
+            Assert.assertTrue(e.getMessage().contains("Key"));
         }
     }
 }
