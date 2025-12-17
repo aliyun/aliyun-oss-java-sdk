@@ -4997,7 +4997,7 @@ public interface OSS {
      * @throws ClientException
      *             If any errors occurred in OSS while processing the request.
      */
-    VoidResult setBucketTransferAcceleration(String bucketName, boolean enable) throws OSSException, ClientException;
+    public VoidResult setBucketTransferAcceleration(String bucketName, boolean enable) throws OSSException, ClientException;
 
     /**
      * Get transferAcceleration configuration from the OSS Server
@@ -5010,7 +5010,7 @@ public interface OSS {
      * @throws ClientException
      *             If any errors occurred in OSS while processing the request.
      */
-    TransferAcceleration getBucketTransferAcceleration(String bucketName) throws OSSException, ClientException;
+    public TransferAcceleration getBucketTransferAcceleration(String bucketName) throws OSSException, ClientException;
 
     /**
      * Delete transferAcceleration configuration from the OSS Server
@@ -5025,7 +5025,7 @@ public interface OSS {
      * @throws ClientException
      *             If any errors occurred in OSS while processing the request.
      */
-    VoidResult deleteBucketTransferAcceleration(String bucketName) throws OSSException, ClientException;
+    public VoidResult deleteBucketTransferAcceleration(String bucketName) throws OSSException, ClientException;
 
     /**
      * Set BucketAccessMonitor configuration to the OSS Server
@@ -5043,7 +5043,7 @@ public interface OSS {
      * @throws ClientException
      *             If any errors occurred in OSS while processing the request.
      */
-    VoidResult putBucketAccessMonitor(String bucketName, String status) throws OSSException, ClientException;
+    public VoidResult putBucketAccessMonitor(String bucketName, String status) throws OSSException, ClientException;
 
     /**
      * Get BucketAccessMonitor configuration from the OSS Server
@@ -5056,7 +5056,7 @@ public interface OSS {
      * @throws ClientException
      *             If any errors occurred in OSS while processing the request.
      */
-    AccessMonitor getBucketAccessMonitor(String bucketName) throws OSSException, ClientException;
+    public AccessMonitor getBucketAccessMonitor(String bucketName) throws OSSException, ClientException;
 
     /**
      * Open MetaQuery configuration to the OSS Server
@@ -5071,7 +5071,7 @@ public interface OSS {
      * @throws ClientException
      *             If any errors occurred in OSS while processing the request.
      */
-    VoidResult openMetaQuery(String bucketName) throws OSSException, ClientException;
+    public VoidResult openMetaQuery(String bucketName) throws OSSException, ClientException;
 
     /**
      * Open MetaQuery configuration to the OSS Server
@@ -5084,7 +5084,7 @@ public interface OSS {
      * @throws OSSException oss exception
      * @throws ClientException client exception
      */
-    VoidResult openMetaQuery(String bucketName, MetaQueryMode metaQueryMode) throws OSSException, ClientException;
+    public VoidResult openMetaQuery(String bucketName, MetaQueryMode metaQueryMode) throws OSSException, ClientException;
 
     /**
      * Open MetaQuery configuration to the OSS Server
@@ -5096,7 +5096,7 @@ public interface OSS {
      * @throws OSSException oss exception
      * @throws ClientException client exception
      */
-    VoidResult openMetaQuery(OpenMetaQueryRequest openMetaQueryRequest) throws OSSException, ClientException;
+    public VoidResult openMetaQuery(OpenMetaQueryRequest openMetaQueryRequest) throws OSSException, ClientException;
 
     /**
      * Get MetaQueryStatus configuration from the OSS Server
@@ -5109,7 +5109,7 @@ public interface OSS {
      * @throws ClientException
      *             If any errors occurred in OSS while processing the request.
      */
-    GetMetaQueryStatusResult getMetaQueryStatus(String bucketName) throws OSSException, ClientException;
+    public GetMetaQueryStatusResult getMetaQueryStatus(String bucketName) throws OSSException, ClientException;
 
     /**
      * Query files that meet the specified criteria from the OSS Server
@@ -5122,7 +5122,7 @@ public interface OSS {
      * @throws ClientException
      *             If any errors occurred in OSS while processing the request.
      */
-    DoMetaQueryResult doMetaQuery(DoMetaQueryRequest doMetaQueryRequest) throws OSSException, ClientException;
+    public DoMetaQueryResult doMetaQuery(DoMetaQueryRequest doMetaQueryRequest) throws OSSException, ClientException;
 
     /**
      * Close metadata management from the OSS Server
@@ -5136,7 +5136,7 @@ public interface OSS {
      * @throws ClientException
      *             If any errors occurred in OSS while processing the request.
      */
-    VoidResult closeMetaQuery(String bucketName) throws OSSException, ClientException;
+    public VoidResult closeMetaQuery(String bucketName) throws OSSException, ClientException;
 
     /**
      * Describe regions from the OSS Server
@@ -5149,7 +5149,7 @@ public interface OSS {
      * @throws ClientException
      *             If any errors occurred in OSS while processing the request.
      */
-    DescribeRegionsResult describeRegions(DescribeRegionsRequest describeRegionsRequest) throws OSSException, ClientException;
+    public DescribeRegionsResult describeRegions(DescribeRegionsRequest describeRegionsRequest) throws OSSException, ClientException;
 
     /**
      * Sets the callback policy on the {@link Bucket} instance.
@@ -5685,4 +5685,19 @@ public interface OSS {
      */
     public ListAccessPointsResult listBucketAccessPoints(ListBucketAccessPointsRequest listBucketAccessPointsRequest) throws OSSException, ClientException;
 
+    /**
+     * Used to stop an Object of the type Appendable Object from further writing.
+     *
+     * @param sealAppendObjectRequest
+     *            A {@link SealAppendObjectRequest} instance which specifies the
+     *            bucket name, appendable object key and position.
+     * @return A {@link VoidResult} instance.
+     *
+     * @throws OSSException
+     *             If any errors occurred in OSS while processing the request.
+     * @throws ClientException
+     *             If any errors are encountered in the client while making the
+     *             request or handling the response.
+     */
+    public VoidResult sealAppendObject(SealAppendObjectRequest sealAppendObjectRequest) throws OSSException, ClientException;
 }

@@ -21,16 +21,8 @@ package com.aliyun.oss.integrationtests;
 
 import java.util.List;
 
+import com.aliyun.oss.model.*;
 import org.junit.Ignore;
-
-import com.aliyun.oss.model.CreateBucketVpcipRequest;
-import com.aliyun.oss.model.CreateVpcipRequest;
-import com.aliyun.oss.model.CreateVpcipResult;
-import com.aliyun.oss.model.DeleteBucketVpcipRequest;
-import com.aliyun.oss.model.DeleteVpcipRequest;
-import com.aliyun.oss.model.GenericRequest;
-import com.aliyun.oss.model.VpcPolicy;
-import com.aliyun.oss.model.Vpcip;
 
 import junit.framework.Assert;
 import org.junit.Test;
@@ -208,6 +200,65 @@ public class VpcipTest extends TestBase {
         } catch (Exception e) {
             // expected exception
         }
+    }
+
+
+    @Test
+    public void testWithInvalidArgsFail() {
+        try {
+            String bucket = null;
+            CreateBucketVpcipRequest request = new CreateBucketVpcipRequest();
+            request.setBucketName(bucket);
+            ossClient.createBucketVpcip(request);
+        } catch (NullPointerException e) {
+            Assert.assertTrue(e.getMessage().contains("bucketName"));
+        }
+
+        try {
+            String bucket = "12/";
+            CreateBucketVpcipRequest request = new CreateBucketVpcipRequest();
+            request.setBucketName(bucket);
+            ossClient.createBucketVpcip(request);
+        } catch (IllegalArgumentException e) {
+            Assert.assertTrue(e.getMessage().contains("Bucket \"12/\""));
+        }
+
+        try {
+            String bucket = null;
+            GenericRequest request = new GenericRequest(bucket);
+            request.setBucketName(bucket);
+            ossClient.getBucketVpcip(request);
+        } catch (NullPointerException e) {
+            Assert.assertTrue(e.getMessage().contains("bucketName"));
+        }
+
+        try {
+            String bucket = "12/";
+            GenericRequest request = new GenericRequest(bucket);
+            request.setBucketName(bucket);
+            ossClient.getBucketVpcip(request);
+        } catch (IllegalArgumentException e) {
+            Assert.assertTrue(e.getMessage().contains("Bucket \"12/\""));
+        }
+
+        try {
+            String bucket = null;
+            DeleteBucketVpcipRequest request = new DeleteBucketVpcipRequest();
+            request.setBucketName(bucket);
+            ossClient.deleteBucketVpcip(request);
+        } catch (NullPointerException e) {
+            Assert.assertTrue(e.getMessage().contains("bucketName"));
+        }
+
+        try {
+            String bucket = "12/";
+            DeleteBucketVpcipRequest request = new DeleteBucketVpcipRequest();
+            request.setBucketName(bucket);
+            ossClient.deleteBucketVpcip(request);
+        } catch (IllegalArgumentException e) {
+            Assert.assertTrue(e.getMessage().contains("Bucket \"12/\""));
+        }
+
     }
 
 }

@@ -444,6 +444,23 @@ public class ObjectMetadata {
         }
         return true;
     }
+
+    /**
+     * Gets the {@link Date} value of the "x-oss-sealed-time" header in Rfc822 format. If
+     * sealed time is not set, then the value is null.
+     *
+     * @return sealed time header's value in Rfc822.
+     * @throws ParseException
+     *             The value is not in the Rfc822 format.
+     */
+    public Date getSealedTime() throws ParseException {
+        String sealedTime = (String) metadata.get(OSSHeaders.SEALED_TIME);
+
+        if (sealedTime != null)
+            return DateUtil.parseRfc822Date((String) metadata.get(OSSHeaders.SEALED_TIME));
+
+        return null;
+    }
     
     public void setObjectTagging(Map<String, String> tags) {
         if (tags != null && !tags.isEmpty()) {

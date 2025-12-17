@@ -124,6 +124,7 @@ public final class RequestParameters {
     public static final String COMP_QUERY = "query";
     public static final String META_QUERY = "metaQuery";
     public static final String MODE = "mode";
+    public static final String SEAL = "seal";
 
     public static final String STAT = "stat";
     public static final String HISTORY = "history";
@@ -169,4 +170,5 @@ public final class RequestParameters {
     public static final String X_OSS_REDUNDANCY_TRANSITION_TASK_ID = "x-oss-redundancy-transition-taskid";
     public static final String SUBRESOURCE_ACCESS_POINT = "accessPoint";
     public static final String SUBRESOURCE_ACCESS_POINT_POLICY = "accessPointPolicy";
+    public static final String SUBRESOURCE_SEAL = "seal";
 }
