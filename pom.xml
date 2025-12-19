@@ -29,7 +29,7 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>aliyun-java-sdk-core</artifactId>
-            <version>4.5.10</version>
+            <version>4.7.8</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.json</groupId>
