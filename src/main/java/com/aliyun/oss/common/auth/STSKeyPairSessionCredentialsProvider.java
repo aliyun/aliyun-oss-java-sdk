@@ -78,9 +78,8 @@ public class STSKeyPairSessionCredentialsProvider implements CredentialsProvider
             LogUtils.logException("RamClient.getAcsResponse Exception:", e);
             return null;
         }
-
         return new BasicCredentials(response.getSessionAccessKey().getSessionAccessKeyId(),
-                response.getSessionAccessKey().getSessionAccessKeySecert(), null, expiredDurationSeconds)
+                response.getSessionAccessKey().getSessionAccessKeySecret(), null, expiredDurationSeconds)
                         .withExpiredFactor(expiredFactor);
     }
 
