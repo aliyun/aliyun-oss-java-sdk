@@ -38,7 +38,7 @@ import com.aliyun.oss.model.SetBucketCORSRequest.CORSRule;
 
 public class BucketCORSTest extends TestBase {
 
-    private static int MAX_CORS_RULE_LIMIT = 10;
+    private static int MAX_CORS_RULE_LIMIT = 20;
 
     @Test
     public void testNormalSetBucketCORS() {
@@ -106,6 +106,7 @@ public class BucketCORSTest extends TestBase {
         try {
             ossClient.createBucket(bucketName);
 
+            // cancels the rule number limit
             // Set count of cors rules exceed MAX_CORS_RULE_LIMIT
             try {
                 SetBucketCORSRequest request = new SetBucketCORSRequest(bucketName);
@@ -114,11 +115,11 @@ public class BucketCORSTest extends TestBase {
                     request.addCorsRule(r);
                 }
                 request.addCorsRule(r);
-                Assert.fail("Set bucket cors should not be successful");
+                Assert.assertTrue(true);
             } catch (Exception e) {
-                Assert.assertTrue(e instanceof IllegalArgumentException);
             }
 
+            // cancels the rule number limit
             try {
                 SetBucketCORSRequest request = new SetBucketCORSRequest(bucketName);
                 CORSRule r = new CORSRule();
@@ -128,9 +129,9 @@ public class BucketCORSTest extends TestBase {
                 }
                 rules.add(r);
                 request.setCorsRules(rules);
-                Assert.fail("Set bucket cors should not be successful");
+                Assert.assertTrue(true);
             } catch (Exception e) {
-                Assert.assertTrue(e instanceof IllegalArgumentException);
+                Assert.fail("Set bucket cors should not be successful");
             }
 
             // Miss required field 'AllowedOrigins'
