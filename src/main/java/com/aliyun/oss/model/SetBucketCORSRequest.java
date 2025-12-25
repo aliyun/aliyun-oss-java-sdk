@@ -24,7 +24,6 @@ import java.util.List;
 
 public class SetBucketCORSRequest extends GenericRequest {
 
-    private static int MAX_CORS_RULE_LIMIT = 10;
     private static char ASTERISK = '*';
     private static String[] ALL_ALLOWED_METHODS = { "GET", "PUT", "DELETE", "POST", "HEAD" };
 
@@ -44,10 +43,6 @@ public class SetBucketCORSRequest extends GenericRequest {
     private void checkCorsValidity(CORSRule corsRule) {
         if (corsRule == null) {
             throw new IllegalArgumentException("corsRule should not be null or empty.");
-        }
-
-        if (this.corsRules.size() >= MAX_CORS_RULE_LIMIT) {
-            throw new IllegalArgumentException("One bucket not allowed exceed ten items of CORS Rules.");
         }
 
         // At least one item of allowed origins
@@ -129,10 +124,6 @@ public class SetBucketCORSRequest extends GenericRequest {
     public void setCorsRules(List<CORSRule> corsRules) {
         if (corsRules == null || corsRules.isEmpty()) {
             throw new IllegalArgumentException("corsRules should not be null or empty.");
-        }
-
-        if (corsRules.size() > MAX_CORS_RULE_LIMIT) {
-            throw new IllegalArgumentException("One bucket not allowed exceed ten items of CORS Rules.");
         }
 
         this.corsRules.clear();

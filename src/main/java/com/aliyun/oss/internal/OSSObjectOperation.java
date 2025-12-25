@@ -1497,6 +1497,7 @@ public class OSSObjectOperation extends OSSOperation {
                 .setKey(key)
                 .setHeaders(headers)
                 .setParameters(params)
+                .setInputStream(new ByteArrayInputStream(new byte[0]))
                 .setOriginalRequest(sealAppendObjectRequest)
                 .build();
 
