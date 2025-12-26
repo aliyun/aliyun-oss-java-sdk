@@ -3,7 +3,15 @@
 [![GitHub version](https://badge.fury.io/gh/aliyun%2Faliyun-oss-java-sdk.svg)](https://badge.fury.io/gh/aliyun%2Faliyun-oss-java-sdk)
 [![Build Status](https://travis-ci.org/aliyun/aliyun-oss-java-sdk.svg?branch=master)](https://travis-ci.org/aliyun/aliyun-oss-java-sdk)
 
+
+## About OSS SDK for Java V2
+> - OSS SDK for Java V2([alibabacloud-oss-java-sdk-v2](https://github.com/aliyun/alibabacloud-oss-java-sdk-v2)) has been released, it is a major rewrite of OSS SDK for Java V1 (aliyun-oss-java-sdk).
+> - V2 simplifies underlying operations such as identification authentication, automatic retry of failed requests, and error handling. It provides flexible parameter configuration methods and rich advanced operations, such as paginator, transmission managers, and File-like operations. This comprehensively improves development efficiency and experience.
+
+
+## About
 The Aliyun OSS SDK for Java enables Java developers to easily work with Aliyun OSS. You can get started in minutes using ***Maven*** or by downloading a [single zip file](https://help.aliyun.com/document_detail/32170.html).
+
 
 - [SDK Homepage](https://help.aliyun.com/document_detail/32008.html)
 - [API Docs](https://gosspublic.alicdn.com/AliyunJavaSDK/latest/javadoc/index.html)
@@ -24,7 +32,7 @@ The recommended way to use the Aliyun OSS SDK for Java in your project is to con
 <dependency>
     <groupId>com.aliyun.oss</groupId>
     <artifactId>aliyun-sdk-oss</artifactId>
-    <version>3.18.1</version>
+    <version>3.18.4</version>
 </dependency>
 ```
 
