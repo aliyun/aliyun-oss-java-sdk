@@ -84,7 +84,10 @@ public class STSAssumeRoleSessionCredentialsProvider implements CredentialsProvi
         if (credentials == null || credentials.willSoonExpire()) {
             synchronized (this) {
                 if (credentials == null || credentials.willSoonExpire()) {
-                    credentials = getNewSessionCredentials();
+                    BasicCredentials newCredentials = getNewSessionCredentials();
+                    if(newCredentials != null) {
+                        credentials = newCredentials;
+                    }
                 }
             }
         }
