@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import com.aliyun.oss.model.BucketInfo;
 import com.aliyun.oss.model.BucketList;
+import com.aliyun.oss.model.BucketPolicy;
 import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.Grant;
 import com.aliyun.oss.model.GroupGrantee;
@@ -64,6 +65,33 @@ public class BucketInfoTest extends TestBase {
             Assert.assertEquals(CannedAccessControlList.PublicReadWrite, info.getCannedACL());
 
         } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+    
+    @Test
+    public void testGetBucketInfoWithNewFields() {
+        try {
+            ossClient.setBucketAcl(bucketName, CannedAccessControlList.Private);
+
+            BucketInfo info = ossClient.getBucketInfo(bucketName);
+
+            Assert.assertNotNull("TransferAcceleration should not be null", info.getTransferAcceleration());
+            Assert.assertNotNull("CrossRegionReplication should not be null", info.getCrossRegionReplication());
+            Assert.assertNotNull("BucketPolicy should not be null", info.getBucketPolicy());
+
+            Assert.assertEquals(info.getBucket().getName(), bucketName);
+            Assert.assertEquals(info.getBucket().getLocation(), "oss-" + TestConfig.OSS_TEST_REGION);
+            Assert.assertNotNull(info.getBucket().getCreationDate());
+            Assert.assertTrue(info.getBucket().getExtranetEndpoint().length() > 0);
+            Assert.assertTrue(info.getBucket().getIntranetEndpoint().length() > 0);
+            Assert.assertTrue(info.getBucket().getOwner().getId().length() > 0);
+            Assert.assertEquals(CannedAccessControlList.Private, info.getCannedACL());
+            Assert.assertEquals(info.getRequestId().length(), REQUEST_ID_LEN);
+
+            
+        } catch (Exception e) {
+            e.printStackTrace();
             Assert.fail(e.getMessage());
         }
     }
