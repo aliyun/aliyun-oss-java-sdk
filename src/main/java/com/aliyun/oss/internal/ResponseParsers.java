@@ -2785,8 +2785,35 @@ public final class ResponseParsers {
                 bucket.setAccessMonitor(bucketElem.getChildText("AccessMonitor"));
             }
 
+            // TransferAcceleration
+            if (bucketElem.getChild("TransferAcceleration") != null) {
+                String transferAcceleration = bucketElem.getChildText("TransferAcceleration");
+                bucketInfo.setTransferAcceleration(transferAcceleration);
+            }
+
+            // CrossRegionReplication
+            if (bucketElem.getChild("CrossRegionReplication") != null) {
+                String crossRegionReplication = bucketElem.getChildText("CrossRegionReplication");
+                bucketInfo.setCrossRegionReplication(crossRegionReplication);
+            }
+
+            // BlockPublicAccess
+            if (bucketElem.getChild("BlockPublicAccess") != null) {
+                String blockPublicAccessStr = bucketElem.getChildText("BlockPublicAccess");
+                boolean blockPublicAccess = Boolean.parseBoolean(blockPublicAccessStr);
+                bucketInfo.setBlockPublicAccess(blockPublicAccess);
+            }
+
+            // Versioning
+            if (bucketElem.getChild("Versioning") != null) {
+                String versioning = bucketElem.getChildText("Versioning");
+                bucketInfo.setVersioning(versioning);
+            }
+
+            // BucketPolicy
             if (bucketElem.getChild("BucketPolicy") != null) {
                 Element policyElem = bucketElem.getChild("BucketPolicy");
+
                 if (policyElem.getChild("XCType") != null) {
                     bucket.setXcType(policyElem.getChildText("XCType"));
                 }

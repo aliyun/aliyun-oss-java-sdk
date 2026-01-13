@@ -79,10 +79,46 @@ public class BucketInfo extends GenericResult {
         this.sseConfig = sseConfig;
     }
 
+    public String getTransferAcceleration() {
+        return transferAcceleration;
+    }
+
+    public void setTransferAcceleration(String transferAcceleration) {
+        this.transferAcceleration = transferAcceleration;
+    }
+
+    public String getCrossRegionReplication() {
+        return crossRegionReplication;
+    }
+
+    public void setCrossRegionReplication(String crossRegionReplication) {
+        this.crossRegionReplication = crossRegionReplication;
+    }
+
+    public boolean isBlockPublicAccess() {
+        return blockPublicAccess;
+    }
+
+    public void setBlockPublicAccess(boolean blockPublicAccess) {
+        this.blockPublicAccess = blockPublicAccess;
+    }
+
+    public String getVersioning() {
+        return versioning;
+    }
+
+    public void setVersioning(String versioning) {
+        this.versioning = versioning;
+    }
+
     private Bucket bucket;
     private String comment;
     private DataRedundancyType dataRedundancyType;
     private Set<Grant> grants = new HashSet<Grant>();
     private CannedAccessControlList cannedACL;
     private ServerSideEncryptionConfiguration sseConfig;
+    private String transferAcceleration;
+    private String crossRegionReplication;
+    private boolean blockPublicAccess;
+    private String versioning;
 }

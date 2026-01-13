@@ -934,6 +934,79 @@ public class ResponseParsersTest {
     }
 
     @Test
+    public void testParseGetBucketInfoWithAllFields() {
+        InputStream instream = null;
+
+        String respBody = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<BucketInfo>\n" +
+                "  <Bucket>\n" +
+                "    <AccessMonitor>Enabled</AccessMonitor>\n" +
+                "    <CreationDate>2013-07-31T10:56:21.000Z</CreationDate>\n" +
+                "    <ExtranetEndpoint>oss-cn-hangzhou.aliyuncs.com</ExtranetEndpoint>\n" +
+                "    <IntranetEndpoint>oss-cn-hangzhou-internal.aliyuncs.com</IntranetEndpoint>\n" +
+                "    <Location>oss-cn-hangzhou</Location>\n" +
+                "    <StorageClass>Standard</StorageClass>\n" +
+                "    <TransferAcceleration>Disabled</TransferAcceleration>\n" +
+                "    <CrossRegionReplication>Disabled</CrossRegionReplication>\n" +
+                "    <DataRedundancyType>LRS</DataRedundancyType>\n" +
+                "    <Name>oss-example</Name>\n" +
+                "    <ResourceGroupId>rg-aek27tc********</ResourceGroupId>\n" +
+                "    <Owner>\n" +
+                "      <DisplayName>username</DisplayName>\n" +
+                "      <ID>27183473914****</ID>\n" +
+                "    </Owner>\n" +
+                "    <AccessControlList>\n" +
+                "      <Grant>private</Grant>\n" +
+                "    </AccessControlList> \n" +
+                "    <ServerSideEncryptionRule>\n" +
+                "        <SSEAlgorithm>KMS</SSEAlgorithm>\n" +
+                "        <KMSMasterKeyID>shUhih687675***32edghadg</KMSMasterKeyID>\n" +
+                "        <KMSDataEncryption>SM4</KMSDataEncryption>\n" +
+                "    </ServerSideEncryptionRule>\n" +
+                "    <BucketPolicy>\n" +
+                "      <LogBucket>examplebucket</LogBucket>\n" +
+                "      <LogPrefix>log/</LogPrefix>\n" +
+                "    </BucketPolicy>\n" +
+                "    <Comment>test</Comment>\n" +
+                "    <Versioning>Enabled</Versioning>\n" +
+                "    <BlockPublicAccess>true</BlockPublicAccess>\n" +
+                "  </Bucket>\n" +
+                "</BucketInfo>";
+
+        try {
+            instream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+            BucketInfo result = ResponseParsers.parseGetBucketInfo(instream);
+
+            Assert.assertEquals("oss-example", result.getBucket().getName());
+            Assert.assertEquals("oss-cn-hangzhou", result.getBucket().getLocation());
+            Assert.assertEquals("oss-cn-hangzhou.aliyuncs.com", result.getBucket().getExtranetEndpoint());
+            Assert.assertEquals("oss-cn-hangzhou-internal.aliyuncs.com", result.getBucket().getIntranetEndpoint());
+            Assert.assertEquals("username", result.getBucket().getOwner().getDisplayName());
+            Assert.assertEquals("27183473914****", result.getBucket().getOwner().getId());
+            Assert.assertEquals("test", result.getComment());
+            Assert.assertEquals(DataRedundancyType.LRS, result.getDataRedundancyType());
+            Assert.assertEquals("private", result.getCannedACL().toString());
+
+            Assert.assertEquals("Disabled", result.getTransferAcceleration());
+            Assert.assertEquals("Disabled", result.getCrossRegionReplication());
+            Assert.assertTrue(result.isBlockPublicAccess());
+            Assert.assertEquals("Enabled", result.getVersioning());
+
+            Assert.assertNotNull(result.getServerSideEncryptionConfiguration());
+            Assert.assertEquals("KMS", result.getServerSideEncryptionConfiguration()
+                    .getApplyServerSideEncryptionByDefault().getSSEAlgorithm());
+            Assert.assertEquals("shUhih687675***32edghadg", result.getServerSideEncryptionConfiguration()
+                    .getApplyServerSideEncryptionByDefault().getKMSMasterKeyID());
+            Assert.assertEquals("SM4", result.getServerSideEncryptionConfiguration()
+                    .getApplyServerSideEncryptionByDefault().getKMSDataEncryption());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.assertTrue(false);
+        }
+    }
+
+    @Test
     public void testParseGetBucketInfo() {
         String respBody = "" +
                 "<BucketInfo>\n" +

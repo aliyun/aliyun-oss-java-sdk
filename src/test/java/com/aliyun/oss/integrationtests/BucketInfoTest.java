@@ -69,6 +69,32 @@ public class BucketInfoTest extends TestBase {
     }
     
     @Test
+    public void testGetBucketInfoWithNewFields() {
+        try {
+            ossClient.setBucketAcl(bucketName, CannedAccessControlList.Private);
+
+            BucketInfo info = ossClient.getBucketInfo(bucketName);
+
+            Assert.assertNotNull("TransferAcceleration should not be null", info.getTransferAcceleration());
+            Assert.assertNotNull("CrossRegionReplication should not be null", info.getCrossRegionReplication());
+
+            Assert.assertEquals(info.getBucket().getName(), bucketName);
+            Assert.assertEquals(info.getBucket().getLocation(), "oss-" + TestConfig.OSS_TEST_REGION);
+            Assert.assertNotNull(info.getBucket().getCreationDate());
+            Assert.assertTrue(info.getBucket().getExtranetEndpoint().length() > 0);
+            Assert.assertTrue(info.getBucket().getIntranetEndpoint().length() > 0);
+            Assert.assertTrue(info.getBucket().getOwner().getId().length() > 0);
+            Assert.assertEquals(CannedAccessControlList.Private, info.getCannedACL());
+            Assert.assertEquals(info.getRequestId().length(), REQUEST_ID_LEN);
+
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+    }
+    
+    @Test
     public void testListBucketWithEndpoint() {
         try {            
             ListBucketsRequest listBucketsRequest = new ListBucketsRequest();
