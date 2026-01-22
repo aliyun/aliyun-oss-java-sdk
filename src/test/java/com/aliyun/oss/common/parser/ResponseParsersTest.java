@@ -7023,4 +7023,319 @@ public class ResponseParsersTest {
             Assert.assertTrue(false);
         }
     }
+
+
+    @Test
+    public void testDoMetaQueryResponseParserWithSemanticInsights() {
+        String respBody = "" +
+                "<MetaQuery>\n" +
+                "          <NextToken>next-token-value</NextToken>\n" +
+                "          <Files>\n" +
+                "            <File>\n" +
+                "              <URI>oss://examplebucket/test-object.jpg</URI>\n" +
+                "              <Filename>sampleobject.jpg</Filename>\n" +
+                "              <Size>1000</Size>\n" +
+                "              <ObjectACL>default</ObjectACL>\n" +
+                "              <FileModifiedTime>2021-06-29T14:50:14.011643661+08:00</FileModifiedTime>\n" +
+                "              <ServerSideEncryption>AES256</ServerSideEncryption>\n" +
+                "              <ServerSideEncryptionCustomerAlgorithm>SM4</ServerSideEncryptionCustomerAlgorithm>\n" +
+                "              <ETag>\"1D9C280A7C4F67F7EF873E28449****\"</ETag>\n" +
+                "              <OSSCRC64>559890638950338001</OSSCRC64>\n" +
+                "              <ProduceTime>2021-06-29T14:50:15.011643661+08:00</ProduceTime>\n" +
+                "              <ContentType>image/jpeg</ContentType>\n" +
+                "              <MediaType>image</MediaType>\n" +
+                "              <LatLong>30.134390,120.074997</LatLong>\n" +
+                "              <Title>test</Title>\n" +
+                "              <OSSExpiration>2024-12-01T12:00:00.000Z</OSSExpiration>\n" +
+                "              <AccessControlAllowOrigin>https://aliyundoc.com</AccessControlAllowOrigin>\n" +
+                "              <AccessControlRequestMethod>PUT</AccessControlRequestMethod>\n" +
+                "              <ServerSideDataEncryption>SM4</ServerSideDataEncryption>\n" +
+                "              <ServerSideEncryptionKeyId>9468da86-3509-4f8d-a61e-6eab1eac****</ServerSideEncryptionKeyId>\n" +
+                "              <CacheControl>no-cache</CacheControl>\n" +
+                "              <ContentDisposition>attachment; filename =test.jpg</ContentDisposition>\n" +
+                "              <ContentEncoding>UTF-8</ContentEncoding>\n" +
+                "              <ContentLanguage>zh-CN</ContentLanguage>\n" +
+                "              <ImageHeight>500</ImageHeight>\n" +
+                "              <ImageWidth>270</ImageWidth>\n" +
+                "              <VideoWidth>1080</VideoWidth>\n" +
+                "              <VideoHeight>1920</VideoHeight>\n" +
+                "              <VideoStreams>\n" +
+                "                <VideoStream>\n" +
+                "                  <CodecName>h264</CodecName>\n" +
+                "                  <Language>en</Language>\n" +
+                "                  <Bitrate>5407765</Bitrate>\n" +
+                "                  <FrameRate>25/1</FrameRate>\n" +
+                "                  <StartTime>0</StartTime>\n" +
+                "                  <Duration>22.88</Duration>\n" +
+                "                  <FrameCount>572</FrameCount>\n" +
+                "                  <BitDepth>8</BitDepth>\n" +
+                "                  <PixelFormat>yuv420p</PixelFormat>\n" +
+                "                  <ColorSpace>bt709</ColorSpace>\n" +
+                "                  <Height>720</Height>\n" +
+                "                  <Width>1280</Width>\n" +
+                "                </VideoStream>\n" +
+                "              </VideoStreams>\n" +
+                "              <AudioStreams>\n" +
+                "                <AudioStream>\n" +
+                "                  <CodecName>aac</CodecName>\n" +
+                "                  <Bitrate>1048576</Bitrate>\n" +
+                "                  <SampleRate>48000</SampleRate>\n" +
+                "                  <StartTime>0.0235</StartTime>\n" +
+                "                  <Duration>3.690667</Duration>\n" +
+                "                  <Channels>2</Channels>\n" +
+                "                  <Language>en</Language>\n" +
+                "                </AudioStream>\n" +
+                "              </AudioStreams>\n" +
+                "              <Subtitles>\n" +
+                "                <Subtitle>\n" +
+                "                  <CodecName>mov_text</CodecName>\n" +
+                "                  <Language>en</Language>\n" +
+                "                  <StartTime>0</StartTime>\n" +
+                "                  <Duration>71.378</Duration>\n" +
+                "                </Subtitle>\n" +
+                "              </Subtitles>\n" +
+                "              <Bitrate>5407765</Bitrate>\n" +
+                "              <Artist>Jane</Artist>\n" +
+                "              <AlbumArtist>Jenny</AlbumArtist>\n" +
+                "              <Composer>Jane</Composer>\n" +
+                "              <Performer>Jane</Performer>\n" +
+                "              <Album>FirstAlbum</Album>\n" +
+                "              <Duration>71.378</Duration>\n" +
+                "              <Addresses>\n" +
+                "                <Address>\n" +
+                "                  <AddressLine>中国浙江省杭州市余杭区文一西路969号</AddressLine>\n" +
+                "                  <City>杭州市</City>\n" +
+                "                  <Country>中国</Country>\n" +
+                "                  <District>余杭区</District>\n" +
+                "                  <Language>zh-Hans</Language>\n" +
+                "                  <Province>浙江省</Province>\n" +
+                "                  <Township>文一西路</Township>\n" +
+                "                </Address>\n" +
+                "              </Addresses>\n" +
+                "              <OSSObjectType>Normal</OSSObjectType>\n" +
+                "              <OSSStorageClass>Standard</OSSStorageClass>\n" +
+                "              <OSSTaggingCount>2</OSSTaggingCount>\n" +
+                "              <OSSTagging>\n" +
+                "                <Tagging>\n" +
+                "                  <Key>key</Key>\n" +
+                "                  <Value>val</Value>\n" +
+                "                </Tagging>\n" +
+                "              </OSSTagging>\n" +
+                "              <OSSUserMeta>\n" +
+                "                <UserMeta>\n" +
+                "                  <Key>key</Key>\n" +
+                "                  <Value>val</Value>\n" +
+                "                </UserMeta>\n" +
+                "              </OSSUserMeta>\n" +
+                "              <Insights>\n" +
+                "                <Video>\n" +
+                "                  <Caption>hand holding shampoo</Caption>\n" +
+                "                  <Description>The video shows two different scenes: one with a stationary white plate, black bottle, and transparent glass cup, and another of a hand holding a shampoo bottle labeled \"YEZOLU\" moving slowly upward in the bathroom</Description>\n" +
+                "                </Video>\n" +
+                "                <Image>\n" +
+                "                  <Caption>person standing</Caption>\n" +
+                "                  <Description>Picture shows a person wearing a dark-colored suit jacket with a white shirt underneath. The background is a gradient from light blue to gray</Description>\n" +
+                "                </Image>\n" +
+                "              </Insights>\n" +
+                "            </File>\n" +
+                "          </Files>\n" +
+                "          <Aggregations>\n" +
+                "            <Aggregation>\n" +
+                "              <Field>size</Field>\n" +
+                "              <Operation>sum</Operation>\n" +
+                "              <Value>1000.0</Value>\n" +
+                "              <Groups>\n" +
+                "                <Group>\n" +
+                "                  <Value>group1</Value>\n" +
+                "                  <Count>10</Count>\n" +
+                "                </Group>\n" +
+                "              </Groups>\n" +
+                "            </Aggregation>\n" +
+                "          </Aggregations>\n" +
+                "        </MetaQuery>";
+
+        InputStream inputStream = null;
+        try {
+            inputStream = new ByteArrayInputStream(respBody.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail("UnsupportedEncodingException");
+        }
+
+        DoMetaQueryResult result = null;
+        try {
+            ResponseMessage response = new ResponseMessage(null);
+            response.setContent(inputStream);
+            ResponseParsers.DoMetaQueryResponseParser parser = new ResponseParsers.DoMetaQueryResponseParser();
+            result = parser.parse(response);
+            Assert.assertNotNull(result);
+            Assert.assertEquals("next-token-value", result.getNextToken());
+            Assert.assertNotNull(result.getFiles());
+            Assert.assertNotNull(result.getAggregations());
+
+            List<ObjectFile> files = result.getFiles().getFile();
+            Assert.assertEquals(1, files.size());
+
+            ObjectFile file = files.get(0);
+            Assert.assertEquals("oss://examplebucket/test-object.jpg", file.getUri());
+            Assert.assertEquals("sampleobject.jpg", file.getFilename());
+            Assert.assertEquals(1000L, file.getSize());
+            Assert.assertEquals("default", file.getObjectACL());
+            Assert.assertEquals("2021-06-29T14:50:14.011643661+08:00", file.getFileModifiedTime());
+            Assert.assertEquals("AES256", file.getServerSideEncryption());
+            Assert.assertEquals("SM4", file.getServerSideEncryptionCustomerAlgorithm());
+            Assert.assertEquals("\"1D9C280A7C4F67F7EF873E28449****\"", file.getETag());
+            Assert.assertEquals("559890638950338001", file.getOssCRC64());
+            Assert.assertEquals("2021-06-29T14:50:15.011643661+08:00", file.getProduceTime());
+            Assert.assertEquals("image/jpeg", file.getContentType());
+            Assert.assertEquals("image", file.getMediaType());
+            Assert.assertEquals("30.134390,120.074997", file.getLatLong());
+            Assert.assertEquals("test", file.getTitle());
+            Assert.assertEquals("2024-12-01T12:00:00.000Z", file.getOssExpiration());
+            Assert.assertEquals("https://aliyundoc.com", file.getAccessControlAllowOrigin());
+            Assert.assertEquals("PUT", file.getAccessControlRequestMethod());
+            Assert.assertEquals("SM4", file.getServerSideDataEncryption());
+            Assert.assertEquals("9468da86-3509-4f8d-a61e-6eab1eac****", file.getServerSideEncryptionKeyId());
+            Assert.assertEquals("no-cache", file.getCacheControl());
+            Assert.assertEquals("attachment; filename =test.jpg", file.getContentDisposition());
+            Assert.assertEquals("UTF-8", file.getContentEncoding());
+            Assert.assertEquals("zh-CN", file.getContentLanguage());
+            Assert.assertEquals(500L, file.getImageHeight());
+            Assert.assertEquals(270L, file.getImageWidth());
+            Assert.assertEquals(1080L, file.getVideoWidth());
+            Assert.assertEquals(1920L, file.getVideoHeight());
+            Assert.assertEquals(5407765L, file.getBitrate());
+            Assert.assertEquals("Jane", file.getArtist());
+            Assert.assertEquals("Jenny", file.getAlbumArtist());
+            Assert.assertEquals("Jane", file.getComposer());
+            Assert.assertEquals("Jane", file.getPerformer());
+            Assert.assertEquals("FirstAlbum", file.getAlbum());
+            Assert.assertEquals(71.378, file.getDuration(), 0.001); // Use delta for floating point comparison
+            Assert.assertEquals("Normal", file.getOssObjectType());
+            Assert.assertEquals("Standard", file.getOssStorageClass());
+            Assert.assertEquals(2, file.getOssTaggingCount());
+
+            // Check video streams
+            List<MetaQueryVideoStream> videoStreams = file.getMetaQueryVideoStreams();
+            Assert.assertEquals(1, videoStreams.size());
+            MetaQueryVideoStream videoStream = videoStreams.get(0);
+            Assert.assertEquals("h264", videoStream.getCodecName());
+            Assert.assertEquals("en", videoStream.getLanguage());
+            Assert.assertEquals(5407765L, videoStream.getBitrate());
+            Assert.assertEquals("25/1", videoStream.getFrameRate());
+            Assert.assertEquals(0.0, videoStream.getStartTime(), 0.001);
+            Assert.assertEquals(22.88, videoStream.getDuration(), 0.001);
+            Assert.assertEquals(572L, videoStream.getFrameCount());
+            Assert.assertEquals(8L, videoStream.getBitDepth());
+            Assert.assertEquals("yuv420p", videoStream.getPixelFormat());
+            Assert.assertEquals("bt709", videoStream.getColorSpace());
+            Assert.assertEquals(720L, videoStream.getHeight());
+            Assert.assertEquals(1280L, videoStream.getWidth());
+
+            // Check audio streams
+            List<MetaQueryAudioStream> audioStreams = file.getMetaQueryAudioStreams();
+            Assert.assertEquals(1, audioStreams.size());
+            MetaQueryAudioStream audioStream = audioStreams.get(0);
+            Assert.assertEquals("aac", audioStream.getCodecName());
+            Assert.assertEquals(1048576L, audioStream.getBitrate());
+            Assert.assertEquals(48000L, audioStream.getSampleRate());
+            Assert.assertEquals(0.0235, audioStream.getStartTime(), 0.001);
+            Assert.assertEquals(3.690667, audioStream.getDuration(), 0.001);
+            Assert.assertEquals(2L, audioStream.getChannels());
+            Assert.assertEquals("en", audioStream.getLanguage());
+
+            // Check subtitles
+            List<MetaQuerySubtitle> subtitles = file.getMetaQuerySubtitles();
+            Assert.assertEquals(1, subtitles.size());
+            MetaQuerySubtitle subtitle = subtitles.get(0);
+            Assert.assertEquals("mov_text", subtitle.getCodecName());
+            Assert.assertEquals("en", subtitle.getLanguage());
+            Assert.assertEquals(0.0, subtitle.getStartTime(), 0.001);
+            Assert.assertEquals(71.378, subtitle.getDuration(), 0.001);
+
+            // Check address information
+            List<MetaQueryAddress> addresses = file.getAddresses();
+            Assert.assertEquals(1, addresses.size());
+            MetaQueryAddress address = addresses.get(0);
+            Assert.assertEquals("中国浙江省杭州市余杭区文一西路969号", address.getAddressLine());
+            Assert.assertEquals("杭州市", address.getCity());
+            Assert.assertEquals("中国", address.getCountry());
+            Assert.assertEquals("余杭区", address.getDistrict());
+            Assert.assertEquals("zh-Hans", address.getLanguage());
+            Assert.assertEquals("浙江省", address.getProvince());
+            Assert.assertEquals("文一西路", address.getTownship());
+
+            // Check tags
+            List<Tagging> taggings = file.getOssTagging().getTagging();
+            Assert.assertEquals(1, taggings.size());
+            Tagging tagging = taggings.get(0);
+            Assert.assertEquals("key", tagging.getKey());
+            Assert.assertEquals("val", tagging.getValue());
+
+            // Check user metadata
+            List<UserMeta> userMetas = file.getOssUserMeta().getUserMeta();
+            Assert.assertEquals(1, userMetas.size());
+            UserMeta userMeta = userMetas.get(0);
+            Assert.assertEquals("key", userMeta.getKey());
+            Assert.assertEquals("val", userMeta.getValue());
+
+            // Check insights information
+            MetaQueryRespFileInsights insights = file.getInsights();
+            Assert.assertNotNull(insights);
+
+            MetaQueryVideoInsights videoInsights = insights.getVideo();
+            Assert.assertNotNull(videoInsights);
+            Assert.assertEquals("hand holding shampoo", videoInsights.getCaption());
+            Assert.assertEquals("The video shows two different scenes: one with a stationary white plate, black bottle, and transparent glass cup, and another of a hand holding a shampoo bottle labeled \"YEZOLU\" moving slowly upward in the bathroom", videoInsights.getDescription());
+
+            MetaQueryImageInsights imageInsights = insights.getImage();
+            Assert.assertNotNull(imageInsights);
+            Assert.assertEquals("person standing", imageInsights.getCaption());
+            Assert.assertEquals("Picture shows a person wearing a dark-colored suit jacket with a white shirt underneath. The background is a gradient from light blue to gray", imageInsights.getDescription());
+
+            // Check aggregation information
+            List<Aggregation> aggregations = result.getAggregations().getAggregation();
+            Assert.assertEquals(1, aggregations.size());
+            Aggregation aggregation = aggregations.get(0);
+            Assert.assertEquals("size", aggregation.getField());
+            Assert.assertEquals("sum", aggregation.getOperation());
+            Assert.assertEquals(1000.0, aggregation.getValue(), 0.001);
+
+            List<AggregationGroup> groups = aggregation.getGroups().getGroup();
+            Assert.assertEquals(1, groups.size());
+            AggregationGroup group = groups.get(0);
+            Assert.assertEquals("group1", group.getValue());
+            Assert.assertEquals(10, group.getCount());
+
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(false);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        // Test null input
+        try {
+            ResponseMessage nullResponse = new ResponseMessage(null);
+            nullResponse.setContent(null);
+            ResponseParsers.DoMetaQueryResponseParser nullParser = new ResponseParsers.DoMetaQueryResponseParser();
+            DoMetaQueryResult nullResult = nullParser.parse(nullResponse);
+            Assert.assertNotNull(nullResult);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+
+        // Test invalid XML
+        String invalidRespBody = "invalid";
+        try {
+            InputStream invalidInputStream = new ByteArrayInputStream(invalidRespBody.getBytes("utf-8"));
+            ResponseMessage invalidResponse = new ResponseMessage(null);
+            invalidResponse.setContent(invalidInputStream);
+            ResponseParsers.DoMetaQueryResponseParser invalidParser = new ResponseParsers.DoMetaQueryResponseParser();
+            DoMetaQueryResult invalidResult = invalidParser.parse(invalidResponse);
+            Assert.assertTrue(false);
+        } catch (ResponseParseException e) {
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+    }
 }

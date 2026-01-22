@@ -48,6 +48,7 @@ public class ObjectFile {
     private String album;
     private double duration;
     private List<MetaQueryAddress> addresses;
+    private MetaQueryRespFileInsights insights;
 
 
 
@@ -410,5 +411,21 @@ public class ObjectFile {
 
     public void setAddresses(List<MetaQueryAddress> addresses) {
         this.addresses = addresses;
+    }
+
+    /**
+     * Gets the insights information for video and image files.
+     * @return insights information containing video and image descriptions
+     */
+    public MetaQueryRespFileInsights getInsights() {
+        return insights;
+    }
+
+    /**
+     * Sets the insights information for video and image files.
+     * @param insights insights information containing video and image descriptions
+     */
+    public void setInsights(MetaQueryRespFileInsights insights) {
+        this.insights = insights;
     }
 }

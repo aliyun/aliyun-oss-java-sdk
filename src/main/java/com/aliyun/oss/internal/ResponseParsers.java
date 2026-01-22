@@ -4374,6 +4374,29 @@ public final class ResponseParsers {
                             objectFile.setAddresses(addressList);
                         }
 
+                        Element insightsElem = elem.getChild("Insights");
+                        if(insightsElem != null){
+                            MetaQueryRespFileInsights insights = new MetaQueryRespFileInsights();
+                            
+                            Element videoInsightsElem = insightsElem.getChild("Video");
+                            if(videoInsightsElem != null){
+                                MetaQueryVideoInsights videoInsights = new MetaQueryVideoInsights();
+                                videoInsights.setCaption(videoInsightsElem.getChildText("Caption"));
+                                videoInsights.setDescription(videoInsightsElem.getChildText("Description"));
+                                insights.setVideo(videoInsights);
+                            }
+                            
+                            Element imageInsightsElem = insightsElem.getChild("Image");
+                            if(imageInsightsElem != null){
+                                MetaQueryImageInsights imageInsights = new MetaQueryImageInsights();
+                                imageInsights.setCaption(imageInsightsElem.getChildText("Caption"));
+                                imageInsights.setDescription(imageInsightsElem.getChildText("Description"));
+                                insights.setImage(imageInsights);
+                            }
+                            
+                            objectFile.setInsights(insights);
+                        }
+                        
                         fileList.add(objectFile);
                     }
                     objectFiles.setFile(fileList);
