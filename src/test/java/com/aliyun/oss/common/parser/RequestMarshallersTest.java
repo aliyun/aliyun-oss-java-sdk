@@ -1764,4 +1764,77 @@ public class RequestMarshallersTest {
 
     }
 
+    @Test
+    public void testDoMetaQuery() {
+        String bucketName = "testBucket";
+        int maxResults = 100;
+        String query = "select * from test";
+        String sort = "filename";
+        
+        DoMetaQueryRequest doMetaQueryRequest = new DoMetaQueryRequest(bucketName, maxResults, query, sort);
+        doMetaQueryRequest.setNextToken("next-token");
+        doMetaQueryRequest.setOrder(SortOrder.DESC);
+        
+        // Test media types
+        List<String> mediaTypes = new ArrayList<String>();
+        mediaTypes.add("Image");
+        mediaTypes.add("Video");
+        doMetaQueryRequest.setMediaTypes(mediaTypes);
+        
+        // Test simple query
+        doMetaQueryRequest.setSimpleQuery("simple-query");
+        
+        // Test aggregations
+        Aggregations aggregations = new Aggregations();
+        List<Aggregation> aggregationList = new ArrayList<Aggregation>();
+        
+        Aggregation aggregation = new Aggregation();
+        aggregation.setField("size");
+        aggregation.setOperation("sum");
+        aggregationList.add(aggregation);
+        
+        aggregations.setAggregation(aggregationList);
+        doMetaQueryRequest.setAggregations(aggregations);
+        
+        byte[] data = doMetaQueryRequestMarshaller.marshall(doMetaQueryRequest);
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+        
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(is);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        Element root = doc.getRootElement();
+        
+        Assert.assertEquals("next-token", root.getChildText("NextToken"));
+        Assert.assertEquals("100", root.getChildText("MaxResults"));
+        Assert.assertEquals("select * from test", root.getChildText("Query"));
+        Assert.assertEquals("filename", root.getChildText("Sort"));
+        Assert.assertEquals("desc", root.getChildText("Order"));
+        Assert.assertEquals("simple-query", root.getChildText("SimpleQuery"));
+        
+        // Check media types
+        Element mediaTypesElement = root.getChild("MediaTypes");
+        Assert.assertNotNull(mediaTypesElement);
+        List<Element> mediaTypeElements = mediaTypesElement.getChildren("MediaType");
+        Assert.assertEquals(2, mediaTypeElements.size());
+        Assert.assertEquals("Image", mediaTypeElements.get(0).getText());
+        Assert.assertEquals("Video", mediaTypeElements.get(1).getText());
+        
+        // Check aggregations
+        Element aggregationsElement = root.getChild("Aggregations");
+        Assert.assertNotNull(aggregationsElement);
+        List<Element> aggregationElements = aggregationsElement.getChildren("Aggregation");
+        Assert.assertEquals(1, aggregationElements.size());
+        
+        Element aggregationElement = aggregationElements.get(0);
+        Assert.assertEquals("size", aggregationElement.getChildText("Field"));
+        Assert.assertEquals("sum", aggregationElement.getChildText("Operation"));
+    }
+
 }
