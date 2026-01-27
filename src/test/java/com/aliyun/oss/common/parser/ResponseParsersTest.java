@@ -992,10 +992,6 @@ public class ResponseParsersTest {
             Assert.assertTrue(result.isBlockPublicAccess());
             Assert.assertEquals("Enabled", result.getVersioning());
 
-            Assert.assertNotNull(result.getBucketPolicy());
-            Assert.assertEquals("examplebucket", result.getBucketPolicy().getLogBucket());
-            Assert.assertEquals("log/", result.getBucketPolicy().getLogPrefix());
-
             Assert.assertNotNull(result.getServerSideEncryptionConfiguration());
             Assert.assertEquals("KMS", result.getServerSideEncryptionConfiguration()
                     .getApplyServerSideEncryptionByDefault().getSSEAlgorithm());

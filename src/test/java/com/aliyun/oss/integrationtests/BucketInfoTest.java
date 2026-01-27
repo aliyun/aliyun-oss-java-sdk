@@ -27,7 +27,6 @@ import org.junit.Test;
 
 import com.aliyun.oss.model.BucketInfo;
 import com.aliyun.oss.model.BucketList;
-import com.aliyun.oss.model.BucketPolicy;
 import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.Grant;
 import com.aliyun.oss.model.GroupGrantee;
@@ -78,7 +77,6 @@ public class BucketInfoTest extends TestBase {
 
             Assert.assertNotNull("TransferAcceleration should not be null", info.getTransferAcceleration());
             Assert.assertNotNull("CrossRegionReplication should not be null", info.getCrossRegionReplication());
-            Assert.assertNotNull("BucketPolicy should not be null", info.getBucketPolicy());
 
             Assert.assertEquals(info.getBucket().getName(), bucketName);
             Assert.assertEquals(info.getBucket().getLocation(), "oss-" + TestConfig.OSS_TEST_REGION);

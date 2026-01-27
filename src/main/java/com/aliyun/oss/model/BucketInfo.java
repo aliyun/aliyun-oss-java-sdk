@@ -103,14 +103,6 @@ public class BucketInfo extends GenericResult {
         this.blockPublicAccess = blockPublicAccess;
     }
 
-    public BucketPolicy getBucketPolicy() {
-        return bucketPolicy;
-    }
-
-    public void setBucketPolicy(BucketPolicy bucketPolicy) {
-        this.bucketPolicy = bucketPolicy;
-    }
-
     public String getVersioning() {
         return versioning;
     }
@@ -128,6 +120,5 @@ public class BucketInfo extends GenericResult {
     private String transferAcceleration;
     private String crossRegionReplication;
     private boolean blockPublicAccess;
-    private BucketPolicy bucketPolicy;
     private String versioning;
 }

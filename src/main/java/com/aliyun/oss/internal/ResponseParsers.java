@@ -2813,17 +2813,6 @@ public final class ResponseParsers {
             // BucketPolicy
             if (bucketElem.getChild("BucketPolicy") != null) {
                 Element policyElem = bucketElem.getChild("BucketPolicy");
-                BucketPolicy bucketPolicy = new BucketPolicy();
-                
-                if (policyElem.getChild("LogBucket") != null) {
-                    bucketPolicy.setLogBucket(policyElem.getChildText("LogBucket"));
-                }
-                
-                if (policyElem.getChild("LogPrefix") != null) {
-                    bucketPolicy.setLogPrefix(policyElem.getChildText("LogPrefix"));
-                }
-                
-                bucketInfo.setBucketPolicy(bucketPolicy);
 
                 if (policyElem.getChild("XCType") != null) {
                     bucket.setXcType(policyElem.getChildText("XCType"));
