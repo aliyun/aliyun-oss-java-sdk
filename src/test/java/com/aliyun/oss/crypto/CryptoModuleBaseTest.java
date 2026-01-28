@@ -25,6 +25,9 @@ import junit.framework.Assert;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;
 
+import java.security.KeyPair;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -124,7 +127,12 @@ public class CryptoModuleBaseTest {
         Map<String, String> matDesc = new HashMap<String, String>();
         matDesc.put("<yourDescriptionKey>", "<yourDescriptionValue>");
 
-        KmsEncryptionMaterials encryptionMaterials = new KmsEncryptionMaterials("region", "cmk", matDesc);
+        final RSAPrivateKey privateKey = SimpleRSAEncryptionMaterials.getPrivateKeyFromPemPKCS8(RSAEncryptionUnitTest.PRIVATE_KEY_PEM_PKCS8);
+        final RSAPublicKey publicKey = SimpleRSAEncryptionMaterials.getPublicKeyFromPemX509(RSAEncryptionUnitTest.PUBLIC_KEY_PEM_XC509);
+
+        KeyPair keyPair = new KeyPair(publicKey, privateKey);
+
+        SimpleRSAEncryptionMaterials encryptionMaterials = new SimpleRSAEncryptionMaterials(keyPair, matDesc);
         CryptoConfiguration cryptoConfig = new CryptoConfiguration();
 
         CryptoModuleBaseWrap wrap = new CryptoModuleBaseWrap(new OSSDirectImplWarp(), encryptionMaterials, cryptoConfig);

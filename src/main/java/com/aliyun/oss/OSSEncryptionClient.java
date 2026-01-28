@@ -44,9 +44,6 @@ public class OSSEncryptionClient extends OSSClient {
         super(endpoint, credsProvider, clientConfig);
         assertParameterNotNull(credsProvider, "CredentialsProvider");
         assertParameterNotNull(encryptionMaterials, "EncryptionMaterials");
-        if(encryptionMaterials instanceof KmsEncryptionMaterials) {
-            ((KmsEncryptionMaterials)encryptionMaterials).setKmsCredentialsProvider(credsProvider);
-        }
         this.cryptoConfig = cryptoConfig == null ? CryptoConfiguration.DEFAULT : cryptoConfig;
         this.encryptionMaterials = encryptionMaterials;
     }

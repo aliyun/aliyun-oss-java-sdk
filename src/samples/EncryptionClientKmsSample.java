@@ -30,7 +30,6 @@ import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSSEncryptionClient;
 import com.aliyun.oss.OSSEncryptionClientBuilder;
 import com.aliyun.oss.OSSException;
-import com.aliyun.oss.crypto.KmsEncryptionMaterials;
 import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.OSSObject;
 

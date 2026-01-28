@@ -33,14 +33,14 @@ import junit.framework.Assert;
 public class RSAEncryptionUnitTest {
     private final String PLAIN_TEXT = "kdnsknshiwonrjsn23e1vdjknvlsfnsl34ihsohnqm92u32jns.msl082mjk73643dns";
 
-    private final String PUBLIC_KEY_PEM_XC509 = 
+    public static final String PUBLIC_KEY_PEM_XC509 =
             "-----BEGIN PUBLIC KEY-----\n"
             + "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDIUc0RE+OF4qvJkFp/sBR4iiPy\n"
             + "5czlKdHoOKOjhvh93aGpipoMb05+t07XSOBDJUzKGhqqVQJZEQahKXJUU0h3mxYy\n"
             + "xRQMhhWWWdH1LH4s/GAjf4h5l+6tKxS6mnZGH4IlbJz1pvbPiZjzD6BEWtGBMAxZ\n" + "IjqPgSRjJpB6fBIrHQIDAQAB\n"
             + "-----END PUBLIC KEY-----";
 
-    private final String PRIVATE_KEY_PEM_PKCS1 = 
+    public static final String PRIVATE_KEY_PEM_PKCS1 =
             "-----BEGIN RSA PRIVATE KEY-----\n"
             + "MIICXQIBAAKBgQDIUc0RE+OF4qvJkFp/sBR4iiPy5czlKdHoOKOjhvh93aGpipoM\n"
             + "b05+t07XSOBDJUzKGhqqVQJZEQahKXJUU0h3mxYyxRQMhhWWWdH1LH4s/GAjf4h5\n"
@@ -57,7 +57,7 @@ public class RSAEncryptionUnitTest {
             + "aURh6yaGmkK8gfmrkFMtWQ0CC3fNecewUNLpScuKunCh\n" 
             + "-----END RSA PRIVATE KEY-----";
 
-    private static String PRIVATE_KEY_PEM_PKCS8 = 
+    public static String PRIVATE_KEY_PEM_PKCS8 =
             "-----BEGIN PRIVATE KEY-----\n"
             + "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAMhRzRET44Xiq8mQ\n"
             + "Wn+wFHiKI/LlzOUp0eg4o6OG+H3doamKmgxvTn63TtdI4EMlTMoaGqpVAlkRBqEp\n"
