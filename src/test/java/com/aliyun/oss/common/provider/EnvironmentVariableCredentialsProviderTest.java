@@ -67,40 +67,6 @@ public class EnvironmentVariableCredentialsProviderTest extends TestBase {
         }
     }
 
-    @Test
-    public void testGetEnvironmentVariableStsCredentials() {
-        try {
-            // unset evn
-            List<String> envSet = new ArrayList<String>();
-            envSet.add(AuthUtils.ACCESS_KEY_ENV_VAR);
-            envSet.add(AuthUtils.SECRET_KEY_ENV_VAR);
-            envSet.add(AuthUtils.SESSION_TOKEN_ENV_VAR);
-            unsetEnv(envSet);
-
-            CredentialsProvider assumeRoleCredProvider = CredentialsProviderFactory.newSTSAssumeRoleSessionCredentialsProvider(
-                    TestConfig.RAM_REGION_ID, TestConfig.USER_ACCESS_KEY_ID, TestConfig.USER_ACCESS_KEY_SECRET,
-                    TestConfig.RAM_ROLE_ARN);
-
-            // set env
-            Credentials assumeRoleCred = assumeRoleCredProvider.getCredentials();
-            Map<String, String> envMap = new HashMap<String, String>(System.getenv());
-            envMap.put(AuthUtils.ACCESS_KEY_ENV_VAR, assumeRoleCred.getAccessKeyId());
-            envMap.put(AuthUtils.SECRET_KEY_ENV_VAR, assumeRoleCred.getSecretAccessKey());
-            envMap.put(AuthUtils.SESSION_TOKEN_ENV_VAR, assumeRoleCred.getSecurityToken());
-            setEnv(envMap);
-
-            // env provider
-            EnvironmentVariableCredentialsProvider credentialsProvider = new EnvironmentVariableCredentialsProvider();
-            Credentials credentials = credentialsProvider.getCredentials();
-            Assert.assertEquals(credentials.getAccessKeyId(), assumeRoleCred.getAccessKeyId());
-            Assert.assertEquals(credentials.getSecretAccessKey(), assumeRoleCred.getSecretAccessKey());
-            Assert.assertEquals(credentials.getSecurityToken(), assumeRoleCred.getSecurityToken());
-            Assert.assertTrue(credentials.useSecurityToken());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
 
     @Test
     public void testGetEnvironmentVariableCredentialsInOss() {
@@ -131,48 +97,6 @@ public class EnvironmentVariableCredentialsProviderTest extends TestBase {
             waitForCacheExpiration(2);
             ossClient.putObject(bucketName, key, new ByteArrayInputStream(content.getBytes()));
             ossClient.deleteObject(bucketName, key);
-            ossClient.shutdown();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
-
-    @Test
-    public void testGetEnvironmentVariableStsCredentialsInOss() {
-        try {
-            // unset evn
-            List<String> envSet = new ArrayList<String>();
-            envSet.add(AuthUtils.ACCESS_KEY_ENV_VAR);
-            envSet.add(AuthUtils.SECRET_KEY_ENV_VAR);
-            envSet.add(AuthUtils.SESSION_TOKEN_ENV_VAR);
-            unsetEnv(envSet);
-
-            CredentialsProvider assumeRoleCredProvider = CredentialsProviderFactory.newSTSAssumeRoleSessionCredentialsProvider(
-                    TestConfig.RAM_REGION_ID, TestConfig.USER_ACCESS_KEY_ID, TestConfig.USER_ACCESS_KEY_SECRET,
-                    TestConfig.RAM_ROLE_ARN);
-
-            // set env
-            Credentials assumeRoleCred = assumeRoleCredProvider.getCredentials();
-            Map<String, String> envMap = new HashMap<String, String>(System.getenv());
-            envMap.put(AuthUtils.ACCESS_KEY_ENV_VAR, assumeRoleCred.getAccessKeyId());
-            envMap.put(AuthUtils.SECRET_KEY_ENV_VAR, assumeRoleCred.getSecretAccessKey());
-            envMap.put(AuthUtils.SESSION_TOKEN_ENV_VAR, assumeRoleCred.getSecurityToken());
-            setEnv(envMap);
-
-            // env provider
-            EnvironmentVariableCredentialsProvider credentialsProvider = CredentialsProviderFactory
-                    .newEnvironmentVariableCredentialsProvider();
-            String key = "test.txt";
-            String content = "HelloOSS";
-            String bucketName = getRandomBucketName();
-
-            OSS ossClient = new OSSClientBuilder().build(TestConfig.OSS_ENDPOINT, credentialsProvider);
-            ossClient.createBucket(bucketName);
-            waitForCacheExpiration(2);
-            ossClient.putObject(bucketName, key, new ByteArrayInputStream(content.getBytes()));
-            ossClient.deleteObject(bucketName, key);
-            ossClient.deleteBucket(bucketName);
             ossClient.shutdown();
         } catch (Exception e) {
             e.printStackTrace();

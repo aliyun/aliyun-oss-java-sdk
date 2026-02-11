@@ -24,16 +24,11 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import com.aliyun.oss.common.auth.PublicKey;
-import com.aliyun.oss.common.utils.AuthUtils;
 import com.aliyun.oss.common.utils.IniEditor;
-import com.aliyuncs.exceptions.ClientException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-
-import static com.aliyun.oss.integrationtests.TestUtils.waitForCacheExpiration;
 
 public class TestBase {
 
@@ -53,11 +48,6 @@ public class TestBase {
     @Before
     public void setUp() {
         // for each case
-        try {
-            deleteAllPublicKey();
-        } catch (ClientException e) {
-            e.printStackTrace();
-        }
     }
 
     @After
@@ -115,13 +105,7 @@ public class TestBase {
         }
     }
 
-    public static void deleteAllPublicKey() throws ClientException {
-        List<PublicKey> publicKeys = AuthUtils.listPublicKeys(TestConfig.RAM_REGION_ID,
-                TestConfig.ROOT_ACCESS_KEY_ID, TestConfig.ROOT_ACCESS_KEY_SECRET);
-        for (PublicKey pk : publicKeys) {
-            AuthUtils.deletePublicKey(TestConfig.RAM_REGION_ID, TestConfig.ROOT_ACCESS_KEY_ID,
-                    TestConfig.ROOT_ACCESS_KEY_SECRET, pk.getPublicKeyId());
-        }
+    public static void deleteAllPublicKey()  {
     }
 
     public static void generateProfileFile(String ProfileFilePath, String sectionName, Map<String, String> options)

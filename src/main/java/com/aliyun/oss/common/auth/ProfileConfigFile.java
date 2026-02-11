@@ -23,9 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import com.aliyun.oss.common.auth.Credentials;
-import com.aliyun.oss.common.auth.DefaultCredentials;
-import com.aliyun.oss.common.auth.InvalidCredentialsException;
 import com.aliyun.oss.common.utils.AuthUtils;
 import com.aliyun.oss.common.utils.LogUtils;
 import com.aliyun.oss.common.utils.StringUtils;

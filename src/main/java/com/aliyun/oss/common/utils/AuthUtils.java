@@ -25,18 +25,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
-import com.aliyun.oss.common.auth.PublicKey;
-import com.aliyuncs.DefaultAcsClient;
-import com.aliyuncs.exceptions.ClientException;
-import com.aliyuncs.profile.DefaultProfile;
-import com.aliyuncs.ram.model.v20150501.DeletePublicKeyRequest;
-import com.aliyuncs.ram.model.v20150501.ListPublicKeysRequest;
-import com.aliyuncs.ram.model.v20150501.ListPublicKeysResponse;
-import com.aliyuncs.ram.model.v20150501.UploadPublicKeyRequest;
-import com.aliyuncs.ram.model.v20150501.UploadPublicKeyResponse;
 
 public class AuthUtils {
 
@@ -139,7 +128,7 @@ public class AuthUtils {
 
     /**
      * Get the default profile path.
-     * 
+     *
      * @return Default profile path
      */
     public static String defaultProfilePath() {
@@ -147,96 +136,8 @@ public class AuthUtils {
     }
 
     /**
-     * Upload the public key of RSA key pair.
-     * 
-     * @param regionId
-     *            RAM's available area.
-     * @param accessKeyId
-     *            Access Key ID of the root user.
-     * @param accessKeySecret
-     *            Secret Access Key of the root user.
-     * @param publicKey
-     *            Public key content.
-     * @return Public key description, include public key id etc.
-     * @throws ClientException
-     *            If any errors are encountered in the client while making the
-     *            request or handling the response.
-     */
-    public static PublicKey uploadPublicKey(String regionId, String accessKeyId, String accessKeySecret,
-            String publicKey) throws ClientException {
-        DefaultProfile profile = DefaultProfile.getProfile(regionId, accessKeyId, accessKeySecret);
-        DefaultAcsClient client = new DefaultAcsClient(profile);
-
-        UploadPublicKeyRequest uploadPublicKeyRequest = new UploadPublicKeyRequest();
-        uploadPublicKeyRequest.setPublicKeySpec(publicKey);
-
-        UploadPublicKeyResponse uploadPublicKeyResponse = client.getAcsResponse(uploadPublicKeyRequest);
-        com.aliyuncs.ram.model.v20150501.UploadPublicKeyResponse.PublicKey pubKey = uploadPublicKeyResponse
-                .getPublicKey();
-
-        return new PublicKey(pubKey);
-    }
-
-    /**
-     * List the public keys that has been uploaded.
-     * 
-     * @param regionId
-     *            RAM's available area.
-     * @param accessKeyId
-     *            Access Key ID of the root user.
-     * @param accessKeySecret
-     *            Secret Access Key of the root user.
-     * @return Public keys.
-     * @throws ClientException
-     *            If any errors are encountered in the client while making the
-     *            request or handling the response.
-     */
-    public static List<PublicKey> listPublicKeys(String regionId, String accessKeyId, String accessKeySecret)
-            throws ClientException {
-        DefaultProfile profile = DefaultProfile.getProfile(regionId, accessKeyId, accessKeySecret);
-        DefaultAcsClient client = new DefaultAcsClient(profile);
-
-        ListPublicKeysRequest listPublicKeysRequest = new ListPublicKeysRequest();
-        ListPublicKeysResponse listPublicKeysResponse = client.getAcsResponse(listPublicKeysRequest);
-
-        List<PublicKey> publicKeys = new ArrayList<PublicKey>();
-        for (com.aliyuncs.ram.model.v20150501.ListPublicKeysResponse.PublicKey publicKey : listPublicKeysResponse
-                .getPublicKeys()) {
-            publicKeys.add(new PublicKey(publicKey));
-        }
-
-        return publicKeys;
-    }
-
-    /**
-     * Delete the uploaded public key.
-     * 
-     * @param regionId
-     *            RAM's available area.
-     * @param accessKeyId
-     *            Access Key ID of the root user.
-     * @param accessKeySecret
-     *            Secret Access Key of the root user.
-     * @param publicKeyId
-     *            Public Key Id.
-     * @throws ClientException
-     *            If any errors are encountered in the client while making the
-     *            request or handling the response.
-     */
-    public static void deletePublicKey(String regionId, String accessKeyId, String accessKeySecret, String publicKeyId)
-            throws ClientException {
-        DefaultProfile profile = DefaultProfile.getProfile(regionId, accessKeyId, accessKeySecret);
-        DefaultAcsClient client = new DefaultAcsClient(profile);
-
-        DeletePublicKeyRequest deletePublicKeyRequest = new DeletePublicKeyRequest();
-        deletePublicKeyRequest.setUserPublicKeyId(publicKeyId);
-
-        client.getAcsResponse(deletePublicKeyRequest);
-    }
-
-    /**
      * Load public key content from file and format.
-     * 
+     *
      * @param publicKeyPath
      *            Public key file path.
      * @return Formatted public key content.
@@ -265,7 +166,7 @@ public class AuthUtils {
 
     /**
      * Load private key content from file and format.
-     * 
+     *
      * @param privateKeyPath
      *            Private key file path.
      * @return Formatted private key content.
