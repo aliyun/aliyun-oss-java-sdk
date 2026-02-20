@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -138,7 +139,7 @@ public class UploadPartFromFileTest extends TestBase {
         }
         
         private File createSampleFile(String fileName, long size) throws IOException {
-            File file = File.createTempFile(fileName, ".txt");
+            File file = Files.createTempFile(fileName, ".txt").toFile();
             file.deleteOnExit();
             String context = "abcdefghijklmnopqrstuvwxyz0123456789011234567890\n";
 
