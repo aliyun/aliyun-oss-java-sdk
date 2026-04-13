@@ -314,6 +314,7 @@ public class OSSBucketOperation extends OSSOperation {
             if (oe.getErrorCode().equals(OSSErrorCode.NO_SUCH_BUCKET)) {
                 return false;
             }
+            throw oe;
         }
         return true;
     }
